@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000543]: Noisy sound, broken mixer with via8235 (driver regression)
-Date: Tue, 12 Oct 2004 13:06:49 +0200 (CEST)
+Subject: [ALSA - driver 0000579]: multi+route distort sound
+Date: Tue, 12 Oct 2004 13:10:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041012110649.9444118009@server.perex-int.cz>
+Message-ID: <20041012111047.B92C918009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E18AA27D
-	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2004 13:06:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2CE182DB
+	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2004 13:10:48 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,171 +22,112 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000543
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000579
 ======================================================================
-Reported By:                obsidian
+Reported By:                ramendik
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     543
-Category:                   PCI - via82xx
+Bug ID:                     579
+Category:                   CORE - pcm
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.8-1-k7
+Distribution:               ASP Linux, RH9-based
+Kernel Version:             2.6.8.1-ck8 , with alsa 1.0.7rc1 stuck in and patches from bug 505 put on top
 ======================================================================
-Date Submitted:             09-25-2004 23:15 CEST
-Last Modified:              10-12-2004 13:06 CEST
+Date Submitted:             10-11-2004 20:45 CEST
+Last Modified:              10-12-2004 13:10 CEST
 ======================================================================
-Summary:                    Noisy sound, broken mixer with via8235 (driver regression)
+Summary:                    multi+route distort sound
 Description: 
-Sound is "shimmery" or "staticky" - noticeably bad. Mixer "master volume"
-has no effect. "PCM volume" cannot be adjusted. "DXS https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001" volume has an
-effect but not "correct" - i.e. zero != silent. I do get the message (at
-boot): 
+I have Intel ICH5, with both analog and spdif output.
 
-via82xx: Assuming DXS channels with 48k fixed sample rate.
-         Please try dxs_support=1 or dxs_support=4 option
-         and report if it works on your machine.
+I have made up /etc/asound.conf to route to both hw:0,0 and hw:0,4; I am
+listening on spdif (hw:0,4). (tiwai: I will try the new patch that may
+make this redundant, but what we have here seems to be another bug and
+might happen in other cases too).
 
-This is a big prob. on this particular machine, which is supposed to
-connect to the stereo and play mp3s, among other things.
+Here's my /etc/asound.conf in its entirety:
 
-Sound works normally outside Linux, and in Linux 2.4 with some Alsa 0.9.*.
-But with Linux 2.6 and alsa 1.0.5/6, bleah.
+pcm.analog {
+    type hw
+    card 0
+    device 0
+}
 
-I have been googling and troubleshooting all day. Here's what I've already
-tried:
+pcm.digit {
+    type hw
+    card 0
+    device 4
+}
 
-dxs_support=1, 2, 3 and 4 
+pcm.whole {
+    type multi
+    slaves.a.pcm "hw:0,0"
+    slaves.a.channels 2
+    slaves.b.pcm "hw:0,4"
+    slaves.b.channels 2
+    bindings.0.slave a
+    bindings.0.channel 0
+    bindings.1.slave a
+    bindings.1.channel 1
+    bindings.2.slave b
+    bindings.2.channel 0
+    bindings.3.slave b
+    bindings.3.channel 1
+}
 
-This makes zero difference, so I thought I might be doing it wrong; I
-tried it in modprobe.conf, modprobe.d/sound, and manually as an argument
-to modprobe, i.e. "modprobe snd-via82xx dxs_support=1", also with both
-rmmod'ing all alsa-related modules and rebooting altogether. 
+pcm.rt {
+    type route
+    slave.pcm whole
+    slave.channels 4
+    ttable.0.0 1
+    ttable.1.1 1
+    ttable.0.2 1
+    ttable.1.3 1
+}
+pcm.!default {
+    type copy
+    slave.pcm rt
+}
 
-Is there any way to tell if a dxs_support or other argument has been acted
-on? It really felt like they were all ignored. I could never get that
-original message to happen anytime but at boot, not matter what I did.
-modprobe -v did show an "insmod" line with the parameter(s) on it,
-though.
+ctl.!default {
+    type hw
+    card 0
+}
 
-ac97_quirk=0,1,2,3,4
+When I play to hw:0,4 or "analog", the sound is OK. When I play to "rt",
+it is distorted. Not noisy this time; instead, the pitch is shifted
+somewhat lower. 
 
-No effect.
+Checked with alsaplayer and xmms 1.2.10 . (XMMS 1.2.8 also caused high CPU
+use when playing to "rt", but this may be a CPU bug). Checked with both
+44100 Hz and 48000 Hz files.
 
-Various kernel boot parameters, both alone and in combination with the
-above:
-
-noapic, nolapic, acpi=off, and pci=noacpi.
-
-No effect. (BTW, I am currently running with all 4.) 
-
-Frustrating, because it seemed from searching a great many people have the
-exact same problem I do, but none of the many, varying "worked for me"
-answers have helped me.
-
-I'm a developer, somewhat kernel-savvy, and at your disposal. What do we
-try first?
+This may have something to do with a strange fact. When I play a 48k file,
+iecset still reports a rate of 44100 Hz. And in fact, if I set it to 48000
+Hz manualy and start a 48k file in alsaplayer, it still shifts to 44100 !
+This is true for both playing to hw:0,4 and to "rt". (Not tested with
+XMMS, can test if needed)
 ======================================================================
 
 ----------------------------------------------------------------------
- obsidian - 09-26-2004 01:09 CEST 
+ tiwai - 10-12-2004 13:10 CEST 
 ----------------------------------------------------------------------
-Still no solution, but there are new details.
-
-By loading snd-via82xx from /etc/modules, and putting the driver options
-on the line in that file, I was finally able to get them to take effect
-(i.e. items available in the mixer would change, 48k message wouldn't
-display, etc). I ran through the tests again (rebooting every time) with
-different values of dxs_settings and ac97_quirk. 
-
-ac97_quirk seemed to have no effect anyway.
-
-By varying dxs_settings I observed dxs volume controls disappearing from
-alsamixer with some values. Otherwise everything was the same ("shimmery"
-sound, master volume ignored, etc) and so this only had the effect of
-making it impossible to influence the volume altogether.
-
-----------------------------------------------------------------------
- obsidian - 09-26-2004 01:24 CEST 
-----------------------------------------------------------------------
-One more thing: I observed this in alsamixer. Surprised it hasn't popped up
-in too many other places, but I noticed that the chip (CM9739) correlates
-exactly with the same mixer issues I'm having:
-
-Card: VIA 8235
-Chip: C-Media Electronics CMI9739
-
-See:
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg10120.html
-
-This doesn't overlap with sound quality issues, however.
-
-----------------------------------------------------------------------
- obsidian - 09-26-2004 02:27 CEST 
-----------------------------------------------------------------------
-I upgraded to the current BIOS. No effect.
-
-----------------------------------------------------------------------
- SirPreme - 10-11-2004 15:13 CEST 
-----------------------------------------------------------------------
-I have the same problem and I couldn't find a way to solve this. I'm using
-a via82xx, too.
-
-This is what makes it working on 2.4, I think:
-If you compile OSS together with your soundcard into the kernel (or as a
-module), it works fine, but then you donnot use real ALSA.. :/
-
-Please, fix this bug..
-
-----------------------------------------------------------------------
- tiwai - 10-11-2004 15:56 CEST 
-----------------------------------------------------------------------
-You should try dxs_support=4.  It works on more mobos.
-
-Don't change ac97_quirk for CM9739.
-The CM9739 has no PCM volume control indeed.
-You need the software volume control in each app.
-
-----------------------------------------------------------------------
- obsidian - 10-12-2004 02:06 CEST 
-----------------------------------------------------------------------
-I already tried setting dxs_support to 4. This only had the effects I
-described above - did not fix the problem.
-
-What can we try next?
-
-----------------------------------------------------------------------
- tiwai - 10-12-2004 13:06 CEST 
-----------------------------------------------------------------------
-Try dxs_support=2, then you'll have no DXS multi-channel control.
-This should be identical with the kernel OSS/Free driver.
-
-If this doesn't fix the sound quality, it's because the output level
-is too big (due to the lack of DAC attenuation control).  Try to
-reduce the signal level in software.  E.g. xmms ALSA output has
-the software volume control.
-
-With dxs_support=4 (or 1), you have VIA DXS volume control, and can
-reduce the playback volume with this control, too.
-Note that the control seems inear, so it's peaky.
+No clue yet.  To make the test consistent, use aplay for testing.
+Run aplay with -v option.  This will show the hw/sw setting.
+In addition, iecset output and /proc/asound/card0/codec97#0/* files
+would be helpful as usual.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-25-04 23:15 obsidian       New Bug                                      
-09-25-04 23:15 obsidian       Distribution              => Debian Sarge    
-09-25-04 23:15 obsidian       Kernel Version            => 2.6.8-1-k7      
-09-26-04 01:09 obsidian       Bugnote Added: 0001913                       
-09-26-04 01:24 obsidian       Bugnote Added: 0001914                       
-09-26-04 02:27 obsidian       Bugnote Added: 0001915                       
-10-11-04 15:13 SirPreme       Bugnote Added: 0002078                       
-10-11-04 15:56 tiwai          Bugnote Added: 0002080                       
-10-12-04 02:06 obsidian       Bugnote Added: 0002086                       
-10-12-04 13:06 tiwai          Bugnote Added: 0002090                       
+10-11-04 20:45 ramendik       New Bug                                      
+10-11-04 20:45 ramendik       Distribution              => ASP Linux, RH9-based
+10-11-04 20:45 ramendik       Kernel Version            => 2.6.8.1-ck8 , with alsa 1.0.7rc1 stuck in and patches from bug 505 put on top
+10-12-04 13:10 tiwai          Bugnote Added: 0002091                       
 ======================================================================
 
 
