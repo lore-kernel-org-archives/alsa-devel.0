@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Is cvs server working ?
-Date: Wed, 9 Apr 2003 23:02:45 +0200 (CEST)
+From: =?gb2312?q?li=20Tom?= <tom374233@yahoo.com.cn>
+Subject: Does ALSA support C-Media 9738?
+Date: Thu, 10 Apr 2003 08:40:35 +0800 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0304092301290.24605-100000@pnote.perex-int.cz>
-References: <1049928012.12236.1.camel@Jay>
+Message-ID: <20030410004035.22539.qmail@web15106.mail.bjs.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative; boundary="0-2018371371-1049935235=:21754"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1049928012.12236.1.camel@Jay>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +15,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 9 Apr 2003, Giuliano Pochini wrote:
+--0-2018371371-1049935235=:21754
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: 8bit
 
-> 
-> [Giu@Jay ad]$ cvs -d ':pserver:anonymous@160.217.9.25:/cvsroot/alsa'
-> login
-> Logging in to :pserver:anonymous@160.217.9.25:2401/cvsroot/alsa
-> CVS password: 
-> cvs login: authorization failed: server 160.217.9.25 rejected access to
-> /cvsroot/alsa for user anonymous
 
-Yes, but don't forget that our CVS server is on SourceForge ;-)
+My sound card is C-Media 9738. Does ALSA driver support it?
 
-cvs.alsa-project.org    canonical name = cvs.alsa.sourceforge.net.
-cvs.alsa.sourceforge.net        canonical name = cvs.sourceforge.net.
-Name:   cvs.sourceforge.net
-Address: 66.35.250.207
+Thanks,
 
-						Jaroslav
+Tom
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
+
+---------------------------------
+Do You Yahoo!?
+"ÑÅ»¢Í¨ÍøÂçKTV, ËæÊ±ËæµØÃâ·Ñ¿¨À­OK~~"
+--0-2018371371-1049935235=:21754
+Content-Type: text/html; charset=gb2312
+Content-Transfer-Encoding: 8bit
+
+<P>My sound card is C-Media 9738. Does ALSA driver support it?</P>
+<P>Thanks,</P>
+<P>Tom</P><p><br><hr size=1><b>Do You Yahoo!?</b><br>
+<a href="http://rd.yahoo.com/mail_cn/tag/?http://cn.messenger.yahoo.com//chat/index.html
+">"ÑÅ»¢Í¨ÍøÂçKTV, ËæÊ±ËæµØÃâ·Ñ¿¨À­OK~~"</a>
+--0-2018371371-1049935235=:21754--
 
 
 -------------------------------------------------------
