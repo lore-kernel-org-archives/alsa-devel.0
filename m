@@ -1,8 +1,8 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
 Subject: Re: Re: should i be able to abort in the middle of
  snd_pcm_mmap_{begin,commit} ?
-Date: Thu, 21 Feb 2002 09:14:18 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202210913180.578-100000@pnote.perex-int.cz>
+Date: Thu, 21 Feb 2002 10:35:58 +0200 (EET)
+Message-ID: <Pine.LNX.4.44.0202210912360.3739-100000@ecabase.localdomain>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 In-Reply-To: <Pine.LNX.4.44.0202210745340.3739-100000@ecabase.localdomain>
@@ -14,66 +14,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 21 Feb 2002, Kai Vehmanen wrote:
+Answering to my own mail...
 
-> On Tue, 19 Feb 2002, Jaroslav Kysela wrote:
->
-> >> I'm still a bit puzzled why I didn't get xruns in the test case quoted
-> >> below, but until I can reproduce the problem, there's not much to discuss
-> > You posted this sw params on alsa-devel a few days ago:
-> [....]
-> > sw_params:
-> > stop_threshold: 4294967295
-> [...]
-> > As you can see, the stop_threshold is set to UMAX_INT. In case when
-> > stop_threshold is above ring buffer size, then it means for drivers: I
-> > don't care about xruns, don't report them. The stop threshold must be
-> > equal to ring buffer size to get xruns when no more frames are in ring
-> > buffer.
->
-> Hmm, makes sense. This raises a few new questions:
->
-> 1) Is 'avail > stop_threshold' the only condition when a stream
->    can move from RUNNING to XRUN state? The only places I located
->    in the current source tree, where this state change happens, were
->    in alsa-kernel/core/pcm_lib.c, functions
->    snd_pcm_update_hw_ptr_interrupt() and snd_pcm_update_hw_ptr().
->
-> 2) If (1) is true, why does runnig jack produces xruns every
->    now and then...? The stop_threshold is UMAX_INT for
->    both directions and it should never occur that over
->    buffer_size samples is writable to, or readable from
->    the pcm device.
->
-> And to save your time ;), here's one possible explanation to (2):
->
 > Looking at jackd code, one possibility is that the we are only getting an
-> EPIPE from snd_pcm_avail_update(), but the stream is still in RUNNING
+> EPIPE from snd_pcm_avail_update(), but the stream is still in RUNNING 
 > state. At least in alsa-lib/src/pcm/pcm_hw.c:snd_pcm_hw_avail_update()
 > we have a test for:
->
-> --cut--
+[...]
 > if (avail > pcm->buffer_size)
 > 	return -EPIPE;
-> --cut--
->
-> This would trigger jackd's xrun handling code, but leave state to RUNNING.
-> Am I on the right track here?
 
-Yes, this condition is faulty. It should be 'avail >= pcm->stop_threshold'.
-Fixed in CVS and thanks for verbose error detection.
+This seems to be the case. It does look very unlikely that an xrun 
+could go unnoticed. It would take quite a latency spike to 
+allow hw_ptr to wrap around pcm->boundary. :)
 
-						Jaroslav
+I guess more probable explanation is something like:
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+loop:
+    start = timer()
+    poll()
+    <interrupt -> hw_ptr += period_size>
+    snd_pcm_avail_update()
+    snd_pcm_mmap_begin()
+    ...
+    snd_pcm_mmap_commit()
+    <interrupt -> hw_ptr += period_size>
+    stop = timer()
+
+If the interrupts occur at the right time, 'stop-start' 
+might exceed 'period_time * period_count' even though 
+snd_pcm_avail_update() never returns EPIPE. This is
+probably what I saw when debugging jackd (and is, of
+course, perfectly legal).
+
+-- 
+ http://www.eca.cx
+ Audio software for Linux!
 
 
 _______________________________________________
