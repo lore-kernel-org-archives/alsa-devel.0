@@ -1,14 +1,13 @@
-From: "Jeffrey W. Baker" <jwbaker@acm.org>
-Subject: Re: Support for ADI 1980?
-Date: Sun, 20 Jul 2003 23:50:21 -0700
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: intek8x0 driver
+Date: Sun, 20 Jul 2003 13:57:10 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1058770221.15365.0.camel@noodles>
-References: <200307210005.22755.christopher.martin@utoronto.ca>
+Message-ID: <Pine.LNX.4.44.0307201355360.3903-100000@pnote.perex-int.cz>
+References: <200307201304.51654.dirk_aust@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7BIT
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200307210005.22755.christopher.martin@utoronto.ca>
+In-Reply-To: <200307201304.51654.dirk_aust@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,27 +16,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Christopher Martin <christopher.martin@utoronto.ca>
-Cc: alsa-devel@lists.sourceforge.net
+To: Dirk Aust <dirk_aust@gmx.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2003-07-20 at 21:05, Christopher Martin wrote:
-> Hello,
-> 
-> Does ALSA support the Analog Devices ADI 1980? I am considering the 
-> purchase of a motherboard (ASUS A7V8X-X) that comes integrated with 
-> this chip, but I don't see it listed in the ALSA soundcard matrix. I 
-> don't need S/PDIF in/out, just solid working analog Line Out 
-> (CD-Digital input would be nice too).
-> 
-> If this chip does work under Linux, which module would be the correct 
-> one to use?
-> 
-> Any help would be most appreciated. Thanks in advance,
+On Sun, 20 Jul 2003, Dirk Aust wrote:
 
-This one works, as well as the other AD198x series AC'97 codecs.
+> Hello all,
+> I have some difficulties using the /dev/dsp devices, when trying to use the 
+> call: 
+> 
+> mmap2(NULL, 16384, PROT_READ, MAP_SHARED, 5, 0) = -1 EIO (Input/output error)
 
--jwb
+Note that you are allowed to mmap only stereo 16-bit streams with 
+the intel8x0 driver (and maybe only at 48kHz rate - check your 
+/var/log/messages, if your codec is restricted).
+
+> If I'm not root, I even can't read() from that device, even though I'm the 
+> owner of /dev/dsp0.
+
+Probably a permission problem.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
