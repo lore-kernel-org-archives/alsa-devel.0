@@ -1,14 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Bug in OSS simulation (ALSA 0.9.4)
-Date: Thu, 10 Jul 2003 14:15:25 +0100
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: Re: Where is the real developers list?
+Date: Thu, 10 Jul 2003 17:44:47 +0300 (EEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F0D66ED.3090509@superbug.demon.co.uk>
-References: <20030710013326.GA12086@alinoe.com>
+Message-ID: <Pine.LNX.4.44.0307101722110.7662-100000@ecabase.localdomain>
+References: <20030710120333.GA15534@alinoe.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030710013326.GA12086@alinoe.com>
+In-Reply-To: <20030710120333.GA15534@alinoe.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,62 +20,44 @@ To: Carlo Wood <carlo@alinoe.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Carlo Wood wrote:
-> I pinpointed the problem and wrote a small program
-> to illustrate the problem.
-> 
-> When compiling the program given below with:
-> 
->   gcc -DUSE_DSP_SETFMT=0 troep.c
-> 
-> it runs fine.
-> 
-> But, when compiling it with:
-> 
->   gcc -DUSE_DSP_SETFMT=1 troep.c
-> 
-> It stops rather quickly with reading data.
-> 
-> Example output of the latter:
-> 
-> ~>a.out
-> Fragment size: 1024
-> Number of fragments: 32767
-> Number of channels: 1
-> Sample rate: 22050
-> Read 1024 bytes.
-> Number of full fragments that can be read or written without blocking: 0
-> Total number of fragments allocated for buffering: 2
-> Size of a fragment in bytes: 1024
-> Number of bytes that can be read or written immediately without blocking: 0
-> #fragments, #bytes: 0, 0
-> #fragments, #bytes: 1, 1632
-> Read 1024 bytes.
-> #fragments, #bytes: 2, 2048
-> Read 1024 bytes.
-> #fragments, #bytes: 1, 1024
-> Read 1024 bytes.
-> #fragments, #bytes: 0, 0
-> #fragments, #bytes: 0, 0
-> #fragments, #bytes: 0, 0
-> ...etc
-> 
-Why don't you just use /proc/asound to gather all the info you need, 
-like buffer and period sizes.
-E.g.
-While playing a sound file: -
-cat /proc/asound/oss/sndstat
-cat /proc/asound/card0/pcm0p/info
+Hi,
 
-cat /proc/asound/card0/pcm0p/sub0/hw_params
-cat /proc/asound/card0/pcm0p/sub0/info
-cat /proc/asound/card0/pcm0p/sub0/status
-cat /proc/asound/card0/pcm0p/sub0/sw_params
+On Thu, 10 Jul 2003, Carlo Wood wrote:
 
-If recording a sound, use pcm0c instead of pcm0p
+> I only see questions on this list,
+> and nobody who answers them.
+[...]
+> Where are the developers?  Is ALSA still maintained?
 
-Cheers
-James
+ALSA is definitely maintained, and alsa-devel is the correct list. ALSA
+actually has quite a good history in project activity. Development has
+continued without breaks for over five years now and it certainly hasn't
+slowed down recently. I've been developing ALSA applications since 1999, 
+and well, I'm still here! :)
+
+But for the last few years the users/developers ratio has simply gone
+through the roof, and nowadays the developers are simply overwhelmed with
+different kinds of requests/reports (both from users and application
+developers). I cannot speak for them, but I'd guess they simply have to
+ignore some of the issues (even good, valid reports), or otherwise they
+wouldn't have time for the actual development work. I guess the state of
+OSS audio in current kernels is one reason for the massive interest in
+ALSA.
+
+Unfortunately there hasn't been a similar flood of developers to ALSA.  
+Hopefully now that ALSA is in linux-2.5.xx this situation will slowly
+change.
+
+As with other busy FOSS projects (Linux kernel, Apache), you have to be
+patient to get developer attention. For example, writing a small test
+program that demonstrates the problem is a good way to make
+debugging/fixing easier for the developers (and increases the likelihood
+that they will look at your issue). But I guess - if you are the same guy
+who has been writing to the linux-c++ list - you already know this. ;)
+
+-- 
+ http://www.eca.cx
+ Audio software for Linux!
 
 
 
