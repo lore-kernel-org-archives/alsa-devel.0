@@ -1,16 +1,14 @@
-From: Fedor Karpelevitch <fedor@apache.org>
-Subject: Re: [2.4]ALi M5451 sound hangs on init; workaround
-Date: Wed, 11 Dec 2002 11:42:31 -0800
+From: Mark Knecht <markknecht@attbi.com>
+Subject: Re: HDSP 9652 - a couple of small (?) issues
+Date: 11 Dec 2002 12:09:09 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200212111142.31709.fedor@apache.org>
-References: <200212110715.20617.fedor@apache.org> <200212111036.21771.fedor@apache.org> <1039635588.18587.8.camel@irongate.swansea.linux.org.uk>
+Message-ID: <1039637351.1652.1.camel@Godzilla>
+References: <20021211133210.MUPQ3269.rwcrgwc51.attbi.com@newmx3.fast.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1039635588.18587.8.camel@irongate.swansea.linux.org.uk>
-Content-Disposition: inline
+In-Reply-To: <20021211133210.MUPQ3269.rwcrgwc51.attbi.com@newmx3.fast.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,21 +17,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Cc: lkml <linux-kernel@vger.kernel.org>, Vicente Aguilar <bisente@bisente.com>, alsa-devel@lists.sourceforge.net, Debian-Laptops <debian-laptop@lists.debian.org>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>, PlanetCCRMA <planetccrma@ccrma.stanford.edu>
 List-Id: alsa-devel@alsa-project.org
 
-> On Wed, 2002-12-11 at 18:36, Fedor Karpelevitch wrote:
-> > almost as I posted before, just passing pointers to the read
-> > method. It works, but the question as to what is this supposed to
-> > affect remains...
->
-> If I am reading the docs right then its just a thinko in the code
-> and it is meant to be toggling that bit not whacking the entire
-> register.
+Paul,
+   Thanks. We new users will certainly appreciate that.
 
-So I wonder what toggling those bits is supposed to change. I would 
-test that somehow then
+   I notice I get a message "IO box is a DigiFace" in dmesg. Is the
+mixer in DigiFace working, or is there some possibility that there's a
+clue there?
+
+Thanks much,
+Mark
+
+On Wed, 2002-12-11 at 05:38, Paul Davis wrote:
+> >1) I am unable to turn down the volume with alsamixer. All the way up or
+> >down, the volume is always very loud. Has anyone else seen this? Is
+> >there some other tool which will actually control the volume?
+> 
+> the mixer is (currently) disabled on the 9652-hdsp. i have asked RME
+> to send me the commands to reset it and the new register information
+> on how to access it (its not the same as the regular hdsp). i will
+> prod them again this morning.
+> 
+> --p
+
+
 
 
 -------------------------------------------------------
