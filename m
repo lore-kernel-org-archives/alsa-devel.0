@@ -1,17 +1,18 @@
-From: Gerard Janssen <G.Janssen@ITS.TUDelft.NL>
-Subject: How to route "spdif" to an FXBUS of emu10k1
-Date: Wed, 08 Jan 2003 12:47:17 +0100
+From: James Tappin <sjt@star.sr.bham.ac.uk>
+Subject: Re: the last changes to trident driver
+Date: Wed, 8 Jan 2003 12:52:27 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <724D1102774@Octopus.et.tudelft.nl>
+Message-ID: <20030108125227.4ee7ff0a.sjt@star.sr.bham.ac.uk>
+References: <s5hn0md9c9s.wl@alsa2.suse.de>
+	<20030107232051.2861d226.james@tappin.me.uk>
+	<s5hbs2s9cns.wl@alsa2.suse.de>
+	<20030108110650.1d579069.sjt@star.sr.bham.ac.uk>
+	<s5h8yxvam1u.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailhst2.its.tudelft.nl (mailhst2.its.tudelft.nl [130.161.34.250])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA10320
-	for <alsa-devel@alsa-project.org>; Wed, 8 Jan 2003 12:44:01 +0100
-Received: from Octopus.et.tudelft.nl (dutetvh.et.tudelft.nl [130.161.40.138])
-	by mailhst2.its.tudelft.nl (8.11.6/8.11.6) with ESMTP id h08Bhti02661
-	for <alsa-devel@alsa-project.org>; Wed, 8 Jan 2003 12:43:57 +0100 (MET)
+In-Reply-To: <s5h8yxvam1u.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,49 +21,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: james@tappin.me.uk, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 08 Jan 2003 13:00:29 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-By making slight changes in emufx.c, I could use all four spdif stereo
-channels of the sblive! that are present on the audio-ext connector. These
-spdif0..3 outputs can be accessed via: EXTOUT_TOSLINK_L,R ;
-EXTOUT_HEADPHONE_L,R ; EXTOUT_REAR_L,R and EXTOUT_CENTER,LFE. By re-routing
-"spdif", "front", "rear" and "center_lfe" to the respective outputs, four
-stereo signals (8 channels) can be simultaneously send to these outputs. 
+TI> At Wed, 8 Jan 2003 11:06:50 +0000,
+TI> James Tappin wrote:
+TI> > 
+TI> > On Wed, 08 Jan 2003 11:08:39 +0100
+TI> > Takashi Iwai <tiwai@suse.de> wrote:
+TI> > 
+TI> > TI> At Tue, 7 Jan 2003 23:20:51 +0000,
+TI> > TI> James Tappin wrote:
+TI> > TI> > 
+TI> > TI> > On Tue, 07 Jan 2003 17:04:47 +0100
+TI> > TI> > Takashi Iwai <tiwai@suse.de> wrote:
+TI> > TI> > 
+TI> > TI> > > Hi,
+TI> > TI> > > 
+TI> > TI> > > if someone has a Trident 4DNX (not DX), could you test the
+TI> > TI> > > latest CVS driver?  i hope my last change doesn't break,
+TI> > TI> > > but i couldn't test the board atm...
+TI> > TI> > > 
+TI> > TI> > > 
+TI> > TI> > 
+TI> > TI> > Hi Takashi,
+TI> > TI> > 	I've managed to resolve my unresolved references problem
+TI> > TI> > 	by rebuilding
+TI> > TI> > the kernel without gameport support, but now attempting to
+TI> > TI> > aplay a wav file produces an immediate segfault (but it
+TI> > TI> > refuses to dump core).
+TI> > TI> 
+TI> > TI> hmm, perhaps it caused oops in kernel.
+TI> > TI> could you check the kernel message and get the trace via
+TI> > TI> ksymoops if possible?
+TI> > TI> 
+TI> > 
+TI> > I've just logged into the machine from work and looked back at the
+TI> > system logs and this is what I see from "ksymoops syslog.0":
+TI> > 
+TI> 
+TI> hmm, unfortunately the stack wasn't parsed correctly with symbols.
+TI> did you build the alsa drivers with debug option
+TI> (--with-debug=full)? anyway, please rebuild the drivers with the
+TI> attached patch (and debug option, if not yet).  i hope a fatal oops
+TI> or hang-up can be avoided now...
+TI> oh, also, please update the cvs tree again.  i've done some changes
+TI> since yesterday.
 
-The "front", "rear" and "center_lfe" signals are alsmost perfectly
-synchronized (within a few samples) and the small delays are constant.
-However, the signal via "spdif" is not: its delay w.r.t. the other signals
-is about 60 samples and changes randomly every time the application is
-started. 
-The "spdif" signal is taken from GPR(8) and GPR(9) in emufx.c. As far as I
-could backtrace these signals come from etram, which probably is the cause
-of the random delay.
+As far as I can tell that works, i.e. the modules load, aplay plays a
+wav file and there's nothing in /var/log/syslog -- I can't tell if any
+sound's coming out.
 
-A solution might be to put the "spdif" also directly in two FXBUS registers
-(there are still 6 free FXBUS registers), as is done with the other
-signals. However, I don't know how to do this.
+Best regards,
+	James
 
-I would appreciate any help or suggestions in routing "spdif" to an FXBUS.
+P.S. any ideas on the incompatibility with a kernel with gameport
+enabled as modules?
 
-Thanks,
-
-Gerard Janssen
-
-
-********************************************************************** 
-Dr.ir. Gerard J.M. Janssen
-Delft University of Technology 
-Faculty of Information Technology and Systems (ITS) 
-Wireless Mobile Communications Group
-P.O. Box 5031, 2600 GA Delft, The Netherlands 
-Phone +31-15-2786736, Fax +31-15-2781774 
-E-mail G.Janssen@ITS.TUDelft.NL 
-**********************************************************************
-
-
+-- 
++------------------------+-------------------------------+---------+
+| James Tappin           | School of Physics & Astronomy |  O__    |
+| sjt@star.sr.bham.ac.uk | University of Birmingham      | --  \/` |
+| Ph: 0121-414-6462. Fax: 0121-414-3722                  |         |
++--------------------------------------------------------+---------+
 
 
 -------------------------------------------------------
