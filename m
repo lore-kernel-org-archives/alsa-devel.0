@@ -1,9 +1,9 @@
 From: Andrei Boros <andrei@srr.ro>
-Subject: Re: alsa-utils cvscompile
-Date: Wed, 24 Sep 2003 14:25:53 +0300
+Subject: Re: cvs alsa-lib compilation :
+Date: Wed, 24 Sep 2003 14:29:25 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F717F41.8A481DF8@srr.ro>
-References: <3F6EBD21.385BE9EA@srr.ro> <s5hd6drr2m4.wl@alsa2.suse.de>
+Message-ID: <3F718015.6954A110@srr.ro>
+References: <3F6EBB9E.C9C13190@srr.ro> <s5hbrtbr2i0.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -22,33 +22,40 @@ List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
 
-> > source='alsactl.c' object='alsactl.o' libtool=no \
-> > depfile='.deps/alsactl.Po' tmpdepfile='.deps/alsactl.TPo' \
-> > depmode=none /bin/sh ../depcomp \
-> > gcc -DHAVE_CONFIG_H -I. -I. -I../include     -O2 -Wall -pipe -g -c `test
-> > -f alsactl.c || echo './'`alsactl.c
-> > gcc  -O2 -Wall -pipe -g   -o alsactl  alsactl.o  -lasound -lm -ldl
-> > -lpthread
-> > gcc: alsactl.o: No such file or directory
+> >  gate:~/install/alsa-cvs/alsa-lib# ./cvscompile
+> > configure.in:44: warning: do not use m4_patsubst: use patsubst or
+> > m4_bpatsubst
+> > configure.in:182: warning: do not use m4_regexp: use regexp or
+> > m4_bregexp
+> > autoheader: `include/config.h.in' is unchanged
+> > CFLAGS=-O2 -Wall -W -pipe -g
 > 
-> do you have really alsactl.c?
-> or, any system error such as no diskt space, etc?
+> ARGH, again autotools problem!
 > 
-> anyway i don't see any errors in the alsa-utils side.
+> please tell me the version of automake, autoconf and libtool.
+> and check which tool causes this error by running the sequence in
+> cvscompile script manually.
+> 
 
-gate:~/install/alsa-cvs/alsa-utils/alsactl# pwd
-/root/install/alsa-cvs/alsa-utils/alsactl
-gate:~/install/alsa-cvs/alsa-utils/alsactl# ls -l
-total 72
-drwxr-xr-x   2 root     root         4096 Aug  6 13:45 CVS
--rw-r--r--   1 root     root         9983 Sep 22 12:11 Makefile
--rw-r--r--   1 root     root           89 Nov  6  2001 Makefile.am
--rw-r--r--   1 root     root        10258 Sep 22 12:11 Makefile.in
--rw-r--r--   1 root     root         2061 Sep  6  2002 alsactl.1
--rw-r--r--   1 root     root        34727 Jun 20 21:13 alsactl.c
-gate:~/install/alsa-cvs/alsa-utils/alsactl#
+gate:~/install/alsa-cvs/alsa-utils/alsactl# automake --version
+automake (GNU automake) 1.5
 
-and 197M free space.
+gate:~/install/alsa-cvs/alsa-utils/alsactl# autoconf --version
+autoconf (GNU Autoconf) 2.53
+
+gate:~/install/alsa-cvs/alsa-utils/alsactl# libtool --version
+ltmain.sh (GNU libtool) 1.4.2 (1.922.2.53 2001/09/11 03:18:52)
+
+Running each command in cvscompile : 
+
+gate:~/install/alsa-cvs/alsa-lib# autoheader
+configure.in:44: warning: do not use m4_patsubst: use patsubst or
+m4_bpatsubst
+configure.in:182: warning: do not use m4_regexp: use regexp or
+m4_bregexp
+autoheader: `include/config.h.in' is unchanged
+
+
 
 -- 
 ing. Andrei Boros
