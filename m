@@ -1,14 +1,12 @@
-From: Friedrich Ewaldt <friedrich.ewaldt@gmx.de>
-Subject: Re: RC7 and CS46xx (GTXP) -> Terratec XFire
-Date: Sun, 02 Feb 2003 17:22:43 +0100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: mutli channel
+Date: Sun, 02 Feb 2003 15:26:04 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E3D45D3.8010303@gmx.de>
-References: <20030201144858.0479188a.flame@home.se>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <E18fQd3-0000nw-00@sc8-sf-list1.sourceforge.net>
+References: <200302011222.49280.ljp@llornkcor.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030201144858.0479188a.flame@home.se>
+In-reply-to: Your message of "Sat, 01 Feb 2003 12:22:49 MST."
+             <200302011222.49280.ljp@llornkcor.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,30 +15,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Richard Olsson <flame@home.se>
-Cc: alsa-devel@lists.sourceforge.net
+To: ljp <ljp@llornkcor.com>
+Cc: alsa devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Richard Olsson wrote:
+>1) does alsa have support for multichannel output? If so, how would one go 
 
->Something between CVS 2002-12-18 and RC7 seriously broke the amplifier
->stuff for me on my GTXP - sound is very disorted and volume is very low.
->It's different from the troubles RC6 gave me though.  I'd guess it's
->the recent amplifier patch that was applied to the CS46xx driver.
->
->Only oddity I see is in dmesg:
->ALSA ../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:415: cs46xx: failure waiting for FIFO command to complete
->
->I'll stick to the 2002-12-18 CVS for now:)
->
->  
->
-The same warning in dmesg with my Terrartec DMX XFire. But everything 
-seems to work (OK) like 2002-12-09-CVS + 2003-01-05-patch. What does 
-this warning mean. Should I ignore it?
-TIA
- fe
+of course.
 
+>about sending individual signals to channels 1-8?
+
+depends on the access format: interleaved or non-interleaved. it also
+depends on whether you are using read/write access or mmap-based
+access. 
+
+so you have to get a bit more specific with your question before we
+can answer it.
+
+--p
 
 
 -------------------------------------------------------
