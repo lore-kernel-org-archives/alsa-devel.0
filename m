@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
-Date: Thu, 9 Dec 2004 11:27:33 +0100
-Message-ID: <3a61a07734c039e2e898dc65c4663823@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000705]: RME96 Driver crashes
+Date: Thu, 9 Dec 2004 11:22:03 +0100
+Message-ID: <1fff06da3f3fd605d84fd4db661afa3f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D820331E
-	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2004 11:27:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E27C731E
+	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2004 11:22:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,242 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=705> 
 ======================================================================
-Reported By:                footcow
+Reported By:                FishB8
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   666
-Category:                   PCI - azx
+Issue ID:                   705
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
+Distribution:               Gentoo
 Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-23-2004 01:31 CET
-Last Modified:              12-09-2004 11:27 CET
+Date Submitted:             12-03-2004 23:43 CET
+Last Modified:              12-09-2004 11:22 CET
 ======================================================================
-Summary:                    Simply no sound ... no line ... no mixer
+Summary:                    RME96 Driver crashes
 Description: 
-I have compiled the last release : 1.0.7 stable.
-But I do not have any sound, no line ... no mixer ... :(
-
-I have an AsusTek P5GD2 motherboard with lspci -v :
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Asustek Computer, Inc.: Unknown device 813d
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
-
-
-The snd_azx module is well loaded :
-lsmod : 
-snd_azx                30920  1
-snd_pcm                95112  1 snd_azx
-snd_timer              25476  1 snd_pcm
-snd                    54500  5 snd_azx,snd_pcm,snd_timer
-snd_page_alloc         10120  1 snd_pcm
-
-If I run alsamixer I get this :
-$ alsamixer
-No mixer elems found
-
-If I run alsamixergui, I get 3 columns:
-Line is emplty and can't change
-Same for Mic
-I can only move values for a third column called Capt.
-
+Something has changed in the RME96 driver between 1.0.6 and 1.0.7 causeing
+it to crash. Whenever an audio program uses ALSA and stops playing the
+driver hangs. When trying to start JACK, it never gets started but the CPU
+hits 100%. It's impossible to kill any of the programs because any program
+dealing with processes hangs as well. The system will not totally shut
+down and has to be reset. Kernel 2.6.8 works just fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- footcow - 12-08-04 23:56 
+ FishB8 - 12-09-04 00:22 
 ----------------------------------------------------------------------
-Sorry now alsa definitively not working :
-dmesg :
-ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:1865: BUG? (err >=
-0) (called from f89af986)
-ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:2011:
-snd_pcm_hw_constraints_complete failed
-
-The contents of /proc/asound/card0/codec#0 is :
-Codec: Generic 434d ID 4980
-Address: 0
-Vendor Id: 0x434d4980
-Subsystem Id: 0x0
-Revision Id: 0x90002
-Default PCM: rates 0x540, bits 0x0e, types 0x1
-Default Amp-In caps: N/A
-Default Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-Node 0x06 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-Node 0x07 [Audio Output] wcaps 0x615: Stereo Digital Amp-Out
-  Amp-Out caps: N/A
-  PCM: rates 0x000, bits 0x00, types 0x5
-Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
-  PCM: rates 0x160, bits 0x02, types 0x0
-  Connection: 9
-     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
-Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
-  PCM: rates 0x160, bits 0x02, types 0x0
-  Connection: 9
-     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
-Node 0x0a [Audio Input] wcaps 0x100791: Stereo Digital
-  PCM: rates 0x160, bits 0x0e, types 0x0
-  Connection: 1
-     0x13
-Node 0x0b [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f:  IN
-  OUT
-  Pin Default 0x01014010: Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0
-  Connection: 1
-     0x03
-Node 0x0c [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f:  IN
-  OUT
-  Pin Default 0x01813000: Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0xc0
-  Connection: 1
-     0x04
-Node 0x0d [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f:  IN
-  OUT
-  Pin Default 0x01a19000: Mic at Ext Rear
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0xc0
-  Connection: 1
-     0x05
-Node 0x0e [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x081033f:  IN
-  OUT
-  Pin Default 0x01011014: Line Out at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0xc0
-  Connection: 1
-     0x06
-Node 0x0f [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f:  IN
-  OUT
-  Pin Default 0x82214100: HP Out at Ext Front
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x10 [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f:  IN
-  OUT
-  Pin Default 0x82a19100: Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0xc0
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x11 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0863:  IN
-  Pin Default 0x19330000: CD at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x00
-Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810:  OUT
-  Pin Default 0x01450000: SPDIF Out at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x40
-  Connection: 1
-     0x07
-Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
-  Pincap 0x0830:  IN
-  OUT
-  Pin Default 0x41150000: Speaker at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x00
-Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x15 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x16 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x19 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1d [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1f [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0833f:  IN
-  OUT
-  Pin Default 0x01016012: Line Out at Ext Rear
-    Conn = 1/8, Color = Orange
-  Pin-ctls: 0xc0
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x20 [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0833f:  IN
-  OUT
-  Pin Default 0x01012016: Line Out at Ext Rear
-    Conn = 1/8, Color = Grey
-  Pin-ctls: 0x00
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x23 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-
-Still no alsamixer
-#alsamixer
-No mixer elems found
-
-#lsmod | grep snd
-snd_mixer_oss          21376  0
-snd_azx                14960  0
-snd_hda_codec          36736  1 snd_azx
-snd_pcm               103944  2 snd_azx,snd_hda_codec
-snd_timer              27012  1 snd_pcm
-snd                    64260  5
-snd_mixer_oss,snd_azx,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc         10504  2 snd_azx,snd_pcm
-
-
-Hope this will help you ...
+Older version is even worse: the whole system locked up. I was using
+version 0.98.1. Once again this is only in real time mode though. Non real
+time mode for 0.98.1 didn't cause any problems.
 
 ----------------------------------------------------------------------
- tiwai - 12-09-04 11:27 
+ tiwai - 12-09-04 11:22 
 ----------------------------------------------------------------------
-Please write how did you get the error (what did you run exactly).
+The crash of JACK is because of RT process.  You'd better to contact with
+JACK developer ML for debugging this.
 
-Also, compile with --with-debug=detect option.  This will show more
-information in the kernel message.  At least, I need to know which format
-is used.
+Maybe the older version of rme96 driver worked casually because its (a
+kind of fake) implementation of mmap mode.
 
-Perhaps it's because the audio-out widget doesn't have the overriding
-rates and formats information.
+Martin, does the latest rme32 work with JACK?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 01:31 footcow        New Issue                                    
-11-23-04 01:31 footcow        Distribution              => Debian          
-11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
-11-23-04 21:49 footcow        Note Added: 0002530                          
-12-08-04 19:54 tiwai          Note Added: 0002791                          
-12-08-04 23:56 footcow        Note Added: 0002795                          
-12-09-04 11:27 tiwai          Note Added: 0002799                          
+12-03-04 23:43 FishB8         New Issue                                    
+12-03-04 23:43 FishB8         File Added: config                           
+12-03-04 23:43 FishB8         Distribution              => Gentoo          
+12-03-04 23:43 FishB8         Kernel Version            => 2.6.9           
+12-04-04 12:30 martin         Note Added: 0002715                          
+12-04-04 17:56 FishB8         Note Added: 0002717                          
+12-04-04 19:21 FishB8         Note Added: 0002718                          
+12-04-04 20:18 eradicator     Issue Monitored: eradicator                    
+12-07-04 18:44 tiwai          Note Added: 0002758                          
+12-07-04 23:06 FishB8         Note Added: 0002768                          
+12-08-04 12:08 tiwai          Note Added: 0002776                          
+12-09-04 00:22 FishB8         Note Added: 0002796                          
+12-09-04 11:22 tiwai          Note Added: 0002798                          
 ======================================================================
 
 
