@@ -1,11 +1,21 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: To soundcard matrix maintainer
-Date: 26 May 2003 21:57:17 +0000
+From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Subject: Re: usb quattro permission denied as normal user
+Date: Sun, 25 May 2003 17:07:43 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1053986238.975.7.camel@Jay>
+Message-ID: <20030525170743.2dd7bacb.erikd-alsa@mega-nerd.com>
+References: <Law9-F68BE5op1NGGbf0004b443@hotmail.com>
+	<3ED05E27.3030804@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-EApMQS6fh3CQ7TXRPtJk"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mega-nerd.net (foobar@CPE-144-132-185-246.nsw.bigpond.net.au [144.132.185.246])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA10521
+	for <alsa-devel@alsa-project.org>; Sun, 25 May 2003 09:22:16 +0200
+Received: from coltrane (coltrane [192.168.1.101])
+	by mega-nerd.net (Postfix) with SMTP id 6DB978D95
+	for <alsa-devel@alsa-project.org>; Sun, 25 May 2003 17:07:43 +1000 (EST)
+In-Reply-To: <3ED05E27.3030804@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,95 +24,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 25 May 2003 15:09:43 +0900
+Patrick Shirkey <pshirkey@boosthardware.com> wrote:
 
---=-EApMQS6fh3CQ7TXRPtJk
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+> After installing latest cvs and running chmod a+rw /dev/dsp* /dev/mixer 
+> I get this error while normal user which doesn't occur as root.
 
+In case you didn't know, there is probably a better to do this.
 
-Please, can you replace the part about Echoaudio cards with the attached
-file ?
+For each user who needs to access the audio hardware do:
 
-Tnx.
+    adduser <username> <group owner of audio devices>
 
+In my case that would be (as root):
 
---=-EApMQS6fh3CQ7TXRPtJk
-Content-Disposition: attachment; filename=echocards.html
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/html; name=echocards.html; charset=ISO-8859-1
+    adduser erikd audio
 
-<tr><th rowspan=3D"10">
-     <a href=3D"http://www.echoaudio.com/">Echo Digital Audio</a>
- </tr>
- <tr>
-      <td>Darla20</td>
-      <td>Motorola DSP56301</td>
-      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
-rgilio.it/ea.html">Details</a></td>
-      <td>&nbsp;</td>
-    </tr>
- <tr>
-      <td>Gina20</td>
-      <td>Motorola DSP56301</td>
-      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
-rgilio.it/ea.html">Details</a></td>
-      <td>[Rio][Tio][Aio]</td>
-    </tr>
- <tr>
-      <td>Laya20</td>
-      <td>Motorola DSP56301</td>
-      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
-rgilio.it/ea.html">Details</a></td>
-      <td>[Rio][Tio][Aio]</td>
-    </tr>
- <tr>
-      <td>Darla24</td>
-      <td>Motorola DSP56301</td>
-      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
-rgilio.it/ea.html">Details</a></td>
-      <td>&nbsp;</td>
-    </tr>
- <tr>
-      <td>Gina24</td>
-      <td>DSP56301 or DSP56361</td>
-      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
-rgilio.it/ea.html">Details</a></td>
-      <td>[Rio][Tio][Aio]</td>
-    </tr>
- <tr>
-      <td>Layla24</td>
-      <td>Motorola DSP56361</td>
-      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
-rgilio.it/ea.html">Details</a></td>
-      <td>[Rio][Tio][Aio]</td>
-    </tr>
- <tr>
-      <td>Mona</td>
-      <td>DSP56301 or DSP56361</td>
-      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
-rgilio.it/ea.html">Details</a></td>
-      <td>[Rio][Tio][Aio]</td>
-    </tr>
- <tr>
-      <td>Mia</td>
-      <td>Motorola DSP56361</td>
-      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
-rgilio.it/ea.html">Details</a></td>
-      <td>(4)[Rio]</td>
-    </tr>
- <tr bgcolor=3D"#aaaaaa">
-      <td>Indigo</td>
-      <td>Motorola DSP56361</td>
-      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
-rgilio.it/ea.html">Details</a></td>
-      <td>[X?]</td>
-    </tr>
+> Could this be related to the recent changes to the snddevices script 
+> procedure?
 
---=-EApMQS6fh3CQ7TXRPtJk--
+That I can't answer, but the procedure above should solve this problem 
+another way.
 
+Cheers,
+Erik
+-- 
++-----------------------------------------------------------+
+  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
++-----------------------------------------------------------+
+The difference between genius and stupidity is that
+  genius has its limits.
 
 
 -------------------------------------------------------
