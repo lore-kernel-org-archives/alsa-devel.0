@@ -1,13 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: sample rate conversion
-Date: Fri, 3 Sep 2004 17:14:29 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: User land drivers.
+Date: Fri, 03 Sep 2004 16:58:09 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0409031710210.21405@linux.local>
-References: <200409021953.57939.grabner@icg.tu-graz.ac.at>
+Message-ID: <41389491.1030804@superbug.demon.co.uk>
+References: <413456AE.7000007@superbug.demon.co.uk> <Pine.LNX.4.58.0409031603060.21405@linux.local> <s5hy8jrwhoy.wl@alsa2.suse.de> <Pine.LNX.4.58.0409031628530.21405@linux.local>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200409021953.57939.grabner@icg.tu-graz.ac.at>
+Received: from anchor-post-30.mail.demon.net (anchor-post-30.mail.demon.net [194.217.242.88])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 78D90298
+	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 17:58:10 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.58.0409031628530.21405@linux.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,43 +20,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Markus Grabner <grabner@icg.tu-graz.ac.at>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2 Sep 2004, Markus Grabner wrote:
+Jaroslav Kysela wrote:
+> On Fri, 3 Sep 2004, Takashi Iwai wrote:
+> 
+> 
+>>Also, we may provide a more easy-to-use interface for additional ALSA
+>>pcm plugins.  The current design of plugin is bound too tightly to the
+>>ALSA lowlevel structure, and it's a pain to implement all on that at
+>>each time.
+> 
+> 
+> I think that we should follow the kernel space here - create only helper 
+> functions which might be used in the user space driver design.
+> 
+> 						Jaroslav
+> 
 
->     I am working on a Linux driver for a weird device that only accepts
-> 24bit input at 39062.5Hz (PODxt Pro by Line6), so for this driver to be
-> able to play regular audio files, the built-in sample rate conversion
-> (via plughw:n)  has to be used. I noticed that the resampler improved a
-> lot since ALSA-1.0.4, but it still has some problems. The sound quality
-> is significantly reduced compared to a file that is resampled offline
-> (e.g., by the resampler included in "sox"). It sounds like additional
-> noise when high frequencies occur (aliasing?). It should be technically
-> possible to use the "sox" algorithm in the ALSA libraries, but before I
-> dive into the code, I wanted to ask if anybody else is aware of this
-> problem or maybe even works on a solution!
+Currently, to support a new sound card in ALSA, we just write a small 
+bit of code to talk to the hardware, and other alsa kernel modules 
+provide all the helper functions(period_elapsed etc.), so for a user 
+land driver(bluetooth), these helper functions should be in alsa-lib.
 
-We are using only poor but very fast linear interpolation in our 
-resampling algorithm.
+You mention the PCM plugin. I did not know there was already a PCM 
+plugin api that could be used to talk to some other user land program. I 
+just thought the PCM plugins were for sample rate conversion and simple 
+stuff like that.
 
-There are several problems to implement another algorithm with filters:
+I might have to look at the docs again.
 
-1) algorithm state depending on the previous samples
-   - we can move back in the stream (rewind)
-   - we can also skip some samples in the stream (forward)
-2) fixed size input and output chunks (input and output period size)
-
-In other words, it's much easier to do rate conversion in the application 
-code where samples are processed in a stream.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+James
 
 
 -------------------------------------------------------
