@@ -1,11 +1,11 @@
-From: "M. Nentwig" <nentwig@users.sourceforge.net>
-Subject: RME DSP / Multiface documentation? (hdsp.c)
-Date: Tue, 12 Nov 2002 16:40:52 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] Use rawmidi device name for sequencer client name
+Date: Tue, 12 Nov 2002 16:06:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DD112F4.B4A84A07@users.sourceforge.net>
+Message-ID: <Pine.HPX.4.33n.0211121603080.24863-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,27 +18,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-I would like to help with the Hammerfall DSP driver.
-Is there any additional technical information? Could someone be so kind
-and forward it to me? The driver is easily readable, but it wouldn't
-hurt if I had the original documents still.
-
-Two more things:
-- The driver uses inlined functions quite extensively. But I think, that
-gcc does not inline functions, at least not with -O2 optimization, which
-was default (I tried -finline-functions, hdsp.o was different
-afterwards).
-- In snd_hdsp_interrupt: The first four lines determine, why the
-interrupt was triggered (audio, midi0, midi1). Now the MIDI code further
-down does not use that information, but the MIDI status instead. Could
-that be the cause for the audio dropouts, that happen now and then, when
-MIDI is received?
-
-Cheers
-
-Markus
+Index: alsa-kernel/core/seq/seq_midi.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/core/seq/seq_midi.c,v
+retrieving revision 1.9
+diff -u -r1.9 seq_midi.c
+--- alsa-kernel/core/seq/seq_midi.c	6 Aug 2002 07:28:26 -0000	1.9
++++ alsa-kernel/core/seq/seq_midi.c	12 Nov 2002 14:59:46 -0000
+@@ -328,7 +328,7 @@
+ 		memset(&inf,0,sizeof(snd_seq_client_info_t));
+ 		inf.client = client->seq_client;
+ 		inf.type = KERNEL_CLIENT;
+-		sprintf(inf.name, "External MIDI %i", card->number);
++		strncpy(inf.name, info.name, sizeof(inf.name) - 1);
+ 		snd_seq_kernel_client_ctl(client->seq_client, SNDRV_SEQ_IOCTL_SET_CLIENT_INFO, &inf);
+ 	}
 
 
 
