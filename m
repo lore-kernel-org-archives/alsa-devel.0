@@ -1,143 +1,35 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Fri, 21 Jan 2005 05:11:29 +0100
-Message-ID: <4650873e12971bee82017450d24caa9f@bugtrack.alsa-project.org>
+From: Andi Kleen <ak@suse.de>
+Subject: Re: [PATCH] compat ioctl security hook fixup
+Date: Fri, 21 Jan 2005 05:19:59 +0100
+Message-ID: <20050121041959.GA27155@wotan.suse.de>
+References: <20050105133448.59345b04.akpm@osdl.org> <20050106140636.GE25629@mellanox.co.il> <20050112203606.GA23307@mellanox.co.il> <20050112212954.GA13558@kroah.com> <20050112214326.GB14703@wotan.suse.de> <20050112225230.GA14590@kroah.com> <20050112151049.7473db7d.akpm@osdl.org> <20050119213818.55b14bb0.akpm@osdl.org> <20050121000935.GA341@mellanox.co.il> <20050120172656.R24171@build.pdx.osdl.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 59713233
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 05:11:29 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262257AbVAUEUQ@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20050120172656.R24171@build.pdx.osdl.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Chris Wright <chrisw@osdl.org>
+Cc: "Michael S. Tsirkin" <mst@mellanox.co.il>, Andrew Morton <akpm@osdl.org>, ak@suse.de, Greg KH <greg@kroah.com>, tiwai@suse.de, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, VANDROVE@vc.cvut.cz
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jan 20, 2005 at 05:26:56PM -0800, Chris Wright wrote:
+> * Michael S. Tsirkin (mst@mellanox.co.il) wrote:
+> > Security hook seems to be missing before compat_ioctl in mm2.
+> > And, it would be nice to avoid calling it twice on some paths.
+> > 
+> > Chris Wright's patch addressed this in the most elegant way I think,
+> > by adding vfs_ioctl.
+> 
+> The patch below is against Linus' tree as per Andrew's request.  It will
+> conflict with some of the changes in -mm2 (including the some-fixes bit
+> from Andi, and LTT).  I also have a patch directly against -mm2 if anyone
+> would like to see that instead.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
-======================================================================
-Reported By:                Q3Man
-Assigned To:                fmoraes
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   752
-Category:                   PCI - emu10k1x
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r9
-======================================================================
-Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              01-21-2005 05:11 CET
-======================================================================
-Summary:                    ALSA > 1.0.5a does not load, failed with error -16
-Description: 
-I'm having some problems with alsa since 1.0.6a. Previously I just had the
-later versions masked, but now various kde packages require the latest
-alsa, so I'm having to tackle it now. ALSA seems to start normally,
-however I get this error in dmesg: 
-EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
+I'm not sure really adding vfs_ioctl is a good idea politically.
+I predict we'll see drivers starting to use it, which will cause quite
+broken design.
 
-I also get this error when running alsamixer: 
-alsamixer: function snd_ctl_open failed for default: No such device 
+If you add it make at least sure it's not EXPORT_SYMBOL()ed.
 
-And similar ones in other alsa programs. 
-
-Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
-code and it seems that the error is vaguely interrupt related, but I could
-not find the code that produces error -16. I've swapped interrupts around
-and disabled non-essential devices (usb, serial, parallel ports, removed
-network cards and sound cards - although that last one proved slightly
-less than helpful :) I've changed from having my bios manage irq's to
-having the OS handle them with zero success. 
-
-I've looked around for that error code in google for the last few weeks -
-since the release of 1.0.6a with limited success. Nothing relevant to my
-situation. 
-
-Important configs and error messages:
-$ lspci -v |grep audio -A4
-0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
-EMU10k1X
-        Subsystem: Creative Labs: Unknown device 1003
-        Flags: bus master, medium devsel, latency 32, IRQ 12
-        I/O ports at d000
-        Capabilities: [dc] Power Management version 2
-(It is an actual EMU10k1X and not the Dell bastardized version)
-
-$ /etc/init.d/alsasound start; dmesg |tail -n1
- * Loading ALSA drivers...
- * Using ALSA OSS emulation
- * Loading: snd-mixer-oss
- * Loading: snd-pcm-oss
- * Loading: snd-seq-oss
- * Running card-dependent scripts
- * Restoring Mixer Levels                                                
-[ ok ]
-EMU10K1X: probe of 0000:00:09.0 failed with error -16
-
-$ uname -a
-Linux tobin1 2.6.9-gentoo-r9
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
-2004 i686 AMD
-Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
-
-If anyone needs any other config information, please let me know. Again,
-it works perfectly fine in 1.0.5a, the problems only appear in later
-versions.
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-20-05 19:12 
-----------------------------------------------------------------------
-What is the error message from snd-emu10k1x with other irqs?
-
-----------------------------------------------------------------------
- Q3Man - 01-21-05 05:11 
-----------------------------------------------------------------------
-The error message is exactly the same, including the error number. The only
-difference shown in any of the above messages is the line:
-
-Flags: bus master, medium devsel, latency 32, IRQ 12
-
-which has IRQ12 replaced with the appropriate irq number.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-28-04 05:12 Q3Man          New Issue                                    
-12-28-04 05:12 Q3Man          File Added: einfo                            
-12-28-04 05:12 Q3Man          Distribution              => Gentoo          
-12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
-12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
-01-03-05 12:10 tiwai          Note Added: 0003054                          
-01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
-01-03-05 17:30 Q3Man          Note Added: 0003071                          
-01-16-05 14:54 fmoraes        Note Added: 0003216                          
-01-18-05 00:44 Q3Man          Note Added: 0003240                          
-01-20-05 02:23 Q3Man          Note Added: 0003322                          
-01-20-05 19:12 tiwai          Note Added: 0003332                          
-01-21-05 05:11 Q3Man          Note Added: 0003337                          
-======================================================================
-
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by: IntelliVIEW -- Interactive Reporting
-Tool for open source databases. Create drag-&-drop reports. Save time
-by over 75%! Publish reports on the web. Export to DOC, XLS, RTF, etc.
-Download a FREE copy at http://www.intelliview.com/go/osdn_nl
+-Andi
