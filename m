@@ -1,9 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: USB quattro input quality
-Date: Sat, 08 May 2004 13:56:30 +0900
+Subject: Re: hdspmixer vs cvs
+Date: Sat, 08 May 2004 14:24:13 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <409C687E.8010702@boosthardware.com>
-References: <409B0D89.6090503@boosthardware.com> <20040507140321.28777db8@laptop>
+Message-ID: <409C6EFD.8030609@boosthardware.com>
+References: <409B16F0.8070601@boosthardware.com> <Pine.LNX.4.58.0405070943430.1783@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,39 +16,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tim Blechmann <TimBlechmann@gmx.net>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Tim Blechmann wrote:
->>Just wondering if anyone has found time to look into fixing the input 
->>quality of the usb quattro?
->>
->>I'm not sure it has ever functioned perfectly for input quality.
->>
->>Currently I get a better sound quality from my $10 cmipci than my $400
->>
->>usb-quattro ;-P
->>
->>There is a constant crackle in the audio stream.
+Jaroslav Kysela wrote:
+> On Fri, 7 May 2004, Patrick Shirkey wrote:
 > 
-> there is a thread on this on the alsa bugtracking system ... there is a
-> patch available, but it's not fully working for me...
-> using kernel 2.6.6rc2 with the patch to the usb subsystem to allow the
-> using of the quattro, i'll only have to restart alsa about once or
-> twice. (probably i still had problems with the alsa patch because of
-> kernel 2.6.6)
+> 
+>>In the latest cvs snapshot the hdspmixer app returns this error when I 
+>>try to use it.
+> 
+> 
+> I've fixed this in CVS yesterday, so wait for new snapshot.
 > 
 
+Great. The reason I'm using a snapshot is because I cannot login to the 
+cvs repository as anonymous. It times out.
 
-Thanks for the tip.
-
-Just to confirm what I read in mantis. The quattro can only record in 
-big endian mode and playback in little endian?
-
-How does this affect jackd?
-
-AFAIK it's not possible to have dual modes while using jack...
 
 
 -- 
