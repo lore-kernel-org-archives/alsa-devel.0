@@ -1,13 +1,14 @@
-From: peter plessas <plessas@mur.at>
-Subject: Re: hdsploader on ppc
-Date: Tue, 05 Apr 2005 23:25:20 +0200
-Message-ID: <42530240.6040805@mur.at>
-References: <423CC3E0.2020408@mur.at> <s5h64zl45cd.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001037]: No volume control with SIS7012 on SIS 755 Athlon64 system
+Date: Tue, 5 Apr 2005 23:39:44 +0200
+Message-ID: <51690f5f10e9af983549c8ba63f47202@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h64zl45cd.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 95424244
+	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 23:39:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,53 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
 
-Thanks for the hint, as i checked again, i see that i am indeed using 
-alsa-drivers-1.0.9rc1.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1037> 
+======================================================================
+Reported By:                pharm
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1037
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.6.10-9-amd64-k8
+======================================================================
+Date Submitted:             04-05-2005 17:25 CEST
+Last Modified:              04-05-2005 23:39 CEST
+======================================================================
+Summary:                    No volume control with SIS7012 on SIS 755 Athlon64
+system
+Description: 
+I can't get any volume control on this system. The volume mixer makes no
+difference to the output, which is only affected by the PCM mixer which
+appears to either be 100% or nothing. (ie, if I set it to 0 then the sound
+is muted, but any other setting results in maximum volume). I've tried
+setting ac97_quirk to values up to 13 and none of them made any
+difference.
 
- From what i found out so far, this might still be an endianess issue.
-What about the firmware itself? Could there be a byte-swapping problem?
+cheers, Phil
+======================================================================
 
-Thanks for any help!
-I would so much like to solve this, it's been a year or so i have been 
-revisiting this problem.
+----------------------------------------------------------------------
+ badibugle - 04-05-05 23:39 
+----------------------------------------------------------------------
+I've got exactly the same problem with the SI701 - The master maximum value
+is 0 and there is no way to have a sound even if the installation seems
+OK.
+I've upload an aadebug.log file to give the conf.
 
-regards, Peter
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-05-05 17:25 pharm          New Issue                                    
+04-05-05 17:25 pharm          Distribution              => Debian unstable 
+04-05-05 17:25 pharm          Kernel Version            => 2.6.10-9-amd64-k8
+04-05-05 23:37 badibugle      File Added: aadebug.log                      
+04-05-05 23:39 badibugle      Note Added: 0004343                          
+======================================================================
 
 
-Takashi Iwai wrote:
-> At Sun, 20 Mar 2005 01:29:20 +0100,
-> peter plessas wrote:
-> 
->>Dear list,
->>
->>this is a bit complicated, due to big/little endian issues, perhaps.
->>I am trying to load the firmware into my hdsp pcmcia card.
->>
->>I am getting the fifo timeout:
->>
->>peter:~# hdsploader
->>hdsploader - firmware loader for RME Hammerfall DSP cards
->>Looking for HDSP + Multiface or Digiface cards :
->>Card 0 : PowerMac Screamer Rev 0
->>Card 1 : RME Hammerfall DSP at 0xf3000000, irq 58
->>Upload firmware for card hw:1
->>Hwdep ioctl error on card hw:1 : Input/output error.
->>
->>I am using debian testing, running a 2.6.8 kernel with manually compiled 
->>1.0.8 alsa drivers on a G3 powerpc laptop.
-> 
-> 
-> hdsp support on ALSA 1.0.8 seems buggy.
-> Please try 1.0.9rc1.
-> 
-> 
-> Takashi
 
 
 -------------------------------------------------------
