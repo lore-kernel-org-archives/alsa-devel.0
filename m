@@ -1,13 +1,14 @@
-From: "David E. Storey" <dave@tamos.net>
-Subject: Re: hdsploader 1.1
-Date: 10 Jul 2003 20:21:33 -0400
+From: Richard Cochran <cochran@cs.umass.edu>
+Subject: i810 - no sound from cvs snapshot
+Date: Thu, 10 Jul 2003 20:23:20 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1057882892.810.1.camel@localhost>
-References: <3f27abc8699473d7ba478249ffcfbf5b@essej.net>
+Message-ID: <20030710202320.A25614@loki.cs.umass.edu>
+References: <PM.9386.1053461408@pmweb11.uk1.bibliotech.net> <XFMail.20030521093456.pochini@shiny.it> <20030521104349.A793@loki.cs.umass.edu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Yy9f/vjbBiXcAqwJyUnR"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3f27abc8699473d7ba478249ffcfbf5b@essej.net>
+Content-Disposition: inline
+In-Reply-To: <20030521104349.A793@loki.cs.umass.edu>; from cochran@loki.cs.umass.edu on Wed, May 21, 2003 at 10:43:49AM -0400
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,74 +17,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jesse Chappell <jesse@essej.net>
-Cc: Thomas Charbonnel <thomas@undata.org>, alsa <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I post this here because I _want_ to contribute to alsa development,
+but I never can get alsa working to even begin. And no, I'm not a
+moron (I hope). Here is what I did:
 
---=-Yy9f/vjbBiXcAqwJyUnR
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+1. I got the 2003-06-29.tar file, and I was pleased and suprised when
+it compiled without errors (except alsa-tools, but that looks
+unimportant).
 
-ditto. I have cardbus hdsp + multiface connected to CD player via S/PDIF
-coax and RME ADI 8 Pro via ADAT. All appears to work. Yay! no longer do
-I need to load firmware via windoze.
+2. I ran alsa-driver/snddevices.
 
-d!
+3. I loaded the modules:  lsmod |grep snd
+snd-intel8x0           17888   0 
+snd-mpu401-uart         3584   0  [snd-intel8x0]
+snd-rawmidi            14304   0  [snd-mpu401-uart]
+snd-seq                41580   0  (unused)
+snd-seq-device          4212   0  [snd-rawmidi snd-seq]
+snd-ac97-codec         36368   0  [snd-intel8x0]
+snd-pcm                66080   0  [snd-intel8x0]
+snd-page-alloc          6116   0  [snd-intel8x0 snd-pcm]
+snd-hwdep               5280   0 
+snd-timer              16448   0  [snd-seq snd-pcm]
+snd                    35424   0  [snd-intel8x0 snd-mpu401-uart snd-rawmidi snd-seq snd-seq-device snd-ac97-codec snd-pcm snd-hwdep snd-timer]
 
-On Thu, 2003-07-10 at 00:00, Jesse Chappell wrote:
-> Thomas Charbonnel wrote on Wed, 09-Jul-2003:
->=20
->  > You can find the new version of hdsploader here:
->  > http://www.undata.org/~thomas/
->  >=20
->  > This version includes a small fix + correct firmware files for rev11 c=
-ards.
->  > I did not test those firmwares, but having skimmed through I can say t=
-hey
->  > look far more adequate than the previous ones. I'm waiting for feedbac=
-k.
->  > Many thanks to Martin Bj=F6rnsen and Matthias Carstens from RME for th=
-eir
->  > quick answer.
->  >=20
->  > I hope we're getting closer :)
->=20
-> Thomas and RME did it!  The new firmware loads flawlessly and everything
-> operates properly with my cardbus/multiface (rev 0xb)!
->=20
-> Definitely commit the new version into the alsa-tools ASAP.
->=20
-> Thanks again....
->=20
-> jlc
->=20
->=20
->=20
-> -------------------------------------------------------
-> This SF.Net email sponsored by: Parasoft
-> Error proof Web apps, automate testing & more.
-> Download & eval WebKing and get a free book.
-> www.parasoft.com/bulletproofapps
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->=20
+4. Installed alsa-lib into /usr/local.
 
---=-Yy9f/vjbBiXcAqwJyUnR
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+5. Ran 'aplay -D hw:0,0 alone.wav', this produces:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
+ALSA lib pcm_hw.c:1055:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Invalid argument
+aplay: main:484: audio open error: Invalid argument
 
-iD8DBQA/DgMM+5sC2muyxOMRArBzAJ0ei8zLOSYYr3u7SnOOfiptEre/pACfaejw
-vhbC5f/7wRSBJZJvuQcpiys=
-=/nWZ
------END PGP SIGNATURE-----
+What am I doing wrong? Thanks,
 
---=-Yy9f/vjbBiXcAqwJyUnR--
+Richard
+
+Other diagnostics:
+
+ls -l /dev/snd/pcmC0D0p
+crw-rw----    1 root     audio    116,  16 Jul  5 07:34 /dev/snd/pcmC0D0p
+
+tail syslog
+Jul 10 20:10:59 muse kernel: PCI: Enabling device 00:1f.5 (0000 -> 0001)
+Jul 10 20:10:59 muse kernel: PCI: Setting latency timer of device 00:1f.5 to 64
+Jul 10 20:10:59 muse kernel: intel8x0: clocking to 48000
+Jul 10 20:11:36 muse kernel: ALSA pcm_native.c:1789: BUG? (err >= 0) (called from d8922afa)
+Jul 10 20:11:36 muse kernel: ALSA pcm_native.c:1923: snd_pcm_hw_constraints_complete failed
+
+cat /proc/asound/cards   
+0 [I82801CAICH3   ]: ICH - Intel 82801CA-ICH3
+                     Intel 82801CA-ICH3 at 0x1c00, irq 9
+
+cat /proc/asound/pcm     
+00-00: Intel ICH : Intel 82801CA-ICH3 : playback 1 : capture 1
 
 
 
