@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000908]: suport for ESI Juli@ - ICE1724
-Date: Tue, 22 Feb 2005 10:07:04 +0100
-Message-ID: <4d4db700238e60a2ddae2a5a1fb7d602@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000930]: Ego Sys Juli@ does not work at all
+Date: Tue, 22 Feb 2005 10:07:28 +0100
+Message-ID: <db583076e49ab0dcda0b0b318d776aac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41C60174
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 10:07:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2501A176
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 10:07:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,52 +21,86 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue has been set as RELATED TO issue 0000908.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=908> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=930> 
 ======================================================================
-Reported By:                arsen
+Reported By:                lingis
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   908
+Issue ID:                   930
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.11-rc4
+Distribution:               Ubuntu 4.10
+Kernel Version:             2.6.8.1-3-386
 ======================================================================
-Date Submitted:             02-14-2005 19:38 CET
-Last Modified:              02-22-2005 10:07 CET
+Date Submitted:             02-22-2005 00:32 CET
+Last Modified:              02-22-2005 09:29 CET
 ======================================================================
-Summary:                    suport for ESI Juli@ - ICE1724
+Summary:                    Ego Sys Juli@ does not work at all
 Description: 
-Hello. I have soundcard ESI Juli@ on chipset ICE1724.
-I tried run her with alsa 1.0.8 on kernel 2.6.10 and 2.6.11.
-Unfortunely soundcard don't work. In my logs i found that:
+When trying to load ice1724 driver, nothing happens:
 
-- ice1724: No matching model found for ID 0x31305345
-- ice1724: Invalid EEPROM (size = 120)
-- ICE1724: probe of 0000:00:0a.0 failed with error -5
-- ALSA device list:
-- No soundcards found
+sudo modprobe snd-ice1724
+dmesg | tail -n 20
+bt878: Bt878 AUDIO function found (0).
+ACPI: PCI interrupt 0000:00:0d.1[A] -> GSI 11 (level, low) -> IRQ 11
+bt878(0): Bt878 (rev 2) at 00:0d.1, irq: 11, latency: 32, memory:
+0xe3000000
+8139cp: 10/100 PCI Ethernet driver v1.2 (Mar 22, 2004)
+8139cp: pci dev 0000:00:0f.0 (id 10ec:8139 rev 10) is not an 8139C+
+compatible
+chip
+8139cp: Try the "8139too" driver instead.
+8139too Fast Ethernet driver 0.9.27
+ACPI: PCI interrupt 0000:00:0f.0[A] -> GSI 11 (level, low) -> IRQ 11
+eth0: RealTek RTL8139 at 0xe400, 00:50:fc:44:75:5d, IRQ 11
+eth0:  Identified 8139 chip type 'RTL-8139C'
+eth0: link up, 100Mbps, full-duplex, lpa 0x41E1
+NET: Registered protocol family 10
+Disabled Privacy Extensions on device c02cc0c0(lo)
+IPv6 over IPv4 tunneling driver
+ACPI: Power Button (FF) [PWRF]
+ACPI: Sleep Button (CM) [SLPB]
+eth0: no IPv6 routers present
+bttv0: timeout: drop=58 irq=7964/193355, risc=16103024, bits: HSYNC OFLOW
+FDSR
+bttv0: reset, reinitialize
+bttv0: PLL: 28636363 => 35468950 . ok
 
-I know that other cards work correctly on this chipset and
-if it's necesarry i could help in tests of driver for this
-soundcard.
+cat /proc/asound/cards
+--- no soundcards ---
+
+
+
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000908 suport for ESI <a href="mailto:Juli@ -"...
+======================================================================
+
+----------------------------------------------------------------------
+ perex - 02-22-05 09:26 
+----------------------------------------------------------------------
+The driver for Juli@ is work in progress and preliminary version is
+available in CVS only (probably not functional at all).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-14-05 19:38 arsen          New Issue                                    
-02-14-05 19:38 arsen          Distribution              => Gentoo          
-02-14-05 19:38 arsen          Kernel Version            => 2.6.11-rc4      
-02-15-05 07:32 arsen          Issue Monitored: arsen                       
-02-22-05 10:07 perex          Status                   new => assigned     
-02-22-05 10:07 perex          Assigned To               => perex           
+02-22-05 00:32 lingis         New Issue                                    
+02-22-05 00:32 lingis         Distribution              => Ubuntu 4.10     
+02-22-05 00:32 lingis         Kernel Version            => 2.6.8.1-3-386   
+02-22-05 00:45 lingis         Issue Monitored: lingis                      
+02-22-05 09:26 perex          Note Added: 0003685                          
+02-22-05 09:26 perex          Status                   new => assigned     
+02-22-05 09:26 perex          Assigned To               => perex           
+02-22-05 09:29 perex          View Status              private => public   
+02-22-05 10:07 perex          Relationship added       related to 0000908  
 ======================================================================
 
 
