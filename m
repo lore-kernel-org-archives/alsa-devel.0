@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000705]: RME96 Driver crashes
-Date: Wed, 12 Jan 2005 15:05:29 +0100
-Message-ID: <4532769148f98713b1d186d65f247512@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000810]: Doesn't find any module while using alsaconf
+Date: Wed, 12 Jan 2005 15:06:32 +0100
+Message-ID: <551ef519037bff28d0016dc317f8d870@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 90AC42F2
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:05:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 69448314
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:06:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,77 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=705> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=810> 
 ======================================================================
-Reported By:                FishB8
-Assigned To:                tiwai
+Reported By:                skorpio
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   705
-Category:                   PCI - RME 96
+Issue ID:                   810
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.9
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Slackware
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             12-03-2004 23:43 CET
-Last Modified:              01-12-2005 15:05 CET
+Date Submitted:             01-12-2005 11:30 CET
+Last Modified:              01-12-2005 15:06 CET
 ======================================================================
-Summary:                    RME96 Driver crashes
+Summary:                    Doesn't find any module while using alsaconf
 Description: 
-Something has changed in the RME96 driver between 1.0.6 and 1.0.7 causeing
-it to crash. Whenever an audio program uses ALSA and stops playing the
-driver hangs. When trying to start JACK, it never gets started but the CPU
-hits 100%. It's impossible to kill any of the programs because any program
-dealing with processes hangs as well. The system will not totally shut
-down and has to be reset. Kernel 2.6.8 works just fine.
+Alsaconf can't load soundcards modules, so it doesn't find any matching
+soundcard.
 ======================================================================
 
 ----------------------------------------------------------------------
- corwin - 01-12-05 12:53 
+ tiwai - 01-12-05 15:06 
 ----------------------------------------------------------------------
-Confirmed. I'm using 2.6.10 with 1.0.8-rc2, and my RME96 is working well
-(ADAT and analog.)
-
-----------------------------------------------------------------------
- tiwai - 01-12-05 15:05 
-----------------------------------------------------------------------
-OK, resolved to FIXED.
+Please elaborate the problem.  What you did exactly, the exact error
+messages, lspci output, etc.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-03-04 23:43 FishB8         New Issue                                    
-12-03-04 23:43 FishB8         File Added: config                           
-12-03-04 23:43 FishB8         Distribution              => Gentoo          
-12-03-04 23:43 FishB8         Kernel Version            => 2.6.9           
-12-04-04 12:30 martin         Note Added: 0002715                          
-12-04-04 17:56 FishB8         Note Added: 0002717                          
-12-04-04 19:21 FishB8         Note Added: 0002718                          
-12-04-04 20:18 eradicator     Issue Monitored: eradicator                    
-12-07-04 18:44 tiwai          Note Added: 0002758                          
-12-07-04 23:06 FishB8         Note Added: 0002768                          
-12-08-04 12:08 tiwai          Note Added: 0002776                          
-12-09-04 00:22 FishB8         Note Added: 0002796                          
-12-09-04 11:22 tiwai          Note Added: 0002798                          
-12-12-04 20:04 martin         Note Added: 0002819                          
-12-12-04 23:35 FishB8         Note Added: 0002820                          
-12-13-04 19:28 martin         Note Added: 0002822                          
-12-15-04 06:09 FishB8         Note Added: 0002825                          
-12-15-04 20:06 martin         Note Added: 0002828                          
-12-16-04 18:27 tiwai          Note Added: 0002835                          
-01-12-05 02:46 FishB8         Note Added: 0003160                          
-01-12-05 12:53 corwin         Note Added: 0003162                          
-01-12-05 15:05 tiwai          Status                   new => resolved     
-01-12-05 15:05 tiwai          Resolution               open => fixed       
-01-12-05 15:05 tiwai          Assigned To               => tiwai           
-01-12-05 15:05 tiwai          Note Added: 0003167                          
+01-12-05 11:30 skorpio        New Issue                                    
+01-12-05 11:30 skorpio        Distribution              => Slackware       
+01-12-05 11:30 skorpio        Kernel Version            => 2.4             
+01-12-05 15:06 tiwai          Note Added: 0003168                          
 ======================================================================
 
 
