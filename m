@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000750]: no sound since 2.6.8.1
-Date: Thu, 30 Dec 2004 00:07:01 +0100
-Message-ID: <75dc586d4f67372639b4f66f1ba16ae9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000759]: reloading opl4 driver isn't allowed - it segfaults
+Date: Thu, 30 Dec 2004 00:05:56 +0100
+Message-ID: <f53c51436de64d46c285d10d056ade0e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D9D2115C
-	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 00:07:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6403C127
+	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 00:05:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=750> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=759> 
 ======================================================================
-Reported By:                aquarichy
-Assigned To:                
+Reported By:                martin
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   750
-Category:                   PCI - via82xx
+Issue ID:                   759
+Category:                   GENERIC - opl4
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10
-Kernel Version:             2.6.9+
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-28-2004 02:20 CET
-Last Modified:              12-30-2004 00:07 CET
+Date Submitted:             12-30-2004 00:05 CET
+Last Modified:              12-30-2004 00:05 CET
 ======================================================================
-Summary:                    no sound since 2.6.8.1
+Summary:                    reloading opl4 driver isn't allowed - it segfaults
 Description: 
-Sound using a kernel.org 2.6.8.1 kernel with ALSA built-in worked.  When I
-compile  any newer stable kernel, there is no sound.  Compilation executes
-without complaints.  No Sound related options change.  I have even tried
-saying No to all the new options 2.6.9 and .10 provided in fear that one
-of those might be interfering, but nada.  
+I'm writing a driver for the miroSOUND PCM12. But I have some trouble with
+the OPL4 part and I'm afraid it's not related to my hardware/software. The
+first modprobe works ok and OPL4 behaves correct. Then rmmod'ing the
+driver and modprobe'ing it again shows a segfault.
+
+The reason for the segfault is snd_opl4_create() which calls
+snd_opl3_create() where snd_opl3_new() is the reason for the segfault. 
+
+I don't see, that a correct unload of opl4 will ever run snd_device_free()
+for the opl3 part? Any comments? Any OPL4 user out there for
+cross-checking this with a working OPL4 environment? 
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-29-04 20:46 
-----------------------------------------------------------------------
-Because the mixer code changed between the old and new ALSA versions.  This
-is not likely to be the problem, if you say running alsamixer and unmuting
-everything still gives no sound.   The numids are probably not related
-either.
-
-Try building ALSA from CVS.
-
-----------------------------------------------------------------------
- aquarichy - 12-30-04 00:07 
-----------------------------------------------------------------------
-Unmuting everything via alsamixer does not help produce sound, but
-alsamixer is no longer affecting/recognising control.1 or control.2 in the
-newer version, which an older version ends up reporting as muted and
-repots as the Master Playback Switch and Volume.  
-
-CVS did not change any thing.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 02:20 aquarichy      New Issue                                    
-12-28-04 02:20 aquarichy      Distribution              => Slackware 10    
-12-28-04 02:20 aquarichy      Kernel Version            => 2.6.9+          
-12-29-04 08:23 aquarichy      Note Added: 0002993                          
-12-29-04 14:12 tiwai          Note Added: 0002996                          
-12-29-04 19:02 aquarichy      Note Added: 0003007                          
-12-29-04 19:17 aquarichy      Note Added: 0003008                          
-12-29-04 19:37 aquarichy      Note Added: 0003009                          
-12-29-04 20:39 aquarichy      Note Added: 0003011                          
-12-29-04 20:46 rlrevell       Note Added: 0003012                          
-12-30-04 00:07 aquarichy      Note Added: 0003015                          
+12-30-04 00:05 martin         New Issue                                    
 ======================================================================
 
 
