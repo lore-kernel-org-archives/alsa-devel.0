@@ -1,14 +1,14 @@
-From: "Loc Ho" <loc@pacificconsultants.com>
-Subject: ALSA USB Audio Driver
-Date: Fri, 14 May 2004 14:46:48 -0700
+From: Francisco Moraes <fmoraes74@netzero.net>
+Subject: Re: Emu10k1x driver
+Date: Fri, 14 May 2004 19:49:09 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <D22B281CC561444AA27F7F6C6C9E3E6102F564@mtvs4.pcllc.net>
+Message-ID: <40A55AF5.6050009@netzero.net>
+References: <20040514.045055.28422.197543@webmail10.nyc.untd.com> <s5hlljvm8qz.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+In-Reply-To: <s5hlljvm8qz.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,25 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Takashi Iwai wrote:
 
-I am using the Linux 2.6.4 version of the ALSA (1.0.2c). Apparently, the =
-ALSA USB Audio driver doesn't cleanup properly when it is disconnected =
-while the streams are not closed. For example, perform a loop back =
-(record and playback) for 1 minute and then disconnect. If you =
-disconnect, there will be a bunch of error messages printed from the URB =
-call back (or retire_xxx) function. I don't believe that there is any =
-change in the ALSA USB Audio driver to handle this in the current =
-version Linux 2.6.6. Have any one tried this? Or, this only happens on =
-the ARM architecture? The fix that I made is to return an error code and =
-stop submitting URB if there is any error.
+>i noticed that you set the irq mask IPR_CH_0_LOOP|IPR_CH_0_HALF_LOOP.
+>does it mean that the chip generates interrupts twice per buffer?
+>if yes, what we need is to limit the number of periods to 2.
+>
+>  
+>
+Well, you can enable the half buffer interrupt. I am not sure if that 
+helps or improves anything but it is available.
 
+>the attached patch includes some fixes by me for the latest cvs, and
+>changes the periods to 2.  i'll apply it to cvs now.
+>  
+>
+I also noticed that I forgot to enable the interrupts for the other two 
+voices.
 
-Thanks,
-Loc
+Francisco
 
 
 -------------------------------------------------------
