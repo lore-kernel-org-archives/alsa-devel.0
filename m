@@ -1,8 +1,8 @@
 From: dzln11/Bang_&_Olufsen/DK <dzln11/Bang_&_Olufsen/DK@bang-olufsen.dk>
 Subject: Report to Recipient(s)
-Date: Fri, 29 Oct 2004 12:48:58 +0200
+Date: Fri, 29 Oct 2004 12:48:46 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <OFB9B84831.0505C7CE-ONC1256F3C.003B6A45@bang-olufsen.dk>
+Message-ID: <OFD18EA410.E6751D7E-ONC1256F3C.003B65C3@bang-olufsen.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -25,10 +25,13 @@ Incident Information:-
 
 Originator: alsa-devel-admin@lists.sourceforge.net
 Recipients: alsa-devel@lists.sourceforge.net
-Subject:    Alsa-devel digest, Vol 1 #2383 - 2 msgs
+Subject:    Alsa-devel digest, Vol 1 #2294 - 6 msgs
 
-WARNING:  The file mime001.txt (letter.zip) you received was infected with
-the W32/Netsky.p@MM!zip virus.  The file attachment was not successfully
+WARNING:  The file mime001.txt (000051e3.eml) you received was infected
+with the Exploit-MIME.gen.c virus.  The file attachment was not
+successfully cleaned. Attachment was quarantined.
+WARNING:  The file mime001.txt (message.scr) you received was infected with
+the W32/Netsky.p@MM virus.  The file attachment was not successfully
 cleaned. Attachment was quarantined.
 
 
