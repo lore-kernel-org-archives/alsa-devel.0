@@ -1,19 +1,17 @@
-From: Anders Torger <torger@ludd.luth.se>
-Subject: Repeatable exact I/O-delay
-Date: Sat, 27 Jul 2002 14:51:21 +0200
+From: Frank van de Pol <fvdpol@home.nl>
+Subject: Re: More CS4630, secondary CODEC output.
+Date: Sat, 27 Jul 2002 17:13:47 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020727125116.B57458D1@mail.it4u.net>
+Message-ID: <20020727151347.GA1991@idefix.fvdpol.home.nl>
+References: <3D41D4DC.60004@cucumelo.org> <20020727003649.GA5560@porky> <3D4245A1.3020302@cucumelo.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.it4u.net (mail.it4u.net [81.8.150.196])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA10763
-	for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2002 14:52:03 +0200
-Received: from there (shark.it4u.net [80.88.99.82])
-	by mail.it4u.net (Postfix) with SMTP id B57458D1
-	for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2002 14:51:16 +0200 (CEST)
+Received: from mail2.home.nl (mail2.home.nl [213.51.129.226])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA12438
+	for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2002 17:13:54 +0200
+Content-Disposition: inline
+In-Reply-To: <3D4245A1.3020302@cucumelo.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,51 +20,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Benny Sjostrand <gorm@cucumelo.org>
+Cc: Peter Heatwole <peter599@gotnet.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-I have made a multi-channel convolution software (BruteFIR) which has 
-some I/O-delay, typically 4096 samples.
+On Sat, Jul 27, 2002 at 09:02:57AM +0200, Benny Sjostrand wrote:
+> >   And to those with Santa Cruz cards, after my first (quick) test the 
+> >rear
+> >channel doesn't seem to work... yet. 
+> 
+> Well, you dont seems to any luck ... no SPDIF, no rear sound -:(
+> Do you know which CODEC's you card have ??, are AC97 2.0 or AC97 1.03
+> 
 
-The software works like this: it reads a block of 2048 samples, 
-processes it during the coming 2048 samples, and then puts the 
-processed samples to the output, thus a total of 4096 samples I/O-delay.
+Turtle Beach Santa Cruz boards have:
 
-The problem here is that there is no mechanism I know of which can 
-cause the output to start coming *exactly* 4096 samples after the first 
-input sample is read. I have not measured, but probably the I/O-delay 
-varies a few tens of samples each time the program is started.
+CS4630-CM DSP, 
+CS4294-JO codec, 
+CS4297A-JO codec
 
-I think repeatable exact I/O-delay is a very important feature, but I 
-guess that hardware support is necessary to make it work reliably. So, 
-why is this feature important?
+the board supports 4 analog inputs + 6 analog outputs (I use it for
+multi-track recording). One thing that might cause for the driver is that it
+has one 1/8" jack, the 'versa jack' that combines multiple (selectable)
+functions:
 
-This feature means that the computer could be sample-aligned with other 
-hardware audio processors. In the recording studio, you could use audio 
-processing software on a standard workstation as a low-cost 
-alternative, and still let it collaborate with your existing hardware 
-processors.
+- analog in (channel 3+4)
+- analog out (channel (5+6)
+- digital out (spdif+ac3; these are different signals on the tip/ring of the
+  mini jack)
 
-Low I/O-delay is good, but if it varies, you can't sample-align anyway. 
-In many cases it is better to have exactly 4096 samples I/O-delay every 
-time, than having an I/O-delay that varies between 100 - 150 samples. 
-Even not all commercially available hardware audio processors have zero 
-delay, some have delays up to tens of milliseconds, but they can be 
-used anyway in most applications, since the delay is always the same 
-and can be compensated for.
+Frank.
 
-With repeatable exact I/O-delay, it would also be possible to build 
-audio processing clusters, by duplicating the inputs (using for example 
-ADAT duplicators) to several sample-aligned workstations. With my 
-software I could build a synchronised convolution cluster, which could 
-handle large-scale auralisation, wave field synthesis and other 
-extremely demanding applications.
 
-Does anyone have any comments on this? Is repeatable exact I/O-delay 
-possible to achieve today with current hardware (and ALSA)?
-
-/Anders Torger
+-- 
++---- --- -- -  -   -    - 
+| Frank van de Pol                  -o)    A-L-S-A
+| FvdPol@home.nl                    /\\  Sounds good!
+| http://www.alsa-project.org      _\_v
+| Linux - Why use Windows if we have doors available?
 
 
 -------------------------------------------------------
