@@ -1,13 +1,15 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
+From: Peter Heatwole <peter599@gotnet.net>
 Subject: Re: cs46xx experimental DSP drivers
-Date: Wed, 25 Sep 2002 07:40:56 +0200
+Date: Tue, 24 Sep 2002 23:41:51 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D914C68.7010401@cucumelo.org>
-References: <3D8F7F59.6030105@prism.gatech.edu> <3D90A8D8.7070103@cucumelo.org> <3D90B54F.20402@prism.gatech.edu> <3D90D641.7050200@cucumelo.org> <3D90FEF4.2040309@prism.gatech.edu> <20020925010013.GC990@porky> <3D911550.1000309@prism.gatech.edu> <20020925020343.GC4779@porky>
+Message-ID: <20020925064151.GC781@porky>
+References: <3D8F7F59.6030105@prism.gatech.edu> <3D90A8D8.7070103@cucumelo.org> <3D90B54F.20402@prism.gatech.edu> <3D90D641.7050200@cucumelo.org> <20020925010806.GA4779@porky>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <20020925010806.GA4779@porky>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,33 +18,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Peter Heatwole <peter599@gotnet.net>
-Cc: Weijia Yang <gte733z@prism.gatech.edu>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: gorm@cucumelo.org
 List-Id: alsa-devel@alsa-project.org
 
->    I suppose so. I just leave an MP3 playing in XMMS, and restart it 
-> after
-> making a change (though this isn't required for all changes; I'm just
-> cautious).
->    I _think_ you modify each pin using the "EGPIO On/Off" to turn each 
-> pin
-> on and off, and select the different pins using "EGPIO select".
->    When I have more time I will try to learn more about this, and may be
-> able to help more.
->
-And "EGPIO In/Out" controls to use pin as input or output,
-"EGPIO CMOS/Open drain", control if the pin use active CMOS
-levels, or open drain. If think "Open drain" is like open collector, the
-pin is floating when it's active, it needs a pull-up resistor or 
-something, well,
-just copied the text from the datasheet.
-
-Playing with the EGPIO is very experimental and the consequences
-can be _any_, but hope that you already knows that -;)
-
-/Benny
+On 2002.09.24 18:08 Peter Heatwole wrote:
+> 
+> 
+>    Booyah!   Just got digital out working properly on my Santa Cruz, and 
+> it
+> sounds great. I just needed to unmute "EGPIO In" and "IEC 958 Output".
 
 
+    My apologies, I was rushed for a meeting and had to fire that e-mail 
+off
+in a hurry. (Not to mention I was elated to have digital output)
+    To be more precise, here is the information I've collected.
+
+    I've double checked, and from a fresh module insertion, I need to 
+unmute
+"EGPIO Input/Output" (therby setting bit one in BA0_EGPIODR), and unmute
+"IEC 958 Output". Then coaxial digital out functions properly on my TB 
+Santa
+Cruz.
+    Benny: what needs to be done so that the proper BA0_EGPIODR bits are 
+set
+to input or output when the user uses the "IEC 958 Input" and "IEC 958
+Output" sliders? In other words, how could using the "IEC 958 Input" and
+"IEC 958 Output" sliders properly set the BA0_EGPIODR bits? Also, can the
+Game Theater have both optical in/out, and coaxial in/out simultaneously?
+
+    On a side note, I noticed that the chip retains certain register 
+values.
+When I re-tested my instructions, I noticed that "EGPIO Input/Output" would
+retain it's value after reloading the snd-cs46xx module. Just a heads up in
+case you hadn't noticed this. It confused me for a minute, since I couldn't
+understand why simply unmuting "IEC 958 Output" worked now, whereas earlier
+it did not.
+
+I hope all that makes sense. =o)
+
+-- Peter Heatwole
+"Murphy was just a well known pessimist."
 
 
 -------------------------------------------------------
