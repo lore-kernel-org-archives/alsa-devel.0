@@ -1,14 +1,13 @@
-From: Richard Cochran <cochran@cs.umass.edu>
+From: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
 Subject: Re: documentation - yeah right!
-Date: Thu, 22 May 2003 10:18:23 -0400
+Date: Thu, 22 May 2003 16:51:19 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030522101823.B29826@loki.cs.umass.edu>
-References: <20030521104349.A793@loki.cs.umass.edu> <200305211518.h4LFI2jE027163@mail.cs.umass.edu> <20030521120928.C793@loki.cs.umass.edu> <s5hof1vqhb4.wl@alsa2.suse.de>
+Message-ID: <3ECCE3E7.2060603@student.kuleuven.ac.be>
+References: <Pine.LNX.4.44.0305221512380.3445-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hof1vqhb4.wl@alsa2.suse.de>; from tiwai@suse.de on Thu, May 22, 2003 at 02:47:27PM +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,59 +16,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks to all who wrote about how Alsa works. If you collect these
-facts together, you have the beginnings of a design document! When I
-finally undertake to understand Alsa (a daunting task), I will be
-happy to reconstruct an architecture description for Alsa.
+Jaroslav Kysela wrote
 
-Let me summarize what I have learned (please comment if needed):
+>The question is, if we have to create another library or integrate "basic" 
+>API for simple applications inside alsa-lib.
+>
+>I think that most of applications are simple players or recorders. Then we 
+>might design very simple API which can have some similar functionality as 
+>OSS for developers recoding the OSS applications or for developers 
+>expecting very simple API.
+>
+>I see three groups of applications:
+>
+>1) players (expecting mostly stereo output, maybe 4.0 and 5.1 or simple multichannel)
+>2) recorders (expecting mostly stereo input - might be enhanced to any number of channels)
+>3) full-duplex (same requirements as players or recorders)
+>
+>All groups also usually want to control the mixer settings. We have 
+>already requests from audio conference tool developers to integrate
+>such feature to our API. Actually, there is no direct connection between 
+>PCM outputs and mixer settings. These applications don't want to handle 
+>many controls. I think that these will be quite sufficient:
+>
+>1) Master Playback Volume
+>2) PCM Playback Volume
+>3) Capture Gain
+>4) Capture Source (Mic, Line, Aux - might be enumerated)
+>5) Playback -> Capture Loopback Switch (to disable echo for conferences 
+>   and other tools)
+>
+>All these controls are quite abstract and some hardware might have 
+>missing some of them or the routing might be very complex.
+>
+>The main goals for simple interfaces should be:
+>
+>1) offer unified simple abstract way
+>2) offer to describe (user might change it) the relations 
+>   between simple abstract and HAL (current alsa-lib)
+>
+>						Jaroslav
+>  
+>
+Totally unproductive remark: this is a great idea.
 
-1. Alsa has clearly stated feature and performance goals. However,
-there is no overall design document (block diagram, notes on a napkin,
-etc) describing how the architecture will reach these goals. Some of
-the design may be gleened from the list archives, or from reading
-example programs and Alsa sources.
+More productive (mabye): In my opinion it should also be possible to mix 
+both simple API & complex API. Sometimes all you need is the simple API 
+functionallity, but for one function/method/action that isn't included 
+in this simple API. It would be a pitty if this one thing should prevent 
+developers to use the complex API for all of the work. Maybe this is an 
+obvious remark, but nevertheless I think it's important.
 
-2. Alsa is being developed by a very small number of people (a good
-thing, IMHO). These same people are actively involved in major audio
-software projects for this platform. The actual direction of the Alsa
-development comes from practical experience with these apps.
+Pieter
 
-3. Alsa has gone through substantial rewrites. The latest version is
-fairly stable, however.
 
-4. One of the major advantages of Alsa is the transparent conversion
-and mixing library. The same functionality is provided in a different
-way by JACK.
-
-5. The latency (time from write() to DAC, or from ADC to read()) is
-not worse using the Alsa API and drivers as compared with OSS API and
-drivers.
-
-I have two additional questions:
-
-On Thu, May 22, 2003 at 02:47:27PM +0200, Takashi Iwai wrote:
-> - ALSA is not only the driver.
-> - ALSA model is still Unix style (somehow).
-> - ALSA library is the low-level library.
-
-Are the calls snd_pcm_* kernel calls or library calls? If the latter,
-where is the library-kernel API?
-
-When using the Alsa OSS compatibility layer, is there a performace
-penalty in terms of latency?
-
-Will OSS support likely be dropped in kernel 2.6?
-
-How are the OSS drivers "thread unsafe", or rather, what are the
-thready safety issues that Alsa addresses?
-
-Thanks,
-
-Richard
 
 
 -------------------------------------------------------
