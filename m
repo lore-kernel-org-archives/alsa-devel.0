@@ -1,12 +1,15 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: [PATCH] Remove ARRAY_SIZE macro from SoundScape
-Date: Mon, 7 Oct 2002 21:47:08 +0100 (BST)
+From: AthlonRob <athlonrob@data.4t3.com>
+Subject: Re: Multiple Audio Streams
+Date: 07 Oct 2002 17:44:44 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200210072047.g97Kl8Hh002568@wittsend.radionet>
+Message-ID: <1034037884.7319.9.camel@duron>
+References: <3D9F3D84.4040102@boom.org.il> <1033859918.1118.24.camel@duron>
+	 <3DA15968.1000205@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3DA15968.1000205@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,38 +19,41 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: Sagi Bashari <sagi@boom.org.il>
 List-Id: alsa-devel@alsa-project.org
 
-Now that the ARRAY_SIZE macro has been migrated to adriver.h, it can come out of here. And there's a whitespace diff too.
+On Mon, 2002-10-07 at 02:52, James Courtier-Dutton wrote:
 
-Chris
+> mypc: /proc/asound/card0/pcm0p# cat info
 
-Index: alsa-driver/isa/sscape.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/isa/sscape.c,v
-retrieving revision 1.7
-diff -u -u -r1.7 sscape.c
---- alsa-driver/isa/sscape.c	7 Oct 2002 10:59:39 -0000	1.7
-+++ alsa-driver/isa/sscape.c	7 Oct 2002 20:40:40 -0000
-@@ -68,9 +68,6 @@
- static snd_card_t *sscape_card[SNDRV_CARDS];
- static unsigned __initdata sscape_count;
- 
--#ifndef ARRAY_SIZE
--#  define ARRAY_SIZE(a)  (sizeof(a) / sizeof(a[0]))
--#endif
- 
- #define MPU401_IO(i)     ((i) + 0)
- #define MIDI_DATA_IO(i)  ((i) + 0)
-@@ -286,7 +283,7 @@
-  * Also leaves all locking-issues to the caller ...
-  */
- static int host_write_ctrl_unsafe(unsigned io_base, unsigned char data,
--		       unsigned timeout)
-+                                  unsigned timeout)
- {
- 	int err;
- 
+> subdevices_count: 1
+> subdevices_avail: 1   <- This tells you how many streams the sound card 
+> can handle in hardware at the same time.
+> E.g. Only one application at a time can use the card.
+
+Thanks, that does help some.  But, I fear the subdevice_count and avail
+are only reporting the numbers that the driver supports... not the
+number that the hardware itself supports.
+
+At least, I hope so, because mine is reporting as 1 & 0 (I have esd
+running).  :-)
+
+> I also have a SB Live in another machine, the subdevices_avail is then 
+> 32 because the SB Live can handle 32 streams at once in hardware.
+
+I can probably scrounge up a SB Live if need be... maybe I'll do that so
+I'm able to play multiple streams (if we can't get a better driver
+written, that is).
+
+> There are other applications/tools you can use, one of which is "JACK" 
+> that allows for multiple audio streams mixed in software and lots of 
+> other cool stuff.
+
+Cool, I'll see if I can find some information about that.  I hadn't
+heard of it before... is it GPL'd?
+
+Rob
+
 
 
 -------------------------------------------------------
