@@ -1,11 +1,12 @@
-From: <david.thompson@magharl.co.uk>
-Subject: 5.1 - Analogue - Philips Soundcard
-Date: Mon, 19 Jan 2004 11:10:34 -0000
+From: Manuel Jander <manuel.jander@mat.utfsm.cl>
+Subject: Control API, help
+Date: Mon, 19 Jan 2004 08:31:01 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <00e001c3de7c$dc230760$cbc809c0@Harlequin.local>
+Message-ID: <1074515461.1048.21.camel@localhost>
+Reply-To: manuel.jander@mat.utfsm.cl
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_00DD_01C3DE7C.DC1C0280"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,76 +16,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hi,
 
-------=_NextPart_000_00DD_01C3DE7C.DC1C0280
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I'm trying to familiarize myself with the Control API (userland
+programs). I'm somewhat scared about the huge amount of API functions...
 
-Hello Again:
+I hammered some code together but i'm not very sure if i'm doing it
+right. If anyone can comment about this concept code, would be nice.
 
-Just posted an e-mail regarding 5.1 Analogue Speakers with SB Live 5.1 =
-soundcard ...
+What i intend to do:
 
-Have another question...
+1) Gain access to a control with numeric ID "CTRL_HRTF".
+2) Read some info (value limits and such).
+3) Write 6 (upto 112) integer values into that control.
 
-Has anyone been able to setup a Philips Sonic Edge 5.1 Soundcard in Alsa =
-yet?
+The commented code (//) are things that i believe are not needed.
 
-If I can't get the SB Live card to work, a friend has offered me to try =
-this one - but it is not on the list of currently supported hardware.
+void test() {
+  int i;
+  snd_kcontrol_t *ctlp;
+	
+  /* Open the control. Is this really needed ? */
+  if ((err = snd_ctl_open(&ctlp, "3d_hrtf", SND_CTL_ASYNC)) != 0) {
+    fprintf (stderr, "3D CTL failed: (%s)\n", snd_strerror (err));
+    exit(1);
+  }
+  
+  /* Retrieve some ifno to check if anything is as expected. */
+  snd_ctl_elem_info_t *info;
+  snd_ctl_card_info_alloca(info)
+	
+  /* Setup info struct. */
+  //snd_ctl_elem_info_set_id(info, const snd_ctl_elem_id_t *ptr);
+  snd_ctl_elem_info_set_numid(info, CTRL_HRTF);
+  snd_ctl_elem_info_set_interface(info, snd_ctl_elem_iface_t val);
+  snd_ctl_elem_info_set_device(info, 0);
+  snd_ctl_elem_info_set_subdevice(info, 2);
+  //snd_ctl_elem_info_set_name(info, const char *val);
+	
+  /* Get info field 0. */
+  snd_ctl_elem_info_set_index(info, 0);
+  if ((err = snd_ctl_elem_info(ctlp, info)) != 0) {
+    fprintf (stderr, "3D CTL failed: (%s)\n", snd_strerror (err));
+    exit(1);
+  }
+  snd_ctl_elem_info_free(info);
+	
+  /* Declare and setup ctl_elem_value struct. */
+  snd_ctl_elem_value_t *ctl_val;
+  snd_ctl_elem_value_alloca(ctl_val);
+	
+  //snd_ctl_elem_value_set_id(ctl_val, const snd_ctl_elem_id_t *ptr);
+  snd_ctl_elem_value_set_numid(ctl_val, CTRL_HRTF /* Some const defined
+elsewhere. */);
+  snd_ctl_elem_value_set_interface(ctl_val, SNDRV_CTL_ELEM_IFACE_PCM);
+  snd_ctl_elem_value_set_device(ctl_val, 0);
+  snd_ctl_elem_value_set_subdevice(ctl_val, 2);
+  //snd_ctl_elem_value_set_name(ctl_val, const char *val);
 
-It is a cheap and widely available card however, at least here in the =
-UK, and was wondering if anyone was working on support.
+  /* Write values. */
+  for (i=0; i<6; i++) {
+    snd_ctl_elem_value_set_index(ctl_val, i);
+    snd_ctl_elem_value_alloca(ctl_val);
+    snd_ctl_elem_value_set_integer(ctl_val, unsigned int idx, long val);
+  }
+  /* Dispatch ctl write to soundcard. */
+  if ((err = snd_ctl_elem_write(ctlp, &control)) != 0) {
+    fprintf (stderr, "3D CTL failed: (%s)\n", snd_strerror (err));
+    exit(1);
+  }
+  snd_ctl_elem_value_free(ctl_val);
+}
 
-Best,
+Thank you very much.
 
-David
-------=_NextPart_000_00DD_01C3DE7C.DC1C0280
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1276" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hello Again:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Just posted an e-mail regarding 5.1 =
-Analogue=20
-Speakers with SB Live 5.1 soundcard ...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Have another question...</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Has anyone been able to setup a Philips =
-Sonic Edge=20
-5.1 Soundcard in Alsa yet?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>If I can't get the SB Live card to =
-work, a friend=20
-has offered me to try this one - but it is not on the list of currently=20
-supported hardware.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>It is a cheap and widely available card =
-however, at=20
-least here in the UK, and was wondering if anyone was working on=20
-support.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Best,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>David</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_00DD_01C3DE7C.DC1C0280--
+-- 
+Manuel Jander
+mjander(at)users(dot)sourceforge(dot)net
 
 
 
