@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000487]: Driver builds, but offers wrong mixer controls and no sound
-Date: Tue, 21 Sep 2004 12:42:38 +0200 (CEST)
+From: "Wilma M. Stanley" <w_m_stanley_na@ccowzb.de>
+Subject: Spyware removal
+Date: Wed, 22 Sep 2004 02:50:12 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040921104238.9AEB232005@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <PJFHLLHJDJALMENKOFDPEIIGPMAA.w_m_stanley_na@ccowzb.de>
+Mime-Version: 1.0
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CDA031AD
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 12:42:38 +0200 (MEST)
+Received: from bene-online.de (a213-22-204-194.netcabo.pt [213.22.204.194])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 15499303
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 12:54:08 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,62 +22,6 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000487
-======================================================================
-Reported By:                Quietti
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     487
-Category:                   PARISC - harmony
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.8.1-pa7
-======================================================================
-Date Submitted:             09-08-2004 06:40 CEST
-Last Modified:              09-21-2004 12:42 CEST
-======================================================================
-Summary:                    Driver builds, but offers wrong mixer controls and no sound
-Description: 
-The driver builds with the correct options, the module can be loaded, but
-the mixer control it offers do not correspond to my model 712 (Gecko)
-hardware. 
-
-Additionally, trying to send sound to the module produces horrible
-chainsaw noise in the speakers. Esound also informs me that the hardware
-does not support any suitable sample rate. Something is evidently broken.
-
-I am quite positive that the corresponding Harmony OSS driver in kernel
-2.4 works well with this workstation, so this is definitely not a hardware
-problem (the same module in kernel 2.6 has been broken from day 1).
-======================================================================
-
-----------------------------------------------------------------------
- Quietti - 09-14-2004 10:13 CEST 
-----------------------------------------------------------------------
-I would like to point out that this bug is still unresolved in
-2.6.8.1-pa11.
-
-----------------------------------------------------------------------
- tiwai - 09-21-2004 12:42 CEST 
-----------------------------------------------------------------------
-No developer is working on this driver because of lack of hardware.
-Any patches appreciated, of course :)
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-08-04 06:40 Quietti        New Bug                                      
-09-08-04 06:40 Quietti        Distribution              => Debian          
-09-08-04 06:40 Quietti        Kernel Version            => 2.6.8.1-pa7     
-09-14-04 10:13 Quietti        Bugnote Added: 0001757                       
-09-21-04 12:42 tiwai          Bugnote Added: 0001801                       
-======================================================================
 
 
 -------------------------------------------------------
