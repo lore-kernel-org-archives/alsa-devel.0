@@ -1,11 +1,13 @@
-From: Evandro Veloso Gomes <gnome_gtk2000@yahoo.com.br>
-Subject: Problems with fm-801 module
-Date: Fri, 1 Apr 2005 01:04:14 -0300 (ART)
-Message-ID: <20050401040414.90279.qmail@web54204.mail.yahoo.com>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: RE: Sound with metal effect
+Date: Fri, 01 Apr 2005 09:39:51 +0200 (CEST)
+Message-ID: <XFMail.20050401093951.pochini@shiny.it>
+References: <20050331212842.26204.qmail@web25103.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20050331212842.26204.qmail@web25103.mail.ukl.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,39 +17,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Laurielle LEA <lauriellelea@yahoo.fr>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I compiled alsa in my machine and, to load the module
-I use: =20
 
-sudo
-insmod/home/kurumin/alsa-driver-1.0.8/pci/snd-fm801.ko
+On 31-Mar-2005 Laurielle LEA wrote:
 
+> I'm integrating ALSA to my voipclient (softphone) and
+> my problem is the sound received by the remote user is
+> with metal effect.
 
-But gives the following error: =20
-
-I compiled alsa in my machine and, to load the module
-I use:  sudo
-insmod/home/kurumin/alsa-driver-1.0.8/pci/snd-fm801.ko
-But gives the following error:  insmod:  error
-inserting
-'/home/kurumin/alsa-driver-1.0.8/pci/snd-fm801.ko ':=20
--1 Unknown symbol in modulates Moreover, it zeroed the
-volume and, exactly placing in the maximum in kmix and
-aumix still it is without sound...
-
-It zeroed the volume and, exactly placing in the
-maximum in kmix and aumix still it is without sound...
-
-Thanks!!
+VoIP uses 8KHz sampling rate IIRC. What did you expect ?
 
 
-=09
-=09
-	=09
-Yahoo! Acesso Gr=E1tis - Internet r=E1pida e gr=E1tis.=20
-Instale o discador agora! http://br.acesso.yahoo.com/
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
