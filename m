@@ -1,12 +1,12 @@
 From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: Re: [Jackit-devel] alsa_driver_wait -> libasound?
-Date: Tue, 14 Jan 2003 11:42:40 -0500
+Date: Tue, 14 Jan 2003 11:47:58 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301141642.h0EGgKCg018516@spider.tela.com>
-References: <Pine.LNX.4.33.0301141728510.504-100000@pnote.perex-int.cz>
+Message-ID: <200301141647.h0EGldCg019400@spider.tela.com>
+References: <s5hel7fy9n6.wl@alsa2.suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 14 Jan 2003 17:31:22 +0100."
-             <Pine.LNX.4.33.0301141728510.504-100000@pnote.perex-int.cz>
+In-reply-to: Your message of "Tue, 14 Jan 2003 17:32:45 +0100."
+             <s5hel7fy9n6.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,19 +15,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Josh Haberman <joshua@haberman.com>, "jackit-devel@lists.sourceforge.net" <jackit-devel@lists.sourceforge.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Josh Haberman <joshua@haberman.com>, jackit-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 >> that said, i think it would be great if this found its way into libasound.
 >
->I wonder why to implement this function when one can link more pcm streams
->with "snd_pcm_link()" together? Then polling one stream is sufficient when
->streams are hardware synchronized.
+>is the below code ok?
+>
+>int snd_pcm_wait_many(snd_pcm_t **handles, int num_handles, int timeout)
+>{
+>	struct pollfd *pfds;
+>	int i, err;
+>	pfds = (struct pollfd *)alloca(sizeof(*pfds) * num_handles);
+>	if (! pfds)
+>		reutrn -ENOMEM;
+>	for (i = 0; i < num_handles; i++) {
+>		err = snd_pcm_poll_descriptors(handles[i], &pfds[i], 1);
+>		assert(err == 1);
+>	}
+>	err = poll(pfds, num_handles, timeout);
+>	if (err < 0)
+>		return -errno;
+>	return err > 0 ? 1 : 0;
+>}
 
-why don't you go read the function in question and then consider
-whether that would actually accomplish anything like what it does? i
-say that because i don't think its even close. 
+this isn't even close. the function in question waits until each and
+every handle is ready. that means reentering poll over and over again
+until each handle is ready, making sure to only poll on the handles
+that are not yet ready (because otherwise poll returns immediately).
+
+the semantics are not "wait for any one many", its "wait for all or an
+error".
+
+if someone wants to write the function that joshua was thinking of, i
+would suggest starting with the JACK alsa function and explain how it
+can be made simpler.
 
 --p
 
