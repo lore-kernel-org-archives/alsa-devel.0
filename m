@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000831]: sparc: "alsa-oss.c:405: warning: long int format, __suseconds_t arg (arg 4)"
-Date: Wed, 19 Jan 2005 14:35:37 +0100
-Message-ID: <07da76491dd7562cbdf4f3e47ce79cca@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000830]: ia64, alpha: "pcm_jack.c:742: warning: int format, different type arg (arg 5)"
+Date: Wed, 19 Jan 2005 14:37:25 +0100
+Message-ID: <575df42870c00b6a7125481ac17239e0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AC41E24F
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:35:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6856024F
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:37:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=831> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=830> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   831
-Category:                   
+Project:                    ALSA - lib
+Issue ID:                   830
+Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
@@ -39,60 +39,60 @@ Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-17-2005 09:46 CET
-Last Modified:              01-19-2005 14:35 CET
+Date Submitted:             01-17-2005 09:36 CET
+Last Modified:              01-19-2005 14:37 CET
 ======================================================================
-Summary:                    sparc: "alsa-oss.c:405: warning: long int format,
-__suseconds_t arg (arg 4)"
+Summary:                    ia64, alpha: "pcm_jack.c:742: warning: int format,
+different type arg (arg 5)"
 Description: 
-Making all in alsa
+This warning is thrown on ia64 and alpha.
+
+Making all in utils
 [...]
-if /bin/sh ../libtool --mode=compile sparc-linux-gcc -DPACKAGE_NAME=\"\"
--DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\"
--DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"alsa-oss\" -DVERSION=\"1.0.8\"
--DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1
--DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1
--DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1
--DHAVE_LIBASOUND=1  -I. -I.     -Wall -g -O2 -MT alsa-oss.lo -MD -MP -MF
-".deps/alsa-oss.Tpo" \
-  -c -o alsa-oss.lo `test -f 'alsa-oss.c' || echo './'`alsa-oss.c; \
-then mv -f ".deps/alsa-oss.Tpo" ".deps/alsa-oss.Plo"; \
-else rm -f ".deps/alsa-oss.Tpo"; exit 1; \
+make[1]: Entering directory `/build/buildd/alsa-lib-1.0.8/src/pcm/ext'
+if /bin/sh ../../../libtool --mode=compile ia64-linux-gcc -DHAVE_CONFIG_H
+-I. -I. -I../../../include -I../../../include -I../../../src/pcm 
+-D__ia64__  -g -Wall -O2 -MT pcm_jack.lo -MD -MP -MF ".deps/pcm_jack.Tpo"
+\
+  -c -o pcm_jack.lo `test -f 'pcm_jack.c' || echo './'`pcm_jack.c; \
+then mv -f ".deps/pcm_jack.Tpo" ".deps/pcm_jack.Plo"; \
+else rm -f ".deps/pcm_jack.Tpo"; exit 1; \
 fi
- sparc-linux-gcc -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\"
--DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\"
--DPACKAGE=\"alsa-oss\" -DVERSION=\"1.0.8\" -DSTDC_HEADERS=1
--DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1
--DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1
--DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_LIBASOUND=1
--I. -I. -Wall -g -O2 -MT alsa-oss.lo -MD -MP -MF .deps/alsa-oss.Tpo -c
-alsa-oss.c  -fPIC -DPIC -o .libs/alsa-oss.o
-alsa-oss.c: In function `dump_select':
-alsa-oss.c:405: warning: long int format, __suseconds_t arg (arg 4)
- sparc-linux-gcc -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\"
--DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\"
--DPACKAGE=\"alsa-oss\" -DVERSION=\"1.0.8\" -DSTDC_HEADERS=1
--DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1
--DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1
--DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_LIBASOUND=1
--I. -I. -Wall -g -O2 -MT alsa-oss.lo -MD -MP -MF .deps/alsa-oss.Tpo -c
-alsa-oss.c -o alsa-oss.o >/dev/null 2>&1
+mkdir .libs
+ ia64-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../../include
+-I../../../include -I../../../src/pcm -D__ia64__ -g -Wall -O2 -MT
+pcm_jack.lo -MD -MP -MF .deps/pcm_jack.Tpo -c pcm_jack.c  -fPIC -DPIC -o
+.libs/pcm_jack.o
+pcm_jack.c: In function `snd_pcm_jack_open':
+pcm_jack.c:742: warning: int format, different type arg (arg 5)
+ ia64-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../../include
+-I../../../include -I../../../src/pcm -D__ia64__ -g -Wall -O2 -MT
+pcm_jack.lo -MD -MP -MF .deps/pcm_jack.Tpo -c pcm_jack.c -o pcm_jack.o
+>/dev/null 2>&1
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 14:35 
+ jdthood - 01-17-05 11:23 
+----------------------------------------------------------------------
+This warning is also thrown on s390.  See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=s390&stamp=1105954179&file=log&as=raw
+for the full build log on s390.
+
+----------------------------------------------------------------------
+ tiwai - 01-19-05 14:37 
 ----------------------------------------------------------------------
 Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-05 09:46 jdthood        New Issue                                    
-01-19-05 14:35 tiwai          Status                   new => resolved     
-01-19-05 14:35 tiwai          Resolution               open => fixed       
-01-19-05 14:35 tiwai          Assigned To               => tiwai           
-01-19-05 14:35 tiwai          Note Added: 0003271                          
+01-17-05 09:36 jdthood        New Issue                                    
+01-17-05 11:23 jdthood        Note Added: 0003232                          
+01-19-05 14:37 tiwai          Status                   new => resolved     
+01-19-05 14:37 tiwai          Resolution               open => fixed       
+01-19-05 14:37 tiwai          Assigned To               => tiwai           
+01-19-05 14:37 tiwai          Note Added: 0003273                          
 ======================================================================
 
 
