@@ -1,11 +1,11 @@
-From: Nathaniel Gray <n8gray@caltech.edu>
-Subject: dmix plugin problems -- Resend
-Date: Mon, 26 May 2003 15:28:32 -0700
+From: Jacek Blizinski <azidog@nyc.rr.com>
+Subject: Problem compiling alsa-driver-0.9.3c
+Date: Mon, 26 May 2003 18:57:31 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305261528.32421.n8gray@caltech.edu>
+Message-ID: <200305261857.31425.azidog@nyc.rr.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
@@ -20,124 +20,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'm sending this again since I got no response the first time and dmix 
-does not appear to be under heavy development, despite how incredibly 
-useful it would be if it worked.
+checking for GCC version... Kernel compiler: gcc 3.2.2 (Mandrake Linux 9.1 
+3.2.2-3mdk) Used compiler: gcc-3.2.2 (GCC) 3.2.2 (Mandrake Linux 9.1 
+3.2.2-3mdk)
+Fatal error: Compiler type does not match
 
-[n8gray@golux alsa-lib-0.9.3]$ cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 0.9.3a.
-Compiled on May  9 2003 for kernel 2.4.21-0.16mm-mdkcustom.
-Using alsa-libs 0.9.3.
+However the compiler is the same. Is there any way to fix this or remove the 
+check?
 
-The dmix plugin seems to be very unreliable, or else maybe I'm not 
-setting it up correctly.  Here's my asoundrc:
-=================== .asoundrc ===================
-pcm.intel8x0 {
-   type hw
-   card 0
-}
+I use the following command successfully on previous versions of alsa 
+successfully:
+./configure --with-cards=intel8x0 --with-sequencer=yes --with-isapnp=no
 
-ctl.intel8x0 {
-   type hw
-   card 0
-}
-
-pcm.mydmix {
-    type dmix
-    ipc_key 12349
-    ipc_key_add_uid true
-    slave {
-        pcm "hw:0,0"
-        # Setting this rate to 44100 seems to help
-        rate 44100
-    }
-}
-
-ctl.mydmix {
-    type hw
-    card 0
-}
-
-pcm.mixed {
-    type plug
-    slave {
-       pcm mydmix
-    }
-}
-
-ctl.mixed {
-    type hw
-    card 0
-}
-=================================================
-
-If I run this command nothing happens:
-[n8gray@golux sounds]$ aplay -D mixed KDE_Beep_ClockChime.wav
-Playing WAVE 'KDE_Beep_ClockChime.wav' : Unsigned 8 bit, Rate 7418 Hz, 
-Mono
-
-I get no sound, no error, aplay uses no cpu time.  Here's the tail end 
-of the same command under strace:
-open("KDE_Beep_ClockChime.wav", O_RDONLY) = 5
-read(5, "RIFF\256\17\0\0WAVEfmt \20\0\0\0\1\0\1\0", 24) = 24
-read(5, "\372\34", 2)                   = 2
-read(5, "\0\0\372\34\0\0\1\0\10\0", 10) = 10
-read(5, "data\212\17\0\0", 8)           = 8
-write(2, "Playing WAVE \'KDE_Beep_ClockChim"..., 41Playing WAVE 
-'KDE_Beep_ClockChime.wav' : ) = 41
-write(2, "Unsigned 8 bit, ", 16Unsigned 8 bit, )        = 16
-write(2, "Rate 7418 Hz, ", 14Rate 7418 Hz, )          = 14
-write(2, "Mono", 4Mono)                     = 4
-write(2, "\n", 1
-)                       = 1
-shmget(IPC_PRIVATE, 49152, 0x1b6|0666)  = 10747908
-shmat(10747908, 0, 0)                   = 0x40274000
-shmget(IPC_PRIVATE, 12288, 0x1b6|0666)  = 10780677
-shmat(10780677, 0, 0)                   = 0x40023000
-read(5, "G\214j\313\267hqG\234\250Yn;\206\274[e=t\305\207\217FM"..., 
-927) = 927
-read(5, "\206\177U\217\214\207\211S\201\215\211\231[p\204\201\242"..., 
-927) = 927
-poll([at this point the program just hangs]
-
-If I run this command it completes but I get no sound output:
-[n8gray@golux sounds]$ aplay -D mixed pop.wav
-Playing WAVE 'pop.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, 
-Mono
-
-The same file plays properly (with sound) if I leave out the "-D mixed" 
-flag.  This command, however, works perfectly:
-[n8gray@golux sounds]$ aplay -D mixed info.wav
-Playing WAVE 'info.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, 
-Mono
-
-If I actually try to mix two streams, though, I get xruns and cracks in 
-the sound:
-[n8gray@golux sounds]$ aplay -D mixed info.wav & aplay -D mixed info.wav
-[1] 12952
-Playing WAVE 'info.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, 
-Mono
-Playing WAVE 'info.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, 
-Mono
-xrun!!! (at least 0.030 ms long)
-xrun!!! (at least 0.008 ms long)
-[1]+  Done                    aplay -D mixed info.wav
-
-I've tried this experiment with long sounds to try to eliminate any 
-startup inefficiency, but the cracks last as long as the streams are 
-being mixed.
-
-I'll be glad to help debug in any way I can.  I've tried using the C 
-versions of mix_areas1 and mix_areas2 and it doesn't help any of these 
-problems.
-
-Thanks,
--Nathan
--- 
->>>-- Nathaniel Gray -- Caltech Computer Science ------>
->>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
-
-
+I tried compiling the drivers with the 2.4.21-rc1 kernel and when I got the 
+message, I compiled and use 2.4.21-rc3. However I still get the message. I 
+havent changed any of the compiler settings. I dont understand what's wrong. 
+Please help.
 
 
 -------------------------------------------------------
