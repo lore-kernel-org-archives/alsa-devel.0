@@ -1,8 +1,8 @@
 From: tom burkart <alsa@aussec.com>
 Subject: Re: Re: alsa 0.9.5 - ymfpci - Yay!
-Date: Thu, 17 Jul 2003 21:09:05 +1000 (EST)
+Date: Thu, 17 Jul 2003 21:17:40 +1000 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307172107260.1505-100000@home.aussec.com>
+Message-ID: <Pine.LNX.4.44.0307172116240.1505-100000@home.aussec.com>
 References: <s5hwuehzgdr.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -16,16 +16,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Today, Takashi Iwai wrote:
 
 > could you try once whether the oss ymfpci driver works?
 > if it works, then unload it and start the ALSA again?
-works, works.
+While it works, I noticed a lot of arifacts in the sound that never used
+to be there...
 
 tom.
+Consultant
+
+AUSSEC    Phone: 61 4 1768 2202
+339 Blaxland Rd., Ryde NSW 2112
+Email: tom@aussec.com
 
 
 
