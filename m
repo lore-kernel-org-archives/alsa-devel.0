@@ -1,12 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: emu10k1: difference between _fx8010_ and _efx_
-Date: Thu, 24 Jun 2004 15:45:24 -0400
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: [PATCH]snd-usb-usx2y yields much better latency....
+Date: Thu, 24 Jun 2004 21:50:01 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1088106324.1591.18.camel@mindpipe>
+Message-ID: <200406242150.02019.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_pBz2A79/pelhw/2"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,48 +16,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hey,
 
-I have been looking at the emu10k1 driver source and am confused about 
-the use of _fx8010_ and _efx_ in variable names.  The FX8010 is the 
-DSP used for hardware "efx" in the EMU10K1.  Can someone clarify the 
-distinction?
+--Boundary-00=_pBz2A79/pelhw/2
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-It seems like these are almost used interchangable in some places, but 
-I am sure there are important distinctions.
+....with the default setting as in this patch.
 
-I have heard that these devices have something to do with AC3 
-passthrough.
+Please commit with comment
+	- set NRPACKS to 1 as default setting to improve latency.
 
-Here is an example from emupcm.c:
-
-int __devinit snd_emu10k1_pcm_efx(emu10k1_t * emu, int device, snd_pcm_t
-** rpcm)
-{
-        snd_pcm_t *pcm;
-        int err;
-
-        if (rpcm)
-                *rpcm = NULL;
-
-        if ((err = snd_pcm_new(emu->card, "emu10k1 efx", device, 8, 1,
-&pcm)) < 0)
-                return err;
-
-        pcm->private_data = emu;
-        pcm->private_free = snd_emu10k1_pcm_efx_free;
-
-        snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
-&snd_emu10k1_fx8010_playback_ops);
-        snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
-&snd_emu10k1_capture_efx_ops);
+Thanks & Regards
+Karsten
 
 
-Lee
+--Boundary-00=_pBz2A79/pelhw/2
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="snd-usb-usx2y.patch.1Packet"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="snd-usb-usx2y.patch.1Packet"
 
+Index: alsa-driver/usb/usx2y/usbusx2y.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/usb/usx2y/usbusx2y.h,v
+retrieving revision 1.5
+diff -u -r1.5 usbusx2y.h
+--- alsa-driver/usb/usx2y/usbusx2y.h	15 Jun 2004 10:55:39 -0000	1.5
++++ alsa-driver/usb/usx2y/usbusx2y.h	24 Jun 2004 19:47:34 -0000
+@@ -5,7 +5,13 @@
+ #include "usbus428ctldefs.h" 
+ 
+ #define NRURBS	        2	/* */
+-#define NRPACKS		2	/* usb-frames/ms per urb: 1 and 2 are supported. set to 1 if you want lowest possible latency */
++#define NRPACKS		1	/* usb-frames/ms per urb: 1 and 2 are supported.
++				   setting to 2 will PERHAPS make it easier for slow machines.
++				   Jitter will be higher though.
++				   On my PIII 500Mhz Laptop setting to 1 is the only way to go 
++				   for PLAYING synths. i.e. Jack & Aeolus sound quit nicely 
++				   at 4 periods 64 frames. 
++				*/
+ 
+ #define URBS_AsyncSeq 10
+ #define URB_DataLen_AsyncSeq 32
+
+--Boundary-00=_pBz2A79/pelhw/2--
 
 
 -------------------------------------------------------
