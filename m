@@ -1,11 +1,14 @@
-From: Edouard Gomez <ed.gomez@free.fr>
-Subject: Cannot mmap /dev/dsp error in alsa 0.9.7 and 0.9.8
-Date: Sat, 15 Nov 2003 02:31:37 +0100
+From: Peter Kirk <pwk.linuxfan@gmx.de>
+Subject: Re: smart and automatic use of dmix and dsnoop - feature suggestion.
+Date: Sat, 15 Nov 2003 03:46:34 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031115013137.GF832@leeloo>
+Message-ID: <200311150346.40669.pwk.linuxfan@gmx.de>
+References: <200311141221.hAECLqlT003018@oud.linuxaudiosystems.com> <200311141511.22130.mark@egghead.free-online.co.uk> <s5hy8uj55m6.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="4jXrM3lyYWu4nBt5"
+Content-Type: Text/Plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hy8uj55m6.wl@alsa2.suse.de>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,123 +21,73 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+WARNING: Unsanitized content follows.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
---4jXrM3lyYWu4nBt5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Am Freitag, 14. November 2003 16:31 schrieb Takashi Iwai:
+> At Fri, 14 Nov 2003 15:11:22 +0000,
+>
+> Mark Hubbard wrote:
+> > On Friday 14 Nov 2003 13:20, Takashi Iwai wrote:
+> > > as a future plan, we'll define dmix as default for el-cheapo
+> > > soundcards, but e.g. not for sb live, which supports such a function
+> > > on hardware.
+> >
+> > And what is your definition of an "el-cheapo" soundcard? :)
+OK,
 
-Hello,
+now I understand that using what I suggested for *every* device alsa provides
+is stupid (hw: should go directly to the hardware for low level application
+etc.). Well, but as I see it the behavior for the "default" "front" "rear"
+devices (the *normal* consumer applications use) could (and should in my
+opinion) implement the behavior I suggest. But - I cant understand why you
+are limiting down the use of dmix to "el-cheapo" soundcards - every soundcard
+has in-hardware limitations for playback and capture...so dmix (and the
+dnsoop part of my suggestion which you guys like to ignore :/) _can_ be
+needed things for every/any card. And - if implemented in the *smart* way I
+am talking about, dmix will only start mixing once the "default" "front" or
+"rear" (assuming these are the only 3 devices *normal* applications should
+use) cant handle another playback...Before that this "smartdmix" thing would
+only pass through a untouched (same quality, no extra cpu usage, no extra
+latency) stream. What you are talking about is the current (call it
+stupid :P) dmixing, to just mix every stream that comes in, no matter if the
+used device could handle the stream in hardware without mixing or not...which
+of course gives you things like quality degression and unnecessary cpu usage
+on cards that can playback more than one stream in hardware.
 
-I'm having troubles with recent alsa releases (newer than 0.9.6). I
-first suffered the bugs explained later on 2.6 test kernels, so i
-thought it was smply a 2.6 bug. Tonight the 0.9.8 alsa packages made
-their paths into debian SID so i compiled the kernel part for my usual
-2.4.22 kernel and i experience the same problems.
+> the question is "which" user is targeted.
+> most desktop users need simple mixing only: playing mp3 or DVD and
+> beep.  hence, if the restriction of sampling-rate for a single app is
+> removed, there would be no big disadvantage to use always dmix.
+see above, always use smartdmix shouldnt be a problem for anybody - always
+using dmix is (I must agree) plain stupid for high-end soundcards.
 
-Symptoms:
-- OSS device mapping fails with a EACCES errno. See attachment for
-  triggering the bug.
-- mplayer AV sync is too fast by ~20% (men sound like ladies ;-) when
-  using the alsa9 output, but syncs well when using the compat oss layer
+> and, note that we're discussing the "default" behavior.  you can
+> easily change it by defining your own default in ~/.asoundrc, as well
+> as you can set dmix for now.
+>
+> i believe that the "usability" is a keyword to spread the linux
+> desktop over world.  we're still NOT in the way at all.
+>
+Right,
 
-Configuration:
-- 2.4.22-ck2 or 2.4.22 or 2.6.0-test8 or 2.6.0-test9 or
-  2.6.0-test9+latest alsa cvs
-- alsa 0.9.7 or 0.9.8 or current CVS for the kernel modules and 0.9.8
-  for all client shared libs (but shared libs aren't a problem as the
-  OSS bug is only related to the module part)
-- VIA 8235 (module snd-via82xx)
+this is what Im talking about =). And the way I see my suggestion it will
+offer great usability improvements for low-end soundcards, very view to
+high-end soundcards, and never give any big disadvantages... :)
 
-Known working combinations:
-- 2.4.22 + alsa 0.9.6 kmodules + 0.9.8 libs
-- 2.4.22-ck2 + alsa 0.9.6 kmodules + 0.9.8 libs
 
-Changing the modules to a 0.9.8 makes the bug appearing.
+Peter
+- --
+Where does it go when you flush?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-When playing with 2.6, i tried 0.9.7 and 0.9.8 on top of the test9
-version, all show the bug, sorry, i forgot trying 0.9.6 and i erased
-the 2.6 tree.
+iD8DBQE/tZOPg2ieGvTmHiURApD9AJ0Xxwx0mieCLmFa5z9tnmv5FmLD3wCZAU4e
+qUSuQEVlYYHenzIXSylB/rE=
+=IXw8
+-----END PGP SIGNATURE-----
 
-Hope this bug report is enough. See attachment for the OSS bug. The
-mmap function call will always return -1 with 0.9.7 or 0.9.8.
-
-PS: the code in the attached file is exactly the same as found in all
-    quake engines. That's an Id game (quake3) that triggered the bug first so
-    i've copied the quake1 sound init sequence in order to approximate
-    the quake3 engine sound initialization... this worked.
-
--- 
-Edouard Gomez
-
---4jXrM3lyYWu4nBt5
-Content-Type: text/x-csrc; charset=us-ascii
-Content-Disposition: attachment; filename="mmap-bug-oss.c"
-
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/ioctl.h>
-#include <sys/mman.h>
-#include <sys/shm.h>
-#include <sys/wait.h>
-#include <linux/soundcard.h>
-#include <stdio.h>
-
-int main()
-{
-	int dsp;
-	char *dma_buffer;
-	struct audio_buf_info info;
-	int caps;
-
-	/* Open the dsp device */
-	if ((dsp = open("/dev/dsp", O_RDWR)) == -1) {
-		perror("error opening /dev/dsp");
-		return(-1);
-	}
-
-	/* Reset the dsp */
-	if (ioctl(dsp, SNDCTL_DSP_RESET, 0) == -1) {
-		perror("Could not reset DSP");
-		close(dsp);
-		return(-2);
-	}
-
-	if (ioctl(dsp, SNDCTL_DSP_GETCAPS, &caps) == -1) {
-		perror("error getting DSP capabilities");
-		close(dsp);
-		return(-3);
-	}
-
-	if (!(caps & DSP_CAP_TRIGGER) || !(caps & DSP_CAP_MMAP)) {
-		fprintf(stderr, "error mmap capability unavailable\n");
-		close(dsp);
-		return(-4); 
-	}
-
-	if (ioctl(dsp, SNDCTL_DSP_GETOSPACE, &info) == -1) {   
-		perror("error GETOSPACE unavailable");
-		close(dsp);
-		return(-5);
-	}
-
-	/* memory map the dma buffer */
-	dma_buffer = mmap(NULL, info.fragstotal*info.fragsize, PROT_WRITE, MAP_FILE|MAP_SHARED, dsp, 0);
-	if (!dma_buffer || dma_buffer == (char *)-1) {
-		perror("Could not mmap /dev/dsp");
-		close(dsp);
-		return(-6);
-	}
-
-	/* never reached */
-	munmap(dma_buffer, info.fragstotal*info.fragsize);
-	close(dsp);
-
-	return(0);
-}
-
---4jXrM3lyYWu4nBt5--
 
 
 -------------------------------------------------------
