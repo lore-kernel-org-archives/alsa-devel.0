@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000779]: SPDIF audio is broken up... stutters
-Date: Sun, 30 Jan 2005 06:53:00 +0100
-Message-ID: <30fd208d1b1c0f525a11d1e4db6e2431@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000686]: No surround sound
+Date: Sun, 30 Jan 2005 12:38:28 +0100
+Message-ID: <b64cd453b2e1c1550fc8454b37f56a1a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9FDEA22E
-	for <alsa-devel@alsa-project.org>; Sun, 30 Jan 2005 06:53:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6818D1C7
+	for <alsa-devel@alsa-project.org>; Sun, 30 Jan 2005 12:38:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=779> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=686> 
 ======================================================================
-Reported By:                jeffgus
-Assigned To:                
+Reported By:                dziegiel
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   779
-Category:                   PCI - emu10k1
+Issue ID:                   686
+Category:                   PCI - audigyls
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9-ac16
+Status:                     feedback
+Distribution:               Gentoo Linux
+Kernel Version:             2.4.26-gentoo-r9
 ======================================================================
-Date Submitted:             01-03-2005 05:50 CET
-Last Modified:              01-30-2005 06:53 CET
+Date Submitted:             11-28-2004 15:45 CET
+Last Modified:              01-30-2005 12:38 CET
 ======================================================================
-Summary:                    SPDIF audio is broken up... stutters
+Summary:                    No surround sound
 Description: 
-I was previously able to send ac3 audio via the coaxial output to an
-external amp (a Creative 5.1 amp).  At some point after upgrading to FC2
-(not sure when) I noticed that when I played DVDs the AC3 wouldn't come
-out right.  It's all broken up.  The light on the amp blinks.  The light
-comes on when it decodes a segment of audio then goes out with silence.
+I can`t enable surround sound on my 5.1 speakers.
+In xmms with alsa-plugin i get stereo with 2 Front speakers[low-quality
+sound] ,but with oss i get 2 Front and Center[they work fine]without
+Rear.
+In movies[I`ve tried several players] I have the same problem.
+When I type:
+mplayer -ao alsa1x -channels 6 movie.avi
+I get:
+...
+alsa-init: soundcard set to surround51
+ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
+definition (id: surround51, value: cards.pcm.surround51)
+alsa-init: playback open error:
+Z&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=322;y argument
+...
 
-The AC3 used to work perfectly with 2.4 kernel.  I'm not sure chance
-caused the problem (upgrade to 2.6?).
-
+I`ve tried everything with alsamixer, but with no result.
+PS.
+Sorry for my English.
 ======================================================================
 
 ----------------------------------------------------------------------
- jeffgus - 01-07-05 11:15 
+ jcdutton - 12-06-04 23:34 
 ----------------------------------------------------------------------
-Okay.
-Compiled it... installed:
-Advanced Linux Sound Architecture Driver Version 1.0.7.
-Compiled on Jan  7 2005 for kernel 2.6.9-ac16.
-
-Same problem... all broken up.  I tried to search the mailing list before
-creating this entry.  I'll go off searching again.  Maybe i was using the
-wrong search terms.
-
-If 1.0.7 is supposed to work, then I guess I have another problem.  :( 
-Any ideas?  I don't think I'm doing anything different.
-
+Please provide output of
+cat /proc/asound/cards
 
 
 ----------------------------------------------------------------------
- jeffgus - 01-30-05 06:53 
+ dziegiel - 01-30-05 12:38 
 ----------------------------------------------------------------------
-This issue can now be closed.  The problem seemed to go away after I
-finally got around to installing alsa 1.0.8 this evening.
+cat /proc/asound/cards :
+
+0 [AUDIGYLS       ]: AudigyLS - AUDIGYLS
+                     AudigyLS [SB0310] at 0xe400 irq 9
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 05:50 jeffgus        New Issue                                    
-01-03-05 05:50 jeffgus        Distribution              => Fedora Core 2   
-01-03-05 05:50 jeffgus        Kernel Version            => 2.6.9-ac16      
-01-07-05 02:22 chutzimir      Note Added: 0003100                          
-01-07-05 02:32 chutzimir      Issue Monitored: chutzimir                    
-01-07-05 11:10 jeffgus        Note Added: 0003101                          
-01-07-05 11:15 jeffgus        Note Edited: 0003101                         
-01-30-05 06:53 jeffgus        Note Added: 0003440                          
+11-28-04 15:45 dziegiel       New Issue                                    
+11-28-04 15:45 dziegiel       Distribution              => Gentoo Linux    
+11-28-04 15:45 dziegiel       Kernel Version            => 2.4.26-gentoo-r9
+12-06-04 23:34 jcdutton       Note Added: 0002743                          
+12-06-04 23:34 jcdutton       Status                   assigned => feedback
+01-30-05 12:38 dziegiel       Note Added: 0003441                          
 ======================================================================
 
 
