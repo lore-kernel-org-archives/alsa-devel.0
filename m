@@ -1,22 +1,22 @@
 From: "mahendra  sp" <mahendra_sp@rediffmail.com>
 Subject: Playback underrun
-Date: 5 Jul 2003 12:52:28 -0000
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030705125228.31781.qmail@mailweb33.rediffmail.com>
+Date: 5 Jul 2003 12:52:34 -0000
+Sender: alsa-user-admin@lists.sourceforge.net
+Message-ID: <20030705125234.27493.qmail@webmail36.rediffmail.com>
 Reply-To: "mahendra  sp" <mahendra_sp@rediffmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
 	format=flowed
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Return-path: <alsa-user-admin@lists.sourceforge.net>
 Content-Disposition: inline
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
 To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 Cc: James@superbug.demon.co.uk, raphael@math.umass.edu
 List-Id: alsa-devel@alsa-project.org
