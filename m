@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000984]: No Sound
-Date: Fri, 18 Mar 2005 18:14:57 +0100
-Message-ID: <68bbddc18b33d2167be0eab2b9eac25d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000800]: Sound is Corrupted or terribe quality.
+Date: Fri, 18 Mar 2005 18:23:37 +0100
+Message-ID: <b07c701c0d9876e7c67a8d9e93c4e77c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 10FF3243
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 18:14:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9BDCD243
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 18:23:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,71 +23,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=984> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=800> 
 ======================================================================
-Reported By:                mailavj
-Assigned To:                tiwai
+Reported By:                abonilla
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   984
-Category:                   CORE - pcm
+Issue ID:                   800
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     new
 Distribution:               Debian
-Kernel Version:             2.6.7-2
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             03-12-2005 19:09 CET
-Last Modified:              03-18-2005 18:14 CET
+Date Submitted:             01-10-2005 03:20 CET
+Last Modified:              03-18-2005 18:23 CET
 ======================================================================
-Summary:                    No Sound
+Summary:                    Sound is Corrupted or terribe quality.
 Description: 
-my sound card is Sound MAX integrated Audio with Intel D865 GBF
-motherboard..
-i'm not getting sound output..
-kernel version is 2.6.7-2 and my alsa driver version is 1.0.6-a
-Is there any way to get sound out put on this card using this driver.. 
-please help
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000970 No Sound
+Sound goes out just like if the jack was not propperly plugged. bad Sound
+Quality.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-17-05 18:55 
+ jdthood - 03-16-05 13:27 
 ----------------------------------------------------------------------
-What part of "try the later version of ALSA. 1.0.6 is way too old for
-debugging" don't you understand?
+It seems that this problem persists in 1.0.8.
+
+--- Forwarded from http://bugs.debian.org/299459 ---
+
+poor quality problem: When I play any sound file I hear this sound and 
+rustle.
+
+> Can you describe the problem in more detail?  Does changing the output
+> level of the tuner (if you have some way of doing this) make any
+> difference?
+
+Changing volume level only regulated sound and rustle volume.
+This problem as seem re majority of sound file but not all (not all 
+frequency ??).
+
+If this is helpful I can send file, with recording sound with rustle.
 
 ----------------------------------------------------------------------
- tiwai - 03-18-05 18:14 
+ tiwai - 03-18-05 18:23 
 ----------------------------------------------------------------------
-Apart from that the system is old -- you should check the mixer
-configuration at first.
+How about 1.0.9rc1?  Many bugs have been fixed for hda driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 19:09 mailavj        New Issue                                    
-03-16-05 13:00 tiwai          Note Added: 0003952                          
-03-16-05 14:56 tiwai          Relationship added       duplicate of 0000970
-03-16-05 14:56 tiwai          Duplicate ID             0 => 970            
-03-16-05 14:56 tiwai          Status                   new => resolved     
-03-16-05 14:56 tiwai          Resolution               open => duplicate   
-03-16-05 14:56 tiwai          Assigned To               => tiwai           
-03-16-05 14:56 tiwai          Assigned To              tiwai =>            
-03-17-05 18:49 mailavj        Distribution              => Debian          
-03-17-05 18:49 mailavj        Kernel Version            => 2.6.7-2         
-03-17-05 18:49 mailavj        Status                   resolved => feedback
-03-17-05 18:49 mailavj        Resolution               duplicate => reopened
-03-17-05 18:49 mailavj        Note Added: 0003981                          
-03-17-05 18:49 mailavj        Assigned To               => tiwai           
-03-17-05 18:50 mailavj        Note Added: 0003982                          
-03-17-05 18:55 rlrevell       Note Added: 0003983                          
-03-18-05 18:14 tiwai          Note Added: 0003999                          
+01-10-05 03:20 abonilla       New Issue                                    
+01-10-05 03:20 abonilla       Distribution              => Debian          
+01-10-05 03:20 abonilla       Kernel Version            => 2.6.9           
+01-10-05 14:56 tiwai          Note Added: 0003134                          
+03-16-05 13:27 jdthood        Note Added: 0003956                          
+03-18-05 18:23 tiwai          Note Added: 0004003                          
 ======================================================================
 
 
