@@ -1,13 +1,13 @@
 From: Manush Dodunekov <manush@stendahls.net>
 Subject: Re: unitor8/amt8 driver for alsa 0.9.0rc1
-Date: Wed, 1 May 2002 12:52:31 +0200 (CEST)
+Date: Wed, 1 May 2002 14:25:02 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.40.0205011238180.988-100000@dunk.hq.fett.net>
-References: <001001c1f100$4cab6700$0400a8c0@martijn>
+Message-ID: <Pine.LNX.4.40.0205011416020.3813-100000@dunk.hq.fett.net>
+References: <006901c1f110$84014110$0400a8c0@martijn>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <001001c1f100$4cab6700$0400a8c0@martijn>
+In-Reply-To: <006901c1f110$84014110$0400a8c0@martijn>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,60 +21,41 @@ List-Id: alsa-devel@alsa-project.org
 
 On Wed, 1 May 2002, Martijn Sipkema wrote:
 
-> > The following patch:
+> > > This is nice. What documentation did you use for writing the driver?
 > >
-> > http://fett.net/m/alsa/alsa-0.9.0rc1-unitor8.patch
+> > http://www.math.tu-berlin.de/~sbartels/unitor/unitor8_doc.txt
 > >
-> > implements a driver for the Emagic Unitor family of multiport MIDI
-> > interfaces. Only serial connection is supported. You need to rerun the
-> > autoconf toolchain after applying the patch.
-> >
-> > The driver is heavily based on serial-u16550.c, which may be the wrong
-> > concept. A more correct concept seems to have a generic-serial.c and
-> > generic-usb.c, which only implement a communication channel. The interface
-> > drivers could then load&use them and only implement their own
-> > init/port-select/whatever dialect. Lots of MIDI interfaces come with both
-> > USB and serial connectors nowadays. Any thoughts on this?
+> > It's in German. I have a translation of it I made using some online
+> > translation thingy a while ago, but I still find the German version a bit
+> > more readable (and my German really sucks).
 >
-> This is nice. What documentation did you use for writing the driver?
+> I have that document also. Emagic would not give me any AMT
+> documentation, that's why I aksed.
 
-http://www.math.tu-berlin.de/~sbartels/unitor/unitor8_doc.txt
-
-It's in German. I have a translation of it I made using some online
-translation thingy a while ago, but I still find the German version a bit
-more readable (and my German really sucks).
+Did they actually say 'no', or just didn't answer?
 
 
-> I think a driver for interfaces like the unitor should not be in the
-> kernel. The standard serial port driver already allows access to the
-> device.
+> > > Also, using a kernel driver does not allow using many different serial
+> > > hardware, right?
+> >
+> > I don't see why not. As long as it doesn't limit itself to a maximum of
+> > one instance at a time.
+>
+> How does this work then? Can a file be opened from kernel space? Or is
+> there a kernel module with an standard interface for serial devices?
+> This would be needed in order to be able to use other than standard pc
+> serial hardware such as usb serial convertors and professional multi
+> port serial adapters, right?
 
-I agree. However, I needed something working fast =)
-
-
-> Also, using a kernel driver does not allow using many different serial
-> hardware, right?
-
-I don't see why not. As long as it doesn't limit itself to a maximum of
-one instance at a time.
-
-
-> A solution could be alter libasound to support non-kernel drivers. Or
-> use a loopback device in the kernel. Perhaps only supporting the alsa
-> sequencer is an option.
-
-I like the libasound driver idea. A while ago, there was some talk about
-moving the sequencer stuff to user level too, with all that low-latency
-stuff happening in the kernel nowadays. What do you ALSA guys think about
-this?
+The best way would be to simply use /dev/ttyS* from userspace. This
+eliminates any dependencies on the underlying serial driver. I think.
 
 
-> I am myself still working on a library for MIDI i/o that uses plugins
-> for device access and IMHO provides a better interface than alsa
-> rawmidi.
+> I was under the impression you were accessing the serial hardware
+> directly.
 
-I thought of this as well, but I would like to use the alsa sequencer API
-for some experiments.
+Yes I am, but only the port in question. The other ports can still be
+accessed in whatever way you like. It's still an ugly approach though.
 
 -- 
 Manush
