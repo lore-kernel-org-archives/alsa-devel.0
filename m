@@ -1,13 +1,15 @@
-From: patrick reardon <swpatrick@earthlink.net>
-Subject: Re: possible problems with rc6 aplay
-Date: Tue, 17 Dec 2002 11:08:40 -0600
+From: Martin Langer <martin-langer@gmx.de>
+Subject: clock mode problem [was: possible problems with rc6 aplay]
+Date: Tue, 17 Dec 2002 18:54:58 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DFF5A18.A861D1BA@earthlink.net>
-References: <200212161844.18o7IP2Gs3NZFjV0@sparrow.mail.pas.earthlink.net>
+Message-ID: <20021217175458.GO773@tuba.home>
+References: <20021216143611.GN773@tuba.home> <20021216144807.8950gmx1@mx005-rz3.gmx.net>
+Reply-To: martin-langer@gmx.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <20021216144807.8950gmx1@mx005-rz3.gmx.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,38 +22,62 @@ To: Paul Davis <paul@linuxaudiosystems.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
+On Mon, Dec 16, 2002 at 09:51:34AM -0500, Paul Davis wrote:
 > 
-> >yes, thnx, it's much clearer now.  my converter is external with no
-> >rate switches and from the manual i just discovered it always
-> >operates at 48000 (Alesis AI-3).  i'm s till uncertain how to change
-> >the card's configuration though.  "alsactl" doesn't seem to provide
-> >an obvious way to do this (looking at the man page).  but my
-> >asound.state file has [ ... ]
+> >Alsa has copied here the documented rme way, but this seems to be wrong for
+> >me. I have just checked the behaviour of rme32, but I'm very sure that the
+> >bigger ones are working in the same style.
 > 
-> what do you want to change it to?
+> well, they have a more complex setup:
 > 
-> --p
+>       * clock mode: AutoSync, Master or Word Clock
+>       * preferred source for autosync: ADAT1/2/3 or S/PDIF
+>       * S/PDIF sample rate
+>       * ADAT sample rate
+>       * system sample rate (the one the master clock runs at)
+> 
+> so its really not possible to define "the rate" in a straightforward
+> way. but i see your point.
+> 
 
-thanks to all the posts about my problem, i inferred that setting the "Preferred Sync
-Source" of the hammerfall to Master would be one way to solve the problem, and possibly
-solve some others too, like third party WAV files at 22050 that play back way too fast
-regardless of the --rate=# option given to "aplay".  (in my setup, play back output runs
-through the converter to an analog mixer and then on to the speakers.)  
+Hmm, it's more complex, but it looks not so different. 
 
-i just looked again at the asound.state file with a fresh pair of eyes, and apparently the
-only allowable values for Preferred Sync Source are IEC958, ADAT1, and ADAT2.  Sync Mode
-seems to be the only control that has Master as an allowable value,  (this based on my
-guess that lines like "comment.item.# <string>" list the allowable values for the
-parameter.)  
+So, I will show you another corner of this problem.
 
-on the other hand, i could leave ADAT1 as the preferred sync source and give "arecord" the
-option -f dat to make 48000 WAV files, then resample to 44100 when i want to burn a CD. 
-maybe this approach wouldn't confuse Alsa into writing incorrect headers, but i don't know
-if it would sacrifice audio quality on the resulting CD (as opposed to just recording
-everything at 44100).  
+Like every rme card you have to set the rate of your output with 2 or 3
+bits. The funny thing is, they never talked about the zero position. I've
+tried out this with my rme32 and it is the slave clock position. Let's call
+it "switch off the internal master clock".
 
-patrick
+The datasheet is just talking about one specific Master Clock Bit and not
+about zeroing the sample rate bits, if you want to use slave mode. Right?
+
+A practical experiment: If you are in slave clock mode and you are changing
+the input sample rate, the output doesn't follow automatically. But if
+you've set the sample rate bits for output to 0-0 before, the output rate
+will change on each input change (like it should be in a perfect slave mode).
+
+And if you want to change from slave to master clock you have to set a
+sample rate different from 0-0 again. So it is only possible to switch
+between this clockmodes if you are setting the sample rate and the result is
+a list of master modes with sample rate dependency.
+
+output rate bits      Master/Slave bit	Mode    	    	 
+0-0  	    	      Slave	   	Slave mode
+0-1		      Master		Master mode (freq. #1)
+1-0		      Master		Master mode (freq. #2)
+...
+
+Everything is without warranty, but I'm very sure that this is typical for
+all other rme cards: rme96, rme9652, hdsp. But I've no possibility to check
+it.
+
+
+martin
+
+
+-- 
+"2b|!2b"
 
 
 -------------------------------------------------------
