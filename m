@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: hdsp/firmware problem
-Date: Fri, 14 Feb 2003 07:46:09 -0500
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: emu10k1 bug and patch (0.9.0rc7)
+Date: Fri, 14 Feb 2003 13:49:42 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18jfEO-0007rb-00@sc8-sf-list1.sourceforge.net>
-References: <20030214120658.GE1169@finnendahl.de>
+Message-ID: <Pine.LNX.4.44.0302141347360.1222-100000@pnote.perex-int.cz>
+References: <s5hr8abjkii.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Fri, 14 Feb 2003 13:06:58 +0100."
-             <20030214120658.GE1169@finnendahl.de>
+In-Reply-To: <s5hr8abjkii.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,25 +16,101 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Orm Finnendahl <finnendahl@folkwang-hochschule.de>
-Cc: alsa-devel@lists.sourceforge.net, Simon de Bakker <sim@z2.v2.nl>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Arnaud de Bossoreille de Ribou <arnaud.debossoreille@via.ecp.fr>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->the hdsp driver still seems to have problems with the new pci
->card. It's a little complicated for me to give exact information as
->the machine is in Rotterdam and I'm in Berlin. I got The following
->email from the sysadmin of the machine:
+On Fri, 14 Feb 2003, Takashi Iwai wrote:
 
-i have an hdsp-9652 here that i haven't installed yet. it sounds as if
-need to do so and test it out, because i think it has the new firmware
-on it. RME sent me one because to develop a firmware flasher is not
-safe on the pure hdsp - a mistake will fry the h/w. apparently the
-hdsp-9652 is resistant to such mistakes.
+> At Thu, 13 Feb 2003 20:57:40 +0100 (CET),
+> Jaroslav wrote:
+> > 
+> > On Thu, 13 Feb 2003, Takashi Iwai wrote:
+> > 
+> > > At Mon, 10 Feb 2003 18:21:12 +0100,
+> > > Arnaud de Bossoreille de Ribou wrote:
+> > > > 
+> > > > Hi, I discovered a bug in the emu10k1 driver which I'll explain here:
+> > > > 
+> > > > I was developing an application which uses the timestamps given in the
+> > > > status of the device to send S/PDIF data to it. This app worked pretty
+> > > > well except that sometimes I heard sound discontinuities and then a
+> > > > constant time delay between the sound and the video.
+> > > > 
+> > > > I finally found where was the problem, my results is based on the
+> > > > emu10k1-debug.patch file attached. The "frame" argument is equal to 0
+> > > > when the app gets the status of the device. With this patch applied I
+> > > > saw some output on the console exactly at the same time the bug occured.
+> > > > Adding a "else" after the "if" to prevent sw_ready from being updated
+> > > > fixed the problem and the output looked like
+> > > > 
+> > > > ----------------
+> > > > plop 0 -1536 A B
+> > > > plop 0 1536 B A
+> > > > ----------------
+> > > > 
+> > > > where B == A - 1536 (1536 is the period_size). These two lines were
+> > > > repeated a few times during playback.
+> > > > 
+> > > > So the bug looks like a signedness problem since sw_ready is unsigned
+> > > > and there is a while(sw_ready > 0), which explain the constant delay,
+> > > > next in the "snd_emu10k1_fx8010_playback_transfer" function.
+> > > 
+> > > this is because of the incorrect check of boundary-wrap.
+> > > the comparison below must be <= instead of <.
+> > > (or, it can be simply "diff < 0".)
+> > > if there only two periods, the original code cannot detect the
+> > > boundary-wrap.
+> > > 
+> > > 	if (diff) {
+> > > ==>		if (diff < -(snd_pcm_sframes_t) (runtime->boundary / 2))
+> > > 			diff += runtime->boundary;
+> > > 		pcm->sw_ready += diff;
+> > > 	}
+> > > 
+> > > sw_ready should be unsigned safely.
+> > > please try the change above with the unsigned sw_ready.
+> > 
+> > Not really. Note that the application can move the appl_ptr backward 
+> > (using snd_pcm_rewind()). The problem is that pcm->appl_ptr is updated
+> > wrongly, thus calling function with frames == 0 twice or more causes 
+> > different results. I'm working on a proper fix.
+> 
+> ah, rewind take the appl_ptr back...
+> 
+> 
+> regarding to another appl_ptr update:
+> 
+> in pcm_lib.c snd_pcm_lib_read1/write1(), appl_ptr is set to 0 if it
+> comes over boundary. 
+> 
+> 		appl_ptr += frames;
+> 		if (appl_ptr >= runtime->boundary) {
+> 			runtime->control->appl_ptr = 0;
+> 		} else {
+> 			runtime->control->appl_ptr = appl_ptr;
+> 		}
+> 
+> i'm not sure it's always safe (whether frame increment is aligned to
+> the boundary size).  is there problem to do like below?
+> 
+> 		if (appl_ptr >= runtime->boundary) {
+> 			runtime->control->appl_ptr = appl_ptr - runtime->boundary;
+> 		} else {
+> 			...
 
-however, i can't do it today, that's for sure. i will ask RME though
-and see if they know of anything that i/we should know.
+Note that boundary = N * buffer_size (it's close to LONG_MAX value).
+Also, read/write code does only the contiguous transfers (they don't 
+crosses the buffer_size). So it's perfectly safe to set the appl_ptr to 
+zero when it is over boundary.
 
---p
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
