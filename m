@@ -1,16 +1,11 @@
-From: Weijia Yang <gte733z@prism.gatech.edu>
-Subject: Re: [PATCH] cs46xx: SPDIF channel status more volume fixes
-Date: Thu, 14 Nov 2002 23:00:08 -0500
+From: "walter-lee" <walter-lee@163.com>
+Subject: =?gb2312?B?YWxzYSBwY20gcHJvZ3JhbW1pbmcgcXVlc3Rpb24h?=
+Date: Fri, 15 Nov 2002 14:31:41 +0800 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200211142300.08087.gte733z@prism.gatech.edu>
-References: <3DD40142.8080209@cucumelo.org>
+Message-ID: <3DD494CD.000012.17216@bj222.163.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Alternative; boundary="Boundary-=_JQuhMWPJzmajLoFQEIghNvjfiUNF"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DD40142.8080209@cucumelo.org>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,46 +14,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benny Sjostrand <gorm@cucumelo.org>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Sorry to report, but still having same problems w/ the bass.
+--Boundary-=_JQuhMWPJzmajLoFQEIghNvjfiUNF
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Weijia Yang
+Hi All,
+  It's the first time I programming the alsa sound code, I record my audio data to a wave file with only the raw data, when I play the file with the aplay utility, it works fine, but with my own program, it play correctly but the volumn seems to be very low, I have to turn the volumn to maximum, and then, only a weak sound can be heard, and I even wonder if it's there.
+  How can I adjust the volumn for the playing action?
+  thx!
 
-On Thursday 14 November 2002 03:02 pm, Benny Sjostrand wrote:
-> Hi!
->
-> Here's my final aproach for related to volume fixes. I hope that this
-> possibly can solve the bass-problem. I've discovered that the volume was
-> a little bit unbalanced in left vs. right channel,  however a human ear
-> may not hear the difference maybe some audio equipment can react very
-> weird on this, I've tested to change between Stereo 3Stereo or Dolbly
-> Pro Logic modes on my receiver the sound is distributed very different.
-> Well, this problem should be fixed with this patch, the level should be
-> equal in left and right channel (depending on what you playing and your
-> mixer settings).
->
-> About AC3, I've implemented the channel status as it's based on how it's
-> done in ens1370.c. From what I can understand from the spec. it's only
-> possible to set channel status byte 0, 1 and 3, the worst thing is that
-> all bits are wrapped: byte0,bit0 -> csuv register, bit(32) byte 1 bit
-> (8) -> csuv register bit(16)  I hope all weird byte and bits swappings
-> are correct.
-> I've done some quick test with xine, AC3 still dont work forme, dont
-> know exactly what's wrong. I would to have some stuff that could display
-> the stream raw data the comes out from SPDIF interface .... :(
->
-> Summary:
-> - SPDIF channel status implementation (based on how it's done in ens1370.c)
-> - Removed the "AC3 Mode" control in mixer
-> - Final aproach for rewrite on the DAC and SPDIF input volume mechanism
-> - Change mixer control name on some mixer items "IEC 958" -> "IEC958",
-> to  heave it in the
->    same way like it's done in the rest of the ALSA code.
->
-> /Benny
+Walter
+--Boundary-=_JQuhMWPJzmajLoFQEIghNvjfiUNF
+Content-Type: text/html
+Content-Transfer-Encoding: 8bit
 
+Hi&nbsp;All,<br>&nbsp;&nbsp;It's&nbsp;the&nbsp;first&nbsp;time&nbsp;I&nbsp;programming&nbsp;the&nbsp;alsa&nbsp;sound&nbsp;code,&nbsp;I&nbsp;record&nbsp;my&nbsp;audio&nbsp;data&nbsp;t<br>o&nbsp;a&nbsp;wave&nbsp;file&nbsp;with&nbsp;only&nbsp;the&nbsp;raw&nbsp;data,&nbsp;when&nbsp;I&nbsp;play&nbsp;the&nbsp;file&nbsp;with&nbsp;the&nbsp;aplay&nbsp;utility<br>,&nbsp;it&nbsp;works&nbsp;fine,&nbsp;but&nbsp;with&nbsp;my&nbsp;own&nbsp;program,&nbsp;it&nbsp;play&nbsp;correctly&nbsp;but&nbsp;the&nbsp;volumn&nbsp;seems&nbsp;<br>to&nbsp;be&nbsp;very&nbsp;low,&nbsp;I&nbsp;have&nbsp;to&nbsp;turn&nbsp;the&nbsp;volumn&nbsp;to&nbsp;maximum,&nbsp;and&nbsp;then,&nbsp;only&nbsp;a&nbsp;weak&nbsp;sound<br>&nbsp;can&nbsp;be&nbsp;heard,&nbsp;and&nbsp;I&nbsp;even&nbsp;wonder&nbsp;if&nbsp;it's&nbsp;there.<br>&nbsp;&nbsp;How&nbsp;can&nbsp;I&nbsp;adjust&nbsp;the&nbsp;volumn&nbsp;for&nbsp;the&nbsp;playing&nbsp;action?<br>&nbsp;&nbsp;thx!<br><br>Walter<br><body background="http://images.163.com/images/logo/
+ maillist/vip/background.gif" bgproperties="fixed">
+<font style='font-size:12pt'>
+<br>
+=============================================================<br>
+
+<a target=_blank href='http://pt.163.com'><font color=blue>精灵:中国第一个Q版全3D万人网络游戏！</a><br>
+<a target=_blank href='http://popme.163.com/freemail/index.html'><font color=blue>免费邮箱健康杀毒大行动！</a><br>
+
+
+--Boundary-=_JQuhMWPJzmajLoFQEIghNvjfiUNF--
 
 
 -------------------------------------------------------
