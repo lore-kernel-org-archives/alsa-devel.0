@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000929]: Left/Right reversed when using the raw iec958 on Audigy2
-Date: Mon, 21 Feb 2005 14:56:56 +0100
-Message-ID: <9c713308040ef748d28c56d6273b3e7e@bugtrack.alsa-project.org>
+Date: Mon, 21 Feb 2005 15:04:18 +0100
+Message-ID: <ba2e6006de544890cf4813a14bf399f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A334125B
-	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 14:56:56 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9E23725B
+	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 15:04:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=929> 
 ======================================================================
@@ -37,7 +37,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             02-21-2005 14:56 CET
-Last Modified:              02-21-2005 14:56 CET
+Last Modified:              02-21-2005 15:04 CET
 ======================================================================
 Summary:                    Left/Right reversed when using the raw iec958 on
 Audigy2
@@ -72,10 +72,18 @@ as in Audigy.conf, makes the channels appear from the right speaker even
 when using the raw spdif device.
 ======================================================================
 
+----------------------------------------------------------------------
+ pzad - 02-21-05 15:04 
+----------------------------------------------------------------------
+Do you mean playing stereo sound using spdif has swapped left and right ?
+
+Channel swap in Audigy2.conf is needed for AC3 (DTS) passthrough.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-21-05 14:56 TheOrwithVagrantNew Issue                                    
+02-21-05 15:04 pzad           Note Added: 0003679                          
 ======================================================================
 
 
