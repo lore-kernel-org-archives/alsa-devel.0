@@ -1,15 +1,14 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: Re: Intel 8x0 static & compile error
-Date: Wed, 3 Dec 2003 11:18:27 +0300
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Bug in ALSA OSS mixer emulation. Volume++ does not
+ work.
+Date: Wed, 3 Dec 2003 09:27:14 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031203081827.GA1753@sirius.home>
-References: <92C0412E07F63549B2A2F2345D3DB515F7D302@cm-msg-02.cmedia.com.tw> <s5hu14jebt7.wl@alsa2.suse.de> <20031202110554.GK988@master.mivlgu.local>
+Message-ID: <Pine.LNX.4.58.0312030924420.12963@pnote.perex-int.cz>
+References: <3FCD5830.2000702@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20031202110554.GK988@master.mivlgu.local>
+In-Reply-To: <3FCD5830.2000702@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,52 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 3 Dec 2003, James Courtier-Dutton wrote:
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Dec 02, 2003 at 02:05:54PM +0300, Sergey Vlasov wrote:
-> On Tue, Dec 02, 2003 at 11:47:16AM +0100, Takashi Iwai wrote:
-> > At Tue, 2 Dec 2003 17:36:41 +0800,
-> > C.L. Tien - ????????? <cltien@cmedia.com.tw> wrote:
-> > > 
-> > > I found that if I forced the aRtsd use 48000 sample rate then there
-> > > is no the static problem, I guess there is a problem in SW sample rate
-> > > converter. 
-> > 
-> > ok, at least, a step forward :)
-> > could you tell me whether it runs on ALSA native or OSS mode?
-> > (i guess the latter.)
+> Hi,
 > 
-> BTW, I have experienced the same problem (static and distortion after
-> about 20 seconds) with VIA VT8235 when loading snd-via82xx with
-> dxs_support=3 (so that it will be 48k only).  This was with ALSA 0.9.8
-> (did not have a chance to try 1.0.0rc1 on that machine).
+>   The alsa keeps state of all mixer levels in alsa's internal format 
+> which has min,max info. So, for example if alsa has 0-31 levels, 
+> converting that to the OSS 0-100 range is easy with a simple 
+> calculation, but if an OSS app just does Volume++, the change will be 
+> lost in the conversion from OSS to ALSA to actually set the state. So, 
+> to work the way it should, OSS will have to cache all mixer state in OSS 
+> format, thus requiring 2 state tables.
 > 
-> When trying to use OSS apps with 44100 sample rate in this configuration,
-> I got distortion after about 20 seconds of playback.  When trying ALSA
-> output in xmms, there was no such distortion, but some static was heard.
+> E.g.
+> OSS Volume(0-100)   ALSA Volume(0-31)
+> OSS = ALSA * 100/31;
+> 
+> 0		    0
+> 1                   0
+> 2                   0
+> 3                   1
+> 4                   1
+> etc.
+> 
+> So, if OSS Volume is 2, and the OSS application does Volume++, the OSS 
+> volume will be set to 3. but if OSS Volume is 3, and the OSS application 
+> does Volume++, the OSS volume will stay at 3!
 
-Tried 1.0.0rc1 now - the OSS 44100->48000 sample rate conversion has
-the same problem (distortion after 20 seconds of playback).
+I don't undestand. Actually we have volumes in OSS format (in the kernel's 
+mixer emulation), because some applications simply does not work for 
+reason as you described (++ or -- applied). Note that these values are 
+valid per application (so the resolution is reverted to ALSA's when 
+another application changes volume too much). I don't see any other way to 
+do it.
 
---17pEHd4RhPHOinZp
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+						Jaroslav
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQE/zZxTW82GfkQfsqIRAsZpAKCL2J7w0Cp667KfRldtdF2l2kgykwCbB5UJ
-CJ+X0Yjhzy6vOVwOg4aeHO0=
-=+Tg2
------END PGP SIGNATURE-----
-
---17pEHd4RhPHOinZp--
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
