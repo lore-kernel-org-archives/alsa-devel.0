@@ -1,14 +1,13 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: [OT] Re: Virus/Worms/Spam problem from portuguese dial-in mail server ?
-Date: Sun, 4 Apr 2004 21:12:34 +0200
+From: "Robert Rozman" <rozman@fri.uni-lj.si>
+Subject: Bug in sis7012 driver - or probably I'm doing something wrong ?
+Date: Sun, 4 Apr 2004 21:54:48 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040404191233.GA1113@tuba.home>
-References: <20040404073736.GA663@tuba.home> <32876.192.168.1.5.1081097195.squirrel@www.rncbc.org>
+Message-ID: <007001c41a7e$b0125750$6500a8c0@Lapitopi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <32876.192.168.1.5.1081097195.squirrel@www.rncbc.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,49 +16,109 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rui Nuno Capela <rncbc@rncbc.org>
-Cc: Martin Langer <martin-langer@gmx.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 04, 2004 at 05:46:35PM +0100, Rui Nuno Capela wrote:
-> >
-> > damned. What's that? A dial-in account for spammers from netcabo.pt???
-> 
-> No dial-in but cable. Netcabo.pt is my ISP, and rncbc.org is just my own
-> dynamic DNS domain name, although it's IP address hasn't change for almost
-> more than an year.
-> 
+Hi,
 
-Is it possible to run a local smtp server without using the smarthost of
-your provider by dynamic IP. Then it's easy to spam around. So I
-understand the reason why those IPs are blacklisted. Dynamic IP's aren't
-static. 
+I have Asus pundit with sis7012 sound device and alsa 1.0.4 under Suse 9.0.
+I've got advice how to use this 6 channel device as 3 stereo channels but
+there seems something not to be right (it could be my mistake).
 
-> > Still in hope that you're not the reason for my virus/worm traffic
-> > explosion. Please, don't take it personally. It's only the spam/virus
-> > traffic I hate.
-> 
-> I hate it too, and thank you for pointing me out. Maybe I'm a bit relaxed
-> about my sendmail administration, but I am confident that it's not
-> configured as an open relay. I will check it out a little more deeper,
-> rest assured.
+I have /etc/asound.conf :
+pcm_slave.sis {
+pcm "hw:0"
+channels 6
+rate 48000
+buffer_size 4096  # make these sizes smaller for lower latency
+period_size 2048
+periods 0
+period_time 0
+}
 
-If it's a dynamic IP range and someone spams there, they will blacklist the
-whole range. Blacklisting only one IP wouldn't solve the problem.
+pcm.ch12 {
+type dmix
+ipc_key 47110815
+slave sis
+bindings.0 0
+bindings.1 1
+}
 
-> Help me out in clearing this up. Please.
+pcm.ch34 {
+type dmix
+ipc_key 47110815
+slave sis
+bindings.0 2
+bindings.1 3
+}
 
-I remember a similar discussion in a longer thread here:
-http://www.music.columbia.edu/pipermail/linux-audio-dev/2003-September/004935.html
+pcm.ch56 {
+type dmix
+ipc_key 47110815
+slave sis
+bindings.0 4
+bindings.1 5
+}
 
-Use a smarthost for your mails and the sun will shine again.
+
+pcm.a {
+type plug
+slave.pcm ch12
+}
+
+pcm.b {
+type plug
+slave.pcm ch34
+}
+
+pcm.c {
+type plug
+slave.pcm ch56
+}
+
+pcm.dmixerALL {
+type dmix
+ipc_key 47110815
+slave sis
+    bindings.0 0
+    bindings.1 1
+    bindings.2 2
+    bindings.3 3
+    bindings.4 4
+    bindings.5 5
+}
+
+pcm.channelALL {
+    type plug
+    slave.pcm "dmixerALL"
+    ttable.0.0 1
+    ttable.1.1 1
+    ttable.0.2 1
+    ttable.1.3 1
+    ttable.0.4 1
+    ttable.1.5 1
+}
+-----------------------------------------
+
+Now I do:
+
+- alsaplayer with mp3 file on device plug:a
+- aplay -D plug:ch12 (funny is that plug:a doesn't work)
+- everything is ok and mixed properly
+
+- but if I start another alsaplayer on plug:b (probably also plug:c would be
+the same), then aplay produces sound that is "interleaved" in short chunks
+and also sound from alsaplayer on plug:b is also heard in addition to
+original mp3 and aplay sound.
+
+Am I doing something worng or is this somkind of bug or limitation of alsa
+driver ?
+
+Thanks in advance,
+
+Robert.
 
 
-martin
-
--- 
-                                     Living on earth may be expensive,
-                   but it includes an annual free trip around the sun. 
 
 
 -------------------------------------------------------
