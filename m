@@ -1,8 +1,8 @@
 From: Paul Davis <pbd@op.net>
 Subject: Re: What is the current status of the alsa sound server (signal polling)?
-Date: Fri, 19 Apr 2002 13:00:51 -0400
+Date: Fri, 19 Apr 2002 13:01:48 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a9pje1$p1g$2@main.gmane.org>
+Message-ID: <a9pje1$p1o$2@main.gmane.org>
 References: <000101c1e766$39a37a60$ac1f830a@ico>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: Your message of "Fri, 19 Apr 2002 01:51:18 EDT."
@@ -19,12 +19,12 @@ To: Ivica Bukvic <ico@fuse.net>
 Cc: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->Also, what is the current status of gstreamer in this department and
->jack? (I tried artsd and that one simply doesn't cut it)
+I meant to add:
 
-jack allows any number of applications to use a single audio
-interface, up to a run-time configurable limit imposed by the total
-maximum number of "ports" in the JACK system. the default is 128
-ports, but any number is theoretically OK.
+>Also, what is the current status of gstreamer in this department and
+
+gstreamer has nothing to do with this. gstreamer is an internal
+architecture/framework for a single application and has nothing to do
+with sharing audio interfaces or audio data with other processes.
 
 --p
