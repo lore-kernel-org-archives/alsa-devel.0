@@ -1,11 +1,11 @@
-From: Andreas =?ISO-8859-1?Q?Kl=F6ckner?= <andreas-kloeckner@gmx.net>
-Subject: [bug] cs46xx: sound way too fast and chopped
-Date: Sat, 5 Apr 2003 00:28:24 +0200 (MEST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: User notes online
+Date: Sat, 05 Apr 2003 17:02:20 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <14554.1049495304@www58.gmx.net>
+Message-ID: <3E8E8D8C.7030107@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,49 +15,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I have whipped up a page to which displays all the user notes contributions.
 
-I'm using the CS46xx sound chip in my Thinkpad A21m with a 2.4.20 kernel and
-alsa 0.9.2, compiled by gcc (GCC) 3.2.3 20030309 (Debian prerelease).
+http://www.alsa-project.org/alsa-doc/doc-php/notes-full.php3
 
-At unpredictable times, the sound becomes very silent, and it appears as if
-it was playing many times faster than it should. Only very short snippets of
-sound (<1ms, not intelligible) are played with lots of silence in between.
+It can also be accessed quickly through the main matrix page.
 
-This happens a lot when the computes is busy doing other things besides
-playing sounds (such as intense hard drive activity). It has happened to me once
-at least through every movie that I've watched (using mplayer, if that helps)
-recently. Seeking in XMMS has also caused that kind of problem before.
+I have been feeling slightly guilty that I'm probably the only person 
+who has a full view of what people are contributing to the notes and 
+managed to figure out how to generate a page so y'all can find out these 
+things too.
 
-lspci -v:
+Hopefully this will make things easier for people when they are looking 
+at purchasing new cards/devices too.
 
-00:05.0 Multimedia audio controller: Cirrus Logic CS 4614/22/24
-[CrystalClear SoundFusion Audio Accelerator] (rev 01)
-        Subsystem: IBM: Unknown device 0153
-        Flags: bus master, slow devsel, latency 64, IRQ 11
-        Memory at f4122000 (32-bit, non-prefetchable) [size=4K]
-        Memory at f4000000 (32-bit, non-prefetchable) [size=1M]
-        Capabilities: [40] Power Management version 2
+It should also give developers an idea of which cards are most used. 
+Currently the people who use the via82xx module are the most prolific 
+contributers.
 
-lspci -vn:
-
-00:05.0 Class 0401: 1013:6003 (rev 01)
-        Subsystem: 1014:0153
-        Flags: bus master, slow devsel, latency 64, IRQ 11
-        Memory at f4122000 (32-bit, non-prefetchable) [size=4K]
-        Memory at f4000000 (32-bit, non-prefetchable) [size=1M]
-        Capabilities: [40] Power Management version 2
-
-Best regards and thank you for your help,
-
-Andreas
+Hopefully it doesn't make any problems for the server. I'm not sure how 
+much it affects the machine/s running things.
 
 -- 
-+++ GMX - Mail, Messaging & more  http://www.gmx.net +++
-Bitte lächeln! Fotogalerie online mit GMX ohne eigene Homepage!
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
