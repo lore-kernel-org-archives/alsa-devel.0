@@ -1,14 +1,13 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Re: Quattro woes or: What does "SNDRV_PCM_IOCTL_START failed" mean?
-Date: Tue, 11 Mar 2003 19:57:35 +0100
+From: Dan Hollis <goemon@anime.net>
+Subject: Re: s/pdif controls
+Date: Tue, 11 Mar 2003 11:25:10 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030311185735.GA4312@fliwatut.scifi>
-References: <20030311180209.GC1812@fliwatut.scifi> <20030311184050.5D539C6F38@mailproxy1.netcologne.de>
+Message-ID: <Pine.LNX.4.44.0303111112510.32606-100000@sasami.anime.net>
+References: <E18skA4-0000l5-00@sc8-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20030311184050.5D539C6F38@mailproxy1.netcologne.de>
+In-Reply-To: <E18skA4-0000l5-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,30 +16,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
-Paul Davis hat gesagt: // Paul Davis wrote:
+On Tue, 11 Mar 2003, Paul Davis wrote:
+> i agree. but why are the status bit fields so long? is this following
+> IEC958 specs?
 
-> >But this doesn't work with Pd, which expects powers of 2...
-> 
-> i suggest you try to find an "ALSA-native" configuration that Pd and
-> your quattro *do* work with, then we can map that to JACK.
+Yes. They are large.
 
-Well, jack was a workaround because I couldn't get Pd to work
-ALSA-natively in the first place, while the Jack-solution now works.
-In fact, I just 0 minutes ago found a working Pd solution as well, by
-taking Takashi's tip to run at 48000 Hz at work with Pd. And voila,
-now Pd works with the Quattro...
+The only full description of the status bitfields I have ever found is in 
+the AD1892 datasheet. I have archived a copy here:
+http://bani.anime.net/bookmarkz/AD1892_0.pdf
 
-It only required downgrading the kernel and playing (a lot) with all
-those parameters, Jack (as I wrote on jack-devel) also had strange
-problems on 2.4.20 that went away on 2.4.18, even without Pd involved.
-
-Best Regards,
+-Dan
 -- 
- Frank Barknecht                               _ ______footils.org__
+[-] Omae no subete no kichi wa ore no mono da. [-]
+
 
 
 -------------------------------------------------------
