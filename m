@@ -1,14 +1,16 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: Re: Tascam US-224/428 MMC?
-Date: Tue, 20 Jul 2004 23:24:45 +0200
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000399]: Audigy ls + gameport
+Date: Tue, 20 Jul 2004 23:24:59 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040720212445.GB521@tuba.home>
-References: <33466.195.245.190.93.1089901175.squirrel@195.245.190.93> <7444.195.245.190.93.1090312112.squirrel@195.245.190.93> <20040720180512.GA527@tuba.home> <32928.192.168.1.5.1090350103.squirrel@192.168.1.5>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <20040720212459.A7AE523003@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <32928.192.168.1.5.1090350103.squirrel@192.168.1.5>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 097E7225
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2004 23:25:00 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id C68F714139
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2004 23:24:59 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,45 +19,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rui Nuno Capela <rncbc@rncbc.org>
-Cc: alsa-devel@lists.sourceforge.net, annabellesgarden@yahoo.de, ws@seh.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 20, 2004 at 08:01:43PM +0100, Rui Nuno Capela wrote:
-> >
-> > Well, my us122 has no controller stuff. I guess it's even impossible
-> > to fix this with a more advanced firmware;-) But, go ahead and improve
-> > things. Your code is always welcome, except Karsten has already solved
-> > it;-)
-> 
-> Have he?
 
-Good question! For me it looks like "no", but I'm not Karsten.
-
-> > BTW: I'm still searching an us224 user who wants to try out a free
-> > firmware file ( http://www.langerland.de/us122/usx2y-fw-0.1b.tar.bz2 ).
-> > It works with us122/us428, but us224 is still untested.
-> >
-> 
-> It works on my us-224 too, just tested it with the bundled ld2-ezusb.hex
-> file, as I don't have as31 as required to make it.
-
-That should make no difference.
-
-> At first glance, everything works (using alsa-driver/kernel as of cvs
-> 20040713, where Karten's recent snd-usb-usx2y 0.7.1 patch is included).
-> 
-> Remember that you can always count on my for us-224 testing.
-
-That's great.
-
-
-martin
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000399
+======================================================================
+Reported By:                eric
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     399
+Category:                   OTHERS
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora core 1
+Kernel Version:             kernel 2.6.7
+======================================================================
+Date Submitted:             07-20-2004 23:24 CEST
+Last Modified:              07-20-2004 23:24 CEST
+======================================================================
+Summary:                    Audigy ls + gameport
+Description: 
+no audigy ls support for gameport analog in standard kernel 
+(2.6.7)
+and no patch in alsa cvs files.
 
 
--- 
-                                     Living on earth may be expensive,
-                   but it includes an annual free trip around the sun. 
+======================================================================
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-20-04 23:24 eric           New Bug                                      
+07-20-04 23:24 eric           Distribution              => Fedora core 1   
+07-20-04 23:24 eric           Kernel Version            => kernel 2.6.7    
+======================================================================
 
 
 -------------------------------------------------------
