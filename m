@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000398]: aplay produces no sound on short wav files through dmix
-Date: Tue, 7 Dec 2004 03:58:59 +0100
-Message-ID: <f0e608a1c0b5b93857b25622fb137de5@bugtrack.alsa-project.org>
+From: Michael Geis <michaelgeis11@yahoo.com>
+Subject: alsa sequencer: How to eliminate choking
+Date: Mon, 6 Dec 2004 19:08:35 -0800 (PST)
+Message-ID: <20041207030836.76199.qmail@web51904.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="0-1813504093-1102388915=:75808"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 99B4137D
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 03:58:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +14,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+--0-1813504093-1102388915=:75808
+Content-Type: text/plain; charset=us-ascii
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=398> 
-======================================================================
-Reported By:                raveng
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   398
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-19-2004 16:21 CEST
-Last Modified:              12-07-2004 03:58 CET
-======================================================================
-Summary:                    aplay produces no sound on short wav files through
-dmix
-Description: 
-Wav files shorter than about 0.157 seconds produce no sound under aplay and
-dmix. No error message is given, and it looks like it should be working.
-If I add silence to the file to make the duration longer, it plays fine.
-Also, if I direct aplay to use the hardware directly, it plays the
-original file just fine.  Tested on both ens1371 and i810 audio.
-
-Other media players (xmms, mplayer, and artsplay) all play the same file
-correctly with dmix. It is only the ALSA-provided aplay that seems to have
-difficulty.
-======================================================================
-
-----------------------------------------------------------------------
- lesieur - 07-28-04 02:08 
-----------------------------------------------------------------------
-using aplay -R125000 pop.wav works
-
-----------------------------------------------------------------------
- leahcim - 12-07-04 03:58 
-----------------------------------------------------------------------
-Reducing buffer_size in asound.conf to some small value (eg. 2K for
-/usr/share/sounds/pop.wav, and 1K for /usr/share/sounds/KDE_Click.wav)
-made the sounds audible again.
-
-Obviously this will make things underrunny, so I instead opted to increase
-the length of the sound files. I have a useful shell script that consists
-of the line:
-
-   (sox -p "$@" -t raw -r 44100 -w -s -c2 -;dd if=/dev/zero bs=1024
-count=40 2>/dev/null)|aplay -M -N -q - -f cd &
-
-...and point the KDE system notification external player at the script (I
-don't use artsd).
-
-The number 40 above isn't an exact figure; there might still be -really-
-short sounds that still won't play.
-
-The 'aplay -R125000' hack didn't make a difference for me until I used
-smaller numbers. Hmm, perhaps that will be a nicer alternative to my dd
-hack...
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-19-04 16:21 raveng         New Issue                                    
-07-28-04 02:08 lesieur        Note Added: 0001478                          
-12-07-04 03:24 leahcim        Issue Monitored: leahcim                     
-12-07-04 03:58 leahcim        Note Added: 0002745                          
-======================================================================
+Hello, everyone!
+Before describing my problem, I would like to comment on the great degree of transparancy 
+of the ALSA library. Sure enough, it took a while to get used to its wealth, but the example 
+programs + the former posts on this list give great indications as to how to make use of
+this wealth.
+ 
+I am using ALSA to stream pieces of music contained in a class called score to an ALSA client with a port of type MIDI_GENERIC. One way to construct a score is from a Midi file, so I can compare the sound of playing the Midi file with pmidi with the result of streaming a score constructed from that midifile to the alsa sequencer.
+The streaming works for pieces that dont contain many parts, but when many notes are played simultaneously (e.g. Beethoven's 5 Symphony, Movement 1), the order of notes gets mixed up and the output devices choke (same problem for a keyboard and with timidity). However, the midifile I made the score from plays nicely with pmidi.
+I am pretty convinced that the problem is not queue overflow, since I flush queues every two seconds.
+ 
+Does someone have an idea where the choking could come from and what measures can be used to get rid of it?
+ 
+There are two more items I have been wondering about that dont appear worth to put into a post of their own.
+Is there a Macro that tells me whether an ALSA sequencer client is an internal or external device? Thus, a user could choose what kind of device to play to (without having to specify client and port). 
+Second, is ALSA used purely on linux or also on OS X or BSD?
+If not, are there indications that it may be in the future?
+ 
+ 
+Thanks in advance for replies to these questions,
+ 
+Michael Geis
 
 
+		
+---------------------------------
+Do you Yahoo!?
+ Read only the mail you want - Yahoo! Mail SpamGuard.
+--0-1813504093-1102388915=:75808
+Content-Type: text/html; charset=us-ascii
+
+<DIV>
+<DIV>Hello, everyone!</DIV>
+<DIV>Before describing my problem, I would like to comment on the great degree of transparancy </DIV>
+<DIV>of the ALSA library. Sure enough, it took a while to get used to its wealth, but the example </DIV>
+<DIV>programs + the former posts on this list give great indications as to how to make use of</DIV>
+<DIV>this wealth.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am using ALSA to stream pieces of music contained in a class called score to an ALSA client with a port of type MIDI_GENERIC.&nbsp;One way to construct a score is from a Midi file, so I can compare the sound of playing the Midi file with pmidi&nbsp;with the result of&nbsp;streaming a score constructed from that midifile to the alsa sequencer.</DIV>
+<DIV>The streaming works&nbsp;for pieces that dont contain many parts, but when many notes are played simultaneously (e.g. Beethoven's 5 Symphony, Movement 1), the order of notes gets mixed up and the output devices choke (same problem for a keyboard and with timidity). However, the midifile I made the score from plays nicely with pmidi.</DIV>
+<DIV>I am pretty convinced that the problem is not queue overflow, since I flush queues every two seconds.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Does someone have an idea where the choking could come from and what measures can be used to get rid of it?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>There are two more items I have been wondering about that dont appear worth to put into a post of their own.</DIV>
+<DIV>Is there a Macro that tells me whether an ALSA sequencer client is an internal or external device? Thus, a user could choose what kind of device to play to (without having to specify client and port). </DIV>
+<DIV>Second, is ALSA used purely on linux or also&nbsp;on OS X or BSD?</DIV>
+<DIV>If not, are there indications that it may be in the future?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks in advance for replies to these questions,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Michael Geis</DIV></DIV><p>
+		<hr size=1>Do you Yahoo!?<br> 
+Read only the mail you want - <a href="http://us.rd.yahoo.com/mail_us/taglines/spamguard/*http://promotions.yahoo.com/new_mail/static/protection.html">Yahoo! Mail SpamGuard</a>.
+--0-1813504093-1102388915=:75808--
 
 
 -------------------------------------------------------
