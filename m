@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000800]: Sound is Corrupted or terribe quality.
-Date: Sat, 19 Mar 2005 12:42:18 +0100
-Message-ID: <3f9a97e6986f10104ffc52baff31edfd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000165]: random snd_es1938 crashes
+Date: Sat, 19 Mar 2005 12:43:23 +0100
+Message-ID: <e4ed903e9f718176af6a2abe29830597@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CCD351D8
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 12:42:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4C34C1D8
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 12:43:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,57 +23,66 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=800> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=165> 
 ======================================================================
-Reported By:                abonilla
+Reported By:                lucas
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   800
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   165
+Category:                   PCI - es1938
+Reproducibility:            sometimes
+Severity:                   crash
 Priority:                   normal
 Status:                     new
 Distribution:               Debian
-Kernel Version:             2.6.9
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-10-2005 03:20 CET
-Last Modified:              03-19-2005 12:42 CET
+Date Submitted:             03-29-2004 16:25 CEST
+Last Modified:              03-19-2005 12:43 CET
 ======================================================================
-Summary:                    Sound is Corrupted or terribe quality.
+Summary:                    random snd_es1938 crashes
 Description: 
-Sound goes out just like if the jack was not propperly plugged. bad Sound
-Quality.
+Some randoms alsa problems appeared after I upgraded from 2.6.3 to 2.6.4.
+Here is what hit the logs :
+
+<3>irq 7: nobody cared!
+Call Trace:
+ [<c010a8aa>] __report_bad_irq+0x2a/0x90
+ [<c010a99c>] note_interrupt+0x6c/0xb0
+ [<c010ac51>] do_IRQ+0x121/0x130
+ [<c01090a4>] common_interrupt+0x18/0x20
+ [<c011dd80>] do_softirq+0x40/0xa0
+ [<c010ac2d>] do_IRQ+0xfd/0x130
+ [<c0105000>] rest_init+0x0/0x60
+ [<c01090a4>] common_interrupt+0x18/0x20
+ [<c0105000>] rest_init+0x0/0x60
+ [<c0106c13>] default_idle+0x23/0x30
+ [<c0106c7c>] cpu_idle+0x2c/0x40
+ [<c031e6e3>] start_kernel+0x163/0x180
+ [<c031e430>] unknown_bootoption+0x0/0x120
+
+handlers:
+[<df994980>] (snd_es1938_interrupt+0x0/0x1b0 [snd_es1938])
+Disabling IRQ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7
+spurious 8259A interrupt: IRQ7.
+
+xmms hangs when trying to listen to music, but xawtv/xawdecode still works
+with sound. rmmod-ing and modprob-ing snd_es1938 restores the normal
+behaviour.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-18-05 18:23 
+ jdthood - 03-19-05 12:43 
 ----------------------------------------------------------------------
-How about 1.0.9rc1?  Many bugs have been fixed for hda driver.
-
-----------------------------------------------------------------------
- jdthood - 03-19-05 12:42 
-----------------------------------------------------------------------
->  How about 1.0.9rc1? Many bugs have been fixed for hda driver. 
-
-I have asked the submitter to try 1.0.9rc1 but it may be that
-we will get no feedback from him until 1.0.9 is released.
-(I don't plan to make a new Debian release of alsa-driver until
-1.0.9 is finalized.)
+Submitter: Is this still a problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-10-05 03:20 abonilla       New Issue                                    
-01-10-05 03:20 abonilla       Distribution              => Debian          
-01-10-05 03:20 abonilla       Kernel Version            => 2.6.9           
-01-10-05 14:56 tiwai          Note Added: 0003134                          
-03-16-05 13:27 jdthood        Note Added: 0003956                          
-03-18-05 18:23 tiwai          Note Added: 0004003                          
-03-18-05 23:35 allefant       Issue Monitored: allefant                    
-03-18-05 23:36 allefant       Issue End Monitor: allefant                    
-03-19-05 12:42 jdthood        Note Added: 0004036                          
+03-29-04 16:25 lucas          New Issue                                    
+03-29-04 16:25 lucas          Distribution              => Debian          
+03-19-05 12:43 jdthood        Note Added: 0004037                          
 ======================================================================
 
 
