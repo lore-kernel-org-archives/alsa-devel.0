@@ -1,12 +1,11 @@
-From: =?iso-8859-1?Q?J=F6rn?= Nettingsmeier <nettings@folkwang-hochschule.de>
-Subject: Re: Re: [Alsa-user] Request for test of powermac driver
-Date: Mon, 20 May 2002 22:36:06 +0200
+From: =?iso-8859-1?q?karsten=20wiese?= <annabellesgarden@yahoo.de>
+Subject: small enhancement to es1968.c
+Date: Mon, 20 May 2002 22:38:17 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CE95E36.A6122F19@folkwang-hochschule.de>
-References: <s5hn0v15p95.wl@alsa2.suse.de> <20020520104117.7f18005a.mis@creazone.com>
+Message-ID: <20020520203817.10461.qmail@web12206.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,41 +15,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Michal Seta <mis@creazone.com>
-Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Michal Seta wrote:
-> =
+hallo,
 
-> Hi,
-> =
+this one lets the volume reach maximum on both
+channels also by using the extra volume-control-knobs
+found on some laptops. 
+the diff was run against the cvs - version of today.
 
-> I'm having trouble compiling the new powermac driver:
-> =
+>>>>
+--- es1968.c_cvs        Mon May 20 22:09:37 2002
++++ es1968.c    Mon May 20 22:12:11 2002
+@@ -1981,7 +1981,7 @@
+                        /* volume up */
+                        if ((val & 0xff) > 0)
+                                val--;
+-                       if ((val & 0xff00) > 0x100)
++                       if ((val & 0xff00) > 0)
+                                val -= 0x0100;
+                } else {
+                        /* volume down */
+<<<<
 
-> gcc -DALSA_BUILD -D__KERNEL__ -DMODULE=3D1 -I/home/mis/CVS/alsa-driver/=
-include -I/usr/src/linux/include -O2 -D__powerpc__ -fsigned-char -fno-bui=
-ltin -msoft-float -ffixed-r2 -Wno-uninitialized -mmultiple -mstring -DLIN=
-UX -Wall -Wstrict-prototypes -fomit-frame-pointer -pipe  -DKBUILD_BASENAM=
-E=3Dpowermac   -c -o powermac.o powermac.c
-> ../alsa-kernel/ppc/powermac.c:40: warning: `snd_enable' defined but not=
- used
-> gcc -DALSA_BUILD -D__KERNEL__ -DMODULE=3D1 -I/home/mis/CVS/alsa-driver/=
-include -I/usr/src/linux/include -O2 -D__powerpc__ -fsigned-char -fno-bui=
-ltin -msoft-float -ffixed-r2 -Wno-uninitialized -mmultiple -mstring -DLIN=
-UX -Wall -Wstrict-prototypes -fomit-frame-pointer -pipe  -DKBUILD_BASENAM=
-E=3Dpmac   -c -o pmac.o pmac.c
-> In file included from pmac.c:1:
-> ../alsa-kernel/ppc/pmac.c: In function `snd_pmac_new':
-> ../alsa-kernel/ppc/pmac.c:1353: structure has no member named `mode'
-> make[1]: *** [pmac.o] Error 1
-> make[1]: Leaving directory `/home/mis/CVS/alsa-driver/ppc'
-> make: *** [compile] Error 1
+best regards, karsten
 
-that's a typo. change "mode" to "model".
 
-j=F6rn
+__________________________________________________________________
+
+Gesendet von Yahoo! Mail - http://mail.yahoo.de
+Sie brauchen mehr Speicher für Ihre E-Mails? - http://premiummail.yahoo.de
 
 _______________________________________________________________
 
