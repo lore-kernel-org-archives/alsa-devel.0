@@ -1,15 +1,14 @@
-From: Vlad - Andrei Lazar <clusty1@gmail.com>
-Subject: Re: Audigy 2 NX USB
-Date: Thu, 13 Jan 2005 20:04:18 +0100
-Message-ID: <d27697d60501131104456027fa@mail.gmail.com>
-References: <d27697d605011308157a93b066@mail.gmail.com>
-	 <41E6C1FF.7010404@superbug.co.uk>
-Reply-To: Vlad - Andrei Lazar <clusty1@gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - firmware 0000815]: missing DESTDIR support with hotplug dir
+Date: Thu, 13 Jan 2005 20:33:29 +0100
+Message-ID: <9b7b4d8e2db1ab24ef290d0fe6bc5db5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41E6C1FF.7010404@superbug.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 67DFE2F6
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 20:33:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,37 +18,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: Alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I just bought the Audigy 2 NX USB because I thought there ain;t gonna
-be any support. Now I see that my new soundcard sounds really like
-shit (tons of glitches and some funny distorsions). Please guys come
-up with some driver. I would do it myself if I would know how to make
-it :-D.
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=815> 
+======================================================================
+Reported By:                gvy
+Assigned To:                
+======================================================================
+Project:                    ALSA - firmware
+Issue ID:                   815
+Category:                   
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             01-13-2005 20:21 CET
+Last Modified:              01-13-2005 20:33 CET
+======================================================================
+Summary:                    missing DESTDIR support with hotplug dir
+Description: 
+with intoruction of hotplug dir I had to kludge in RPM buildroot into
+configure parameters -- it doesn't belong there, it's rather install-time
+not compile-time (and definitely not configure-time).
+
+hardwiring /usr/lib is no good too -- bringing ilbdir in would be better
+too.
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-13-05 20:33 
+----------------------------------------------------------------------
+$DESTDIR works fine for me...
+
+The hotplug directory is really /usr/lib/hotplug (or better /lib/hotplug
+in the recent version).  It shouldn't depend on $prefix.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-13-05 20:21 gvy            New Issue                                    
+01-13-05 20:33 tiwai          Note Added: 0003199                          
+======================================================================
 
 
-
-
-
-On Thu, 13 Jan 2005 18:46:23 +0000, James Courtier-Dutton
-<James@superbug.co.uk> wrote:
-> Vlad - Andrei Lazar wrote:
-> > Hello,
-> >
-> > Before I asked about an Audicy ZS PCMCIA and sadlly figured out that
-> > it has no (and will never have) support for linux.
-> >
-> > Is there or will there be any support for the Audigy 2 NX USB soundcard?
-> > If not, what is the latest SB card that is supported.
-> >
-> > Best,
-> > Vlad
-> >
-> 
-> There might be Audigy ZS PCMCIA support if someone donates a card to me.
-> 
->
 
 
 -------------------------------------------------------
