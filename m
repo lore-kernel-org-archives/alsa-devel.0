@@ -1,14 +1,18 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: TRAM on Audigy
-Date: Mon, 07 Jul 2003 11:22:52 +0100
+From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: some more anon cvs funkiness...
+Date: Mon, 07 Jul 2003 12:25:51 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F0949FC.30408@superbug.demon.co.uk>
-References: <200307070719.JAA06549@www1.pobox.sk>
+Message-ID: <3F094AAF.4080807@folkwang-hochschule.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200307070719.JAA06549@www1.pobox.sk>
+Received: from kuwiserv.folkwang-hochschule.de (kuwiserv.folkwang-hochschule.de [193.175.156.250])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA31946
+	for <alsa-devel@alsa-project.org>; Mon, 7 Jul 2003 12:25:56 +0200
+Received: from folkwang-hochschule.de (kuwiserv.folkwang-hochschule.de [193.175.156.250])
+	by kuwiserv.folkwang-hochschule.de (8.11.6/8.11.6/SuSE Linux 0.5) with ESMTP id h67APrD11023
+	for <alsa-devel@alsa-project.org>; Mon, 7 Jul 2003 12:25:53 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,45 +21,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: p z oooo <pzad@pobox.sk>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-p z oooo wrote:
-> Hi,
-> 
-> I wanted to add support for TRAM on Audigy to emu10k1 driver.
-> I look (tryed) at OSS driver and found that TRAM is not working 
-> too. :-(
-> 
-> Then I use trial and error method and found how to setup TRAM on 
-> Audigy. I know how to read from and write to TRAM in EMU10k2 DSP 
-> program but not more.
-> Is there any documentation on using TRAM on Audigy, or am I only one 
-> (except Creative and Creative NDA signer) who know how to use TRAM on 
-> Audigy ???
-> 
-> I need more info on how is TRAM working on SB Live:
-> TANKMEMADDRREG_CLEAR - Clear tank memory
-> TANKMEMADDRREG_ALIGN - Align read or write relative to tank access
-> TANKMEMADDRREG_WRITE - Write to tank memory
-> TANKMEMADDRREG_READ - Read from tank memory
-> 
-> Please help
-> 
-> Peter Zubaj
-> 
-> PS: If no one knows more, I will make patch against current CVS and 
-> send it to this list. (mayby AC3 passthrough using TRAM will work 
-> too :-))
-> 
-> 
-I heard that one will not have to do TRAM AC3, one can just select a 
-different interpolator (A special NULL interpolor). I have not tested my 
-self, but I saw emails about it about 1 year ago.
-I think that it is just old SB Live cards that need the TRAM method.
-Cheers
-James
+hello * !
+
+after the usual 10-20 re-login attempts to the sf cvs server, i can=20
+update my alsa tree fine up to this point:
+
+cvs server: Updating alsa-driver/drivers/vx
+cvs server: [02:56:59] waiting for anoncvs_alsa's lock in=20
+/cvsroot/alsa/alsa-driver/drivers/vx
+=2E..[repeats every 30 sec]
+cvs server: [03:04:29] waiting for anoncvs_alsa's lock in=20
+/cvsroot/alsa/alsa-driver/drivers/vx
+cvs server: [03:04:59] waiting for jguenther's lock in=20
+/cvsroot/alsa/alsa-driver/drivers/vx
+=2E..[same]
+cvs server: [03:22:29] waiting for jguenther's lock in=20
+/cvsroot/alsa/alsa-driver/drivers/vx
+
+what's happening ?
+
+
+--=20
+All Members shall refrain in their international relations from
+the threat or use of force against the territorial integrity or
+political independence of any state, or in any other manner
+inconsistent with the Purposes of the United Nations.
+	-- Charter of the United Nations, Article 2.4
+
+
+J=F6rn Nettingsmeier
+Kurf=FCrstenstr 49, 45138 Essen, Germany
+http://spunk.dnsalias.org (my server)
+http://www.linuxdj.com/audio/lad/ (Linux Audio Developers)
+
+
 
 
 
