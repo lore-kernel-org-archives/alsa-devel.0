@@ -1,76 +1,117 @@
-From: Holger Waechtler <holger@qanu.de>
-Subject: Re: [Alsa-devel] Problem with Avermedia 771
-Date: Fri, 15 Oct 2004 13:58:11 +0200
-Sender: linux-dvb-bounce@linuxtv.org
-Message-ID: <416FBB53.5070104@qanu.de>
-References: <416ED29A.7060200@qanu.de> <20041015101119.GH3866@bytesex> <Pine.LNX.4.58.0410151254140.20968@pnote.perex-int.cz>
+From: "Roger Villars" <roger.villars@fhso.ch>
+Subject: RE: Userspace ALSA Soundcard
+Date: Fri, 15 Oct 2004 13:53:16 +0200
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <MEMPHISWYTZiAXCKe570000000d@Memphis.stud.so.fhnw.ch>
+References: <s5hzn2pfh2n.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Return-path: <linux-dvb-bounce@linuxtv.org>
-In-Reply-To: <Pine.LNX.4.58.0410151254140.20968@pnote.perex-int.cz>
-Errors-to: linux-dvb-bounce@linuxtv.org
-List-help: <mailto:ecartis@linuxtv.org?subject=help>
-List-unsubscribe: <mailto:ecartis@linuxtv.org?subject=unsubscribe%20linux-dvb>
-List-software: Ecartis version 1.0.0
-List-subscribe: <mailto:ecartis@linuxtv.org?subject=subscribe%20linux-dvb>
-List-owner: <mailto:listmaster@convergence.de>
-List-post: <mailto:linux-dvb@linuxtv.org>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Gerd Knorr <kraxel@bytesex.org>, dvb list <linux-dvb@linuxtv.org>, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hzn2pfh2n.wl@alsa2.suse.de>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
+Thanks for your answer!
 
->On Fri, 15 Oct 2004, Gerd Knorr wrote:
->
->  
->
->>The list of DVB card ID's isn't that long at the moment (from bttv):
->>
->>	// DVB cards (using pci function .1 for mpeg data xfer)
->>	{ 0x01010071, BTTV_NEBULA_DIGITV, "Nebula Electronics DigiTV" },
->>	{ 0x07611461, BTTV_AVDVBT_761,    "AverMedia AverTV DVB-T" },
->>	{ 0x002611bd, BTTV_TWINHAN_DST,   "Pinnacle PCTV SAT CI" },
->>	{ 0x00011822, BTTV_TWINHAN_DST,   "Twinhan VisionPlus DVB-T" },
->>	{ 0xfc00270f, BTTV_TWINHAN_DST,   "ChainTech digitop DST-1000 DVB-S" },
->>	{ 0x07711461, BTTV_AVDVBT_771,    "AVermedia DVB-T 771" },
->>	{ 0xdb1018ac, BTTV_DVICO_DVBT_LITE,    "DVICO FusionHDTV DVB-T Lite" },
->>            ^^^^      subsystem device
->>                ^^^^  subsystem vendor
->>
->>The alsa driver could either blacklist those or use a whitelist.  The
->>whitelist approach probably is more work, but would have the advantage
->>that the driver could also filter out analog tv cards where you don't
->>get any useful audio data out of the card.  And there is at least one
->>DVB card which can't be identified by PCI Subsystem ID because it hasn't
->>one, the whitelist approach would catch that one as well.
->>
->>Comments?
->>    
->>
->
->I think that the database should be on one central place.
->I suggest to create a simple function in a standalone module:
->
->#define BTTV_CAP_AUDIOISVIDEO	(1<<0)
->
->unsigned int bttv_caps(struct pci_dev *bttv, char **name);
->
->It will simply check, if audio is real audio and return the real name for 
->passed bttv card. Then we can call this function from our driver, too.
->
+I looked at pcm_jack a bit closer and it seems to be
+some sort of plugin for ALSA. Actually, this is not exactly
+what I need. I thought about something like this:
 
-Please implement the whitelist approach as suggested by Gerd. It's will 
-always cause problems if drivers attach to cards that are not known 
-(whitelisted) to work. The whitelists can easily get updated by the 
-maintainers, a central database for all cards requires much more efforts.
+int main(......)
+{
+	create a new soundcard
+	connect to the headset using blueZ
+	while(true) {
+		get the audio stream from blueZ
+		give the audio stream to the soundcard
+		same thing, other direction
+	}
+	remove the soundcard
+}
 
-On the long term it would make things easier if bttv, cx88 and 
-saa714x-drivers would not instanciate itself as PCI drivers but would 
-only provide the library functions to talk with the hardware. Then the 
-DVB/audio/TV-card-driver can implement the PCI attach function on their 
-own and are free to use i2c adresses showing up on the board, EEPROM 
-content etc to validate whitelisted cards, this would even work for the 
-cards without valid subsystem IDs.
+(programming could be so easy ;-) )
 
-Holger
+That's why I mentioned the deamon. With this, I can use the headset
+with the program running in the background without the need to change 
+any kernel stuff. But it seems to me that ALSA is not made for this. 
+So it would be very complicated, don't you think?
+
+Roger 
+
+-----Original Message-----
+From: alsa-devel-admin@lists.sourceforge.net
+[mailto:alsa-devel-admin@lists.sourceforge.net] On Behalf Of Takashi Iwai
+Sent: Thursday, October 14, 2004 5:36 PM
+To: Roger Villars
+Cc: alsa-devel@lists.sourceforge.net
+Subject: Re: [Alsa-devel] Userspace ALSA Soundcard
+
+At Thu, 14 Oct 2004 09:32:52 +0200,
+Roger Villars wrote:
+> 
+> 
+> Hello
+> 
+> I'm new to the ALSA Framework and I'm trying to program a "virtual" 
+> soundcard for a Bluetooth Headset that is running completely in 
+> userspace. No kernel modules or something.
+> 
+> You should only start a deamon program and then every ALSA beware 
+> program can "see" a new Soundcard.
+
+Even the daemon wouldn't needed, I guess.
+Well, the mixer might be problematic in some cases.
+
+> First Question: Do you think this is possible?
+
+Yes.
+
+> Second Question: How?
+
+A good question :)  There is no real documentation for this.
+As you wrote below, jack_pcm.c is the best example to rerfer to.
+
+> I heard that there is a file called pcm_jack.c in ALSA that is doing 
+> exactly what I need. But as I'm new to ALSA I don't know how and where 
+> in the code it is doing it.
+> 
+> Would be nice if somebody can give me some Know-how. 
+
+Basically, you need to write dozen of callbacks for each pcm operation.  The
+most cryptical part is the PCM configuration.
+The PCM layer calls hw_params, hw_refine, and sw_params callbacks for
+querying and setting up the proper configuration.
+
+
+Takashi
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: IT Product Guide on ITManagersJournal Use
+IT products in your business? Tell us what you think of them. Give us Your
+Opinions, Get Free ThinkGeek Gift Certificates! Click to find out more
+http://productguide.itmanagersjournal.com/guidepromo.tmpl
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
+Use IT products in your business? Tell us what you think of them. Give us
+Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out more
+http://productguide.itmanagersjournal.com/guidepromo.tmpl
