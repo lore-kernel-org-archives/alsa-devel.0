@@ -1,15 +1,14 @@
-From: Howard Abrams <abramsh@acm.org>
-Subject: Re: Simple ALSA capture/playback example and help wanted
-Date: Thu, 28 Mar 2002 22:19:13 -0800
+From: til1li.iili1i1li1_il@email.it
+Subject: When will your website be finished?
+Date: Fri, 29 Mar 2002 02:57:02 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CA40761.3010408@acm.org>
-References: <3CA3D05A.5060102@acm.org> <20020328220648.A18690@mlug.missouri.edu> <3CA3F61B.9080302@acm.org> <20020328234942.B18690@mlug.missouri.edu>
+Message-ID: <200203290757.IAA16689@alsa.alsa-project.org>
+Reply-To: til1li.iili1i1li1_il@email.it
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000409050101080105090906"
-Received: from gemini.voidstar.org (12-236-25-36.client.attbi.com [12.236.25.36])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id HAA15438
-	for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2002 07:20:20 +0100
+Content-Type: multipart/alternative;  boundary="----_NextPart_6249893069"
+Received: from email.it ([200.33.79.153])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id IAA16689
+	for <alsa-devel@alsa-project.org>; Fri, 29 Mar 2002 08:57:47 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,75 +17,176 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Mark Rages <markrages@mlug.missouri.edu>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------000409050101080105090906
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+
+------_NextPart_6249893069
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+Get a beautiful, 100%
+
+Custom Web site
+
+or redesign your
+
+
+existing site.
+
+
+Only $399!*
 
 
 
-Mark Rages wrote:
-
-> On Thu, Mar 28, 2002 at 09:05:31PM -0800, Howard Abrams wrote:
-> 
->>Thanks Mark. I'll take a look at jack, but in the near-term, I
->>copied a sample from a link off your page. It must have been
->>from a earlier rev of the api, but it only required very minimal
->>changes to compile.
->>
->>The program I used was "A Minimal Full-Duplex Program", off the
->>page: http://www.op.net/~pbd/alsa-audio.html#duplexex
->>
-> 
-> Can you tell us what changes were required? It will help improve the
-> documentation.
 
 
-Sure, a diff is attached.
+
+Call now and schedule a walk through
+with a Web design specialist.
+404-806-6124
 
 
-> Sorry, I don't have the expertise (or the appropriate soundcard)
-> to help with your specific problem.
-> 
+
+Includes up to 7 pages (you can add more), plus a Guestbook and a Bulletin
+Board. Java rollover buttons, Feedback forms, Pushbutton E-Commerce
+Activation and more. It will be constructed to your taste and specifications in only
+five days. We do not use templates,  our sites are completely custom.
+
+*Must host with us for $15.96 a month. You get: 200 Megs, 100 E-mail accounts,
+Control Panel, Front Page, Graphical Statistics, more!
+Act now and get one FREE .com domain name!
+
+To discuss your Web site, call 404-806-6124
+and schedule a call back now.
 
 
-Is Takashi Iwai on this list? He's credited in the source for the
-driver. Anyone else have one of these cards?
+
+------_NextPart_6249893069
+Content-Type: text/html; charset="ISO-8859-1"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Beautiful,Custom Websites for $399 Complete!</TITLE>
+</HEAD>
+<BODY text=3D#000000 vLink=3D#000080 aLink=3D#000080 link=3D#000080 bgColor=3D#000080 
+topMargin=3D7>
+<div align=3D"center">
+    <TABLE borderColor=3D#000000 height=3D669 cellSpacing=3D0 cellPadding=3D3 width=3D564 
+bgColor=3D#990000 border=3D1>
+       
+      <TR>
+        <TD width=3D554 bgColor=3D#990000 height=3D22> 
+          <P align=3Dcenter><font color=3D"#ffffff" size=3D5 
+     ><STRONG>We build GREAT LOOKING 
+      websites!</STRONG> 
+                </font></P>
+        </TD>
+      </TR>
+  <TR>
+        <TD vAlign=3Dtop width=3D554 height=3D0>
+            <TABLE style=3D"WIDTH: 555px" height=3D654 cellSpacing=3D0 
+      cellPadding=3D0 width=3D"539" border=3D0>
+               
+              <TR>
+                <TD width=3D"0" height=3D0 valign=3D"top">
+            <TABLE borderColor=3D#000000 height=3D5 cellSpacing=3D0 cellPadding=3D5 
+            width=3D554 bgColor=3D#ffffff border=3D1>
+              
+              <TR>
+                        <TD vAlign=3Dtop width=3D0 height=3D0> 
+                          <TABLE height=3D439 width=3D"529" border=3D0 style=3D"HEIGHT: 439px; WIDTH: 529px">
+                            <FONT color=3D#ff0000> </FONT>
+                    <TBODY> 
+                            <TR><FONT color=3D#ff0000>
+                              <TD width=3D"314" height=3D299 valign=3D"top"><P align=3Dleft><font color=3D#ff0000><font color=3D#ff0000></font></font><font face=3D"Arial" 
+                       ><FONT color=3D#ff0000 
+                        size=3D6><STRONG>STOP toiling over that Website that just 
+                        never gets finished!</STRONG></FONT></font></P>
+                        <P align=3Dleft><FONT color=3D#ff0000><FONT face=3DArial 
+                        color=3D#ff0000><FONT color=3D#000080><STRONG><FONT 
+                        color=3D#000000><FONT 
+                        style=3D"BACKGROUND-COLOR: #ff0000" color=3D#0000ff 
+                       ><FONT size=3D4><FONT 
+                        color=3D#800040>Trade the headaches for this:</FONT>   
+                         <BR></FONT></FONT><FONT 
+                        style=3D"BACKGROUND-COLOR: #ffff00" size=3D4>7 GREAT looking 
+                        pages<BR>Flashy "Roll Over" buttons<BR>Professional 
+                        Graphics<BR>15 Pictures<BR>Feedback&nbsp; Forms<BR>Guest 
+                        book<BR>Bulletin Board<BR>Chat Room<BR>Unlimited Email 
+                        Accounts<BR>Website Visitor Statistics<BR>Toll Free 
+                        Support and more.<BR></FONT><FONT 
+                        style=3D"BACKGROUND-COLOR: #ff0000"><FONT size=3D4><FONT 
+                        color=3D#0000ff>Online and on CD&nbsp;in just 5 
+                        days.</FONT>   
+                           
+                        <BR></FONT></FONT></FONT></STRONG></FONT></FONT></FONT><font face=3D"Arial" color=3D"#ff0000" size=3D"3"></P>
+                              </FONT>
+                        </TD></FONT>
+                              <TD vAlign=3Dtop width=3D"205" height=3D299><P align=3Dcenter><font face=3D"Arial"><font color=3D"#004080" size=3D4 
+                       ><STRONG>Professional Website 
+                        Production only $399.00<BR><BR><FONT 
+                        color=3D#000000>Order today and 
+                        get<BR></FONT></STRONG>
+                                  </font></font><FONT 
+                        face=3DArial size=3D4><STRONG><FONT color=3D#0000ff>FREE 
+                        <BR></FONT><FONT color=3D#000000><FONT 
+                        color=3D#0000ff>HOSTING</FONT> for<BR> 1 Full 
+                        Year<BR></FONT><FONT color=3D#004080><FONT 
+                        color=3D#0000ff>and FREE copy on CD!</FONT>
+                        <HR id=3Dundefined align=3Dcenter>
+                        </FONT></STRONG><FONT color=3D#0000ff><STRONG><FONT 
+                        face=3DArial><STRONG><FONT color=3D#0000ff size=3D5><FONT 
+                        size=3D3><FONT color=3D#000000 size=3D2>Call Toll Free <FONT 
+                        color=3D#ff0000 
+                        size=3D3>1-877-684 0179</FONT><BR>and&nbsp;place 
+                        your order&nbsp;today.</FONT>
+                        <HR id=3Dundefined>
+                        Your completed Website is placed online 
+                        and&nbsp;</FONT><FONT size=3D4><FONT color=3D#000000><FONT 
+                        color=3D#0000ff size=3D3>Hosted FREE for a full year.
+                        <HR id=3Dundefined>
+                        </FONT></FONT><FONT color=3D#000000 size=3D3>A copy of 
+                        your website is also placed on <FONT 
+                        color=3D#0000ff>Compact Disc</FONT> </FONT><FONT 
+                        color=3D#000000 size=3D3>and mailed to you.<BR><BR><FONT 
+                        color=3D#ff0000 size=3D4>ALL FOR ONLY</FONT> <FONT 
+                        color=3D#000000>$399<BR></FONT></FONT></FONT></FONT></STRONG></FONT></STRONG></FONT></FONT>
+                        <P><STRONG><FONT color=3D#ff0000>Get yours today and you 
+                        will sending visitors in&nbsp;less than 
+                        a&nbsp;week!</FONT></STRONG></P>
+                                </TD>
+                      </TR></TABLE>
+                          <p align=3Dcenter><FONT face=3DArial 
+                 ><STRONG> <FONT color=3D#0000ff size=3D6>CALL 
+                  TOLL&nbsp;FREE 1-877-684-0179<BR><FONT color=3D#800040>Target 
+                  Marketing</FONT><BR>
+                  <TABLE width=3D"100%" align=3Dcenter>
+                    <TBODY>
+                    <TR>
+                      <TD align=3Dmiddle>
+                        <DIV align=3Dcenter><FONT face=3DArial size=3D-1>
+                        <HR id=3Dundefined>
+                        To unsubscribe from this list, send a blank email to 
+                        <BR><A 
+                        href=3D"mailto:unsub-32295514-213@mail1.bvmmailer01.com "><FONT 
+                        color=3D#800080>mailto:unsub-32295514-213@mail1.bvmmailer01.com 
+                        </FONT></A><BR>or send a postcard to 
+                        Unsubscribe, <BR>       
+                                
+                                
+                                
+                         6228 North Federal Highway, Suite 187, Ft. Lauderdale, 
+                        Florida,&nbsp;33308.
+                        <HR id=3Dundefined>
+                        </DIV></FONT></TD></TR></TABLE></FONT></STRONG></FONT></P>
+        </TD></TR></TABLE>
+                  <CENTER><FONT 
+        size=3D6></FONT>
+                  </CENTER></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
+</div>
+</BODY></HTML>
 
 
-h.
-
---------------000409050101080105090906
-Content-Type: text/plain;
- name="diff.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="diff.txt"
-
-12c10
-<          if ((snd_pcm_open ( &playback_handle, argv[1], SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
----
->          if ((playback_handle = snd_pcm_open (argv[1], SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
-17c15
-<          if ((snd_pcm_open ( &capture_handle, argv[1], SND_PCM_STREAM_CAPTURE, 0)) < 0) {
----
->          if ((capture_handle = snd_pcm_open (argv[1], SND_PCM_STREAM_CAPTURE, 0)) < 0) {
-27c25
-<          snd_pcm_hw_params_set_rate_near (playback_handle, hw_params, 44100, 0);
----
->          snd_pcm_hw_params_set_rate_near (playback_handle, hw_params, 44100);
-35c33
-<          snd_pcm_hw_params_set_rate_near (capture_handle, hw_params, 44100, 0);
----
->          snd_pcm_hw_params_set_rate_near (capture_handle, hw_params, 44100);
-45,46c43,44
-<                  snd_pcm_writei (playback_handle, pbuf, sizeof (pbuf));
-<                  snd_pcm_readi (capture_handle, cbuf, sizeof (cbuf));
----
->                  snd_pcm_write (playback_handle, pbuf, sizeof (pbuf));
->                  snd_pcm_read (capture_handle, cbuf, sizeof (cbuf));
---------------000409050101080105090906--
+------_NextPart_6249893069--
