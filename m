@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000143]: Kernel Oops
-Date: Fri, 16 Jul 2004 13:05:27 +0200 (CEST)
+Subject: [ALSA - driver 0000141]: Multiple sources per channel not supported
+Date: Fri, 16 Jul 2004 13:04:56 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716110527.68A2526008@server.perex-int.cz>
+Message-ID: <20040716110456.6E22C26008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C4C0A255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 13:05:27 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E16DF255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 13:04:56 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,51 +22,48 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000143
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000141
 ======================================================================
-Reported By:                subodh
+Reported By:                titan
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     143
-Category:                   PCI - intel8x0
+Bug ID:                     141
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   crash
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
 Distribution:               Gentoo
-Kernel Version:             2.6.5-rc1
+Kernel Version:             2.6.3-r2
 ======================================================================
-Date Submitted:             03-18-2004 00:55 CET
-Last Modified:              07-16-2004 13:05 CEST
+Date Submitted:             03-16-2004 17:47 CET
+Last Modified:              07-16-2004 13:04 CEST
 ======================================================================
-Summary:                    Kernel Oops
+Summary:                    Multiple sources per channel not supported
 Description: 
-When ever i compile something on my box i get a Oops
+ALSA does not support multiple sources per channel (i.e. XMMS and GAIM
+sending output to the PCM channel.) I know that ESD, artsd and other such
+programs will support that, however it would be nice if the kernel
+natively supported it.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-23-2004 15:57 CET 
+ perex - 03-16-2004 19:44 CET 
 ----------------------------------------------------------------------
-It does not look like ALSA bug. It looks like memory corruption.
-Ask on the Linux kernel mailing list.
+This feature is supported with the dmix plugin (alsa-lib).
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-18-04 00:55 subodh         New Bug                                      
-03-18-04 00:55 subodh         File Added: oops.out                         
-03-18-04 00:55 subodh         Distribution              => Gentoo          
-03-18-04 00:55 subodh         Kernel Version            => 2.6.5-rc1       
-03-18-04 00:56 subodh         File Added: lspci.out                        
-03-18-04 00:56 subodh         File Added: dmesg.out                        
-03-18-04 00:57 subodh         File Added: .config                          
-03-18-04 00:57 subodh         File Added: ksymoops.txt                     
-03-23-04 15:57 perex          Bugnote Added: 0000662                       
-03-23-04 15:57 perex          Assigned To               => perex           
-03-23-04 15:57 perex          Resolution               open => not a bug   
-03-23-04 15:57 perex          Status                   new => resolved     
-07-16-04 13:05 tiwai          Status                   resolved => closed  
+03-16-04 17:47 titan          New Bug                                      
+03-16-04 17:47 titan          Distribution              => Gentoo          
+03-16-04 17:47 titan          Kernel Version            => 2.6.3-r2        
+03-16-04 19:44 perex          Bugnote Added: 0000630                       
+03-16-04 19:44 perex          Assigned To               => perex           
+03-16-04 19:44 perex          Resolution               open => fixed       
+03-16-04 19:44 perex          Status                   new => resolved     
+07-16-04 13:04 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
