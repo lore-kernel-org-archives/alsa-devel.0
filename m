@@ -1,15 +1,13 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Experimental USB audio support
-Date: Fri, 31 May 2002 21:02:23 +0900
+From: "Martijn Sipkema" <msipkema@sipkema-digital.com>
+Subject: Re: Fw: writing audiowerk driver (philips saa7146a), some questions
+Date: Fri, 31 May 2002 14:05:20 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CF7664F.D74991F2@boosthardware.com>
-References: <s5hy9e2hk02.wl@alsa2.suse.de>
-		<3CF5B58B.59E5A233@boosthardware.com>
-		<s5hwutkhhhj.wl@alsa2.suse.de>
-		<3CF74113.46D53687@boosthardware.com>
-		<s5hofewhd1u.wl@alsa2.suse.de> <s5hk7pkh9pi.wl@alsa2.suse.de>
+Message-ID: <003201c208a3$d8e06030$0400a8c0@martijn>
+References: <001801c2088f$71693120$0400a8c0@martijn> <s5hg008h829.wl@alsa2.suse.de>
+Reply-To: "Martijn Sipkema" <msipkema@sipkema-digital.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -24,80 +22,107 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Here's the descriptor. Now there are two entries in the card2,3,4 dirs.
-'descriptor' and 'id'. The descriptor files all appear to be the same. 
+> >  - should i use the normal double buffered aproach or does having
+> >  more than 2 buffers have advantages?
+>
+> most of pci drivers use a linear contigous buffer for pcm (per
+> stream).
+> the scatter-gather buffer is not supported yet on alsa (as a mid/high
+> level layer -- it would be possible if you write all on the low-level
+> layer).
+> the buffer is accessed directly via mmap as long as it's supported.
+>
+>
+> >  - what is normally called the latency of an audio interface for output?
+> >  is this the total size of the buffers or (in the case of double
+buffered
+> > io)
+> >  only one buffer? i'm thinking it is the total buffer size and this
+would
+> >  make using more than 2 buffers have a better latency/interrupt response
+> >  time ratio, right?
+>
+> but if you have double buffer, isn't it difficult to handle mmap?
+> also i don't think double-buffer (that i'm not sure whether you mean
+> here "period" in the sense of alsa, or really double-buffering as in
+> graphics) leads to better latency.  of course my guess may be wrong.
 
-----
-M Audio USB AudioSport Quattro (tm)
+i did not mean two buffers actually, perhaps the alsa term is period? with
+double buffering i meant having the saa7146 interrupt at half buffer.
 
-00: 09 02 ce 03 0a 01 00 40 00 09 04 00 00 00 01 01
-10: 00 02 0a 24 01 00 01 34 00 02 01 02 0c 24 02 05
-20: 01 01 00 02 03 00 00 00 09 24 03 06 01 06 00 05
-30: 00 0c 24 02 01 01 06 00 02 03 00 00 00 09 24 03
-40: 02 01 01 00 01 00 09 04 01 00 00 01 02 00 00 09
-50: 04 01 04 01 01 02 00 00 07 24 01 05 01 01 00 11
-60: 24 02 01 02 02 10 03 11 2b 00 22 56 00 44 ac 00
-70: 09 05 03 09 c0 00 01 00 00 07 25 01 01 00 00 00
-80: 09 04 02 00 00 01 02 00 00 09 04 02 04 01 01 02
-90: 00 00 07 24 01 02 01 01 00 11 24 02 01 02 02 10
-a0: 03 11 2b 00 22 56 00 44 ac 00 09 05 85 0d c0 00
-b0: 01 00 00 07 25 01 01 00 00 00 09 04 03 00 00 01
-c0: 01 00 02 0a 24 01 00 01 34 00 02 04 05 0c 24 02
-d0: 05 01 01 00 02 03 00 00 00 09 24 03 06 01 06 00
-e0: 05 00 0c 24 02 01 01 06 00 02 03 00 00 00 09 24
-f0: 03 02 01 01 00 01 00 09 04 04 00 00 01 02 00 00
-100: 09 04 04 01 01 01 02 00 00 07 24 01 05 01 01 00
-110: 0e 24 02 01 02 03 18 02 88 58 01 00 77 01 09 05
-120: 03 09 40 02 01 00 00 07 25 01 01 00 00 00 09 04
-130: 04 03 01 01 02 00 00 07 24 01 05 01 01 00 14 24
-140: 02 01 02 03 18 04 11 2b 00 22 56 00 44 ac 00 80
-150: bb 00 09 05 03 09 20 01 01 00 00 07 25 01 01 00
-160: 00 00 09 04 04 04 01 01 02 00 00 07 24 01 05 01
-170: 01 00 14 24 02 01 02 02 10 04 11 2b 00 22 56 00
-180: 44 ac 00 80 bb 00 09 05 03 09 c0 00 01 00 00 07
-190: 25 01 01 00 00 00 09 04 05 00 00 01 02 00 00 09
-1a0: 04 05 01 01 01 02 00 00 07 24 01 02 01 01 00 0e
-1b0: 24 02 01 02 03 18 02 88 58 01 00 77 01 09 05 85
-1c0: 0d 40 02 01 00 00 07 25 01 01 00 00 00 09 04 05
-1d0: 03 01 01 02 00 00 07 24 01 02 01 01 00 14 24 02
-1e0: 01 02 03 18 04 11 2b 00 22 56 00 44 ac 00 80 bb
-1f0: 00 09 05 85 0d 20 01 01 00 00 07 25 01 01 00 00
-200: 00 09 04 05 04 01 01 02 00 00 07 24 01 02 01 01
-210: 00 14 24 02 01 02 02 10 04 11 2b 00 22 56 00 44
-220: ac 00 80 bb 00 09 05 85 0d c0 00 01 00 00 07 25
-230: 01 01 00 00 00 09 04 06 00 00 01 01 00 02 0a 24
-240: 01 00 01 34 00 02 07 08 0c 24 02 07 01 01 00 02
-250: 03 00 00 00 09 24 03 08 01 06 00 07 00 0c 24 02
-260: 03 01 06 00 02 03 00 00 00 09 24 03 04 01 01 00
-270: 03 00 09 04 07 00 00 01 02 00 00 09 04 07 01 01
-280: 01 02 00 00 07 24 01 07 01 01 00 0e 24 02 01 02
-290: 03 18 02 88 58 01 00 77 01 09 05 04 09 40 02 01
-2a0: 00 00 07 25 01 01 00 00 00 09 04 07 03 01 01 02
-2b0: 00 00 07 24 01 07 01 01 00 14 24 02 01 02 03 18
-2c0: 04 11 2b 00 22 56 00 44 ac 00 80 bb 00 09 05 04
-2d0: 09 20 01 01 00 00 07 25 01 01 00 00 00 09 04 07
-2e0: 04 01 01 02 00 00 07 24 01 07 01 01 00 14 24 02
-2f0: 01 02 02 10 04 11 2b 00 22 56 00 44 ac 00 80 bb
-300: 00 09 05 04 09 c0 00 01 00 00 07 25 01 01 00 00
-310: 00 09 04 08 00 00 01 02 00 00 09 04 08 01 01 01
-320: 02 00 00 07 24 01 04 01 01 00 0e 24 02 01 02 03
-330: 18 02 88 58 01 00 77 01 09 05 86 0d 40 02 01 00
-340: 00 07 25 01 01 00 00 00 09 04 08 03 01 01 02 00
-350: 00 07 24 01 04 01 01 00 14 24 02 01 02 03 18 04
-360: 11 2b 00 22 56 00 44 ac 00 80 bb 00 09 05 86 0d
-370: 20 01 01 00 00 07 25 01 01 00 00 00 09 04 08 04
-380: 01 01 02 00 00 07 24 01 04 01 01 00 14 24 02 01
-390: 02 02 10 04 11 2b 00 22 56 00 44 ac 00 80 bb 00
-3a0: 09 05 86 0d c0 00 01 00 00 07 25 01 01 00 00 00
-3b0: 09 04 09 00 03 ff 00 00 00 07 05 81 03 20 00 01
-3c0: 07 05 82 02 20 00 00 07 05 02 02 20 00 00 
-----
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-=======================================================================
+the saa7146 uses a single contiguous buffer, optionally using an mmu (so
+then the buffer is not actually contiguous in physical memory).
+
+thus, having more than two periods is advantageous?
+
+> >  - should setting the buffer size and number be done on modules loading
+> >  or should it be possible to change it after that? the saa7146 doesn't
+need
+> >  contiguous memory since it has a mmu.
+>
+> the buffer size and numbers are specified by each application.
+> at set-up stage, an application and driver commnucate with each other
+> to find the preferable condition.  the driver answers the hardware
+> restriction to the application which inquires the condition.
+> then the hardware is "prepared" actually, by calling prepare
+> callback.
+>
+> in most cases, the hardawre restriction (condition) can be described
+> in snd_pcm_hardware_t struct, which is passed to the runtime instance
+> at open callback.  the struct contains most of important conditions,
+> such as supported formats, rates, channels, max buffers, etc.
+> also, you can define more complicated conditions, if necessary.
+>
+
+so if the application can set the buffer at set-up stage, it is best to
+allocate
+buffer memory at that time?
+
+> >  - does alsa allow varipitch? i think the new rme cards are supposed to
+> >  have this feature and the audiowerk8 has it, i.e. it can change its
+> > sampling
+> >  rate from about 37700 to 58200 hz while running in 1hz increments.
+> >  this allows for sync to video/tape/midi or whatever. or it allows for
+the
+> >  sample rate to be adjusted when receiving audio using rtp.
+>
+> basically no (at least not tested).  but i think it's not too
+> difficult to support it.  we can assign a control per pcm.
+> you'll need to change runtime->rate dynamically according to the
+> current rate, so that the tick interrupt handler calculates the time
+> properly.
+
+again, i am not (yet) familiar with alsa, so i am not sure what
+runtime->rate is
+or what you mean with the tick interrupt handler (where can i find
+documentation
+on this?), but i think 'pitch' is meant as a deviation from the nominal
+sample rate
+and setting a large deviation can be thought of as a bad dac/adc?
+
+> >  - the audiowerk8 uses three dma channels: one for input and two for
+output.
+> >  should i just wake a process that is blocking on a read() from the
+input
+> > dma
+> >  interrupt or should i wait until all three dma channels are ready and
+then
+> >  unblock all read()/write() processes? should unblocking the processes
+be
+> >  done
+> >  from bottom half?
+>
+> it's a job of alsa's high-level layer.
+> the lowlevel routines don't have to handle sleep()/wakeup().
+> just call snd_pcm_period_elapsed() in the interrupts routine when the
+> certain amount of samples have been processed.
+
+is there any documentation on this?
+
+--martijn
+
+
+
 
 _______________________________________________________________
 
