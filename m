@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000750]: no sound since 2.6.8.1
-Date: Wed, 29 Dec 2004 20:39:37 +0100
-Message-ID: <d6040b31ba5921b9ae7aca64a4d9795b@bugtrack.alsa-project.org>
+Date: Wed, 29 Dec 2004 20:46:11 +0100
+Message-ID: <ab85d87198f71bc9bb4dc733e9196710@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 478D829A
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 20:39:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9770713A
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 20:46:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10
 Kernel Version:             2.6.9+
 ======================================================================
 Date Submitted:             12-28-2004 02:20 CET
-Last Modified:              12-29-2004 20:39 CET
+Last Modified:              12-29-2004 20:46 CET
 ======================================================================
 Summary:                    no sound since 2.6.8.1
 Description: 
@@ -50,14 +50,6 @@ without complaints.  No Sound related options change.  I have even tried
 saying No to all the new options 2.6.9 and .10 provided in fear that one
 of those might be interfering, but nada.  
 ======================================================================
-
-----------------------------------------------------------------------
- aquarichy - 12-29-04 19:37 
-----------------------------------------------------------------------
-additional information: using Slackware, I have four ALSA packages
-installed: driver, lib, oss, and utils. All are version 1.0.7.  Could any
-of those may be conflicting with the in-kernel versions? or would these
-packages contain independent software?
 
 ----------------------------------------------------------------------
  aquarichy - 12-29-04 20:39 
@@ -72,6 +64,16 @@ Boo.
 
 Perhaps I will now try CVS.  Why are the numid's differing?
 
+----------------------------------------------------------------------
+ rlrevell - 12-29-04 20:46 
+----------------------------------------------------------------------
+Because the mixer code changed between the old and new ALSA versions.  This
+is not likely to be the problem, if you say running alsamixer and unmuting
+everything still gives no sound.   The numids are probably not related
+either.
+
+Try building ALSA from CVS.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -84,6 +86,7 @@ Date Modified  Username       Field                    Change
 12-29-04 19:17 aquarichy      Note Added: 0003008                          
 12-29-04 19:37 aquarichy      Note Added: 0003009                          
 12-29-04 20:39 aquarichy      Note Added: 0003011                          
+12-29-04 20:46 rlrevell       Note Added: 0003012                          
 ======================================================================
 
 
