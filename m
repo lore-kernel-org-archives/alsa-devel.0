@@ -1,14 +1,14 @@
-From: John Anderson <ardour@semiosix.com>
-Subject: Re: anybody else OK with current CVS *and* SMP?
-Date: 06 Aug 2003 18:11:27 +0200
+From: Frank Barknecht <fbar@footils.org>
+Subject: Re: Is a complete Alsa restart possibly without rebooting?
+Date: Wed, 6 Aug 2003 18:30:09 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1060186287.387.194.camel@groovious.semiosix.local>
-References: <200308061513.h76FDnN5010871@localhost.localdomain>
+Message-ID: <20030806163009.GA5872@fliwatut.scifi>
+References: <NDBBLGIKBJENLAMOLFHGEEKGCOAB.mknecht@controlnet.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200308061513.h76FDnN5010871@localhost.localdomain>
+Content-Disposition: inline
+In-Reply-To: <NDBBLGIKBJENLAMOLFHGEEKGCOAB.mknecht@controlnet.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,30 +17,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2003-08-06 at 17:13, Paul Davis wrote:
-> >OK, compiled, installed etc. But no lockups with a 2.4.20 kernel. Is
-> >there anything in particular that triggers it?
+Hallo,
+Mark Knecht hat gesagt: // Mark Knecht wrote:
+
+>    I am debugging a problem that seems to require me to reboot the machine
+> after it happens as Alsa cannot recover. I am wondering whether there is any
+> known way to script a complete Alsa restart, like I can do with networking
+> or other drivers, so that I wouldn't have to do this reboot?
 > 
-> i don't know. i just know that both my system and that of my first
-> paying customer	
-
-ouch :-(
-
-> lock up when JACK is run SCHED_FIFO, and it
-> normally happens within 10 minutes.
+>    I've tried /etc/init.d/alsasound stop and then start. This doesn't work.
+> I've tried the stop/start with an rmmod of everything I can see in lsmod,
+> but this doesn't work either.
 > 
-> i'll try to make sure to try it with my trident card as well.
+>    I suspect that a big part of the problem is that the sound card itself is
+> getting into a state that the drivers and Alsa do not have the capabilities
+> to get it out of and possibly what's happening is the reboot fixes it via a
+> PCI reset operation.
+> 
+>    Can anyone recommend a method that might actually work? This is a bit
+> painful because right now a simple adjustment even in alsamixer requires me
+> to reboot the machine.
 
-Been listening to a CD here using alsaplayer and jack for about 30
-minutes now. Alsaplayer crashed.
+Debian has an init-script that accepts a "force-[stop|restart]"
+option. What this does is: It first kills all programs that use ALSA
+with: 
 
-bye
-John
+procs_using_sound="$(echo $({ find /dev -print0 | xargs -0 stat -Lc '%t:%n' | grep -E '^(e|74):' \
+| cut -d: -f2-; } | while read REPLY; do fuser "$REPLY" || true; done | cut -f2- -d:))"
+kill $procs_using_sound
+sleep 2
+kill -9 $procs_using_sound
 
+and then rmmods like this: 
 
+rmmod -r $(lsmod | grep ^snd | awk '{print $1}')
+
+Hope that helps... I could send you the file (or you could get it from
+debian.org), but basically that's it.
+
+ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
