@@ -1,14 +1,16 @@
-From: "danu" <danu@rediffmail.com>
-Subject: Re: Re: LoopBack Mode for cirrus codec cs4205 - Help needed
-Date: 20 Aug 2002 11:20:21 -0000
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: Re: CS4281 fixes (2nd try) (fwd)
+Date: Tue, 20 Aug 2002 14:39:13 +0300 (EEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020820112021.21830.qmail@webmail24.rediffmail.com>
-Reply-To: "danu" <danu@rediffmail.com>
+Message-ID: <Pine.LNX.4.44.0208201421520.20196-100000@aino.wakkanet.fi>
+References: <s5hptwdsw3b.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	format=flowed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from vaino.wakkanet.fi (vaino.wakkanet.fi [212.83.117.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA08380
+	for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2002 14:00:04 +0200
+In-Reply-To: <s5hptwdsw3b.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,59 +20,42 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 Aug 2002 Takashi Iwai wrote :
->At 20 Aug 2002 05:17:30 -0000,
->danu wrote:
-> >
-> > Hello people,
-> >
-> > I am new to this group.
-> >
-> > 1) Does ALSA provide driver support for CS4205 codec ?
->
->yes.
+On Tue, 20 Aug 2002, Takashi Iwai wrote:
 
-Danu> Could you please let me know in which version of ALSA the 
-driver for CS4205 is available ?
-I downloaded "alsa-driver-0.4.0" from alsa site but didn't find 
-cs4205 related file.
+> Kai Vehmanen wrote:
+>> After doing a cvs update and recompiling and reinstalling the driver
+>> package, snd-cs4281 now freezes my ibm-x20 laptop (rh7x, kernel 2.4.16,
+>> today's ALSA-CVS). 0.9.0rc1 works fine. Anyone with similar experience? I
+> Jaroslav already fixed this on cvs (hopefully :)
+> please give a try.
 
->
-> > 2) I am doing diagnostics for CS4205 codec. I set the codec 
->in
-> > Loopback mode(ADC o/p is fed to DAC i/p without involving
-> > AC-Link), Feed data to LINE_IN Pin using external Function
-> > generator and try to analyse the output at LINE_OUT.
-> > But i don't get any o/p at the LINE_OUT pin. I set the codec 
->in
-> > Digital Centeric mode and all other register setting seems to 
->be
-> > fine.
-> >
-> > Anyone encountered such problems with Loop Back mode with 
->cirrus
-> > codecs ?
->
->did you set the module option "enable_loopback" for 
->snd-ac97-codec?
->without it, no ADC/DAC loopback control will appear.
+Yup, works fine now (tested two laptops; one x20 and one x21)! Thanks!
 
-Danu> I have enabled Loop Back in the Genral Purpose 
-Register(Index 20h) in the codec.
-FYI, I am not using any of ALSA code as yet.
+>> And another cs4281 mystery: with 0.9.0rc1 the record wakeup is constantly
+>> late. Even though I've set avail_min to x frames, upon wake-up there's
+>> continuously more than y*x frames available (ie. not just a few samples).
+> this issue is not investigated yet.  i'll get a card and take a look
+> later, too.
 
-Thanx for the help.
+Hmm, the very latest CVS-tree seems to work differently (rc1 -> rc3). Now
+that post-rc3 snd-cs4281 works with my laptops, I'll try to reproduce the
+problem.
 
-Best Regards
-Danu
+BTW; The cs4281 compilation problem I reported earlier is definitely
+     a compiler issue. On two different laptops (x20&x21 thinkpads),
+     compiling with the RH72 gcc 2.96 produces a snd-cs4281.o that fails 
+     to recognize the soundchip. By adding one "(volatile*)" (that shouldn't 
+     have any effect), driver works on all laptops. This happens with
+     current CVS and all 0.9.x release candidates. So beware 
+     of that gcc version.
 
-__________________________________________________________
-Give your Company an email address like
-ravi @ ravi-exports.com.  Sign up for Rediffmail Pro today!
-Know more. http://www.rediffmailpro.com/signup/
+--
+ http://www.eca.cx
+ Audio software for Linux!
+
 
 
 
