@@ -1,16 +1,15 @@
-From: Tim Goetze <tim@quitte.de>
-Subject: Re: Easy question: ppq and tempo
-Date: Fri, 24 May 2002 12:48:15 +0200 (CEST)
+From: Paul Davis <pbd@op.net>
+Subject: Re: HDSP CardBus issue - /proc/ioports /proc/iomem
+Date: Fri, 24 May 2002 10:09:53 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0205241242240.761-100000@summer.quitte>
-References: <3CEDF24F.2080503@mechanik.tu-graz.ac.at>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200205241407.QAA32578@alsa.alsa-project.org>
+References: <E1795WT-0000Dc-00@satellite>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from post.webmailer.de (natwar.webmailer.de [192.67.198.70])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA29963
-	for <alsa-devel@alsa-project.org>; Fri, 24 May 2002 12:51:19 +0200
-In-Reply-To: <3CEDF24F.2080503@mechanik.tu-graz.ac.at>
+Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA32578
+	for <alsa-devel@alsa-project.org>; Fri, 24 May 2002 16:07:32 +0200
+In-Reply-To: Your message of "Sat, 18 May 2002 16:49:28 +0200."
+             <E1795WT-0000Dc-00@satellite>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,36 +18,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Gerald Grabner <gerry@mechanik.tu-graz.ac.at>
+To: thomas@undata.org, Ivica Bukvic <ico@fuse.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Gerald Grabner wrote:
+Thomas and Ico:
 
->Hi,
->
->I'm just starting to write my first alsa-lib midi applications. I'm 
->wondering what the acronym ppq stands for and what it means (especially 
->in relation to tempo). Unfortunately, I didn't find any docu on the 
->topic of tempo.
+can you please try to boot your systems with the "pci=biosirq" command
+line flag?
 
-from <sound/asequencer.h>:
+from my discussions with alan cox on the linux kernel mailing list, it
+appears that the PCI configuration information for the card isn't
+complete, and only the BIOS knows how to figure out the interrupt
+number. You both had different issues - one of you had a problem with
+IO memory, the other with interrupts - but I'd like to see what
+difference this makes. 
 
-/* queue tempo */
-struct sndrv_seq_queue_tempo {
-  int queue;      /* sequencer queue */
-  unsigned int tempo;   /* current tempo, us/tick */
-  int ppq;      /* time resolution, ticks/quarter */
-  unsigned int skew_value;  /* queue skew */
-  unsigned int skew_base;   /* queue skew base */
-  char reserved[24];    /* for the future */
-};
+as i understand it, it tells the PCI code in the kernel to use the IRQ
+allocation decisions made by the BIOS (linux usually throws them away
+and does its own thing; windows uses the BIOS values).
 
-the value is usually synonymous to the 'division' of a standard midi
-file. 
+thanks.
 
-tim
-
+--p
 
 _______________________________________________________________
 
