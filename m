@@ -1,16 +1,13 @@
-From: Pavel Machek <pavel@suse.cz>
-Subject: Re: 2.6.10-mm1: oops during swsusp in ac97 support
-Date: Sun, 9 Jan 2005 22:16:11 +0100
-Message-ID: <20050109211611.GA1325@elf.ucw.cz>
-References: <20050103182842.GA1420@elf.ucw.cz> <s5h4qhxgnl9.wl@alsa2.suse.de> <20050104212702.GA1456@elf.ucw.cz>
+From: Stefan Macher <Stefan.Macher@web.de>
+Subject: ALC658 SPDIF input patch
+Date: Sun, 9 Jan 2005 22:49:44 +0100
+Message-ID: <200501092249.44565.Stefan.Macher@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from amd.ucw.cz (gprs214-84.eurotel.cz [160.218.214.84])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6670B246
-	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2005 22:42:21 +0100 (MET)
 Content-Disposition: inline
-In-Reply-To: <20050104212702.GA1456@elf.ucw.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,32 +17,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: kernel list <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+Hi,
 
-> > > I have via82xx soundcard, and since 2.6.10-mm1, I get an oops in
-> > > snd_ac97_resume. Does 
-> > 
-> > What happened exactly? :)
-> 
-> During suspend, at one point devices are resumed. I get NULL pointer
-> dereference during that phase.
-> 
-> I'll mail you a screenshot in a private mail. I just hope you'll be
-> able to decipher it, it is pretty hard to read. (If not let me know, I
-> think I can read most of it but no numbers).
-> 
-> 2.6.10-mm1 is broken, 2.6.10-currentbk is not.
+I have made a patch to get SPDIF input working with the Realtek ALC658. 
+Realtek has changed the meaning of the Pin47 function selection bit (MX7A bit 
+1 ) between ALC655 and ALC658.
 
-2.6.10-mm2 is ok, so problem went away.
-								Pavel
+ALC655: 0 -> external amplifier power down; 1 -> SPDIF IN
+ALC658: 0 -> SPDIF IN; 1 -> external amplifier power down
 
--- 
-People were complaining that M$ turns users into beta-testers...
-...jr ghea gurz vagb qrirybcref, naq gurl frrz gb yvxr vg gung jnl!
+
+Can please anybody include this into CVS.
+
+Thanks,
+Stefan
+-------------------------------------------------------------------------------------------------------------
+
+--- alsa-driver-1.0.8rc2/alsa-kernel/pci/ac97/ac97_patch.c      2005-01-04 
+12:01:01.000000000 +0100
++++ alsa-driver-1.0.8rc2-alc658patch/alsa-kernel/pci/ac97/ac97_patch.c  
+2005-01-09 22:20:53.933529512 +0100
+@@ -1605,7 +1605,10 @@
+
+        /* adjust default values */
+        val = snd_ac97_read(ac97, 0x7a); /* misc control */
+-       val |= (1 << 1); /* spdif input pin */
++       if(ac97->id == 0x414c4780) /* ALC658 */
++               val &= ~(1 << 1); /* Pin 47 is spdif input pin */
++       else /* ALC655 */
++               val |= (1 << 1); /* Pin 47 is spdif input pin */
+        val &= ~(1 << 12); /* vref enable */
+        snd_ac97_write_cache(ac97, 0x7a, val);
+        /* set default: spdif-in enabled,
 
 
 -------------------------------------------------------
