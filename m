@@ -1,12 +1,14 @@
-From: Ryan Gammon <rggammon@helixcommunity.org>
-Subject: dmix, pause, and snd_pcm_delay
-Date: Tue, 06 Jul 2004 00:46:50 -0700
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: snd_pcm_lib_preallocate_pages_for_all
+Date: Tue, 6 Jul 2004 10:34:41 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40EA58EA.2080005@helixcommunity.org>
+Message-ID: <Pine.LNX.4.58.0407061029490.2318@linux.local>
+References: <A6991F0FA073F34C94E97976CAC0323116F8E5@server2.nordicid.com>
+ <s5hzn6e7lrj.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hzn6e7lrj.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,95 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys,
+On Mon, 5 Jul 2004, Takashi Iwai wrote:
 
-I've been fooling around with the helix client media playback engine 
-from helixcommunity.org in combination with alsa-lib-1.0.4, with the 
-goal of getting audio playing back properly.
+> Ah, of course, the crash in snd_pcm_lib_preallocate_pages_for_all has
+> nothing to do with mmap.  I overlooked the point of crash.
+> 
+> The attached patch should fix it.
 
-My set-up looks something like this:
+The patch looks wrong. Some architectures does not mark pages as reserved
+and other do it. I discussed this problem with Russell and it seems that
+there is no way to distinct these diferences using a generic way, so we
+need to add #ifdefs for some platforms.
 
-===============
-| Esound apps |
-===============
-      ||
-      ||
-=================      ===================
-| Esound hacked |      | Helix Client w/ |
-| to work with  |      | ALSA support    |
-| dmix          |      ===================
-=================             /
-       \                    /
-         \                /
-         =======================
-         | dmix server running |
-         | in an esound forked |
-         | process             |
-         =======================
-                   ||
-                   ||
-           =================
-           | snd_usb_audio |
-           =================
+						Jaroslav
 
-
-Esound apps here are mostly apps with an alsa implementation that's not 
-up to supporting dmix. This has the additional benefit of hosting the 
-alsa dmix server in a esound process, which is good, as dmix doesn't 
-seem to run properly if it's in a process forked from the helix client. 
-This might have something to do with the various threads created by the 
-client before opening the audio device, and the fact that the dmix 
-server doesn't exec after the fork, but I haven't really looked too 
-deeply into it.
-
-My main difficulty is in implementing the 
-CAudioOutUNIX::_GetBytesActualyPlayed (sic) function in the helix code 
-base. The goal of this function is to return the number of bytes that 
-have been played by the sound device. It is mostly used for ensuring 
-video and audio are synchronized.
-
-I've tried to implement this in a couple of different ways:
-1. Using mmaped timestamps, and converting the time interval between now 
-and when playback triggered into bytes.
-2. Using bytes_written - snd_pcm_delay()
-3. Using bytes_written - (initial snd_pcm_avail_update() value - current 
-snd_pcm_avail_update() value
-4. Using the snd_timer api (still figuring this out)
-5. Something with snd_pcm_sync_id_t (not sure what this is, or how to 
-use it)
-
-I've run into various problems with all these methods.
-
-1. I find that, while I get a valid timestamp from 
-snd_pcm_status_get_trigger_tstamp, snd_pcm_status_get_tstamp 
-consistantly gives me a timestamp of 0 s + 0 us.
-
-2. This works well until I try to pause. dmix claims support for 
-hardware pause, but when I pause, the hw.ptr seems to keep marching on, 
-and when I unpause, snd_pcm_delay() returns a negative value, as the 
-hardware pointer has become greater than the software pointer.
-
-3. Similar problem to (2) -- hw.ptr seems to get out of sync.
-
-4. Not sure how to get playback and the timer to start at the same time. 
-Maybe I have to set the start threshold on the pcm device such that I 
-start playback manually, and start the timer at the same time as 
-playback? I'm also worried that there might be drift between the timer 
-and the PCM device when the timer isn't something that's on the sound 
-card. Dealing with overruns and underruns also seems like it would be 
-complicated here.
-
-5. Not sure what snd_pcm_sync_id_t is nor how one would use it.
-
-Anyone have any tips or tricks? I'm willing to some poking around 
-alsa-lib if what I'm looking at here appears to be a dmix issue.
-
-Thanks,
-
-Ryan
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
