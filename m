@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001032]: 1.0.9rc2 causes mplayer -ao alsa to crash on startup
-Date: Tue, 5 Apr 2005 21:17:41 +0200
-Message-ID: <10e6687793f8271d1b8b7b5805cf8b51@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
+Date: Tue, 5 Apr 2005 21:29:13 +0200
+Message-ID: <55540996efd10d93759bfedf9b459a8e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A53E2244
-	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 21:17:41 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D5CD7151
+	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 21:29:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,96 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1032> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=857> 
 ======================================================================
-Reported By:                bero
-Assigned To:                
+Reported By:                mart
+Assigned To:                sashak
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1032
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   857
+Category:                   PCI - intel8x0m
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               slackware 10
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             04-02-2005 16:10 CEST
-Last Modified:              04-05-2005 21:17 CEST
+Date Submitted:             01-29-2005 16:43 CET
+Last Modified:              04-05-2005 21:29 CEST
 ======================================================================
-Summary:                    1.0.9rc2 causes mplayer -ao alsa to crash on startup
+Summary:                    intel8x0m does not work on asus a3n laptop
 Description: 
-1.0.9rc2 causes mplayer -ao alsa to crash on startup
+with this laptop, the sound by intel8x0 works ok, but the modem with the 
+alsa-driver intel8x0m and slmodemd 2.9.10 does not.
+slmodemd starts ok, it opens the alsa device hw:1 that is tje modem, but
+when i try to dial a number (i tried with kppp and minicom) the modem does
+dial, but after a while it quits with a NO ANSWER error.
+making some exprtiments, i found that when i connect under windows, if i
+listen to the phone connected to the same line, i can hear the tones
+gererated by the modem, but when i dial under linux i can't hear anything,
+so i think this is a driver issue, the driver that can't make the modem
+produce any sound.
+
+this is what lspci tells me on that modem:
+00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000509 Conexant Moden &quot;not ready&quot;
+related to          0000890 no dialtone with modem &amp; strange lo...
 ======================================================================
 
 ----------------------------------------------------------------------
- Toph - 04-05-05 21:08 
+ sashak - 04-03-05 01:49 
 ----------------------------------------------------------------------
-I can confirm this issue. Happens with anything that uses alsa, the end any
-strace is always:
-octl(7, SNDCTL_TMR_START or TCSETS, 0xbffed748) = 0
-ioctl(7, TIOCSPGRP, 0xbffed750)         = 0
-ioctl(7, TIOCSTI <unfinished ...>
-+++ killed by SIGSEGV +++
+Don't think it is same - slamr does not work with conexant codec. It is
+different problem here.
+But "not ready semaphore" should be fixed by this patch:
 
-the attached patch does make everything work again, though.
+Index: alsa-kernel/pci/intel8x0m.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/intel8x0m.c,v
+retrieving revision 1.30
+diff -u -b -B -r1.30 intel8x0m.c
+--- alsa-kernel/pci/intel8x0m.c 8 Mar 2005 16:35:32 -0000       1.30
++++ alsa-kernel/pci/intel8x0m.c 2 Apr 2005 23:38:46 -0000
+@@ -500,6 +500,8 @@
+                        res = 0xffff;
+                }
+        }
++       if (reg == AC97_GPIO_STATUS)
++               iagetword(chip, 0); /* clear semaphore */
+        return res;
+ }
 
-I'm using Gentoo on x86, Kernel 2.6.11, patched with cko3, my soundcard is
-an "Ensoniq 5880 AudioPCI" (es1371), but it seems to happen with most
-hardware. http://bugs.gentoo.org/show_bug.cgi?id=87099 is about the same
-issue.
+
+Regards,
+Sasha.
 
 ----------------------------------------------------------------------
- rlrevell - 04-05-05 21:17 
+ metal - 04-05-05 21:29 
 ----------------------------------------------------------------------
-Please try ALSA CVS.  This bug should be fixed.
+The patch was reject, but I patched file manualy. This patch fix only
+errors in log, but not problem. When I try connect, I get NO DIALTONE
+error.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-02-05 16:10 bero           New Issue                                    
-04-02-05 16:10 bero           File Added: alsa-lib-mplayer.patch                
-   
-04-05-05 21:08 Toph           Note Added: 0004340                          
-04-05-05 21:17 rlrevell       Note Added: 0004341                          
+01-29-05 16:43 mart           New Issue                                    
+01-29-05 16:43 mart           Distribution              => slackware 10    
+01-29-05 16:43 mart           Kernel Version            => 2.6.10          
+01-29-05 16:44 mart           Issue Monitored: mart                        
+02-03-05 21:55 mart           Note Added: 0003494                          
+02-03-05 23:21 sashak         Note Added: 0003495                          
+02-04-05 13:10 mart           Note Added: 0003501                          
+03-02-05 14:12 perex          Relationship added       related to 0000509  
+03-02-05 15:19 perex          Relationship added       related to 0000890  
+03-24-05 20:25 metal          Note Added: 0004200                          
+04-03-05 01:49 sashak         Note Added: 0004301                          
+04-05-05 21:29 metal          Note Added: 0004342                          
 ======================================================================
 
 
