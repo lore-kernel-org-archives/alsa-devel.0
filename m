@@ -1,8 +1,11 @@
-From: Daniel Pouzzner <douzzer@mega.nu>
-Subject: Re: 192khz working for anyone?  and  RME96 patch broke
-Date: Wed, 29 Jan 2003 01:18:06 -0500 (EST)
+From: Antti Boman <antti.boman@mindcom.fi>
+Subject: snd-cmipci with Jack not working
+Date: Wed, 29 Jan 2003 11:27:38 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301290618.h0T6I6k95459@mail.mega.nu>
+Message-ID: <3E379E8A.10502@mindcom.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -12,51 +15,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->what is the kernel message?
+Hi,
 
-Ah ha.
+I and a few other people have tried to get snd-cmipci (8738 integrated 
+into ASUS A7V266 motherboard) work with Jack Audio Connection Kit, but 
+with no success. We tried solving this problem in jack's developer list, 
+but as there was no success I though (and was adviced) it might be the 
+ALSA driver problem.
 
-  ALSA ../../alsa-kernel/pci/ice1712/ice1712.c:2472: invalid EEPROM version 120
+The thread about the problem can be found at
+http://sourceforge.net/mailarchive/forum.php?thread_id=1580464&forum_id=3040
 
-the driver wants version 1 and barfs on anything else.
+I've gathered the key information here:
 
-If I disable the error-out at that point in the code, here's what
-results:
+- The sound when playing back is totally garbled, the pitch is lower
+  than the original, and I get lots of clicking alongside. If I'm not
+  using jack but alsa output, everything (playing and recording) is ok.
 
-  ALSA ../../alsa-kernel/pci/ice1712/ice1712.c:2472: invalid EEPROM version 120
-  ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1829: AC'97 0:0 does not respond - RESET [REC_GAIN = 0xffff]
-  ice1712: cannot initialize pro ac97, skipped
-  devfs_register(unknown): could not append to parent, err: -17
-  devfs_register(unknown): could not append to parent, err: -17
-  devfs_register(unknown): could not append to parent, err: -17
+- I have the lowlat patch installed in kernel, but using or not using it
+  doesn't seem to change anything.
 
-The module then deals with the card well enough for it to come up in
-amixer with read/write access, but not well enough to actually make
-sounds.  Only S32_LE is accepted at all, the others producing "aplay:
-set_params:1346: Sample format non available".  If S32_LE is used,
-aplay and record block for a few seconds, then product
+- The irq for the "card" is 10, and doesn't seem to be shared. I also
+  have .asoundrc set up.
 
-  aplay: pcm_write:1623: write error: Input/output error
+- Jack server->client operation works ok, but playing back and recording
+  cause the troubles.
 
-or
+- After watching /proc/asound/card0/pcm0p/sub0/status and
+  /proc/asound/card0/pcm0c/sub0/status, it seems that the wake-up does
+  not happen in time although using relatively large buffersizes, or:
 
-  arecord: pcm_read:1710: read error: Input/output error
+- the playback and capture directions might be driven by different
+  clocks (i.e. they run at different speeds)
 
+- Using jackd with playback/capture only, it produces the following
+  message:
+   jackd: pcm.c:5851: snd_pcm_mmap_commit: Assertion 'pcm' failed
 
-Other glitches:
+- If using kernel real-time patches with playback/capture only, the
+  system locks up. This doesn't happen with both capture and playback
+  enabled.
 
-  douzzer@triceps douzzer $ /usr/sbin/alsactl -f /tmp/bla store 2
-  /usr/sbin/alsactl: get_controls:484: snd_ctl_open error: No such device
+More can be found in the thread.
 
+Anyway, we ran into dead-end. I'm very willing to answer any questions 
+you may have, test any configuration you're suggesting, or debug 
+anything you want me to debug.
 
-Clearly more work is needed in the driver.  I'm sure I'm missing some
-vital details on the card needed to do it, not to mention, some vital
-skills (I'm a hacker of neither the linux kernel nor the ALSA
-kernel).
+And no, I still don't know if it's a Jack or ALSA driver problem. What 
+I've read, though, is that people with other drivers (or chipsets) 
+haven't had these kind of problems, and there are at least two reports 
+on the same problem with users of C-Media 8738 with jack.
+
+Thanks for any help!
+
+-Antti Boman
+
 
 
 -------------------------------------------------------
