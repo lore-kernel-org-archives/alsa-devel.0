@@ -1,8 +1,8 @@
 From: Roger Williams <raw@qux.com>
 Subject: Re: hdsp multiface pci.
-Date: 20 Jan 2003 08:35:59 -0500
+Date: 20 Jan 2003 08:46:28 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m3n0lwhrk0.fsf@grouper.coelacanth.com>
+Message-ID: <m3iswkhr2j.fsf@grouper.coelacanth.com>
 References: <3E2A952E.6060305@boosthardware.com>
 	<1042985569.1663.33.camel@satellite.undata.org>
 	<3E2AC45F.3070601@boosthardware.com>
@@ -14,11 +14,12 @@ References: <3E2A952E.6060305@boosthardware.com>
 	<1042994069.1162.33.camel@Godzilla>
 	<m3bs2ck1o3.fsf@grouper.coelacanth.com>
 	<1043006386.1401.60.camel@Godzilla>
-	<m3u1g4iamm.fsf@grouper.coelacanth.com> <3E2BB3D8.6C3D2E61@telia.com>
+	<m365skjq1j.fsf@grouper.coelacanth.com>
+	<1043039164.1157.9.camel@Godzilla>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E2BB3D8.6C3D2E61@telia.com>
+In-Reply-To: <1043039164.1157.9.camel@Godzilla>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -27,17 +28,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Marcus Andersson <054185595@telia.com>
-Cc: Mark Knecht <markknecht@attbi.com>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Mark Knecht <markknecht@attbi.com>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->>>>> Marcus Andersson <054185595@telia.com> writes:
+>>>>> Mark Knecht <markknecht@attbi.com> writes:
 
-  > The panners and the output faders are mapped to the matrix mixer
-  > controls by the TotalMix software. They have no correspondence in
-  > hardware.
+  >    When I tried some amixer commands I was disappointed to find that
+  > they do nothing at all on my machine. No command I tried seems to
+  > control volume to my headphones or speakers at all.
 
-Thanks for the confirmation, Marcus.  That's what I suspected.
+  >    I guess the HDSP 9652 is not supported at this time. Makes me feel
+  > like I bought the wrong product. 
+
+Bummer.  It seems odd that the ALSA driver (apparently) works, but
+amixer doesn't.  Out of curiousity, what sort of outboard converters
+are you using for your analogue outputs?
 
 -- 
 Roger Williams <raw@qux.com>
