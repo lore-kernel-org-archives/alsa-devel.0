@@ -1,13 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000981]: I don't get any sound on nforce 3 (AMD64 plataform).
-Date: Sat, 12 Mar 2005 01:48:46 +0100
-Message-ID: <9002560c5b89af2f96b3064c81c15a11@bugtrack.alsa-project.org>
+From: "=?gb2312?B?wO69qMCk?=" <li_jiankun@hotmail.com>
+Subject: Re: Re: I want to dmix for my MIPS board, how can I do?
+Date: Sat, 12 Mar 2005 10:48:16 +0800
+Message-ID: <BAY16-DAV1466CE0B242F72321AFBB8E9540@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 877381B2
-	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 01:48:46 +0100 (MET)
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,53 +15,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=981> 
-======================================================================
-Reported By:                soulhunter
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   981
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian and Gentoo.
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             03-12-2005 01:48 CET
-Last Modified:              03-12-2005 01:48 CET
-======================================================================
-Summary:                    I don't get any sound on nforce 3 (AMD64 plataform).
-Description: 
->From kernel version 2.6.9 and up I don't get any sound.  I currently use
-2.6.8.1 (where the sound works just fine).
-
-I even tried to compile 2.6.11 with only snd_intel8x0 as module: nothing.
-
-I have no idea what is going on, yes I looked at the volume settings, and
-unmuted the master and pcm channels.  The sound application seems to be
-"playing", but I get no sound.
-
-My motherboard is a Chaintech VNF250.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-12-05 01:48 soulhunter     New Issue                                    
-03-12-05 01:48 soulhunter     Distribution              => Debian and Gentoo.
-03-12-05 01:48 soulhunter     Kernel Version            => 2.6.11          
-======================================================================
-
-
+DQogIA0KICBUaGFuayB5b3UgZm9yIHlvdXIgcmVwbHksIFRha2FzaGkgSXdhaS4NCiAgV2hlbiBh
+cGxheSAtRCBkbWl4IHdpbmRvdzExMDI1X3N0ZXJlby53YXYgYnJlYWsgZG93biBvbiBteSBtaXBz
+IGJvYXJkLCBpdCBwcm9kdWNlZCBhIGR1bXAgY29yZSBmaWxlLg0KICBXaGVuIEkgZGVidWcgaXQg
+dXNpbmcgZ2RiIG9uIG15IEF1MTEwMCBib2FyZCwgaXQgc2FpZDoJDQogICMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMNCiAgICBDb3JlIHdhcyBnZW5lcmF0ZWQgYnkgYGFwbGF5IC1EIGRtaXggd2luZG93MTEwMjVf
+c3RlcmVvLndhdicuIA0KICAgIFByb2dyYW0gdGVybWluYXRlZCB3aXRoIHNpZ25hbCAxMSwgU2Vn
+bWVudGF0aW9uIGZhdWx0Lg0KICAgIENhbm5vdCBhY2Nlc3MgbWVtb3J5IGF0IGFkZHJlc3MgMHgy
+YWI5NmQ3OA0KICMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIw0KIEkgZG9uJ3Qga25vdyB3aHkgYW5kIGNhbm4n
+dCBiYWNrdHJhY2UgaXQsIGV2ZW4gaXQgY3Jhc2hlZCBkb3duIGJlZm9yZSBiZWdpbm5pbmcgdG8g
+ZG8gc29mdHdhcmUgbWl4aW5nLg0KDQogTG9va2luZyBmb3J3YXJkIGZvciB5b3VyIHJlcGx5IQ0K
+IA0KIENoZWVycywNCiBMaSBKaWFuLWt1bg0KoaGhoaGhoaGhoaGhoaGhoWxpX2ppYW5rdW5AaG90
+bWFpbC5jb20NCqGhoaGhoaGhoaGhoaGhoaGhoaGhMjAwNS0wMy0xMg0K
 
 
 -------------------------------------------------------
