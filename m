@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
-Date: Mon, 14 Feb 2005 22:27:27 +0100
-Message-ID: <b0b62c91f2238612f1ae9e6cacd9862c@bugtrack.alsa-project.org>
+Date: Mon, 14 Feb 2005 22:28:43 +0100
+Message-ID: <c2d2c0ffc5cf73e8b4d30d2ed342e391@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3E1A524F
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 22:27:28 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5B03C24F
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 22:28:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.8-ac8
 ======================================================================
 Date Submitted:             01-25-2005 15:28 CET
-Last Modified:              02-14-2005 22:27 CET
+Last Modified:              02-14-2005 22:28 CET
 ======================================================================
 Summary:                    Intel HDA (C-Media 9880) SPDIF Out
 Description: 
@@ -51,33 +51,6 @@ the command run normally, but no output on spdif out.the same with xmms
 (with ALSA, on hw:0,1).
 
 ======================================================================
-
-----------------------------------------------------------------------
- 1g0R - 02-05-05 08:46 
-----------------------------------------------------------------------
-[igor@skynet ~]$ iecset sbits 4
-Mode: professional
-Data: audio
-Rate: unknown
-Rate Locked: yes
-Emphasis: unknown
-Stereophonic: not indicated
-Userbits: unkown
-Sample Bits: unknown
-Word Length: unknown
-[igor@skynet ~]$ iecset -Dhw:0
-Mode: professional
-Data: audio
-Rate: unknown
-Rate Locked: yes
-Emphasis: unknown
-Stereophonic: not indicated
-Userbits: unkown
-Sample Bits: unknown
-Word Length: unknown
-[igor@skynet ~]$   
-
-I cant change the values.Only Mode,and Data can i change. Why?
 
 ----------------------------------------------------------------------
  1g0R - 02-14-05 22:27 
@@ -108,6 +81,15 @@ Sample Bits: unknown
 Word Length: unknown
 [igor@skynet ~]$
 
+----------------------------------------------------------------------
+ 1g0R - 02-14-05 22:28 
+----------------------------------------------------------------------
+Here is a bite of man page:
+
+sbits <int>
+              Sample bits:  2 = 20bit, 4 = 24bit, 6 = undefined.  This
+command is for the professional mode only.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -126,6 +108,7 @@ Date Modified  Username       Field                    Change
 02-05-05 06:06 mab            Issue Monitored: mab                         
 02-05-05 08:46 1g0R           Note Added: 0003518                          
 02-14-05 22:27 1g0R           Note Added: 0003612                          
+02-14-05 22:28 1g0R           Note Added: 0003613                          
 ======================================================================
 
 
