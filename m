@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000792]: alsa fails to initialize after UDEV is installed
-Date: Mon, 10 Jan 2005 20:49:16 +0100
-Message-ID: <f9ea6d9b1c950df75a30a492c2791ee5@bugtrack.alsa-project.org>
+From: "Lee, TommyX C" <tommyx.c.lee@intel.com>
+Subject: RE: The date of releasing 1.0.8
+Date: Mon, 10 Jan 2005 15:30:30 -0800
+Message-ID: <A3E6EF77AFE291498B01A47D64B04636025DA160@orsmsx403.amr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6D65A16B
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2005 20:49:16 +0100 (MET)
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +17,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=792> 
-======================================================================
-Reported By:                sluce
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   792
-Category:                   alisp
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-08-2005 04:12 CET
-Last Modified:              01-10-2005 20:49 CET
-======================================================================
-Summary:                    alsa fails to initialize after UDEV is installed
-Description: 
-I'm really running 1.0.7 but that wasn't an option above.
-The kernel reports that it finds my CMI8330 card and alsa says:
-pnp: the driver 'cmi8330' has been registered
-pnp: match found with the PnP device '01:01.00' and the driver 'cmi8330'
-pnp: match found with the PnP device '01:01.03' and the driver 'cmi8330'
-pnp: Device 01:01.00 activated.
-pnp: Device 01:01.03 activated.
-ALSA sound/isa/sb/sb_common.c:130: SB [0x220]: DSP chip found, version =
-4.13
+Thanks for posting me with the 1.0.8 release info.
 
-I am unable to use the sound card.  KDE is configured to use alsa but is
-unable to open the sound device.
+Please tell me the most stable music players for testing the playback
+functionality of ALSA drivers. I am now using XMMS and aplay on RHEL3u3.
 
-I'll happily provide more information if you tell me what you want to see.
-======================================================================
+Thanks,
+Tommy
+-----Original Message-----
+From: Takashi Iwai [mailto:tiwai@suse.de]=20
+Sent: Wednesday, January 05, 2005 5:28 AM
+To: Lee Revell
+Cc: Lee, TommyX C; alsa-devel@lists.sourceforge.net
+Subject: Re: [Alsa-devel] The date of releasing 1.0.8
 
-----------------------------------------------------------------------
- tiwai - 01-10-05 15:03 
-----------------------------------------------------------------------
-Did you try the latest ALSA 1.0.8rc2?
+At Tue, 04 Jan 2005 19:31:25 -0500,
+Lee Revell wrote:
+>=20
+> On Tue, 2005-01-04 at 16:00 -0800, Lee, TommyX C wrote:
+> > Please provide the date of ALSA 1.0.8 release.=20
+> >=20
+>=20
+> When it's ready?
 
-----------------------------------------------------------------------
- sluce - 01-10-05 20:49 
-----------------------------------------------------------------------
-Any chance that 1.0.8rc2 is available as a .deb ?  Right now the Debian
-unstable is 1.0.7-2 when I search debian.org packages.
-
-I assume you suggest 1.0.8 because some changes have been made to work
-with UDEV?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-08-05 04:12 sluce          New Issue                                    
-01-08-05 18:43 sluce          Issue Monitored: sluce                       
-01-08-05 18:44 sluce          Issue End Monitor: sluce                     
-01-08-05 23:34 sluce          File Added: 792.txt                          
-01-08-05 23:35 sluce          Note Added: 0003131                          
-01-10-05 15:03 tiwai          Note Added: 0003136                          
-01-10-05 20:49 sluce          Note Added: 0003139                          
-======================================================================
+RC2 will be released soon.
+Hopefully 1.0.8-final will get reached in a week or so.
 
 
+Takashi
 
 
 -------------------------------------------------------
