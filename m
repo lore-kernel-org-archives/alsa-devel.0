@@ -1,14 +1,14 @@
-From: Andrew Gaydenko <a@etver.com>
-Subject: 1.0.4 snd-pcm.o dma_xxx errors
-Date: Sat, 3 Apr 2004 22:30:22 +0400
+From: "Mathieu Rondonneau" <mathieu.rondonneau@polymtl.ca>
+Subject: src pointer parameter in copy operator
+Date: Sat, 3 Apr 2004 14:06:29 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200404032230.22915@goldspace.net>
+Message-ID: <000901c419b7$274ffe80$0403a8c0@win2K>
+References: <Pine.HPX.4.33n.0403301505490.25443-100000@studcom.urz.uni-halle.de> <EB5AA0AA-8258-11D8-88CD-000A95AB8A40@hollingsworth.com.au> <Pine.LNX.4.58.0403301729380.1835@pnote.perex-int.cz> <A521B1A8-838A-11D8-89F0-000A95AB8A40@hollingsworth.com.au> <Pine.LNX.4.58.0404011051250.1843@pnote.perex-int.cz> <8436B8CE-84A1-11D8-B350-000A95AB8A40@hollingsworth.com.au> <Pine.LNX.4.58.0404031040250.2140@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="koi8-r"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,20 +20,25 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Just have tried 1.0.4. "etc/init.d/alsasound restart" gives:
+Hi all,
 
-Starting sound driver: snd-ice1724 /lib/modules/2.4.25-lck1/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_alloc_pages_Rsmp_2cbfa9e2
-/lib/modules/2.4.25-lck1/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_set_reserved_Rsmp_77de065d
-/lib/modules/2.4.25-lck1/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_free_pages_Rsmp_dbbb3d95
-/lib/modules/2.4.25-lck1/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_free_reserved_Rsmp_fe02b257
-/lib/modules/2.4.25-lck1/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_get_reserved_Rsmp_0d073398
-/lib/modules/2.4.25-lck1/kernel/sound/acore/snd-pcm.o: insmod /lib/modules/2.4.25-lck1/kernel/sound/acore/snd-pcm.o failed
-/lib/modules/2.4.25-lck1/kernel/sound/acore/snd-pcm.o: insmod snd-ice1724 failed
-done
+I have question according to the src pointer in the copy operator:
+I'm writing an ALSA driver for the cogent CSB337 board. I'm testing the
+driver but there are some problem.
+I'm trying to playback a wav file, but i hear some strange noise, not the
+data corresponding to the wav file.
+I compared the data of the wav file and the data in the copy operator
+(before they sent to the codec). They are different.
 
-As you see. I have 2.4.25 kernrl with lck1 patch.
+Why the data pointed by the src pointer (parameter of the playback copy
+operator) and the data of the wav file to playback are different?
 
-Andrew
+Thanks for any help.
+
+best regards,
+
+Mathieu rondonneau
+
 
 
 -------------------------------------------------------
