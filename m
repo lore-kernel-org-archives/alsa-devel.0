@@ -1,14 +1,14 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH]usx2yloader hotplugging in HEAD
-Date: Tue, 2 Dec 2003 09:31:32 +0100
+From: Mark Knecht <markknecht@comcast.net>
+Subject: Re: ALSA 1.0.0rc1 released
+Date: Mon, 01 Dec 2003 12:56:35 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312020931.32523.annabellesgarden@yahoo.de>
+Message-ID: <1070312195.3552.14.camel@Wizard.knechthome.com>
+References: <s5hu14kabjn.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <s5hu14kabjn.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,37 +18,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Hi,
+   I want to report that I've built alsa-1.0.0rc1 under Gentoo with q
+2.4.20-r7 kernel. Thanks to Thomas Charbonnel for the help with the
+ebuilds. If any other Gentoo users need the ebuilds, then contact me off
+list.
 
-Please commit this to reenable usx2yloader hotplugging:
->>>
-Index: alsa-tools/usx2yloader/tascam_fw
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/usx2yloader/tascam_fw,v
-retrieving revision 1.1
-diff -u -r1.1 tascam_fw
---- alsa-tools/usx2yloader/tascam_fw	23 Sep 2003 14:16:23 -0000	1.1
-+++ alsa-tools/usx2yloader/tascam_fw	2 Dec 2003 07:46:08 -0000
-@@ -3,7 +3,7 @@
- # load the firmware into Tascam USB devices
- 
- FIRMWARE=
--FIRMWAREDIR=/usr/local/share/alsa/firmware
-+FIRMWAREDIR=/usr/local/share/alsa/firmware/usx2yloader
- FLAGS=
- LOADER=/sbin/fxload
- LOADERFIRMWARE=$FIRMWAREDIR/tascam_loader.ihx
-<<<
+   Unfortunately this release does not impact my loud glitch/pop noise
+on the HDSP 9652 when using OSS applications. The results are the same
+as I reported over the last few weeks.
 
-Later there should also be some magic to (not) include the "/local" substring, 
-I don't know yet how to do that; anybody?
+   I have not run significant Alsa audio yet to talk about how that's
+working. The OSS fix was the one I was most hoping for, and I haven't
+had many Alsa problems anyway.
 
-Thanks, 
-Karsten
+- Thanks,
+Mark
 
+On Mon, 2003-12-01 at 05:54, Takashi Iwai wrote:
+> Hi,
+> 
+> today we reached ALSA 1.0.0rc1 release.
+> as its name stands, this is the "release candidate" for 1.0.0.
+> if no show-stopper bug is reported, we'll release 1.0.0 really
+> soon.
+> 
+> this version includes the following fixes since the last 1.0.0-pre3
+> release.
+> 
+> Drivers:
+> - fixed OSS emulation on kernel.  quake and wine should work now.
+<SNIP>
 
 
 
