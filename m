@@ -1,15 +1,13 @@
-From: mru@users.sourceforge.net (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
-Subject: Re: Memory leaks in alsa-lib
-Date: Tue, 26 Aug 2003 13:53:43 +0200
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: A bug or feature in PCM handling or is it really meant to be this way?
+Date: Mon, 25 Aug 2003 14:49:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xptis1vp4.fsf@users.sourceforge.net>
-References: <Pine.LNX.4.44.0308261159450.29234-100000@pnote.perex-int.cz>
+Message-ID: <200308251449.05449.adrian@mcmen.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0308261159450.29234-100000@pnote.perex-int.cz> (Jaroslav
- Kysela's message of "Tue, 26 Aug 2003 12:07:36 +0200 (CEST)")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,64 +16,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela <perex@suse.cz> writes:
+I have been working on writing an ALSA driver for the Sega Dreamcast AICA=
+=20
+sound system (PCM). But I have noticed that 2.6.0-test2 will not build fo=
+r=20
+PCM unless the OSS PCM emulation is turned on?
 
->> Is there a memory leak in alsa-lib?  When playing music with a player
->> I'm writing (TCVP, http://tcvp.sf.net), the memory usage reported by
->> top grows for each file I play, but only if I use ALSA for sound
->> playback.  If I use OSS the memory usage varies around 1.5 MB, but if
->> I use ALSA, it starts at 1.9 MB (OK, libasound takes some space) and
->> grows by 30-40 kB for each played file.  Running the whole thing under
->> valgrind gives me this, which is all alsa-related.  When using OSS,
->> valgrind reports no leaks.
->
-> I tested aplay with valgrind and I cannot find any leak (except a few=20
-> allocations probably from glibc). Note that you have to use=20
-> snd_config_update_free_global() after end of the session to free
+Is that the way it is meant to be? If so, why different options in the kb=
+uild=20
+process?
 
-OK, so what constitutes a session?  A snd_pcm_open/snd_pcm_close pair?
-Won't snd_pcm_open reuse the data from a previous call?
-
-I added that call after my call to snd_pcm_open, and valgrind no
-longer reports any leaks, except for a few kilobytes from a flex
-scanner (not related to alsa).  Still, the memory used by the player
-when running increases with each file.  The virtual size of the player
-is rather constant at around 25 MB all the time, while the resident
-size is slowly increasing, until it too reaches 25 MB.  Then the
-impossible happens:
-
-  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND     =
-     =20
- 7148 mru       11   0 25160  27m 2740 S  0.0 12.4   0:00.08 tcvp        =
-     =20
-
-Now the man page for top tells me that "VIRT =3D SWAP + RES", so unless
-a negative amount has been swapped (what would that mean?), something
-strange is going on.  The odd thing is that this happens only when I
-use the ALSA output module.  Could it be that alsa-lib triggers some
-bug somewhere in top, or in the kernel?  This seems a little unlikely,
-though.
-
-In case it matters, I use ALSA OSS emulation when testing OSS sound.
-
-> the configuration cache in alsa-lib. This is described in=20
-> the alsa-lib/MEMORY-LEAK file.
-
-That file isn't present in the alsa-lib 0.9.6 tarball.  It should be
-added the EXTRA_DIST list in Makefile.am.
-
-I ran valgrind on aplay, and it tells me more or less the same as for
-my program.  Does aplay not call the above function?  Not that it
-needs to, really.
-
-
---=20
-M=E5ns Rullg=E5rd
-mru@users.sf.net
+Adrian
 
 
 -------------------------------------------------------
