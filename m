@@ -1,15 +1,12 @@
-From: Gilles Degottex <gilles.degottex@net2000.ch>
-Subject: Re: Lowest latency: JACK, or ALSA directly?
-Date: Fri, 12 Nov 2004 15:47:04 +0100
-Message-ID: <200411121547.05145.gilles.degottex@net2000.ch>
-References: <200411111534.iABFY8UK012314@localhost.localdomain>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: The ALSA Situation
+Date: Fri, 12 Nov 2004 16:06:41 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411121559200.16196-100000@studcom.urz.uni-halle.de>
+References: <20041112082446.GA16172@rhlx01.fht-esslingen.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200411111534.iABFY8UK012314@localhost.localdomain>
-Content-Disposition: inline
+In-Reply-To: <20041112082446.GA16172@rhlx01.fht-esslingen.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,32 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: andi@lisas.de
+Cc: alsa-devel@lists.sourceforge.net, Manuel Jander <manuel.jander@usm.cl>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 11 November 2004 16:34, Paul Davis wrote:
-> it doesn't *add* any latency at all. what it might conceivably do is
-> to prevent a given application from reaching the lowest possible
-> latency, because of the extra context switching involved in JACK. so
-> far, however, this doesn't appear to be the case - people have JACK
-> running at the same latency settings as they could get with ALSA. so
-> the effect is marginal if its measurable at all.
+Andreas Mohr wrote:
+> Don't we have a problem here??
+> ...
+> d) H/W (1/4) * S/W (1/4) each == S/W (1/16) each !!
+>
+> which clearly has a different volume (1/16 of total output) than each
+> of the H/W-mix-only channels (1/4).
 
-no latency ?? so why qjackctl show latency information ? (around 50ms for me)
+dmix simply adds (and clips), so this isn't a problem.
 
-> >Although I so far barely have gotten into ALSA programming, it does seem
-> >to be manageable in difficulty. (Don't laugh, I am an aconcy austican, not
-> > a=20 programmer.)  How is programming against JACK in comparison?
 
-I already meet A LOT of difficulties when programming with ALSA: at the time I 
-did (about 6 month) doc was not synchronized to my devel library and examples 
-I found was completly obsolete ...
-But you can control more things with ALSA (and so ALSA code is longer than 
-JACK code). Personnaly I recommend you start with JACK, If there is no 
-latency problem and you wont fight with the library.
+Clemens
 
-regards
-Gilles
 
 
 -------------------------------------------------------
