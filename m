@@ -1,11 +1,15 @@
-From: Paul Davis <pbd@Op.Net>
-Subject: Re: using external MIDI device to control the computer
-Date: Thu, 21 Mar 2002 07:01:32 -0500
+From: Mathieu Dube <mdube@8d.com>
+Subject: Re: sinus example
+Date: Thu, 21 Mar 2002 09:36:46 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200203211201.HAA13010@renoir.op.net>
-References: <20020321064256.83273.qmail@web21302.mail.yahoo.com>
-In-Reply-To: Your message of "Thu, 21 Mar 2002 01:42:56 EST."
-             <20020321064256.83273.qmail@web21302.mail.yahoo.com>
+Message-ID: <02032109364600.01822@mdube.usine.8D.com>
+References: <Pine.LNX.4.33.0203210818440.487-100000@pnote.perex-int.cz>
+Reply-To: mdube@8d.com
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.33.0203210818440.487-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,32 +18,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: fn ln <neplace1@yahoo.ca>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> a sequencer client ? as a userspace program ? How
->could it then get the (filtered) data back for the
->MIDI app into /dev/midi ? I didn't think there was a
->way for a userspace program to feed "incoming" data
->into /dev/midi, and therefore I thought that it would
->have to be a kernel module, not a userspace pgm.
+I use the snd-card-ens1371 which work alright with the 0.5.
 
-the sequencer API isn't structured around /dev/midi, its structured
-around sequencer ports. clients have their own ports which they
-connect to other ports. all the raw midi devices automatically become
-clients with ports (which correspond to the h/w they control) when the
-sequencer module is loaded, so you can always send/receive data to
-them. a client can be a user space program or a kernel space
-entity. any number of clients can be connected to a port.
+But isnt it weird that all the other call to setup the sw_params work??
 
->How can "several clients connect to the same sequencer
->port " so they all see the data ?
+Thanks
+-Mat
 
-as i said, /dev/midi isn't the sequencer, its the raw MIDI device, and
-there isn't a way to multiplex access to it except via the sequencer.
+On Thursday 21 March 2002 02:19, Jaroslav Kysela wrote:
+> On Wed, 20 Mar 2002, Mathieu Dube wrote:
+> > Hi,
+> > 	I tried to run the example given in the documentation and what I get is
+> > this: ALSA lib pcm_hw.c:167:(snd_pcm_hw_sw_params)
+> > SNDRV_PCM_IOCTL_SW_PARAMS failed: Invalid argument
+> >
+> > Im wondering what it could be and what error I could look for to solve
+> > that.
+>
+> Hardware?
+>
+> 						Jaroslav
+>
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project  http://www.alsa-project.org
+> SuSE Linux    http://www.suse.com
 
---p
+-- 
+Mathieu Dube -- mdube@8d.com
+8D Technologies Inc.
+http://www.8d.com
 
 _______________________________________________
 Alsa-devel mailing list
