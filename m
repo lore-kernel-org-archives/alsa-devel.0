@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000971]: Compilation Errors - Cannot find specific files during compilation
-Date: Tue, 8 Mar 2005 01:50:51 +0100
-Message-ID: <0242bf48b926b781652519165a19420e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000972]: No sound after install...
+Date: Tue, 8 Mar 2005 02:00:30 +0100
+Message-ID: <176e874c1a9a8525f5b119ebe06c8db7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0ED511B7
-	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2005 01:50:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 25C581B7
+	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2005 02:00:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,14 +23,14 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=971> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=972> 
 ======================================================================
 Reported By:                rbechard1
-Assigned To:                perex
+Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   971
-Category:                   0_compilation problem_!!!
+Issue ID:                   972
+Category:                   PCI - emu10k1x
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
@@ -38,29 +38,22 @@ Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             03-08-2005 01:50 CET
-Last Modified:              03-08-2005 01:50 CET
+Date Submitted:             03-08-2005 02:00 CET
+Last Modified:              03-08-2005 02:00 CET
 ======================================================================
-Summary:                    Compilation Errors - Cannot find specific files
-during compilation
+Summary:                    No sound after install...
 Description: 
-When installing the application using the method described in this link:
-
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI+X+%28Dell+OEM%29.&chip=SB0200&module=emu10k1x
-
-I get error messages during the compilation, yet the process tells me it
-has completed successfully. When I go to configure my sound card it has
-the correct driver loaded but yet there is no sound. When I checked the
-mixer settings nothing is muted. 
-
-There is no option within the sound configuration panel to switch to the
-correct driver.
+After following all of the install instructions included with the
+documentation there is no sound from the sound card. The settings in
+DiskDrake indicate that the sound card is using the correct driver and
+alsaconf reconfigured it several times to no effect. I also check the
+mixer outputs and nothing is muted.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-08-05 01:50 rbechard1      New Issue                                    
+03-08-05 02:00 rbechard1      New Issue                                    
 ======================================================================
 
 
