@@ -1,13 +1,13 @@
 From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
 Subject: Re: Bug in OSS simulation (ALSA 0.9.4)
-Date: Fri, 11 Jul 2003 01:49:49 +0300 (EEST)
+Date: Fri, 11 Jul 2003 01:54:51 +0300 (EEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307110145380.5612-100000@ecabase.localdomain>
-References: <20030710013326.GA12086@alinoe.com>
+Message-ID: <Pine.LNX.4.44.0307110150040.5612-100000@ecabase.localdomain>
+References: <20030710015134.GA12482@alinoe.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030710013326.GA12086@alinoe.com>
+In-Reply-To: <20030710015134.GA12482@alinoe.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,95 +17,40 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Carlo Wood <carlo@alinoe.com>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net, xvoice@yahoogroups.com
 List-Id: alsa-devel@alsa-project.org
 
 On Thu, 10 Jul 2003, Carlo Wood wrote:
 
-> But, when compiling it with:
->   gcc -DUSE_DSP_SETFMT=1 troep.c
-> It stops rather quickly with reading data.
+>> #fragments, #bytes: 0, 0
+>> #fragments, #bytes: 1, 1632
+>> Read 1024 bytes.
+>> #fragments, #bytes: 2, 2048
+[...]
+> Ah... I noticed something else.
+> It doesn't have to do with whether or not
+> using SNDCTL_DSP_SETFMT, but with having
+> an overrun of the number of buffers.
+[...]
+> Why is the number of allocated buffers
+> so low?!
 
-Hmm, I tested on my machine and this seems to work fine (ALSA 0.9.3c 
-/ 2.4.19 / SB128 (snd-ens1371 module).
+This is a feature of the SB-Live driver: in capture/recording direction,
+it supports max two interrupts per buffer. To increase the total
+buffersize you need to increase fragment size. In playback mode up to 1024 
+interrupts per buffer is supported. I got this info by reading through the 
+driver code, so I don't have further info about the issue.
 
-> ~>a.out
-> Fragment size: 1024
-> Number of fragments: 32767
-> Number of channels: 1
-> Sample rate: 22050
-> Read 1024 bytes.
-> Number of full fragments that can be read or written without blocking: 0
-> Total number of fragments allocated for buffering: 2
-> Size of a fragment in bytes: 1024
-> Number of bytes that can be read or written immediately without blocking: 0
-> #fragments, #bytes: 0, 0
-> #fragments, #bytes: 1, 1632
-> Read 1024 bytes.
-> #fragments, #bytes: 2, 2048
-> Read 1024 bytes.
-> #fragments, #bytes: 1, 1024
-> Read 1024 bytes.
-> #fragments, #bytes: 0, 0
-> #fragments, #bytes: 0, 0
-> #fragments, #bytes: 0, 0
+> And, is it normal that when the buffers
+> did overrun that nothing is returned anymore?
+> How about just skipping it? :/
 
-I get:
---cut--
-Fragment size: 1024
-Number of fragments: 32767
-Number of channels: 1
-Sample rate: 22050
-Read 1024 bytes.
-Number of full fragments that can be read or written without blocking: 0
-Total number of fragments allocated for buffering: 64
-Size of a fragment in bytes: 1024
-Number of bytes that can be read or written immediately without blocking: 
-0
-#fragments, #bytes: 0, 0
-#fragments, #bytes: 1, 1696
-Read 1024 bytes.
-#fragments, #bytes: 2, 2432
-Read 1024 bytes.
-#fragments, #bytes: 3, 3168
-Read 1024 bytes.
-#fragments, #bytes: 3, 3904
-Read 1024 bytes.
-#fragments, #bytes: 4, 4640
-Read 1024 bytes.
-#fragments, #bytes: 5, 5376
-Read 1024 bytes.
-#fragments, #bytes: 5, 6112
-Read 1024 bytes.
-#fragments, #bytes: 6, 6848
-Read 1024 bytes.
-#fragments, #bytes: 7, 7584
-Read 1024 bytes.
-#fragments, #bytes: 8, 8320
-Read 1024 bytes.
-#fragments, #bytes: 8, 9056
-Read 1024 bytes.
-#fragments, #bytes: 9, 9792
-Read 1024 bytes.
-#fragments, #bytes: 10, 10528
-Read 1024 bytes.
-#fragments, #bytes: 11, 11264
-Read 1024 bytes.
-#fragments, #bytes: 11, 12000
-Read 1024 bytes.
-#fragments, #bytes: 12, 12736
-Read 1024 bytes.
-#fragments, #bytes: 13, 13472
-Read 1024 bytes.
-...
---cut--
-
-More in the next post...
+No, this definitely looks like a driver bug. In OSS-emulation mode the 
+xruns should be ignored (just lke kernel/OSS drivers do).
 
 -- 
  http://www.eca.cx
  Audio software for Linux!
-
 
 
 
