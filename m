@@ -1,12 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] AD1888 support
-Date: Wed, 11 Feb 2004 10:49:43 +0100 (MET)
+Subject: Re: Creamware Noah, snd-usb-audio capable?
+Date: Wed, 11 Feb 2004 10:46:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0402111047360.24733-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0402111036160.24733-100000@studcom.urz.uni-halle.de>
+References: <20040210213617.GH10941@fliwatut.scifi>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <20040210213617.GH10941@fliwatut.scifi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,199 +17,120 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Frank Barknecht <fbar@footils.org>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Frank Barknecht wrote:
+> Hartmut Geissbauer hat gesagt: // Hartmut Geissbauer wrote:
+>
+> > reading the different entries in usbquirks.h it looks like they are
+> > taken from the usb-infos like lsusb provides. Is it very difficult to
+> > take the infos from lsusb and translate it to an quirk?
 
-This adds support for the AD1888 (same as AD1980, but without 2CMIC).
+It depends.  If the class-specific descriptors are missing, you have
+to guess and try what the sample format actually is.
 
-Not tested.
+> [...] I was investigating why the Midi jacks on the Terratec Phase
+> 26 aren't supported.
+>
+> I looked up the specification of usb-midi in
+> http://www.usb.org/developers/devclass_docs/midi10.pdf and also looked
+> very closely and for a long time at the lsusb output.  This interface
+> descriptor then looks very much like it must be the midi interface:
+>
+>     Interface Descriptor:
+>       bLength                 9
+>       bDescriptorType         4
+>       bInterfaceNumber        3
+>       bAlternateSetting       0
+>       bNumEndpoints           2
+>       bInterfaceClass       255 Vendor Specific Class
+>       bInterfaceSubClass      3
+>       bInterfaceProtocol      0
+>       iInterface              3 TerraTec PHASE 26 USB
+>   unknown descriptor type: 07 24 01 00 01 41 00
+>   unknown descriptor type: 06 24 02 01 10 00
+>   unknown descriptor type: 06 24 02 02 11 00
+>   unknown descriptor type: 09 24 03 01 12 01 11 01 00
+>   unknown descriptor type: 09 24 03 02 13 01 10 01 00
+>       Endpoint Descriptor:
+>         bLength                 9
+>         bDescriptorType         5
+>         bEndpointAddress     0x05  EP 5 OUT
+>         bmAttributes            2
+>           Transfer Type            Bulk
+>           Synch Type               none
+>         wMaxPacketSize         64
+>         bInterval               0
+>         bRefresh                0
+>         bSynchAddress           0
+>   unknown descriptor type: 05 25 01 01 10
+>       Endpoint Descriptor:
+>         bLength                 9
+>         bDescriptorType         5
+>         bEndpointAddress     0x86  EP 6 IN
+>         bmAttributes            2
+>           Transfer Type            Bulk
+>           Synch Type               none
+>         wMaxPacketSize         64
+>         bInterval               0
+>         bRefresh                0
+>         bSynchAddress           0
+>   unknown descriptor type: 05 25 01 01 12
+>
+> The main reason for my assumption is the value for bInterfaceNumber
+> which is "3" or 0x03 as it should be according to the USB spec which
+> requires for a "MIDI Adapter Standard MIDIStreaming Interface
+> Descriptor" to have this field set as follows:
+>
+> Offset Field                Size  Value   Description
+> ...
+> 6      bInterfaceSubclass   1     0x03   MIDISTREAMING.
+> ...
+
+The bInterfaceNumber field simply specifies the number (i.e., the
+index) of the interface.  Interfaces must be numbered 0, 1, 2, etc.
+
+>       bInterfaceClass       255 Vendor Specific Class
+>       bInterfaceSubClass      3
+>       bInterfaceProtocol      0
+
+The problem is that bInterfaceClass isn't set to 1 (Audio).
+
+The class-specific descriptors are there (lsusb shows them as
+"unknown" because it doesn't try to parse vendor-specific things), so
+it should be possible to use the MIDI_STANDARD_INTERFACE quirk (see
+below).
 
 
-Index: alsa-kernel/pci/ac97/ac97_codec.c
+Regards,
+Clemens
+
+-- 
+
+Index: alsa-kernel/usb/usbquirks.h
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_codec.c,v
-retrieving revision 1.120
-diff -u -r1.120 ac97_codec.c
---- alsa-kernel/pci/ac97/ac97_codec.c	9 Feb 2004 12:01:07 -0000	1.120
-+++ alsa-kernel/pci/ac97/ac97_codec.c	11 Feb 2004 09:26:20 -0000
-@@ -100,6 +100,7 @@
- { 0x41445361, 0xffffffff, "AD1886",		patch_ad1886,	NULL },
- { 0x41445362, 0xffffffff, "AD1887",		patch_ad1881,	NULL },
- { 0x41445363, 0xffffffff, "AD1886A",		patch_ad1881,	NULL },
-+{ 0x41445368, 0xffffffff, "AD1888",		patch_ad1888,	NULL },
- { 0x41445370, 0xffffffff, "AD1980",		patch_ad1980,	NULL },
- { 0x41445372, 0xffffffff, "AD1981A",		patch_ad1981a,	NULL },
- { 0x41445374, 0xffffffff, "AD1981B",		patch_ad1981b,	NULL },
-Index: alsa-kernel/pci/ac97/ac97_patch.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_patch.c,v
-retrieving revision 1.34
-diff -u -r1.34 ac97_patch.c
---- alsa-kernel/pci/ac97/ac97_patch.c	9 Feb 2004 11:45:40 -0000	1.34
-+++ alsa-kernel/pci/ac97/ac97_patch.c	11 Feb 2004 09:26:20 -0000
-@@ -799,7 +799,7 @@
- 	return 0;
- }
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usbquirks.h,v
+retrieving revision 1.26
+diff -u -r1.26 usbquirks.h
+--- alsa-kernel/usb/usbquirks.h	20 Jan 2004 15:31:59 -0000	1.26
++++ alsa-kernel/usb/usbquirks.h	11 Feb 2004 09:33:45 -0000
+@@ -688,4 +688,14 @@
 
--static int snd_ac97_ad1980_lohpsel_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t *uinfo)
-+static int snd_ac97_ad1888_lohpsel_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t *uinfo)
- {
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
- 	uinfo->count = 1;
-@@ -808,7 +808,7 @@
- 	return 0;
- }
+ },
 
--static int snd_ac97_ad1980_lohpsel_get(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t* ucontrol)
-+static int snd_ac97_ad1888_lohpsel_get(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t* ucontrol)
- {
- 	ac97_t *ac97 = snd_kcontrol_chip(kcontrol);
- 	unsigned short val;
-@@ -818,7 +818,7 @@
- 	return 0;
- }
-
--static int snd_ac97_ad1980_lohpsel_put(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol)
-+static int snd_ac97_ad1888_lohpsel_put(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol)
- {
- 	ac97_t *ac97 = snd_kcontrol_chip(kcontrol);
- 	unsigned short val;
-@@ -829,7 +829,7 @@
- 				    AC97_AD198X_LOSEL | AC97_AD198X_HPSEL, val);
- }
-
--static int snd_ac97_ad1980_downmix_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t *uinfo)
-+static int snd_ac97_ad1888_downmix_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t *uinfo)
- {
- 	static char *texts[3] = {"Off", "6 -> 4", "6 -> 2"};
-
-@@ -842,7 +842,7 @@
- 	return 0;
- }
-
--static int snd_ac97_ad1980_downmix_get(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t* ucontrol)
-+static int snd_ac97_ad1888_downmix_get(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t* ucontrol)
- {
- 	ac97_t *ac97 = snd_kcontrol_chip(kcontrol);
- 	unsigned short val;
-@@ -855,7 +855,7 @@
- 	return 0;
- }
-
--static int snd_ac97_ad1980_downmix_put(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol)
-+static int snd_ac97_ad1888_downmix_put(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *ucontrol)
- {
- 	ac97_t *ac97 = snd_kcontrol_chip(kcontrol);
- 	unsigned short val;
-@@ -871,51 +871,47 @@
- 				    AC97_AD198X_DMIX0 | AC97_AD198X_DMIX1, val);
- }
-
--static const snd_kcontrol_new_t snd_ac97_ad1980_controls[] = {
-+static const snd_kcontrol_new_t snd_ac97_ad1888_controls[] = {
- 	{
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 		.name = "Exchange Front/Surround",
--		.info = snd_ac97_ad1980_lohpsel_info,
--		.get = snd_ac97_ad1980_lohpsel_get,
--		.put = snd_ac97_ad1980_lohpsel_put
-+		.info = snd_ac97_ad1888_lohpsel_info,
-+		.get = snd_ac97_ad1888_lohpsel_get,
-+		.put = snd_ac97_ad1888_lohpsel_put
- 	},
- 	AC97_SINGLE("Spread Front to Surround and Center/LFE", AC97_AD_MISC, 7, 1, 0),
- 	{
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 		.name = "Downmix",
--		.info = snd_ac97_ad1980_downmix_info,
--		.get = snd_ac97_ad1980_downmix_get,
--		.put = snd_ac97_ad1980_downmix_put
-+		.info = snd_ac97_ad1888_downmix_info,
-+		.get = snd_ac97_ad1888_downmix_get,
-+		.put = snd_ac97_ad1888_downmix_put
- 	},
- 	AC97_SINGLE("Surround Jack as Input", AC97_AD_MISC, 12, 1, 0),
- 	AC97_SINGLE("Center/LFE Jack as Input", AC97_AD_MISC, 11, 1, 0),
- };
-
--static int patch_ad1980_specific(ac97_t *ac97)
-+static int patch_ad1888_specific(ac97_t *ac97)
- {
--	int err;
--
- 	/* rename 0x04 as "Master" and 0x02 as "Master Surround" */
- 	snd_ac97_rename_ctl(ac97, "Master Playback Switch", "Master Surround Playback Switch");
- 	snd_ac97_rename_ctl(ac97, "Master Playback Volume", "Master Surround Playback Volume");
- 	snd_ac97_rename_ctl(ac97, "Headphone Playback Switch", "Master Playback Switch");
- 	snd_ac97_rename_ctl(ac97, "Headphone Playback Volume", "Master Playback Volume");
--	if ((err = patch_build_controls(ac97, &snd_ac97_ad198x_2cmic, 1)) < 0)
--		return err;
--	return patch_build_controls(ac97, snd_ac97_ad1980_controls, ARRAY_SIZE(snd_ac97_ad1980_controls));
-+	return patch_build_controls(ac97, snd_ac97_ad1888_controls, ARRAY_SIZE(snd_ac97_ad1888_controls));
- }
-
--static struct snd_ac97_build_ops patch_ad1980_build_ops = {
-+static struct snd_ac97_build_ops patch_ad1888_build_ops = {
- 	.build_post_spdif = patch_ad198x_post_spdif,
--	.build_specific = patch_ad1980_specific
-+	.build_specific = patch_ad1888_specific
- };
-
--int patch_ad1980(ac97_t * ac97)
-+int patch_ad1888(ac97_t * ac97)
- {
- 	unsigned short misc;
-
- 	patch_ad1881(ac97);
--	ac97->build_ops = &patch_ad1980_build_ops;
-+	ac97->build_ops = &patch_ad1888_build_ops;
- 	/* Switch FRONT/SURROUND LINE-OUT/HP-OUT default connection */
- 	/* it seems that most vendors connect line-out connector to headphone out of AC'97 */
- 	/* AD-compatible mode */
-@@ -927,6 +923,27 @@
- 			     AC97_AD198X_MSPLT |
- 			     AC97_AD198X_AC97NC);
- 	ac97->flags |= AC97_STEREO_MUTES;
-+	return 0;
-+}
-+
-+static int patch_ad1980_specific(ac97_t *ac97)
 +{
-+	int err;
++	USB_DEVICE_VENDOR_SPEC(0x0ccd, 0x0013),
++	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
++		.vendor_name = "Terratec",
++		.product_name = "PHASE 26",
++		.ifnum = 3,
++		.type = QUIRK_MIDI_STANDARD_INTERFACE
++	}
++},
 +
-+	if ((err = patch_ad1888_specific(ac97)) < 0)
-+		return err;
-+	return patch_build_controls(ac97, &snd_ac97_ad198x_2cmic, 1);
-+}
-+
-+static struct snd_ac97_build_ops patch_ad1980_build_ops = {
-+	.build_post_spdif = patch_ad198x_post_spdif,
-+	.build_specific = patch_ad1980_specific
-+};
-+
-+int patch_ad1980(ac97_t * ac97)
-+{
-+	patch_ad1888(ac97);
-+	ac97->build_ops = &patch_ad1980_build_ops;
- 	return 0;
- }
-
-Index: alsa-kernel/pci/ac97/ac97_patch.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_patch.h,v
-retrieving revision 1.13
-diff -u -r1.13 ac97_patch.h
---- alsa-kernel/pci/ac97/ac97_patch.h	12 Jan 2004 14:38:06 -0000	1.13
-+++ alsa-kernel/pci/ac97/ac97_patch.h	11 Feb 2004 09:26:20 -0000
-@@ -41,6 +41,7 @@
- int patch_ad1881(ac97_t * ac97);
- int patch_ad1885(ac97_t * ac97);
- int patch_ad1886(ac97_t * ac97);
-+int patch_ad1888(ac97_t * ac97);
- int patch_ad1980(ac97_t * ac97);
- int patch_ad1981a(ac97_t * ac97);
- int patch_ad1981b(ac97_t * ac97);
+ #undef USB_DEVICE_VENDOR_SPEC
 
 
 
