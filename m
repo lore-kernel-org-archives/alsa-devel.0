@@ -1,13 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: Driver Programming
-Date: Fri, 26 Nov 2004 09:47:20 +0100 (CET)
-Message-ID: <XFMail.20041126094720.pochini@shiny.it>
-References: <41A60B97.3010809@fetron.de>
+From: =?utf-8?q?Saul Esivpabs?= <buniondludo@moecklin.ch>
+Subject: =?utf-8?q?Supple and soluble p?=
+ =?utf-8?q?ills for literal in?=
+ =?utf-8?q?dividuals?=
+Date: Fri, 26 Nov 2004 09:02:48 +0000
+Message-ID: <E1CXbrZ-0003fd-G2@sc8-sf-mx1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	 boundary="e1oOIWA2HmB3PAzkfJCx4"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41A60B97.3010809@fetron.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,31 +17,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: " (Klaus Fetscher)" <K.Fetscher@t-online.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: =?utf-8?q?Christiana Ypbem?= <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-On 25-Nov-2004 Klaus Fetscher wrote:
+--e1oOIWA2HmB3PAzkfJCx4
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-> I have read the documentation "Writing an Alsa Driver" but I am confused 
-> about the meaning of PCM Streams and Substreams. What must I declare, 
-> one PCM Stream with three Substreams or 3 PCM Streams ?
+Our pills are simply like usual pills but they 
+are especially developed to be pliable and soluble
+below the lingua. The tablets is absorbed at the rima oris
+and gets in the blood direct instead of advancing
+through the breadbasket. This effects in a quicker more
+mighty upshot which still up to 37 hours!
 
-How does your chip work ?  If I inderstood you correcty, it has three
-independent stereo outputs and two inputs.
+http://bezphafcefoo.result-x.info/?uoyyhoctnxtvuyoazvtshyagndi
+--e1oOIWA2HmB3PAzkfJCx4
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-snd_pcm_new(chip->card, "name", DEV_0, THREE_OUT, TWO_IN, &pcm);
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
+<STYLE></STYLE>
+</HEAD>
+<HTML>
+<BODY>
+These tablets are simply similar typical tablets but they <BR>
+are specially formulated to be soft and soluble<BR>
+under the glossa. The tablets is absorbed at the oral fissure<BR>=
 
-If each substream can be either mono or stereo, in the
-.open() callback you'll set
+and comes in the fluid instantly instead of acting<BR>
+through the tummytum. This effects in a faster much more<BR>
+vigorous outcome which even up to 26 hours!<BR>
+<BR>
+<A href=3D"http://kjasibpishw.expoprod.info/?powspblcysonxtvuyfne=
+maslzvtkbodsure">Purchase it</A>
+<BR>
+<BR>
+</BODY>
+</HTML></HTML>
+--e1oOIWA2HmB3PAzkfJCx4--
 
-runtime->hw->channels_min = 1;
-runtime->hw->channels_max = 2;
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
