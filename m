@@ -1,12 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: alsa-lib plugin devel
-Date: Mon, 24 Jan 2005 09:36:29 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0501240933490.4480-100000@studcom.urz.uni-halle.de>
-References: <41F4AF11.2090109@xmission.com>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Error: firmware not found
+Date: Mon, 24 Jan 2005 09:41:43 +0100 (CET)
+Message-ID: <XFMail.20050124094143.pochini@shiny.it>
+References: <1106447855.2368.29.camel@cmn37.stanford.edu>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41F4AF11.2090109@xmission.com>
+In-Reply-To: <1106447855.2368.29.camel@cmn37.stanford.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,29 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Brad Midgley <bmidgley@xmission.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Brad Midgley wrote:
-> 	aplay -B 1000000 -D pcm.a2dp sound.wav
+
+On 23-Jan-2005 Fernando Lopez-Lezcano wrote:
+
+>> - In /etc/hotplug/pci.agent:pci_map_modules() at line 123 I had to rem=
+ove
+>> the break, otherwise the loop stops as soon as it finds the first matc=
+hing
+>> PCI ID. This is not good because some cards (in my case the Layla3G an=
+d the
+>> Gina3G) have the same PCI card, but different external module.
 >
-> What I'm struggling with is how to make this driver
-> appear to clients that use alsa-lib. In the simplest case,
->
-> 	aplay --list-devices
->
-> Does not show my device in its list!
+> Could you expand on this? What is the result of using an unmodified
+> hotplug? Wrong firmware loaded? (fc3 ships with hotplug-2004_04_01-8.1
+> which I presume would have the problem)
 
-"aplay -l" shows only hardware devices, i.e., devices that can be
-accessed with the hw plugin.
+I don't know if there are other devices that have the same PCI card
+and different "box" (not necessarily an audio device). The Gina3G
+and Layla3G have different driver, but same PCI card. For example I
+have a Gina3G. If in /lib/modules/x.x.x/modules.pcimap the Layla3G
+module is listed before the Gina3G the original hotplug script loads
+snd-layla3g *only* which, obviously, fails.
+With that change pci_map_modules() return all matching modules, so
+it fixes the problem. BUT, there is a comment before that function
+that says it returns "ONE" (all uppercase) module only. It means
+it was done on purpose, but I can't see why.
 
-There is no simple enumeration function for plugin pcm's.
 
-
-HTH
-Clemens
-
+--
+Giuliano.
 
 
 -------------------------------------------------------
