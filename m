@@ -1,16 +1,22 @@
 From: Torrey Hoffman <thoffman@arnor.net>
-Subject: Re: any support for realtech sound chip
-Date: Thu, 22 Jan 2004 13:04:04 -0800
+Subject: Re: Re: ice1712 driver broken in 2.6.1-mm kernels
+Date: Thu, 22 Jan 2004 13:54:23 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1074805444.13428.8.camel@moria.arnor.net>
-References: <m3llnz25uf.fsf@ccs.covici.com>
-	 <65072.138.88.11.209.1074802308.squirrel@cocula.com>
-	 <401030A7.5050604@superbug.demon.co.uk>
+Message-ID: <1074808462.13428.14.camel@moria.arnor.net>
+References: <1074633766.6579.2.camel@moria.arnor.net>
+	 <Pine.LNX.4.58.0401202308390.2010@pnote.perex-int.cz>
+	 <1074637277.6579.16.camel@moria.arnor.net>
+	 <Pine.LNX.4.58.0401210908220.2010@pnote.perex-int.cz>
+	 <1074712729.5895.11.camel@moria.arnor.net>
+	 <Pine.OSF.4.58.0401212214060.155462@kosh.hut.fi>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <401030A7.5050604@superbug.demon.co.uk>
+Received: from devil.servak.biz (devil.servak.biz [209.124.81.2])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA16374
+	for <alsa-devel@alsa-project.org>; Thu, 22 Jan 2004 22:54:36 +0100
+In-Reply-To: <Pine.OSF.4.58.0401212214060.155462@kosh.hut.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,99 +25,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: "John W. Cocula" <john@cocula.com>, John Covici <covici@ccs.covici.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Tommi Sakari Uimonen <tuimonen@cc.hut.fi>
+Cc: Jaroslav Kysela <perex@suse.cz>, ALSA Development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I've got an ABit MAX-3 with the ALC650 chip controlled by the Intel ICH5
-(R) as well.  Playback through the front channel with ALSA works fine.
-
-My problem is that the motherboard has 5 1/8th inch mini jacks on the
-back, and two of those can be configured as either input or output. 
-One may be either Microphone 1 stereo input, or output the center
-channel and subwoofer channel.  Another may be either a stereo line
-input, or output the rear surround channels.
-
-The gnome ALSA Mixer program shows options to set these (they appear as
-check boxes labelled "Line-In As Surround" and "Mic As Center/LFE") but
-selecting them doesn't seem to give me any extra output channels.
-
-With both of those checkboxes turned on, my /proc/asound/devices still
-shows:
-
-[thoffman@moria thoffman]$ cat /proc/asound/devices
-  0: [0- 0]: ctl
- 20: [0- 4]: digital audio playback
- 27: [0- 3]: digital audio capture
- 26: [0- 2]: digital audio capture
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
- 33:       : timer
-
-(Device 0-4 is the optical SPDIF output.  I don't know if it works or
-not, I have nothing that can take optical inputs.)
-
-If anyone out there knows how to make my six-channel sound outputs
-actually work, I'd be deeply appreciative.
-
-Thanks!
-
-
-On Thu, 2004-01-22 at 12:20, James Courtier-Dutton wrote:
-> 5.1 Audio works fine on my ALC650 rev 3 chip.
-> I have a Intel ICH5 chip controlling it.
-> Try my speaker-test program from 
-> http://www.superbug.demon.co.uk/speaker-test/
+On Wed, 2004-01-21 at 12:25, Tommi Sakari Uimonen wrote:
+...
+> > [thoffman@moria thoffman]$ cat /proc/asound/pcm
+> > 01-00: ICE1712 multi : ICE1712 multi : playback 1 : capture 1
+> >
+> > Shouldn't there be separate devices for the analog & SPDIF inputs and
+> > outputs?  If not, how do I send different signals to the analog &
+> > digital outputs?
 > 
-> Cheers
-> James
-> 
-> 
-> John W. Cocula wrote:
-> > The Realtek ALC650 rev 3 chip, in my Shuttle SB62G2, is supported by the
-> > intel8x0 driver.
-> > 
-> > HOWEVER, and I have a headache from it at this very moment, I've just
-> > learned that the driver does not support anything but the front L and R
-> > channels for output.
-> > 
-> > Can anyone tell me what is involved in evolving the driver so that it will
-> > support all 6 playback channels?  Please someone tell me what I can do to
-> > help make this come to pass!
-> > 
-> > Many thanks,
-> > John
-> > 
-> > Now to find some ibuprofen.
-> > 
-> > 
-> > John Covici said:
-> > 
-> >>Hi.  I would like to use a Shuttle An50R which supports the Athlon 64
-> >>under Linux, but their sound chip is an ac97 audio Realtech.  What
-> >>module would support such a beast or is it not possible to use ALSA
-> >>with that chip?
-> >>
-> >>Thanks.
-> >>
-> >>--
-> >>         John Covici
-> >>         covici@ccs.covici.com
-> >>
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> The SF.Net email is sponsored by EclipseCon 2004
-> Premiere Conference on Open Tools Development and Integration
-> See the breadth of Eclipse activity. February 3-5 in Anaheim, CA.
-> http://www.eclipsecon.org/osdn
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> You have to create .asoundrc to your home directory.
+
+(example as below)
+
+Thanks for the tip.  I tried your suggestion, but it doesn't work for
+me.  My .asoundrc now has this in it:
+
+pcm.maudio_analog {
+	type hw
+	card 1
+	device 0
+}
+
+pcm.maudio_spdif {
+	type plug
+        ttable.0.8 1
+        ttable.1.9 1
+        slave.pcm {
+                type hw
+                card 1
+                device 0
+        }
+}
+
+I can play sound fine through the analog channel:
+[thoffman@moria thoffman]$ aplay -D plug:maudio_analog 12.wav
+Playing WAVE '12.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+
+But when I try to use the spdif channel, I get an error:
+
+[thoffman@moria thoffman]$ aplay -D plug:maudio_spdif 12.wav
+Playing WAVE '12.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+aplay: pcm_write:1083: write error: Invalid argument
+
+So, still no success using the digital output channel...
+
 -- 
 Torrey Hoffman <thoffman@arnor.net>
 
