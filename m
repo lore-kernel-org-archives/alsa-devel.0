@@ -1,13 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: CMI8768 patch, softvol mixer slider
-Date: Sat, 19 Feb 2005 02:56:49 -0500
-Message-ID: <1108799809.9005.3.camel@krustophenia.net>
-References: <92C0412E07F63549B2A2F2345D3DB515F7D63F@cm-msg-02.cmedia.com.tw>
-	 <4216EE28.6040702@gmx.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000924]: crash in oss emulation's rate conversion
+Date: Sat, 19 Feb 2005 12:02:16 +0100
+Message-ID: <e96e8bdef665366362019c93ce360500@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <4216EE28.6040702@gmx.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0061D1C9
+	for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2005 12:02:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,20 +17,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: t.schorpp@gmx.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-02-19 at 08:43 +0100, thomas schorpp wrote:
-> hmm, if read the docs right its userspace.
-> 
-> how about getting it in the kernel and calling it snd_x_csoftmix ?
 
-Why?  It works fine in userspace.  The whole point of alsa-lib is to get
-things like software volume control and mixing and sample rate
-conversion that don't need to be in the kernel out of the kernel.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=924> 
+======================================================================
+Reported By:                Benjamin Otte
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   924
+Category:                   PPC - powermac
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian unstable
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             02-19-2005 12:02 CET
+Last Modified:              02-19-2005 12:02 CET
+======================================================================
+Summary:                    crash in oss emulation's rate conversion
+Description: 
+When running the attached code on my ibook, it crashes inside the kernel.
+After that, /dev/dsp is reported as in use until I restart.
+This is using OSS emulations with the snd-powermac driver.
+======================================================================
 
-Lee
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-19-05 12:02 Benjamin Otte  New Issue                                    
+02-19-05 12:02 Benjamin Otte  File Added: bug.c                            
+02-19-05 12:02 Benjamin Otte  Distribution              => Debian unstable 
+02-19-05 12:02 Benjamin Otte  Kernel Version            => 2.6.9           
+======================================================================
+
 
 
 
