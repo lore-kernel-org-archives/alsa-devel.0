@@ -1,14 +1,18 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: hdspconf and rmedigicontrol are on cvs
-Date: Wed, 2 Jul 2003 19:51:58 +0200
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: hdsp multiface.
+Date: Wed, 2 Jul 2003 10:57:44 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030702175158.GB536@tuba.home>
-References: <s5h3chpkxha.wl@alsa2.suse.de>
+Message-ID: <NDBBLGIKBJENLAMOLFHGKEEKCKAB.mknecht@controlnet.com>
+References: <3F030FB3.1040006@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h3chpkxha.wl@alsa2.suse.de>
+Received: from vivaldi.controlnet.com (hidden-user@mail.controlnet.com [199.108.40.159])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA06675
+	for <alsa-devel@alsa-project.org>; Wed, 2 Jul 2003 19:57:56 +0200
+In-Reply-To: <3F030FB3.1040006@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,19 +21,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Robert Vetter <postmaster@robertvetter.com>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 02, 2003 at 12:57:05PM +0200, Takashi Iwai wrote:
-> 
-> hdspconf is tagged as version 1.0, and rmedigicontrol 0.3.5a.
-> if you have newer versions, please let me know.
+> Mark Knecht wrote:
+> >
+> > Is this similar to the problems Jesse Chappell was having? If so, his
+> > 'solution' ;-) was to boot Windows to get the firmware loaded,
+> and then to
+> > warm boot into Linux to actually use the card.
+> >
+>
+> I missed the note from Paul saying it was a bug he wanted to fix.
+>
+> Bummer.
 
-correct! rmedigicontrol 0.3.5a is the newest one.
+Yes, I've pretty much given up on Linux at this point because of these
+'bugs'. On the HDSP 9652 (and I think your HDSP also) the mixer doesn't
+work. (Another 'bug' that wants to get fixed one day. This has almost caused
+damage with my studio monitors as I cannot turn down all audio going out
+unless the application supports it. Not all Linux apps do. It eventually
+gets to the point where it's just more difficult to use it than not use it.
+
+Alsa does have a small place at this point in the area of external signal
+processing, but I won't let it hook directly to my hardware anymore.
+
+Very disappointing, but I'm sure it will one day get worked out.
 
 
-martin
 
 
 -------------------------------------------------------
