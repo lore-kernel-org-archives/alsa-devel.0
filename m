@@ -1,16 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000578]:  No soundcard detected on Chaintech 9CJS
-Date: Mon, 11 Oct 2004 12:58:05 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: alsa-driver-1.0.6a unresolved symbol
+Date: Mon, 11 Oct 2004 13:58:45 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041011105805.E3BBF11030@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.HPX.4.33n.0410111356480.8356-100000@studcom.urz.uni-halle.de>
+References: <200410100029.48457.loritz@fh-furtwangen.de>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 56EDE2C2
-	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2004 12:58:06 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id F3D652DE91
-	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2004 12:58:05 +0200 (MEST)
+In-reply-to: <200410100029.48457.loritz@fh-furtwangen.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,49 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Mario Loritz <loritz@fh-furtwangen.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Mario Loritz wrote:
+> Am Samstag, 9. Oktober 2004 14:59 schrieb Florian Schmidt:
+> > I don't think this is an alsa error. This is rather a module build error.
+> > Make sure your kernel source tree is in a suitable state for building
+> > modules against it.
+>
+> Could you, in short words, explain why alsa-1.0.5 compiles just fine
+> and alsa-1.0.6 doesn't?
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000578
-======================================================================
-Reported By:                tarsi
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     578
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               mandrake linux 10.1
-Kernel Version:             2.6.8.1-10mdksmp
-======================================================================
-Date Submitted:             10-11-2004 12:58 CEST
-Last Modified:              10-11-2004 12:58 CEST
-======================================================================
-Summary:                     No soundcard detected on Chaintech 9CJS
-Description: 
- cat /proc/asound/cards don't stop and gives many lines "--no souncards--"
+In 1.0.6, I moved snd_compat_strlcpy() to another module.
 
-/etc/init.d/alsaconf found ice1724 card, but exiting gives:
-.... 
+It may be possible that you didn't reload the snd-page-alloc module
+(usually this is _not_ done by the alsa script).
 
-/usr/sbin/alsactl: save_state:1066: No soundcards found...
 
-======================================================================
+HTH
+Clemens
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-11-04 12:58 tarsi          New Bug                                      
-10-11-04 12:58 tarsi          File Added: command-outputs.tar.bz2                    
-10-11-04 12:58 tarsi          Distribution              => mandrake linux 10.1
-10-11-04 12:58 tarsi          Kernel Version            => 2.6.8.1-10mdksmp
-======================================================================
 
 
 -------------------------------------------------------
