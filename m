@@ -1,16 +1,13 @@
-From: "Jaymi Mcmichael" <JerriRanieri@hkabc.net>
-Subject: Re: Enjoy
-Date: Fri, 17 Sep 2004 06:33:09 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000214]: ac3 passthrough not working
+Date: Fri, 17 Sep 2004 14:12:09 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040917093410.694F1311@alsa.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <20040917121209.2C2F44B011@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from host134-98.pool80183.interbusiness.it (host134-98.pool80183.interbusiness.it [80.183.98.134])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 694F1311
-	for <alsa-devel@alsa-project.org>; Fri, 17 Sep 2004 11:34:10 +0200 (MEST)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE300311
+	for <alsa-devel@alsa-project.org>; Fri, 17 Sep 2004 14:12:09 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,24 +19,113 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<font size=3D"1">"But in the meanwhile I must seek this narwhal in the Nor=
-th Pacific Ocean, which, to return to France, was taking the road to the a=
-ntipodes!!=20</font>
 
-<br><br><br><br><br>
-<a href=3D"http://yourthingswebs.com?e=3Dred145sm"><img src=3D"http://www.=
-yourthingswebs.com/o4.gif" border=3D"0"></a>
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000214
+======================================================================
+Reported By:                m_stolle
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     214
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.4.25
+======================================================================
+Date Submitted:             04-16-2004 05:06 CEST
+Last Modified:              09-17-2004 14:12 CEST
+======================================================================
+Summary:                    ac3 passthrough not working
+Description: 
+I have a Dell Inspiron 8200 with an Intel ICH3/Cirrus Logic CS4205 sound
+card.  Unfortunately, the hardware AC3 passthrough does not work. 
+Instead, I only get a high-pitched funny noise.
 
+The symptoms are the same in mplayer as well as in xine.  Verbose output
+of mplayer provided below:
+======================================================================
 
-<br><br><br>
-<br><br><br><br><br>
-<a href=3D"http://yourthingswebs.com/cgi-bin/.pl">discontinue</a>
-</html>
-And the Congress may by general laws prescribe the manner in which such ac=
-ts, records, and proceedings shall be proved, and the effect thereof; The =
-3rd of July we were at the opening of the Straits of Magellan, level with =
-Cape Vierges?=20
+----------------------------------------------------------------------
+ m_stolle - 09-11-2004 05:25 CEST 
+----------------------------------------------------------------------
+This bug is still present in 2.6.8.1  Am I the only one with this bug?
+
+----------------------------------------------------------------------
+ tiwai - 09-13-2004 15:41 CEST 
+----------------------------------------------------------------------
+How about ALSA-1.0.7rc1?  2.6.8.1 includes the older version.
+
+----------------------------------------------------------------------
+ m_stolle - 09-17-2004 05:05 CEST 
+----------------------------------------------------------------------
+I just recompiled alsa 1.0.7rc1
+
+still same problem 8-(
+
+----------------------------------------------------------------------
+ stoffel - 09-17-2004 10:45 CEST 
+----------------------------------------------------------------------
+I have the same notebook and the same problem with SuSE 9.0 and alsa 1.06a
+(kernel 2.4.27). So, any solution for that problem ?
+
+ The 5.1 sound works without passthrough with following entry in
+.xine/config
+
+audio.alsa_a52_device:iec958:AES0=0x4,AES1=0x82,AES2=0x0,AES3=0x2.
+
+First I start mplayer with
+
+#mplayer -ao alsa1x:spdif dvd://
+.
+
+After that I could start xine and my 5.1 Soundsystem works (without
+passthrough !!!)
+ 
+I don't know how I get the information for the xine entry. I still probe
+many tools for alsa & co and so I've got the information. Where ? I don't
+know, sorry.
+
+edited on: 09-17-04 10:43
+
+edited on: 09-17-04 10:45
+
+----------------------------------------------------------------------
+ m_stolle - 09-17-2004 14:12 CEST 
+----------------------------------------------------------------------
+I have tried recreating those steps, but it still doesn't work.  I first
+start mplayer with exactly the options you describe (no sound though?). 
+Then I edited .xine/config, started xine, switched to 5.1 surround
+(instead of stereo 2.0), restart xine, no more sound.  Redid the mplayer
+command, started xine again, still no sound.
+
+Which version of xine/mplayer are you using?  AFAIK, the alsa1x driver for
+mplayer is not used anymore, it's just alsa ?  My Xine version is 0.99.1,
+my mplayer version is   1.0pre5-3.3.4.
+
+Thanks,
+  Martin
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-16-04 05:06 m_stolle       New Bug                                      
+04-16-04 05:06 m_stolle       Distribution              => Debian          
+04-16-04 05:06 m_stolle       Kernel Version            => 2.4.25          
+09-11-04 05:25 m_stolle       Bugnote Added: 0001744                       
+09-13-04 15:41 tiwai          Bugnote Added: 0001747                       
+09-17-04 05:05 m_stolle       Bugnote Added: 0001775                       
+09-17-04 10:21 stoffel        Bugnote Added: 0001776                       
+09-17-04 10:42 stoffel        Bugnote Added: 0001778                       
+09-17-04 10:43 stoffel        Bugnote Edited: 0001776                      
+09-17-04 10:43 stoffel        Bugnote Deleted: 0001778                     
+09-17-04 10:45 stoffel        Bugnote Edited: 0001776                      
+09-17-04 14:12 m_stolle       Bugnote Added: 0001779                       
+======================================================================
 
 
 -------------------------------------------------------
