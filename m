@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000360]: Don`t run
-Date: Sun, 20 Mar 2005 13:23:32 +0100
-Message-ID: <939158420b6d7b61f9daa082c2368ece@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000493]: Sound mixer decreases volume and mutes sound channels
+Date: Sun, 20 Mar 2005 13:25:36 +0100
+Message-ID: <9a9324c614d27226d4b5c51b7bdd9049@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 17041250
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 13:23:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C14AC250
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 13:25:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,43 +23,46 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=360> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=493> 
 ======================================================================
-Reported By:                alexnanow
+Reported By:                Joe_Bogarde
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   360
-Category:                   alsamixer
+Issue ID:                   493
+Category:                   amixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             07-02-2004 00:17 CEST
-Last Modified:              03-20-2005 13:23 CET
+Date Submitted:             09-09-2004 18:32 CEST
+Last Modified:              03-20-2005 13:25 CET
 ======================================================================
-Summary:                    Don`t run
+Summary:                    Sound mixer decreases volume and mutes sound
+channels
 Description: 
-when i try to run alsamixer get this error message:
-
-alsamixer: function snd_ctl_open failed for default: No such file or
-directory
-
-I have compiled all correctly thingy`s but that s*** don`t works... and
-the alsamixer GUI interface too... help please!!
+Sound volume just drops off on its own (extigy).
+gtk based mixer seems slow to respond and locks up.  I recently tried the
+latest driver but downgraded to 1.0.6 to see if that helped, didn't.  It
+seems lkke the extigy did fine after first boot, but after that it didn't
+work too well.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:23 
+ jdthood - 03-20-05 13:25 
 ----------------------------------------------------------------------
-This can be closed.
+Submitter: Any luck with later ALSA releases?
+
+Does the sound drop in volume when mixers are running?
+Does the sound drop in volume when no mixers are running?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-02-04 00:17 alexnanow      New Issue                                    
-03-20-05 13:23 jdthood        Note Added: 0004081                          
+09-09-04 18:32 Joe_Bogarde    New Issue                                    
+09-09-04 18:35 Joe_Bogarde    File Added: bug.txt                          
+03-20-05 13:25 jdthood        Note Added: 0004082                          
 ======================================================================
 
 
