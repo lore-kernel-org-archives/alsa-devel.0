@@ -1,14 +1,16 @@
-From: Steffen Sauder <steffensauder@gmx.de>
-Subject: Re: [patch] Envy24control access to 6Fire controls
-Date: Thu, 30 Oct 2003 13:36:52 +0100
+From: Niklas Werner <bergtroll@gmx.li>
+Subject: Re: usb-audio
+Date: Thu, 30 Oct 2003 13:42:14 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FA105E4.5020104@gmx.de>
-References: <20031029232257.7fabac62.dan_a@manx.net>
+Message-ID: <200310301342.14872.bergtroll@gmx.li>
+References: <20031027180300.GA5016@Zeryn> <200310292326.08018.bergtroll@gmx.li> <s5hsmlayl5r.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20031029232257.7fabac62.dan_a@manx.net>
+In-Reply-To: <s5hsmlayl5r.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,29 +22,55 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
-
->This patch against the stable version of envy24control gives access to most of the Terratec DMX 6Fire mixer controls.  It also changes the lables on the inputs in the monitor mixer to be more useful.  It should have no effect on your envy24control if you are using a card other than the 6Fire.
+Am Donnerstag, 30. Oktober 2003 13:17 schrieb Takashi Iwai:
+> At Wed, 29 Oct 2003 23:26:07 +0100,
 >
-Works fine for me, nice to finally have the input switches available in 
-envy24control. Though envy24control really is flexible, I always wished 
-to have an less complex mixer for the DMX6Fire, but never took the time 
-to write one or patch e24c for that purpuse. So if you ever get in that 
-mood again, it would be nice if you could also change the other labels 
-in the patchbay/router tab and the analog volume tab. (ADC0->In CD L , 
-ADC1->In CD R, ..., IGPA 0 -> Gain CD-L, IPGA 1 -> Gain CD-R ...).
-
-And I really wish I had a mixer that would handle the stereo channels as 
-what they are. Its annoying to have 6 sliders for adjusting the volume 
-of your line-in, for example, but since you're no programmer, you 
-probably won't fix that :)
-
->Note that I'm not a programmer, so there might be huge errors in this...
+> Niklas Werner wrote:
+> > Am Mittwoch, 29. Oktober 2003 19:24 wurde geschrieben:
+> > > At Tue, 28 Oct 2003 20:18:35 +0100,
+> > >
+> > >
+> > > hmm, it seems that a wrong label is used.  the label should be
+> > > conv_xx12_xx21 (= conv_labels[35]).  something is really broken.
+> > >
+> > > could you check stepwise the loop there?
+> >
+> > still checking (any tips on speeding this up (I'm trying "step 80000"
+> > atm?), seems to happen after the first set of frames (=16384) is
+> > processed.
 >
-Haven't really looked at the code, but it seems to work flawlessly.
+> in the first process, did it go to conv_xx12_xx21 properly?
 
-gruß,
-Steffen
+nope:
+
+0x0fd422f4      184                             goto *conv;
+(gdb) si
+299     conv_1234_xx21: as_u16(dst) = bswap_16(as_u32c(src) >> 16); goto 
+CONV_END;
+(gdb) si
+0x0fd424c0      299     conv_1234_xx21: as_u16(dst) = bswap_16
+(as_u32c(src) >> 16); goto CONV_END;
+(gdb) si
+0x0fd424c4      299     conv_1234_xx21: as_u16(dst) = bswap_16
+(as_u32c(src) >> 16); goto CONV_END;
+(gdb) si
+0x0fd424c8      299     conv_1234_xx21: as_u16(dst) = bswap_16
+(as_u32c(src) >> 16); goto CONV_END;
+(gdb) si
+0x0fd424cc      299     conv_1234_xx21: as_u16(dst) = bswap_16
+(as_u32c(src) >> 16); goto CONV_END;
+(gdb) si
+0x0fd4235c      230     conv_xxx1_xx10: as_u16(dst) = 
+(u_int16_t)as_u8c(src) << 8; goto CONV_END;
+(gdb) si
+0x0fd42360      230     conv_xxx1_xx10: as_u16(dst) = 
+(u_int16_t)as_u8c(src) << 8; goto CONV_END;
+(gdb) si
+190                             dst += dst_step;
+
+
+
+Niklas
 
 
 
