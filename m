@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000323]: full duplex limitation: one sample rate for both directions
-Date: Fri, 2 Jul 2004 20:53:56 +0200
+Date: Fri, 2 Jul 2004 20:53:28 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <2a973fe994dcabaf4c6aca72ca1af14e@bugtrack.alsa-project.org>
+Message-ID: <aab91d9dc458f3b3008215e4c5c81280@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -19,7 +19,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been CLOSED
+A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -39,7 +39,7 @@ Category:                   USB - usb-usx2y
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     closed
+Status:                     assigned
 Distribution:              =20
 Kernel Version:            =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
@@ -70,11 +70,6 @@ usx2y models are affected.
 ----------------------------------------------------------------------
 It's already fixed in cvs. Let's close the bug.
 
-----------------------------------------------------------------------
- martin - 07-02-2004 20:53 CEST=20
-----------------------------------------------------------------------
-fixed in cvs
-
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -85,10 +80,6 @@ Date Modified  Username       Field                    Change            =
  =20
 07-02-04 20:53 martin         Bugnote Added: 0001376                     =
  =20
-07-02-04 20:53 martin         Bugnote Added: 0001377                     =
- =20
-07-02-04 20:53 martin         Status                   assigned =3D> clos=
-ed =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
