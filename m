@@ -1,14 +1,15 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: 1.0.4rc from cvs-head: snd-usb-usx2y still needs snd-hwdep....
-Date: Fri, 2 Apr 2004 20:35:13 +0200
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Badness in remove_proc_entry
+Date: Fri, 2 Apr 2004 23:08:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040402183513.GA723@tuba.home>
-References: <200403310119.34195.annabellesgarden@yahoo.de> <Pine.LNX.4.58.0403310910110.1950@pnote.perex-int.cz> <20040331185719.GA9281@tuba.home> <200404011012.10249.annabellesgarden@yahoo.de> <20040401183414.GA576@tuba.home> <Pine.LNX.4.58.0404012320130.1843@pnote.perex-int.cz>
+Message-ID: <20040402230818.49d1a4de.pochini@shiny.it>
+References: <20040327215238.6e3f0762.pochini@shiny.it>
+	<Pine.LNX.4.58.0403280954360.1828@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0404012320130.1843@pnote.perex-int.cz>
+In-Reply-To: <Pine.LNX.4.58.0403280954360.1828@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,58 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Karsten Wiese <annabellesgarden@yahoo.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 01, 2004 at 11:23:00PM +0200, Jaroslav Kysela wrote:
-> On Thu, 1 Apr 2004, Martin Langer wrote:
+On Sun, 28 Mar 2004 09:54:46 +0200 (CEST)
+Jaroslav Kysela <perex@suse.cz> wrote:
+
+> On Sat, 27 Mar 2004, Giuliano Pochini wrote:
 > 
-> > It's still there, but this patch will fix it:
-> > 
-> > Index: alsa-driver/usb/Kconfig
-> > ===================================================================
-> > RCS file: /cvsroot/alsa/alsa-driver/usb/Kconfig,v
-> > retrieving revision 1.2
-> > diff -u -r1.2 Kconfig
-> > --- alsa-driver/usb/Kconfig	31 Mar 2004 06:57:28 -0000	1.2
-> > +++ alsa-driver/usb/Kconfig	1 Apr 2004 18:14:09 -0000
-> > @@ -4,11 +4,12 @@
-> >  	depends on SND!=n && USB!=n
-> >  
-> >  config SND_USB_USX2Y
-> > -	tristate "US-428 USB driver"
-> > +	tristate "US-X2Y USB driver"
-> 
-> Grr. Can someone provide a better list?
+> > I'm not sure if this is alsa's fault. It happens when I unload the module.
+> > Yup, snd_gina24 is the driver I'm developing, but it also happens with
+> > snd-powermac and when I try to load a module for a card I don't have.
+>
+> It's fixed in 1.0.4rc1.
 
-Here is a patch with more details.
+I ported my driver to 1.0.4rc2. There is no "badness" in the message anymore
+:) but it still comes up. Now it only happens if I try two modules I'm
+developing. Example:
 
-martin
+modprobe snd-layla24
+
+No errors, but I don't have that card. lsmod shows the module is
+loaded.
+
+modprobe snd-gina24 (my card) --> dmesg:
 
 
-Index: alsa-driver/usb/Kconfig
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/usb/Kconfig,v
-retrieving revision 1.3
-diff -u -r1.3 Kconfig
---- alsa-driver/usb/Kconfig	1 Apr 2004 21:10:57 -0000	1.3
-+++ alsa-driver/usb/Kconfig	2 Apr 2004 18:16:49 -0000
-@@ -4,11 +4,12 @@
- 	depends on SND!=n && USB!=n
- 
- config SND_USB_USX2Y
--	tristate "US-X2Y USB driver"
-+	tristate "Tascam US-122, US-224 and US-428 USB driver"
- 	depends on SND && USB
- 	select SND_HWDEP
- 	select SND_USB_AUDIO
- 	help
--	  Say 'Y' or 'M' to include support for Tescam US-X2Y USB devices.
-+	  Say 'Y' or 'M' to include support for Tascam USB Audio/MIDI 
-+	  interfaces or controllers US-122, US-224 and US-428.
- 
- endmenu
+kobject_register failed for Echoaudio (-17)
+Call trace:
+ [c000bbe4] dump_stack+0x18/0x28
+ [c00dfb24] kobject_register+0x68/0x6c
+ [c012adec] bus_add_driver+0x50/0xf0
+ [c012b2b4] driver_register+0x38/0x48
+ [c00ec408] pci_register_driver+0x50/0x6c
+ [e66669b0] alsa_card_Echo_init+0x1c/0x774 [snd_gina24]
+ [c003de50] sys_init_module+0x200/0x3e0
+ [c0007b1c] ret_from_syscall+0x0/0x44
+Echoaudio soundcard not found or device busy
+
+
+If I load snd-gina24 and then snd-layla24, it complains when I load the
+latted, even if snd-gina24 is loaded and running fine. It does not happen if
+the first module I load is something else (eg. hdsp). Maybe there is
+something I'm not aware of... I already tried to use different
+MODULE_DESCRIPTION and MODULE_DEVICES without success.
+
+
+--
+Giuliano.
+
 
 
 -------------------------------------------------------
