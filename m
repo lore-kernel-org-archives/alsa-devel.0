@@ -1,9 +1,22 @@
-From: "thewade" <pdman@aproximation.org>
-Subject: Re: Change of iomem types
-Date: Thu, 16 Sep 2004 13:27:56 -0600
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: [PATCH] Kernel crash
+Date: Thu, 16 Sep 2004 21:56:33 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409161927.i8GJRuCm004059@sanctuary.aproximation.org>
+Message-ID: <20040916215633.228bfc21.pochini@shiny.it>
+References: <s5h7jr7whqj.wl@alsa2.suse.de>
+	<XFMail.20040907095502.pochini@shiny.it>
+	<20040911210212.317d930b.pochini@shiny.it>
+	<s5hekl6tdru.wl@alsa2.suse.de>
+	<20040913220729.466531ce.pochini@shiny.it>
+	<s5h4qlzx22k.wl@alsa2.suse.de>
+	<20040915195008.33713acb.pochini@shiny.it>
+	<s5hhdpzs968.wl@alsa2.suse.de>
+	<s5hacvqsbty.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hacvqsbty.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -12,23 +25,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This sounds like it may fix my hdsploader/AMD64 problem.
-I tried last night to patch 2.6.8.1 using the 2.6.9-rc2 patch
-but patch -p2 < patch-2.6.9-rc2 wouldnt work. It wouldnt strip the 
-a/ or b/ before the file path, so I edited the patch file and fixed 
-all the paths: s/ a\\// linux\\// and s/ b\\// linux\\//
+On Thu, 16 Sep 2004 13:16:41 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-How can I get this new fix: kernel.org has the latest patch as
-2.6.9-rc2 2004-09-13?
+> > I think it'd be better to add a new field to substream to indicate the
+> > DMA running status so that snd_pcm_stop() can be called safely
+> > regardless of the current status.
+> >
+> > The situation right now is a mess, the DMA running state depending on
+> > the stream direction and the state.
+>
+> We have a snd_pcm_running() so the flag is not always necessary
+> (although it would be nice).
+>
+> In the current code, the PCM state is changed somehow unconditionally
+> among all linked substreams via snd_pcm_change_state(), and apparently
+> this causes the confusion.
+>
+> I did clean up and rewrite of pcm core stuff.
+> Could you check the attached patch?
 
-btw, I couldnt get the patched 2.6.9-rc2 kernel to boot. Because of the
-above patch modification?
+I had no time to check the code carefully, but it seems ok. I tested it and
+it worked flawlessly. I'll do more testing tomorrow. Tnx.
 
-Thanks for the help, and thanks for the work Takashi!
--thewade
+
+--
+Giuliano.--
+Giuliano.
 
 
 -------------------------------------------------------
