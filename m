@@ -1,24 +1,17 @@
-From: Manuel Jander <manuel.jander@usm.cl>
-Subject: Re: The ALSA Situation
-Date: Fri, 12 Nov 2004 22:15:01 -0300
-Message-ID: <1100308501.2337.54.camel@localhost>
-References: <200411102113.iAALDLUN001061@localhost.localdomain>
-	 <Pine.LNX.4.58.0411101426260.2301@ppc970.osdl.org>
-	 <Pine.LNX.4.58.0411110714280.2179@pnote.perex-int.cz>
-	 <Pine.LNX.4.58.0411102241240.2301@ppc970.osdl.org>
-	 <s5his8cfiot.wl@alsa2.suse.de>
-	 <Pine.LNX.4.58.0411110855380.2301@ppc970.osdl.org>
-	 <s5hhdnwfgbz.wl@alsa2.suse.de>
-	 <Pine.LNX.4.58.0411111021520.2301@ppc970.osdl.org>
-	 <s5hekizfo0n.wl@alsa2.suse.de>
-	 <Pine.LNX.4.58.0411120741300.2301@ppc970.osdl.org>
-	 <20041112230617.41c5073e@mango.fruits.de>
-Reply-To: mjander@users.sourceforge.net
+From: Andrzej Zaremba <anzar@megapolis.pl>
+Subject: PKO BP Zyskali inwestorzy, stracil Skarb Panstwa
+Date: 13 Nov 2004 05:38:05 +0100
+Message-ID: <20041113043708.CF1FB391DC@mail.perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041112230617.41c5073e@mango.fruits.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A4263198
+	for <alsa-devel@alsa-project.org>; Sat, 13 Nov 2004 05:37:09 +0100 (MET)
+Received: from megapolis.pl (unknown [217.153.130.50])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id CF1FB391DC
+	for <alsa-devel@alsa-project.org>; Sat, 13 Nov 2004 05:37:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -28,140 +21,147 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Florian Schmidt <mista.tapas@gmx.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+<html>
 
-On Fri, 2004-11-12 at 23:06 +0100, Florian Schmidt wrote:
-> On Fri, 12 Nov 2004 07:50:58 -0800 (PST) 
-> > My arguments have really been against blocking. And to some degree an 
-> > argument against people thinking it's _good_ to set individual parameters. 
-> 
-> Historically seen there's a long tradition for sound applications to choose
-> their own parameters as different applications serve vastly different
-> purposes and thus imply different paramaters to be used.
+<head>
+<meta http-equiv=3D"Content-Language" content=3D"pl">
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-885=
+9-2">
+<title>cenaPKOBP</title>
+</head>
 
-Nowadays, with so many different hardware around (USB, PCI, ISA,
-firewire, etc), it may even happen that two soundcards have mutually
-exclusive settings, in other words, you may not able to find a period
-number and period size setting that will work on both. Forget about
-trying some period setup that will work on every soundcard, even those
-still not invented. That is absolutely  nonsense in my opinion. This bad
-assumption should be put to an end as soon as possible, if not things
-will (they actually are now) very messy, in regard of soundcard
-parameter selection.
+<body leftmargin=3D"30" rightmargin=3D"30" bottommargin=3D"0" bgcolor=3D"=
+#FFFFFF">
 
-By now, the only solution i can think of, is doing some measurements at
-startup, to determine the feasible period size/count bounds, without
-xruns.
+<p align=3D"justify" style=3D"margin-top: 15px"><font style=3D"font-size:=
+ 16pt">PKO BP</font><font style=3D"font-size: 15pt">=20
+&#8211; </font><font style=3D"font-size: 16pt">Zani=BFona cena sprzeda=BF=
+y akcji</font></p>
+<p align=3D"justify" style=3D"margin-top: -15px">
+<font style=3D"font-size: 26pt; font-weight: 700">Zysk inwestor=F3w, stra=
+ta Skarbu=20
+Pa=F1stwa</font></p>
+<p align=3D"justify" style=3D"line-height: 22px; margin-top: 5px">
+<span style=3D"font-size: 12pt">Minister Socha w wywiadach udzielanych w =
+trakcie=20
+emisji akcji PKO BP m=F3wi=B3 o czynniku natury spo=B3ecznej i atrakcyjno=
+=B6ci=20
+inwestycji maj=B1cej zach=EAci=E6 osoby fizyczne do gie=B3dy. Cena emisyj=
+na mia=B3a=20
+gwarantowa=E6 godziwy zysk przysz=B3ym nabywcom. &#8222;Czynnik spo=B3ecz=
+ny&#8221; maj=B1cy zagwarantowa=E6 osobom=20
+fizycznym godziwy zysk rozci=B1gn=B1=B3 si=EA na osoby zagraniczne, w&nbs=
+p;tym=20
+inwestor=F3w instytucjonalnych... Jaki jest pow=F3d aby zapewni=E6 inwest=
+orom=20
+zagranicznym godziwy zysk na prywatyzacji PKO BP?</span></p>
+<p align=3D"justify" style=3D"line-height: 22px; margin-top: -5px">
+<span style=3D"font-size: 12pt">Dlaczego minister Socha sprzedaje PKO BP =
+znacznie=20
+taniej ani=BFeli cena r=F3wnowagi popytu i poda=BFy? Na jakiej podstawie =
+minister=20
+skarbu zabiega o wp=B3ywy (zarobek) nabywc=F3w akcji, zamiast o zarobek s=
+karbu=20
+pa=F1stwa? Firma jest warta tyle ile nabywcy chc=B1 w danej sytuacji rynk=
+owej za ni=B1=20
+zap=B3aci=E6. 90% redukcja zapis=F3w =B6wiadczy, i=BF ustalono cen=EA akc=
+ji znacznie poni=BFej=20
+jej warto=B6ci rynkowej &#8211; &#8222;czynnik natury spo=B3ecznej&#8221;=
+. Minister skarbu je=BFeli ma=20
+tak=B1 wol=EA mo=BFe rozdawa=E6 sw=F3j prywatny maj=B1tek, ale dlaczego r=
+ozdaje maj=B1tek=20
+publiczny? </span></p>
+<p align=3D"justify" style=3D"line-height: 22px; margin-top: -4px">
+<span style=3D"font-size: 12pt">Za zysk os=F3b i funduszy nabywaj=B1cych =
+akcje PKO BP=20
+zap=B3ac=B1 wszyscy obywatele. Pieni=B1dze podziel=B1 pomi=EAdzy siebie n=
+abywcy akcji PKO.=20
+Wszyscy zarobili na niskiej cenie PKO BP, tylko Skarb Pa=F1stwa straci=B3=
+ - czyli=20
+ca=B3e spo=B3ecze=F1stwo, tak=BFe ci kt=F3rych nie sta=E6 by=B3o na zakup=
+ akcji oraz nie sta=E6=20
+na zakup lek=F3w, kt=F3re powinny by=E6 finansowane z publicznych pieni=EA=
+dzy. Panie=20
+Ministrze, dlaczego sprzedaje Pan &#8211; z premedytacj=B1 &#8211; maj=B1=
+tek publiczny za cen=EA=20
+ni=BFsz=B1 od rynkowej? R=F3=BFnica tylko 1 z=B3oty w cenie akcji PKO BP =
+oznacza przy=20
+sprzeda=BFy 380 mln akcji warto=B6=E6 380 mln z=B3otych odebranych Pa=F1s=
+twu &#8211; czyli=20
+wszystkim obywatelom.<br>
+Czy minister Socha zamierza zwr=F3ci=E6 kwot=EA kilkuset milion=F3w z=B3o=
+tych ze swojego=20
+prywatnego maj=B1tku?</span></p>
+<p align=3D"justify" style=3D"line-height: 22px; margin-top: -4px">
+<span style=3D"font-size: 12pt">Zarobi=B3y osoby, kt=F3re zakupi=B3y akcj=
+e, reszta stanowi=B1ca=20
+99% spo=B3ecze=F1stwa straci=B3a. Kto=B6 zarobi=B3 aby kto=B6 m=F3g=B3 st=
+raci=E6. Zarobili ci co=20
+maj=B1 pieni=B1dze i kupuj=B1 akcje, a stracili ci co nie maj=B1 pieni=EA=
+dzy i nie kupili=20
+akcji. Sprzedawany by=B3 maj=B1tek wszystkich, nie prywatne akcje ministr=
+a Sochy.=20
+Inwestorzy zamierzali kupi=E6 od skarbu pa=F1stwa znacznie dro=BFej, jedn=
+ak minister=20
+si=EA upar=B3 i powiedzia=B3, =BFe chce sprzeda=E6 taniej. Ograniczenie g=
+=F3rnej ceny=20
+spowodowa=B3o, =BFe t=B3um si=EA ustawi=B3 w kolejki, a na sesji by=B3a 9=
+0% redukcja... Po=20
+prostu minister si=EA upar=B3, =BFe da zarobi=E6 inwestorom kosztem skarb=
+u pa=F1stwa.</span></p>
+<p align=3D"justify" style=3D"line-height: 22px; margin-top: -4px">
+<span style=3D"font-size: 12pt">Minister Socha z premedytacj=B1 zani=BFy=B3=
+ cen=EA=20
+sprzeda=BFy akcji PKO BP w oparciu o &#8222;czynnik natury spo=B3ecznej&#=
+8221;. Ten<span lang=3D"en">&nbsp;</span>sam czynnik=20
+powinien doprowadzi=E6 ministra Soch=EA przed oblicze wymiaru sprawiedliw=
+o=B6ci.
+</span></p>
+<p align=3D"justify" style=3D"word-spacing: 10px; line-height: 22px; marg=
+in-top: -12px">
+<b><span style=3D"font-size: 11pt">Stop-korupcji@mail.com</span></b><br>
+<br>
+<b><span style=3D"font-size: 12pt">Komentarz:</span></b></p>
+<p align=3D"justify" style=3D"line-height: 22px; margin-top: -15px">
+<span style=3D"font-size: 12pt">Wszyscy zarobili, a zap=B3aci=B3 za to mi=
+nister=20
+skarbu. Zap=B3aci=B3 nie swoimi pieni=EAdzmi. MSP sprzeda=B3o akcje za 20=
+.50<span lang=3D"en">&nbsp;</span>z=B3otych,=20
+a mog=B3o sprzeda=E6 za 22.50-23 z=B3ote. Minister=20
+Socha rzeczywi=B6cie na si=B3=EA chcia=B3 da=E6 zarobi=E6 inwestorom. Czy=
+ kurs wzro=B6nie po sprzeda=BFy w=20
+ofercie publicznej czy nie to ju=BF inna sprawa - albo wzro=B6nie o 30% a=
+lbo spadnie=20
+o 30% - tego nie wie nikt. Przy czym opcja stabilizacji kursu jak najbard=
+ziej ma znaczenie=20
+&#8211; dzi=EAki niej akcje s=B1 obarczone mniejszym ryzykiem i za to mo=BF=
+na uzyska=E6=20
+w=B3a=B6nie wy=BFsz=B1 cen=EA sprzeda=BFy.<br>
+Wa=BFne jest to, =BFe gdy Socha sprzedawa=B3 akcje po ustalonej przez sie=
+bie cenie to=20
+popyt znacznie przewy=BFsza=B3 ofert=EA -&nbsp; <span style=3D"letter-spa=
+cing: 1px">w<span lang=3D"en">&nbsp;</span>ka=BFdej kategorii inwestor=F3=
+w!</span> Minister Socha zamiast ustali=E6 cen=EA r=F3wnowagi, ustali=B3 =
+cen=EA ni=BFsz=B1. <br>
+Gdyby zarz=B1dzaj=B1cy prywatnym maj=B1tkiem tak sprzedawa=B3 akcje swoje=
+go mocodawcy to=20
+by =BCle sko=F1czy=B3. Ale minister zarz=B1dza maj=B1tkiem publicznym...<=
+/span></p>
+<p align=3D"justify" style=3D"line-height: 22px; margin-top: -10px">
+<span style=3D"font-weight: 700; font-size: 12pt">Jaros=B3aw Sup=B3acz</s=
+pan></p>
+<p align=3D"justify" style=3D"word-spacing: 10px; line-height: 22px; marg=
+in-top: -16px">
+<span style=3D"font-size: 11pt">j.suplacz@rediffmail.com</span><br>
+&nbsp;</p>
 
-> A low latency realtime effects box program will need completely different
-> periodsize and periodcount settings than a program without realtime needs
-> like a highly reliable harddisc recorder. The former will use a very small
-> periodsize and a periodcount of 2 (or the minimum available by the hw), the
-> latter will use the opposite (large periodsizes and a high periodcount).
+</body>
 
-I agree. But again, this is highly hardware dependant, and some setting
-may work splendid on your computer, but maybe wont on mine. Even using
-the same soundcard, because even the system bus characteristics may
-influence a lot.
+</html>
 
-> The need for software mixing is somewhat orthogonal to this, as it enforces
-> a particular set of settings on all programs using this software mixing
-> device. The software mixing device might still allow the programs to use
-> their own set of parameters, but this would require some sort of
-> conversion/translation (and of course a program, using a periodsize/count
-> smaller than the ones the software mixing device uses to communicate with
-> the hw, doesn't gain anything by doing so).
-
-Application should not need to care about buffer setup. If they do, the
-chance to fail is very high; in other words: flaky.
-Sometimes things are not optimal, but its better to be sure that it will
-work without xruns.
-
-> For compatibility issues this translation/conversion is a must and since
-> ALSA aims to provide full compatibility for OSS apps, the software mixing
-> and conversion must be available to the OSS emulation layer as well.
-> 
-> The current "ALSA situation" looks like follows (correct me people if i talk
-> BS):
-> 
-> 1. ALSA infrastructure kernel modules (pcm, seq, ctl, other voodoo stuff)
-> 2. ALSA driver modules (using 1.)
-> 3. ALSA OSS emulation modules (using 2. used directly by OSS apps)
-> 4. ALSA-lib (using 2. used by ALSA apps)
-> 5. ALSA-oss-lib (using 4. LD_PRELOAD hack to make OSS apps use ALSA-lib)
-> 
-> ALSA does provide software mixing and conversion routines. But these reside
-> in ALSA-lib, thus to make use of them systemwide, both ALSA apps and OSS
-> apps need to go through ALSA-lib. This is a natural thing for ALSA apps as
-> it was designed this way. For OSS apps one needs to use the ALSA-oss-lib
-> (5]), which is a hack and doesn't work with all OSS apps, as there is no way
-> to LD_PRELOAD symbols which are not resolved at runtime (excuse my possibly
-> wrong terminology).
-> 
-> IMHO it would be better to have the software mixing and conversion code in a
-> place where the ALSA OSS emulation modules can make use of them. I don't
-> know how feasible it is to call userspace stuff from the kernel space, but i
-> can imagine it's rather difficult. Thus the software mixing and conversion
-> stuff should live in the kernel.
-> 
-> I'm not arguing against having plugin functionality in ALSA-lib per se.
-> There's many uses for this (effects, routing between alsa apps), but i think
-> the fundamental mixing/conversion stuff is really needed in the kernel.
-> 
-> So how to add this functionality to ALSA with the least effort and breakage?
-> Personally i think the following is the best approach:
-> 
-> 1. ALSA infrastructure kernel modules (pcm, seq, ctl, other voodoo stuff) 
-> 2. ALSA driver modules (using 1. one instance for every real soundcard driver) 
-> 3. ALSA virtual soundcard modules (using 2. sw mixing plus conversion for 2.) 
-> 4. ALSA OSS emulation modules (using 2 or 3. used directly by OSS apps) 
-> 5. ALSA-lib (using 2 or 3. used by ALSA apps) 
-> 
-> The ALSA virtual soundcard module (3.) would look to ALSA-lib or to the ALSA
-> OSS emulation modules just like a normal soundcard. When used it "opens" the
-> underlying ALSA driver module and provides software mixing and conversion by
-> allowing umlimited open's and arbitrary parameters to all applications using
-> it either through the OSS emulation modules or ALSA-lib.
-> 
-> Actually thanks to the design of ALSA, this is really all that needs to be
-> done to provide software mixing to all OSS apps and to all ALSA apps. The
-> distribution/user would only have to make sure that the virtual soundcard
-> module is loaded for the card and that both OSS emu modules and ALSA-lib use
-> it as default. For professional users neeeddng direct access to the hardware
-> they still have the option of using the real ALSA driver (as long as it's not
-> in use by the virtual soundcard module of course).
-> 
-> Sadly i have no idea about how difficult it would be to code up such a
-> virtual soundcard module, but i suppose some of the
-> resampling/mixing/conversion code in ALSA-lib can be reused. I have never
-> attempted to program a module, so i leave judgement about this idea to the
-> gurus :)
-> 
-> What other ways to intergrate this into the ALSA structure are there? And
-> how much effort do they take? In the end it all comes down to developer
-> time. I own a hardware mixing capable soundcard, so i can happily live with
-> the current ALSA state, but IMHO this is a very important thing missing for
-> the completely positive ALSA experience. ALSA has improved the situation for
-> a serious linux musician/audio user tremendously over OSS (which was really
-> a crutch). The final missing building block is providing an equally positive
-> experience to the laptop user with his crappy soundcard needing bleeps and
-> music at the same time..
-
-Imagine, you have a virtual soundcard module, that mixes together all
-the streams you want... How do you make use of it ? Who decides which
-hardware stream is going to used ? Who decides if a application is
-granted a hardware stream or takes part of the virtual device ? 
-
-IMHO, ALSA requires a resource manager. And before someone starts
-hacking any shit, please let us design something well done.
-
-
--- 
-Manuel Jander
-Electronic Engineer
 
 
 
