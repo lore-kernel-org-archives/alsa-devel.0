@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000345]: Echo with SB Audigy and microphone input
-Date: Tue,  7 Sep 2004 09:29:00 +0200 (CEST)
+Subject: [ALSA - driver 0000366]: driver hangs when trying to load a soundfont >8MB
+Date: Tue,  7 Sep 2004 09:37:05 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907072900.25DB8D00D@server.perex-int.cz>
+Message-ID: <20040907073705.2FAF9D00D@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 70599265
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 09:29:00 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8C622273
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 09:37:05 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,92 +22,100 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000345
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000366
 ======================================================================
-Reported By:                quinn
+Reported By:                deathpudding
 Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     345
+Bug ID:                     366
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     assigned
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             06-26-2004 11:57 CEST
-Last Modified:              09-07-2004 09:28 CEST
+Date Submitted:             07-05-2004 09:43 CEST
+Last Modified:              09-07-2004 09:37 CEST
 ======================================================================
-Summary:                    Echo with SB Audigy and microphone input
+Summary:                    driver hangs when trying to load a soundfont >8MB
 Description: 
-When in "loopback" recording mode, where the recorded audio from the
-microphone is played back (Easiest example would be the Recorder plugin
-for XMMS), even when every other capture channel is at zero volume and the
-sound is output through headphones, microphone input still echos
+The alsa driver and the applications using it hang, unkillable and unable
+to be unloaded, when I try to load a soundfont larger than 8MB. This
+sometimes results in the appearance of a page fault message when shutting
+down. The shutdown is never completed because the disk cannot be
+unmounted, presumably because the alsa driver is still frozen while trying
+load the soundfont from it.
+
+I found a thread in the alsa-devel archives discussing this problem:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg12386.html
+
+I see that the discussed patch has been applied, but I still have this
+problem. I haven't tested with versions prior to 1.0.4 because they did
+not compile with the later library version, but I do know that it was
+working not too long ago (with kernel 2.6.x).
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 07-12-2004 13:37 CEST 
+ vlajsa - 07-10-2004 20:39 CEST 
 ----------------------------------------------------------------------
-I tested this. You get echo, but this is ok.
-You probably have "Mic volume" not set to 0 and echo comes from record
-loopback (this is where delay comes from). When you set "Mic volume" to 0
-you will hear delayed mic signal, but without echo.
+To add to this report! Sfxload don't work with alsa 1.0.5, too!
 
 ----------------------------------------------------------------------
- pzad - 08-06-2004 15:03 CEST 
+ deathpudding - 07-10-2004 21:45 CEST 
 ----------------------------------------------------------------------
-Helped this ???
+I marked this as a 1.0.5a bug, but it doesn't look like it showed up in the
+report.
 
 ----------------------------------------------------------------------
- quinn - 08-06-2004 15:15 CEST 
+ pzad - 07-12-2004 13:31 CEST 
 ----------------------------------------------------------------------
-I'm sorry, I missed the first reply.
-
-No, that didn't help. I have microphone output completely muted as well.
-(And am using headphones, so no analog feedback is present.)
+I tested this with 32 MB soundfont what I have and it worked.
+If this is free soundfont can you give link to it ????
 
 ----------------------------------------------------------------------
- pzad - 08-30-2004 12:14 CEST 
+ deathpudding - 07-12-2004 23:03 CEST 
 ----------------------------------------------------------------------
-I missed your reply :-)
+I've tried it with multiple soundfonts, but here are two examples:
 
-I will try this again.
+http://www.hammersound.net/cgi-bin/soundlink.pl?action=view_download_page;ID=116;SoundFont_Filename_Selected=mustheory2.sfArk
+http://bennetng.kc-studio.com/bennetng_AnotherGS_v2-0.exe
 
-Test if you have Mic Volume to 0.
+Unfortunately the first requires the sfArk program, and the second is a
+self-extracting sfArk. Both should work under Wine, at least.
 
-If echo is still there, try to set AnalogMix volume to 0. 
-Helped this ???
-
-----------------------------------------------------------------------
- quinn - 08-31-2004 23:25 CEST 
-----------------------------------------------------------------------
-Yes, I am completely and utterly sure that microphone output is set to
-zero. Zeroing out either Analog Mix playback or recording does not help
-either.
+edited on: 07-12-04 23:03
 
 ----------------------------------------------------------------------
- pzad - 09-07-2004 09:28 CEST 
+ vlajsa - 08-03-2004 17:11 CEST 
 ----------------------------------------------------------------------
-I tested again this. I think, your echo comes from headphones.
-Try to only record from mic (set same volume for mic as you used for
-loopback mode). Then try to play some music through headphone at some good
-volume level (same as you used for mic loopback). Then check what you
-recorded - if you hear music, then this comes from your headphone.
+Hmm... I really don't know how I've missed this one! When playing some
+music with xmms through alsa plugin, the song continues to the end, and
+then silently driver hangs! Of course this happenes when trying to load
+soundfont while playing some song! Hope this can help!!
+
+I'm sure I can find sone fonts that dont need wine to use them. If you
+want me to do that, let me know!
+
+----------------------------------------------------------------------
+ pzad - 09-07-2004 09:37 CEST 
+----------------------------------------------------------------------
+Sorry, I can not reproduce this with alsa 1.0.6a + Audigy + kernel 2.6.5.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-26-04 11:57 quinn          New Bug                                      
-07-12-04 13:37 pzad           Bugnote Added: 0001410                       
-08-06-04 15:03 pzad           Bugnote Added: 0001541                       
-08-06-04 15:03 pzad           Status                   assigned => feedback
-08-06-04 15:15 quinn          Bugnote Added: 0001542                       
-08-30-04 12:14 pzad           Bugnote Added: 0001668                       
-08-31-04 23:25 quinn          Bugnote Added: 0001675                       
-09-07-04 09:28 pzad           Bugnote Added: 0001702                       
+07-05-04 09:43 deathpudding   New Bug                                      
+07-05-04 09:43 deathpudding   Kernel Version            => 2.6.7           
+07-10-04 20:39 vlajsa         Bugnote Added: 0001404                       
+07-10-04 21:45 deathpudding   Bugnote Added: 0001405                       
+07-12-04 13:31 pzad           Bugnote Added: 0001409                       
+07-12-04 23:02 deathpudding   Bugnote Added: 0001411                       
+07-12-04 23:03 deathpudding   Bugnote Edited: 0001411                      
+08-03-04 17:11 vlajsa         Bugnote Added: 0001528                       
+09-07-04 09:37 pzad           Bugnote Added: 0001703                       
 ======================================================================
 
 
