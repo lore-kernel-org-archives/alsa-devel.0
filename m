@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000474]: Compiling with -Wshadow generates warning messages with gcc-2.95
-Date: Tue, 21 Sep 2004 12:38:23 +0200 (CEST)
+Subject: [ALSA - driver 0000487]: Driver builds, but offers wrong mixer controls and no sound
+Date: Tue, 21 Sep 2004 12:42:38 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040921103823.37E4832005@server.perex-int.cz>
+Message-ID: <20040921104238.9AEB232005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0EC462FA
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 12:38:23 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CDA031AD
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 12:42:38 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,73 +20,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000474
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000487
 ======================================================================
-Reported By:                erikd-alsa
-Assigned To:                tiwai
+Reported By:                Quietti
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     474
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Bug ID:                     487
+Category:                   PARISC - harmony
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.8.1-pa7
 ======================================================================
-Date Submitted:             08-30-2004 12:52 CEST
-Last Modified:              09-21-2004 12:38 CEST
+Date Submitted:             09-08-2004 06:40 CEST
+Last Modified:              09-21-2004 12:42 CEST
 ======================================================================
-Summary:                    Compiling with -Wshadow generates warning messages with gcc-2.95
+Summary:                    Driver builds, but offers wrong mixer controls and no sound
 Description: 
-In file included from /usr/include/alsa/asoundlib.h:49,
-                 from alsa.c:3:
-/usr/include/alsa/pcm.h:535: warning: declaration of `access' shadows
-global declaration
-/usr/include/alsa/pcm.h:536: warning: declaration of `access' shadows
-global declaration
-/usr/include/alsa/pcm.h:537: warning: declaration of `access' shadows
-global declaration
-/usr/include/alsa/pcm.h:538: warning: declaration of `access' shadows
-global declaration
-/usr/include/alsa/pcm.h:539: warning: declaration of `access' shadows
-global declaration
-/usr/include/alsa/pcm.h:1260: warning: declaration of `access' shadows
-global declaration
-/usr/include/alsa/pcm.h:1270: warning: declaration of `access' shadows
-global declaration
-In file included from /usr/include/alsa/asoundlib.h:52,
-                 from alsa.c:3:
-/usr/include/alsa/hwdep.h:142: warning: declaration of `index' shadows
-global declaration
-In file included from /usr/include/alsa/asoundlib.h:56,
-                 from alsa.c:3:
-/usr/include/alsa/seq.h:363: warning: declaration of `index' shadows
-global declaration
+The driver builds with the correct options, the module can be loaded, but
+the mixer control it offers do not correspond to my model 712 (Gecko)
+hardware. 
 
+Additionally, trying to send sound to the module produces horrible
+chainsaw noise in the speakers. Esound also informs me that the hardware
+does not support any suitable sample rate. Something is evidently broken.
+
+I am quite positive that the corresponding Harmony OSS driver in kernel
+2.4 works well with this workstation, so this is definitely not a hardware
+problem (the same module in kernel 2.6 has been broken from day 1).
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-31-2004 12:42 CEST 
+ Quietti - 09-14-2004 10:13 CEST 
 ----------------------------------------------------------------------
-They are quite harmless, although it'd be better to be fixed.
+I would like to point out that this bug is still unresolved in
+2.6.8.1-pa11.
 
 ----------------------------------------------------------------------
- tiwai - 09-21-2004 12:38 CEST 
+ tiwai - 09-21-2004 12:42 CEST 
 ----------------------------------------------------------------------
-Fixed on CVS.
+No developer is working on this driver because of lack of hardware.
+Any patches appreciated, of course :)
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-30-04 12:52 erikd-alsa     New Bug                                      
-08-31-04 12:42 tiwai          Bugnote Added: 0001672                       
-09-21-04 12:38 tiwai          Bugnote Added: 0001799                       
-09-21-04 12:38 tiwai          Assigned To               => tiwai           
-09-21-04 12:38 tiwai          Resolution               open => fixed       
-09-21-04 12:38 tiwai          Status                   new => resolved     
+09-08-04 06:40 Quietti        New Bug                                      
+09-08-04 06:40 Quietti        Distribution              => Debian          
+09-08-04 06:40 Quietti        Kernel Version            => 2.6.8.1-pa7     
+09-14-04 10:13 Quietti        Bugnote Added: 0001757                       
+09-21-04 12:42 tiwai          Bugnote Added: 0001801                       
 ======================================================================
 
 
