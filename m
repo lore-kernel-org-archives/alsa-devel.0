@@ -1,11 +1,11 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: FYI: Recording with USB Quattro
-Date: Tue, 16 Jul 2002 03:53:54 +0900
+From: Bruce Paterson <bruce@tele-ip.com>
+Subject: Re: Underruns (borken pipes)
+Date: Tue, 16 Jul 2002 18:43:46 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D331A42.8090202@boosthardware.com>
-References: <E17U8lL-0001uF-00@usw-sf-list1.sourceforge.net> <3D331243.8010005@boosthardware.com>
+Message-ID: <3D33DCC2.2D23591@tele-ip.com>
+References: <20020715175552.982741F343@thorin.martin.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,43 +16,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: ardour-dev <ardour-dev@lists.sourceforge.net>, linux-audio-user@music.columbia.edu
+To: Paul Davis <pbd@op.net>
+Cc: alsa development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Just to let y'all know that I have just recorded cleanly in stereo 
-through the USB Quattro. Using a combination of ALSA-cvs, JACK, 
-lowlatency patched kernel 2.4.19-rc10, and ardour.
+Paul Davis wrote:
+> 
+> >OK. I believe I now understand the tradeoffs. Also, it was not clear
+> >to me that the Jack audio driver would solve my problems since most
+> >of what Jack is about is allowing multiple audio clients (which I
+> >don't have, and in fact don't want at all in this case).
+> 
+> Thats not entirely true. At least 30-50% of JACK's design comes from
+> the desire to have a simple, highly abstracted, highly efficient model
+> for audio i/o. 95%+ of the time that i use JACK, its with one client
+> (for now, anyway).
 
-Some of the other things I had to do were check my video card driver was 
-running correctly and turn off some of the virtual desktop windows I had 
-open (was 9 now 6).
+ok. 
+[Might be worth doing a re-visit to your intro to Jack...add a line
+about
+the above.] 
 
-Hardware is:
+> no, poll reports back to you when the amount of data/space equals or
+> exceeds the "avail_min" count set by your program.
 
-CPU: PIV 1.5GHz
-RAM: 384MB RDRAM
-HDD: 2x7200rpm ide (one for os, one for recording to)
-Sound: intel8x0, cmipci, USB Quattro soundcards
-Video: 64MB Geforce2 DDR NVIDIA
+AHHHHHHHHHH !!!!!  Click ! :-)
 
-Big shout outs to all the people who have worked on the previously 
-mentioned projects.
-
-Let the fun begin :)
-
-
+It now works fine with polling once I set the avail_min to 1/8 the max
+size of 
+the frame buffer. 
+Since it's working fine I'll leave it for now, but if we need to support
+diff.
+soundcards etc. in the future Jack may be worth a visit.
 
 -- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
+Cheers,
+Bruce
+-------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom
+they are addressed. If you have received this email in error please
+notify the system manager.
 
+    /\\\/\\\/\\\    /   /      Bruce Paterson          
+   /  \\\ \\\ \\\  /   /    Senior Design Engineer
+  /   /\\\/\\\/\\\/   /   87 Peters Ave, Mulgrave, Vic, 3170
+ /   /  \\\ \\\ \\\  /  PO Box 4112, Mulgrave, Vic, 3170, Australia
+/   /    \\\/\\\ \\\/   Ph: +61 3 8561 4232   Fax: +61 3 9560 9055
+      Tele-IP Ltd.      Email: bruce@tele-ip.com    Icq: #32015991
+                        WWW:   http://www.tele-ip.com       VK3TJN
+-------------------------------------------------------------------
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+This sf.net email is sponsored by: Jabber - The world's fastest growing 
+real-time communications platform! Don't just IM. Build it in! 
+http://www.jabber.com/osdn/xim
