@@ -1,12 +1,15 @@
 From: Paul Davis <pbd@op.net>
-Subject: Re: unitor8/amt8 driver for alsa 0.9.0rc1
-Date: Sat, 04 May 2002 07:39:33 -0400
+Subject: Re: DMA: do all drivers need it?
+Date: Sat, 04 May 2002 07:41:28 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E173xsT-0002VV-00@usw-sf-list1.sourceforge.net>
-References: <006901c1f110$84014110$0400a8c0@martijn>
+Message-ID: <200205041140.g44BeoD09284@post2.fast.net>
+References: <20020423191053.81397.qmail@web11507.mail.yahoo.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Wed, 01 May 2002 14:02:33 BST."
-             <006901c1f110$84014110$0400a8c0@martijn>
+Received: from post2.fast.net (post2.fast.net [209.92.1.22])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA18554
+	for <alsa-devel@alsa-project.org>; Sat, 4 May 2002 13:41:00 +0200
+In-Reply-To: Your message of "Tue, 23 Apr 2002 12:10:53 PDT."
+             <20020423191053.81397.qmail@web11507.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,13 +18,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Martijn Sipkema <m.j.w.sipkema@student.tudelft.nl>
-Cc: Manush Dodunekov <manush@stendahls.net>, alsa-devel@lists.sourceforge.net
+To: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->How does this work then? Can a file be opened from kernel space? Or
+>I am starting to write an sound driver for a card with no previous support and
+>would like to know if DMA is necessary as per the ALSA framework itself. My
+>card doesn't support DMA, yet. So if your answer is no, I would need to
+>fallback on OSS for the time being.
 
-sys_{open,read,write,ioctl,close} can be called from kernel space.
+its not. ALSA doesn't require anything but a fairly small set of
+function pointers to be initialized so that the "mid-level" code can
+manage the device. as long as there is some way to move data to and
+from the audio interface (which seems like a pretty basic assumption),
+you just have to wrap it up and present it to the mid-level code.
 
 --p
 
