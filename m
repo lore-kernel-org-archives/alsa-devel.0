@@ -1,16 +1,18 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: Re: Re: [Alsa-user] alsa-driver-1.0.4rc1 missing      snd-usb-usx2y ?
-Date: Thu, 1 Apr 2004 14:57:41 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: cannot submit datapipe for urb 0 on /dev/dsp access
+ -extigy
+Date: Thu, 01 Apr 2004 15:38:40 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200404011457.41884.annabellesgarden@yahoo.de>
-References: <44618.195.245.190.94.1080560065.squirrel@www.rncbc.org> <45386.195.245.190.94.1080632967.squirrel@www.rncbc.org> <32795.192.168.1.5.1080679902.squirrel@www.rncbc.org>
+Message-ID: <Pine.HPX.4.33n.0404011536320.14718-100000@studcom.urz.uni-halle.de>
+References: <20040401023450.01B5A39BF@mprdmxin.myway.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <32795.192.168.1.5.1080679902.squirrel@www.rncbc.org>
-Content-Disposition: inline
+Received: from mlucom10.urz.uni-halle.de (mlucom10.urz.uni-halle.de [141.48.3.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA20211
+	for <alsa-devel@alsa-project.org>; Thu, 1 Apr 2004 15:38:44 +0200
+In-reply-to: <20040401023450.01B5A39BF@mprdmxin.myway.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,27 +21,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rui Nuno Capela <rncbc@rncbc.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: "John H." <mrmailer@myway.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am Dienstag 30 M=E4rz 2004 22:51 schrieb Rui Nuno Capela:
-> >>> the snd-usb-usx2y module. AFAICT it's not being included by
-> >>> ./configure --with-cards option, nor it gets built when one sets
-> >>> --with-cards=3Dall.
-> >>
-> >> It is fixed in CVS now. Thanks.
+John H. wrote:
+> I get this error repeatedly
 >
-> Checked out today's alsa-driver-1.0.4rc2 where the missed snd-usb-usx2y
-> module gets built now.
+> ALSA /tmp/alsa-driver-1.0.4rc2/usb/usbaudio.c:811:
+> cannot submit datapipe for urb 0, err = -38
 >
-> However, I couldn't get it to load, dmesg gives:
+> whenever i try to use /dev/dsp now, and i can only get sound from line in.
 >
-> snd_usb_usx2y: Unknown symbol snd_pcm_dma_flags
->
-> All other alsa packages are up to 1.0.4rc1 here.
->
-CVS today: OK here with 2.4 and 2.6.5-rc3. Have you tried a fresh checkout?
+> i have kernel 2.6.4 and drivers 1.0.4rc2
+
+What is in /proc/asound/cards?
+
+Is your host controller UHCI or OHCI?
+
+Does it work with "aplay something.wav"?
+
+Does it work with a 2.4.x kernel?
+
+
+Regards,
+Clemens
+
+
 
 
 -------------------------------------------------------
