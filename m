@@ -1,11 +1,10 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: ALSA user documentation
-Date: Tue, 28 May 2002 13:21:45 +0900
+From: Lars Heineken <Lars.Heineken@gmx.de>
+Subject: arecord -D cards.pcm.iec958
+Date: Tue, 28 May 2002 19:31:58 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CF305D9.B987DA79@boosthardware.com>
-References: <Pine.LNX.4.44.0205261717520.6800-100000@sasami.anime.net>
+Message-ID: <20020528193158.186005ae.Lars.Heineken@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,40 +15,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net, Dan Hollis <goemon@anime.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dan Hollis wrote:
-> 
-> 
-> > > Maybe we should integrate this information somewhere?
-> 
-> Well, I hope to design a mechanism in the future where the list is
-> automatically generated from the alsa source code...
-> 
+Hi !
 
-I have been working on a new more automated version of the online docs
-and you should probably have a look at that too. 
+I finaly managed to capture sound from spdif-in using my Terratec EWX24/96 (ICE1712)
 
-http://www.alsa-project.org/alsa-doc/doc-php/cmipci.php3
+Doing it this way:  arecord -D cards.pcm.iec958 -c 12 -r 44100 -f S32_LE test.wav  
+// all other ways failed, as you can only record from spdif when using S32_LE and 12 channels.
 
-I need to figure out how to update the module options for each page from
-the source code so that will probably be a similar script to what you
-want for the soundcard matrix.
+My problem now: This is a twelve track, 44 Hz 32bit Little Endian Wave ?
+                I have no idea what to do next.
 
-At the moment I am working on getting the add notes pages working
-correctly. I think I am half way there then I will move on to the module
-options.
+I would like to record a single stereo signal from spdif-in. How can I accomplish that ?
 
+Regards,
 
+Lars.
 
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-=======================================================================
+PS: I searched the while for hours but got no closer than this. Recording from -D 0 works fine, but records only from analog-in, even when the sliders (AND captures) in alsamixer are set for recording spdif ONLY. (?)
 
 _______________________________________________________________
 
