@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000813]: Terratec USB surround broken
-Date: Wed, 26 Jan 2005 10:40:58 +0100
-Message-ID: <9f97e9108430fb084f1898f67b1ae466@bugtrack.alsa-project.org>
+From: Alberto.Pareto@seleniacomms.com
+Subject: Capturing audio and 1010lt
+Date: Wed, 26 Jan 2005 11:33:39 +0100
+Message-ID: <OFDAEF9790.06BB015E-ONC1256F95.003851E8@MarconiSelenia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 92AD11F0
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2005 10:40:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,77 +14,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=813> 
-======================================================================
-Reported By:                ilikejam
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   813
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10 (ALSA compiled in)
-======================================================================
-Date Submitted:             01-12-2005 19:41 CET
-Last Modified:              01-26-2005 10:40 CET
-======================================================================
-Summary:                    Terratec USB surround broken
-Description: 
-I'm using a Terratec USB 5.1 card. The 6 channels test correctly using
-'./speaker-test -c6', but any attempt to use 5.1 channel in Xine, or using
-'aplay -Dsurround51 file.wav' results in errors e.g.
------
-ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
-definition (id: surround51, value: cards.pcm.surround51)
-aplay: main:508: audio open error: Invalid argument
------
-Xine similarly fails saying the sound card is in use. Xine works fine for
-stereo audio, even when configured to use 5.1 channel sound.
-======================================================================
+Hi, I'm starting using a delta 1010lt (my first audio device). I installed
+ALSA on a RedHat Linux and at the moment I'm able to capture/play.
 
-----------------------------------------------------------------------
- ilikejam - 01-26-05 09:02 
-----------------------------------------------------------------------
-Also, when recording, I have to record at 48000Hz, then change the sample
-rate in Audacity to 44100Hz (without resampling) in order to get the
-correct speed.
+   ALSA version:
+   Advanced Linux Sound Architecture Driver Version 1.0.8.
+   Compiled on Jan 19 2005 for kernel 2.4.21-4.EL with versioned symbols.
 
-----------------------------------------------------------------------
- Clemens Ladisch - 01-26-05 10:40 
-----------------------------------------------------------------------
-The "surround51" device is used to configure some cards for 5.1 output, but
-this special configuration is not possible for USB devices because there
-are so many different models.
+I've to capture simultaneously 8 different input sources and to record
+separate audio in different
+files (one file for each input) , but I only see one capture device:
 
-However, USB devices don't need to be separately configured for 5.1
-output, so just use a standard device name (like "default" or "plughw" or
-"hw").
+   cat /proc/asound/devices:
 
+           8: [0- 0]: raw midi
+          16: [0- 0]: digital audio playback
+          24: [0- 0]: digital audio capture
+           0: [0- 0]: ctl
+           1:       : sequencer
+       33:       : timer
 
-As for the sample rate:  what are the contents of
-/proc/asound/cardX/stream0 while you are recording?
+At the moment I'm using 'arecord', 'aplay' and 'alsamixer'. My .asoundrc
+is empty (I'd need it?). I use the default device or 'hw:0,0' (otherwise I
+get errors).
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-12-05 19:41 ilikejam       New Issue                                    
-01-12-05 19:41 ilikejam       Distribution              => Fedora Core 3   
-01-12-05 19:41 ilikejam       Kernel Version            => 2.6.10 (ALSA compiled
-in)
-01-26-05 09:02 ilikejam       Note Added: 0003413                          
-01-26-05 10:40 Clemens LadischNote Added: 0003414                          
-======================================================================
+What I'm supposed to do to get 8 different captures? Maybe this can be done
+only through the API and not with the standard tool installed with ALSA
+(like arecord and aplay)?
+Is this a limitation of the board?
 
+Thanks for advices!!!
+Alberto
 
 
 
