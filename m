@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000375]: SB Live (Value and 5.1), OSS playback fine, ALSA playback distorted
-Date: Fri, 24 Sep 2004 13:35:48 +0200 (CEST)
+Subject: [ALSA - driver 0000401]: alsaconf correctly identifies the driver, but it fails to load properly
+Date: Fri, 24 Sep 2004 13:30:30 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924113548.5E012101DE@server.perex-int.cz>
+Message-ID: <20040924113030.D41E59074@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3BD2228E
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:36:02 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 495B4288
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:30:31 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,84 +22,86 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000375
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000401
 ======================================================================
-Reported By:                azrael7157
-Assigned To:                pzad
+Reported By:                ronis
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     375
-Category:                   PCI - emu10k1
+Bug ID:                     401
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.4.20-gentoo-r8
+Distribution:               slackware-10.0
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             07-10-2004 17:36 CEST
-Last Modified:              09-24-2004 13:35 CEST
+Date Submitted:             07-21-2004 18:30 CEST
+Last Modified:              09-24-2004 13:30 CEST
 ======================================================================
-Summary:                    SB Live (Value and 5.1), OSS playback fine, ALSA playback distorted
+Summary:                    alsaconf correctly identifies the driver, but it fails to load properly
 Description: 
-    I'm using a SB Live!. Normally I use the SB Live! Value (CT4780) but it
-came with a Dell computer, so I bought a SB Live! 5.1 Digital (SB0220) to
-make sure it wasn't one of those crippled soundcards. The issue occurs
-with both versions of the SB Live!
-    I'm using ALSA 1.0.5 - Gentoo doesn't have alsa-driver 1.0.5a
-available yet.
-    I have a rather unusual problem - when I try to use ALSA e.g. aplay,
-to play back a wav file e.g. one of the KDE wavs, it produces an odd
-output. The output is distorted, plays back really slowly, and samples
-keep on getting repeated. Once, it took over 5 minutes to play back
-/usr/kde/3.1/share/sound/KDE_Startup.wav.
-     On a whim, I tried using XMMS through the OSS output - to my suprise
-it worked perfectly. In fact, I'm listening to MP3's as I fill out this
-bug report.
-     I don't know whether this is a driver issue or a mixer one - the
-mixer settings are horrendous. However, I managed to get onboard sound to
-work (via82xx, now disabled) through ALSA and OSS emulation perfectly fine
-on the same PC, so it seems like a SB Live! specific issue.
-    I've attached my asound.state in case it is a mixer issue.
+alsaconf chooses this driver, but when it tries to load:
+
+ kernel: ATI IXP AC97 controller: probe of 0000:00:14.5 failed with error
+-13
+
+No sound, needless to say.
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- azrael7157 - 07-10-2004 18:39 CEST 
+ ronis - 07-21-2004 21:55 CEST 
 ----------------------------------------------------------------------
-Midi playback via pmidi (using hardware or Timidity) doesn't work either.
-Haven't tried an OSS midi player yet.
+Oops, I just realized I'd pasted the wrong lines from lspci -vn:  
+
+Here are the correct ones:
+
+00:14.5 Class 0401: 1002:4341
+        Subsystem: 103c:006b
+        Flags: bus master, 66Mhz, slow devsel, latency 64, IRQ 5
+        Memory at d0003000 (32-bit, non-prefetchable) [size=256]
 
 ----------------------------------------------------------------------
- azrael7157 - 07-13-2004 18:33 CEST 
+ ronis - 07-22-2004 16:38 CEST 
 ----------------------------------------------------------------------
-I've been looking into this further myself, this bug can be closed now. Not
-actually an ALSA issue, turns out it's a motherboard issue. I tried it in
-a different computer, and it worked first time. I tried disabling ACPI,
-sound started working again through aplay.
-It might be worth noting in the SB Live installation pages that users of
-Via chipsets on Athlon motherboards (especially the Abit AT7-MAX2) need to
-disable ACPI e.g. with lilo, add append="acpi=off".
+I've resolved the problem.  Installing the CVS version of the atiixp
+driver
+works.   I'd been using the driver that came with the 2.6.7 linux kernel
+sources.
+
+Guess you can close this one.
 
 ----------------------------------------------------------------------
- tiwai - 07-15-2004 11:24 CEST 
+ Mark Knecht - 07-29-2004 17:35 CEST 
 ----------------------------------------------------------------------
-Ok, closed now.
+Can someone point me towards instructions on how to 'install a CVS version
+of the atiixp driver'? I'm seeing this problem and have been down for a
+week.
+
+Thanks
+
+----------------------------------------------------------------------
+ tiwai - 07-30-2004 16:44 CEST 
+----------------------------------------------------------------------
+1.0.6-rc will be released soon later.  Wait for a while...
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-10-04 17:36 azrael7157     New Bug                                      
-07-10-04 17:36 azrael7157     File Added: asound.state                     
-07-10-04 17:36 azrael7157     Distribution              => Gentoo          
-07-10-04 17:36 azrael7157     Kernel Version            => 2.4.20-gentoo-r8
-07-10-04 17:37 azrael7157     Bug Monitored: azrael7157                    
-07-10-04 18:39 azrael7157     Bugnote Added: 0001403                       
-07-13-04 18:33 azrael7157     Bugnote Added: 0001414                       
-07-15-04 11:24 tiwai          Bugnote Added: 0001427                       
-07-15-04 11:24 tiwai          Resolution               open => not a bug   
-07-15-04 11:24 tiwai          Status                   assigned => resolved
-09-24-04 13:35 tiwai          Status                   resolved => closed  
+07-21-04 18:30 ronis          New Bug                                      
+07-21-04 18:30 ronis          Distribution              => slackware-10.0  
+07-21-04 18:30 ronis          Kernel Version            => 2.6.7           
+07-21-04 21:55 ronis          Bugnote Added: 0001465                       
+07-22-04 16:38 ronis          Bugnote Added: 0001467                       
+07-29-04 17:35 Mark Knecht    Bugnote Added: 0001484                       
+07-30-04 16:44 tiwai          Bugnote Added: 0001487                       
+07-30-04 16:44 tiwai          Resolution               open => fixed       
+07-30-04 16:44 tiwai          Status                   assigned => resolved
+09-24-04 11:29 assenls        Bug Monitored: assenls                       
+09-24-04 13:30 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
