@@ -1,11 +1,12 @@
-From: "Thomas Charbonnel" <thomas@undata.org>
-Subject: Re: RME HDSP 9632 driver
-Date: Mon, 11 Aug 2003 09:00:01 +0200 (CEST)
+From: p z oooo <pzad@pobox.sk>
+Subject: PATCH: alsamixer + big range controls
+Date: Mon, 11 Aug 2003 10:06:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32833.62.106.184.128.1060585201.squirrel@www.undata.org>
+Message-ID: <200308110806.KAA23451@www7.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97784280-1804289383-1060589201=:23406"
+Content-Transfer-Encoding: 8BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,24 +19,40 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Is there an RME HDSP 9632 driver in development?
-> The current hdsp driver from 0.9.6 will not load claiming the device is
-not  present.
->
-> Thank you.
->
->
+--97784280-1804289383-1060589201=:23406
+Content-Type: TEXT/plain; CHARSET=US-ASCII
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-No that I know of. The hdsp 9632 is quite different from the other hdsp
-cards. Supporting it will require non-trivial driver adaptation. Right now
-the driver claims the device is not present because it doesn't recognise
-the card revision number (>= 0x96). I've asked RME about the card, I'll
-let you know.
+Hi,
 
-Thomas
+Alsa mixer is not correctly working with controls with big range (for=20
+example 0 - 2000000000) (there is integer overflow).
+
+Peter Zubaj
 
 
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislusenstva=0ADig=
+italny fotoaparat Olympus =B5300 v cenach uz od 16.100,- Sk bez DPH=0ANavst=
+ivte nas na adrese http://www.somi.sk/akcie.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=0A
+--97784280-1804289383-1060589201=:23406
+Content-Type: APPLICATION/octet-stream; name="E:\\patch\\alsamixer.patch"
+Content-Transfer-Encoding: BASE64
 
+LS0tIGFsc2FtaXhlci5jLm9sZAkyMDAzLTA3LTIyIDE4OjM4OjI1LjAwMDAw
+MDAwMCArMDIwMAorKysgYWxzYW1peGVyLmMJMjAwMy0wOC0xMCAyMToyNDoy
+Ni4wMDAwMDAwMDAgKzAyMDAKQEAgLTQ2OCw3ICs0NjgsNyBAQAogc3RhdGlj
+IGludAogbWl4ZXJfY29udihpbnQgdmFsLCBpbnQgb21pbiwgaW50IG9tYXgs
+IGludCBubWluLCBpbnQgbm1heCkKIHsKLQlpbnQgb3JhbmdlID0gb21heCAt
+IG9taW4sIG5yYW5nZSA9IG5tYXggLSBubWluOworCWZsb2F0IG9yYW5nZSA9
+IG9tYXggLSBvbWluLCBucmFuZ2UgPSBubWF4IC0gbm1pbjsKIAkKIAlpZiAo
+b3JhbmdlID09IDApCiAJCXJldHVybiAwOwo=
+
+--97784280-1804289383-1060589201=:23406--
 
 
 -------------------------------------------------------
