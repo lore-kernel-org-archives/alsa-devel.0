@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: How do I perform non-DMA transfers in an interrupt
- handler?
-Date: Fri, 21 Mar 2003 13:31:02 +0100 (CET)
+From: "Jan \"Evil Twin\" Depner" <eviltwin69@cableone.net>
+Subject: Re: SoundCard compatibility question
+Date: 20 Mar 2003 15:10:42 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303211328090.2699-100000@pnote.perex-int.cz>
-References: <3E7AFEFE.50901@student.kuleuven.ac.be>
+Message-ID: <1048194643.6927.11.camel@eviltwin>
+References: <002101c2ef22$0f249f20$0100a8c0@Pblaptop>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E7AFEFE.50901@student.kuleuven.ac.be>
+In-Reply-To: <002101c2ef22$0f249f20$0100a8c0@Pblaptop>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,81 +17,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Pete Barnard <petebarnard@tiscali.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 21 Mar 2003, Pieter Palmers wrote:
+That card may not even be full duplex.  For a very cheap, compatible
+card you can use an Ensoniq Audio PCI.  This is 16 bit 48KHz.  I've done
+some decent two channel recording with one of those.  There are a couple
+of decent two channel 24 bit 96KHz cards based on the envy24 chipset
+that run about $130 to $180 US at musician's Friend.  Here are a couple
+of examples.
 
-> Hi all,
-> 
-> I face the following problem: The card I'm writing a driver for (SAM9707
-> based) doesn't support any form of DMA transfer. It requires you to
-> transfer the PCM data through a 'rep outsw' like mechanism. It raises an
-> interrupt when it needs new data. The transfer flow is as follows:
->      1) allocate buffer on card
->      2) start playback
->      3) card raises interrupt
->      4) transfer block of data in interrupt handler
->      5) wait for next interrupt -> 4
-> 
-> How do I implement this in ALSA? After reading the 'Writing an ALSA
-> driver' document a few times, I still cannot figure out how to do this.
-> Should I use the copy/silence callbacks? Or can I access the PCM buffer
-> from within the interrupt handler? I'm currently using 'concept' code
-> from Uros Bizjak, and the interrupt handler looks like this:
-> 
-> (I removed irrelevant pieces)
-> 
->      substream = voice->substream;
->      runtime = substream->runtime;
-> 
->      hwoff = runtime->hw_ptr_interrupt;
-> 
->      hwbuf = (u16 *) runtime->dma_area;
->             hwbuf += (frames_to_bytes(runtime, hwoff) >> 1);
-> 
->      /* word transfer count */
->      wcount = snd_pcm_lib_period_bytes(substream);
->      wcount >>= 1;
-> 
->      /* transfer to/from sam9407 buffers */
->      if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
->          sam->writeData16Burst(sam, hwbuf, wcount);
->      else
->          sam->readData16Burst(sam, hwbuf, wcount);
-> 
->      snd_sam9407_command(sam, NULL, SAM_END_XFER,
->              &voice->channel, 1, NULL, 0, -1);
-> 
->      /* update hardware pointer mirror */
->      voice->hwptr = runtime->hw_ptr_interrupt + runtime->period_size;
-> 
->      snd_pcm_period_elapsed(substream);
-> 
-> But I'm not sure if this is correct.
-> 
-> What should I use here?
-> Is there a card driver that I can refer to that uses the same mechanism?
+http://www.musiciansfriend.com/srs7/sid=030320132900024117199122901257/search/g=live/detail/base_id/52845
 
-This code is ok. It might use probably a little bit better interrupt 
-resolution to sync the DMA ring buffer with hardware more precisely (I 
-mean use the transfer size in interrupt less than the period size).
+http://www.musiciansfriend.com/srs7/sid=030320132900024117199122901257/search/g=live/detail/base_id/52399
 
-You don't need to use extra copy and silence when the DMA ring buffer has 
-not a special sample order (something other than interleaved and 
-non-interleaved).
 
-						Jaroslav
+If you need more than two channels I would recommend the Delta 44 or 66
+(again, envy24 chipset which I highly recommend).
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+http://www.musiciansfriend.com/srs7/sid=030320132900024117199122901257/search/g=live/detail/base_id/52398
+
+http://www.musiciansfriend.com/srs7/sid=030320132900024117199122901257/search/g=live/detail/base_id/52397
+
+
+Hope that helps.
+
+
+Jan
+
+
+On Thu, 2003-03-20 at 14:48, Pete Barnard wrote:
+> I have just installed Red Hat Linux 7.3 on my pc at work and will be installing the ALSA drivers.  However, the sound card is described as a "SoundMax integrated Audio" (I don't really know much about this card and cannot find it on the ALSA soundcard matrix).   I have read that it is a SoundBlaster compatible card but I haven't had this confirmed.  Does anybody have any suggestions as to how I would get ALSA to work with this card? for example, what lines do I need to put in the /etc/modules.conf file? and what options do I need to type when I do a ./configure for the drivers? Are there any external drivers that I need to download etc?
+> 
+> Failing all this - will I have to replace it with another card that is listed on the ALSA soundcard matrix ??
+> 
+> Regards,
+> 
+> Pete
+
 
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+This SF.net email is sponsored by: Tablet PC.  
+Does your code think in ink? You could win a Tablet PC. 
+Get a free Tablet PC hat just for playing. What are you waiting for? 
+http://ads.sourceforge.net/cgi-bin/redirect.pl?micr5043en
