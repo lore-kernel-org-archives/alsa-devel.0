@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000838]: m68k: "simple.c:223: warning: `n' might be used uninitialized in this function"
-Date: Thu, 20 Jan 2005 19:09:48 +0100
-Message-ID: <5a8d1bd9e2ed675f7001631eacdfde03@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
+Date: Thu, 20 Jan 2005 19:11:03 +0100
+Message-ID: <c144b6dece4d428a36ba33acc9f33b62@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ABE6723D
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 19:09:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 239DD23D
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 19:11:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=838> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                jbrsubscribe
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   838
-Category:                   mixer
+Project:                    ALSA - driver
+Issue ID:                   836
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     feedback
+Distribution:               Suse
+Kernel Version:             2.6.8-24.10-smp
 ======================================================================
-Date Submitted:             01-20-2005 12:39 CET
-Last Modified:              01-20-2005 19:09 CET
+Date Submitted:             01-19-2005 18:19 CET
+Last Modified:              01-20-2005 19:11 CET
 ======================================================================
-Summary:                    m68k: "simple.c:223: warning: `n' might be used
-uninitialized in this function"
+Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
+slider control for Surround/Center/LFE/Side
 Description: 
-Making all in mixer
-[...]
-if /bin/sh ../../libtool --mode=compile m68k-linux-gcc -DHAVE_CONFIG_H -I.
--I. -I../../include -I../../include    -g -Wall -O2 -MT simple.lo -MD -MP
--MF ".deps/simple.Tpo" \
-  -c -o simple.lo `test -f 'simple.c' || echo './'`simple.c; \
-then mv -f ".deps/simple.Tpo" ".deps/simple.Plo"; \
-else rm -f ".deps/simple.Tpo"; exit 1; \
-fi
- m68k-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include -g
--Wall -O2 -MT simple.lo -MD -MP -MF .deps/simple.Tpo -c simple.c  -fPIC
--DPIC -o .libs/simple.o
-simple.c: In function `to_user':
-simple.c:223: warning: `n' might be used uninitialized in this function
-simple.c: In function `from_user':
-simple.c:232: warning: `n' might be used uninitialized in this function
- m68k-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include -g
--Wall -O2 -MT simple.lo -MD -MP -MF .deps/simple.Tpo -c simple.c -o
-simple.o >/dev/null 2>&1
-
-See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=m68k&stamp=1106208530&file=log&as=raw
-for the full m68k build log.
+Unable to set volume control for Surround/Center/LFE/Side due to the fact
+that the sliders for these entities do not function in alsamixer and
+gamix. The sliders cannot be manipulated. The only functional sliders are
+PCM, PC Speaker and the two (2) Capture sliders.
+In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
+appear at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-20-05 19:09 
+ jbrsubscribe - 01-20-05 18:42 
 ----------------------------------------------------------------------
-I believe these warnings are bogus.
+IgOR,
+
+I'm running Suse 9.2 with 2.6.8-24.10-smp on an ASUS P5AD2-E Premium
+motherboard. I installed the alsa 1.0.8 driver with:
+./configure
+make
+make install
+./snddevices
+Then I installed the remainder of the alsa packages (these were
+pre-compiled for Suse). I ran alsaconf (as root) to select the HDA card.
+After this, I ran alsamixer (not alsamixergui). This shows the sliders for
+PCM, Surround, center, LFE, PC Speaker.
+I tabbed to the PCM slider and used the 'up' arrow to increase the volume.
+on my system, the PCM, PC Speaker and the 2 Capture sliders are the only
+ones showing '0<>0' at the bottom of the slider. using the 'up' arrow will
+increase the numbers to the left and right of the '<>'.
+I hope this helps. With my first post I attached a file 'aadebug" with a
+part of my configuration. Perhaps you could have a look at this.
+
+----------------------------------------------------------------------
+ tiwai - 01-20-05 19:11 
+----------------------------------------------------------------------
+Shall I close this bug?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-20-05 12:39 jdthood        New Issue                                    
-01-20-05 19:09 tiwai          Note Added: 0003330                          
+01-19-05 18:19 jbrsubscribe   New Issue                                    
+01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
+01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
+01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
+01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-19-05 18:36 tiwai          Status                   new => resolved     
+01-19-05 18:36 tiwai          Resolution               open => not an issue
+01-19-05 18:36 tiwai          Assigned To               => tiwai           
+01-19-05 18:36 tiwai          Note Added: 0003311                          
+01-19-05 18:36 tiwai          Assigned To              tiwai =>            
+01-20-05 01:07 jbrsubscribe   Status                   resolved => feedback
+01-20-05 01:07 jbrsubscribe   Resolution               not an issue => reopened
+01-20-05 01:07 jbrsubscribe   Note Added: 0003320                          
+01-20-05 01:51 jbrsubscribe   Note Added: 0003321                          
+01-20-05 11:52 1g0R           Note Added: 0003325                          
+01-20-05 18:42 jbrsubscribe   Note Added: 0003328                          
+01-20-05 19:11 tiwai          Note Added: 0003331                          
 ======================================================================
 
 
