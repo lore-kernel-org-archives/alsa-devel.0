@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000240]: Clean up the iPaq specific things (move them into another source code).
-Date: Wed, 20 Oct 2004 11:53:35 +0200
+Date: Wed, 20 Oct 2004 12:21:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <8233f122e4bce85e54735b1029c5f61b@bugtrack.alsa-project.org>
+Message-ID: <82fe2ad86f5143d714fa34026dd9a4dd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B0DCB2DD
-	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 11:53:35 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC936345
+	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 12:21:29 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -43,6 +43,10 @@ Date Modified  Username       Field                    Change            =
 10-20-04 11:31 perex          Note Deleted: 0002214                      =
  =20
 10-20-04 11:53 perex          Note Added: 0002215                        =
+ =20
+10-20-04 11:53 perex          Note Deleted: 0002215                      =
+ =20
+10-20-04 12:21 perex          Note Added: 0002216                        =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
