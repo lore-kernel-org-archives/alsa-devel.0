@@ -1,14 +1,14 @@
-From: Juergen Kreileder <jk@blackdown.de>
-Subject: Re: alsalib symbol problem
-Date: Tue, 17 Sep 2002 15:35:50 +0200
+From: Chuck Winters <cwinters@atl.lmco.com>
+Subject: Re: Configuration Spaces
+Date: Tue, 17 Sep 2002 09:48:00 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87u1kolow9.fsf@zaphod.blackdown.de>
-References: <Pine.LNX.4.21.0209171050510.612-100000@summer.quitte>
+Message-ID: <20020917094800.A3340@atl.lmco.com>
+References: <20020916110722.A28835@atl.lmco.com> <E17r1Ja-0001U3-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.21.0209171050510.612-100000@summer.quitte> (Tim
- Goetze's message of "Tue, 17 Sep 2002 10:52:53 +0200 (CEST)")
+Content-Disposition: inline
+In-Reply-To: <E17r1Ja-0001U3-00@usw-sf-list1.sourceforge.net>; from pbd@op.net on Mon, Sep 16, 2002 at 02:33:09PM -0400
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,51 +17,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Tim Goetze <tim@quitte.de>
-Cc: Florian Bomers <Florian.Bomers@sun.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Tim Goetze <tim@quitte.de> writes:
+Thanks.
 
-> Florian Bomers wrote:
+One other question.  This may be stupid, but here goes.
+
+My knowledge of signals is that the period is the time it takes a signal to 
+complete 1 cycle.  So what is the snd_pcm_hw_params_set_period used for?
+Is the "period" a property of the signal, or an arbitrary property set by
+the programmer for performance, fidelity, etc.
+
+Thanks,
+Chuck
+
+On Mon, Sep 16, 2002 at 02:33:09PM -0400, Paul Davis wrote:
+> >	1) Is the configuration space specific to each device, or each opened s
+> >tream?
 > 
->>Why does this happen ? I searched the mailing list archive and only
->>found an explanation that symbols don't match and I need to
->>recompile the ALSA lib. In my case it's a clean install of ALSA on a
->>newly installed red hat system. There was never any other version of
->>ALSA.
+> each open stream. obviously, its related to the underlying physical
+> device, but you're semantically operation on one stream.
 > 
-> you probably are calling alsa from a shared object -- try 
+> --p
 > 
->   dlopen ("libasound.so", RTLD_LAZY | RTLD_GLOBAL);
 > 
-> in your module's init function.
-
-The need for RTLD_GLOBAL is somewhat ugly, usually one wants to load
-plugins with RTLD_LOCAL.  E.g. Java's System.load()/loadLibrary()
-doesn't use RTLD_GLOBAL.  We could make a special case for ALSA in our
-Java implementation but that won't help people running JMF with
-another JVM.
-
-Is there any reason ALSA can't do something like 
-
-   if (name == NULL) {
-       Dl_info dlinfo;
-       static int dummy;
-       dladdr((void *) &dummy, &dlinfo);
-       name = dlinfo.dli_fname;
-   }
-
-in snd_dlopen()?  This would fix the snd_dlopen(NULL, ...) problem
-when the ALSA library has been dlopened with RTLD_LOCAL and the
-symbols are unknown in the main program.
-
-
-        Juergen
-
--- 
-Juergen Kreileder, Blackdown Java-Linux Team
-http://www.blackdown.org/java-linux/java2-status/
+> 
+> 
+> -------------------------------------------------------
+> This sf.net email is sponsored by:ThinkGeek
+> Welcome to geek heaven.
+> http://thinkgeek.com/sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 -------------------------------------------------------
