@@ -1,16 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Is source in CVS broken, or is it just me?
-Date: Mon, 26 Jan 2004 20:10:58 +0100 (CET)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: usx2y dependencies
+Date: Tue, 27 Jan 2004 00:07:43 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401262010410.2959@pnote.perex-int.cz>
-References: <40155FCB.10302@verizon.net>
+Message-ID: <20040126230743.GA681@tuba.home>
+References: <20040124002328.GA1946@tuba.home> <s5hy8rvui3n.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA22413
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jan 2004 20:11:09 +0100
-In-Reply-To: <40155FCB.10302@verizon.net>
+Content-Disposition: inline
+In-Reply-To: <s5hy8rvui3n.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,26 +17,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Justin Turner Arthur <justinarthur.mail@verizon.net>
-Cc: ALSA Development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, annabellesgarden@yahoo.de
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 26 Jan 2004, Justin Turner Arthur wrote:
-
-> 5. "make bzImage"
+On Mon, Jan 26, 2004 at 11:20:12AM +0100, Takashi Iwai wrote:
+> At Sat, 24 Jan 2004 01:23:28 +0100,
+> Martin Langer wrote:
+> > 
+> > usx2y build by "./configure --with-cards=usb-usx2y" has a dependency problem:
+> > 
+> > depmod: *** Unresolved symbols in
+> > /lib/modules/2.4.23/kernel/sound/usb/usx2y/snd-usb-usx2y.o
+> > depmod:         snd_usbmidi_disconnect_Rc1a56322
+> > depmod:         snd_hack_usb_set_interface_R5b6905b8
+> > depmod:         snd_usb_create_midi_interface_R5a5eff3a
+> > 
+> > ./configure --with-cards=usb-usx2y,usb-audio fix this problem, but OTOH it
+> > looks fine in /alsa-driver/utils/Modules.dep -- usx2y depends there on 
+> > snd-usb-audio and that seems to be ok.
+> > 
+> > Any hints?
 > 
-> Upon execution of that last command I get a few warnings about implicit 
-> declarations regarding class_simple_device_*, then in the end I get the 
-> following error:
+> try the attached patch.
+> 
 
-Use latest 2.6.2-rc kernels.
+It's perfect :) Please commit it.
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+martin
 
 
 -------------------------------------------------------
