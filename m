@@ -1,15 +1,13 @@
-From: Jon <jcb@niluge.net>
-Subject: Re: Unexpected hw_pointer value
-Date: Tue, 7 Oct 2003 00:33:44 +0200
+From: "Eliot Blennerhassett" <bigblen@icqmail.com>
+Subject: Getting /dev/snd/* permissions correct
+Date: Mon, 06 Oct 2003 18:44:42 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031006223344.GA589@zeus.homenet>
-References: <20031004211200.GA13137@zeus.homenet> <20031004215812.GI2972@dbz.icequake.net> <20031005162648.1e15ace5.pochini@shiny.it> <Pine.LNX.4.53.0310061419200.1641@pnote.perex-int.cz>
+Message-ID: <20031006184442.8619.h003.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.53.0310061419200.1641@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,29 +16,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Giuliano Pochini <pochini@shiny.it>, Ryan Underwood <nemesis-lists@icequake.net>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 06 October, 2003 � 03:36:32PM +0200, Jaroslav Kysela wrote:
-> We added these sanity checks for debugging purposes, but if they occur too
-> much, there's something bad with driver or hardware.
-> 
-> Basically, we have only information from last interrupt position and the
-> actual position in the ring buffer. We need to determine the new
-> "absolute" position. To detect the wrap point, we compute the delta value
-> for the new and old position and if delta is greater than buffer_size / 2,
-> we correct the new position by adding buffer_size. Otherwise we take value
-> as error, because we ask driver to acknowledge interrupts after
-> period_size not before. Note that some interrupt might be lost.
-> 
-> 						Jaroslav
+I can't work out how to get the entries in /dev/snd to have the correct
+permissions.
 
-my hardware seems really bad : ES1983S Maestro-3i on a dell c600.
-i experience lots of hardware freeze (bios does not respond) caused the
-driver/card with oss or alsa.
+Starting with no modules.
+Modprobe snd-XXXX results in the files in /dev/snd having only root rw
+permissions.  They are created with the correct group "audio"
 
-i'm kind of desperate with my sound card :(
+At the moment every time I reload my driver I need to "chmod g+rw /dev/snd/*"
+I want them to have root and group rw permissions.
+
+What do I need to change?
+
+thanks
+
+==================
+modules.conf includes
+options snd device_mode=0660
+
+devfsd is running.
+
+devfsd.conf includes
+REGISTER ^snd$ PERMISSIONS root.audio 0660
+REGISTER ^snd/.* PERMISSIONS root.audio 0660
+
+cat /proc/asound/version:
+Advanced Linux Sound Architecture Driver Version 0.9.7.
+Compiled on Oct  1 2003 for kernel 2.4.18-6mdk with versioned symbols.
+
+
+Eliot Blennerhassett
+AudioScience Inc.
+--
+Junk footer beyond this point. Read at your own risk.
+
+
+-------------------------------------------------------------
+Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
 
 
 -------------------------------------------------------
