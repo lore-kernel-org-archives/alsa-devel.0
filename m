@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000395]: No Sound-Output on FSC D1219 Mainboard (OSS-Free from Kenrel works)
-Date: Fri, 25 Mar 2005 15:31:20 +0100
-Message-ID: <c58815472eb05a08d99d25d10d7ed182@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001016]: [PATCH] conf.c -- allow to compile with gcc 4.0
+Date: Fri, 25 Mar 2005 15:41:06 +0100
+Message-ID: <4e1d332ee25f03aa562a762be3ae5918@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4AB84238
-	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 15:31:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3E989249
+	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 15:41:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,60 +21,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=395> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1016> 
 ======================================================================
-Reported By:                thorstenl
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   395
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1016
+Category:                   general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.6-1.435.2.3
 ======================================================================
-Date Submitted:             07-17-2004 11:32 CEST
-Last Modified:              03-25-2005 15:31 CET
+Date Submitted:             03-25-2005 15:41 CET
+Last Modified:              03-25-2005 15:41 CET
 ======================================================================
-Summary:                    No Sound-Output on FSC D1219 Mainboard (OSS-Free
-from Kenrel works)
+Summary:                    [PATCH] conf.c -- allow to compile with gcc 4.0
 Description: 
-On my Fujitsu Siemens D1219 Mainboard the snd-intel8x0 from alsa 1.05a
-(compiled by myself) or the version that comes with the Fedora Core 2
-Kernel (2.6.6-1.435.2.3; alsa 1.04a) are not able to output any sound.
-Trying to experiment with the different volume settings in alsamixer did
-not help. With the oss-free module i810_audio (compiled from the Fedora
-Core 2 kernel-sourcecode) it works fine.  
+The submitter of Debian bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=300792 has provided this
+patch which allows
+alsa-lib to be built with gcc 4.0.
+
+He says that without the patch, gcc-4.0 stops with an 'invalid 
+storage class' error because it is not allowed to declare a 'static'
+function inside another function.
 ======================================================================
-
-----------------------------------------------------------------------
- thorstenl - 03-25-05 15:27 
-----------------------------------------------------------------------
-jdthood, thanks for the tip. I removed the system/boards two weeks ago, so
-I can't try it anymore.
-
-----------------------------------------------------------------------
- thorstenl - 03-25-05 15:31 
-----------------------------------------------------------------------
-Seems I'm blind. I can't find any option to close this bug...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-17-04 11:32 thorstenl      New Issue                                    
-07-17-04 11:32 thorstenl      File Added: fsc_d1219                        
-07-17-04 11:32 thorstenl      Distribution              => Fedora Core 2   
-07-17-04 11:32 thorstenl      Kernel Version            => 2.6.6-1.435.2.3 
-07-17-04 11:33 thorstenl      Issue Monitored: thorstenl                    
-03-23-05 16:11 jdthood        Note Added: 0004176                          
-03-25-05 15:27 thorstenl      Note Added: 0004208                          
-03-25-05 15:27 thorstenl      Issue End Monitor: thorstenl                    
-03-25-05 15:31 thorstenl      Note Added: 0004209                          
+03-25-05 15:41 jdthood        New Issue                                    
+03-25-05 15:41 jdthood        File Added: conf.c-gcc-4.0_20050325jdth1.patch    
+               
 ======================================================================
 
 
