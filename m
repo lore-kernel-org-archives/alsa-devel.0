@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000951]: Fix bugs with early IRQs mishandling, missing silence fill, and wrong timing calculations
-Date: Tue, 1 Mar 2005 11:15:44 +0100
-Message-ID: <9efc469a26552c7406993963b439818b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000839]: No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with CS4299
+Date: Tue, 1 Mar 2005 11:31:02 +0100
+Message-ID: <e5a3e5924de77a5f67403829a2f11438@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BCE57205
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2005 11:15:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 922D0201
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2005 11:31:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,206 +23,167 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=951> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=839> 
 ======================================================================
-Reported By:                charles_levert
+Reported By:                Mimosius
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   951
-Category:                   CORE - pcm
+Issue ID:                   839
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.4.22
+Distribution:               SuSE 9.2
+Kernel Version:             2.6.8-24.10 + 2.6.10
 ======================================================================
-Date Submitted:             02-28-2005 21:26 CET
-Last Modified:              03-01-2005 11:15 CET
+Date Submitted:             01-21-2005 03:12 CET
+Last Modified:              03-01-2005 11:31 CET
 ======================================================================
-Summary:                    Fix bugs with early IRQs mishandling, missing
-silence fill, and wrong timing calculations
+Summary:                    No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with
+CS4299
 Description: 
-A patch is forthcoming.
+Audio-mode via SPDIF works fine but I can't get any non-audio passthru
+working.
 
-Here is the text from the patch preamble.
+Using 'ac3play -C test.ac3' SPDIF output is set to AES0=0x2 AES1=0x82
+AES2=0x0 AES3=0x2 and the PCM indicator on external decoder turns off, but
+there seems to arrive no decodeable signal on receiver side.
+There are no errors or warnings after loading soundrivers and there are no
+other soundcards plugged in (notebook).
 
-    This patch is against alsa-driver-1.0.8.
-    It covers:
-        alsa-kernel/core/pcm_lib.c
-        alsa-kernel/include/pcm.h
-        alsa-kernel/core/pcm_native.c
-        alsa-kernel/core/oss/pcm_oss.c
-    The main changes are in the first listed file.
 
-    An original bug description was filed
-    under "[ALSA - driver] PCI - cmipci":
-        <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=946>
-    since the problems were first observed on this hardware.
+here are some system informations:
 
-    The patch fixes the following problems:
+# cat /etc/modprobe.d/sound
+alias snd-card-0 snd-intel8x0
+options snd-ac97-codec
+options snd-intel8x0 enable=1 index=0
 
-     -- Properly handle early IRQs in
-        snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c.
 
-        This does occur, at least with CMI8738MC6 hardware.
+# cat /proc/asound/pcm' 
+00-00: Intel ICH : Intel 82801DB-ICH4 : playback 1 : capture 1
+00-01: Intel ICH - MIC ADC : Intel 82801DB-ICH4 - MIC ADC : capture 1
+00-02: Intel ICH - MIC2 ADC : Intel 82801DB-ICH4 - MIC2 ADC : capture 1
+00-03: Intel ICH - ADC2 : Intel 82801DB-ICH4 - ADC2 : capture 1
+00-04: Intel ICH - IEC958 : Intel 82801DB-ICH4 - IEC958 : playback 1
 
-        This bug had a major impact that caused the DMAs
-        to run for too long and irritating noise to be
-        heard at the end of playback.
 
-     -- Properly compute estimated time of next interrupt
-        in snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c;
-        this is no longer done with a
-        "... % runtime->period_size" kludge (which didn't
-        even attempt to round to nearest instead of merely
-        truncating).
+# cat /proc/asound/card0/codec97#0/ac97#0-0' (while playing ac3 using
+ac3dec -C)
+0-0/0: Cirrus Logic CS4299 rev 4
 
-     -- Test whether hw_avail is big enough to handle
-        the next runtime->period_size in
-        snd_pcm_update_hw_ptr_post() in pcm_lib.c,
-        otherwise call snd_pcm_tick_prepare() to
-        tentatively set up a timer if needed (to be able
-        to take earlier action in that case).
+Capabilities     : -headphone out-
+DAC resolution   : 20-bit
+ADC resolution   : 18-bit
+3D enhancement   : Crystal Semi 3D Stereo Enhancement
 
-     -- Centralize all folding of values with regard to
-        runtime->boundary in the new snd_pcm_next_buf()
-        function in pcm_lib.c.
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : Mic
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=0 AMAP DSA=0 VRA
+Extended status  : VRA
+PCM front DAC    : 48000Hz
+PCM ADC          : 48000Hz
+SPDIF Control    : Consumer Non-audio Category=0x2 Generation=1 Rate=48kHz
+Enabled
 
-        All relevant values are now systematically in
-        coherent synchronization without resorting to the
-        ugly and error-prone "value %= runtime->boundary"
-        kludge all over the place; unobvious wrapping
-        conditions testing is no longer needed in these
-        places.
 
-        A safe zone worth one runtime->buffer_size is now
-        kept on the left side of the operating interval,
-        just like it was the case for the right side;
-        this is necessary for proper simplified operation.
-
-     -- Direct manipulations of values with respect to
-        runtime->boundary needed to be brought in line
-        with new proper practices (and thus simplified)
-        in pcm.h, pcm_lib.c, pcm_native.c, and pcm_oss.c.
-
-     -- Isolate the second part of
-        snd_pcm_playback_silence() in the new
-        snd_pcm_playback_silence_fill() function in
-        pcm_lib.c.
-
-        This makes the code more readable since the
-        task this performs should not be confused with
-        what is done in the remaining first part of
-        snd_pcm_playback_silence().
-
-        The isolated code is unchanged.
-
-     -- Rewrite the remaining first part of
-        snd_pcm_playback_silence() to properly handle all
-        situations, including computing minimum silence
-        insertion even when "runtime->silence_size == 0".
-
-        This is needed for proper operation of the aplay
-        program, for one, and is much more forgiving on the
-        user; insertion of silence samples in user space
-        was always useless and a wrong solution anyway (but
-        user space specification of kernel space silence
-        insertion is useful and still very much supported).
-
-        The code is now much more straightforward to read.
-
-        Updates of runtime->control->appl_ptr (due
-        to the user writing samples) and updates to
-        runtime->status->hw_ptr (due to the audio hardware
-        consuming samples) are now _both_ properly
-        accounted for in all cases; the new code makes
-        this much more obvious.
-
-     -- All calls to snd_pcm_playback_silence() in
-        pcm_lib.c and pcm_native.c must no longer be under
-        the "runtime->silence_size > 0" condition.
-
-     -- Properly perform rounded-up integer division in
-        snd_pcm_system_tick_set() in pcm_lib.c.
-
-        This only had a minor impact.
-
-     -- Properly compute distance to next interrupt in
-        snd_pcm_tick_prepare() in pcm_lib.c; again, avoid
-        using any "... % runtime->period_size" kludge.
-
-     -- The usage of runtime->rate in
-        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
-        regarless of other changes.
-
-        The impact was that the timer was systematically
-        set to 1 single tick when it needed to be set to
-        typically hundreds of ticks.
-
-     -- The usage of runtime->sleep_min in
-        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
-        regarless of other changes.
-
-        The impact was that the number of ticks for
-        the timer was not properly adjusted up to what
-        sleep_min is documented to mean, when needed.
+# cat /proc/asound/card0/codec97#0/ac97#0-0+regs (while playing ac3 using
+ac3dec -C)
+0:00 = 1990
+0:02 = 3f3f
+0:04 = 9f1f
+0:06 = 801f
+0:08 = 0000
+0:0a = 801e
+0:0c = 801f
+0:0e = 8000
+0:10 = 9f1f
+0:12 = 9f1f
+0:14 = 9f1f
+0:16 = 9f1f
+0:18 = 8000
+0:1a = 0606
+0:1c = 0f0f
+0:1e = 0000
+0:20 = 0200
+0:22 = 0000
+0:24 = 0000
+0:26 = 800f
+0:28 = 0201
+0:2a = 0001
+0:2c = bb80
+0:2e = 0000
+0:30 = 0000
+0:32 = bb80
+0:34 = 0000
+0:36 = 0000
+0:38 = 0000
+0:3a = 0000
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0404
+0:5c = 0000
+0:5e = 0080
+0:60 = 0022
+0:62 = 0000
+0:64 = 0000
+0:66 = 0000
+0:68 = 8826
+0:6a = 0000
+0:6c = 0000
+0:6e = 0000
+0:70 = 0000
+0:72 = 0000
+0:74 = 0000
+0:76 = 0000
+0:78 = 003f
+0:7a = 0000
+0:7c = 4352
+0:7e = 5934
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000946 Early playback DMA IRQ with CMI8738MC6 ...
-======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-01-05 09:40 
+ Mimosius - 03-01-05 11:31 
 ----------------------------------------------------------------------
-Could you split your patch to single very elementary ones?
-Thanks.
+Hi,
 
-----------------------------------------------------------------------
- charles_levert - 03-01-05 11:15 
-----------------------------------------------------------------------
-The snd_pcm_tick_prepare() change could be on its own.
-That's one chunk with 2 old lines replaced by 1 new line.
-
-The runtime->rate and runtime->sleep_min in
-snd_pcm_tick_prepare() could be together on their own.
-That's one chunk with 3 old lines replaced by 3 new lines.
-
-
-Everything else, however, forms a coherent ensemble.
-For example, snd_pcm_playback_silence() now relies on
-snd_pcm_update_hw_ptr_interrupt() having already updated
-runtime->hw_ptr_interrupt and done the snd_pcm_next_buf()
-type of update.  Splitting this in a fashion that would
-leave the code in a still-coherent state in-between each
-individual patch would mean writing intermediary code that
-does not exist at this point.  It is far from obvious that
-what would so be made to appear as intermediary points
-would bring any more insight into the single main issue.
-It could present things in a worst way, actually.
-
-I've been burned doing this type of work for nothing in
-the past.  Please provide me with a preliminary evaluation
-of the patch and some rough directions about what you would
-like to appear as intermediary points (and in which order
-of individual patch application), if any is justified,
-before I go any further.
-
-The patch is actually not that big.  I just was very
-verbose in its description.
+I still couldnt solve the problem.
+I've read the CS4299-5.pdf Specs and tried to set register 0x2a to 0x0
+before playing any AC3-stream but this doesn't help. (compiled alsa-driver
+with full debug)
+There is still no decodeable signal on receiver side.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-28-05 21:26 charles_levert New Issue                                    
-02-28-05 21:26 charles_levert Kernel Version            => 2.4.22          
-02-28-05 21:29 charles_levert File Added: early-irqs.patch                    
-03-01-05 09:36 perex          Relationship added       related to 0000946  
-03-01-05 09:40 perex          Note Added: 0003755                          
-03-01-05 11:15 charles_levert Note Added: 0003757                          
+01-21-05 03:12 Mimosius       New Issue                                    
+01-21-05 03:12 Mimosius       Distribution              => SuSE 9.2        
+01-21-05 03:12 Mimosius       Kernel Version            => 2.6.8-24.10 + 2.6.10
+01-21-05 03:13 Mimosius       Issue Monitored: Mimosius                    
+03-01-05 11:31 Mimosius       Note Added: 0003758                          
 ======================================================================
 
 
