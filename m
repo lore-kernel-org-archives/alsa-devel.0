@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Sun, 20 Mar 2005 15:26:09 +0100
-Message-ID: <aef69d8091147d1e592ccbcea85bfd60@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000601]: Getting error while trying to insert the modules into the kernel>>cannot proceede further
+Date: Sun, 20 Mar 2005 15:37:27 +0100
+Message-ID: <a0efb22272de30367f6d8ba61c5d7d56@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D208B255
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 15:26:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4783A255
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 15:37:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,177 +21,84 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=601> 
 ======================================================================
-Reported By:                Q3Man
-Assigned To:                fmoraes
+Reported By:                djcobra
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   752
-Category:                   PCI - emu10k1x
+Project:                    ALSA - utils
+Issue ID:                   601
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r9
+Status:                     feedback
 ======================================================================
-Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-20-2005 15:26 CET
+Date Submitted:             10-24-2004 21:16 CEST
+Last Modified:              03-20-2005 15:37 CET
 ======================================================================
-Summary:                    ALSA > 1.0.5a does not load, failed with error -16
+Summary:                    Getting error while trying to insert the modules
+into the kernel>>cannot proceede further
 Description: 
-I'm having some problems with alsa since 1.0.6a. Previously I just had the
-later versions masked, but now various kde packages require the latest
-alsa, so I'm having to tackle it now. ALSA seems to start normally,
-however I get this error in dmesg: 
-EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
+sir,
+i have followed the installation instructions of the above mentioned
+driver to the letter according to what is given in the link :
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI128+%28earlier+model+CT4700%29.&chip=ES1370&module=ens1370
+but unfortunatly>>i am not able to proceed further after the step where i
+am supposed to insert the modules into the keranl>>as when i try to run
+the given comand :
 
-I also get this error when running alsamixer: 
-alsamixer: function snd_ctl_open failed for default: No such device 
+modprobe snd-ens1370;modprobe snd-pcm-oss;modprobe snd-mixer-oss;modprobe
+snd-seq-oss
 
-And similar ones in other alsa programs. 
+i get an error : 
 
-Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
-code and it seems that the error is vaguely interrupt related, but I could
-not find the code that produces error -16. I've swapped interrupts around
-and disabled non-essential devices (usb, serial, parallel ports, removed
-network cards and sound cards - although that last one proved slightly
-less than helpful :) I've changed from having my bios manage irq's to
-having the OS handle them with zero success. 
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o:
+init_module: No such device
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO or IRQ parameters.
+      You may find more information in syslog or the output from dmesg
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o: insmod
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o failed
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o: insmod
+snd-ens1370 failed
 
-I've looked around for that error code in google for the last few weeks -
-since the release of 1.0.6a with limited success. Nothing relevant to my
-situation. 
 
-Important configs and error messages:
-$ lspci -v |grep audio -A4
-0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
-EMU10k1X
-        Subsystem: Creative Labs: Unknown device 1003
-        Flags: bus master, medium devsel, latency 32, IRQ 12
-        I/O ports at d000
-        Capabilities: [dc] Power Management version 2
-(It is an actual EMU10k1X and not the Dell bastardized version)
-
-$ /etc/init.d/alsasound start; dmesg |tail -n1
- * Loading ALSA drivers...
- * Using ALSA OSS emulation
- * Loading: snd-mixer-oss
- * Loading: snd-pcm-oss
- * Loading: snd-seq-oss
- * Running card-dependent scripts
- * Restoring Mixer Levels                                                
-[ ok ]
-EMU10K1X: probe of 0000:00:09.0 failed with error -16
-
-$ uname -a
-Linux tobin1 2.6.9-gentoo-r9
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
-2004 i686 AMD
-Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
-
-If anyone needs any other config information, please let me know. Again,
-it works perfectly fine in 1.0.5a, the problems only appear in later
-versions.
-
+Kindly help me solve this problem so that i too can listen to wonderful
+music in the eccelent quality provided by this awesome driver that u have
+created
 ======================================================================
 
 ----------------------------------------------------------------------
- Q3Man - 03-20-05 08:17 
+ jdthood - 03-20-05 13:30 
 ----------------------------------------------------------------------
-Ok.. more checking. I found what I think are the functions you meant. I've
-ended up with this:
-
-if ((kctl =
-snd_ctl_find_numid(card,SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT))) !=
-NULL) {
-        /* already defined by ac97, remove it */
-        /* FIXME: or do we need both controls? */
-        snd_ctl_remove(card, SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT));
-}
-if ((err = snd_ctl_add(card, kctl)))
-                return err;
-snd_printk(KERN_ERR "returning 0\n");
-return 0;
-
-I've tried both snd_ctl_find_numid() and snd_ctl_find_id(), and in both
-cases the module dies with the following error in dmesg:
-EMU10K1X: probe of 0000:00:0a.0 failed with error -22
-
-I suppose that's relatively good, as we're no longer getting the error
--16. I'll do some digging and see if I can determine what error -22 is.
+This can be closed.
 
 ----------------------------------------------------------------------
- fmoraes - 03-20-05 15:26 
+ djcobra - 03-20-05 15:37 
 ----------------------------------------------------------------------
-Good, progress. Do you still have those snd_printk's in the code to see
-where it is failing/dieing?
--22 should EINVAL, so some argument is invalid... If that added code is
-causing the problem, just comment out the third new/add ctl block and see
-if the module loads. I took that chunck of code from the ca0106 driver
-(_mixer.c), so that's why they weren't found. Here's their definition:
+thank you for the suggestion tiwai
+im sorri for not responding earlier as i was unwelll >> hospitalised
+will check up immedeatly about the driver u mentioned and reply once
+again
+sorri once again for my delay in replying
 
-static int remove_ctl(snd_card_t *card, const char *name)
-{
-	snd_ctl_elem_id_t id;
-	memset(&id, 0, sizeof(id));
-	strcpy(id.name, name);
-	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-	return snd_ctl_remove_id(card, &id);
-}
-
-static snd_kcontrol_t *ctl_find(snd_card_t *card, const char *name)
-{
-	snd_ctl_elem_id_t sid;
-	memset(&sid, 0, sizeof(sid));
-	/* FIXME: strcpy is bad. */
-	strcpy(sid.name, name);
-	sid.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-	return snd_ctl_find_id(card, &sid);
-}
-
-Keep me updated.
+Cobra.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 05:12 Q3Man          New Issue                                    
-12-28-04 05:12 Q3Man          File Added: einfo                            
-12-28-04 05:12 Q3Man          Distribution              => Gentoo          
-12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
-12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
-01-03-05 12:10 tiwai          Note Added: 0003054                          
-01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
-01-03-05 17:30 Q3Man          Note Added: 0003071                          
-01-16-05 14:54 fmoraes        Note Added: 0003216                          
-01-18-05 00:44 Q3Man          Note Added: 0003240                          
-01-20-05 02:23 Q3Man          Note Added: 0003322                          
-01-20-05 19:12 tiwai          Note Added: 0003332                          
-01-21-05 05:11 Q3Man          Note Added: 0003337                          
-01-21-05 11:14 tiwai          Note Added: 0003341                          
-01-22-05 23:24 fmoraes        Note Added: 0003382                          
-03-09-05 02:57 fmoraes        Note Added: 0003821                          
-03-15-05 17:34 Q3Man          Note Added: 0003916                          
-03-15-05 22:32 Q3Man          Note Added: 0003918                          
-03-16-05 02:09 fmoraes        Note Added: 0003927                          
-03-16-05 03:32 Q3Man          Note Added: 0003930                          
-03-16-05 04:06 fmoraes        Note Added: 0003931                          
-03-16-05 04:53 Q3Man          Note Added: 0003932                          
-03-16-05 05:19 Q3Man          Note Added: 0003933                          
-03-17-05 01:45 fmoraes        Note Added: 0003976                          
-03-17-05 03:20 Q3Man          Note Added: 0003977                          
-03-18-05 02:07 fmoraes        Note Added: 0003988                          
-03-18-05 02:43 Q3Man          Note Added: 0003989                          
-03-18-05 03:41 Q3Man          Note Added: 0003990                          
-03-18-05 21:17 fmoraes        Note Added: 0004005                          
-03-18-05 23:48 Q3Man          Note Added: 0004007                          
-03-19-05 21:00 fmoraes        Note Added: 0004069                          
-03-20-05 08:00 Q3Man          Note Added: 0004073                          
-03-20-05 08:17 Q3Man          Note Added: 0004074                          
-03-20-05 15:26 fmoraes        Note Added: 0004091                          
+10-24-04 21:16 djcobra        New Issue                                    
+10-26-04 22:19 djcobra        Issue Monitored: djcobra                     
+11-09-04 19:24 tiwai          Note Added: 0002347                          
+03-20-05 13:30 jdthood        Note Added: 0004086                          
+03-20-05 13:34 perex          Status                   new => resolved     
+03-20-05 13:34 perex          Resolution               open => suspended   
+03-20-05 15:37 djcobra        Status                   resolved => feedback
+03-20-05 15:37 djcobra        Resolution               suspended => reopened
+03-20-05 15:37 djcobra        Note Added: 0004092                          
 ======================================================================
 
 
