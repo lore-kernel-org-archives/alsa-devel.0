@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000674]: sound modules loaded, unmuted channels, progressbar moving STILL no output
-Date: Wed, 24 Nov 2004 16:07:27 +0100
-Message-ID: <1585a995df6c767f0f95b167cde78918@bugtrack.alsa-project.org>
+Date: Wed, 24 Nov 2004 16:31:32 +0100
+Message-ID: <f83b953e333bda66e4ece13178bef726@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4BD832DB
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 16:07:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 997E82D0
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 16:31:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               ArchLinux
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             11-24-2004 13:12 CET
-Last Modified:              11-24-2004 16:07 CET
+Last Modified:              11-24-2004 16:31 CET
 ======================================================================
 Summary:                    sound modules loaded, unmuted channels, progressbar
 moving STILL no output
@@ -50,21 +50,21 @@ tried everything possible (I think - oh, I haven't tried Windows, yet)
 ======================================================================
 
 ----------------------------------------------------------------------
- IceRAM - 11-24-04 15:39 
-----------------------------------------------------------------------
-I've attached 'lspci -v' also. It shows that the multimedia controller is
-using the same IRQ as "00:1f.3 SMBus: Intel Corp. 82801EB/ER (ICH5/ICH5R)
-SMBus Controller (rev 02)"
-
-I am not sure that this is the problem.. and I also don't know how to
-solve it (I don't know how to change some IRQs on my Linux box)
-
-----------------------------------------------------------------------
  pzad - 11-24-04 16:07 
 ----------------------------------------------------------------------
 Hmm, maybe you have same problem as this:
 
 http://sourceforge.net/mailarchive/message.php?msg_id=10061173
+
+----------------------------------------------------------------------
+ IceRAM - 11-24-04 16:31 
+----------------------------------------------------------------------
+You might be right... it does seem to have some kind of a little bit louder
+hummm while playing.
+
+I have a background humm (loud speakers) even if it's not playing,
+probably because of interference. It also hummms when moving the mouse or
+using the keyboard.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -81,6 +81,7 @@ Date Modified  Username       Field                    Change
 11-24-04 15:36 IceRAM         File Added: lspci_v.txt                      
 11-24-04 15:39 IceRAM         Note Added: 0002568                          
 11-24-04 16:07 pzad           Note Added: 0002569                          
+11-24-04 16:31 IceRAM         Note Added: 0002570                          
 ======================================================================
 
 
