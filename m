@@ -1,94 +1,57 @@
-From: Nishanth Aravamudan <nacc@us.ibm.com>
-Subject: [PATCH] sound/korg1212: remove sleep_on*() usage
-Date: Wed, 26 Jan 2005 11:44:00 -0800
-Message-ID: <20050126194400.GF3593__25723.2543467127$1106769449$gmane$org@us.ibm.com>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: [Alsa-devel] hdsp fixes
+Date: 26 Jan 2005 13:22:13 -0800
+Message-ID: <1106774533.9769.250.camel@cmn37.stanford.edu>
+References: <1106761331.11426.17.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from e1.ny.us.ibm.com (e1.ny.us.ibm.com [32.97.182.141])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3F7A91E8
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2005 20:44:07 +0100 (MET)
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e1.ny.us.ibm.com (8.12.10/8.12.10) with ESMTP id j0QJi23e002946
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2005 14:44:02 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id j0QJi2hu264406
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2005 14:44:02 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j0QJi2Fp001712
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2005 14:44:02 -0500
-Content-Disposition: inline
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, kernel-janitors@lists.osdl.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <planetccrma-admin@ccrma.stanford.edu>
+In-Reply-To: <1106761331.11426.17.camel@localhost>
+Sender: planetccrma-admin@ccrma.Stanford.EDU
+Errors-To: planetccrma-admin@ccrma.Stanford.EDU
+List-Help: <mailto:planetccrma-request@ccrma.stanford.edu?subject=help>
+List-Post: <mailto:planetccrma@ccrma.stanford.edu>
+List-Subscribe: <http://ccrma-mail.stanford.edu/mailman/listinfo/planetccrma>,
+	<mailto:planetccrma-request@ccrma.stanford.edu?subject=subscribe>
+List-Unsubscribe: <http://ccrma-mail.stanford.edu/mailman/listinfo/planetccrma>,
+	<mailto:planetccrma-request@ccrma.stanford.edu?subject=unsubscribe>
+List-Archive: <http://ccrma-mail.stanford.edu/pipermail/planetccrma/>
+To: thomas charbonnel <thomas@undata.org>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, planetccrma@ccrma.Stanford.EDU, Takashi Iwai <tiwai@suse.de>, "Michael E. Smith" <melkhorn@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 2005-01-26 at 09:42, thomas charbonnel wrote:
+> Sorry for my long absence. Here's a patch against 1.0.8 that should
+> solve the firmware issues people are experiencing.
 
-Please consider applying.
+Wow! Thank you!!
+I just tested a build of it on top of 1.0.8 and it loaded the firmware
+on the first try with hotplug, no problems so far in simple tests (9652
++ Digiface on top of Fedora Core 3). 
 
-Description: Directly use wait-queues instead of the deprecated
-sleep_on_timeout(). Since the sleep in this function is unconditional,
-wait_event_timeout() does not appear to be appropriate. Patch is
-compile-tested.
+Takashi-san: sorry, I did not try your smaller patch, I went with what
+Thomas posted. 
 
-Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
+Planet CCRMA dwellers... packages coming up soon :-)
+Beautiful!
+-- Fernando
 
---- 2.6.11-rc2-kj-v/sound/pci/korg1212/korg1212.c	2005-01-24 09:34:24.000000000 -0800
-+++ 2.6.11-rc2-kj/sound/pci/korg1212/korg1212.c	2005-01-26 10:50:44.000000000 -0800
-@@ -620,11 +620,14 @@ static void snd_korg1212_SendStop(korg12
- 
- static void snd_korg1212_SendStopAndWait(korg1212_t *korg1212)
- {
-+	DEFINE_WAIT(wait);
- 	unsigned long flags;
- 	spin_lock_irqsave(&korg1212->lock, flags);
- 	snd_korg1212_SendStop(korg1212);
- 	spin_unlock_irqrestore(&korg1212->lock, flags);
--	sleep_on_timeout(&korg1212->wait, (HZ * 3) / 2);
-+	prepare_to_wait(&korg1212->wait, &wait, TASK_UNINTERRUPTIBLE);
-+	schedule_timeout((HZ * 3) / 2);
-+	finish_wait(&korg1212->wait, &wait);
- }
- 
- /* timer callback for checking the ack of stop request */
-@@ -1243,7 +1246,8 @@ static irqreturn_t snd_korg1212_interrup
- 
- static int snd_korg1212_downloadDSPCode(korg1212_t *korg1212)
- {
--
-+	DEFINE_WAIT(wait);
-+	unsigned long i;
- #if K1212_DEBUG_LEVEL > 0
-         K1212_DEBUG_PRINTK("K1212_DEBUG: DSP download is starting... [%s]\n", stateName[korg1212->cardState]);
- #endif
-@@ -1267,9 +1271,12 @@ static int snd_korg1212_downloadDSPCode(
- 	if (rc) K1212_DEBUG_PRINTK("K1212_DEBUG: Start DSP Download RC = %d [%s]\n", rc, stateName[korg1212->cardState]);
- #endif
- 
--	if (! sleep_on_timeout(&korg1212->wait, HZ * CARD_BOOT_TIMEOUT))
-+	prepare_to_wait(&korg1212->wait, &wait, TASK_UNINTERRUPTIBLE);
-+	i = schedule_timeout(HZ * CARD_BOOT_TIMEOUT);
-+	finish_wait(&korg1212->wait, &wait);
-+	if (i == 0) 
- 		return -EBUSY; /* timeout */
--
-+	
- 	snd_korg1212_OnDSPDownloadComplete(korg1212);
- 
-         return 0;
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by: IntelliVIEW -- Interactive Reporting
-Tool for open source databases. Create drag-&-drop reports. Save time
-by over 75%! Publish reports on the web. Export to DOC, XLS, RTF, etc.
-Download a FREE copy at http://www.intelliview.com/go/osdn_nl
+> ChangeLog:
+> * init sequence cleanup and firmware upload related bugfixes
+> * more robust revision detection scheme
+>   (should transparently handle new revisions)
+> * allow hdsploader and the kernel fw loader to coexist
+>   this is useful for cardbus user who compiled the driver in-kernel
+>   (userspace may not be ready to upload the firmware when the card
+>    is probed)
+> * removed confusing and obsolete passthru option (was interfering
+>   with the mixer when opening the device for capture or playback)
+>   this change requires a recompile of the userspace tools against
+>   the patched hdsp.h
+> * removed confusing and obsolete line_outs_monitor module param
+> * made precise_ptr the default behaviour, and runtime tweakable
+>   (removed corresponding module param)
+> * small endianness fix
+> * ALSA-Configuration.txt HDSP entry update
+> * error messages cleanup
