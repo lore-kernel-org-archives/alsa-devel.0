@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Has this patch been updated on any ALSA releases?
-Date: Fri, 26 Mar 2004 13:22:00 +0100 (CET)
+From: "Yong, Chee Yeew " <Chee-Yeew.Yong@thalesgroup.com>
+Subject: RE: Has this patch been updated on any ALSA releases
+	?
+Date: Fri, 26 Mar 2004 12:28:34 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403261321070.10157@pnote.perex-int.cz>
-References: <51BF576D5A02CC4CB2591F50994FD76691CA75@nts013.uk.trt.thales>
+Message-ID: <51BF576D5A02CC4CB2591F50994FD76691CA76@nts013.uk.trt.thales>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <51BF576D5A02CC4CB2591F50994FD76691CA75@nts013.uk.trt.thales>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,31 +16,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Yong, Chee Yeew " <Chee-Yeew.Yong@thalesgroup.com>
+To: 'Jaroslav Kysela' <perex@perex.cz>, "Yong, Chee Yeew " <Chee-Yeew.Yong@thalesgroup.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 26 Mar 2004, Yong, Chee Yeew  wrote:
+Hi Jaroslav,
 
-> Hi,
-> 
-> I have the same problem as Andrea Mohr, and I wish to patch it. See:
-> http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg09732.html
-> 
-> The patch is posted by Jaroslav Kysela:
-> http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg09781.html
-> 
-> I was wondering if:
-> a) The patch works as it is?
-> b) The patch has been added to a stable ALSA drivers release?
+Thanks for replying.
 
-It would be better to specify your problem. The OSS emulation code was 
-changed a lot from this date and rat is working for me perfectly.
+> It would be better to specify your problem. The OSS emulation code was 
+> changed a lot from this date and rat is working for me perfectly.
+>					Jaroslav
 
-					Jaroslav
+When I run RAT, I get the warning:
 
------
-Jaroslav Kysela <perex@perex.cz>
+audio_read: Resource temporarily unavailable.
+
+This warning persists throughout the running of RAT. RAT continues to run
+even with this warning/error.
+This may (or may not) be impacting the received audio, as I am experiencing
+break-ups even with 'redundancy' switched on.
+
+Chee
 
 
 -------------------------------------------------------
