@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000980]: nforce4/alc850 line-in -> spdif out - solution ???
-Date: Fri, 11 Mar 2005 16:08:43 +0100
-Message-ID: <cccd05f17e24a5cade1ee789367f01bf@bugtrack.alsa-project.org>
+Date: Fri, 11 Mar 2005 16:15:51 +0100
+Message-ID: <91a8d154ab9b20163b572df45e23779d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AC388F8
-	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 16:08:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9CFF11CA
+	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 16:15:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             03-11-2005 01:17 CET
-Last Modified:              03-11-2005 16:08 CET
+Last Modified:              03-11-2005 16:15 CET
 ======================================================================
 Summary:                    nforce4/alc850 line-in -> spdif out - solution ???
 Description: 
@@ -51,17 +51,17 @@ knowledge of alsa architecture to write a proper patch.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-11-05 12:11 
-----------------------------------------------------------------------
-alc855 patch already includes the correct control "IEC958 Playback Route". 
-You can choose the SPDIF output route via your mixer (e.g. alsamixer).
-
-----------------------------------------------------------------------
  dobromir - 03-11-05 16:08 
 ----------------------------------------------------------------------
 Ok so bug is in another place, because I cant change the value of iec958,
 it stays on PCM, and I can't change it. Do you have any ideas what to do
 now ?
+
+----------------------------------------------------------------------
+ tiwai - 03-11-05 16:15 
+----------------------------------------------------------------------
+You hit a bug hidden in this control :)
+Try the attached patch.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -73,6 +73,7 @@ Date Modified  Username       Field                    Change
 03-11-05 10:24 dobromir       Note Added: 0003883                          
 03-11-05 12:11 tiwai          Note Added: 0003884                          
 03-11-05 16:08 dobromir       Note Added: 0003889                          
+03-11-05 16:15 tiwai          Note Added: 0003890                          
 ======================================================================
 
 
