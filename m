@@ -1,12 +1,16 @@
-From: Weijia Yang <gte733z@prism.gatech.edu>
-Subject: cs46xx experimental DSP drivers
-Date: Mon, 23 Sep 2002 16:53:45 -0400
+From: Zenaan Harkness <zen@getsystems.com>
+Subject: Re: can't compile
+Date: 24 Sep 2002 10:43:55 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D8F7F59.6030105@prism.gatech.edu>
+Message-ID: <1032824635.488.18.camel@zen8100a>
+References: <1032676882.752.116.camel@zen8100a>
+	<1032735604.473.34.camel@zen8100a>
+	<20020923131019.2332c921.ketelaars@wanadoo.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20020923131019.2332c921.ketelaars@wanadoo.nl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,21 +19,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Frans Ketelaars <ketelaars@wanadoo.nl>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I am testing out the cs46xx experimental DSP drivers on the 9/22 cvs 
-build on a TB Santa Cruz. The drivers work fine except for the fact that 
-all sound is "flat"--almost no base at all. This is in comparison to the 
-original cs46xx drivers that come with rc3. The sound quality difference 
-is very noticeable. I have tried tweaking with all the mixer settings 
-with no result. I have also tried the experimental DSP drivers on the 
-rc3 build with the same results. Anyone know a fix? Thanks
--- 
-Weijia Yang
-School of Electrical and Computer Engineering
-Georgia Institute of Technology
-Atlanta, GA
+Yes, that's it.
+
+On Tue, 2002-09-24 at 00:10, Frans Ketelaars wrote:
+> On 23 Sep 2002 10:00:04 +1100
+
+> > > TIA
+> > > Zen
+> 
+> See http://www.alsa-project.org/ :
+> 
+> Latest News     page 1 of 4    2002-08-22  Note for compiling alsa-driver-0.9.0rc3:
+>  Please remove the file - alsa-driver-0.9.0rc3/include/linux/isapnp.h - before 
+> running the configure script.
+
+I'd compiled it on another machine multiple times, so I didn't think to
+go check the web page again. Thanks to all,
+
+Zen
 
 
 
