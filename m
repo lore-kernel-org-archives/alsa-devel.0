@@ -1,11 +1,10 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Subject: A few ideas about environmental audio...
-Date: Wed, 17 Mar 2004 10:58:52 -0400
+From: jcep@post.cz
+Subject: Echo Canceler with ALSA
+Date: Wed, 17 Mar 2004 20:22:21 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1079535532.1993.28.camel@localhost>
-Reply-To: manuel.jander@mat.utfsm.cl
+Message-ID: <07583ab7a2310faf5c3a330294b7159e@www3.mail.post.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-2"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,49 +15,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa Devel list <alsa-devel@lists.sourceforge.net>, Openvortex <openvortex-dev@nongnu.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi everyone,
 
-So far i'm following this list, there are some people interested in
-environmental audio, and advanced effect processing support. Regarding
-this i would like to share some thoughts about and hopefully collect
-some critics and comments.
+my diploma project is to develop an echo canceler for controlling
+application with speech. For this purpose, I need to know what a
+sound card is  currently playing. I was trying to find out how to
+read the DMA buffer which contains mixed samples prepared to be
+passed to the sound card. Is there any API call to do this? The
+second thing - What is the best way to allow applications to
+access the echo-cancelled microphone input?
 
-How i visualize environmental audio for the common user:
+Thank a lot
 
-  Context: The user has a Soundboard with several audio outputs (most of
-them do). He/She may connect just a headphone or 2 speakers or a 5.1
-setup, 7.1, or whatever the card supports.
-
-  Problem: It's up to the application to support either 5.1, headphones
-or whatever. You may end up not hearing some channels (your soundcard
-has 6 outputs, but you just have headphones, or you have 6 speakers and
-your are hearing a stereo stream on just 2 speakers). There is a lot of
-duplicated code in different applications, and there is no standard
-about how this down or up mix should be done. It may be impossible to
-exploit any advanced hardware feature (see Advantage).
-  Idea: Support any audio channel arrangement, and mix it in hardware or
-software (plugins, dmix ?) to the actual number of speaker/headphones
-channels. Define a standard how channel formatting should be
-converted/mixed, etc.
-  Requirements: The user has to tell ALSA what kind of
-speakers/headphones is she/he using (not a big deal).
-  Advantage: We could support 7.1 or 5.1 environmental audio on
-headphones, by using hardware HRTF filters to put each stream at the
-desired spatial position. On some soundcards this is trivial (just a
-matter of routing).
-  Caveats: It involves work obviously. I'm willing to volunteer on this.
-
-Any comments are gladly welcome.
-
-Best Regards
-
-Manuel
+Jan C.
 
 
-
+-- 
+Surfujete pres VOLNY? Tak proc jeste nejste ve VOLNY klubu?
+Nyni exkluzivne pro cleny klubu soutez o skvele ceny.
+http://klub.volny.cz
 
 
 
