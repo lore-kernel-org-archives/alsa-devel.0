@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000649]: alsaplayer only works as root
-Date: Sun, 20 Mar 2005 13:36:22 +0100
-Message-ID: <51df4727d6de9c458f3099b4b2d250fa@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000360]: Don`t run
+Date: Sun, 20 Mar 2005 13:38:07 +0100
+Message-ID: <1e68ef1da39404ee25721ff9f697a5bd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9317A22B
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 13:36:22 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 519BE250
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 13:38:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,53 +23,48 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=649> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=360> 
 ======================================================================
-Reported By:                mthoro
+Reported By:                alexnanow
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   649
-Category:                   aplay/arecord
+Issue ID:                   360
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
 Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-14-2004 15:37 CET
-Last Modified:              03-20-2005 13:36 CET
+Date Submitted:             07-02-2004 00:17 CEST
+Last Modified:              03-20-2005 13:38 CET
 ======================================================================
-Summary:                    alsaplayer only works as root
+Summary:                    Don`t run
 Description: 
-changed permissions on snd devices to 777.  player only works after login
-as root.  after login as user in audio group, player will not work even if
-I log back in as root.  I have to reboot and login as root to get the
-player to work again. gnome cd player works okay, but the alsaplayer is
-great!
+when i try to run alsamixer get this error message:
+
+alsamixer: function snd_ctl_open failed for default: No such file or
+directory
+
+I have compiled all correctly thingy`s but that s*** don`t works... and
+the alsamixer GUI interface too... help please!!
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 11-15-04 18:10 
+ jdthood - 03-20-05 13:23 
 ----------------------------------------------------------------------
-It seems you're using a system that automatically creates device nodes
-(devfs or udev).  You have to change the devfs/udev configuration so that
-it sets correct permissions.  Ask the debian experts.
-
-----------------------------------------------------------------------
- jdthood - 03-20-05 13:31 
-----------------------------------------------------------------------
-This report can be closed.
+This can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-14-04 15:37 mthoro         New Issue                                    
-11-15-04 18:10 Clemens LadischNote Added: 0002417                          
-03-20-05 13:31 jdthood        Note Added: 0004087                          
-03-20-05 13:36 perex          Status                   new => resolved     
-03-20-05 13:36 perex          Resolution               open => not an issue
+07-02-04 00:17 alexnanow      New Issue                                    
+03-20-05 13:23 jdthood        Note Added: 0004081                          
+03-20-05 13:38 perex          Status                   new => resolved     
+03-20-05 13:38 perex          Resolution               open => not an issue
+03-20-05 13:38 perex          Description Updated                          
 ======================================================================
 
 
