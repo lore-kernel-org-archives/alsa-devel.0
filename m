@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000555]: ATI IXP 150 - Does Not work majority of the time.
-Date: Tue, 9 Nov 2004 16:42:23 +0100
-Message-ID: <6930b3d6700ad56671eba24048764c70@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000637]: Laptop volume control & mute buttons don't work
+Date: Tue, 9 Nov 2004 16:57:23 +0100
+Message-ID: <44478227fbc3727caaa10833e5e25081@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A421C176
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:42:23 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 750051EF
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:57:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,81 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=555> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=637> 
 ======================================================================
-Reported By:                bremedios
+Reported By:                Mark Knecht
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   555
+Issue ID:                   637
 Category:                   PCI - atiixp
-Reproducibility:            sometimes
-Severity:                   major
+Reproducibility:            always
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8.1
-Resolution:                 won't fix
-Fixed in Version:           
+Status:                     feedback
+Distribution:               Gentoo
+Kernel Version:             2.6.9-rc2-mm4-VP-S7-noACPI-UMP
 ======================================================================
-Date Submitted:             09-30-2004 20:53 CEST
-Last Modified:              11-09-2004 16:42 CET
+Date Submitted:             11-08-2004 18:50 CET
+Last Modified:              11-09-2004 16:57 CET
 ======================================================================
-Summary:                    ATI IXP 150 - Does Not work majority of the time.
+Summary:                    Laptop volume control & mute buttons don't work
 Description: 
-Majority of the time (approx 70%) the board boots and reports timeout
-errors.  In these cases the sound driver fails to load, thus trying to use
-any sound applications results in failure.
-
-Trying to unload and reload the modules when it fails does not seem to
-help.
-
-Shutting down and Starting up seems to eventually fix the problem.
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000556 ATI IXP 150 - Does Not work majority of...
+The Compaq, like may laptops, comes with buttons to increase and decrease
+volume, as well as a mute button. Under Linux these buttons do nothing.
+The mute button is always lit even when sound is coming out. The volume
+control buttons do not adjust volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- bremedios - 10-01-04 19:17 
+ Mark Knecht - 11-09-04 16:13 
 ----------------------------------------------------------------------
-pci=noacpi has the result of getting the ATI IXP 150 to work.
+This was not filed as a bug. It was filed as a feature request. Please do
+not be so dismissive. What did you spend? Maybe 3 seconds and then blew it
+off?
 
-I guess this is actually an ACPI bug then right?
+Under Windows the buttons control volume. Pushing the buttons raises or
+lowers volume in the applications. you can see the volume controls go up
+and down. 
+
+Why should Linux *not* work this way? I am requesting that Alsa consider
+how to be more user friendly. I am not filing a bug report. 
+
+If they are already handled under ACPI (which I do not use on my laptop as
+it causes kernel timing problems) then please simply state that Alsa
+already handles this. However, I do not beleive that these specific
+buttons are handled by ACPI, but that's just my guess.
 
 ----------------------------------------------------------------------
- tiwai - 10-04-04 18:57 
+ tiwai - 11-09-04 16:57 
 ----------------------------------------------------------------------
-Yes, it must be an ACPI issue.   Close this bug now.
+Calm down, this has *nothing* to do with ALSA although the buttons are
+printed as volume up/down.  There is *no* hardware connection between
+buttons and the sound chip in your case.  Thus, there is nothing the sound
+driver can do for this directly.
+
+To support this feature, the ACPI event must be handled by a certain user
+space program such as the window manager (or desktop system).
+
+Windows works because it grabs the ACPI event and processes it properly. 
+Linux could handle this but the current system doesn't care it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-30-04 20:53 bremedios      New Issue                                    
-09-30-04 20:53 bremedios      File Added: messages                         
-09-30-04 20:53 bremedios      Distribution              => Fedora Core 2   
-09-30-04 20:53 bremedios      Kernel Version            => 2.6.8.1         
-10-01-04 16:39 tiwai          Relationship added       has duplicate 0000556
-10-01-04 17:03 tiwai          Note Added: 0002000                          
-10-01-04 19:17 bremedios      Note Added: 0002005                          
-10-04-04 18:57 tiwai          Status                   assigned => resolved
-10-04-04 18:57 tiwai          Resolution               open => won't fix   
-10-04-04 18:57 tiwai          Note Added: 0002014                          
-11-09-04 16:42 tiwai          Status                   resolved => closed  
+11-08-04 18:50 Mark Knecht    New Issue                                    
+11-08-04 18:50 Mark Knecht    Distribution              => Gentoo          
+11-08-04 18:50 Mark Knecht    Kernel Version            =>
+2.6.9-rc2-mm4-VP-S7-noACPI-UMP
+11-09-04 10:35 tiwai          Note Added: 0002317                          
+11-09-04 10:36 tiwai          Resolution               open => not an issue
+11-09-04 10:37 tiwai          Status                   assigned => resolved
+11-09-04 16:13 Mark Knecht    Status                   resolved => feedback
+11-09-04 16:13 Mark Knecht    Resolution               not an issue => reopened
+11-09-04 16:13 Mark Knecht    Note Added: 0002326                          
+11-09-04 16:57 tiwai          Note Added: 0002328                          
 ======================================================================
 
 
