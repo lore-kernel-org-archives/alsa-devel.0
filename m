@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000979]: Feature Request : Bass redirection on emu10k1 cards
-Date: Thu, 10 Mar 2005 19:40:07 +0100
-Message-ID: <803bd48b18bfe0d19c5f02148038146b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
+Date: Thu, 10 Mar 2005 19:57:39 +0100
+Message-ID: <f2223c3685bca848ff8d08e53a56bd7f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41A631A6
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 19:40:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0AE921D5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 19:57:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,48 +21,109 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=979> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
 ======================================================================
-Reported By:                Casper
-Assigned To:                
+Reported By:                vaxen
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   979
-Category:                   PCI - emu10k1
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   914
+Category:                   PCI - nm256
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10-gentoo-r4
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.9 2.6.10
 ======================================================================
-Date Submitted:             03-10-2005 19:40 CET
-Last Modified:              03-10-2005 19:40 CET
+Date Submitted:             02-16-2005 20:39 CET
+Last Modified:              03-10-2005 19:57 CET
 ======================================================================
-Summary:                    Feature Request : Bass redirection on emu10k1 cards
+Summary:                    nm256 causes kernel to hard freeze
 Description: 
-The goal of this feature is to generate a LFE channel from a stereo source
-by removing low frequencies of this source and sending them to the LFE
-output. I think this can be made by the DSP.
+Hi, here is my specs:
 
-I own a Creative SB Audigy, and a home-made 5.1 sound system with only
-amplifiers and no filters. So when I listen to music, all my speakers
-works fine with channel mirroring, but the LFE output is not filtered and
-the sound is awful. And when I use mplayer to play music with the option
-"-af sub" which generates a LFE channel, the low frequencies are already
-present on the others speakers and then bass are too loud.
+Gateway solo 3300
+http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
+Audio chipset NM2200 interface to AC97 CODEC
 
-Is this possible to add this feature ?
+pegasos vaxen # lspci -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
+      +-0a.0  Texas Instruments PCI1211
+      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
+      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
+
+I am using a custom patched kernel at
+http://morph-sources.sourceforge.net/?q=node/27 
+
+It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
+alsa-bk-2005-01-14.patch.
+
+I compiled the drivers into the kernel, the kernel hard freezes after
+displaying these message:
+nm256:found card signature in video RAM: 0x27ec00
+nm256:Mapping port 1 from 0x2709a0-0x27ec00
+I have to switch off the laptop as it does not respond to any inputs.
+
+I also tried compiling the drivers as modules, when I tried to modprobe
+snd-nm256, the kernel hard freezes without any warning message.
+
+I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
+like 2.6.10.
+
+I have not tried alsa 1.0.7 driver.
+
+Please let me know if you need more diagnostic information to fix this
+problem.
 ======================================================================
+
+----------------------------------------------------------------------
+ vaxen - 03-10-05 18:56 
+----------------------------------------------------------------------
+This is a newbie question. How do I use this patch?
+
+1) copy the file nm256-test.diff /usr/src/linux
+
+2) /usr/src/linux # patch -p1 < nm256-test.diff
+
+Is this how I do it?
+
+----------------------------------------------------------------------
+ vaxen - 03-10-05 19:57 
+----------------------------------------------------------------------
+Tested on 2.6.11 final. kernel hardlocks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-10-05 19:40 Casper         New Issue                                    
-03-10-05 19:40 Casper         Distribution              => Gentoo          
-03-10-05 19:40 Casper         Kernel Version            => 2.6.10-gentoo-r4
+02-16-05 20:39 vaxen          New Issue                                    
+02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
+02-16-05 21:36 vaxen          Note Added: 0003626                          
+02-16-05 21:38 vaxen          Note Edited: 0003626                         
+02-16-05 21:56 vaxen          Note Edited: 0003626                         
+02-17-05 18:31 tiwai          Note Added: 0003632                          
+02-17-05 20:44 vaxen          Note Added: 0003638                          
+02-17-05 20:45 vaxen          Note Edited: 0003638                         
+02-17-05 21:28 vaxen          Note Added: 0003641                          
+02-17-05 22:40 vaxen          Note Added: 0003644                          
+02-24-05 03:55 vaxen          Note Added: 0003717                          
+02-24-05 04:01 vaxen          Note Added: 0003718                          
+02-24-05 22:04 tiwai          Note Added: 0003727                          
+02-25-05 16:29 vaxen          Note Added: 0003735                          
+03-10-05 12:50 interfaSys     Note Added: 0003849                          
+03-10-05 14:38 tiwai          Note Added: 0003852                          
+03-10-05 14:38 tiwai          File Added: nm256-test.diff                    
+03-10-05 18:56 vaxen          Note Added: 0003870                          
+03-10-05 19:57 vaxen          Note Added: 0003871                          
 ======================================================================
 
 
