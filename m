@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000686]: No surround sound
-Date: Sun, 30 Jan 2005 12:38:28 +0100
-Message-ID: <b64cd453b2e1c1550fc8454b37f56a1a@bugtrack.alsa-project.org>
+Date: Sun, 30 Jan 2005 13:40:35 +0100
+Message-ID: <ef2a8c6a2847ef291284bfb6249c91ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6818D1C7
-	for <alsa-devel@alsa-project.org>; Sun, 30 Jan 2005 12:38:28 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 185D91C7
+	for <alsa-devel@alsa-project.org>; Sun, 30 Jan 2005 13:40:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.4.26-gentoo-r9
 ======================================================================
 Date Submitted:             11-28-2004 15:45 CET
-Last Modified:              01-30-2005 12:38 CET
+Last Modified:              01-30-2005 13:40 CET
 ======================================================================
 Summary:                    No surround sound
 Description: 
@@ -66,19 +66,18 @@ Sorry for my English.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 12-06-04 23:34 
-----------------------------------------------------------------------
-Please provide output of
-cat /proc/asound/cards
-
-
-----------------------------------------------------------------------
  dziegiel - 01-30-05 12:38 
 ----------------------------------------------------------------------
 cat /proc/asound/cards :
 
 0 [AUDIGYLS       ]: AudigyLS - AUDIGYLS
                      AudigyLS [SB0310] at 0xe400 irq 9
+
+----------------------------------------------------------------------
+ jcdutton - 01-30-05 13:40 
+----------------------------------------------------------------------
+Upgrade alsa-driver and alsa-lib to latest versions, and use the snd-ca0106
+module instead of the snd-audigyls module.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -89,6 +88,7 @@ Date Modified  Username       Field                    Change
 12-06-04 23:34 jcdutton       Note Added: 0002743                          
 12-06-04 23:34 jcdutton       Status                   assigned => feedback
 01-30-05 12:38 dziegiel       Note Added: 0003441                          
+01-30-05 13:40 jcdutton       Note Added: 0003442                          
 ======================================================================
 
 
