@@ -1,13 +1,13 @@
 From: Paul Davis <pbd@op.net>
 Subject: Re: Repeatable exact I/O-delay
-Date: Sun, 28 Jul 2002 10:57:11 -0400
+Date: Sun, 28 Jul 2002 10:58:07 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200207281456.QAA29896@alsa.alsa-project.org>
+Message-ID: <200207281457.QAA29904@alsa.alsa-project.org>
 References: <20020728143945.D582D902@mail.it4u.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx2.fast.net (newmx2.fast.net [209.92.1.32])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA29896
-	for <alsa-devel@alsa-project.org>; Sun, 28 Jul 2002 16:56:04 +0200
+Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA29904
+	for <alsa-devel@alsa-project.org>; Sun, 28 Jul 2002 16:57:00 +0200
 In-Reply-To: Your message of "Sun, 28 Jul 2002 16:39:50 +0200."
              <20020728143945.D582D902@mail.it4u.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -22,18 +22,15 @@ To: Anders Torger <torger@ludd.luth.se>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->By the way, I tried to search for the same code in rme9652.c, and found 
->something similar, but it does not seem to activate both capture and 
->playback with a single write to the control register. I'm not sure how 
->the hardware works (nor the driver) though so I may be wrong. 
+>I've looked through some driver code, and if I understand it correctly, 
+>it seems like some drivers, for example the ens1370, check in the 
+>trigger function the substream is linked with other substreams on the 
 
-there are no distinct capture/playback streams in the h/w. the card is
-either running or not. hence, capture and playback always run exactly
-in sync, and there are no separate interrupts for each stream. its a
-properly designed card for full-duplex operation.
+yes, sorry, i forgot about this aspect of things. i was thinking of
+snd_pcm_link() across multiple cards, which is handled by the
+mid-level code.
 
---p
-
+--p 
 
 
 -------------------------------------------------------
