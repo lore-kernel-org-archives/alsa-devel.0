@@ -1,15 +1,11 @@
-From: "Bernie Camacho" <camacho_zh@stagleys.demon.co.uk>
-Subject: Bu#y Cialis soft%tabs at Unbelievable Prices
-Date: Sun, 05 Dec 2004 10:21:33 +0000
-Message-ID: <0c2201c4dab4$35a116e7$669a8ecf@cin.nihon-u.ac.jp>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: [PATCH] Update user-space access from sscape driver
+Date: Sat, 4 Dec 2004 18:14:42 +0000 (GMT)
+Message-ID: <200412041814.iB4IEhUM021640@wittsend.homenet>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cin.nihon-u.ac.jp (modemcable231.189-37-24.mc.videotron.ca [24.37.189.231])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id CC36634C
-	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2004 18:16:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,19 +15,101 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-Get set for intense lovmaking in as low as 15 minutes
-<p>
-lncrease your performnce and astound your partnr with ClALlS S0FTABS and=20
-<br>
-<a href=3D"http://ybndckbiotfak.go-medz.com/cs/?jj432"> GET 8O% 0FF RETAl=
-L PRlCE=20
-T0DAY</a>
-</html>
+Signed-off-by: Chris Rankin <rankincj@yahoo.com>
 
+Hi,
+
+I see that the copy_to/from_user() functions have been updated across Linux 2.4 and 2.6, and that verify_read/write() has been replaced by access_ok(). I have patched the SoundScape driver accordingly.
+
+Cheers,
+Chris
+
+Index: alsa-kernel/isa/sscape.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/isa/sscape.c,v
+retrieving revision 1.18
+diff -u -u -r1.18 sscape.c
+--- alsa-kernel/isa/sscape.c	30 Nov 2004 14:37:33 -0000	1.18
++++ alsa-kernel/isa/sscape.c	4 Dec 2004 18:07:26 -0000
+@@ -487,7 +487,7 @@
+ 		 * the userspace pointer ...
+ 		 */
+ 		len = min(size, dma.bytes);
+-		__copy_from_user(dma.area, data, len);
++		len -= __copy_from_user(dma.area, data, len);
+ 		data += len;
+ 		size -= len;
+ 
+@@ -571,9 +571,9 @@
+ 		if (data < 0) {
+ 			snd_printk(KERN_ERR "sscape: timeout reading firmware version\n");
+ 			ret = -EAGAIN;
+-		} else {
+-			if (__copy_to_user(&bb->version, &data, sizeof(bb->version)))
+-				ret = -EFAULT;
++		}
++		else if (__copy_to_user(&bb->version, &data, sizeof(bb->version))) {
++			ret = -EFAULT;
+ 		}
+ 	}
+ 
+@@ -592,7 +592,7 @@
+ {
+ 	unsigned long flags;
+ 	char __user *code;
+-	int err, ret;
++	int err;
+ 
+ 	/*
+ 	 * We are going to have to copy this data into a special
+@@ -602,12 +602,11 @@
+ 	 * NOTE: This buffer is 64K long! That's WAY too big to
+ 	 *       copy into a stack-temporary anyway.
+ 	 */
+-	if (get_user(code, &mc->code))
++	if ( get_user(code, &mc->code) ||
++	     !access_ok(VERIFY_READ, code, SSCAPE_MICROCODE_SIZE) )
+ 		return -EFAULT;
+-	if ((err = verify_area(VERIFY_READ, code, SSCAPE_MICROCODE_SIZE)) != 0)
+-		return err;
+ 
+-	if ((ret = upload_dma_data(sscape, code, SSCAPE_MICROCODE_SIZE)) == 0) {
++	if ((err = upload_dma_data(sscape, code, SSCAPE_MICROCODE_SIZE)) == 0) {
+ 		snd_printk(KERN_INFO "sscape: MIDI firmware loaded\n");
+ 	}
+ 
+@@ -617,7 +616,7 @@
+ 
+ 	initialise_mpu401(sscape->mpu);
+ 
+-	return ret;
++	return err;
+ }
+ 
+ /*
+@@ -674,14 +673,14 @@
+ 			 * DMA-able buffer before we can upload it. We shall therefore
+ 			 * just check that the data pointer is valid for now ...
+ 			 */
+-			if ((err = verify_area(VERIFY_READ, bb->code, sizeof(bb->code))) != 0)
+-				return err;
++			if ( !access_ok(VERIFY_READ, bb->code, sizeof(bb->code)) )
++				return -EFAULT;
+ 
+ 			/*
+ 			 * Now check that we can write the firmware version number too...
+ 			 */
+-			if ((err = verify_area(VERIFY_WRITE, &bb->version, sizeof(bb->version))) != 0)
+-				return err;
++			if ( !access_ok(VERIFY_WRITE, &bb->version, sizeof(bb->version)) )
++				return -EFAULT;
+ 
+ 			err = sscape_upload_bootblock(sscape, bb);
+ 		}
 
 
 -------------------------------------------------------
