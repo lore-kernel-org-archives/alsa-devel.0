@@ -1,12 +1,14 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Bug in pcm_lib.c ?? (using Xmms)
-Date: Sun, 08 Dec 2002 13:45:40 +0100
+From: Mark Knecht <markknecht@attbi.com>
+Subject: Compiling but not installing Alsa
+Date: 08 Dec 2002 09:35:55 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DF33EF4.5060207@cucumelo.org>
+Message-ID: <1039368955.1410.46.camel@Godzilla>
+References: <1039368265.1410.42.camel@Godzilla>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1039368265.1410.42.camel@Godzilla>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,39 +17,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+Hi,
+   I did my first Alsa CVS download this morning just to take a look at
+the code. I am a PlanetCCRMA user, but wanted to know more about Alsa.
 
-Just updated CVS tree and recompiled. Everything works OK execpt that I 
-got this message in log
-when using Xmms with ALSA-plugin and OSS-plugin. Using aplay the message 
-dont apear.
+   I have not yet found a README or INSTALL file on how to do a build.
+Are there any written instructions in the CVS tree?
 
-Dec  8 13:40:16 cactus kernel: ALSA ../alsa-kernel/core/pcm_lib.c:176: 
-BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x200
-Dec  8 13:40:16 cactus kernel: ALSA ../alsa-kernel/core/pcm_lib.c:176: 
-BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x200
-Dec  8 13:40:16 cactus kernel: ALSA ../alsa-kernel/core/pcm_lib.c:110: 
-BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x200
-Dec  8 13:40:16 cactus kernel: ALSA ../alsa-kernel/core/pcm_lib.c:176: 
-BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x200
-Dec  8 13:40:16 cactus kernel: ALSA ../alsa-kernel/core/pcm_lib.c:176: 
-BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x200
-Dec  8 13:40:16 cactus kernel: ALSA 
-../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:226: 
-cs46xx_dsp_proc_free_scb_desc: freeing PCMReader_SCB0
-Dec  8 13:40:16 cactus kernel: ALSA 
-../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:226: 
-cs46xx_dsp_proc_free_scb_desc: freeing SrcTask_SCB0
+   I looked at the Makefile, which I can't read well, and I get the
+feeling that the default operation would be to build AND install the
+code. As a RPM based user I would like to build the code, but not
+install it until the Planet updates the appropriate RPM.
 
-With the ALSA-plugin I got the message only one time, with the 
-OSS-plugin it apears about a 1000 of times.
-(have not done any changes to the cs46xx driver yet,  except what's in 
-current CVS ;) )
+   Is this possible with the current CVS code?
 
-/Benny
+Thanks,
+Mark
+
+
+
 
 
 
