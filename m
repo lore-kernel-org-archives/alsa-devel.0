@@ -1,16 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] usbaudio fixes
-Date: Tue, 25 Nov 2003 12:51:11 +0100 (CET)
+From: Manuel Jander <manuel.jander@mat.utfsm.cl>
+Subject: Sony VAIO I810 system freeze
+Date: Tue, 25 Nov 2003 13:10:48 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0311251249590.9896@pnote.perex-int.cz>
-References: <s5hwu9q2ehv.wl@alsa2.suse.de>
- <Pine.HPX.4.33n.0311241254590.20532-100000@studcom.urz.uni-halle.de>
- <s5hptfi2bad.wl@alsa2.suse.de> <s5hoev22al5.wl@alsa2.suse.de>
- <s5hu14t1wbu.wl@alsa2.suse.de>
+Message-ID: <1069780248.1588.6.camel@localhost>
+Reply-To: manuel.jander@mat.utfsm.cl
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hu14t1wbu.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,44 +16,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 24 Nov 2003, Takashi Iwai wrote:
+Hi,
 
-> At Mon, 24 Nov 2003 13:51:50 +0100,
-> I wrote:
-> > 
-> > At Mon, 24 Nov 2003 13:36:42 +0100,
-> > I wrote:
-> > > 
-> > > meanwhile, i'm trying to implement:
-> > > 
-> > > (4) allow prepare callback to sleep with a special flag.
-> > > 
-> > > this will be useful for other drivers, too, such as vx and korg1212
-> > > drivers which require the handshaking.
-> > > but what i'm doing is still a hack, and will be a fundamental rewrite
-> > > later.
-> > 
-> > the attached is a quick-hacked version.
-> > it's untested for linked streams.  we need a test case here.
-> 
-> ok, here is the final version.  this one seems working fine.
-> 
-> Jaroslav, could you check whether it's ok?
-> the changes in pcm_native.c shouldn't affect other cards.
+I just tried to help someone with a Sony VAIO + i810 audio device to
+install the latest ALSA driver. As soon as any access to the device
+occurs the system freezes. I tried 0.9.8 and 1.0.0pre2; same result.
+The OSS driver works, but skips all the time.
+The installed OS was SUSE 8.0 (by the way, what an annoyance to install
+kernel modules, version mismatch, no kernel headers .....)
 
-It's ok, but it still looks like an ugly hack, but I don't see any other 
-way to solve this problem so you can apply this code to CVS.
+Its an VAIO Pentium 4 (very small Notebook). I didn't had the chance to
+get a lspci output, sorry.
 
-						Jaroslav
+I haven't take much care about intel810 issues since i don't use such
+hardware, but that driver seems to definitely need some stability
+improvements.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+I hope someone of the intel8x0 guys can take a look and wipe out away
+the nitroglycerin.
+
+Best Regards
+
+
 
 
 -------------------------------------------------------
