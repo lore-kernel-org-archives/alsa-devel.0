@@ -1,15 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000270]: Audigy 2 ZS side surround channels not supported
-Date: Mon, 25 Oct 2004 13:20:34 +0200
+From: "info@62816747.com" <info@62816747.com>
+Subject: www.62816747.com
+Date: Mon, 25 Oct 2004 23:16:12 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <2890476b1df949845fac967023956cbe@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <E1CM6QM-0006wy-W2@sc8-sf-mx1.sourceforge.net>
+Reply-To: info@62816747.com
+Content-Type: text/plain;charset="GB2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6CAAA322
-	for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2004 13:20:34 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,88 +14,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+  ¤╭⌒╮ ╭⌒╮                
+ ╱◥██◣ ╭╭ ⌒╮      www.62816747.com
+︱田︱田田| ╰----------------------------------------- 
+╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬ 
 
-The following issue has been REOPENED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=270> 
-======================================================================
-Reported By:                wraiden
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   270
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     feedback
-Distribution:               LFS
-Kernel Version:             2.6.9-mm1
-======================================================================
-Date Submitted:             05-11-2004 11:14 CEST
-Last Modified:              10-25-2004 13:20 CEST
-======================================================================
-Summary:                    Audigy 2 ZS side surround channels not supported
-Description: 
-There is no Support for the side surround channels on SB Audigy 2 ZS (
-Platinum Pro ) in Alsa.
+  注册上海公司  1000元起   验资资金由我们垫
+  个人创业的良机 --- 自己做老板
+  网址：www.62816747.com 
+  电话：021- 62816747  
+  网络实名：注册上海公司招商代理 
+ －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－ 
+  代理财务记帐 代理报税 
+  只要 150元/月 起
+  网址：www.62816747.com 
+  电话：021- 62816747  
+ －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+  外地客户可以申请上海地区固定电话号码 1000元/年
+  可以转到任何3门电话、手机上
+  转外地电话 0.3元/分钟 转上海本地电话免费
+  外地客户需要一次性预存500元话费
+ －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+  主页空间（虚拟主机）
+  200M主页空间，送20M邮箱，送（国际或国内）域名   230元/年
+  200M主页空间，ASP+ACCESS，送（国际或国内）域名  330元/年
+  还可以享受8.5折购买各种搜索引擎的优惠 
 
-I'll try to get it work and test everything you give me to test.
-======================================================================
+  承接各类企业及商务网站设计，1000元起
+  招聘兼职优秀网页设计师（上海地区）
+  更多产品请登陆 http://www.62816747.com
 
-----------------------------------------------------------------------
- jcdutton - 08-27-04 20:20 
-----------------------------------------------------------------------
-Confirmed fixed in CVS.
-
-----------------------------------------------------------------------
- wraiden - 10-25-04 13:20 
-----------------------------------------------------------------------
-Detection is buggy ... there are other versions of this card using other
-id's  out there
-
-attached is a fix for my european version of Audigy 2 ZS Platinum Pro
-
-please apply
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-11-04 11:14 wraiden        New Issue                                    
-05-11-04 11:14 wraiden        Distribution              => LFS             
-05-11-04 11:14 wraiden        Kernel Version            => 2.6.5           
-05-11-04 14:41 pzad           Note Added: 0001084                          
-05-21-04 16:15 wraiden        File Added: wraiden-alsa-emu10k1-side.patch       
-            
-05-21-04 16:21 wraiden        Note Added: 0001166                          
-05-24-04 09:21 pzad           Note Added: 0001181                          
-05-24-04 16:18 wraiden        Note Added: 0001188                          
-05-31-04 08:32 pzad           File Added: audigy2zs_driver.diff                 
-  
-05-31-04 08:38 pzad           Note Added: 0001281                          
-06-10-04 22:48 bryanhundven   Note Added: 0001298                          
-06-15-04 15:56 wraiden        Note Added: 0001309                          
-06-15-04 16:41 pzad           Note Added: 0001310                          
-06-15-04 19:44 wraiden        Note Added: 0001311                          
-06-15-04 19:55 wraiden        Note Edited: 0001311                         
-06-22-04 13:00 pzad           Note Added: 0001328                          
-06-22-04 16:39 elklein        Note Added: 0001329                          
-06-27-04 22:00 wraiden        Note Added: 0001341                          
-06-27-04 22:53 jcdutton       Note Added: 0001342                          
-07-30-04 12:46 BiO            Issue Monitored: BiO                         
-07-30-04 12:47 BiO            Issue End Monitor: BiO                       
-08-27-04 20:20 jcdutton       Status                   new => closed       
-08-27-04 20:20 jcdutton       Note Added: 0001656                          
-10-25-04 13:20 wraiden        Kernel Version           2.6.5 => 2.6.9-mm1  
-10-25-04 13:20 wraiden        Status                   closed => feedback  
-10-25-04 13:20 wraiden        Resolution               open => reopened    
-10-25-04 13:20 wraiden        Note Added: 0002261                          
-======================================================================
-
-
+-----------------------------------------------------------------------
+如果本信息打扰了您，我们向您表示歉意。
 
 
 -------------------------------------------------------
