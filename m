@@ -1,14 +1,14 @@
-From: Guilhem Tardy <guilhem_tardy@yahoo.com>
-Subject: playout of less than a period worth of audio
-Date: Fri, 23 Aug 2002 06:30:35 -0700 (PDT)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [Alsa-user] ALSA USB MIDI Input
+Date: Fri, 23 Aug 2002 14:17:11 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020823133035.36695.qmail@web11504.mail.yahoo.com>
+Message-ID: <Pine.HPX.4.33n.0208231406150.23751-100000@studcom.urz.uni-halle.de>
+References: <20020822203522.GE10066@tuba.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from web11504.mail.yahoo.com (web11504.mail.yahoo.com [216.136.172.36])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id PAA04453
-	for <alsa-devel@alsa-project.org>; Fri, 23 Aug 2002 15:30:46 +0200
+In-Reply-To: <20020822203522.GE10066@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,24 +17,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Martin Langer <martin-langer@gmx.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thu, 22 Aug 2002, Martin Langer wrote:
+> > On Thu, 22 Aug 2002, Michael Martin wrote:
+> > > linux # cat /proc/asound/cards
+> > > 0 [card0          ]: USB-Audio - USB Audio Driver
+> > >                      Evolution Electronics Ltd. MK-249 USB MIDI keyboard
+> > > 1 [card1          ]: USB MIDI - Evolution Electronics Ltd. MK-2
+> > >                      Evolution Electronics Ltd. MK-249 USB MIDI keyboard at
+>
+> Isn't it a good argument to force an integration of both drivers to one card.
 
-I came across the following behaviour: when I finish playing a 2-bit ADPCM file
-whose length isn't exactly a multiple of the period, my driver runs into an
-infinite loop. Since I never ran into this with Mu-Law or S_16, it could be
-related to some silence function or so. Would anyone have an idea of what's
-missing?
-
-Guilhem.
+Yes. I think I'll have finished the patch Monday.
 
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Finance - Get real-time stock quotes
-http://finance.yahoo.com
+Regards,
+Clemens
+
+
 
 
 -------------------------------------------------------
