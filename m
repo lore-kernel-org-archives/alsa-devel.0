@@ -1,8 +1,8 @@
 From: John Covici <covici@ccs.covici.com>
-Subject: aplay won't play on any second sound card
-Date: Thu, 11 Jul 2002 04:48:00 -0400
+Subject: weird results using aplay on Midiman audiofile 24/96 card
+Date: Thu, 11 Jul 2002 04:52:40 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m3adoyr6pr.fsf@ccs.covici.com>
+Message-ID: <m365zmr6hz.fsf@ccs.covici.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -17,9 +17,16 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Using the rc2 aplay, it doesn't honor -c 1 at all, just plays on card
-0.  I even changed the aliases around so what was card1 is now 0, but
-aplay still only plays on card 0.
+I have been trying to use a Midiman Audiofile 24/96 under Linux with
+output to the sp/diff output and I am getting the following results.
+
+Silence if I play a stereo file 16 bit 44.100 hz
+
+For a mono file of the same characteristics, I get it to play but
+with the pitches all reduced as though it were at the wrong sample
+rate.
+
+Any assistance would be appreciated.
 
 -- 
          John Covici
