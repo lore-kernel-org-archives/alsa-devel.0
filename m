@@ -1,12 +1,13 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: HDSP advanced routing (matrix mixer)
-Date: Fri, 06 Sep 2002 10:02:24 -0400
+From: Pavel Roskin <proski@gnu.org>
+Subject: Re: integration of via668 and via8233 drivers
+Date: Fri, 6 Sep 2002 10:03:07 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17nJeb-0006X5-00@usw-sf-list1.sourceforge.net>
-References: <1031318910.7294.26.camel@satellite.undata.org>
+Message-ID: <Pine.LNX.4.44.0209060956500.2226-100000@portland.hansa.lan>
+References: <s5hsn0nwg7d.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "06 Sep 2002 15:28:25 +0200."
-             <1031318910.7294.26.camel@satellite.undata.org>
+In-Reply-To: <s5hsn0nwg7d.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,29 +16,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->I'm considering writing an application to control the HDSP matrix mixer,
->but so far I could only figure out how to route physical inputs to the
->line out (First integer value (0-25) : input, second integer value
->(26-27) : line out L-R, third integer value (0-65536) : gain). Paul,
->could you please document a little the channel-to-output,
->channel-to-line-out, and input-to-output cases ?
+Hello!
 
-first value: input source
-second value: output source
-third value: gain
+> i think esd tries to set too small fragment size.
+> anyway, could you check the output of
+> /proc/asound/card0/pcm0p/sub0/hw_params for each bad case?
 
-input source: 0-25  (physical channels), 26-51 (audio output streams)
-output source: 0-27 (physical channels)
+Yes, it looks like that.  If the sound is bad, period_size is 1024 or
+less.  If the sound is good, period_size is 2048 or more.
 
-output channels 26 and 27 are the two line outs on the I/O box.
+> > timidity -Ou -o - ode2joy.mid | aplay -            Bad
 
-i hope this is clearer. let me know if you have more questions.
+That's the simplest case because it doesn't involve OSS emulation.  -Ou 
+means using Sun AU format.  The default sampling rate is 8k.  The sound 
+becomes good when the sampling rate is more than 12k.  Now let's look at 
+this:
 
---p
+timidity -Ou -o - -s 12k ode2joy.mid | aplay -
+bad sound
+/proc/asound/card0/pcm0p/sub0/hw_params:
+
+access: MMAP_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 1
+rate: 12000 (12000/1)
+period_size: 1024
+buffer_size: 6000
+tick_time: 10000
+
+
+timidity -Ou -o - -s 12.5k ode2joy.mid | aplay -
+good sound
+/proc/asound/card0/pcm0p/sub0/hw_params:
+
+access: MMAP_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 1
+rate: 12500 (12500/1)
+period_size: 2048
+buffer_size: 6250
+tick_time: 10000
+
+
+buffer_size changed insignificantly.  period_size jumped from 1024 to 
+2048.  There are no other changes.
+
+-- 
+Regards,
+Pavel Roskin
+
 
 
 -------------------------------------------------------
