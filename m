@@ -1,15 +1,15 @@
 From: Jeremy Hall <jhall@maoz.com>
-Subject: Re: HELP NEEDED URGENTLY
-Date: Mon, 28 Apr 2003 04:13:58 -0400 (EDT)
+Subject: Re: rme9652: possible deadlock
+Date: Mon, 28 Apr 2003 04:23:12 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200304280813.h3S8DwxI029972@sith.maoz.com>
-References: <20030428081042.25682.qmail@webmail32.rediffmail.com>
+Message-ID: <200304280823.h3S8NCUh029997@sith.maoz.com>
+References: <3EA7B654.2090108@libero.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030428081042.25682.qmail@webmail32.rediffmail.com> from mahendra
-  sp at "Apr 28, 2003 08:10:42 am"
+In-Reply-To: <3EA7B654.2090108@libero.it> from Abramo Bagnara at "Apr 24, 2003
+ 12:03:00 pm"
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,28 +18,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mahendra sp <mahendra_sp@rediffmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Jaroslav Kysela <perex@suse.cz>, Jeremy Hall <jhall@maoz.com>, "paul@linuxaudiosystems.com" <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Do you have a problem with your ES SOLO-1?
+Will this fix allow both CPUs to run snd_pcm_period_elapsed() and friends 
+concurrently and then if XRUN is encountered grab the group lock, or will 
+one stream run at a time, in effect only allowing one card to process at a 
+time?
+
+Maybe I misunderstand this code, but my understanding is that this moves 
+the pointer along in the ringbuffer.  Since two cards in a pcm_multi can 
+use different areas, they should be able to process() at the same time, 
+until XRUN is encountered, then the "right" thing should happen according 
+to maintaining sample-synch.  My understanding is this can't happen 
+currently with alsa and this is unfortunate.
 
 _J
 
-In the new year, mahendra  sp wrote:
+In the new year, Abramo Bagnara wrote:
+> Jaroslav Kysela ha scritto:
+> > 
+> > 
+> > Bingo, I got it. You mean this scenario (linked two streams):
+> > 
+> > CPU0: stream1 interrupt: stream1 locked -> snd_pcm_stop()
+> > CPU1: stream2 interrupt: stream2 locked -> snd_pcm_stop()
+> > CPU0: try to lock stream2 (in ACTION macro)
+> > CPU1: try to lock stream1 (in ACTION macro)
+> > 
+> > Yes, this is next deadlock issue.
+> > 
+> > I have probably only one solution in my brain: Separate snd_pcm_stop() to 
+> > two steps:
+> > 
+> > 1) stop only the locked stream and unlock it
+> > 2) stop all other linked streams
 > 
-> hi all,
+> My proposal is to have a per "linked PCM group" lock and to use it for 
+> proper locking (with also some side benefits substituting some use of 
+> snd_pcm_link_lock).
 > 
->    I want the documentation of APIs for ES 1938 sound card 
-> driver.
+> This mean also we need to change the linked list struct from
 > 
->   please help me in this regard as soon as possible,
+> struct _snd_pcm_substream {
+> 	...
+>          /* -- linked substreams -- */
+>          snd_pcm_substream_t *link_next;
+>          snd_pcm_substream_t *link_prev;
 > 
-> thank you,
-> warm  regards,
-> mahendra.
+> to
+> 	struct list_head link_list;
+> 	snd_pcm_link_t *link;	/* 0 for non linked stream */
+> 
+> typedef struct _snd_pcm_link {
+> 	spinlock_t lock;
+> 	struct list_head substreams;
+> };
+> 
+> Of course creation and destruction of a snd_pcm_link_t need to be 
+> protected by snd_pcm_link_lock.
 > 
 > 
+> -- 
+> Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+> 
+> Opera Unica                          Phone: +39.546.656023
+> Via Emilia Interna, 140
+> 48014 Castel Bolognese (RA) - Italy
 > 
 > 
 > 
