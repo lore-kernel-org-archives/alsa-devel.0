@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Strange things with via82xx
-Date: Wed, 23 Jun 2004 14:42:15 +0200 (METDST)
+Subject: Re: [PATCH]snd-usb-usx2y 0.6.4
+Date: Wed, 23 Jun 2004 14:49:26 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0406231436190.4564-100000@studcom.urz.uni-halle.de>
-References: <200406231415.52570.monge@sns.it>
+Message-ID: <Pine.HPX.4.33n.0406231442240.4564-100000@studcom.urz.uni-halle.de>
+References: <200406212257.48375.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200406231415.52570.monge@sns.it>
+In-reply-to: <200406212257.48375.annabellesgarden@yahoo.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,26 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Maurizio Monge <monge@sns.it>
-Cc: alsa-devel@lists.sourceforge.net
+To: Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Maurizio Monge wrote:
-> > What codec does your MB use? (see second line at the top of the
-> > alsamixer screen)
+Karsten Wiese wrote:
+> Am Montag 21 Juni 2004 13:21 schrieb Clemens Ladisch:
+> > Logically, these functions operate on a usb_midi structure/object, not
+> > on a list entry.  AFAICS current pratice would put the list_entry()
+> > call int the list iteration loop (in the caller of these functions).
 >
->  Chip: Analog Devices AD1980
+> I followed the model given by
+> 	snd_usb_audio_disconnect():
+> and
+> 	snd_usbmidi_disconnect()
+> If you change that, I'll change my patch ;-)
 
-The AD1980 allows to reconfigure some of its input/output jacks, see
-the controls "Exchange Front/Surround", "Surround Jack as Input" and
-"Center/LFE Jack as Input" in alsamixer.
+Well, the USB driver as a whole isn't as modular as I'd like it to be,
+but just now I'm too lazy to rewrite the entire thing.  :-)
 
-> > > Further, when using WinXP, linux OSS or FreeBSD i get a MUCH
-> > > better quality than with ALSA (cshhhhhhhhhhhhhhhhh).
-
-Maybe some input isn't muted in the mixer?
-Does it happen when you run "aplay something.wav"?
-Does it happen when you play a file that has a sample rate of 48 kHz?
+Applied, with some minor changes.
 
 
 Regards,
