@@ -1,15 +1,14 @@
-From: Jason Corekin <jason@corekin.no-ip.com>
-Subject: Re: Redhat 9.0 also has the snd.o unresolved symbol
-	schedule_work issue
-Date: 30 Mar 2003 14:19:48 -0800
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: ALSA OSS MIDI emulation: input problems
+Date: Mon, 31 Mar 2003 09:44:31 +0930 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1049062787.3017.22.camel@jason.corekin>
-References: <3E861CFC.9040908@corekin.no-ip.com>
+Message-ID: <200303310014.h2V0EVW24644@sprite.physics.adelaide.edu.au>
+References: <s5h7kajolsy.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E861CFC.9040908@corekin.no-ip.com>
+In-Reply-To: <s5h7kajolsy.wl@alsa2.suse.de> from "Takashi Iwai" at Mar 28, 2003 10:57:49 AM
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,64 +17,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa User's <alsa-user@lists.sourceforge.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-	Good news I have Alsa 0.9.2 working on RedHat 9.0 working with kernel
-version 2.4.20.  The catch is that I had to replace the RedHat kernel
-with the stock kernel from www.kernel.org.  So the problem has to be in
-the changes that RedHat made to their kernel.  I have to give credit to
-Kmberry and Lance A. Brown, for pointing out that RedHat plays around
-with the kernel before releasing it  
-	The only thing that I have not yet tried to do is to rework the
-symlinks to make sure that the Alsa code knows where to find the right
-kernel dependencies.  Since I do not know if there is any thing that I
-am now missing from not running on the RedHat kernel or not it would be
-nice to at least have some modules compatible with their kernel, but I'm
-not too worried about it.
-	I hope this helps.
+> > > The problem as I see it is that the ALSA OSS emulation does not send this
+> > > TMR_WAIT_ABS event - it only sends the NOTEON event.  Jazz gets this and
+> > > without any TMR_WAIT_ABS to tell it otherwise, assumes that it occured at
+> > > the "current" time - which is always a multiple of 48 ticks.
+> > 
+> > does the attached patch cure?
+> > :
+> > diff -u -r1.8 seq_oss_midi.c
+> > --- alsa-kernel/core/seq/oss/seq_oss_midi.c   12 Mar 2003 11:26:20 -0000 1.8
+> > +++ alsa-kernel/core/seq/oss/seq_oss_midi.c   26 Mar 2003 17:51:31 -0000
+> > @@ -593,6 +593,7 @@
+> >               break;
+> >       }
+> >       
+> > +     snd_seq_oss_readq_put_timestamp(dp->readq, ev->time.tick, dp->seq_mode);
+> >       snd_seq_oss_readq_put_event(dp->readq, &ossev);
+> >  
+> >       return 0;
+> > 
+> Ok.  Last night I investigated ev->time.tick.  Admittedly this was under
+> 0.90rc8b.  It transpires that ev->time.tick is *always* zero when the event
+> is a NOTEON/NOTEOF, and therefore gives no timing information what-so-ever. 
+> Thus the above patch does *not* fix the problem, at least under 0.90rc8b.
 
-Jason Corekin 
+Over the weekend I tested this patch against ALSA 0.9.2 release.  The patch
+DOES fix the problem under this version of ALSA - so obviously the sequencer
+changes since 0.9.0rc8b have rectified the problems with ev->time.tick. 
+This is a good development - it means I can run a single sound driver now
+rather than having to switch between ALSA and OSS depending on what I need
+to do at the time.
 
+So to confirm: the above patch fixes the input event timing when using ALSA 
+OSS sequencer (/dev/sequencer2) emulation.
 
-
-On Sat, 2003-03-29 at 14:23, Jason Corekin wrote:
-> I work for HP and I just downloaded the new RH 9.0 iso's from our 
-> internal source yesterday.  After upgrading from RH 8.0 and the 2.4.18 
-> kernel I tried to update my Alsa drivers to work with the new 2.4.20 
-> kernel and found that althought the Alsa 0.9.2 drivers had compiled and 
-> installed without trouble the would not load.  Instead I am getting the 
-> error unresolved symbol schedule_work.
-> 
-> Now I know that there have been numerous similar complaints on the user 
-> mailing list, but since nobody seems to be privinding and answer and 
-> since I saw no mention of this error on the development list I thought 
-> that I would send out this mail to both lists and see if I could get a 
-> little bit more of a response.
-> 
-> I have a Yamahaa Waveforce 192XG, a 1.2Ghz Duron, 128MB of ram, and a 
-> ECS K7S5A motherboard.  But since this appears to be a layer other then 
-> the hardware driver layer and has been reported with to be affecting 
-> numerous cards, I really don't think that my hardware config will be of 
-> much importance.
-> 
-> Jason Corekin
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.net email is sponsored by:
-> The Definitive IT and Networking Event. Be There!
-> NetWorld+Interop Las Vegas 2003 -- Register today!
-> http://ads.sourceforge.net/cgi-bin/redirect.pl?keyn0001en
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+Best regards
+  jonathan
 -- 
-Jason Corekin <jason@corekin.no-ip.com>
-
+* Jonathan Woithe    jwoithe@physics.adelaide.edu.au                        *
+*                    http://www.physics.adelaide.edu.au/~jwoithe            *
+***-----------------------------------------------------------------------***
+** "Time is an illusion; lunchtime doubly so"                              **
+*  "...you wouldn't recognize a subtle plan if it painted itself purple and *
+*   danced naked on a harpsichord singing 'subtle plans are here again'"    *
 
 
 -------------------------------------------------------
