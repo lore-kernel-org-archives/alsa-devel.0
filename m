@@ -1,14 +1,13 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: usbaudio won't do 24-bit or 32-bit i/o, and won't
- do 96000 frames per second
-Date: Fri, 06 Dec 2002 16:12:11 +0900
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: ICE1712: no volume range inversion for AK4528/4524
+Date: Fri, 6 Dec 2002 09:31:16 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DF04DCB.9060305@boosthardware.com>
-References: <Pine.HPX.4.33n.0212051549290.19058-100000@studcom.urz.uni-halle.de> <3DF0482E.8010109@boosthardware.com>
+Message-ID: <Pine.LNX.4.33.0212060930200.527-100000@pnote.perex-int.cz>
+References: <1039143257.5128.74.camel@cmn37.Stanford.EDU>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1039143257.5128.74.camel@cmn37.Stanford.EDU>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,30 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: Clemens Ladisch <clemens@ladisch.de>, "John S. Denker" <jsd@monmouth.com>, alsa-devel@lists.sourceforge.net
+To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey wrote:
+On 5 Dec 2002, Fernando Pablo Lopez-Lezcano wrote:
 
-> Currently I am using the cvs from the 18 November. I will update and 
-> check again. 
+> > The volume range inversion is ok for the AK4529/Delta410 (to increase 
+> > volume when pulling up the faders).
+> > But AK4528 (and AK4524) don't need the inversion (sliders worked 
+> > correctly before Jaroslav's patch).
 > 
+> I have just rebuilt the alsa drivers from cvs and the volume controls in
+> current cvs are inverted for a plain Delta 66 card. 
 
-It is the same with the latest cvs.
+Could you give a next try?
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
+> I also noticed that the adc controls have a weird behavior (in a
+> delta66). I start both alsamixer and envy24control. I can control the
+> adc volume for each channel from both of them. I can quit and restart
+> alsamixer and everything is fine. If I quit and restart envy24control
+> all adc volumes go up to 127 (which is, at this point, 0 volume). 
 
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
+It looks like a envy24control problem. Please, report, if this problem 
+persists with updated driver.
 
-Goldie, 8 Nov, 2002
-The Scotsman
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
