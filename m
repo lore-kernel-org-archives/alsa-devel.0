@@ -1,15 +1,12 @@
-From: Caleb Crome <alsa@crome.org>
-Subject: Re: How do create a dummy device for recording audio?
-  Does it exist already?
-Date: Thu, 22 Apr 2004 14:24:30 -0700
+From: Nikhil Deo <nikhil_deo@usa.net>
+Subject: Configuring the mixer
+Date: Thu, 22 Apr 2004 17:38:04 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4088380E.7070004@crome.org>
-References: <4087CC4B.80402@crome.org> <1082665995.2539.28.camel@deeli.eee.strath.ac.uk>
+Message-ID: <017iDVVMe5392S06.1082669884@cmsweb06.cms.usa.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1082665995.2539.28.camel@deeli.eee.strath.ac.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,72 +15,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arek Korbik <arek.korbik@eee.strath.ac.uk>
-Cc: Caleb Crome <alsa@crome.org>, ALSA Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Arek,
-    That looks like what I want.  However, I'm sorry to be such an 
-ignoramus -- what do I do with that bit of configuration data?  I found 
-the /usr/share/alsa/alsa.conf, and there is a similar pcm.file entry in 
-that, but it seems to take parameters.  Since I have no sound card, how 
-do I configure my system to use the dummy PCM driver and use the 
-pcm.file plugin? 
-
-Sorry to the developer community -- this is a user question.  I'll move 
-the thread over there if it continues on. 
-
-Thanks,
-    -Caleb
+Ok. This is my first attempt at configuring the mixer to get something do=
+ne.
+My two problems are: It is to be done on QNX and nobody seems to be liste=
+ning
+on the QNX ngs. Since the concepts seem to be the same, I am hoping someo=
+ne
+here would be able to point me in the right direction. =
 
 
-Arek Korbik wrote:
+What I want to do:
 
->On Thu, 2004-04-22 at 14:44, Caleb Crome wrote:
->  
->
->>I'd like to create a dummy audio device that can record the PCM data 
->>written to it into a file.  So, the dummy device would appear as a sound 
->>card to the audio program (Real Player for example), and start dumping 
->>    
->>
->
->How about 'file' type plugin? For example:
->
->pcm.file {
->    type file
->    slave {
->        pcm "hw:0,0"
->    }
->    file "/tmp/file.raw"
->}                                                                              
->  
->
->>audio into a file, or maybe it would create another device that could be 
->>read simply by 'dd' or some custom command.  Then I'd pipe the data into 
->>    
->>
->
->It works with named pipes as well.
->
->http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html#pcm_plugins_file
->
->Arek
->
->
->
->-------------------------------------------------------
->This SF.net email is sponsored by: The Robotic Monkeys at ThinkGeek
->For a limited time only, get FREE Ground shipping on all orders of $35
->or more. Hurry up and shop folks, this offer expires April 30th!
->http://www.thinkgeek.com/freeshipping/?cpg=12297
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
->  
->
+I need to capture input from the mic AND the line in. Then I need to outp=
+ut
+the mic input on the Right-LineOut and leftLineIn on leftLineOut. (right =
+line
+in can be ignored)
+
+I have been playing with the samples on the qnx site and was able to do t=
+he
+follwing:
+
+1. Play a wav file on the line-out
+2. running the code for wave record =
+
+
+
+in 1, I understood the concept of mixer group, found out that the best gr=
+oup
+for me was the PCM-Playback and then could modify the mute bits to mute t=
+he
+left and right channels simultaneously.  The JOINT_MUTE in caps was set a=
+nd so
+I believe I cannot mute the left and right (front) separately ( I tried
+changing it, could change the bit in caps but still could not mute the
+channels separately)
+
+in 2, my mixer group was input gain and although it seemed to be recordin=
+g
+something, I could not figure out what it was. How do I make it take the =
+input
+from  mic in only? =
+
+
+So I would really appreciate if anyone can give me a brief strategy on ho=
+w to
+proceed. =
+
+
+I might ask more questions and will be glad to clarify anything that is n=
+ot
+clear in this post. =
+
+
+
+Thanks a lot for your time. I am beginning to creep into frustration mode=
+=2E
+Answers need not be qnx specific, I have a feeling that I will be able to=
+
+apply the logic. Also, pointers to any documentation on the web for a beg=
+inner
+like me are also welcome. =
+
+
+
+
 
 
 
