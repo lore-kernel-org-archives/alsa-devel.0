@@ -1,16 +1,14 @@
-From: "P. Christeas" <p_christ@hol.gr>
-Subject: Re: Reproducible deadlock w. alsa/maestro3 when sleeping (ACPI,) 2.6.0-test1
-Date: Thu, 17 Jul 2003 19:14:16 +0300
+From: Art Haas <ahaas@airmail.net>
+Subject: Re: [PATCH] Replace obsolete GCC initializers in alsa-lib [1/3]
+Date: Thu, 17 Jul 2003 12:19:43 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307171914.16811.p_christ@hol.gr>
-References: <200307141917.22813.p_christ@hol.gr> <200307161803.48574.p_christ@hol.gr> <3F156CD8.6010308@superbug.demon.co.uk>
+Message-ID: <20030717171943.GA834@artsapartment.org>
+References: <20030717124356.GC3788@artsapartment.org> <s5hvfu1yz00.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F156CD8.6010308@superbug.demon.co.uk>
 Content-Disposition: inline
+In-Reply-To: <s5hvfu1yz00.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,58 +17,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> >>This time, I did NOT have 'artsd' (i.e. the client) loaded. What happened
-> >>was that the module was properly restored and I could load (and use)
-> >> artsd even after the resume.
-> >>That brings me to the first assumption/question I have made: is there
-> >>something wrong if we suspend two parts (one module and a userspace
-> >>process), while they inter-communicate through the /dev/* interface?
-> >
-> > In a second test, I have also added messages at the end of these
-> > functions. They surely don't exit early indeed.
-> >
-> > Has anybody else managed to reproduce the bug?
-> > Does it happen with other drivers (say, PCI cards w. pcm interface)?
-> >
-> > procedure:
-> > 	(read the last step first; it is a warning)
-> > 	1. load the sound module, like 'modprobe snd-maestro3'
-> > 	2. load the client ("artsd" should be the one, others may eventually
-> > release the descriptor. If you want, you could give them a try as well.)
-> > 3. Suspend, S1, NOT with an all-capable script. The script you use must
-> > not try to bring down ALSA.
-> > 	4. Resume.
-> > 	5. Check the state of the "artsd" (or equivalent) process.
-> >
-> > 	W. Note that if the process is waiting for I/O, you can do nothing but
-> > reboot.
->
-> I get a similar sort of problem, but that is with an USB sound card, and
-> one unplugs the usb cable.
-> The process (in my case a media appication) is waiting for a return from
-> a call to alsa-lib, but the return from the call never happens.
-> Maybe suspending a PCI sound card is similar to unplugging a USB sound
-> card. In both cases, the device does not respond anymore, but alsa-lib
-> fails to return an error to the application, but instead never returns.
->
-> Cheers
-> James
+On Thu, Jul 17, 2003 at 05:05:51PM +0200, Takashi Iwai wrote:
+> At Thu, 17 Jul 2003 07:45:34 -0500,
+> Art Haas wrote:
+> > 
+> > Hi.
+> > 
+> > This is the first of three patches.
+> 
+> thanks!
+> 
+> however, the patch looks not complete.
+> i noticed that forward is missing in some places.
+> 
+> did you convert them manually?
+> 
 
-If you verify that you are unable to 'kill -9' the client application, then 
-the problem becomes just little more serious. IMHO no such actions should 
-cause the kernel to have 'blocked' resources.
+When I created many of these patches several months ago I used a perl
+script. Then when I got 0.9.5 installed I fixed the files manually.
 
-One important observation I have is that 'esd' doesn't produce the bug. Esd 
-uses '/dev/sound/dsp' rather than '/dev/snd/pcmXXX' (oss-emu. rather than 
-ALSA). I don't even know what level of 'feedback' (in terms of function 
-returns) OSS provides, in comparison to the ALSA system.
+What I'd done when making the patches was:
 
+$ cvs -z3 diff -u alsa_lib > alsa_lib.diff
 
+I copied the "alsa_lib.diff" file into three separate files and then
+manually removed some patches that were of other stuff (i.e. libtool
+version string problems when libtool is version 1.5a. The prescence of
+the "a" makes problems, but a simple sed command fixes it).
 
+I find these old initializers with my patched GCC compiler. You can spot
+them if you compile with '-pedantic', but then a bazillion warnings also
+appear. I patched GCC to warn about the old syntax without needing a
+command line option.
+
+If you apply the patches I'll update my CVS copy and fix the bits I've
+missed.
+
+Thanks.
+
+Art Haas
+-- 
+Man once surrendering his reason, has no remaining guard against absurdities
+the most monstrous, and like a ship without rudder, is the sport of every wind.
+
+-Thomas Jefferson to James Smith, 1822
 
 
 -------------------------------------------------------
