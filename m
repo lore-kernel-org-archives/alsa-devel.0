@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000993]: Please provide asound_fm.h
-Date: Mon, 14 Mar 2005 22:28:04 +0100
-Message-ID: <b20ed2b7fee5163df427142c11f4a308@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: alsa driver, repeat playback of buffer contents
+Date: Mon, 14 Mar 2005 16:45:20 -0500
+Message-ID: <1110836720.15088.3.camel@mindpipe>
+References: <200503141530.20339.random.bits@rogers.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A36461C0
-	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2005 22:28:04 +0100 (MET)
+In-Reply-To: <200503141530.20339.random.bits@rogers.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,46 +16,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "random.bits" <random.bits@rogers.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2005-03-14 at 15:30 -0500, random.bits wrote:
+> I have been reading up on the alsa driver. I would like 
+> to have the alsa driver play a small pcm sound bite 
+> over and over without have to re-write it to the 
+> device.
+> 
+> By small, I mean 1.9K in length. I have followed the 
+> examples enough to get it to play the sound bite once, 
+> but I cannot figure out how to get it to play it 
+> multiple times without having to make another call to 
+> snd_pcm_writei() again.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=993> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   993
-Category:                   general
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             03-14-2005 22:28 CET
-Last Modified:              03-14-2005 22:28 CET
-======================================================================
-Summary:                    Please provide asound_fm.h
-Description: 
-The submitter of Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=299423 says:
+Why in the heck are you using write() instead of mmap()?
 
-> Please include the header asound_fm.h  This is required to use the
-> OSS compatibility Direct-FM interface (or ALSA DMFM device directly via
-> ioctls, as opposed to using through alsa-lib as normal).
-
-See http://bugs.debian.org/299423 for the full request.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-14-05 22:28 jdthood        New Issue                                    
-======================================================================
-
+Lee
 
 
 
