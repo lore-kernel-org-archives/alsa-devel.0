@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: emu10k1 bug and patch (0.9.0rc7)
-Date: Mon, 17 Feb 2003 11:24:44 +0100 (CET)
+From: tomasz motylewski <T.Motylewski@bfad.de>
+Subject: Re: Re: dmix plugin
+Date: Mon, 17 Feb 2003 11:32:52 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302171123090.1054-100000@pnote.perex-int.cz>
-References: <20030217083611.GA2181@via.ecp.fr>
+Message-ID: <Pine.LNX.4.21.0302171120240.30013-100000@mailserver.intern.bfad.de>
+References: <1045476241.3e50b391808f8@webmail2.namezero.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030217083611.GA2181@via.ecp.fr>
+In-Reply-To: <1045476241.3e50b391808f8@webmail2.namezero.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,68 +16,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arnaud de Bossoreille de Ribou <arnaud.debossoreille@via.ecp.fr>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Jaroslaw Sobierski <fycio@gucio.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 17 Feb 2003, Arnaud de Bossoreille de Ribou wrote:
+On Mon, 17 Feb 2003, Jaroslaw Sobierski wrote:
 
-> On Thu, Feb 13, 2003, Jaroslav Kysela wrote:
-> > On Mon, 10 Feb 2003, Arnaud de Bossoreille de Ribou wrote:
+> > Here I don't understand you. Suppose we have 3 samples to mix:
+> > a = 0x7500
+> > b = 0x7400
+> > c = 0x8300
 > > 
-> > > So the bug looks like a signedness problem since sw_ready is unsigned
-> > > and there is a while(sw_ready > 0), which explain the constant delay,
-> > > next in the "snd_emu10k1_fx8010_playback_transfer" function.
-> > > 
-> > > So the emu10k1.patch file attached fixes the problem and seems not to
-> > > introduce new ones.
+> > If you do a + b + c (in this order) you obtain:
+> > d=0
+> > d += a -> 7500
+> > d += b -> 0xe900 -> 0x7fff
+> > d += c -> 0x02ff
 > > 
-> > Please, could you try this patch, if it also fixes your problem? Thanks.
-> > 
-> > 
-> > Index: emufx.c
-> > ===================================================================
-> > RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emufx.c,v
-> > retrieving revision 1.26
-> > diff -u -r1.26 emufx.c
-> > --- emufx.c	31 Jan 2003 15:21:03 -0000	1.26
-> > +++ emufx.c	13 Feb 2003 20:29:55 -0000
-> > @@ -532,7 +532,7 @@
-> >  	if (diff) {
-> >  		if (diff < -(snd_pcm_sframes_t) (runtime->boundary / 2))
-> >  			diff += runtime->boundary;
-> > -		pcm->sw_ready += diff;
-> > +		frames += diff;
-> >  	}
-> >  	pcm->sw_ready += frames;
-> >  	pcm->appl_ptr = appl_ptr + frames;
-> > 
-> > 						Jaroslav
-> 
-> It doesn't. sw_ready is negative (or above 2^31 as you like).
-> 
-> I think it has nothing to do with runtime->boundary since the 2 appl_ptr
-> are very close. The difference is always one period but I wonder why
-> runtime->control->appl_ptr is above pcm->appl_ptr. Is this because the
-> hardware has played one period that it shouldn't ?
-> 
-> On the other hand if the difference is really always of one period the
-> fix consists in conditioning the diff calculation with a
-> "if(frames != 0)" so that sw_ready never reaches its lower boundary.
+> > while the correct result is 0x6c00. You see?
 
-Unfortunately, the problem is more deep that I thought. I have to enhance 
-the midlevel and transfer routine only synchronizes with appl_ptr now. It
-will avoid the "ping-pong" effect caused by the extra function argument
-"frames".
+Well, but when adding a+b we have no idea that that overlow will be compensated
+by next very big negative sample. Also mixing signals which already fill 90% of
+dynamic range is not a good idea. My "fix" is heuristic - it works for
+occasional _small_ overflows like 0x4100+0x4000 -> 0x7fff is much better than
+0x8100. 
 
-Could you try the latest CVS sources? Thanks.
+The idea of dmix as I understand it is that buffer is already in the native
+format for the sound card. So if sound card supports 24 bit, OK. But then
+people will start mixing 24 bit samples :-)
 
-						Jaroslav
+> AFAIK most hardware does not mix by reducing volume before the sum. On the
+> contrary, it is usually summed "as is" to a wider register, and often even so
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+And here our "wider register" is 16bit. That means end users should not expect
+too much if thay mix full power signals on it.
+
+BTW. If you have uncorrelated signals, then to mix 4 signals it may be good
+enough to reduce the amplitude of them just factor 2, because power will drop
+factor 4. Ocassionally there will be overrruns, but 0x7fff limit will make it
+almost not hearable. Not a correct fix, but I can assure you that it works in
+standard cases :-)
+
+Best regards,
+--
+Tomasz Motylewski
+BFAD GmbH & Co. KG
 
 
 
