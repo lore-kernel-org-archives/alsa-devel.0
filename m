@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000691]: M-Audio USB Midisport 4x4 MIDI interfaces are not visible
-Date: Mon, 29 Nov 2004 14:00:48 +0100
-Message-ID: <f1544685f733a1cc60f5705972b7caae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000692]: Possible ALSA support the EMU 0404 or other EMU card in the future?
+Date: Mon, 29 Nov 2004 14:03:48 +0100
+Message-ID: <e99ad3ed31385964be158e7b61bf3c61@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C86AB2AD
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 14:00:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5286F2AD
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 14:03:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,44 +24,35 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=691> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=692> 
 ======================================================================
 Reported By:                comp
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   691
-Category:                   GENERIC - serialmidi
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   692
+Category:                   OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               SuSE Linux 9.1
-Kernel Version:             2.6.5-7.111-smp
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-29-2004 14:00 CET
-Last Modified:              11-29-2004 14:00 CET
+Date Submitted:             11-29-2004 14:03 CET
+Last Modified:              11-29-2004 14:03 CET
 ======================================================================
-Summary:                    M-Audio USB Midisport 4x4 MIDI interfaces are not
-visible
+Summary:                    Possible ALSA support the EMU 0404 or other EMU card
+in the future?
 Description: 
-I don't know how to reproduce, but the first time the kaconnect utility
-shows the all midisport midi interfaces normally. After running any
-application that use midi (muse or whatever), the midi ports lost. I
-trying to unplug/plug the midisport and restart alsa with rcalsasound
-restart command, but the ports are invisible.
-When i create virtual raw midi ports, these midi interfaces always
-visible.
+It is possible that ALSA supports EMU cards in the future?
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-29-04 14:00 comp           New Issue                                    
-11-29-04 14:00 comp           Distribution              => SuSE Linux 9.1  
-11-29-04 14:00 comp           Kernel Version            => 2.6.5-7.111-smp
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 SMP
+11-29-04 14:03 comp           New Issue                                    
 ======================================================================
 
 
