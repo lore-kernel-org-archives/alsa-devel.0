@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Query devices in a non-blocking fashion
-Date: Sun, 07 Dec 2003 14:56:51 -0500
+Date: Sun, 7 Dec 2003 21:00:13 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312071956.hB7Juq18004807@oud.linuxaudiosystems.com>
-References: <Pine.LNX.4.58.0312072033450.20863@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.58.0312072056170.20863@pnote.perex-int.cz>
+References: <200312071919.hB7JJTNk004757@oud.linuxaudiosystems.com>
+ <oprztsi6z7q1sf88@mail.broadpark.no> <Pine.LNX.4.58.0312072033450.20863@pnote.perex-int.cz>
+ <oprzttgbyxq1sf88@mail.broadpark.no>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Sun, 07 Dec 2003 20:38:48 +0100."
-             <Pine.LNX.4.58.0312072033450.20863@pnote.perex-int.cz>
+In-Reply-To: <oprzttgbyxq1sf88@mail.broadpark.no>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,20 +18,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Arve Knudsen <aknuds-1@broadpark.no>, alsa-devel@lists.sourceforge.net
+To: Arve Knudsen <aknuds-1@broadpark.no>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->We all think in the same way, but there's no simple solution for this
->problem. I prefer to have such configuration information in an user-space 
->database accessed via an alsa-lib API. It's nothing for the kernel space.
+On Sun, 7 Dec 2003, Arve Knudsen wrote:
 
-i'm not sure i agree with that. a user-space config DB could be used
-to describe the possibilities. but it doesn't address the approach i
-outlined where a program can present the *current* state of the
-system as configured using the control API.
+> > We all think in the same way, but there's no simple solution for this
+> > problem. I prefer to have such configuration information in an user-space
+> > database accessed via an alsa-lib API. It's nothing for the kernel space.
+> 
+> I dunno, I think Paul's thoughts sound sensible. Its not solved in a simple
+> manner, but it was obviously solved somehow with other driver 
+> architectures.
 
---p
+With very little success when a complicated hardware is in the machine.
+
+> Will this database cope with runtime variables, such as the number of
+> channels with RME Hammerfall though (dependent on samplerate)?
+
+It depends on our goals and what we expect from this information. Can you 
+describe your requirement (for what reason, you need this information?).
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
