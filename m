@@ -1,13 +1,12 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: Re: Test: SBLive! (C) 2003 need extra effort on Rear Analog Output
-Date: Thu, 25 Mar 2004 15:39:31 +0100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: problems using select() on alsa pcm.
+Date: Thu, 25 Mar 2004 09:44:53 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200403251439.i2PEdVAc006177@www3.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
-Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Message-ID: <200403251444.i2PEisl8003668@dhin.linuxaudiosystems.com>
+References: <Pine.LNX.4.58.0403251037200.1807@pnote.perex-int.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Thu, 25 Mar 2004 10:38:18 +0100."
+             <Pine.LNX.4.58.0403251037200.1807@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,26 +15,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: guanyim@hotmail.com
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+>> select is generally deprecated in linux (linus says so!). but you can
+>> use the same pfds in select as in poll (select is implemented in the
+>> kernel using the poll code). the problem is interpreting the results
+>> you get back (as noted recently for the dmix plugin).
+>
+>Nope, the application must give results back to pfd array and call
+>snd_pcm_poll_descriptors_revents() function. In this way, everything
+>will work as expected.
 
-What AC97 codec uses SB Live 2003 ???
-Maybe for rear channels is used AC97 too and by default is rear=20
-volume set to 0 and control is removed to avoid duplicite.
-
-Peter Zubaj
-
-
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=0ASpolocnost SUN Microsystems uviedla na trh novy server Sun Fire V20z=0Az=
-alozeny procesoroch AMD Opteron.=0AViac informacii najdete na : http://www.=
-somi.sk/sun/v20z.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
+i thought that the flags set by select(2) were different than those
+set by poll(2) ??
 
 
 -------------------------------------------------------
