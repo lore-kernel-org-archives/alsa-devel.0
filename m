@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000717]: MIDI input does not generate interrupts
-Date: Mon, 20 Dec 2004 14:38:16 +0100
-Message-ID: <e3c6bb3411b370132b660e70b1cb9574@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000531]: alsamixer.1: Please explain the display
+Date: Mon, 20 Dec 2004 14:39:55 +0100
+Message-ID: <9784a62d05e939c48676b37ff1306cc6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B52CA2E7
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 14:38:16 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC5672E7
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 14:39:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=717> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=531> 
 ======================================================================
-Reported By:                pelzi
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   717
-Category:                   PCI - es1938
+Project:                    ALSA - utils
+Issue ID:                   531
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian Sarge
-Kernel Version:             2.4.27
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-09-2004 14:52 CET
-Last Modified:              12-20-2004 14:38 CET
+Date Submitted:             09-24-2004 06:26 CEST
+Last Modified:              12-20-2004 14:39 CET
 ======================================================================
-Summary:                    MIDI input does not generate interrupts
+Summary:                    alsamixer.1: Please explain the display
 Description: 
-No high level midi events are generated, though raw midi events are
-received. I.e. amidi -d produces results, but the corresponding
-arecordmidi does not.
-The possible cause, as suggested on the alsa-user mailing list, is that no
-interrupts are generated on incoming midi events. In generel, the
-soundcard does generate interrupts tough, e.g. on audio channel events.
-
+On the man page describe the display, e.g. the "------" seen over some
+controls means what, etc.
 ======================================================================
 
 ----------------------------------------------------------------------
- pelzi - 12-20-04 01:58 
+ jdthood - 12-19-04 21:24 
 ----------------------------------------------------------------------
-Ah, I see, there are news at the main page. Tried to delete the original
-patch, but I'm not authorized, tried to upload it once again, but it has
-to have a different name - so an authorized person will have to clean up
-the mess ;-) As writing my email address in a text file doesn't count as
-"signing" for me, I also added a detached GPG signature.
+Another Debian user has submitted Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=286192 asking
+that the new way of displaying controls be documented.  He writes:
+
+> When using alsamixer 1.0.7 for the first time I panicked because I
+> couldn't see my capture devices any more!
+>
+> A little googling found the answer, but the man page should mention
+> this, and it should also mention how to switch views.
+
+
+See http://bugs.debian.org/286192 for the full report.
 
 ----------------------------------------------------------------------
- tiwai - 12-20-04 14:38 
+ tiwai - 12-20-04 14:39 
 ----------------------------------------------------------------------
-Thanks, I applied your patch now to CVS.
+More detailed description was added to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-09-04 14:52 pelzi          New Issue                                    
-12-09-04 14:52 pelzi          Distribution              => Debian Sarge    
-12-09-04 14:52 pelzi          Kernel Version            => 2.4.27          
-12-09-04 15:27 tiwai          Note Added: 0002802                          
-12-10-04 13:22 pelzi          Note Added: 0002804                          
-12-10-04 14:38 Clemens LadischNote Added: 0002805                          
-12-10-04 15:14 pelzi          File Added: es1938_c_MIDI_Patches.diff            
-       
-12-10-04 15:16 pelzi          Note Added: 0002806                          
-12-16-04 18:40 tiwai          Note Added: 0002837                          
-12-20-04 01:48 pelzi          Note Added: 0002865                          
-12-20-04 01:56 pelzi          File Added: es1938_c_MIDI_Patches_signed_off.diff 
-                  
-12-20-04 01:56 pelzi          File Added:
-es1938_c_MIDI_Patches_signed_off.diff.asc                    
-12-20-04 01:58 pelzi          Note Added: 0002866                          
-12-20-04 14:38 tiwai          Status                   new => resolved     
-12-20-04 14:38 tiwai          Resolution               open => fixed       
-12-20-04 14:38 tiwai          Assigned To               => tiwai           
-12-20-04 14:38 tiwai          Note Added: 0002874                          
+09-24-04 06:26 jdthood        New Issue                                    
+09-24-04 08:24 pzad           Note Added: 0001856                          
+12-19-04 21:24 jdthood        Note Added: 0002850                          
+12-20-04 14:39 tiwai          Status                   new => resolved     
+12-20-04 14:39 tiwai          Resolution               open => fixed       
+12-20-04 14:39 tiwai          Assigned To               => tiwai           
+12-20-04 14:39 tiwai          Note Added: 0002876                          
 ======================================================================
 
 
