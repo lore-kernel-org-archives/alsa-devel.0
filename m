@@ -1,12 +1,13 @@
-From: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
-Subject: ens1371 & SPDIF feed-trough
-Date: Mon, 27 Jan 2003 16:44:52 +0100
+From: Oliver Schrempf <un1q@stud.uni-karlsruhe.de>
+Subject: Re: asoundrc problem
+Date: Mon, 27 Jan 2003 16:57:56 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E3553F4.8040803@student.kuleuven.ac.be>
+Message-ID: <Pine.LNX.4.44.0301271655520.26601-100000@rzstud3.stud.uni-karlsruhe.de>
+References: <s5h4r7uofj2.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h4r7uofj2.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,17 +16,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Mon, 27 Jan 2003, Takashi Iwai wrote:
 
-According to the Creative labs specs, the CT4751 (ens1371) supports 
-SPDIF direct feedtrough for DTS or DD. Does the ALSA driver support 
-this? If not, any clue on how to implement this? If it does, what do I 
-use to test it?
 
-Pieter
+> > Broken configuration: no configurations available: Invalid argument
+>
+> doesn't it work with the pcm "plug:multi" ?
+
+Sorry, but I can't find any documentation on "plug:multi"?
+How do I have to to use it?
+
+Oli
 
 
 
