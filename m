@@ -1,17 +1,10 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: 0.9.8 lib + 1.0.6a driver + old sblive = no ac3
-	passthrough
-Date: Tue, 14 Dec 2004 01:10:08 -0500
-Message-ID: <1103004608.13301.3.camel@krustophenia.net>
-References: <BAY22-F28708B2255DC9FF4966C4BAFAC0@phx.gbl>
+From: Michael Geis <michaelgeis11@yahoo.com>
+Subject: Sending divided Sysex events to the ALSA sequencer
+Date: Mon, 13 Dec 2004 22:34:50 -0800 (PST)
+Message-ID: <20041214063450.16768.qmail@web51901.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="0-1536364231-1103006090=:15346"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 62DD22B0
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 07:10:12 +0100 (MET)
-In-Reply-To: <BAY22-F28708B2255DC9FF4966C4BAFAC0@phx.gbl>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,23 +14,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: guan yim <guanyim@hotmail.com>
-Cc: alsa-devel@alsa-project.org, pranay_k@hotmail.com
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2004-12-14 at 06:20 +0200, guan yim wrote:
-> Why I couldn't mix different 
-> version of lib and driver? Please tell me the reason.
+--0-1536364231-1103006090=:15346
+Content-Type: text/plain; charset=us-ascii
 
-Because you are not supposed to do that.  Your ALSA lib and ALSA driver
-version should match.
+I am now going over parts of the midi playing program I had left out initially, e.g. divided 
+Sysex events. The ALSA docu says Sysex events must be sent
+with a beginning 0xF0 and a terminating 0xF7. Does that imply that divided Sysex 
+messages must be converted to a single Sysex message and then be sent to the ALSA sequencer at once (otherwise they would not possess a terminating 0xF7)? 
+Or is there still a way to send them to the sequencer as is, i.e. with none but the last of the messages having a terminating 0x0F.
+ 
+Thanks in advance,
+Michael 
+ 
 
-In this specific case it is because the device changed from hw:x,3 to
-hw:x,2.  But if your ALSA lib version matched then this change would not
-be visible.
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
+--0-1536364231-1103006090=:15346
+Content-Type: text/html; charset=us-ascii
 
-Lee
-
+<DIV>I am now going over parts of the midi playing program I had left out initially, e.g. divided </DIV>
+<DIV>Sysex events. The ALSA docu says&nbsp;Sysex events must be sent</DIV>
+<DIV>with a beginning 0xF0 and a terminating 0xF7. Does that imply that divided Sysex </DIV>
+<DIV>messages must be converted to a single Sysex message and then be sent to the ALSA sequencer at once (otherwise they would not possess a terminating 0xF7)? </DIV>
+<DIV>Or is there still a way to send them to the sequencer as is, i.e. with none but the last of the messages having a terminating 0x0F.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks in advance,</DIV>
+<DIV>Michael&nbsp;</DIV>
+<DIV>&nbsp;</DIV><p>__________________________________________________<br>Do You Yahoo!?<br>Tired of spam?  Yahoo! Mail has the best spam protection around <br>http://mail.yahoo.com 
+--0-1536364231-1103006090=:15346--
 
 
 -------------------------------------------------------
