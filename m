@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Wed, 30 Mar 2005 00:35:36 +0200
-Message-ID: <045265cd18af3c2773c67f5482b5e457@bugtrack.alsa-project.org>
+Date: Wed, 30 Mar 2005 00:47:00 +0200
+Message-ID: <c50a8035811bf212ffe048b196a0d098@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E2C12264
-	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 00:35:36 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA5DC185
+	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 00:47:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
 Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-30-2005 00:35 CEST
+Last Modified:              03-30-2005 00:47 CEST
 ======================================================================
 Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
@@ -101,13 +101,6 @@ versions.
 ======================================================================
 
 ----------------------------------------------------------------------
- Q3Man - 03-26-05 03:38 
-----------------------------------------------------------------------
-Sorry, I've been out of town on business. Didn't want to try something
-remotely that potentially could crash the system. I'll be back in front of
-it this weekend and I'll test it out.
-
-----------------------------------------------------------------------
  Q3Man - 03-30-05 00:35 
 ----------------------------------------------------------------------
 Well, I crossed my fingers and installed a fresh copy of 1.0.9rc2.
@@ -119,6 +112,16 @@ Model 1003 Rev 00000000 Serial 10031102
 EMU10K1X: probe of 0000:00:0a.0 failed with error -16
 
 I'm going to try out the CVS and see if it's any different.
+
+----------------------------------------------------------------------
+ Q3Man - 03-30-05 00:47 
+----------------------------------------------------------------------
+CVS fails in the exact same way :(
+
+PCI: Found IRQ 5 for device 0000:00:0a.0
+ALSA /root/alsacvs/alsa-driver/alsa-kernel/pci/emu10k1/emu10k1x.c:968:
+Model 1003 Rev 00000000 Serial 10031102
+EMU10K1X: probe of 0000:00:0a.0 failed with error -16
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -166,6 +169,7 @@ Date Modified  Username       Field                    Change
 03-25-05 23:10 fmoraes        Note Added: 0004213                          
 03-26-05 03:38 Q3Man          Note Added: 0004217                          
 03-30-05 00:35 Q3Man          Note Added: 0004260                          
+03-30-05 00:47 Q3Man          Note Added: 0004261                          
 ======================================================================
 
 
