@@ -1,15 +1,18 @@
-From: Paul Davis <pbd@op.net>
+From: "Martijn Sipkema" <msipkema@sipkema-digital.com>
 Subject: Re: opening alsa pcm device for input/output on specific channels
-Date: Thu, 06 Jun 2002 11:00:56 -0400
+Date: Thu, 6 Jun 2002 16:51:35 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200206061455.g56EtjH07853@post2.fast.net>
-References: <003101c20d72$0b1d5620$0400a8c0@martijn>
+Message-ID: <003101c20d72$0b1d5620$0400a8c0@martijn>
+References: <200206061439.g56EdgH03077@post2.fast.net>
+Reply-To: "Martijn Sipkema" <msipkema@sipkema-digital.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from post2.fast.net (post2.fast.net [209.92.1.22])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA14653
-	for <alsa-devel@alsa-project.org>; Thu, 6 Jun 2002 16:55:53 +0200
-In-Reply-To: Your message of "Thu, 06 Jun 2002 16:51:35 BST."
-             <003101c20d72$0b1d5620$0400a8c0@martijn>
+Received: from hirogen.kabelfoon.nl (hirogen.kabelfoon.nl [62.45.45.69])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA14594
+	for <alsa-devel@alsa-project.org>; Thu, 6 Jun 2002 16:52:06 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,26 +21,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Martijn Sipkema <msipkema@sipkema-digital.com>
+To: Paul Davis <pbd@op.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->> correct. i know you love EASI
->
->is it that obvious? :)
->
->perhaps if more people like it, it would make sense porting
->it to linux...
+> correct. i know you love EASI
 
-much less sense than porting ASIO, i'm afraid. there are very few
-programs for win/macos that use EASI, but lots that use ASIO, and an
-ASIO layer would make porting the audio side of such programs much
-easier. 
+is it that obvious? :)
 
-personally, i don't like either of them very much, which is partly why
-i wrote JACK. 
+perhaps if more people like it, it would make sense porting
+it to linux...
 
---p
+--martijn
+
+
+
+
+
+
+
+
 
 _______________________________________________________________
 
