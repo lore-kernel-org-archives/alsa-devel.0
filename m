@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000823]: Shutdown messages
-Date: Sun, 16 Jan 2005 21:45:39 +0100
-Message-ID: <6e89c1d7ccff64db865409a4a1ea3c9c@bugtrack.alsa-project.org>
+From: Mark Knecht <markknecht@gmail.com>
+Subject: Maintaining sound card at a specific frequency
+Date: Sun, 16 Jan 2005 13:05:57 -0800
+Message-ID: <5bdc1c8b050116130511757cbf@mail.gmail.com>
+Reply-To: Mark Knecht <markknecht@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 522532AB
-	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2005 21:45:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,51 +16,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
+   I have a problem with my currently setup. I've filed a bug in the
+Alsa tracker a couple of days ago but I hope there might be some
+simple solution to this that only the Alsa developers know.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=823> 
-======================================================================
-Reported By:                Mark Knecht
-Assigned To:                charbonnel
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   823
-Category:                   PCI - RME HDSP
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               FC2/PlanetCCRMA - up to date but not running newest
-kernel due to other Alsa problems
-Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-======================================================================
-Date Submitted:             01-16-2005 21:45 CET
-Last Modified:              01-16-2005 21:45 CET
-======================================================================
-Summary:                    Shutdown messages
-Description: 
-When shutting my system down I consistently get the following message:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=818
 
-Shutting down sound driver rme_hammerfall dsp 0:00:0f 
-device was removed without properly calling pci_disable_device()
-This may need fixing
-======================================================================
+The issue is explained in the bug report, but stated in a more general
+way, in a multi-PC setup where I'm using ADAT clocking to sync all the
+PCs together, there needs to be a way for me to lock down the sample
+rate of my sound card and not let applications change it. In the
+following setup GSt is sending audio continuously to Pro Tools. The
+audio goes through the HDSP 9652 sound card, but not through Linux.
+The HDSP 9652 has a hardware mixer and audio data is just roouted
+through the hardware. The HDSP 9652 is the master clock for the
+system. This works fine.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-16-05 21:45 Mark Knecht    New Issue                                    
-01-16-05 21:45 Mark Knecht    Distribution              => FC2/PlanetCCRMA - up
-to date but not running newest kernel due to other Alsa problems
-01-16-05 21:45 Mark Knecht    Kernel Version            =>
-2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-======================================================================
+GSt ====> HDSP 9652 ====> Pro Tools
+     
+However if I open Mozilla and browse around the Pro Tools side starts
+telling me that the ADAT clock is invalid. My suspicion is that the
+web page I went to in Mozilla has some sort of audio content on it and
+it's not encoded at the frequency I'm running at so Mozilla tries to
+change the frequency of the card to adjust. This would make sense in a
+single PC setup bu makes no sense in a multi-PC setup like this one.
 
+It does not matter that the apps I'm using on the left and right are
+Windows. The problem would be there even if they were Linux.
 
+I guess I'm wondering if there isn't some .asoundrc magic that could
+be done in my Linux account on this machine that would tell all
+applications (other than Jack for now) to use some virtual device that
+handles all frequencies. If that virtual device was the default and
+the resampling (for Mozilla/games/whatever) was done in software and
+the sound cards frequency was never changed then I think things would
+work much better.
+
+Is this possible?
+
+Thanks in advance,
+Mark
 
 
 -------------------------------------------------------
