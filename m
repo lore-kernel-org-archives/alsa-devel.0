@@ -1,19 +1,14 @@
-From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: Update for alsa homepage
-Date: Mon, 1 Apr 2002 00:25:00 -0800 (PST)
+From: optin_travel@email.it
+Subject: (no subject)
+Date: Mon, 1 Apr 2002 07:10:36 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020401082500.D155336F9@sitemail.everyone.net>
-Reply-To: pshirkey@boosthardware.com
+Message-ID: <200204011210.OAA15994@alsa.alsa-project.org>
+Reply-To: optin_travel@email.it
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Received: from omta02.mta.everyone.net (sitemail3.everyone.net [216.200.145.37])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA13237
-	for <alsa-devel@alsa-project.org>; Mon, 1 Apr 2002 10:25:11 +0200
-Received: from sitemail.everyone.net (dsnat [216.200.145.62])
-	by omta02.mta.everyone.net (Postfix) with ESMTP id E5D061C43B3
-	for <alsa-devel@alsa-project.org>; Mon,  1 Apr 2002 00:25:00 -0800 (PST)
-Content-Disposition: inline
+Content-Type: multipart/alternative;  boundary="----_NextPart_0122617405"
+Received: from email.it (81.122.sinix.net [194.224.122.81])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id OAA15994
+	for <alsa-devel@alsa-project.org>; Mon, 1 Apr 2002 14:10:15 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,28 +17,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Just added the new index to the alsa repository
+This is a multi-part message in MIME format.
 
-You can see it here instead:
+------_NextPart_0122617405
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-http://www.alsa-project.org/index-new.php3
+3 Luxury Vacations 199.00
 
-This doesn't seem to have caused any problems so sofa sogood :)
+Orlando, Bahamas, Cancun
+
+This is not a timeshare. No property tours! No Catch!
+
+1-800-922-1432  TOLL FREE - CALL NOW
+
+Operators are standing by.
+
+Cruise the Bahamas -  Cancun - Dive - Snorkel - Sun - Fun !
+
+Visit Disney World ! See Mickey ! Ride the Coasters - Sea World !
 
 
---
-Patrick Shirkey - Boost Hardware Ltd
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
 
 
+------_NextPart_0122617405
+Content-Type: text/html; charset="ISO-8859-1"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
+<html>
 
-_____________________________________________________________
-Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
+<head>
+
+<title>3 Luxury Vacations!</title>
+</head>
+
+<body>
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
+    <tr>
+        
+    <td><img src=3D"http://www.omerset3009f.home.ro/iiiiiillllilililililililililililililililililililililililllllililililililililililililililililililililili/0000000000000000000000000000000000000000000000000000000000000000000000000000000000000001.jpg" width=3D"456" height=3D"110" border=3D"0"></td>
+    </tr>
+    <tr>
+        
+    <td><img src=3D"http://www.omerset3009f.home.ro/iiiiiillllilililililililililililililililililililililililllllililililililililililililililililililililili/0000000000000000000000000000000000001111100000000000000000000000000000000000000000000000001.jpg" width=3D"456" height=3D"116" border=3D"0"></td>
+    </tr>
+    <tr>
+        
+    <td><img src=3D"http://www.omerset3009f.home.ro/iiiiiillllilililililililililililililililililililililililllllililililililililililililililililililililili/000000000000000000000000000000000000000000000000000000000001111111111111010000000000000001.jpg" width=3D"456" height=3D"125" border=3D"0"></td>
+    </tr>
+    <tr>
+        
+    <td><img src=3D"http://www.omerset3009f.home.ro/iiiiiillllilililililililililililililililililililililililllllililililililililililililililililililililili/00000001111111111111110000000000000000000000000000000000000000001111000000000000000000011.jpg" width=3D"456" height=3D"99" border=3D"0"></td>
+    </tr>
+</table>
+</body>
+</html>
+
+
+------_NextPart_0122617405--
