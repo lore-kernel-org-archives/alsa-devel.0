@@ -1,14 +1,11 @@
-From: Bob Ham <node@users.sourceforge.net>
-Subject: Re: new sequencer
-Date: 20 Jun 2002 16:28:00 +0100
+From: Gary Scavone <gary@ccrma.Stanford.EDU>
+Subject: RE:  Application using ALSA-driver es-1968 for Maestro-2e
+Date: Thu, 20 Jun 2002 10:42:37 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1024586880.6074.4.camel@insanity>
-References: <20020620002931.GA6194@filter24.mshome.net>
+Message-ID: <Pine.LNX.4.44.0206201041370.17027-100000@cmn24.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020620002931.GA6194@filter24.mshome.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,29 +14,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2002-06-20 at 01:29, rob buse wrote:
 
-> I just wanted to let everyone take a look at what Ive been working on.  
-> Its a new midi sequencer that uses the 0.9.0 alsa sequencer interface.
+The es1968 driver is broken for capture.  I reported this last Fall
+but no one ever fixed it.  You can try using arecord and it doesn't
+work either, so there's no need to send your own code snippets.
 
-Looks pretty phat
+I too had success with the es1968 driver in version 0.5, but it broke 
+with the 0.9 versions.
 
-> its not released yet, but it soon should be.
+The OSS-free driver does work with the Maestro-2e, so that could be a 
+starting point for a fix.  I haven't been able to use ALSA on my 
+laptop because of this.
 
-I look forward to that :)
+--gary scavone
 
-Bob
 
--- 
-Bob Ham: bob@ham.org  http://pkl.net/~node/
 
-My music: http://mp3.com/obelisk_uk
-GNU Hurd: http://hurd.gnu.org/
 
 
 -------------------------------------------------------
-                   Bringing you mounds of caffeinated joy
-                   >>>     http://thinkgeek.com/sf    <<<
+Sponsored by:
+ThinkGeek at http://www.ThinkGeek.com/
