@@ -1,14 +1,14 @@
-From: Marcel <shizuma@magma.ca>
-Subject: Re: Re: CMI8738-MC6 surround40 plugin on 4 SP systems]
-Date: Fri, 7 Nov 2003 19:19:38 -0500
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Muting at startup in ICE1724 based devices
+Date: Fri, 7 Nov 2003 16:32:09 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031108001938.GA20602@dailyplanet.net>
-References: <E1AIFvE-0005PH-00@sc8-sf-list2.sourceforge.net>
+Message-ID: <20031108003209.80199.qmail@web21501.mail.yahoo.com>
+References: <E1AIFvE-0005PO-00@sc8-sf-list2.sourceforge.net>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <E1AIFvE-0005PH-00@sc8-sf-list2.sourceforge.net>
+In-Reply-To: <E1AIFvE-0005PO-00@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,25 +20,31 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > One more control that deserves to go in mixer: "3D Control Switch".  It
-> > doesn't work, never did, does nothing at all.
-> 
-> well, it works for the older model.
-> it's a 3D-enhancement and not really 3d thing.
+A while ago (about 1 week), there was a message noting that ICE1724
+based devices (I have a revolution 7.1) mute the left-front channel (or
+the first channel) on startup.  This happens even though you set the
+level to something and the startup routines seem to set it.  Any simple
+adjustment to the level (via alsamixer, or alsactl) will properly set
+the level.  This seems to happen ONLY on the first channel (LeftFront),
+and just for the first setting of the day (boot).
 
-Ok, my AWE64 and several SB clones used to have this.
+I didn't see any modifications that address the problem (of course that
+doesn't mean they didn't exist), and was wondering if anything has been
+done to address this problem.
 
-> i'm not sure whether this doesn't work for all new models (> 037), so
-> it still remains there.  we can remove it later after confirming that
-> all new chips don't support this.
+Thanks for the info.
 
-Ok, no problem. Mine is model 055, it's around 18 months old.  The windows
-driver doesn't support it either.
+p.s.  At the moment I have a work around, but a fix would be nice!
 
-> 
-> 
-> Takashi
-> 
+=====
+-- 
+Tom Watson
+tsw@johana.com
+
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
 
 
 -------------------------------------------------------
