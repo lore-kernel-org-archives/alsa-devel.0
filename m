@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000681]: alsamixer, rmedigicontrol and rme96 kernel driver
-Date: Sun, 28 Nov 2004 18:01:00 +0100
-Message-ID: <67abad2396a79aa713cf15ce3e767dc9@bugtrack.alsa-project.org>
+From: =?utf-8?q?Bertie Pbg?= <duskinessnda@thecatranch.net>
+Subject: =?utf-8?q?All pharmaceuticals ?=
+ =?utf-8?q?at 0.63$ for dose?=
+Date: Sun, 28 Nov 2004 14:03:46 +0000
+Message-ID: <E1CYSH5-0005ou-St@sc8-sf-mx1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	 boundary="ZGa91kPtwr"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F14CD24C
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 18:01:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +16,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?utf-8?q?Kitty Jeou?= <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=681> 
-======================================================================
-Reported By:                d637e16c5433737884c13889afdeaf34
-Assigned To:                martin
-======================================================================
-Project:                    ALSA - tools
-Issue ID:                   681
-Category:                   rmedigicontrol
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             11-27-2004 00:59 CET
-Last Modified:              11-28-2004 18:01 CET
-======================================================================
-Summary:                    alsamixer, rmedigicontrol and rme96 kernel driver
-Description: 
-As it's impossible to use the alsamixer with the rme96 driver here's a
-small patch for it to make it work. (it's not from me, it's from undog
-#alsa on irc.freenode.org)
+--ZGa91kPtwr
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch will break rmedigicontrol, so i made a small patch for
-rmedigicontrol that'll fix this, too.
+Have you at any time speculate how much an ordinary chap
+pays for his drugs? Painkillers, medicine to better the 
+choice of life, mass reducing specific, and many more. 
+Our company convey you the equivalent specific, the vegetative re=
+ading - the same
+choice, the equivalent recipe at a greatly wise price. 
 
-Adding is trivial, it's just editing 8 lines of source.
+http://jmroqhpy.cgibamac.info/?BR7dDFCS6FIsN55punpraf
+--ZGa91kPtwr
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-Regards,
-Matthias
-
-PS: Added patch for rmedigicontrol
-======================================================================
-
-----------------------------------------------------------------------
- martin - 11-28-04 18:01 
-----------------------------------------------------------------------
-I've added a patch for rme32, because your patch will also break rme32
-support.
-Don't forget to attach a summary and a signed-off-by line for your patch.
-
-
-Summary: 
-
-The patch will change SNDRV_CTL_ELEM_IFACE_PCM to
-SNDRV_CTL_ELEM_IFACE_MIXER for some mixer elements of rme32.
-
-Signed-off-by: Martin Langer <martin-langer@gmx.de>
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-27-04 00:59 d637e16c5433737884c13889afdeaf34New Issue                        
-           
-11-27-04 00:59 d637e16c5433737884c13889afdeaf34File Added: rmedigicontrol.patch 
-                  
-11-28-04 17:53 martin         File Added: rme32-iface.patch                    
-11-28-04 18:01 martin         Note Added: 0002625                          
-======================================================================
-
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
+<STYLE></STYLE>
+</HEAD>
+<HTML>
+<BODY>
+Have you ever reflect how much an average person<BR>
+hires for his drugs? Analgesics, narcotics to better the <BR>
+quality of real life, weight trim medicine, and much more. <BR>
+I lead you the equivalent drugs, the vegetative variant -- the eq=
+ual<BR>
+class, the same formula at a very reasonable cost. <BR>
+<BR>
+<A href=3D"http://awu.klbbfkka.info/?g0ioikN1NQn7sgMmlysb">check =
+it</A><BR>
+<BR>
+</BODY>
+</HTML></HTML>
+--ZGa91kPtwr--
 
 
 
