@@ -1,17 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [2.6 patch] ALSA PCI drivers: misc cleanups
-Date: Mon, 22 Nov 2004 12:43:05 -0500
-Message-ID: <1101145386.2873.2.camel__49263.8211268515$1101145892$gmane$org@krustophenia.net>
-References: <20041121235855.GI13254@stusta.de>
-	 <1101088632.5119.2.camel@krustophenia.net>  <s5hsm71vlrc.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000664]: ac97_quirk with SIS 7012 [ALC202] don't permit to have sound from the headphones, only internal speakers work.
+Date: Mon, 22 Nov 2004 18:29:22 +0100
+Message-ID: <3208b622824058f5ab1efdb9fb38ab57@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 5BA9720A
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 18:43:10 +0100 (MET)
-In-Reply-To: <s5hsm71vlrc.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A8582A5
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 18:29:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,27 +18,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Adrian Bunk <bunk@stusta.de>, perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2004-11-22 at 18:25 +0100, Takashi Iwai wrote:
-> At Sun, 21 Nov 2004 20:57:12 -0500,
-> Lee Revell wrote:
-> > 
-> > On Mon, 2004-11-22 at 00:58 +0100, Adrian Bunk wrote:
-> > >   - emu10k1/io.c: snd_emu10k1_voice_set_loop_stop
-> > 
-> > Please do not remove this function.  I am working on an enhancement to
-> > the emu10k1 driver that uses it.
-> 
-> Do you need snd_emu10k1_sum_vol_attn, too?
-> 
 
-Nope.  Any idea what this is/was for?  I poked around the OSS driver and
-could not find a similar function.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=664> 
+======================================================================
+Reported By:                ignition
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   664
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               GNU/Linux Slackware 10.0
+Kernel Version:             2.4.28
+======================================================================
+Date Submitted:             11-22-2004 18:29 CET
+Last Modified:              11-22-2004 18:29 CET
+======================================================================
+Summary:                    ac97_quirk with SIS 7012 [ALC202] don't permit to
+have sound from the headphones, only internal speakers work.
+Description: 
+module: intel8x0
+card: SiS SI7012
+chip: Realtek ALC202 rev 0
 
-Lee
+All ok but when I plug a jack from the headphones (or hi-fi system), there
+is no sound.
+And when I plug a jack halfway, I hear mono sound with bad quality from
+internal speaker AND from the headphones.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-22-04 18:29 ignition       New Issue                                    
+11-22-04 18:29 ignition       File Added: report                           
+11-22-04 18:29 ignition       Distribution              => GNU/Linux Slackware
+10.0
+11-22-04 18:29 ignition       Kernel Version            => 2.4.28          
+======================================================================
+
 
 
 
