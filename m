@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000436]: How to have sound to Digital and Analog at the same time ?
-Date: Wed,  1 Sep 2004 22:53:30 +0200 (CEST)
+Subject: [ALSA - driver 0000479]: [Patch] VIA based AC97 modem driver
+Date: Thu,  2 Sep 2004 21:24:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040901205330.E51D1E01F@server.perex-int.cz>
+Message-ID: <20040902192419.18B5D15009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 60E4923C
-	for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2004 22:53:31 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 742A72B6
+	for <alsa-devel@alsa-project.org>; Thu,  2 Sep 2004 21:24:19 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 27B9D1EBCC
+	for <alsa-devel@alsa-project.org>; Thu,  2 Sep 2004 21:24:19 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,46 +23,37 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000436
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000479
 ======================================================================
-Reported By:                tho_x_tran
-Assigned To:                perex
+Reported By:                sashak
+Assigned To:                sashak
 ======================================================================
-Project:                    ALSA - tools
-Bug ID:                     436
-Category:                   ac3dec
+Project:                    ALSA - driver
+Bug ID:                     479
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-12-2004 20:36 CEST
-Last Modified:              09-01-2004 22:53 CEST
+Date Submitted:             09-02-2004 21:24 CEST
+Last Modified:              09-02-2004 21:24 CEST
 ======================================================================
-Summary:                    How to have sound to Digital and Analog at the same time ?
+Summary:                    [Patch] VIA based AC97 modem driver
 Description: 
-I play Xine and Watch TV at the same time, and Xine audio can only go to
-Digital Opt out while TV sound goes to Analog front speakers only.  How
-can I make it go to both devices AT THE SAME TIME for all applications.
+New 'via82xx_modem.c' driver supports VIA based AC97 modems. (tested with
+2.6.8.1). The patch (for alsa-driver) is uploaded.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-01-2004 22:53 CEST 
-----------------------------------------------------------------------
-Basically it's a job of application.
-ALSA doesn't decode AC3 by itself.
-So, apps should send both AC3-analog and AC3-passthru signals to
-different PCM (if possible).  And, this is not always possible
-on many motherboards...
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-12-04 20:36 tho_x_tran     New Bug                                      
-08-12-04 20:36 tho_x_tran     File Added: asound.conf                      
-09-01-04 22:53 tiwai          Bugnote Added: 0001678                       
+09-02-04 21:24 sashak         New Bug                                      
+09-02-04 21:24 sashak         File Added: via-modem.patch                    
 ======================================================================
 
 
