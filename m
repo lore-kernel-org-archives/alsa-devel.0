@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000469]: volume of sblive mic recording too low
-Date: Sat, 28 Aug 2004 01:36:37 +0200 (CEST)
+Subject: [ALSA - driver 0000422]: snd-atiixp-modem driver: No CARRIER/DIALTONE.
+Date: Sat, 28 Aug 2004 04:20:23 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827233637.D02E32C00A@server.perex-int.cz>
+Message-ID: <20040828022023.4DCB82D0BF@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 51213187
-	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2004 01:36:38 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9C7E922B
+	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2004 04:20:23 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,50 +20,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000469
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
 ======================================================================
-Reported By:                wouter
-Assigned To:                pzad
+Reported By:                netstar
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     469
-Category:                   PCI - emu10k1
+Bug ID:                     422
+Category:                   PCI - atiixp-modem
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.8
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-28-2004 01:36 CEST
-Last Modified:              08-28-2004 01:36 CEST
+Date Submitted:             08-04-2004 01:13 CEST
+Last Modified:              08-28-2004 04:20 CEST
 ======================================================================
-Summary:                    volume of sblive mic recording too low
+Summary:                    snd-atiixp-modem driver: No CARRIER/DIALTONE.
 Description: 
-The recordings made with the Mic input on my sblive (5.1) are substantially
-lower in volume than direct playback output. If fact, they are too low to
-be really useful in for instance video conferencing, barely reaching 1/4
-in the VU meter of the gnomemeeting voip program - with Mic boost on.
+I am having issues with the modem, although not the sound card. Both
+drivers load fine (CVS alsa-driver, kernel and lib), sound also works
+fine, it is normally loaded as my second device "hw:1", fine, although the
+problem is persistant with any combination of the two devices. When using
+slmodemd with the "modem" device things seem ok until I try dialing and it
+is reported to me that there is no DIALTONE. After disabling DIALTONE
+detection with ATX3, subsequent ATDT attempts return NO CARRIER.  My
+slmodemd was already fixed with a patch sasha sent me some time back.
 
-Setting "Capture" to anything but zero stops any sound from being
-captured.
+When listening on the device with arecord for example and outputting to
+STDOUT, I get a constant hiss, however when I pick up a phone on the line
+it appears that the device does notice this as the constant hissing is
+interupted when either opening or closing the line elsewhere.
 
-"AC97 Capture" seems to be controlling the volume of the recording, but it
-is too low even with the slider on 100%.
+I do not believe the modem is broken as has been suggested to me before.
 
-People on the users mailinglist seem to indicate that "Capture" actually
-should work, which it doesn't.
+Attatched is an slmodem log of a dialing attempt and some system
+information including card register information whilst dialing. I hope
+this helps.
+
+slmodemd usage:
+
+./slmodemd --alsa modem or modem:0 or modem:1 --country=UK  
+
+ Depending on the card configurations tested.
 ======================================================================
+
+----------------------------------------------------------------------
+ netstar - 08-28-2004 04:20 CEST 
+----------------------------------------------------------------------
+It appears that the latest patch added by Sasha on the 25th of August fixes
+to bug https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000432 resolves the issues with some modems reporting NO DIALTONE. 
+Modem and sound card are working fine.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-28-04 01:36 wouter         New Bug                                      
-08-28-04 01:36 wouter         File Added: amixer.txt                       
-08-28-04 01:36 wouter         Distribution              => Debian          
-08-28-04 01:36 wouter         Kernel Version            => 2.6.8           
+08-04-04 01:13 netstar        New Bug                                      
+08-04-04 01:14 netstar        File Added: systeminfo.txt                    
+08-04-04 01:16 netstar        File Added: slmodem.log.modem                    
+08-04-04 01:17 netstar        File Added: slmodem-2.9.9-fix.patch                    
+08-27-04 19:41 tiwai          Assigned To              tiwai =>            
+08-27-04 19:42 tiwai          Assigned To               => sashak          
+08-28-04 04:20 netstar        Bugnote Added: 0001659                       
 ======================================================================
 
 
