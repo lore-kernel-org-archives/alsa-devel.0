@@ -1,13 +1,15 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: sound/core/pcm_lib.c:158: BUG
-Date: Sat, 18 Dec 2004 19:34:12 -0500
-Message-ID: <1103416452.28301.5.camel@krustophenia.net>
-References: <20041218235359.GA3782@suse.de>
+From: "Jesse Kaufman" <j_kaufman@hrcc.on.ca>
+Subject: Premium Replica Watches
+Date: Sun, 19 Dec 2004 02:36:40 +0400
+Message-ID: <f9be01c4e552$d5408214$9ea9c2d6@james.hut.fi>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041218235359.GA3782@suse.de>
+Received: from james.hut.fi (spr1-yarm1-5-0-cust160.asfd.broadband.ntl.com [81.100.199.160])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 83F222A3
+	for <alsa-devel@alsa-project.org>; Sun, 19 Dec 2004 07:37:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,25 +19,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Olaf Hering <olh@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2004-12-19 at 00:53 +0100, Olaf Hering wrote:
-> Is this just debug output, or should I be worried about it?
-> 
-> linux-2.6.10-rc3-olh/sound/core/pcm_lib.c:158: BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x1000
-> 
-> This is an ibook2, playing mp3 with xmms, alsa version is 1.0.3, from sles9.
-> I remember no failures in the last couple hours.
+Get the Finest Rolex Watch Replica!
 
-That message indicates that the hardware pointer returned by the pointer
-callback was beyond the end of the buffer which should not be possible.
+We only sell premium watches. There's no battery in these replicas just
+like the real ones since they charge themselves as you move. The second h=
+and
+moves JUST like the real ones, too. These original watches sell in stores
+for thousands of dollars. We sell them for much less.=20
 
-This could indicate an off by one error in the driver, it looks like the
-erroneous position is one sample past the end of the buffer.
+- Replicated to the Smallest Detail
+- 98% Perfectly Accurate Markings=20
+- Signature Green Sticker w/ Serial Number on Watch Back
+- Magnified Quickset Date
+- Includes all Proper Markings
 
-Lee
+Visit us: http://www.vanai.com/rep/rolx/
+
+All orders placed before December 20th will be at your door before
+New Years Eve!
+
+No thanks: http://www.vanai.com/z.php
 
 
 
