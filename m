@@ -1,21 +1,20 @@
-From: GCZ <geeceezee@free.fr>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: OSS vs ALSA war :-)
-Date: Tue, 10 Aug 2004 20:20:36 +0200
+Date: Tue, 10 Aug 2004 14:29:22 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <411911F4.6020204@free.fr>
-References: <200408100636.i7A6aMAo030159@www4.pobox.sk> <411875DF.7030203@free.fr> <20040810151525.GC1671@fliwatut.scifi> <4118ED57.50302@free.fr> <20040810174036.GB4342@fliwatut.scifi>
-Reply-To: geeceezee@free.fr
+Message-ID: <1092162561.782.39.camel@mindpipe>
+References: <200408100636.i7A6aMAo030159@www4.pobox.sk>
+	 <411875DF.7030203@free.fr> <20040810151525.GC1671@fliwatut.scifi>
+	 <4118ED57.50302@free.fr> <1092155904.861.3.camel@mindpipe>
+	 <411900D4.7090806@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from postfix4-1.free.fr (postfix4-1.free.fr [213.228.0.62])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 93C8B208
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 20:20:37 +0200 (MEST)
-Received: from [192.168.1.21] (auteuil-3-82-66-93-25.fbx.proxad.net [82.66.93.25])
-	by postfix4-1.free.fr (Postfix) with ESMTP id 8EC9F16E4E7
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 20:20:36 +0200 (CEST)
-In-Reply-To: <20040810174036.GB4342@fliwatut.scifi>
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 49887213
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 20:29:05 +0200 (MEST)
+In-Reply-To: <411900D4.7090806@free.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,54 +23,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: geeceezee@free.fr
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Frank Barknecht wrote:
+On Tue, 2004-08-10 at 13:07, GCZ wrote:
+> Lee Revell wrote:
+> 
+> > No, this is why ALSA provides OSS emulation, so every legacy app doesn't
+> > have to be recoded.  For gaming you should use the closed-source Nvidia
+> > drivers and ALSA's OSS emulation.  I don't think anyone can make a
+> 
+> Which doesn't work on my setup. I posted a message on alsa-user I think, 
+> and I don't remember exactly what error message I got, but I think it 
+> had something to do with mmap. Nobody replied to my message. At one 
+> point, going through so many documents, ML posts, Q&A's, trial and error 
+> steps just to make it work isn't worth it, if no improvement comes out 
+> of it. If Takashi is indeed interested in my feedback, at least it will 
+> be productive.
+> 
 
-> IMO the right thing libre-wise to do in that case is not to buy
-> hardware from vendors that don't support open source development.
+OK, I will check the archives.  The ALSA guys are very busy, you might
+have to make a little noise or even be a bit inflammatory to get your
+bug addressed.  For example, track down the general area of the bug
+using some printk's, then post a completely botched fix to the mailing
+list.  Preferably something that compiles and looks like it's working. 
+This will often get you a hint as to what the real problem is, then
+maybe someone less skilled can fix it. ;-)  I have fixed a few bugs in
+the driver for my soundcard, Jaroslav and Takashi will help you, and
+tell you if you are completely off base.  I encourage you to ask your
+favorite distro vendor to hire some ALSA developers, because all but two
+or three are working for free.
 
-Right. With over 90% of windows users, I think that's a tad useless for 
-now. If you are coherent with your principle then:
+> I'm glad to read that. Let's not get into zealotry.
+> 
 
-- you don't own a single video DVD
-- you shouldn't own a Playstation
-- your choice among cellphones is very limited, if not inexistant
-- you don't own a computer, because you didn't find any motherboard with 
-an open source BIOS
+Sorry, should have left that off...
 
-> solvable. Nvidia however doesn't give a damn about open source, that's
-> why I never would buy any of their products. (I could play Quake3 just
-> fine with my Matrox card, if I wanted to, and I already have a closed
-> source Playstation.) 
+Lee
 
-Right. I ordered Doom3 and will receive it in about two weeks. So I 
-shouldn't use my nice GeForce FX with it either? Come on.
-Nvidia stands out of the crowd because they took the ressources needed 
-to provide the linux community full support for their products (ATI's 
-drivers for linux just suck - hard). Not only am I glad about this, but 
-I also think this should be encouraged. RMS is too extreme in his 
-recommendations for my taste.
 
-My take is this: if you want to promote Free Software, develop and 
-promote Free Hardware in the first place. AFAIK, Nvidia is making a 
-living in a competitive way, and I certainly don't blame them for 
-keeping their IP secret. I would prefer open-source software, and even 
-better, Free Software, but I certainly don't blame them.
-
-> and should run the software (s)he wants to. It's just not very nice to
-> come here, and tell everyone on the ALSA list that you are using
-> OSS/Nonfree now.  That's what provoked me to my sarcastic "goodbye"
-> comment.
-
-I said that because I do care, actually. If I didn't, why would I bother 
-telling the ALSA team that their driver/library/utilities don't work for 
-me? Sometimes ranting is positive, especially if you're willing to give 
-some of your time to help out.
-
-This thread has gone a bit off topic, please fu2 poster if you want to 
-continue this conversation.
 
 
 -------------------------------------------------------
