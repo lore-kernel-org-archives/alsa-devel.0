@@ -1,14 +1,14 @@
-From: =?ISO-8859-2?Q?Adam_Tla=B3ka?= <atlka@pg.gda.pl>
-Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Tue, 28 Sep 2004 07:11:44 +0200
+From: Georgi Georgiev <chutz@gg3.net>
+Subject: Re: Re: Broken AC3 on EMU10K1 since July 2-nd
+Date: Tue, 28 Sep 2004 14:12:51 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4158F290.3050301@pg.gda.pl>
-References: <200409270300.i8R30Ro1016070@localhost.localdomain> <4157B56F.9000905@pg.gda.pl> <Pine.LNX.4.58.0409271433490.1733@pnote.perex-int.cz>
+Message-ID: <20040928051251.GB9175@lion.gg3.net>
+References: <20040927160314.GA16100@lion.gg3.net> <20040927162024.GA5768@lion.gg3.net> <s5hmzzb1o59.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0409271433490.1733@pnote.perex-int.cz>
+Content-Disposition: inline
+In-Reply-To: <s5hmzzb1o59.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,45 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- >>I tried to modify AOSS to use
->>callbacks (works almost good but scheduling/swapping effects still 
->>there)
-> Are you using fully loaded ring buffer on the ALSA side with a decent 
-> size?
-No because of low latency mixing requirements. Buffer is filled with two 
-periods of data at the beginning and the callback refills it to maintain 
-delay to be about this size.
+maillog: 27/09/2004-21:56:50(+0200): Takashi Iwai types
+> At Tue, 28 Sep 2004 01:20:24 +0900,
+> Georgi Georgiev wrote:
+> > 
+> > maillog: 28/09/2004-01:03:14(+0900): Georgi Georgiev types
+> > > I checked out the CVS in my kernel source tree, and after playing with
+> > > different dates:
+> > > 
+> > > cvs up -D "1  Jul 2004" -- sound plays OK
+> > > cvs up -D "2  Jul 2004" -- sound skips heavily
+> > 
+> > I did some more checking:
+> > 
+> > cvs up -dP -D "1 Jul 2004 18:0:0" -- OK
+> > cvs up -dP -D "1 Jul 2004 19:0:0" -- BAD
+> > 
+> > Still, I cannot understand the changes made to emu10k1, so I don't know
+> > what the problem might be. I hope someone finds the fix.
+> 
+> Are you using the latest alsa-lib, too?
 
->>but I found an app which disables SIGIO for example.
-> It might be solved with the loopback device and a RT mixing daemon.
-But now? Just ,,Enjoy The Silence''.
-
-> I don't think that it's something which cannot be solved.
-Maybe, but clock is ticking, compability is broken
-and MS Windows system still is a better solution
-in sound area. I personally want to offer Linux solution as a desktop 
-multimedia system but at this time I just can't.
-Sorry to say that.
-
-Evolution is what is going in the nature. From my point of view (and 
-many others for sure) I don't need a new API. I just need better 
-functionality and some additional features expanding existing API.
-
-OK. If you don't want mixing in kernel space doing this and other 
-effects in some special RT daemon looks like step in right direction.
-If an app could comunicate with it through /dev interface it could be 
-unchanged and compability will be saved.
-
-Regards
+Well, it is the latest *stable* version -- 1.0.6.
 
 -- 
-Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
-System  & Network Administration Group           ~~~~~~
-Computer Center,  Gdansk University of Technology, Poland
-PGP public key:   finger atlka@sunrise.pg.gda.pl
+*)   Georgi Georgiev   *)  Amy: Aw, he looks like a little insane      *)
+(*    chutz@gg3.net    (* drunken angel.                               (*
+*)  +81(90)6266-1163   *)                                              *)
 
 
 -------------------------------------------------------
