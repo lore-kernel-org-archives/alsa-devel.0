@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000221]: ac97 detect fails on xbox/i8x0
-Date: Tue,  7 Sep 2004 16:45:29 +0200 (CEST)
+Date: Tue,  7 Sep 2004 16:44:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907144529.F1079E01F@server.perex-int.cz>
+Message-ID: <20040907144426.88DF7E01F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 550E962
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:45:30 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE15C28E
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:44:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,6 +20,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+A BUGNOTE has been added to this bug.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000221
 ======================================================================
@@ -37,7 +38,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             04-19-2004 11:14 CEST
-Last Modified:              09-07-2004 16:45 CEST
+Last Modified:              09-07-2004 16:44 CEST
 ======================================================================
 Summary:                    ac97 detect fails on xbox/i8x0
 Description: 
@@ -209,9 +210,6 @@ Date Modified  Username       Field                    Change
 05-10-04 09:54 kingmob        Bug Monitored: kingmob                       
 07-23-04 09:43 chrb           Bugnote Added: 0001468                       
 09-07-04 16:44 perex          Bugnote Added: 0001715                       
-09-07-04 16:45 perex          Description Updated                          
-09-07-04 16:45 perex          Resolution               open => suspended   
-09-07-04 16:45 perex          View Status              @0@ => public       
 ======================================================================
 
 
