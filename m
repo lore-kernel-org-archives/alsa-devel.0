@@ -1,12 +1,12 @@
-From: Jason McMullan <jmcmulla@linuxcare.com>
-Subject: VIA 8233 - Interrupt problems w/KT266 Aopen AK77 Pro(A) 133
-Date: Tue, 14 May 2002 09:43:35 -0400
+From: Paul Davis <pbd@op.net>
+Subject: Re: Failed to compile HDSP driver from the CVS
+Date: Tue, 14 May 2002 09:58:00 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020514134335.GA18019@jmcmullan.evillabs.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <E177cnG-0003WZ-00@usw-sf-list1.sourceforge.net>
+References: <000601c1fb4b$7cd77ae0$ac1f830a@ico>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: Your message of "Tue, 14 May 2002 09:30:17 EDT."
+             <000601c1fb4b$7cd77ae0$ac1f830a@ico>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,64 +15,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Ivica Bukvic <ico@fuse.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>Thank you for your prompt reply!
+>
+>However, this is the first time ever I tried using the CVS, so I had no
+>files hanging around prior to this downloading. I am also pretty sure
+>that I downloaded the stuff with -P flag (I did it as instructions on
+>the alsa-project page have stated it, including the -P flag). On top of
+>that I even tried updating the whole CVS tree just to see if that will
+>fix it.
+>
+>So, I am not sure why it is even referencing the file in the first place
+>if none of the other files are supposed to mention it.
+>
+>Should I uninstall every trace of Alsa from my cpu before trying to use
+>CVS?
 
-  Hi there. I have the wackiest problem with my VIA 8233.
-I can record just fine, but playback does nothing. 
+No, thats not the issue. It might be a CVS sync issue at sf.net, as
+well. The "anonymous" CVS repository is sometimes 6hrs behind the
+"login" CVS repository.
 
-  I have a KT266 based Aopen AK77 Pro(A) 133 motherboard,
-and 'Everything works great under Windows(tm)', but 
-under linux (ALSA 0.5 and 0.9) I can only get interrupts
-to happen on record. No interrupts whatsoever on playback.
+rme9652_mem.c is now in the "Attic" meaning that it was removed from
+CVS:
 
-  I have all the mixers unmuted, volumes set, etc. etc.
+pbd[987]>cvs -z3 status rme9652_mem.c
+===================================================================
+File: no file rme9652_mem.c             Status: Up-to-date
 
-  I've tried (by forcing PNP settings in the bios) the 
-VIA 8233 on IRQs 12 & 5, with no change.
+   Working revision:    No entry for rme9652_mem.c
+   Repository revision: 1.8     /cvsroot/alsa/alsa-kernel/pci/rme9652/Attic/rme9652_mem.c,v
+pbd[988]>
 
-  Any ideas? 
+This means that if you checkout ALSA, you should not get this file. I
+would suggest that try 
+      
+ cvs -z3 update -dP
 
-  Anyone know where I can find the VIA 8233 specs so I can
-figure this out?
+again, and see if that removes the file.
 
---------- lspci -xxx -------------------------------------
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. AC97 Audio Controller (rev 40)
-00: 06 11 59 30 01 00 10 02 40 00 01 04 00 00 00 00
-10: 01 e0 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-20: 00 00 00 00 00 00 00 00 00 00 00 00 d4 11 60 53
-30: 00 00 00 00 c0 00 00 00 00 00 00 00 05 03 00 00
-40: 01 cc 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-c0: 01 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00
-d0: 01 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00
-e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-
-------- lspci -vvv ------------------------------------
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. AC97 Audio Controller (rev 40)
-	Subsystem: Analog Devices: Unknown device 5360
-	Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
-	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-	Interrupt: pin C routed to IRQ 5
-	Region 0: I/O ports at e000 [size=256]
-	Capabilities: [c0] Power Management version 2
-		Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-
--- 
-Jason McMullan, Senior Linux Consultant
-Linuxcare, Inc. 412.432.6457 tel, 412.656.3519 cell
-jmcmullan@linuxcare.com, http://www.linuxcare.com/
-Linuxcare. Putting open source to work.
+--p
 
 _______________________________________________________________
 
