@@ -1,16 +1,12 @@
-From: "Men Muheim" <muheim@gmx.ch>
-Subject: read time information
-Date: Fri, 15 Nov 2002 11:28:53 +0100
+From: Richard Olsson <flame@home.se>
+Subject: CS46xx woes.
+Date: Fri, 15 Nov 2002 12:10:43 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <001201c28c91$cc64f470$461d8481@profi>
-References: <200201212159.QAA05738@renoir.op.net>
-Reply-To: <men@ife.ee.ethz.ch>
+Message-ID: <20021115121043.67b5c0af.flame@home.se>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200201212159.QAA05738@renoir.op.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,51 +18,48 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-For synchronization purpose I need the current time of my sound card
-(information on the sample that is currently played out might be
-sufficient / ADAT-Synch timecode) I did anticipate that the functions 
+Hi.
 
-      snd_pcm_status_alloca(&status);
-	snd_pcm_status_get_tstamp(status, timestamp);
+I just upgraded my ALSA from 0.9.0rc2 to 0.9.0rc5 and my sound went from
+"ok" to "very bad".  I've got a Hercules Gametheater XP with the CS4630
+chip.  The volume (with same mixer settings before, including PCM at max
+74% due to disorted sound at higher settings) is generally lower, and
+also weaker, and sounds quite a bit worse too.  I also tried the
+2002-11-15 CVS snapshot with the same results.
 
-do help me with this, but obviously they only call gettimeofday()
-instead of returning a sound card time information (see
-http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2latency_8c-example
-.html#example_test_latency). From the API description I have found that 
+One strange thing is that in alsamixer the chipset line is "Cirrus Logic
+CS4294 rev 5,Cirrus Logic CS4294 rev 5" which seems a bit wrong.
 
-snd_pcm_hwsynch(...)
-snd_pcm_delay(...)
+Kernel used is 2.4.19; compiled with GCC 3.2 etc in Gentoo 1.4,
+shouldn't matter I guess.
 
-must be used to get the current sample positions of the DAC/ADC. But
-these functions do not seem to work on my system (alsa-0.9.0rc5 and an
-RME9652 sound card). Besides that I want to read the ADAT-Synch timecode
-instead of the buffer relative sample offset.
+"lspci -vv" says:
+00:0d.0 Multimedia audio controller: Cirrus Logic CS 4614/22/24
+[CrystalClear SoundFusion Audio Accelerator] (rev 01)
+        Subsystem: Unknown device 1681:0050
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort-
+<TAbort- <MAbort- >SERR- <PERR+
+        Latency: 32 (1000ns min, 6000ns max)
+        Interrupt: pin A routed to IRQ 5
+        Region 0: Memory at db200000 (32-bit, non-prefetchable)
+[size=4K]
+        Region 1: Memory at db100000 (32-bit, non-prefetchable)
+[size=1M]
+        Capabilities: [40] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-Therefore I was looking for another solution to get the time. I tried to
-use the ALSA timer interface
-(http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2timer_8c-example.
-html#example_test_timer). But unfortunately I am getting a "timer time
-out!", which means that 
+Anyone else noticed this?
 
-snd_timer_poll_descriptors(...)
+Thanks, and keep up the good work:)
 
-did fail. Is the timer interface implemented for the By the RME9652? By
-the way I do not understand how the sample number to the read time do
-correlate with each other.
-
-I would appreciate any help with this because if I cannot solve this
-problem, I have to move to Windows ASIO (what a pitty!) ASIO provides
-the functions
-
-ASIOGetSamplePosition(...)
-bufferSwitchTimeInfo(...) 
-
-which do exactly what I need.
-
-Regards,
-
-Men
-
+-- 
+Richard Olsson
+home: flame@home.se
+WWW: http://www.nyo-box.net/
 
 
 -------------------------------------------------------
