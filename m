@@ -1,20 +1,14 @@
-From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: [PATCH] alsamixergui cannot build
-Date: Fri, 26 Apr 2002 14:41:05 +0200
+From: matt yee-king <yeeking@no-future.com>
+Subject: Re: modprobe of snd-powermac fails
+Date: 26 Apr 2002 14:40:35 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m2r8l2ws2m.fsf@vador.mandrakesoft.com>
-References: <m2vgaewtsf.fsf@vador.mandrakesoft.com>
+Message-ID: <1019832041.744.7.camel@bennyhill.belmont>
+References: <1019828111.786.24.camel@bennyhill.belmont>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from vador.mandrakesoft.com (office.mandrakesoft.com [195.68.114.34])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA22932
-	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2002 14:36:14 +0200
-Received: from vador.mandrakesoft.com (localhost.localdomain [127.0.0.1])
-	by vador.mandrakesoft.com (Postfix) with ESMTP id 8EE352689D
-	for <alsa-devel@alsa-project.org>; Fri, 26 Apr 2002 14:41:05 +0200 (CEST)
-In-Reply-To: <m2vgaewtsf.fsf@vador.mandrakesoft.com> (Thierry Vignaud's
- message of "Fri, 26 Apr 2002 14:04:00 +0200")
+In-Reply-To: <1019828111.786.24.camel@bennyhill.belmont>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,49 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---=-=-=
+oops i spoke too soon.
 
-alsamixergui won't build withouth these fixes :
+the modules are loaded ok but they don't work:
 
+# lsmod
+_________________
 
---=-=-=
-Content-Type: text/x-patch
-Content-Disposition: attachment;
-  filename=alsamixergui-0.9.0rc1-fixes.patch
+Module                  Size  Used by    Not tainted
+snd-powermac           24752   0 
+snd-pcm                63680   0  [snd-powermac]
+snd-timer              12768   0  [snd-pcm]
+snd                    34748   0  [snd-powermac snd-pcm snd-timer]
+soundcore               4744   0  [snd]
+serial                 51784   0  (autoclean) (unused)
+__________________
 
---- src/Fl_Pixmap_Button.H.orig	2002-04-26 14:25:24.000000000 +0200
-+++ src/Fl_Pixmap_Button.H	2002-04-26 14:25:17.000000000 +0200
-@@ -48,7 +48,7 @@
- #endif
- 	
- 	if (pw<0) {
--#if FL_MAJOR_VERSION == 1 && FL_MINOR_VERSION == 0
-+#if FL_MAJOR_VERSION == 1 && FL_MINOR_VERSION >= 0
- 		fl_measure_pixmap(p->data,pw,ph);
- #else
- 		fl_measure_pixmap(p->data(),pw,ph);
---- src/Fl_AM.cxx.orig	2002-04-26 14:26:44.000000000 +0200
-+++ src/Fl_AM.cxx	2002-04-26 14:26:48.000000000 +0200
-@@ -215,7 +215,7 @@
- 	Fl::add_timeout(0.05,gui_idle_cb,0);
- 	
- #if FL_MAJOR_VERSION == 1 && FL_MINOR_VERSION >= 1
--	Fl::visible_focus(0);
-+//	Fl::visible_focus(0);
- #endif
- 
- 	Fl::run();
+# alsaplayer auntyplexer.mp3 
+alsaplayer: pcm.c:5655: snd_pcm_unlink_ptr: Assertion `0' failed.
+AlsaPlayer interrupted by signal 6
 
---=-=-=
+# alsaplayer shackup.wav     
+alsaplayer: pcm.c:5655: snd_pcm_unlink_ptr: Assertion `0' failed.
+AlsaPlayer interrupted by signal 6
 
+i tried some oss apps as well (pd, spiralsynthmodular). they don't
+produce any errors, but theres no sound. 
 
-i just packaged both alsamixergui and aconnectgui into mandrake contribs.
+and alsamixer has strange behaviour. the 'master' channel changes from a
+mutable out channel to a 'captur' channel after a while ??
 
--- 
-"il a ete brule au 28e degre" (the naheulbeuk witch)
-"c curieux, gcc fonctionne" (gwenole)
-
---=-=-=--
+- matthew
