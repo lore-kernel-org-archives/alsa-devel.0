@@ -1,14 +1,13 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Recording with V8235 (mic nput)
-Date: Tue, 20 Jul 2004 01:43:04 -0700 (PDT)
+From: noreply@alsa-project.org
+Subject: [ALSA - utils 0000381]: master volume doesn't work; headphone works.
+Date: Tue, 20 Jul 2004 12:22:37 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040720084304.34045.qmail@web60803.mail.yahoo.com>
-References: <E1BmktH-0006Os-Bb@sc8-sf-list2.sourceforge.net>
-Reply-To: tsw@johana.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <20040720102237.9F5632014A@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1BmktH-0006Os-Bb@sc8-sf-list2.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2F00921F
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2004 12:22:38 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,43 +16,108 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In my zeal to get multi-channel working on the V8235 chip set, I flubbed up the
-mixer so that plugging in a mic and attempting to record (arecord) doesn't
-work.
-Previously I was able to get it operational (so the hardware is good!), but
-some secret in 'alsamixer' doesn't connect the mic input to the capture
-converter.  Some will yield a short 'wav' file (converter has no input at all,
-and isn't triggered), but try as I might I can't get the mic to capture.  I was
-able to do this in an earlier version of alsa (0.9.6, maybe 1.0.4), but I am
-now running 1.0.5 and wondering if that is the problem.
 
-The motherboard (EIPA-M) has front & rear jacks for the MIC's and I'm using
-just the front jack (the rear one is empty).  I've got amplified speakers
-connected to the other jacks (line-out, line-in/back).
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000381
+======================================================================
+Reported By:                amitshah
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Bug ID:                     381
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-13-2004 10:57 CEST
+Last Modified:              07-20-2004 12:22 CEST
+======================================================================
+Summary:                    master volume doesn't work; headphone works.
+Description: 
+The 'master' and 'master mono' volume controls don't work. 'Headphone' and
+'pcm' do work, however.
 
-Is there a simple block diagram of the mixer for this chip that would allow me
-to check the mixer controls to see if 'alsamixer' has the proper setup. 
-Getting the info that should be in the datasheet is difficult since VIA doesn't
-want you to see the data sheet.  I'd use the datasheet to figure out the proper
-settings if it were available.
+$ cat /proc/asound/card0/codec97#0/ac97#0-0
+0-0/0: Analog Devices AD1885
 
-ARRG...
-(and I thought this sound stuff was going to be easy...)
+Capabilities     : -headphone out-
+DAC resolution   : 16-bit
+ADC resolution   : 16-bit
+3D enhancement   : Analog Devices Phat Stereo
 
-=====
--- 
-Tom Watson
-tsw@johana.com
+Current setup
+Mic gain         : +20dB [+20dB]
+POP path         : post 3D
+Sim. stereo      : off
+3D enhancement   : on
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=0 DSA=0 VRA
+Extended status  : VRA
+PCM front DAC    : 44100Hz
+PCM ADC          : 44100Hz
 
 
-		
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail is new and improved - Check it out!
-http://promotions.yahoo.com/new_mail
+
+AD18XX configuration
+Unchained        : 0x1000,0x0000,0x0000
+Chained          : 0x0000,0x0000,0x0000
+
+lspci -vv:
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801BA/BAM AC'97
+Audio (rev 04)
+        Subsystem: Intel Corp.: Unknown device 4d56
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap- 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0
+        Interrupt: pin B routed to IRQ 17
+        Region 0: I/O ports at e800
+        Region 1: I/O ports at ef00 [size=64]
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 07-16-2004 12:00 CEST 
+----------------------------------------------------------------------
+Try 'ac97_quirk=1' module option for snd-intel8x0.
+
+If it works, please show the output of lspci -nv, so that
+the workaround is added the the driver.
+
+----------------------------------------------------------------------
+ amitshah - 07-20-2004 12:22 CEST 
+----------------------------------------------------------------------
+Output of lspci -nv for the sound card:
+
+0000:00:1f.5 0401: 8086:2445 (rev 04)
+        Subsystem: 8086:4d56
+        Flags: bus master, medium devsel, latency 0, IRQ 17
+        I/O ports at e800 [size=256]
+        I/O ports at ef00 [size=64]
+
+It works with ac97_quirk=1; the 'headphone' control is now gone and master
+works properly. Though, master mono doesn't seem to make any difference.
+What's that setting supposed to do?
+
+Thanks.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-13-04 10:57 amitshah       New Bug                                      
+07-16-04 12:00 tiwai          Bugnote Added: 0001443                       
+07-20-04 12:22 amitshah       Bugnote Added: 0001461                       
+======================================================================
 
 
 -------------------------------------------------------
