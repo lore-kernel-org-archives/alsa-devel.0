@@ -1,17 +1,13 @@
-From: holborn <holborn@telefonica.net>
-Subject: Re: Question - selecting soundfonts/banks
-Date: Fri, 21 May 2004 10:00:48 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: web site: alsa-project.org  appears to be down.
+Date: Fri, 21 May 2004 12:51:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405211000.49078.holborn@telefonica.net>
-References: <40AD8921.8000503@orcon.net.nz>
-Reply-To: holborn@telefonica.net
+Message-ID: <Pine.LNX.4.58.0405211250440.7872@pnote.perex-int.cz>
+References: <40AC8B15.4080001@superbug.demon.co.uk> <yw1xwu37bbta.fsf@ford.guide>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <40AD8921.8000503@orcon.net.nz>
-Content-Disposition: inline
+In-Reply-To: <yw1xwu37bbta.fsf@ford.guide>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,37 +16,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Don Mackie <rebirth@orcon.net.nz>
+To: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 20 May 2004, M?ns Rullg?rd wrote:
 
-Hi
+> James Courtier-Dutton <James@superbug.demon.co.uk> writes:
+> 
+> > Is it just my end, or is the alsa-project.org web site down?
+> 
+> Here too (Sweden).
 
-On Viernes 21 Mayo 2004 05:44, Don Mackie wrote:
-> Hi,
->
-> Can someone please explain to me the relationship between midi
-> bank_msb/bank_lsb_prognum, and soundfontnum/bank_lsb/prognum on fluidsynth?
->
-> I'm successfully sending prog change events, as well as LSB bank select
-> events.
->
-> However, I'm also trying to select banks within different soundfonts, by
-> sending BANK_SELECT_MSB events, but things are not working.
->
-> My code presently sends BANK_SELECT_MSB controller event, then
-> BANK_SELECT_LSB controller event, then PBMCHANGE event, in that order.
->
-> What do i need to do in my code, so I can reliably select different
-> sounds from different banks from different loaded soundfonts?
+Confirmed. I'm working on it.
 
-Read this: 
+						Jaroslav
 
-http://mail.gnu.org/archive/html/fluid-dev/2003-07/msg00029.html
-
-maybe can help you.
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
