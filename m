@@ -1,14 +1,14 @@
-From: Nathaniel Gray <n8gray@caltech.edu>
-Subject: aplay failures
-Date: Fri, 9 May 2003 18:19:27 -0700
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: hw_rule
+Date: 10 May 2003 11:59:45 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305091819.27428.n8gray@caltech.edu>
+Message-ID: <1052567986.1226.8.camel@Jay>
+References: <1052435969.2728.15.camel@Jay>  <s5hbrycb3fk.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <s5hbrycb3fk.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,35 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, paul@linuxaudiosystems.com
 List-Id: alsa-devel@alsa-project.org
 
-This is for aplay 0.9.3 with the intel8x0 driver from 0.9.3a package.
+On ven, 2003-05-09 at 14:27, Takashi Iwai wrote:
+> > - How many stupid bugs are there ? :)
+>
+> i see only subtle issues.
+> it's better to use snd_interval_any() instead of memset().
+> the resultant interval_t would accept all values.
 
-I get failures when trying to play certain samples with aplay.  They 
-are all low bitrate unsigned 8-bit mono samples from the KDE 
-distribution (you can find them in the $KDEDIR/share/sounds directory).  
+Done, tnx.
 
-[n8gray@golux sounds]$ aplay KDE_Beep_Bottles.wav
-Playing WAVE 'KDE_Beep_Bottles.wav' : Unsigned 8 bit, Rate 11127 Hz, Mono
-aplay: set_params:847: Can't use period equal to buffer size (5564 == 5564)
-[n8gray@golux sounds]$ aplay ktalkd.wav
-Playing WAVE 'ktalkd.wav' : Unsigned 8 bit, Rate 11025 Hz, Mono
-aplay: set_params:847: Can't use period equal to buffer size (5513 == 5513)
-[n8gray@golux sounds]$ aplay KDE_Beep_Connect.wav
-Playing WAVE 'KDE_Beep_Connect.wav' : Unsigned 8 bit, Rate 11128 Hz, Mono
-aplay: set_params:847: Can't use period equal to buffer size (5564 == 5564)
+rme9652.c::snd_rme9652_hw_rule_*() functions do not initialize the
+structures. They may fail, unless I'm missing something.
 
-BTW, this is a good (but noisy) way to test aplay.  Go to a directory 
-with lots of wav files and:
-	for f in *.wav; do echo $f; aplay $f || break; done
+> the constraint for the another direction would be needed, too,
+> that is, the constraint for the channels which checks the acceptable
+> formats from the current values.
 
-Cheers,
--n8
+Yes, of course.
 
--- 
->>>-- Nathaniel Gray -- Caltech Computer Science ------>
->>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
+
+Bye.
+
 
 
 
