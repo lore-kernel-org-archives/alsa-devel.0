@@ -1,13 +1,14 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: USB audio kernel panic
-Date: Thu, 13 May 2004 10:09:01 +0900
+From: "Loc Ho" <loc@pacificconsultants.com>
+Subject: ALSA Memory Allocation Bug
+Date: Wed, 12 May 2004 18:40:05 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40A2CAAD.7050603@boosthardware.com>
-References: <Pine.HPX.4.33n.0405111618000.8179-100000@studcom.urz.uni-halle.de>
+Message-ID: <D22B281CC561444AA27F7F6C6C9E3E6102F546@mtvs4.pcllc.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,84 +17,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Patrick Shirkey wrote:
-> 
->>Using the latest usb-audio code from cvs I get a kernel panic when
->>loading the drivers.
->>
->>I'm running kernel-2.2.21 with gcc-2.95.4
-> 
-> 
-> Works fine with my 2.2.19(?).
-> 
-> ALSA 1.0.4 fixed some horrible bugs in the USB compatibility code for
-> 2.2.x kernels.
-> 
-> Where exactly does this crash happen?
-> 
+Hi,
 
-I just updated to the latest sf.net cvs. hdspmixer is working again but 
-still get a kernel error with usb-audio.
+I developed an custom USB Audio driver. In addition, I am also using the =
+provided USB Audio driver for commercial USB Audio devices. After some =
+testing with the custom USB Audio driver and the provided USB Audio =
+driver, there seem to be a problem with the ALSA memory allocation =
+routine. In file pcm_memory.c function setup_pcm_id, the id is generated =
+using the pcm device ID, stream ID, and substream number. This only =
+guarantee that the memory tag ID is unique for one card. If I have =
+multiple cards, they will not be unique. Am I correct?
 
-This is the error message and the corresponding section of /proc/ksyms. 
-(The actual symbol doesn't appear)
-
------------
-
-Unable to handle kernel paging request at virtual address 28302e63
-  printing eip:
-e08eafc0
-*pde = 00000000
-Oops: 0000
-CPU:    0
-EIP:    0010:[<e08eafc0>]    Tainted: PF
-
-
-
-.
-.
-.
-
-e08e7000 
-__insmod_snd-usb-audio_O/lib/modules/2.4.21/kernel/sound/usb/snd-usb-au
-dio.o_M40A2C2B5_V132117 [snd-usb-audio]
-e08e7060 __insmod_snd-usb-audio_S.text_L29104   [snd-usb-audio]
-e08eb02c snd_hack_usb_set_interface     [snd-usb-audio]
-e08ed8a8 snd_usbmidi_disconnect [snd-usb-audio]
-e08edff4 snd_usb_create_midi_interface  [snd-usb-audio]
-e08ee220 __insmod_snd-usb-audio_S.rodata_L7690  [snd-usb-audio]
-e08f01e0 __insmod_snd-usb-audio_S.data_L4548    [snd-usb-audio]
-e08f13c0 __insmod_snd-usb-audio_S.bss_L64       [snd-usb-audio]
-(END)
-
-
-----------------
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org/LAU/guide/ - The Linux Audio Users guide
-Http://www.djcj.org/gigs/ - Gigs guide Korea
-Http://www.nana7.net - Bar Nana - Itaewon, Seoul, Sth Corea
-========================================
-
-
-Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
-
+Thanks,
+Loc
 
 
 -------------------------------------------------------
