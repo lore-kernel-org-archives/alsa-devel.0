@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000679]: No sound on rear speakers
-Date: Fri, 26 Nov 2004 12:32:43 +0100
-Message-ID: <037a8ec64ef99250af058978b64f8bed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000672]: alternate ALS0200 ident string
+Date: Fri, 26 Nov 2004 12:32:24 +0100
+Message-ID: <956d93b4945372ebb51bda70dcdedcde@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CEA7E235
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 12:32:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 881F6235
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 12:32:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,83 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=679> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=672> 
 ======================================================================
-Reported By:                NosyMan
-Assigned To:                pzad
+Reported By:                basic
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   679
-Category:                   PCI - emu10k1
+Issue ID:                   672
+Category:                   ISA - als100
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
-Kernel Version:             2.6.9
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-26-2004 10:24 CET
+Date Submitted:             11-24-2004 07:31 CET
 Last Modified:              11-26-2004 12:32 CET
 ======================================================================
-Summary:                    No sound on rear speakers
+Summary:                    alternate ALS0200 ident string
 Description: 
-I have no sound on rear speakers in ALSA 1.0.7. The sound was ok in
-previous version tested 1.0.5 :-(
+recently dug up some older hardware to put togather a pc for my brother,
+found this OEM ALS0200 card, couldn't get the module to load, so
+downloaded pnptools and used pnpdump... long story short, here's the patch
+to get it to work.
 ======================================================================
 
 ----------------------------------------------------------------------
- NosyMan - 11-26-04 12:15 
+ tiwai - 11-24-04 12:16 
 ----------------------------------------------------------------------
-cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.7.
-Compiled on Nov 25 2004 for kernel 2.6.9.
-
-
-cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: SigmaTel STAC9708/11
-
-Capabilities     : -headphone out-
-DAC resolution   : 18-bit
-ADC resolution   : 18-bit
-3D enhancement   : SigmaTel 3D Enhancement
-
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=0 SDAC DSA=0
-Extended status  : SDAC
+Please provide the summary, description and signed-off-by lines.
 
 ----------------------------------------------------------------------
- pzad - 11-26-04 12:32 
+ tiwai - 11-26-04 12:32 
 ----------------------------------------------------------------------
-OK, this is Old SB Live.
-
-Hmm, AFAIK there wasn't any change in driver which should affect rear
-speakers.
+Thanks, applied to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-26-04 10:24 NosyMan        New Issue                                    
-11-26-04 10:24 NosyMan        Kernel Version            => 2.6.9           
-11-26-04 10:51 NosyMan        Issue Monitored: NosyMan                     
-11-26-04 11:02 pzad           Note Added: 0002596                          
-11-26-04 11:23 NosyMan        Issue End Monitor: NosyMan                    
-11-26-04 11:24 NosyMan        File Added: test.state                       
-11-26-04 11:24 NosyMan        Note Added: 0002597                          
-11-26-04 11:27 NosyMan        Note Added: 0002598                          
-11-26-04 11:27 NosyMan        Issue Monitored: NosyMan                     
-11-26-04 12:03 pzad           Note Added: 0002599                          
-11-26-04 12:15 NosyMan        Note Added: 0002600                          
-11-26-04 12:32 pzad           Note Added: 0002603                          
+11-24-04 07:31 basic          New Issue                                    
+11-24-04 07:31 basic          File Added: als100.c.patch                    
+11-24-04 12:16 tiwai          Note Added: 0002546                          
+11-26-04 09:46 basic          File Added: als100.c.patch                    
+11-26-04 12:32 tiwai          Status                   new => resolved     
+11-26-04 12:32 tiwai          Resolution               open => fixed       
+11-26-04 12:32 tiwai          Assigned To               => tiwai           
+11-26-04 12:32 tiwai          Note Added: 0002602                          
 ======================================================================
 
 
