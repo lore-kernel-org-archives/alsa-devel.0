@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000138]: Not sound although device is correctly detected...
-Date: Mon, 20 Dec 2004 14:41:13 +0100
-Message-ID: <116d7ff03aedb2a76464f3fff23298ed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000648]: aplay -Dspdif produces choppy (beating?) audio from DTS .wav files
+Date: Mon, 20 Dec 2004 14:42:57 +0100
+Message-ID: <15c9a520b5b9b70b6ea1f321edba98c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5B7DA2E7
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 14:41:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA5732E7
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 14:42:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=138> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=648> 
 ======================================================================
-Reported By:                Eric Valette
-Assigned To:                tiwai
+Reported By:                duanev
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   138
-Category:                   PCI - intel8x0
+Issue ID:                   648
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               debian sid
-Kernel Version:             2.6.4-mm2
+Status:                     closed
+Distribution:               Mandrake 10.1
+Kernel Version:             Preemptable 2.6.8 kernel
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-15-2004 13:57 CET
-Last Modified:              12-20-2004 14:41 CET
+Date Submitted:             11-14-2004 04:24 CET
+Last Modified:              12-20-2004 14:42 CET
 ======================================================================
-Summary:                    Not sound although device is correctly detected...
+Summary:                    aplay -Dspdif produces choppy (beating?) audio from
+DTS .wav files
 Description: 
-On 2.4, I was using the built-in driver and it worked nicely. On 2.6, I'm
-forced to use the 2.6 and get no sound. NB : I have started the ALSAMIXER
-and set output level to speaker to non zero...
+Sound produced by aplay is not smooth - audio is "chopped up" or appears to
+"beat" at about 5Hz.
 ======================================================================
 
 ----------------------------------------------------------------------
- Eric Valette - 03-15-04 17:51 
+ rlrevell - 11-17-04 18:21 
 ----------------------------------------------------------------------
-I managed to make it work in 2.6.4-mm2 today. So apparently it is fixed in
-the last bk tree. You can close it.
-
-Side note : The speakers are muted by default which may lead to trouble
-when volume are not zero...
-
-BTW I have an Oops in the intel8x0M modem driver due to null ponter
-dereference.
-I must fill another bug report...
+Hmm good question.  Takashi-san. can we close this, marking it as a
+duplicate of bug 646?
 
 ----------------------------------------------------------------------
- Eric Valette - 12-19-04 15:16 
+ tiwai - 11-18-04 17:37 
 ----------------------------------------------------------------------
-Please close this bug : it works now
+Closed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-04 13:57 Eric Valette   New Issue                                    
-03-15-04 13:57 Eric Valette   Distribution              => debian sid      
-03-15-04 13:57 Eric Valette   Kernel Version            => 2.6.4-mm2       
-03-15-04 17:41 perex          Note Added: 0000617                          
-03-15-04 17:51 Eric Valette   Note Added: 0000619                          
-12-19-04 15:16 Eric Valette   Note Added: 0002849                          
-12-20-04 14:41 tiwai          Status                   new => resolved     
-12-20-04 14:41 tiwai          Resolution               open => fixed       
-12-20-04 14:41 tiwai          Assigned To               => tiwai           
+11-14-04 04:24 duanev         New Issue                                    
+11-14-04 04:24 duanev         Distribution              => Mandrake 10.1   
+11-14-04 04:24 duanev         Kernel Version            => Preemptable 2.6.8
+kernel
+11-14-04 04:41 rlrevell       Note Added: 0002406                          
+11-14-04 10:02 pzad           Note Added: 0002407                          
+11-17-04 07:02 duanev         Note Added: 0002433                          
+11-17-04 18:21 rlrevell       Note Added: 0002437                          
+11-18-04 17:37 tiwai          Status                   assigned => resolved
+11-18-04 17:37 tiwai          Resolution               open => fixed       
+11-18-04 17:37 tiwai          Note Added: 0002449                          
+12-20-04 14:42 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
