@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000384]: Crackly PCM output.
-Date: Thu, 18 Nov 2004 19:44:36 +0100
-Message-ID: <1ee6042dd387e99fa328ecf05eb90ad8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000651]: via82xxx No Sound Kernel 2.6.10-rc2
+Date: Thu, 18 Nov 2004 19:48:55 +0100
+Message-ID: <98884a2646c930a39476942b40d1db73@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41CE51ED
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:44:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C0371205
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:48:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,55 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=384> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=651> 
 ======================================================================
-Reported By:                bryanb
+Reported By:                glen
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   384
-Category:                   PCI - ymfpci
+Issue ID:                   651
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo dev sources
-Kernel Version:             2.6
+Distribution:               Slackware 10.0 + Dropline Gnome 2.8.0
+Kernel Version:             2.6.10-rc2
 ======================================================================
-Date Submitted:             07-13-2004 19:28 CEST
-Last Modified:              11-18-2004 19:44 CET
+Date Submitted:             11-17-2004 19:03 CET
+Last Modified:              11-18-2004 19:48 CET
 ======================================================================
-Summary:                    Crackly PCM output.
+Summary:                    via82xxx No Sound Kernel 2.6.10-rc2
 Description: 
-When playing a sound through the speakers on Toshiba Tecra 8100 the only
-sound produced is noise.
+Upgraded to kernel 2.6.10-rc2 from 2.6.10-rc1 with identical config.  No
+compile problems.  No boot up problems.  No sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- c0ldevil - 11-18-04 16:00 
+ glen - 11-17-04 19:05 
 ----------------------------------------------------------------------
-I uploaded the dumps in a zip file.
+Added output from lspci.
 
 ----------------------------------------------------------------------
- tiwai - 11-18-04 19:44 
+ tiwai - 11-18-04 19:48 
 ----------------------------------------------------------------------
-Hmm, strnage.  After loading OSS ymfpci, snd-ymfpci starts working fine?
+What is the exact symptom?  Is the playback DMA working?
+
+More info required, too, for example, the mixer configuration
+(/etc/asound.state) and codec information (/proc/asound/card0/codec97#0/*
+files).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-13-04 19:28 bryanb         New Issue                                    
-07-13-04 19:28 bryanb         Distribution              => Gentoo dev sources
-07-13-04 19:28 bryanb         Kernel Version            => 2.6             
-07-29-04 22:43 codefathers    Note Added: 0001485                          
-07-29-04 22:45 codefathers    Issue Monitored: codefathers                    
-09-03-04 03:37 Derek_Burdick  Issue Monitored: Derek_Burdick                    
-09-03-04 03:40 Derek_Burdick  Note Added: 0001684                          
-10-23-04 23:24 c0ldevil       Note Added: 0002257                          
-10-23-04 23:27 c0ldevil       Note Edited: 0002257                         
-10-23-04 23:55 c0ldevil       Note Added: 0002259                          
-10-23-04 23:56 c0ldevil       Note Added: 0002260                          
-11-10-04 12:48 tiwai          Note Added: 0002369                          
-11-17-04 18:14 c0ldevil       Note Added: 0002436                          
-11-17-04 20:33 c0ldevil       Note Added: 0002442                          
-11-17-04 20:39 rlrevell       Note Added: 0002443                          
-11-18-04 14:30 tiwai          Note Added: 0002445                          
-11-18-04 15:46 c0ldevil       Note Added: 0002446                          
-11-18-04 15:56 c0ldevil       Note Added: 0002447                          
-11-18-04 15:59 c0ldevil       File Added: dumps.zip                        
-11-18-04 16:00 c0ldevil       Note Added: 0002448                          
-11-18-04 19:44 tiwai          Note Added: 0002465                          
+11-17-04 19:03 glen           New Issue                                    
+11-17-04 19:03 glen           File Added: config-2.6.10-rc2                    
+11-17-04 19:03 glen           Distribution              => Slackware 10.0 +
+Dropline Gnome 2.8.0
+11-17-04 19:03 glen           Kernel Version            => 2.6.10-rc2      
+11-17-04 19:05 glen           Note Added: 0002439                          
+11-17-04 19:06 glen           File Added: lspci.txt                        
+11-18-04 19:48 tiwai          Note Added: 0002466                          
 ======================================================================
 
 
