@@ -1,14 +1,15 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Re: You've been selected (aka SPAM)
-Date: Wed, 27 Oct 2004 15:59:11 -0700 (PDT)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000604]: sound loop problem
+Date: Thu, 28 Oct 2004 02:14:07 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041027225911.68651.qmail@web60802.mail.yahoo.com>
-References: <E1CMwWX-0000Tt-9j@sc8-sf-list2.sourceforge.net>
-Reply-To: tsw@johana.com
+Message-ID: <5bd59a6ed0ba4adb4d105465272ab92d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1CMwWX-0000Tt-9j@sc8-sf-list2.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C1DD32CD
+	for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2004 02:14:07 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,74 +18,84 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> Message: 4
-> Date: Wed, 27 Oct 2004 17:27:41 -0400
-> From: Glenn Maynard <glenn@zewt.org>
-> To: alsa-devel@lists.sourceforge.net
-> Subject: Re: [Alsa-devel] You've been selected!
-> 
-> On Wed, Oct 27, 2004 at 02:21:05AM -0700, Dan Hollis wrote:
-> > On Wed, 27 Oct 2004, Eleanor Lee wrote:
-> > > [a09fvjoqpvapktqct]
-> > > Available to anyone currently living in the US as well as international
-> applicants
-> > 
-> > time to allow only registered subscribers to post to the list, perhaps?
-> > 
-> > alsa-devel is now 99% spam :-(
-> 
-> This is the second time (in a brief period) where I've seen you whining
-> about spam, when I never even saw the spam itself.  As Lee pointed out,
-> there's a SpamAssassin header right there; use it.  Allowing posts from
-> non-subscribers is very useful; stop asking that it be disabled simply
-> because you won't use existing spam filtering mechanisms.  I see perhaps
-> one spam or spam-related bounce per page of 50 mails on this list--and
-> that's *after* filtering out BTS messages--a far cry from your "99%".
-> 
-> :0
-> * ^X-Spam-Status: Yes
-> 	spam
-> 
-> -- 
-> Glenn Maynard
-> 
-> 
 
-Glenn...
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=604> 
+======================================================================
+Reported By:                chomwitt
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   604
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               slackware10
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             10-26-2004 01:29 CEST
+Last Modified:              10-28-2004 02:14 CEST
+======================================================================
+Summary:                    sound loop problem
+Description: 
+i get a sound loop which gets correctet only 
+while moving the mouse!
+======================================================================
 
-Unfortunately the digester (or whatever assembles the group of messages into a
-digest) DOES NOT forward SpamAssassin Headers.  It treats ALL messages as
-equal.  This means that the digest traffic has more visable SPAM in it.  I
-suspect that what everyone would like (as suggested before) is to get
-sourceforge to do the filtering.  If it were done there, us users (regular and
-digest ones) wouldn't need to do it.  Why do the filtering for every subscriber
-when it can be done once at the source.  Isn't that logical?
+----------------------------------------------------------------------
+ chomwitt - 10-27-04 21:07 
+----------------------------------------------------------------------
+i haven't installed gnome,kde etc,so i dont have esound or alike.
+i removed the usb "mouse" modules from the kernel but 
+the problem remains.
+Its strange that will moving the usb mouse
+the sound-loop (playing the first 0,2sec of a sound file endlessly )
+stops andyou can hear the next 0.2sec and the next 0.2 ... as long as you
+move the usb mouse.While mouving the touchpad mouse the sound loop doesnt
+break.
 
-My understanding is that sourceforge doesn't do the filtering (or won't do it)
-for some reason.  Why, I don't know.
+----------------------------------------------------------------------
+ chomwitt - 10-28-04 02:14 
+----------------------------------------------------------------------
+this is output from dmesg.
 
-For the moment I will live with it.  We all live with it to some degree.
+/root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec read
+timeout (reg 1c)
+ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec
+read timeout (reg 0)
+ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec
+read timeout (reg 3c)
+ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec
+read timeout (reg 1c)
+ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec
+read timeout (reg 0)
+ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec
+read timeout (reg 3c)
+ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec
+read timeout (reg 1c)
+....... (many many lines like the above)
+ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/ac97/ac97_codec.c:1904:
+AC'97 2 does not respond - RESET
+ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/ac97/ac97_codec.c:1912:
+AC'97 2 access is not valid [0xffffffff], removing mixer.
 
-If you want to experiment, just use another address and subscribe in the digest
-format.  You will readly see the problem.  I'm not really complaining about the
-problem, but your answer of "Look at the headers" is FAR from universal.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-26-04 01:29 chomwitt       New Issue                                    
+10-26-04 01:29 chomwitt       Distribution              => slackware10     
+10-26-04 01:29 chomwitt       Kernel Version            => 2.6.7           
+10-27-04 21:07 chomwitt       Note Added: 0002280                          
+10-28-04 02:14 chomwitt       Note Added: 0002281                          
+======================================================================
 
-Enough.....
 
-=====
--- 
-Tom Watson
-tsw@johana.com
-
-
-		
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail Address AutoComplete - You start. We finish.
-http://promotions.yahoo.com/new_mail 
 
 
 -------------------------------------------------------
