@@ -1,10 +1,12 @@
-From: "guan yim" <guanyim@hotmail.com>
+From: p z oooo <pzad@pobox.sk>
 Subject: Re: Test: SBLive! (C) 2003 need extra effort on Rear Analog Output
-Date: Fri, 26 Mar 2004 13:40:39 +0200
+Date: Fri, 26 Mar 2004 13:26:42 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <SEA2-F33lIOiyQMGi3t000256a6@hotmail.com>
+Message-ID: <200403261226.i2QCQg16023146@www6.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,59 +16,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: pzad@pobox.sk
+To: guanyim@hotmail.com
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Because Creative uses diffrent AC97 codec and this codec has same=20
+controls as controls implemented in dsp. then on 9.8 it fails to=20
+load.=20
 
+Could you send me output of /proc/asound/card/codec97/ac97 <- this=20
+is not exact name
+/proc/asound/card/codec97/ac97reg
+where card is card name
+???
 
+Peter Zubaj
 
->From: p z oooo <pzad@pobox.sk>
->Reply-To: p z oooo <pzad@pobox.sk>
->To: guanyim@hotmail.com
->CC: alsa-devel@lists.sourceforge.net
->Subject: Re: [Alsa-devel] Test: SBLive! (C) 2003 need extra effort on Rear 
->Analog Output
->Date: Fri, 26 Mar 2004 08:27:57 +0100
->
->In alsa-driver/alsa-kernel/emu10k1/emumixer there are two static
->arrays:
->1) static char *emu10k1_remove_ctls[]
->remove from this array:
->"Surround Playback Switch",
->"Surround Playback Volume",
->
->2)
->static char *emu10k1_rename_ctls[]
->remove from this array:
->"Surround Digital Playback Volume", "Surround Playback Volume",
->
->recompile, you will maybe have these controls in mixer:
->"Surround Digital Playback Volume"
->"Surround Playback Volume"
->
->unmute and set volume for both volume.
->
->If not working - try same with center, and LFE.
->
->If not working - this must be other problem
->
->Peter Zubaj
->
-
-
-Thanks...I have tried just now. It doesn't work. So alsamixer is indeed 
-innocent :)
-By the way, I am quite curious that....why suddenly the SBLive 2003 can't 
-even be used with alsa 0.9.8, while SBLive 2001, 2002 can... What's the good 
-purpose for Creative to do something that makes SBLive 2003 looks like 
-another new card ? When using alsa 0.9.8, snd-emu10k1 says it cannot find 
-the card :)
-
-_________________________________________________________________
-Add photos to your messages with MSN 8. Get 2 months FREE*. 
-http://join.msn.com/?page=features/featuredemail
-
+=0A____________________________________=0Ahttp://www.pobox.sk/ - spolahliva=
+ a bezpecna prevadzka=0A=0A=0A
 
 
 -------------------------------------------------------
