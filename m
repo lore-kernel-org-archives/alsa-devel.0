@@ -1,13 +1,14 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: ALSA docs
-Date: Tue, 30 Jul 2002 04:12:20 +0900
+From: "daniel sheltraw" <l5gibson@hotmail.com>
+Subject: SB Live and Audigy development
+Date: Mon, 29 Jul 2002 14:35:27 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D459394.80104@boosthardware.com>
-References: <E17ZEzS-0001Sf-00@usw-sf-list1.sourceforge.net>
+Message-ID: <F226XrJA96ouuH6FMP800018201@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from hotmail.com (f226.law7.hotmail.com [216.33.237.226])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA19678
+	for <alsa-devel@alsa-project.org>; Mon, 29 Jul 2002 21:36:04 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,66 +17,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: alsa-devel@lists.sourceforge.net, goemon@anime.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
->>Do you mean that I should be parsing each driver file seperately?
-> 
-> 
-> not really, just do a single pass over each one of them at some point
-> in time. store the results, and use them. this should get you started
-> (its not perfect, but it doesn't do a bad job.
-> 
-> #!/usr/local/bin/perl
-> 
-> while(<>) {
-> 	  if (/MODULE_PARM_DESC/) {
-> 	      @foo = split /[()]/;
->               @bar = split (/,/, $foo[1], 2);
-> 	      $bar[1] =~ s/"//g;
->               printf ("%-32s %s\n", $bar[0], $bar[1]);
->           }
-> }
-> 
-> add something to recurse through the source tree, and include the
-> module name and card name info, and you're pretty much done ...
-> 
+Hello ALSA list
 
-Now that I think about it I could probably get away with doing this on 
-my computer everytime that a new driver is added. We have to add the 
-info manually for the soundcard matrix anyway.
+Would someone please tell me who the main developers of the SB Live
+and Audigy drivers are and their email addresses?
 
-Although If I don't have access to a working Linux computer in the 
-future this will cause problems. Ideally I would like a way to do this 
-all from online preferably automagically.
+Thanks,
+Daniel Sheltraw
 
-I'm loathe to admit but I am very new to perl so I don't even know how 
-to call the above code from a webpage. Is it possible to get the perl 
-script to parse the files and then use php to parse the output of the 
-perl script? I have various variables from a form which php can 
-understand and use to create the correct output in the template.
 
-Unless Dan Hollis speaks up soon (I tried to contact him last Friday) 
-I'm officially commandeering the Soundcard matrix from his dir and 
-putting it in the alsa-docs dir. Where it will become the opening page 
-to the driver docs. He will need to get cvs access for the www dir from 
-Jaroslav to edit the new version of the matrix.
 
-You can see what I'm trying to do here:
-
-http://www.alsa-project.org/alsa-doc/ALSA_Soundcard_Matrix.php3
-
-That is unless other people have a better idea for how to make the docs 
-more user friendly (and competitive ;] ).
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
+_________________________________________________________________
+MSN Photos is the easiest way to share and print your photos: 
+http://photos.msn.com/support/worldwide.aspx
 
 
 
