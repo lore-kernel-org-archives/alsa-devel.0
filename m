@@ -1,16 +1,16 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: aserver, smix
-Date: Thu, 27 Feb 2003 03:24:07 +0900
+From: jfm3 <jfm3@ouroboros-complex.org>
+Subject: Re: ALSA CVS and JACK?
+Date: 26 Feb 2003 14:25:17 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E5D0647.8040407@boosthardware.com>
-References: <20030226180219.B32649@osiris.uid0.sk>
+Message-ID: <1046287523.1101.4.camel@localhost.localdomain>
+References: <Pine.LNX.4.44.0302251856280.2277-100000@pnote.perex-int.cz>
+	<E18nkIs-0002Oa-00@sc8-sf-list1.sourceforge.net>
+	<s5hsmubxv48.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www2.webhosting.cx (www2.webhosting.cx [207.44.198.86])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA08004
-	for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2003 19:35:57 +0100
+In-Reply-To: <s5hsmubxv48.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,57 +19,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jozef Kosoru <zyzstar@uid0.sk>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Jozef Kosoru wrote:
-> Hi!
-> 
-> A couple of questions:
-> 
-> I would like to ask what is the main purpose of the aserver. It can run
-> on the same machine as the client only (AFAIK) and it cannot mix multiple
-> client streams into the one device. So I've missed the point of that
-> application -- is there something for which it could be good for?
-> 
-> ALSA plugin documentation mentions the 'smix' plugin. But I cannot find
-> any further information nor the source code in the library for that. Is
-> it something which will be introduced it the future ALSA releases?
-> According the doc it is exactly something I've been looking for a long
-> time; pcm device sharing.
+On Wed, 2003-02-26 at 04:13, Takashi Iwai wrote:
+> At Tue, 25 Feb 2003 14:02:05 -0500,
+> Paul Davis wrote:
+> > 
+> > >Can we see reports? I don't see any reason for crashes.
+> > 
+> > nobody that this has happened to so far has had an oops trace. they
+> > are always running graphical apps and do not have a serial console. i
+> > am too nervous (:) to try it myself (hence i still have ALSA CVS from
+> > way back). apparently it may it also be connected to a particular
+> > kernel version.
+>  
+> isn't it the 2.4.20+ext3 problem?
 > 
 
-This has been discussed many times.
+OK, I switched to ext2 on all file systems. Now I can run latencytest to
+completion, although oddly it complains about how it can't kill top. The
+upper bound for audio latency on this crusoe-based c1mw is presently
+6.8ms, both according to latencytest and the pd latency measuring patch.
+The cpu latency is reported at around 1.5ms.
 
-Currently the only ways to get pcm device sharing, I assume you mean 
-using multiple devices as one virtual device are to write it up in your 
-.asoundrc or use the patch which has been submitted but not applied to 
-jack for this purpose.
-
-The former is a little tricky to grok but it has been shown to work. The 
-later requires a bit more of a deeper understanding of jack and coding.
-
-There is info in the online docs. Just click on the link in the asoundrc 
-  section for your device and the file is explained in depth.
-
-If however you mean hardware mixing (multiple streams at the same time) 
-then it is dependant on the device and the manufacturers supplied tech 
-details.
-
+Jack and freqtweak still make the system hang, although I have to try
+several times to start freqtweak at all without getting the error
+message that freqtweak was "shut down" by the jack server.
 
 -- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
+(jfm3  2838 BCBA 93BA 3058 ED95  A42C 37DB 66D1 B43C 9FD0)
 
 
 
