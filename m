@@ -1,41 +1,62 @@
-From: Andrew Burgess <aab-UIo0uGTcgxdBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: Which API to use for simple clients?
-Date: Mon, 6 Sep 2004 12:28:14 -0700
-Sender: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-Message-ID: <200409061928.i86JSE4m027169@cichlid.com>
-Reply-To: "The Linux Audio Developers' Mailing List"
-	<linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
-Return-path: <linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
-List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev>
-List-Post: <mailto:linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
-List-Help: <mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=help>
-List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=subscribe>
-Errors-To: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-To: linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org, alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000484]: Hercules MUSE Pocket, channels swapping randomly during playback
+Date: Mon,  6 Sep 2004 21:32:44 +0200 (CEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20040906193244.ADCD94A026@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0CD24290
+	for <alsa-devel@alsa-project.org>; Mon,  6 Sep 2004 21:32:44 +0200 (MEST)
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->I have two Audio related projects that need updating.
 
->Both have existing /dev/dsp style backends at present, which have been working
->fine. But recently (SuSE 9.0 install?) when run under ALSA emulation of 
->/dev/dsp they both started producing segfaults - "after program had exited",
->(neither valgrind nor gdb can give any info on the fault).
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000484
+======================================================================
+Reported By:                jone
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     484
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian unstable
+Kernel Version:             2.4.23-cobalt3
+======================================================================
+Date Submitted:             09-06-2004 21:32 CEST
+Last Modified:              09-06-2004 21:32 CEST
+======================================================================
+Summary:                    Hercules MUSE Pocket, channels swapping randomly during playback
+Description: 
+When my Hercules MUSE Pocket device is connected via a hub the  sound
+channels swap back and forth randomly during playback.
+======================================================================
 
->So I decided it was time to do a native ALSA backend(s).
->I have rsynth backend working, and perl Audio:: one almost working.
->But before going forward I would like to solicit opinions on what 
->is the "right" API to use.
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-06-04 21:32 jone           New Bug                                      
+09-06-04 21:32 jone           Distribution              => Debian unstable 
+09-06-04 21:32 jone           Kernel Version            => 2.4.23-cobalt3  
+======================================================================
 
->(please tell me if I missed any):
 
-Portaudio, which gives you macos and windows for free (but of course
-you must also port the gui stuff...)
-
->2. ALSA
->3. JACK 
-
-Do the callbacks once and it's trivial to port to all three of the above
-in my experience.
+-------------------------------------------------------
+This SF.Net email is sponsored by BEA Weblogic Workshop
+FREE Java Enterprise J2EE developer tools!
+Get your free copy of BEA WebLogic Workshop 8.1 today.
+http://ads.osdn.com/?ad_id=5047&alloc_id=10808&op=click
