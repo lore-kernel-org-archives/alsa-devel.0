@@ -1,13 +1,13 @@
-From: Robert Love <rml@tech9.net>
-Subject: [PATCH] proper lseek locking in ALSA, take 3
-Date: 20 Feb 2002 14:20:40 -0500
-Message-ID: <1014232841.18361.37.camel@phantasy>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] proper lseek locking in ALSA, take 3
+Date: Wed, 20 Feb 2002 21:04:59 +0100 (CET)
+Message-ID: <a5109c$u0m$1@quimby2.netfonds.no>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Received: from zero.tech9.net (zero.tech9.net [209.61.188.187])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA23238
-	for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2002 20:20:50 +0100
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA24023
+	for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2002 21:09:02 +0100
+In-Reply-To: <1014232841.18361.37.camel@phantasy>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,85 +16,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: torvalds@transmeta.com, davej@suse.de
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Robert Love <rml@tech9.net>
+Cc: "torvalds@transmeta.com" <torvalds@transmeta.com>, "davej@suse.de" <davej@suse.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The attached patch implements proper locking in ALSA lseek methods. 
-Note ALSA has 3 lseek implementations, but only:
+On 20 Feb 2002, Robert Love wrote:
 
-	sound/core/info.c :: snd_info_entry_llseek()
+> The attached patch implements proper locking in ALSA lseek methods.
+> Note ALSA has 3 lseek implementations, but only:
+>
+> 	sound/core/info.c :: snd_info_entry_llseek()
+>
+> requires locking.  I wrapped the function in the BKL.  According to
+> Jaroslav Kysela the gus_mem_proc method is only called from above.  The
+> third lseek, in hwdep.c, clearly doesn't need locking.  Without this
+> patch, the above lseek is not safe.
+>
+> Patch is against 2.5.5, please apply.
 
-requires locking.  I wrapped the function in the BKL.  According to
-Jaroslav Kysela the gus_mem_proc method is only called from above.  The
-third lseek, in hwdep.c, clearly doesn't need locking.  Without this
-patch, the above lseek is not safe.
+We have this patch already in our ALSA CVS tree, so it will be commited to
+Linus in next patch round. Thanks.
 
-Patch is against 2.5.5, please apply.
+						Jaroslav
 
-	Robert Love	
-
-diff -urN linux-2.5.5/sound/core/info.c linux/sound/core/info.c
---- linux-2.5.5/sound/core/info.c	Tue Feb 19 21:11:01 2002
-+++ linux/sound/core/info.c	Tue Feb 19 21:50:18 2002
-@@ -29,6 +29,7 @@
- #include <sound/info.h>
- #include <sound/version.h>
- #include <linux/proc_fs.h>
-+#include <linux/smp_lock.h>
- #ifdef CONFIG_DEVFS_FS
- #include <linux/devfs_fs_kernel.h>
- #endif
-@@ -162,31 +163,40 @@
- {
- 	snd_info_private_data_t *data;
- 	struct snd_info_entry *entry;
-+	int ret = -EINVAL;
- 
- 	data = snd_magic_cast(snd_info_private_data_t, file->private_data, return -ENXIO);
- 	entry = data->entry;
-+	lock_kernel();
- 	switch (entry->content) {
- 	case SNDRV_INFO_CONTENT_TEXT:
- 		switch (orig) {
- 		case 0:	/* SEEK_SET */
- 			file->f_pos = offset;
--			return file->f_pos;
-+			ret = file->f_pos;
-+			goto out;
- 		case 1:	/* SEEK_CUR */
- 			file->f_pos += offset;
--			return file->f_pos;
-+			ret = file->f_pos;
-+			goto out;
- 		case 2:	/* SEEK_END */
- 		default:
--			return -EINVAL;
-+			goto out;
- 		}
- 		break;
- 	case SNDRV_INFO_CONTENT_DATA:
--		if (entry->c.ops->llseek)
--			return entry->c.ops->llseek(entry,
-+		if (entry->c.ops->llseek) {
-+			ret = entry->c.ops->llseek(entry,
- 						    data->file_private_data,
- 						    file, offset, orig);
-+			goto out;
-+		}
- 		break;
- 	}
--	return -ENXIO;
-+	ret = -ENXIO;
-+out:
-+	unlock_kernel();
-+	return ret;
- }
- 
- static ssize_t snd_info_entry_read(struct file *file, char *buffer,
-
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 _______________________________________________
