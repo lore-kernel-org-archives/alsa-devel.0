@@ -1,15 +1,12 @@
-From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
-Subject: Re: Audigy 2 support - update
-Date: Mon, 7 Jul 2003 21:49:14 +0300
+From: Ryan Underwood <nemesis-lists@icequake.net>
+Subject: Re: cs4248 / thinkpad 755 / 755c , patch suggestions [PATCH]]
+Date: Mon, 7 Jul 2003 15:53:57 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030707184914.GH7637@edu.joroinen.fi>
-References: <20030523051240.GA10831@www.angiotech.com> <1053675028.18540.70.camel@rivendell.home.local> <20030524004334.GA15947@www.angiotech.com> <1053747456.6906.1.camel@rivendell.home.local> <3ECF6FDD.3090107@superbug.demon.co.uk> <20030527072847.GI7637@edu.joroinen.fi>
+Message-ID: <20030707205357.GQ5013@dbz.icequake.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="f2QGlHpHGjS2mn6Y"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <20030527072847.GI7637@edu.joroinen.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,80 +15,293 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 27, 2003 at 10:28:47AM +0300, Pasi Kärkkäinen wrote:
-> On Sat, May 24, 2003 at 02:13:01PM +0100, James Courtier-Dutton wrote:
-> > Florin Andrei wrote:
-> > >On Fri, 2003-05-23 at 17:43, Stephen Hassard wrote:
-> > >
-> > >>On Fri, May 23, 2003 at 12:30:28AM -0700, Florin Andrei wrote:
-> > >>
-> > >>>On Thu, 2003-05-22 at 22:12, Stephen Hassard wrote:
-> > >>>How about MIDI output?
-> > >>
-> > >>MIDI output seems to work fine too.
-> > >
-> > >
-> > >Thank you Stephen!
-> > >
-> > >And thanks to the ALSA developers. Now i'll go ahead and buy an Audigy2.
-> > >Yeah, it's going to be a Platinum, yeah, maybe a few gizmos on the front
-> > >panel won't work (we'll see), but as long as there is at least one pair
-> > >of MIDI in/out that works, i'm happy.
-> > >
-> > >Keep up the good work!
-> > >
-> > I have heard reports that the SPDIF passthru does not work, so you will 
-> > not be able to use external AC3 and DTS decoders.
+
+--f2QGlHpHGjS2mn6Y
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+
+
+Hi Takashi,
+
+On Thu, Jul 03, 2003 at 02:29:01PM +0200, Takashi Iwai wrote:
+> At Wed, 2 Jul 2003 15:29:55 -0500,
+> Ryan Underwood wrote:
 > > 
-> > Can anyone verify this?
-> > 
+> > 1) What is ALSA's policy on module options?  For example, would it be
+> > okay to add an option like "thinkpad" to the ad1848 module, so that
+> > inserting it with "thinkpad=1" would cause the necessary ports to be
+> > prodded?
 > 
-> I have audigy, and ac3/dts output is not working.
+> this looks like a feasible solution.
 > 
-> Alsa says it cannot find some hw device.. sorry I don't have the exact error
-> message here.
+> > 2) Since the chip's power mode can be controlled through a write to that
+> > port (bit 2 on, cs4248 power on; bit 2 off, cs4248 power off), would it
+> > be a good idea to add the _suspend, _resume, and _set_power_state
+> > functions within a #ifdef CONFIG_PM block, like in other drivers?
 > 
-> I have gotten the same error at least 6 months now..
-> 
+> yep.  we haven't done that just becase of lack of hardware.
+> if you can write and test it, it would be greatly appreciated.
 
-I finally remembered this..
+I have attached a patch against the ALSA 0.94.  ad1848.c, ad1848_lib.c,
+and ad1848.h have changed.
 
-here comes the error-message from mplayer when trying to play movie with
-ac3-sound and use the spdif output:
+I tested the module against 2.4.21 on a Debian system, gcc 3.3 and it
+works fine; simply set the proper resources and thinkpad=1 and the
+thinkpad works.
+
+One issue is to note, I don't know if this is a problem with the ad1848
+driver in general or what; if I cat a 11025hz mono 8-bit file to
+/dev/dsp, the sound comes out verrrrry slllloooowwwllly.   But using
+aplay, it works fine.
+
+I am not sure the best way to test the power managmeent code -- it
+doesn't crash the machine at least. ;)
+
+I added a note to the ALSA wiki about this option.  I tried to fix the
+OSS driver too but it does some other weird things like not allowing a
+IRQ > 7 to be used.  (It thinks the CS4248 is an 8bit card or
+something).  So this will have to be an alsa-only fix for now at least.
+
+Let me know if the patch is ok,
+
+-- 
+Ryan Underwood, <nemesis at icequake.net>, icq=10317253
 
 
-Forced audio codec: hwac3
-Opening audio decoder: [hwac3] AC3/DTS pass-through SP/DIF
-No accelerated IMDCT transform found
-hwac3: switched to AC3, 448000 bps, 48000 Hz
-AUDIO: 48000 Hz, 2 ch, 16 bit (0x400), ratio: 56000->192000 (448.0 kbit)
-Selected audio codec: [hwac3] afm:hwac3 (AC3 through SPDIF)
+--f2QGlHpHGjS2mn6Y
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: attachment; filename="cs4248_thinkpad.diff"
 
-Checking audio filter chain for 48000Hz/2ch/16bit -> 48000Hz/2ch/8bit...
-AF_pre: af format: 2 bps, 2 ch, 48000 hz, big endian AC3 
-AF_pre: 48000Hz 2ch AC3
-alsa-init: testing and bugreports are welcome.
-alsa-init: requested format: 48000 Hz, 2 channels, AC3
-alsa-init: soundcard set to iec958:AES0=0x2,AES1=0x82,AES2=0x0,AES3=0x2
-ALSA lib pcm_hw.c:1055:(snd_pcm_hw_open) open /dev/snd/pcmC0D3p failed: No
-such device
-alsa-init: playback open error: No such device
-Could not open/initialize audio device -> no sound.
-Audio: no sound
+diff -ur alsa-driver/alsa-kernel/include/ad1848.h alsanew/alsa-kernel/include/ad1848.h
+--- alsa-driver/alsa-kernel/include/ad1848.h	2003-04-23 05:01:29.000000000 -0500
++++ alsanew/alsa-kernel/include/ad1848.h	2003-07-03 20:29:59.000000000 -0500
+@@ -121,6 +121,11 @@
+ #define AD1848_HW_CS4248	0x0003	/* CS4248 chip */
+ #define AD1848_HW_CMI8330	0x0004	/* CMI8330 chip */
+ 
++/* IBM Thinkpad specific stuff */
++#define AD1848_THINKPAD_CTL_PORT1		0x15e8
++#define AD1848_THINKPAD_CTL_PORT2		0x15e9
++#define AD1848_THINKPAD_CS4248_ENABLE_BIT	0x02
++
+ struct _snd_ad1848 {
+ 	unsigned long port;		/* i/o port */
+ 	struct resource *res_port;
+@@ -140,6 +145,10 @@
+ 	int mce_bit;
+ 	int calibrate_mute;
+ 	int dma_size;
++	int thinkpad_flag;		/* Thinkpad CS4248 needs some extra help */
++#ifdef CONFIG_PM
++	struct pm_dev *thinkpad_pmstate;
++#endif
+ 
+ 	spinlock_t reg_lock;
+ 	struct semaphore open_mutex;
+@@ -157,7 +166,7 @@
+ 
+ int snd_ad1848_create(snd_card_t * card,
+ 		      unsigned long port,
+-		      int irq, int dma,
++		      int irq, int dma, int thinkpad,
+ 		      unsigned short hardware,
+ 		      ad1848_t ** chip);
+ 
+diff -ur alsa-driver/alsa-kernel/isa/ad1848/ad1848.c alsanew/alsa-kernel/isa/ad1848/ad1848.c
+--- alsa-driver/alsa-kernel/isa/ad1848/ad1848.c	2002-10-21 13:28:21.000000000 -0500
++++ alsanew/alsa-kernel/isa/ad1848/ad1848.c	2003-07-07 13:11:55.000000000 -0500
+@@ -46,6 +46,7 @@
+ static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
+ static int irq[SNDRV_CARDS] = SNDRV_DEFAULT_IRQ;	/* 5,7,9,11,12,15 */
+ static int dma1[SNDRV_CARDS] = SNDRV_DEFAULT_DMA;	/* 0,1,3,5,6,7 */
++static int thinkpad[SNDRV_CARDS];			/* Thinkpad special case */
+ 
+ MODULE_PARM(index, "1-" __MODULE_STRING(SNDRV_CARDS) "i");
+ MODULE_PARM_DESC(index, "Index value for AD1848 soundcard.");
+@@ -65,6 +66,9 @@
+ MODULE_PARM(dma1, "1-" __MODULE_STRING(SNDRV_CARDS) "i");
+ MODULE_PARM_DESC(dma1, "DMA1 # for AD1848 driver.");
+ MODULE_PARM_SYNTAX(dma1, SNDRV_DMA_DESC);
++MODULE_PARM(thinkpad, "1-" __MODULE_STRING(SNDRV_CARDS) "i");
++MODULE_PARM_DESC(thinkpad, "Enable only for the onboard CS4248 of IBM Thinkpad 360/750/755 series.");
++MODULE_PARM_SYNTAX(thinkpad,  SNDRV_ENABLED "," SNDRV_BOOLEAN_FALSE_DESC);
+ 
+ static snd_card_t *snd_ad1848_cards[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
+ 
+@@ -96,6 +100,7 @@
+ 	if ((err = snd_ad1848_create(card, port[dev],
+ 				     irq[dev],
+ 				     dma1[dev],
++				     thinkpad[dev],
+ 				     AD1848_HW_DETECT,
+ 				     &chip)) < 0) {
+ 		snd_card_free(card);
+@@ -116,6 +121,10 @@
+ 	sprintf(card->longname, "%s at 0x%lx, irq %d, dma %d",
+ 		pcm->name, chip->port, irq[dev], dma1[dev]);
+ 
++	if (thinkpad[dev]) {
++		strcat(card->longname, " [Thinkpad]");
++	}
++
+ 	if ((err = snd_card_register(card)) < 0) {
+ 		snd_card_free(card);
+ 		return err;
+@@ -168,7 +177,8 @@
+ 	       get_id(&str,&id[nr_dev]) == 2 &&
+ 	       get_option(&str,(int *)&port[nr_dev]) == 2 &&
+ 	       get_option(&str,&irq[nr_dev]) == 2 &&
+-	       get_option(&str,&dma1[nr_dev]) == 2);
++	       get_option(&str,&dma1[nr_dev]) == 2 &&
++	       get_option(&str,&thinkpad[nr_dev]) == 2);
+ 	nr_dev++;
+ 	return 1;
+ }
+diff -ur alsa-driver/alsa-kernel/isa/ad1848/ad1848_lib.c alsanew/alsa-kernel/isa/ad1848/ad1848_lib.c
+--- alsa-driver/alsa-kernel/isa/ad1848/ad1848_lib.c	2003-05-30 07:28:34.000000000 -0500
++++ alsanew/alsa-kernel/isa/ad1848/ad1848_lib.c	2003-07-03 20:25:21.000000000 -0500
+@@ -625,6 +625,92 @@
+ 
+  */
+ 
++static void snd_ad1848_thinkpad_twiddle(ad1848_t *chip, int on) {
++
++	int tmp;
++
++	if (!chip->thinkpad_flag) return;
++
++	outb(0x1c, AD1848_THINKPAD_CTL_PORT1);
++	tmp = inb(AD1848_THINKPAD_CTL_PORT2);
++
++	switch (on) {
++		case 0:  /* turn it off */
++			tmp &= ~AD1848_THINKPAD_CS4248_ENABLE_BIT;
++		default: /* turn it on */
++			tmp |= AD1848_THINKPAD_CS4248_ENABLE_BIT;
++	}
++
++	outb(tmp, AD1848_THINKPAD_CTL_PORT2);
++
++}
++
++#ifdef CONFIG_PM
++static void snd_ad1848_suspend(ad1848_t *chip) {
++
++	snd_card_t *card = chip->card;
++
++	if (card->power_state == SNDRV_CTL_POWER_D3hot)
++		return;
++
++	if (chip->thinkpad_flag) {
++		snd_pcm_suspend_all(chip->pcm);
++		snd_ad1848_thinkpad_twiddle(chip, 0);
++		snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
++	}
++
++}
++
++static void snd_ad1848_resume(ad1848_t *chip) {
++
++	snd_card_t *card = chip->card;
++
++	if (card->power_state == SNDRV_CTL_POWER_D0)
++		return;
++
++	if (chip->thinkpad_flag) {
++		snd_ad1848_thinkpad_twiddle(chip, 1);
++		snd_power_change_state(card, SNDRV_CTL_POWER_D0);
++	}
++}
++
++/* callback for control API */
++static int snd_ad1848_set_power_state(snd_card_t *card, unsigned int power_state)
++{
++	ad1848_t *chip = (ad1848_t *) card->power_state_private_data;
++	switch (power_state) {
++	case SNDRV_CTL_POWER_D0:
++	case SNDRV_CTL_POWER_D1:
++	case SNDRV_CTL_POWER_D2:
++		snd_ad1848_resume(chip);
++		break;
++	case SNDRV_CTL_POWER_D3hot:
++	case SNDRV_CTL_POWER_D3cold:
++		snd_ad1848_suspend(chip);
++		break;
++	default:
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int snd_ad1848_pm_callback(struct pm_dev *dev, pm_request_t rqst, void *data)
++{
++	ad1848_t *chip = snd_magic_cast(ad1848_t, dev->data, return 0);
++
++	switch (rqst) {
++	case PM_SUSPEND:
++		snd_ad1848_suspend(chip);
++		break;
++	case PM_RESUME:
++		snd_ad1848_resume(chip);
++		break;
++	}
++	return 0;
++}
++
++#endif /* CONFIG_PM */
++
+ static int snd_ad1848_probe(ad1848_t * chip)
+ {
+ 	unsigned long flags;
+@@ -799,6 +885,10 @@
+ 
+ static int snd_ad1848_free(ad1848_t *chip)
+ {
++#ifdef CONFIG_PM
++        if (chip->thinkpad_flag && chip->thinkpad_pmstate)
++                pm_unregister(chip->thinkpad_pmstate);
++#endif
+ 	if (chip->res_port) {
+ 		release_resource(chip->res_port);
+ 		kfree_nocheck(chip->res_port);
+@@ -832,7 +922,7 @@
+ 
+ int snd_ad1848_create(snd_card_t * card,
+ 		      unsigned long port,
+-		      int irq, int dma,
++		      int irq, int dma, int thinkpad,
+ 		      unsigned short hardware,
+ 		      ad1848_t ** rchip)
+ {
+@@ -870,6 +960,22 @@
+ 	}
+ 	chip->dma = dma;
+ 
++	if (thinkpad) {
++		chip->thinkpad_flag = 1;
++		snd_ad1848_thinkpad_twiddle(chip, 1);
++#ifdef CONFIG_PM
++		chip->thinkpad_pmstate = pm_register(PM_ISA_DEV, 0, snd_ad1848_pm_callback);
++		if (chip->thinkpad_pmstate) {
++			chip->thinkpad_pmstate->data = chip;
++			card->set_power_state = snd_ad1848_set_power_state; /* callback */
++			card->power_state_private_data = chip;
++		}
++#endif
++	}
++	else {
++		chip->thinkpad_flag = 0;
++	}
++
+ 	if (snd_ad1848_probe(chip) < 0) {
+ 		snd_ad1848_free(chip);
+ 		return -ENODEV;
 
 
--- Pasi Kärkkäinen
-       
-                                   ^
-                                .     .
-                                 Linux
-                              /    -    \
-                             Choice.of.the
-                           .Next.Generation.
+--f2QGlHpHGjS2mn6Y--
 
 
 -------------------------------------------------------
