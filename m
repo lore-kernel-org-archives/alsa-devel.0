@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000623]: No volume control on SPDIF on cmedia CMI8738-MC6
-Date: Tue, 9 Nov 2004 20:15:16 +0100
-Message-ID: <0dbb6c2add59d1ffd1b19da27b1e43ea@bugtrack.alsa-project.org>
+From: =?Windows-1251?B?0PPs/+325eIgzy7KLg==?= <jordy@lmi.org>
+Subject: =?Windows-1251?B?4PLy5fHy4PI=?=
+Date: Tue, 09 Nov 2004 20:27:05 +0000
+Message-ID: <E1CRchT-0006cT-Uz@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset=Windows-1251
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1ECCF2B4
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 20:15:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +15,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+</head>
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=623> 
-======================================================================
-Reported By:                mtempels
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   623
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Linux 4.10
-Kernel Version:             Linux bubbles 2.6.8.1-3-386
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct 12 12:41:57 BST
-2004 i686 GNU/Linux
-======================================================================
-Date Submitted:             11-02-2004 11:24 CET
-Last Modified:              11-09-2004 20:15 CET
-======================================================================
-Summary:                    No volume control on SPDIF on cmedia CMI8738-MC6
-Description: 
-There is no way to control the output volume on the SPDIF/out on my CMI8738
-soundcard. It can just be switched on or off..
-======================================================================
+<body bgcolor="#FFFFFF" text="#000000">
+<table width="650" border="0" align="center">
+  <tr>
+    <td> уважаемые господа! 
+      <p>Вам нужен диплом для устройства на более высокооплачиваемую 
+        работу<br>
+        или для продвижения вверх по служебной лестнице ?<br>
+        Вы хотите поступить в ВУЗ, на базе первого высшего образования 
+        и обучаться<br>
+        в нем в три раза меньше (и дешевле)? Вы хотите получить MBA образование?<br>
+        Вам требуются различного рода лицензии, свидетельства, сертификаты, а 
+        их не<br>
+        выдают без диплома о высшем образовании?<br>
+        Вы хотите получить эмиграционную визу, а в посольствах предпочтение отдают<br>
+        лицам с высшим образованием?<br>
+        Вы не доучились в ВУЗе, а родители требуют показать диплом?</p>
+      <p>Можно 
+        привести много примеров в необходимости диплома...</p>
+      <p>Мы рады помочь Вам!!!!</p>
+      <p>Предлагаем:<br>
+        Дипломы о высшем образовании ВУЗов России и бывшего СССР (как нового так 
+        и<br>
+        старого образца - любой год выпуска)<br>
+        Дипломы техникумов, колледжей (как нового так и старого образца)<br>
+        Аттестаты<br>
+        Академические справки<br>
+        и т.п.</p>
+      <p>100 % надежность и конфиденциальность<br>
+        Короткие сроки оформления.<br>
+        Доставка в любой регион, без предоплаты.</p>
+      <p>По всем вопросам и за дополнительной информацией можете<br>
+        обращаться<a href="mailto:dipvuz@altern.org"> dipvuz@altern.org</a><br>
+        (можно и на <a href="mailto:diplomvuz@post.com">diplomvuz@post.com</a>).</p>
+      <p>НЕ ОТВЕЧАЙТЕ НА АДРЕС С КОТОРОГО ПРИШЛО ЭТО ПИСЬМО - ОН НЕ ДЕЙСТВИТЕЛЕН.<br>
+        ПИШИТЕ НА <a href="mailto:dipvuz@altern.org">dipvuz@altern.org </a>(можно 
+        и на <a href="mailto:diplomvuz@post.com">diplomvuz@post.com</a>).</p>
+      <p>--------------------------------------------------------------------------</p>
+      <p>*Ваш адрес взят из открытых источников.<br>
+        Приносим извинения, если наше предложение для Вас в настоящее время не 
+        актуально.<br>
+      </p>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
 
-----------------------------------------------------------------------
- tiwai - 11-09-04 19:18 
-----------------------------------------------------------------------
-It's not strange.  As I wrote, we need the signal attenuation in software
-(since the hardware doesn't do it).
-That's what Windows system does.
-
-The soltware volume control is not implemented on ALSA yet, but, in theory
-it's possible.  The question is how and who does it ;)
-
-----------------------------------------------------------------------
- mtempels - 11-09-04 20:15 
-----------------------------------------------------------------------
-I see..
-
-I wish i had the knowledge to do so.. Thanks for thw information!
-
-Cheers
-
-Matthijs
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-02-04 11:24 mtempels       New Issue                                    
-11-02-04 11:24 mtempels       Distribution              => Ubuntu Linux 4.10
-11-02-04 11:24 mtempels       Kernel Version            => Linux bubbles
-2.6.8.1-3-386 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct
-12 12:41:57 BST 2004 i686 GNU/Linux
-11-09-04 18:56 tiwai          Note Added: 0002337                          
-11-09-04 19:01 mtempels       Note Added: 0002340                          
-11-09-04 19:18 tiwai          Note Added: 0002342                          
-11-09-04 20:15 mtempels       Note Added: 0002352                          
-======================================================================
 
 
 
