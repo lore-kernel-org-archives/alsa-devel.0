@@ -1,13 +1,11 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: problems: flushing during snd_pcm_wait()
-Date: Fri, 11 Oct 2002 15:00:43 +0200 (CEST)
+From: David Sankel <camio@yahoo.com>
+Subject: 1.0.0 Requirements, Integration of sound deamon (JACK)
+Date: Fri, 11 Oct 2002 06:13:09 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210111458330.1244-100000@pnote.perex-int.cz>
-References: <3DA6C91B.6030502@superbug.demon.co.uk>
+Message-ID: <20021011131309.46309.qmail@web40613.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DA6C91B.6030502@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,61 +14,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 11 Oct 2002, James Courtier-Dutton wrote:
+Hello ALSA developers,
 
-> Takashi Iwai wrote:
-> 
-> >At Fri, 11 Oct 2002 01:25:19 +1000,
-> >James Courtier-Dutton wrote:
-> >  
-> >
-> >>Hello
-> >>I have an application that has many different threads.
-> >>The sound card's PCM buffer is full during playback, and one thread is 
-> >>currently in snd_pcm_wait() waiting for enough space to appear in the 
-> >>buffer before doing the next snd_pcm_write().
-> >>A different thread wants to flush the buffer. There are two types of 
-> >>flush: -
-> >>1) Immeadiately empty the buffer.
-> >>    
-> >>
-> >
-> >snd_pcm_drop() ?
-> >
-> >  
-> >
-> >>2) Stop accepting snd_pcm_write() commands until the current buffer has 
-> >>drained.
-> >>    
-> >>
-> >
-> >snd_pcm_drain() ?
-> >
-> >
-> >Takashi
-> >
-> >  
-> >
-> Thankyou, I will use snd_pcm_drop(), but as a side note, what actually 
-> does "snd_pcm_reset()" do.
-> Just resetting delay to 0 does not make much sense to me.
+  I was wondering if there is a requirement list for
+1.0.0 release of ALSA.  If not, what would be expected
+in a 1.0.0 release?  (I've got a few brain/cpu cycles
+to spare towards a 1.0.0 release)
 
-It drops all samples in the ring buffer (thus reseting delay to 0). Note 
-that everybody are welcome to improve the current documentation 
-(preferably with patches).
+  I know the topic of sound deamons has really been
+stomped in the ground, but I haven't found any
+information about the possible inclusion of the JACK
+sound deamon into an alsa release.  Since running JACK
+does not lock up any of the sound device files, all
+non-JACK-aware programs will act normally while the
+deamon is running.
 
-						Jaroslav
+David Sankel
+camio@yahoo.com
+Electron Consulting
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
-
+__________________________________________________
+Do you Yahoo!?
+Faith Hill - Exclusive Performances, Videos & More
+http://faith.yahoo.com
 
 
 -------------------------------------------------------
