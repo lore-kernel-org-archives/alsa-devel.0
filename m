@@ -1,12 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: alsa hw params on SB Pro
-Date: Mon, 14 Feb 2005 10:43:47 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0502141038070.20014-200000@studcom.urz.uni-halle.de>
-References: <20050208053606.GB8616@dbz.icequake.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000897]: test/timer.c malfunctions with snd-rtctimer
+Date: Mon, 14 Feb 2005 10:47:44 +0100
+Message-ID: <d327e1e123bdb1d0b001f3f7f2e09345@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="2015913978-758783491-1108374021=:20014"
-In-Reply-To: <20050208053606.GB8616@dbz.icequake.net>
-Content-ID: <Pine.HPX.4.33n.0502141041510.21230@studcom.urz.uni-halle.de>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5BA3621D
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 10:47:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,125 +17,104 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ryan Underwood <nemesis-lists@icequake.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
 
---2015913978-758783491-1108374021=:20014
-Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
-Content-ID: <Pine.HPX.4.33n.0502141041511.21230@studcom.urz.uni-halle.de>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=897> 
+======================================================================
+Reported By:                phunge
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   897
+Category:                   timer
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-09-2005 15:45 CET
+Last Modified:              02-14-2005 10:47 CET
+======================================================================
+Summary:                    test/timer.c malfunctions with snd-rtctimer
+Description: 
+I'm trying to learn how to use the ALSA timer API for getting a hi-res
+interrupt in a program of mine. When I compile test/timer.c, it runs
+correctly using the default system timer. However, when I try to specify
+the RTC timer by modprobing snd-rtctimer and running
 
-Ryan Underwood wrote:
-> I seem to have the following problem.  On snd-sb8 with a SBPro (which is
-> capable of stereo), the best stereo playback mode is 22KHz - going above
-> 22KHz implies that the output will be only one channel.
->
-> If I call snd_pcm_hw_params_set_channels_near with argument of 2
-> channels, I get 2 channels as requested.  But then I call
-> snd_pcm_hw_params_set_rate_near with argument of 44100, and have 44100
-> returned.  Thus I end up with a hwparams that the hardware is not
-> capable of.
+./timer class=1 sclass=0 card=0 device=1 subdevice=0
 
-Seems to work with the attached test program:
+the program fails (output under "additional information").
 
-$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Pro [Sound Blaster Pro], device 0: SB8 DSP [DSP v3.2]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+/dev/rtc is readable and I can run the RTC test from
+http://stommel.tamu.edu/~baum/linux-kernel/rtc.txt
+so I think the problem is in alsa.
+======================================================================
 
-$ sbhwp
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-14-05 10:47 
+----------------------------------------------------------------------
+Works fine on my machine (kernel 2.4.18 with RTC patch).
+Which kernel version are you using?
 
-channels: 1-2, rate: 4000-43479
-set channels to 2
-channels: 2-2, rate: 10989-22223
+$ ./timer class=1 sclass=0 card=0 device=1 subdevice=0
+Using timer class 1, slave class 0, card 0, device 1, subdevice 0
+Timer info:
+  slave = no
+  card = -1
+  id = 'rtc'
+  name = 'RTC timer'
+  average resolution = 976562
+Using 20 tick(s)
+STATUS:
+  resolution = 976562
+  lost = 0
+  overrun = 0
+  queue = 0
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+TIMER: resolution = 976562ns, ticks = 20
+STATUS:
+  resolution = 976562
+  lost = 0
+  overrun = 0
+  queue = 0
+Done
 
-channels: 1-2, rate: 4000-43479
-set rate to 44100
-channels: 1-1, rate: 43478-43479
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-09-05 15:45 phunge         New Issue                                    
+02-14-05 10:47 Clemens LadischNote Added: 0003587                          
+======================================================================
 
 
-Probably you've been using some device using the plug plugin.
-
-
-Best regards,
-Clemens
-
---2015913978-758783491-1108374021=:20014
-Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; NAME="sbhwp.c"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.HPX.4.33n.0502141040210.20014@studcom.urz.uni-halle.de>
-Content-Description: 
-Content-Disposition: ATTACHMENT; FILENAME="sbhwp.c"
-
-I2luY2x1ZGUgPHN0ZGlvLmg+DQojaW5jbHVkZSA8c3RkbGliLmg+DQojaW5j
-
-bHVkZSA8YWxzYS9hc291bmRsaWIuaD4NCg0Kc25kX3BjbV90ICpwY207DQpz
-
-bmRfcGNtX2h3X3BhcmFtc190ICpod19wYXJhbXM7DQoNCiNkZWZpbmUgQ0hF
-
-Q0soZm4pIGNoZWNrKGZuLCAjZm4pDQoNCnZvaWQgY2hlY2soaW50IGVyciwg
-
-Y29uc3QgY2hhciAqZm4pDQp7DQoJaWYgKGVyciA8IDApIHsNCgkJZnByaW50
-
-ZihzdGRlcnIsICIlcyBmYWlsZWQ6ICVzXG4iLCBmbiwgc25kX3N0cmVycm9y
-
-KGVycikpOw0KCQlleGl0KEVYSVRfRkFJTFVSRSk7DQoJfQ0KfQ0KDQp2b2lk
-
-IHByaW50KHZvaWQpDQp7DQoJdW5zaWduZWQgaW50IGNtaW4sIGNtYXg7DQoJ
-
-dW5zaWduZWQgaW50IHJtaW4sIHJtYXg7DQoJQ0hFQ0soc25kX3BjbV9od19w
-
-YXJhbXNfZ2V0X2NoYW5uZWxzX21pbihod19wYXJhbXMsICZjbWluKSk7DQoJ
-
-Q0hFQ0soc25kX3BjbV9od19wYXJhbXNfZ2V0X2NoYW5uZWxzX21heChod19w
-
-YXJhbXMsICZjbWF4KSk7DQoJQ0hFQ0soc25kX3BjbV9od19wYXJhbXNfZ2V0
-
-X3JhdGVfbWluKGh3X3BhcmFtcywgJnJtaW4sIE5VTEwpKTsNCglDSEVDSyhz
-
-bmRfcGNtX2h3X3BhcmFtc19nZXRfcmF0ZV9tYXgoaHdfcGFyYW1zLCAmcm1h
-
-eCwgTlVMTCkpOw0KCXByaW50ZigiY2hhbm5lbHM6ICV1LSV1LCByYXRlOiAl
-
-dS0ldVxuIiwgY21pbiwgY21heCwgcm1pbiwgcm1heCk7DQp9DQoNCnZvaWQg
-
-aW5pdCh2b2lkKQ0Kew0KCUNIRUNLKHNuZF9wY21faHdfcGFyYW1zX2FueShw
-
-Y20sIGh3X3BhcmFtcykpOw0KCUNIRUNLKHNuZF9wY21faHdfcGFyYW1zX3Nl
-
-dF9hY2Nlc3MocGNtLCBod19wYXJhbXMsIFNORF9QQ01fQUNDRVNTX1JXX0lO
-
-VEVSTEVBVkVEKSk7DQoJQ0hFQ0soc25kX3BjbV9od19wYXJhbXNfc2V0X2Zv
-
-cm1hdChwY20sIGh3X3BhcmFtcywgU05EX1BDTV9GT1JNQVRfVTgpKTsNCglw
-
-dXRzKCIiKTsNCglwcmludCgpOw0KfQ0KDQppbnQgbWFpbigpDQp7DQoJdW5z
-
-aWduZWQgaW50IGMgPSAyLCByID0gNDQxMDA7DQoNCglDSEVDSyhzbmRfcGNt
-
-X2h3X3BhcmFtc19tYWxsb2MoJmh3X3BhcmFtcykpOw0KCUNIRUNLKHNuZF9w
-
-Y21fb3BlbigmcGNtLCAiaHc6MCIsIFNORF9QQ01fU1RSRUFNX1BMQVlCQUNL
-
-LCAwKSk7DQoNCglpbml0KCk7DQoJcHJpbnRmKCJzZXQgY2hhbm5lbHMgdG8g
-
-JXVcbiIsIGMpOw0KCUNIRUNLKHNuZF9wY21faHdfcGFyYW1zX3NldF9jaGFu
-
-bmVsc19uZWFyKHBjbSwgaHdfcGFyYW1zLCAmYykpOw0KCXByaW50KCk7DQoN
-
-Cglpbml0KCk7DQoJcHJpbnRmKCJzZXQgcmF0ZSB0byAldVxuIiwgcik7DQoJ
-
-Q0hFQ0soc25kX3BjbV9od19wYXJhbXNfc2V0X3JhdGVfbmVhcihwY20sIGh3
-
-X3BhcmFtcywgJnIsIE5VTEwpKTsNCglwcmludCgpOw0KDQoJQ0hFQ0soc25k
-
-X3BjbV9jbG9zZShwY20pKTsNCglyZXR1cm4gMDsNCn0NCg==
---2015913978-758783491-1108374021=:20014--
 
 
 -------------------------------------------------------
