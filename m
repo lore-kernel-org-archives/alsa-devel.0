@@ -1,13 +1,13 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: 2.6: sound/isa/gus/gus_lfo.c is unused (fwd)
-Date: Sun, 6 Mar 2005 23:41:59 +0100
-Message-ID: <20050306224159.GQ5070@stusta.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000967]: sound dissapears
+Date: Mon, 7 Mar 2005 00:56:56 +0100
+Message-ID: <f2aafc1afd1ae40b448c5a56d788907f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 3D9DE170
-	for <alsa-devel@alsa-project.org>; Sun,  6 Mar 2005 23:42:00 +0100 (MET)
-Content-Disposition: inline
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BB64218A
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2005 00:56:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,53 +17,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jaroslav,
 
-I didn't receive any answer regarding this question.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=967> 
+======================================================================
+Reported By:                paulius
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   967
+Category:                   PCI - intel8x0
+Reproducibility:            sometimes
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10, 2.6.11
+======================================================================
+Date Submitted:             03-07-2005 00:56 CET
+Last Modified:              03-07-2005 00:56 CET
+======================================================================
+Summary:                    sound dissapears
+Description: 
+While using gstreamer based apps, like totem, rhythmbox for a few hours
+sound dissapears and I am not able to use other programs, because they
+also doesnt make sound. The only way for sound to work is to _completely_
+shutdown a PC, even reboot doesnt work. Any ideas what could be wrong? As
+I understand it is kernel related problem. 
+======================================================================
 
-Any comments or shall I send a patch to remove this file?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-07-05 00:56 paulius        New Issue                                    
+03-07-05 00:56 paulius        Distribution              => Gentoo          
+03-07-05 00:56 paulius        Kernel Version            => 2.6.10, 2.6.11  
+======================================================================
 
-cu
-Adrian
-
-
------ Forwarded message from Adrian Bunk <bunk@stusta.de> -----
-
-Date:	Wed, 24 Nov 2004 23:07:42 +0100
-From: Adrian Bunk <bunk@stusta.de>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: 2.6: sound/isa/gus/gus_lfo.c is unused
-
-Hi Jaroslav,
-
-in kernel 2.6 (I've checked 2.6.10-rc2-mm3), the file 
-sound/isa/gus/gus_lfo.c is completely unused (it's never built, and all 
-code using it in other files is #if 0'ed).
-
-What's the status of this file?
-
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
-
--
-To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
-
------ End forwarded message -----
 
 
 
