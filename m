@@ -1,17 +1,19 @@
-From: Thierry Vignaud <tvignaud@mandrakesoft.com>
+From: Matthias Saou <matthias@rpmforge.net>
 Subject: Re: Forward: Re: questions for alsa-devel
-Date: Wed, 02 Oct 2002 19:19:26 +0200
+Date: Wed, 2 Oct 2002 19:25:41 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m2zntwn4gx.fsf@vador.mandrakesoft.com>
+Message-ID: <20021002192541.6e92b6a2.matthias@rpmforge.net>
 References: <m27kh1djdd.fsf@vador.mandrakesoft.com>
-	<20021002145420.6F590146FB@Cantor.suse.de> <s5hd6qskhmn.wl@alsa2.suse.de>
+	<20021002145420.6F590146FB@Cantor.suse.de>
+	<s5hd6qskhmn.wl@alsa2.suse.de>
 	<s5hbs6ckgm0.wl@alsa2.suse.de>
 	<20021002174359.1d2395d3.matthias@rpmforge.net>
+	<m2zntwn4gx.fsf@vador.mandrakesoft.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20021002174359.1d2395d3.matthias@rpmforge.net> (Matthias
- Saou's message of "Wed, 2 Oct 2002 17:43:59 +0200")
+In-Reply-To: <m2zntwn4gx.fsf@vador.mandrakesoft.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,36 +22,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Matthias Saou <matthias@rpmforge.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Matthias Saou <matthias@rpmforge.net> writes:
+Once upon a time, Thierry wrote :
 
-> I've managed to work something out for Red Hat Linux that should be
-> easily portable to Mandrake I guess (then again, they already have
-> ALSA 0.5.x built in, is that what I understood from the last few
-> mails??).
+> since it must be rebuild for each kernel, we integrated in our kernel
+> package (first as a separate tarball with configure/make/..., now we
+> untar it under sound in kernel linux sources and apply a few patches
+> to config.in so that there's one make to run)
 
-yep, we shipped alsa-0.5.x for quite some times, at least since
-december 2000 (and i believe a few month before), that is since mdk8.0
-i think.
+Thanks for those precisions :-)
+So I guess that in some ways, having nothing whatsoever related to ALSA in
+Red Hat Linux does make things easier. The main concern is to then have
+ALSA support in the applications, but most of my packages provide that with
+their "--with alsa" rpmrebuild option.
 
-between mdk8.2 (released in very early 2002) and mdk9.0 (released a
-few days ago), we switched from alsa 0.5.x to alsa-0.9.x
+All this will get so much easier once stable kernels used by Linux
+distributions come with ALSA by default ;-)
 
-> I have a single "alsa-driver" source package which builds a binary
-> "alsa-driver" one containing the include files and the device
-> entries (in a tricky way by adding a file to /etc/makedev.d/ in
-> order to package the device entries even while building as
-> non-root), and another "alsa-kernel" one which matches the currently
-> running kernel's package.
+Matthias
 
-since it must be rebuild for each kernel, we integrated in our kernel
-package (first as a separate tarball with configure/make/..., now we
-untar it under sound in kernel linux sources and apply a few patches
-to config.in so that there's one make to run)
-
+-- 
+Clean custom Red Hat Linux rpm packages : http://freshrpms.net/
+Red Hat Linux release 7.3 (Valhalla) running Linux kernel 2.4.18-10acpi
+Load : 0.10 0.23 0.29
 
 
 -------------------------------------------------------
