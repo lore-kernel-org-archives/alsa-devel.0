@@ -1,11 +1,10 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: ALSA, and building the Linux kernel outside its source tree...
-Date: Wed, 13 Oct 2004 00:43:44 +0100 (BST)
+From: Eric Ross <eross+alsa-devel@disc.ucn.cl>
+Subject: Using snd_async_add_pcm_handler
+Date: Tue, 12 Oct 2004 22:02:25 -0300 (CLST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041012234344.2098.qmail@web52905.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.61.0410122148530.26443@chacaya.disc.ucn.cl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +17,61 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello there
 
-I have a number of Linux boxes, each with different
-CPUs of various speeds. For the sake of speed and
-storage space, I am experimenting with having a single
-source tree from which I can build multiple kernels.
-(It really doesn't make sense to force a P200 to
-compile its own kernel while its networked P4
-neighbour 'twiddles its bits', if you catch my
-meaning.) The Linux build process now allows this by
-specifying:
+I've using ALSA to develop a little video player for the dillo browser, 
+also using the ffmpeg library.
 
-make O=<output directory path> menuconfig
-make O=<output directory path>
-make O=<output directory path> modules_install
+I based the audio part in the pcm.c example found in the library source, 
+but I have some questions about how alsa works. I'm using 
+SND_PCM_ACCESS_RW_INTERLEAVED access.
 
-You get the idea. The installation procedure now
-creates two symlinks:
+Currently I'm using snd_async_add_pcm_handler to make ALSA call some 
+function when it needs data to play. I've read somewhere that before 
+calling snd_pcm_start() one need to feed some data into the buffer or I'll 
+get an error. So I have a call to snd_pcm_writei before calling 
+snd_pcm_start. The problem is that I cant figure out how much data I need 
+to write: in the pcm.c example, it does a loop to write 2*period_size 
+frames before calling _start(), so I do the same thing, but I'd like to 
+know the real reason (and make sure that my player will work in any 
+situation).
 
-/lib/modules/<version>/build
-/lib/modules/<version>/source
+Also, I've ported the player to FamiliarLinux running in a IPaq, and it 
+runs ok without sound, but when starting to write data to alsa handler, I 
+just get a "Broken pipe" error.
 
-However, the ALSA driver cvscompile script expects
-everything to be accessible via the 'build' link,
-although the only headers available under
-build/include/linux are:
-
-version.h
-compile.h
-autoconf.h
-
-Would it be difficult to change the ALSA driver
-configure script to allow for separate source and
-build trees, please?
-
-Thanks,
-Chris
+Any sugestions ?
+thanks in advance
 
 
+PS: When running in the ipaq, the pcm_dump is:
+Hardware PCM card 0 'H5xxx AK4535' device 0 subdevice 0
+Its setup is:
+stream       : PLAYBACK
+access       : RW_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 16
+buffer_size  : 16384
+period_size  : 1024
+period_time  : 23219
+tick_time    : 10000
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 1024
+xfer_align   : 1
+start_threshold  : 16384
+stop_threshold   : 16384
+silence_threshold: 0
+silence_size : 0
+boundary     : 1073741824
 
-	
-	
-		
-___________________________________________________________ALL-NEW Yahoo! Messenger - all new features - even more fun!  http://uk.messenger.yahoo.com
+-- 
+#79989 counter.li.org
 
 
 -------------------------------------------------------
