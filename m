@@ -1,16 +1,12 @@
-From: Rene Rebe <rene.rebe@gmx.net>
-Subject: Re: Problem with __OLD_GET
-Date: Fri, 16 Jan 2004 23:57:21 +0100 (CET)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: [PATCH] fixes au88x0 problem with older kernel
+Date: Sat, 17 Jan 2004 00:47:15 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040116.235721.893793324.rene.rebe@gmx.net>
-References: <opr1tl8sroq1sf88@mail.broadpark.no>
-	<s5h7jzren70.wl@alsa2.suse.de>
-	<opr1vzubwoq1sf88@mail.broadpark.no>
+Message-ID: <20040116234715.GA535@tuba.home>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <opr1vzubwoq1sf88@mail.broadpark.no>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,55 +15,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: aknuds-1@broadpark.no
-Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On: Fri, 16 Jan 2004 22:12:01 +0100,
-    Arve Knudsen <aknuds-1@broadpark.no> wrote:
-> Hi, Takashi
-> =
+This will fix a problem with undeclared PCI_DEVICE_ID_VIA_8365_1
 
-> I have no experience with libtool myself, but from what I can see the=
- =
 
-> plugin host (beep-media-player) uses it. libtool --version tells me t=
-his: =
-
-> ltmain.sh (GNU libtool) 1.4.3 (1.922.2.111 2002/10/23 02:54:36). But =
-at =
-
-> the same time we have another person, Rene Rebe, posting about a simi=
-lar =
-
-> problem and who does not appear to be using libtool (correct me here =
-if =
-
-> I'm mistaken).
-
-Nope I do not use libtool - I posted the exact g{cc,++} lines used for
-compiling and linking.
-
-Althought it should not be that needed to track this down, our sources
-are at:
-
-  http://svn.rocklinux-consulting.de/gsmp/trunk/lowlevel/
-
-they are not yet that advanced and only the tip of the iceberg of a
-heavy cleanup/rewrite ...
-
-Yours,
-  Ren=E9
-
---  =
-
-Ren=E9 Rebe - Europe/Germany/Berlin
-  rene@rocklinux.org rene@rocklinux-consulting.de
-http://www.rocklinux.org http://www.rocklinux-consulting.de
-http://gsmp.tfh-berlin.de/gsmp http://gsmp.tfh-berlin.de/rene
-
+Index: alsa-driver/pci/au88x0/au88x0.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/pci/au88x0/au88x0.c,v
+retrieving revision 1.6
+diff -u -r1.6 au88x0.c
+--- alsa-driver/pci/au88x0/au88x0.c	13 Jan 2004 08:39:14 -0000	1.6
++++ alsa-driver/pci/au88x0/au88x0.c	16 Jan 2004 23:40:00 -0000
+@@ -46,6 +46,13 @@
+ MODULE_LICENSE("GPL");
+ MODULE_DEVICES("{{Aureal Semiconductor Inc., Aureal Vortex Sound Processor}}");
+ 
++#ifndef PCI_VENDOR_ID_VIA 
++#define PCI_VENDOR_ID_VIA 0x1106
++#endif
++#ifndef PCI_DEVICE_ID_VIA_8365_1
++#define PCI_DEVICE_ID_VIA_8365_1 0x8305
++#endif
++
+ #ifndef MODULE
+ /* format is: snd-mychip=enable,index,id */
+ static int __init alsa_card_vortex_setup(char *str) {
 
 
 -------------------------------------------------------
