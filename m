@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
-Date: Fri, 21 Jan 2005 16:55:49 +0100
-Message-ID: <f1ab88b832bd952cc498f96edd6b0a8e@bugtrack.alsa-project.org>
+Date: Fri, 21 Jan 2005 17:26:45 +0100
+Message-ID: <662cca5b9445a85636712184fedd01d7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC5401E4
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 16:55:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1FA0724D
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 17:26:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Suse
 Kernel Version:             2.6.8-24.10-smp
 ======================================================================
 Date Submitted:             01-19-2005 18:19 CET
-Last Modified:              01-21-2005 16:55 CET
+Last Modified:              01-21-2005 17:26 CET
 ======================================================================
 Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
 slider control for Surround/Center/LFE/Side
@@ -54,12 +54,6 @@ appear at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-21-05 12:05 
-----------------------------------------------------------------------
-For SPDIF, try "model=full_dig" option.  This will change the configuration
-to the full mode (back 6 + front 2 jacks with digital in/out).
-
-----------------------------------------------------------------------
  mab - 01-21-05 16:55 
 ----------------------------------------------------------------------
 tiwai
@@ -68,6 +62,15 @@ I tried
 aplay: playback:1930: read error
 
 no pcm slider
+
+----------------------------------------------------------------------
+ tiwai - 01-21-05 17:26 
+----------------------------------------------------------------------
+Ignore the error.  It's expected.
+
+But before all the above: check whether you installed correctly
+alsa-drivers-1.0.8, alsa-lib-1.0.8 and alsa-utils-1.0.8.
+Don't forget to remove ~/.asoundrc and /etc/asound.conf.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,6 +99,7 @@ Date Modified  Username       Field                    Change
 01-21-05 12:04 tiwai          Note Added: 0003343                          
 01-21-05 12:05 tiwai          Note Added: 0003344                          
 01-21-05 16:55 mab            Note Added: 0003348                          
+01-21-05 17:26 tiwai          Note Added: 0003349                          
 ======================================================================
 
 
