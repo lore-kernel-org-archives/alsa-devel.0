@@ -1,13 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000444]: Need a way to select analog I/O levels on Delta66/44
-Date: Fri, 27 Aug 2004 22:17:17 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: [PATCH] Change alsamixer to show different views.
+ Playback controls, or Capture controls.
+Date: Fri, 27 Aug 2004 22:16:11 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827201717.192302C008@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <412FA49B.3020806@superbug.demon.co.uk>
+References: <412F2E4E.4080300@superbug.demon.co.uk>	<s5hwtzkk0hf.wl@alsa2.suse.de>	<412F6481.7030300@superbug.demon.co.uk>	<s5hsma8jzfp.wl@alsa2.suse.de>	<412F709D.10903@superbug.demon.co.uk> <s5hisb4jwun.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------070106070606090602040301"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F20F20F
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 22:17:17 +0200 (MEST)
+Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net [194.217.242.89])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 43EF1210
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 23:16:12 +0200 (MEST)
+In-Reply-To: <s5hisb4jwun.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,59 +21,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------070106070606090602040301
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000444
-======================================================================
-Reported By:                c0ff
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     444
-Category:                   PCI - ice1712
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.8-rc4
-======================================================================
-Date Submitted:             08-15-2004 17:21 CEST
-Last Modified:              08-27-2004 22:17 CEST
-======================================================================
-Summary:                    Need a way to select analog I/O levels on Delta66/44
-Description: 
-Delta66/44 cards support 3 analog level settings (+4dBu, Consumer, -10dBV).
-One setting for all outputs, and per-input settings. We need a way to
-change them :). Thank you.
+Takashi Iwai wrote:
+> At Fri, 27 Aug 2004 18:34:21 +0100,
+> James Courtier-Dutton wrote:
+> 
+>>Takashi Iwai wrote:
+>>
+>>>>I have a question. The "Mic Boost" seems to think it is a "Playback" 
+>>>>control. What would be the best way to getting that to be a "Capture" 
+>>>>control. Would simply editing it in ac97_codec.c be enough?
+>>>
+>>>
+>>>Hmm, when you change the control name itself, it breaks slightly
+>>>compatibility with older version.
+>>
+>>What does the name have to be compatible with?
+>>I.e. What program might break if we change this in ac97_codec.c ?
+> 
+> 
+> Dunno.  But, at least, when you run "alsactl restore", the status
+> won't be restored.
+> 
+> 
+> Takashi
+> 
+> 
 
-======================================================================
+Thats true, but from a purely conceptual point of view, I think the Mic 
+Boost should be associated with Capture and not associated with Playback.
 
-----------------------------------------------------------------------
- edrz - 08-27-2004 22:17 CEST 
-----------------------------------------------------------------------
-I think this functionality is available in the ADC/DAC level section of
-envy24control (2nd tab from the right). As I understand it the Window's
-driver sets these levels at predefined points for the 3 input level
-settings. The alsa driver gives you access to the whole range. Perhaps
-markers could be placed on the bars in envy24control as reference points
-for +4dBu, Consumer, -10dBV to make this more clear for users who actually
-have read their soundcard's manual. :)
+I attach a patch to do just that.
 
--Eric Rz.
+James
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-15-04 17:21 c0ff           New Bug                                      
-08-15-04 17:21 c0ff           Distribution              => Gentoo          
-08-15-04 17:21 c0ff           Kernel Version            => 2.6.8-rc4       
-08-27-04 22:17 edrz           Bugnote Added: 0001658                       
-======================================================================
+
+--------------070106070606090602040301
+Content-Type: text/plain;
+ name="mic-boost.diff.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="mic-boost.diff.txt"
+
+Index: alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_codec.c,v
+retrieving revision 1.144
+diff -u -r1.144 ac97_codec.c
+--- alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c	11 Aug 2004 18:51:58 -0000	1.144
++++ alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c	27 Aug 2004 21:10:44 -0000
+@@ -687,7 +687,7 @@
+ static const snd_kcontrol_new_t snd_ac97_controls_mic[3] = {
+ AC97_SINGLE("Mic Playback Switch", AC97_MIC, 15, 1, 1),
+ AC97_SINGLE("Mic Playback Volume", AC97_MIC, 0, 15, 1),
+-AC97_SINGLE("Mic Boost (+20dB)", AC97_MIC, 6, 1, 0)
++AC97_SINGLE("Mic Boost (+20dB) Capture Switch", AC97_MIC, 6, 1, 0)
+ };
+ 
+ static const snd_kcontrol_new_t snd_ac97_control_capture_src = {
+
+--------------070106070606090602040301--
 
 
 -------------------------------------------------------
