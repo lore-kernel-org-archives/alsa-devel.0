@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000385]: Rate conversion plugin generates noise on frequency reduction
-Date: Fri, 22 Oct 2004 16:34:47 +0200
+Subject: [ALSA - driver 0000077]: Device busy or Can't find it!
+Date: Fri, 22 Oct 2004 16:38:43 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <b810f8c3d138a7e8cdad5b94065eef0a@bugtrack.alsa-project.org>
+Message-ID: <156e08b745504a764d29ef4816b32b30@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C4FBA29A
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:34:47 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E138C29A
+	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:38:43 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,92 +22,143 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+email_notification_title_for_status_bug_new
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=385> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=77> 
 ======================================================================
-Reported By:                fmoraes
-Assigned To:                perex
+Reported By:                boyod
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   385
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   77
+Category:                   ISA - cs4236
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               1.02c
+Kernel Version:             2.6.3
 ======================================================================
-Date Submitted:             07-13-2004 19:46 CEST
-Last Modified:              10-22-2004 16:34 CEST
+Date Submitted:             02-21-2004 17:43 CET
+Last Modified:              10-22-2004 16:38 CEST
 ======================================================================
-Summary:                    Rate conversion plugin generates noise on frequency
-reduction
+Summary:                    Device busy or Can't find it!
 Description: 
-When reducing the frequency, the pcm_rate plugin causes noise on the output
-data. This has been tested with both the snd-cs46xx and snd-emu10k1x
-drivers and the following .asoundrc can be used to recreate the output in
-a file:
-
-pcm.CS46xx {
-	type hw
-	card 0
-}
-
-pcm.filetest {
-	type file
-	slave {
-		pcm "CS46xx"
-	}
-	file "/home/fmoraes/test-out.raw"
-	format "raw"
-}
-
-pcm.test {
-	type rate
-	slave {
-		pcm "filetest"
-		format "S16_LE"
-		rate 8000
-	}
-}
-
-Playing a 48Khz file will cause noticeable noise on the output (noise is
-more noticeable the lower the target frequency is).
+Device busy or Can't find it!
+Kernel is 2.6.3,Don't use default alsa in it.
+Download newer 1.02c
+At kernel 2.4.23,samed as 2.6.3.
 ======================================================================
 
 ----------------------------------------------------------------------
- Tobias Diedrich - 10-21-04 17:01 
+ perex - 02-21-04 19:16 
 ----------------------------------------------------------------------
-I second that.  Downsampling even from 48000Hz to 44100Hz produces very
-noticable artifacts, which sound very much like nearest neighbour
-resampling artifacts and are especially evident in high pitched vocals. 
-It would also be nice to implement better resampling methods than just
-linear resampling, AFAICS from the source polyphase and bandlimited
-resampling are planned but not yet implemented.
+What is in /var/log/messages related to sound?
+
+Also, show me /proc/isapnp contents with 2.4 kernel.
 
 ----------------------------------------------------------------------
- perex - 10-22-04 16:34 
+ perex - 03-13-04 18:33 
 ----------------------------------------------------------------------
-The reported problem should be solved in 1.0.7rc releases.
+No response from user.
 
-At the time, we don't have free resources to write code for another
-resampling method. Also, there are several problems to use methods based
-on sample history.
+----------------------------------------------------------------------
+ boyod - 04-24-04 13:00 
+----------------------------------------------------------------------
+cat /etc/modules.conf:
+
+# --- BEGIN: Generated by ALSACONF, do not edit. ---
+# --- ALSACONF verion 1.0.0rc2 ---
+alias char-major-116 snd
+alias char-major-14 soundcore
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+alias snd-card-0 snd-cs4232
+alias sound-slot-0 snd-cs4232
+# --- END: Generated by ALSACONF, do not edit. ---
+options snd-cs4232 port=0x534 cport=0x120 mpu_port=0x330 fm_port=0x388
+irq=5 mpu_irq=9 dma1=1 dma2=3
+
+----------------------------------------------------------------------
+ perex - 04-24-04 14:05 
+----------------------------------------------------------------------
+boyod - does this configuration work for you?
+
+----------------------------------------------------------------------
+ boyod - 04-26-04 14:25 
+----------------------------------------------------------------------
+no,system report "Device busy or Can't find it!".
+I'm sure parameter is correct because I use this card for some years.
+In oss beta 3.97a,This card can use "Generic Crystal CS4232 type-2 (PnP
+mode)" to launch it.
+
+----------------------------------------------------------------------
+ perex - 04-26-04 14:30 
+----------------------------------------------------------------------
+Can you show me new lines in /var/log/messages when you try to load
+the ALSA module? Also, try ALSA 1.0.4 for sure.
+
+----------------------------------------------------------------------
+ boyod - 04-26-04 14:35 
+----------------------------------------------------------------------
+In oss beta 3.97a.I manually config parameter as same as "options
+snd-cs4232 port=0x534 cport=0x120 mpu_port=0x330 fm_port=0x388 irq=5
+mpu_irq=9 dma1=1 dma2=3". Didn't use PnP.
+
+----------------------------------------------------------------------
+ perex - 04-26-04 15:13 
+----------------------------------------------------------------------
+For sure - add 'isapnp=0' to your module options.
+
+----------------------------------------------------------------------
+ boyod - 05-01-04 06:14 
+----------------------------------------------------------------------
+Uploaded lsmod.log and message.log for 1.04 over linuxkernel 2.6.6-rc3
+
+----------------------------------------------------------------------
+ boyod - 05-01-04 06:21 
+----------------------------------------------------------------------
+There is none effect for "isapnp=0".
+
+----------------------------------------------------------------------
+ boyod - 05-01-04 09:11 
+----------------------------------------------------------------------
+[root@boyod]#modprobe snd-cs4232
+FATAL: Error inserting snd_cs4232
+(/lib/modules/2.6.6-rc3/kernel/sound/isa/cs423x/snd-cs4232.ko): No such
+device
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-13-04 19:46 fmoraes        New Issue                                    
-07-15-04 14:07 perex          Status                   new => assigned     
-07-15-04 14:07 perex          Assigned To               => perex           
-10-21-04 16:57 Tobias DiedrichIssue Monitored: Tobias Diedrich                  
- 
-10-21-04 17:01 Tobias DiedrichNote Added: 0002223                          
-10-22-04 16:19 perex          Project                  ALSA - driver => ALSA -
-lib
-10-22-04 16:20 perex          Category                 OTHERS => pcm - digital
-audio
-10-22-04 16:34 perex          Note Added: 0002244                          
+02-21-04 17:43 boyod          New Issue                                    
+02-21-04 17:44 boyod          Issue Monitored: boyod                       
+02-21-04 19:15 perex          Status                   new => assigned     
+02-21-04 19:15 perex          Assigned To               => perex           
+02-21-04 19:16 perex          Note Added: 0000284                          
+03-13-04 18:33 perex          Status                   assigned => resolved
+03-13-04 18:33 perex          Resolution               open => won't fix   
+03-13-04 18:33 perex          Note Added: 0000597                          
+04-24-04 13:00 boyod          Status                   resolved => feedback
+04-24-04 13:00 boyod          Resolution               won't fix => reopened
+04-24-04 13:00 boyod          Note Added: 0000921                          
+04-24-04 13:19 boyod          File Added: isapnp.log                       
+04-24-04 14:05 perex          Note Added: 0000922                          
+04-24-04 14:05 perex          Status                   feedback => assigned
+04-26-04 14:25 boyod          Note Added: 0000948                          
+04-26-04 14:30 perex          Note Added: 0000949                          
+04-26-04 14:35 boyod          Note Added: 0000950                          
+04-26-04 15:13 perex          Note Added: 0000952                          
+05-01-04 06:14 boyod          Note Added: 0000987                          
+05-01-04 06:14 boyod          File Added: lsmod.log                        
+05-01-04 06:14 boyod          File Added: message.log                      
+05-01-04 06:21 boyod          Note Added: 0000988                          
+05-01-04 09:11 boyod          Note Added: 0000989                          
+10-22-04 16:36 perex          Assigned To              perex =>            
+10-22-04 16:38 perex          Status                   assigned => new     
 ======================================================================
 
 
