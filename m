@@ -1,14 +1,15 @@
-From: "Nick French" <nick@greensignal.com>
-Subject: Re: Multiple PCM files
-Date: Wed, 31 Jul 2002 21:20:31 +0100
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: my first usb-midi experiment ends with segmentation fault
+Date: Wed, 31 Jul 2002 23:02:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <121a01c238cf$b88c66b0$360110ac@dillon>
-References: <200207312258.48640.do1ypv@linux>
+Message-ID: <20020731210259.GA733@tuba.home>
+References: <20020728213924.GA522@tuba.home> <3D469011.855453A7@ladisch.de> <200207301708.07066.plcl@telefonica.net> <3D46C107.2E108CEB@ladisch.de> <20020730181834.GA494@tuba.home> <3D47BB59.1E7012C1@ladisch.de>
+Reply-To: martin-langer@gmx.de
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <3D47BB59.1E7012C1@ladisch.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,45 +18,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Philipp Vollmer <vollmer.philipp@t-online.de>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Exactly. I would prefer the second as if I needed to add a third, 4th its
-takes no effort and I don't reinvent the wheel as they say.
+On Wed, Jul 31, 2002 at 12:26:33PM +0200, Clemens Ladisch wrote:
+> 
+> IMHO the garbled device name is strange, too. ;-)  This is a (rather
+> harmless) buffer overflow which has been fixed by the latest version of my
+> other patch.
+> 
 
-Does alsa support 2 or is this just JACK's.
+Rather harmless buffer overflows results in segfaults - a tough ideology!
+Don't show me any of your critical buffer overflows ;-) 
 
-The mathematics may be simple for 1 but why should it be done over and over
-again. An API is meant to take away repetitive annoyances ;)
+After having some fun with my working snd-usb-midi module I can say: it's
+working, working and working (without problems).
 
-Cheers
+So, the "Evolution MK-249C" can be add to the list of supported devices.
 
-Nick
-
------ Original Message -----
-From: "Philipp Vollmer" <vollmer.philipp@t-online.de>
-To: <nick@greensignal.com>
-Cc: <alsa-devel@lists.sourceforge.net>
-Sent: Wednesday, July 31, 2002 9:58 PM
-Subject: Re: Multiple PCM files
+Finally there is only one point, which doesn't show perfect beauty. It's the
+shortname of the proc entry, which looks incomplete, but that's really
+"rather harmless", because everything works for me, there is no buffer
+overflow(!) .... and other things are much more important.
 
 
-Hello,
+Thanks again and sorry for the mess,
+martin
 
-Maybe you're working at the same problem as me. At this
-point of time.
-There are two possibilities:
-1. Open one device with one handler and mix the two files
-    with arimethic operations as they will be mixed by the sound
-    card although.
+---------------------------------
 
-2. Open one devices but with two handlers in two threads
-     and write your pcm data to it.
-
-regards
-
-Philipp ( DO1YPV )
+3 [card3          ]: USB MIDI - Evolution Electronics Ltd. MK-2
+                     Evolution Electronics Ltd. MK-249C USB MIDI keyboard at
+001/002 if 1
 
 
 
