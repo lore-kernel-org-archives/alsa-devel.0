@@ -1,9 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Some ALSA documents on line
-Date: Fri, 10 Jan 2003 01:54:22 +0900
+Subject: Re: Re: Some ALSA documents on line
+Date: Fri, 10 Jan 2003 02:40:33 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E1DA93E.2070602@boosthardware.com>
-References: <s5hel7m8eqa.wl@alsa2.suse.de>
+Message-ID: <3E1DB411.9050401@boosthardware.com>
+References: <s5hel7m8eqa.wl@alsa2.suse.de> <3E1DA93E.2070602@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,21 +16,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Hi Patrick,
-
-> - ALSA Driver API Reference
-> 
-> 	http://www.alsa-project.org/~iwai/alsa-driver-api/index.html
-> 	http://www.alsa-project.org/~iwai/alsa-driver-api.pdf
-> 	http://www.alsa-project.org/~iwai/alsa-driver-api.sgml
-> 
-
-Is this generated daily in cvs or are you doing it manually?
+I have made the changes to the docs page.
 
 
 -- 
