@@ -1,14 +1,14 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Re: [PATCH] Edirol UA-20 PCM support
-Date: Fri, 28 Feb 2003 23:23:25 +0100
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: Interesting problem with hotplug and Midisport 2x2
+ on Mdk 9.0
+Date: Sat, 01 Mar 2003 14:59:50 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030228222325.GB5635@fliwatut.scifi>
-References: <s5hof50zmhx.wl@alsa2.suse.de> <Pine.HPX.4.33n.0302281144030.5750-100000@studcom.urz.uni-halle.de>
+Message-ID: <3E604C56.6020402@boosthardware.com>
+References: <000201c2de8a$1237dfe0$aa1f830a@ICO>	<s5h65r5k2uc.wl@alsa2.suse.de>	<3E5EF8CC.50400@boosthardware.com> <s5h1y1sk3f0.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0302281144030.5750-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,24 +17,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
-Clemens Ladisch hat gesagt: // Clemens Ladisch wrote:
-> The new parsing code works with my device (UA-1A), but I couldn't test the
-> changes for the mixer and the UA-20.
+Takashi Iwai wrote:
 
-I'm sorry, that I cannot test this anymore on the UA-20 that was mine until
-today, 11:00 :( when I sent it back.
+>>
+>>I see it too with the quattro and another user has reported it with the 
+>>audigy. It would be nicer if we didn't have to remember to unload the 
+>>usb-audio driver before hotplugging. Is it possible to make that happen.
+> 
+> 
+> then there is still a bug in this regard.
+> are you using MIDI on quattro, too?
+> 
 
-But I'd still like to thank you Clemens, for the work you did on that
-driver. I hope, the next buyer can use the UA-20 which in general
-seemed to be a nice interface - but it's just 2-channel...
+It is automatically used. Clemens would have to explain as I cannot 
+remember the exact details.
 
-ciao
+
 -- 
- Frank Barknecht                               _ ______footils.org__
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
+
 
 
 -------------------------------------------------------
