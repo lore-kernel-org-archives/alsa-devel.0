@@ -1,11 +1,12 @@
-From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: Help needed with sequencer driver for Mikmod
-Date: Tue, 23 Apr 2002 22:19:32 +0300
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Problems Playing CDs with the SB Live.  Using "kscd"
+Date: Tue, 23 Apr 2002 21:55:33 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020423221932.A13968@sci.fi>
+Message-ID: <3CC5CA45.3090308@superbug.demon.co.uk>
+Reply-To: James@superbug.demon.co.uk
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,17 +19,24 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Nobody answered my previous mail so maybe a better subject will help...
+Hello
 
-I have written a ALSA sequencer driver for Mikmod. The problem is that I
-can't get any sound from it. It uses simple instruments so it should work
-with GUS and Trident 4dwave cards. I had a semi working driver before the
-sequencer API changes but I misplaced it. This current driver is based on
-alsamod and the drv_ultra driver from Mikmod. I'd appreciate if someone
-who knows the sequencer could take look at the code. I have a patch
-against libmikmod-3.1.9 at "http://www.saunalahti.fi/~syrjala/alsa/"
+I have trouble with playing CDs with the SB Live.
+The alsamixer "CD" volume control adjusts the volume and the sound comes 
+out the the headphone socket.
 
--- 
-Ville Syrjälä
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
+I want the sound to come out of the SPDIF socket.
+
+If I play a .WAV file, the sound comes out the the SPDIF socket if I 
+toggle "IEC958 Optical Raw" so "MM" appears.
+
+No matter what I try, CD audio only ever comes out of the headphone socket.
+
+Another point: -
+I can be playing a DVD is AC3 passthru mode which disables all the 
+alsamixer controls, meaning that .WAV files will not play while AC3 
+passthru is playing.
+Even in this mode, the CD still plays via the headphone socket.
+
+Cheers
+James
