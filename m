@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000781]: make install fails with current alsa-utils cvs.
-Date: Fri, 4 Feb 2005 18:03:49 +0100
-Message-ID: <966918dbd1260615038d8ea0b3ef137e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000764]: ABIT VA-20 works with dxs_support=1
+Date: Fri, 4 Feb 2005 18:04:13 +0100
+Message-ID: <0bea9d8077695944ee8de420d88c8694@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 51ED122E
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 18:03:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D07DF1ED
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 18:04:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,87 +23,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=781> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=764> 
 ======================================================================
-Reported By:                jcdutton
+Reported By:                tomhughes
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   781
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   764
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   block
+Severity:                   tweak
 Priority:                   normal
 Status:                     closed
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-03-2005 13:44 CET
-Last Modified:              02-04-2005 18:03 CET
+Date Submitted:             12-31-2004 12:41 CET
+Last Modified:              02-04-2005 18:04 CET
 ======================================================================
-Summary:                    make install fails with current alsa-utils cvs.
+Summary:                    ABIT VA-20 works with dxs_support=1
 Description: 
-alsa-utils # make install
-Making install in m4
-make[1]: Entering directory `/u/alsacvs/alsa-utils/m4'
-make[2]: Entering directory `/u/alsacvs/alsa-utils/m4'
-make[2]: Nothing to be done for `install-exec-am'.
-make[2]: Nothing to be done for `install-data-am'.
-make[2]: Leaving directory `/u/alsacvs/alsa-utils/m4'
-make[1]: Leaving directory `/u/alsacvs/alsa-utils/m4'
-Making install in include
-make[1]: Entering directory `/u/alsacvs/alsa-utils/include'
-make[2]: Entering directory `/u/alsacvs/alsa-utils/include'
-make[2]: Nothing to be done for `install-exec-am'.
-make[2]: Nothing to be done for `install-data-am'.
-make[2]: Leaving directory `/u/alsacvs/alsa-utils/include'
-make[1]: Leaving directory `/u/alsacvs/alsa-utils/include'
-Making install in alsactl
-make[1]: Entering directory `/u/alsacvs/alsa-utils/alsactl'
-make[2]: Entering directory `/u/alsacvs/alsa-utils/alsactl'
-test -z "/usr/sbin" || mkdir -p -- "/usr/sbin"
-  /bin/install -c 'alsactl' '/usr/sbin/alsactl'
-test -z "/usr/man/man1" || mkdir -p -- "/usr/man/man1"
- /bin/install -c -m 644 './alsactl.1' '/usr/man/man1/alsactl.1'
-make[2]: Leaving directory `/u/alsacvs/alsa-utils/alsactl'
-make[1]: Leaving directory `/u/alsacvs/alsa-utils/alsactl'
-Making install in alsaconf
-make[1]: Entering directory `/u/alsacvs/alsa-utils/alsaconf'
-Making install in po
-make[2]: Entering directory `/u/alsacvs/alsa-utils/alsaconf/po'
-../.././mkinstalldirs /usr/share
-make[2]: ../.././mkinstalldirs: Command not found
-make[2]: *** [install-data-yes] Error 127
-make[2]: Leaving directory `/u/alsacvs/alsa-utils/alsaconf/po'
-make[1]: *** [install-recursive] Error 1
-make[1]: Leaving directory `/u/alsacvs/alsa-utils/alsaconf'
-make: *** [install-recursive] Error 1
+My ABIT VA-20 motherboard is not currently recognised by the dxs_support
+whitelist in the via82xx driver but I have tested it with a 44.1kHz sound
+file and dxs_support=1 and it appears to work correctly. The lspci output
+for the device is:
+
+  00:11.5 Class 0401: 1106:3059 (rev 60)
+          Subsystem: 147b:1411
+          Flags: medium devsel, IRQ 10
+          I/O ports at bc00 [size=256]
+          Capabilities: <available only to root>
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 01-03-05 13:50 
+ tiwai - 01-03-05 20:13 
 ----------------------------------------------------------------------
-alsa-utils-fix.diff.txt  fixes the problem.
-
-----------------------------------------------------------------------
- tiwai - 01-03-05 15:43 
-----------------------------------------------------------------------
-Fixed differently in CVS, using $(mkdir_p) now...
+Thanks for the info.  The entry was added to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 13:44 jcdutton       New Issue                                    
-01-03-05 13:50 jcdutton       File Added: alsa-utils-fix.diff.txt               
-    
-01-03-05 13:50 jcdutton       Note Added: 0003060                          
-01-03-05 15:43 tiwai          Status                   new => resolved     
-01-03-05 15:43 tiwai          Resolution               open => fixed       
-01-03-05 15:43 tiwai          Assigned To               => tiwai           
-01-03-05 15:43 tiwai          Note Added: 0003066                          
-01-03-05 15:43 tiwai          Assigned To              tiwai =>            
-02-04-05 18:03 tiwai          Status                   resolved => closed  
+12-31-04 12:41 tomhughes      New Issue                                    
+12-31-04 12:41 tomhughes      Distribution              => Fedora Core 3   
+12-31-04 12:41 tomhughes      Kernel Version            => 2.6.9           
+01-03-05 20:13 tiwai          Status                   new => resolved     
+01-03-05 20:13 tiwai          Resolution               open => fixed       
+01-03-05 20:13 tiwai          Assigned To               => tiwai           
+01-03-05 20:13 tiwai          Note Added: 0003073                          
+01-03-05 20:13 tiwai          Assigned To              tiwai =>            
+02-04-05 18:04 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
