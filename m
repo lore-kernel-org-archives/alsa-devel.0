@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000863]: Feature request: Mixing channels in software
-Date: Mon, 31 Jan 2005 18:52:02 +0100
-Message-ID: <14902f24262e354ee960f971eb7f3184@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000864]: No Support for C-Media CMI9880
+Date: Mon, 31 Jan 2005 18:51:12 +0100
+Message-ID: <3030e512c5ee2831fcf1ff7e92f5efc4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3A05421C
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 18:52:02 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC4CA21C
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 18:51:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=863> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=864> 
 ======================================================================
-Reported By:                rounin
+Reported By:                neverread
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   863
-Category:                   mixer
-Reproducibility:            N/A
-Severity:                   major
+Project:                    ALSA - driver
+Issue ID:                   864
+Category:                   PCI - cmipci
+Reproducibility:            always
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Resolution:                 fixed
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-30-2005 22:02 CET
-Last Modified:              01-31-2005 18:52 CET
+Date Submitted:             01-31-2005 01:57 CET
+Last Modified:              01-31-2005 18:51 CET
 ======================================================================
-Summary:                    Feature request: Mixing channels in software
+Summary:                    No Support for C-Media CMI9880
 Description: 
-One of the major drawbacks of ALSA versus OSS/esd is that ALSA is unable to
-provide access to an audio channel to more than one application at once,
-meaning that users with cheap sound cards (most users) are unable to hear
-sound in more than application at any one time, or even start more than
-one application that absolutely requires sound.
+A number of the new ASUS motherboards have HD sound using the C-Media
+cmi9880 chip.  I've looked through the list of supported devices and the
+CMI9880 is not listed.  I expect support for the chipset to become more
+common.
 
-It would make ALSA really interesting if an option were added to give each
-program one or more virtual sound devices, all of which were really mixed
-together in software, and then output to the actual sound device by a
-layer at a lower level. Whether this is possible with regards to latency
-and complexity is beyond me, but it seems to be working in Windows.
+During the install (Through YaST) no sound device is detected at all. 
+When trying to use sensible alternates (ie cmipci module by selecting
+cmi87x support) the install fails.
+
+It would be great if we could add support.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rounin - 01-30-05 23:11 
+ 1g0R - 01-31-05 09:30 
 ----------------------------------------------------------------------
-Ah, thanks for the clarification. I really should have done more research;
-I just didn't know where to start.
+Hi,
+
+Try with azx card support.
+./configure --with-card=azx
+
+Chher,
+1gR
 
 ----------------------------------------------------------------------
- tiwai - 01-31-05 18:52 
+ tiwai - 01-31-05 18:51 
 ----------------------------------------------------------------------
-In the CVS version, most of mobo drivers already use dmix as default.
+The corresponding driver for your device is snd-azx (in ALSA 1.0.8), not
+cmipci driver.
+YaST can't detect the newly added drivers.  Use alsaconf instead.
+
+Note that in the CVS version, snd-azx is renamed to snd-hda-intel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-30-05 22:02 rounin         New Issue                                    
-01-30-05 22:16 rlrevell       Note Added: 0003443                          
-01-30-05 22:31 rounin         Note Added: 0003444                          
-01-30-05 22:47 rlrevell       Note Added: 0003445                          
-01-30-05 23:11 rounin         Note Added: 0003446                          
-01-31-05 18:52 tiwai          Status                   new => resolved     
-01-31-05 18:52 tiwai          Resolution               open => fixed       
-01-31-05 18:52 tiwai          Assigned To               => tiwai           
-01-31-05 18:52 tiwai          Note Added: 0003450                          
+01-31-05 01:57 neverread      New Issue                                    
+01-31-05 09:30 1g0R           Note Added: 0003447                          
+01-31-05 18:51 tiwai          Status                   assigned => resolved
+01-31-05 18:51 tiwai          Resolution               open => not an issue
+01-31-05 18:51 tiwai          Note Added: 0003449                          
 ======================================================================
 
 
