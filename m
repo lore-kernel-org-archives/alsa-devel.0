@@ -1,16 +1,16 @@
 From: "Vrihad Shoonya" <vrihad@softhome.net>
 Subject: Re: Is there plans to support SiS7019?
-Date: Wed, 18 Aug 2004 12:26:44 +0530 (IST)
+Date: Wed, 18 Aug 2004 12:32:23 +0530 (IST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1397.192.168.0.30.1092812204.squirrel@dev.datamax.co.in>
-References: <34863.192.168.0.10.1092904274.squirrel@dev.datamax.co.in>
-     <Pine.HPX.4.33n.0408191306530.11486-100000@studcom.urz.uni-halle.de>
-     <2903.192.168.0.30.1092922626.squirrel@dev.datamax.co.in>
-     <1092950819.830.18.camel@krustophenia.net>
+Message-ID: <1447.192.168.0.30.1092812543.squirrel@dev.datamax.co.in>
+References: <Pine.HPX.4.33n.0408191306530.11486-100000@studcom.urz.uni-halle.de>         
+     <Pine.LNX.4.58.0408191353210.1779@pnote.perex-int.cz><2891.192.168.0.3
+     0.1092922413.squirrel@dev.datamax.co.in>
+     <Pine.LNX.4.58.0408191530040.1779@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain;charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1092950819.830.18.camel@krustophenia.net>
+In-Reply-To: <Pine.LNX.4.58.0408191530040.1779@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,32 +19,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Vrihad Shoonya <vrihad@softhome.net>, Clemens Ladisch  <clemens@ladisch.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Clemens Ladisch  <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
->> I want to find out how much time is needed to make the
->> driver from scratch if hardware specs are available. I have
->> no prior experience on this.
+>> >> Google finds a NetBSD patch at
+>> >> <http://www.yasuoka.net/~yasuoka/sis7019.html>, so it's possible.
+>> >
+>> > It looks that the driver must be written from scratch, because
+>> > hardware is different from SI7018 and SI7012.
 >>
+>> That would be pretty big work isn't it? :-( Any estimation of scope
+>> and time?
 >
-> Google for "Writing an ALSA driver".  This excellent document
-> by Takashi Iwai gives step by step instructions with many
-> examples from the real code.  This should give you a pretty
-> good idea of how long writing a driver takes, given the specs.
-Thanks Lee for the right pointer. I have downloaded it. It seems to be
-pretty exhaustive. I think it will help me a lot.
+> One or two weeks for basic functionality.
 
-> I would imagine source code for an OSS driver would be even
-> better than having the docs, as long as the code is not obfuscated.
-The code is not obfuscated and it may help us. Anyway, I am planning
-to dive in and let us see what happens.
+I am ready to spend about a month on it. Hope to get it through with
+all of your help:-)
 
 Thanks.
 
 -vrihad
-
 
 
 -------------------------------------------------------
