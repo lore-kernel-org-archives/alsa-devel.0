@@ -1,105 +1,61 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000644]: CMI8738 - Line-in as bass conflicts with line-as rear.
-Date: Thu, 18 Nov 2004 18:16:57 +0100
-Message-ID: <ecb80a441c751ad3857ebecc9c75b251@bugtrack.alsa-project.org>
+From: "Jack O'Quin" <joq@io.com>
+Subject: Re: [Alsa-devel] CVS commit [0.99.11] ALSA playback latency patch
+Date: 18 Nov 2004 11:20:48 -0600
+Message-ID: <87zn1ft6of.fsf@sulphur.joq.us>
+References: <878y8zvjbs.fsf@sulphur.joq.us> <874qjnvj3v.fsf@sulphur.joq.us>
+	<20041118143600.59ca28b1@mango.fruits.de>
+	<20041118145204.4c000eca@mango.fruits.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 423861DF
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 18:16:57 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <jackit-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20041118145204.4c000eca@mango.fruits.de>
+Sender: jackit-devel-admin@lists.sourceforge.net
+Errors-To: jackit-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:jackit-devel@lists.sourceforge.net>
+List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
+To: Florian Schmidt <mista.tapas@gmx.net>
+Cc: alsa-devel@lists.sourceforge.net, jackit-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Florian Schmidt <mista.tapas@gmx.net> writes:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=644> 
-======================================================================
-Reported By:                jborges
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   644
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Kurumin 3.2 (a Brazilian flavor of Knoppix) with kde
-3.2.3
-Kernel Version:             Kernel 2.4.25-klg
-======================================================================
-Date Submitted:             11-12-2004 00:09 CET
-Last Modified:              11-18-2004 18:16 CET
-======================================================================
-Summary:                    CMI8738 - Line-in as bass conflicts with line-as
-rear.
-Description: 
-I'm using Kurumin 3.2 (a Brazilian flavor of Knoppix) in a ASUS P4B533 with
-CMI8738 sound chip, processor is Pentium IV 3.0 GHz, 512 RAM and 120
-Maxtor Ultra Dma Hard Disk.
+> On Thu, 18 Nov 2004 14:36:00 +0100
+> Florian Schmidt <mista.tapas@gmx.net> wrote:
+> 
+> > On 17 Nov 2004 23:09:24 -0600
+> > "Jack O'Quin" <joq@io.com> wrote:
+> > 
+> > > 
+> > > I should have made it clear that this is a JACK update, not ALSA.  :-)
+> > 
+> > Frankly i must say, that i do not quite understand what this patch changes.
+> > 
+> > from jackd 0.99:
+> > 
+> >         -p, --period    Frames per period (default: 1024)
+> >         -n, --nperiods  Number of periods in hardware buffer (default: 2)
+> > 
+> > --nperiods never set the buffer size. This was always done by --period. Care
+> > to elaborate? I have the feeling i must be blindstruck. Also i think the
+> > 0.99 behaviour is perfectly allright.
+> 
+> arr, well i think i got it now. You are talking about the _total_ buffer
+> size, right? Up to now it was determined by --nperiods * --periods. But
+> since some soundcards don't support these exact buffer sizes, you changed it
+> so that the total buffer size is big enough that --nperiods * --periods fits
+> into it, right?
 
-Also I use Kde 3.2.3 on Kernel 2.4.25-klg.
+Right.  
 
-This Linux installation works in a dual-boot with windows xp.
-
-The sound works fine (all 6 channels respond very well)under windows xp or
-98.
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-Trying to configure my sound to work I noticed some problems with
-alsamixer:
-
-1 - As I can see, there is a conflict for the output. I can't see Line-In
-been used to output as bass and the same Line-In used to output as rear
-(L/R).
-
-2 - I think Line-In would be used to output as Rear (L/R) and Mic to
-output as Bass/Center.
-
-What is happening is that: when one uses a 6 channel system there is no
-sound in the conflicted Line-In as bass and Mic as center. The little
-sound that goes there is squeezed from Line-In as rear. The sound in bass
-and center is full of noise. Impossible to listen.
-
-I took some snapshots (2) to show you what I'm talking about. Please take
-a look on them in the attached files.
-
-Julio Borges
-Rio de Janeiro - Brazil
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 11-18-04 18:16 
-----------------------------------------------------------------------
-When 'Line-In as Bass' is turned off and 'Line-In As Rear' on, does 5.1
-output work fine?  Or still problems?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-12-04 00:09 jborges        New Issue                                    
-11-12-04 00:09 jborges        File Added: sound-cm8738-alsamixergui.png         
-          
-11-12-04 00:09 jborges        Distribution              => Kurumin 3.2 (a
-Brazilian flavor of Knoppix) with kde 3.2.3
-11-12-04 00:09 jborges        Kernel Version            => Kernel 2.4.25-klg
-11-18-04 18:16 tiwai          Note Added: 0002455                          
-======================================================================
-
-
+I forgot to update the --help text.  It should now say "Number of
+periods of playback latency".  Will fix soon.
+-- 
+  joq
 
 
 -------------------------------------------------------
