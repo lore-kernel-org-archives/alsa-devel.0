@@ -1,12 +1,9 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: should i be able to abort in the middle of snd_pcm_mmap_{begin,commit} ?
-Date: Wed, 13 Feb 2002 13:10:44 -0500
-Message-ID: <200202131815.NAA15651@renoir.op.net>
-Received: from renoir.op.net (root@renoir.op.net [207.29.195.4])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA23179
-	for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2002 19:15:45 +0100
-In-reply-to: Your message of "Wed, 13 Feb 2002 19:07:30 +0100."
-             <Pine.LNX.4.31.0202131905050.495-100000@pnote.perex-int.cz>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: ALSA is in 2.5!!!
+Date: Wed, 13 Feb 2002 20:31:10 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202132022200.495-100000@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,48 +12,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->>     poll
->>     snd_pcm_mmap_begin();
->>     snd_pcm_mmap_commit();
->>     poll
->>     snd_pcm_mmap_begin();
->>     ... realize things have gone wrong ...
->>     snd_pcm_drop();
->>     snd_pcm_prepare();
->>     snd_pcm_start ();
->>     poll
->>     snd_pcm_mmap_begin();
->>     snd_pcm_mmap_commit();
->>
->> i would have expected snd_pcm_drop() to effectively shut down the
->> driver, or at least for snd_pcm_drop() and snd_pcm_prepare() to get it
->> back to a "pristine" state again.
->>
->> so, how should i handle such a condition?
+Hi all,
+
+	the big moment in ALSA existence is here. Linus integrated ALSA
+into 2.5 kernel tree!! The first pre-patch with ALSA will be available
+soon. For impatient hackers: Check http://openlogging.org, click on
+'Sorted by number of lines' and choose 'Linux kernel tree' with domain
+'transmeta.com' and contact 'Unknown'.
+	I would like to send big thank you to all ALSA developers. I am
+looking forward to the future.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+SuSE Linux    http://www.suse.com
+ALSA Project  http://www.alsa-project.org
+
+---------- Forwarded message ----------
+Date: Wed, 13 Feb 2002 12:26:06 -0800 (PST)
+From: Linus Torvalds <torvalds@transmeta.com>
+To: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: David S. Miller <davem@redhat.com>,
+     "ac9410@bellsouth.net" <ac9410@bellsouth.net>,
+     "alan@clueserver.org" <alan@clueserver.org>,
+     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: 2.5.4 sound module problem
+
+
+
+On Wed, 13 Feb 2002, Alan Cox wrote:
 >
->The described sequence should work. As Abramo stated, the new
->snd_pcm_mmap_begin() call is enough. 
+> Waste of effort. ALSA will replace the OSS code anyway
 
-that implies that the h/w is left running between the failure point
-and the snd_pcm_mmap_begin() call, right? that would be bad - the
-playback stream will contain data, and we will continue to hear it
-will we clean up. the driver is set to *not* handle xruns by itself.
+In fact, in my tree it right now has replaced it. I'll make a pre-patch
+and try to get the BK tree pushed out.
+
+		Linus
+
+-
+To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
 
->				      What exactly fails?
-
-after restarting, the audio stream is not in sync - it contains minor
-crackles and clicks suggesting that the device driver doesn't really
-know where the hw pointer is. the effect varies with the period size,
-which reinforces my belief in what's gone wrong. this happens on both
-the hammerfall and the trident, though the effect sounds a little
-different on each one.
-
---p
 
 _______________________________________________
 Alsa-devel mailing list
