@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001020]: Driver only records left channel when requested to record in stereo from Line-In
-Date: Tue, 29 Mar 2005 17:14:48 +0200
-Message-ID: <06bc8b6f66e4efee9601e14e899c3036@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000567]: "Loudness" and "Sim. stereo" controls missing in mixer
+Date: Tue, 29 Mar 2005 17:23:31 +0200
+Message-ID: <5bb0d484bf875d917a121a30d8815dcf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 23804209
-	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 17:14:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EDCB21DD
+	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 17:23:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,81 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1020> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=567> 
 ======================================================================
-Reported By:                David Klusacek
+Reported By:                pmatil
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1020
-Category:                   CORE - pcm
+Issue ID:                   567
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.11
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             03-29-2005 14:13 CEST
-Last Modified:              03-29-2005 17:14 CEST
+Date Submitted:             10-05-2004 17:47 CEST
+Last Modified:              03-29-2005 17:23 CEST
 ======================================================================
-Summary:                    Driver only records left channel when requested to
-record in stereo from Line-In
+Summary:                    "Loudness" and "Sim. stereo" controls missing in
+mixer
 Description: 
-
-When recording analog source, only one channel is really being captured,
-while the other returns some garbage (usually zeroes), regardless of the
-program being used for recording. As it appears on at least three
-different soundcards (snd-ens1371, snd-via82xx and snd-intel8x0 (intel
-records left and omits right channel)), I think that the cause might have
-something to do with the pcm core. 
-
-Note also, that drivers for ens1371 and via82xx worked well in the older
-(0.5.10b) versions of ALSA.
-
-
+Since 1.0.4 (somewhere around there), the S/PDIF-controls have disappeared
+from the mixer... It has been there before and there IS one on my
+soundcard (Terratec DMX Xfire 1024, cs46xx)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-29-05 17:14 
+ pmatil - 03-28-05 11:46 
 ----------------------------------------------------------------------
-How did you record?  Provide the information to reproduce your problem
-precisely.
+Since this topic has been brought up again, I thought I should mention
+this. I dont't know why but my mixer settings won't save (again). Also,
+the "Duplicate front" option has no effect. Also, should I have Loudness
+and Sim. Stereo controls also in the mixer?
+
+----------------------------------------------------------------------
+ tiwai - 03-29-05 17:23 
+----------------------------------------------------------------------
+CS4294 doesn't support Loudness and Simulated stereo.  It was bogus in the
+older version.  Forget it.
+
+"Duplicate Front" should work.  How did you test it?
+
+I have no idea about your mixer save/restore problem.  It sounds like a
+problem of installation...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-29-05 14:13 David Klusacek New Issue                                    
-03-29-05 14:13 David Klusacek Kernel Version            => 2.6.11          
-03-29-05 17:14 tiwai          Note Added: 0004248                          
+10-05-04 17:47 pmatil         New Issue                                    
+10-05-04 17:47 pmatil         Distribution              => Debian GNU/Linux
+10-05-04 17:47 pmatil         Kernel Version            => 2.4.22          
+10-06-04 11:13 tiwai          Note Added: 0002018                          
+10-07-04 18:06 pmatil         File Added: asound.state                     
+10-07-04 18:20 pmatil         File Added: codec97#0                        
+10-07-04 18:23 pmatil         Note Added: 0002037                          
+10-11-04 14:07 tiwai          Note Added: 0002077                          
+10-11-04 14:08 tiwai          File Added: cs4298-spdif.diff                    
+10-13-04 13:05 pmatil         Note Added: 0002122                          
+10-13-04 15:50 tiwai          Note Added: 0002123                          
+10-14-04 13:11 pmatil         File Added: prev_+reg                        
+10-14-04 13:11 pmatil         File Added: current_+reg                     
+10-14-04 13:13 pmatil         Note Added: 0002143                          
+10-14-04 13:14 pmatil         Note Edited: 0002143                         
+10-14-04 14:27 tiwai          Note Added: 0002145                          
+10-14-04 14:39 tiwai          Note Added: 0002146                          
+10-14-04 16:20 pmatil         Note Added: 0002153                          
+10-14-04 16:31 tiwai          Note Added: 0002155                          
+10-14-04 18:08 pmatil         Note Added: 0002157                          
+10-15-04 13:53 pmatil         Note Edited: 0002157                         
+10-18-04 17:44 tiwai          Note Added: 0002196                          
+10-20-04 21:32 pmatil         Note Added: 0002219                          
+03-28-05 04:19 jdthood        Summary                  S/PDIF control missing in
+mixer => "Loudness" and "Sim. stereo" controls missing in mixer
+03-28-05 11:46 pmatil         Note Added: 0004237                          
+03-29-05 17:23 tiwai          Note Added: 0004249                          
 ======================================================================
 
 
