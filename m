@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000267]: Cannot Auto load module
-Date: Sat, 19 Mar 2005 15:06:29 +0100
-Message-ID: <e24cac8d5a8a64f611aabf875df2be96@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000454]: cvs site is down
+Date: Sat, 19 Mar 2005 15:30:43 +0100
+Message-ID: <c498ec4638b3d8e218e19f6d18935002@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 64B631D8
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 15:06:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1F30A1D8
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 15:30:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,44 +23,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=267> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=454> 
 ======================================================================
-Reported By:                skmrr
+Reported By:                ronis
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   267
+Issue ID:                   454
 Category:                   OTHERS
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
 Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             05-10-2004 07:46 CEST
-Last Modified:              03-19-2005 15:06 CET
+Date Submitted:             08-18-2004 16:26 CEST
+Last Modified:              03-19-2005 15:30 CET
 ======================================================================
-Summary:                    Cannot Auto load module
+Summary:                    cvs site is down
 Description: 
-I have an intel D845GLLY board. Compilation and instalation went fine and
-the card works when driver is loaded (but the master volume control has no
-effect). Also I cannot autoload the modules by changing modules.conf.
+cvs -z3 update -dP now gives:
+
+cvs [update aborted]: unrecognized auth response from cvs.sourceforge.net:
+M PserverBackend::PserverBackend() Connect (Connection refused)
+
+It started a few days ago, and had been working properly for months
+before.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 15:06 
+ pzad - 08-18-04 16:35 
 ----------------------------------------------------------------------
-"Autoloading" as configured via "alias sound-*" lines in the module
-loader configuration file occurs when the snd module is loaded.
+And what about this too:
+ftp://ftp.alsa-project.org/pub/cvsexport/
+For me this was useful, but it is not up to date too. :-(
+(last is from 2004/06/02)
 
-This does not look like an ALSA bug.  I think the report can be closed.
+----------------------------------------------------------------------
+ ronis - 08-23-04 21:26 
+----------------------------------------------------------------------
+The site is back.  Close this one.
+
+----------------------------------------------------------------------
+ jdthood - 03-19-05 15:30 
+----------------------------------------------------------------------
+This can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-10-04 07:46 skmrr          New Issue                                    
-03-19-05 15:06 jdthood        Note Added: 0004048                          
+08-18-04 16:26 ronis          New Issue                                    
+08-18-04 16:35 pzad           Note Added: 0001587                          
+08-23-04 21:26 ronis          Note Added: 0001614                          
+03-19-05 15:30 jdthood        Note Added: 0004051                          
 ======================================================================
 
 
