@@ -1,14 +1,16 @@
-From: Jesse Chappell <jesse@essej.net>
-Subject: Re: Hammerfall DSP System Problems
-Date: Thu, 12 Jun 2003 04:29:53 -0400 (EDT)
+From: Gorm David Lai <lai@daimi.au.dk>
+Subject: Re: problems with rme digi96/8
+Date: 12 Jun 2003 12:36:01 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0306120420250.1719@pi32.pi>
-References: <E19PnrW-0005mQ-00@sc8-sf-list1.sourceforge.net>
- <Pine.LNX.4.53.0306120009030.1274@pi32.pi>
+Message-ID: <1055414161.16597.32.camel@duff>
+References: <1054808252.7022.8.camel@duff>
+	<200306111548.19324.torger@ludd.luth.se> <1055340198.1390.58.camel@duff>
+	<200306111615.56664.torger@ludd.luth.se>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.53.0306120009030.1274@pi32.pi>
+In-Reply-To: <200306111615.56664.torger@ludd.luth.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,33 +19,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>, Mark Knecht <mknecht@controlnet.com>
+To: Anders Torger <torger@ludd.luth.se>
+Cc: Martin Langer <martin-langer@gmx.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2003-06-11 at 16:15, Anders Torger wrote:
+> 
+> Note that my example uses /dev/zero (zero input) so it should be silent. 
+> Put something with sound in it instead of /dev/zero.
+> 
+> No, you shouldn't need to unmute the card (if you are not using analog 
+> output), the digital output is just digital, no volume control for it 
+> exists. A classical mistake is of course to connect ADAT input to ADAT 
+> input, but I suppose you have checked that.
+> 
+> /Anders
+> 
+I thought so about the digital output, but wanted to make sure.
+I know the ADAT is set up right, because everything works in Windows XP.
 
-On Thu, 12 Jun 2003, Jesse Chappell wrote:
-> doesn't help matters, nor does a warm reboot.  I do not have 
-> windows on the laptop (yet) so I have not attempted to get it 
-> working there (to load the multiface firmware, then warm boot) or 
-> to downgrade the hdsp firmware to 0a.  Ideally, I can help to 
-> debug the primary problems with recent HDSP and recent ALSA.... I 
-> don't *need* to use the hardware right away (but I would like 
-> to :) 
+I tried your example. Aplay is rather stupid, so it is seems it needs a
+soundfile with a equal amount of channels that can be allocated on the
+card; in this case 8.
+As far as i know wave files only support stereo. So i tried feeding it
+noise, like
 
-Woohoo!
+aplay -D hw:0,1 -r 44100 -f S16_LE -c 8 ~/plg-second-printing-update.ps
 
-Well, there is no time like the present.  I installed windows XP
-and the RME drivers.  No problems there, HDSP works in windows,
-red light gone.  Warm reboot into Linux, everything loads and
-works like a champ!  I think that this solution was mentioned by
-someone not too long ago on the list archives.
+aplay starts to play with the output:
 
-I am still interested in solving the problem so that the 
-firmware loading to the multiface/digiface all works within 
-linux.  I will try my hand at fixes if folks have any ideas.
+Playing raw data '/users/lai/plg-second-printing-update.ps' : Signed 16
+bit Little Endian, Rate 44100 Hz, Channels 8
 
-jlc
+But no sound. I am nearly giving up now...
+
+/Gorm
+
+
 
 
 
