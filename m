@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000529]: Please make '?' a synonym for 'h'
-Date: Tue, 9 Nov 2004 16:37:17 +0100
-Message-ID: <8abf6fe35a431520ed5da228bf6468e3@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000512]: [PATCH] 15_alsamixer_doc_mute
+Date: Tue, 9 Nov 2004 16:35:30 +0100
+Message-ID: <1e828781f99ec872e88c1de416af0cb2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5462E2B1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:37:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DBB9E2B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:35:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,44 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=529> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=512> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   529
+Issue ID:                   512
 Category:                   alsamixer
-Reproducibility:            N/A
-Severity:                   feature
+Reproducibility:            always
+Severity:                   text
 Priority:                   normal
 Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-24-2004 06:12 CEST
-Last Modified:              11-09-2004 16:37 CET
+Date Submitted:             09-21-2004 19:45 CEST
+Last Modified:              11-09-2004 16:35 CET
 ======================================================================
-Summary:                    Please make '?' a synonym for 'h'
+Summary:                    [PATCH] 15_alsamixer_doc_mute
 Description: 
-Add a '?' help key that pops up a list of keystrokes, similar to other
-programs.
+Patch for alsamixer.1 to make it mention that '<' and '>' 
+mute channels separately only if the hardware supports this.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-24-04 12:20 
+ jdthood - 09-23-04 19:47 
 ----------------------------------------------------------------------
-Fixed on CVS.
+Summary: mention that '<' and '>' mute channels separately only if the
+hardware supports this
+
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+
+----------------------------------------------------------------------
+ tiwai - 09-24-04 11:37 
+----------------------------------------------------------------------
+Applied.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 06:12 jdthood        New Issue                                    
-09-24-04 12:20 tiwai          Status                   new => resolved     
-09-24-04 12:20 tiwai          Resolution               open => fixed       
-09-24-04 12:20 tiwai          Assigned To               => tiwai           
-09-24-04 12:20 tiwai          Note Added: 0001874                          
-11-09-04 16:37 tiwai          Status                   resolved => closed  
+09-21-04 19:45 jdthood        New Issue                                    
+09-21-04 19:45 jdthood        File Added: 15_alsamixer_doc_mute.dpatch          
+         
+09-23-04 14:13 tiwai          Note Added: 0001825                          
+09-23-04 19:47 jdthood        Note Added: 0001835                          
+09-24-04 11:37 tiwai          Status                   new => resolved     
+09-24-04 11:37 tiwai          Resolution               open => fixed       
+09-24-04 11:37 tiwai          Assigned To               => tiwai           
+09-24-04 11:37 tiwai          Note Added: 0001862                          
+11-09-04 16:35 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
