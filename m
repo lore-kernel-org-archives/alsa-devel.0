@@ -1,12 +1,17 @@
-From: Ted <ted@nowtsfree.freeserve.co.uk>
-Subject: Re: alsa-1.0.1 and linux-2.2.25
-Date: Wed, 21 Jan 2004 17:19:46 +0000
+From: Steffen Sauder <steffensauder@gmx.de>
+Subject: Re: Re: ice1712 driver broken in 2.6.1-mm kernels
+Date: Wed, 21 Jan 2004 19:06:39 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040121171946.E48B44958@marimba.home.net>
-References: <Pine.LNX.4.58.0401211032150.2010@pnote.perex-int.cz>
+Message-ID: <400EBFAF.1080205@gmx.de>
+References: <1074633766.6579.2.camel@moria.arnor.net>	<Pine.LNX.4.58.0401202308390.2010@pnote.perex-int.cz>	<1074637277.6579.16.camel@moria.arnor.net>	<Pine.LNX.4.58.0401210908220.2010@pnote.perex-int.cz>	<400E9603.8010103@gmx.de> <s5hu12pfh1a.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 21 Jan 2004 10:33:26 +0100."
-             <Pine.LNX.4.58.0401211032150.2010@pnote.perex-int.cz>
+Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id TAA19233
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2004 19:05:56 +0100
+In-Reply-To: <s5hu12pfh1a.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,28 +20,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net, Ted <ted@nowtsfree.freeserve.co.uk>
+To: ALSA Development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav writes:
-> On Wed, 21 Jan 2004, Ted wrote:
-> [...]
-> > I configured alsa-lib with
-> > ./configure --prefix=/usr --with-versioned=no --with-debug=yes \
->                             ^^^^^^^^^^^^^^^^^^^
+Takashi Iwai wrote:
+
+>At Wed, 21 Jan 2004 16:08:51 +0100,
+>Steffen Sauder wrote:
+>  
 >
-> This was the problem. I've fixed the code in CVS and sent you this patch
-> in the separate mail.
+>>Is there any reason why the patch is against 2.6.1-rc1? I was quite 
+>>satisfied with 2.6.1 and don't really want to go back to its first rc. 
+>>Should I just try to apply the patch to 2.6.1 or 2.6.1-mmX? Will it work 
+>>for sure, probably or definetly not?
+>>    
+>>
+>
+>i guess it's a typo of 2.6.2-rc1?
+>
+>
+>  
+>
+oh, silly me thought that pros never do typos :o)
 
-Ahh, I should have guessed everyone else was using versioning.
-The patch fixed it, aplay is working again.
-Thankyou.
+works fine with 2.6.2-rc1 as well, I'm so glad...
 
-Ted.
--- 
-Ted <ted@nowtsfree.freeserve.co.uk>
-   http://www.nowtsfree.freeserve.co.uk
+Steffen
+
 
 
 -------------------------------------------------------
