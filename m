@@ -1,16 +1,20 @@
-From: Ivica Ico Bukvic <ico@fuse.net>
-Subject: Re: More issues with hdsp and 1.0.7 and 1.0.8 drivers
-Date: Thu, 13 Jan 2005 22:53:26 -0500
-Message-ID: <200501132253.26202.ico@fuse.net>
-References: <200501132244.07541.ico@fuse.net>
-Reply-To: ico@fuse.net
+From: Juergen Kreileder <jk@blackdown.de>
+Subject: Re: snd-ioctl32 is failing on x86_64 (no crashes, just errors)
+Date: Fri, 14 Jan 2005 07:13:39 +0100
+Message-ID: <87wtuga67g.fsf@blackdown.de>
+References: <20050106130649.GA253131@lion.gg3.net>
+	<s5h1xcxy0tj.wl@alsa2.suse.de> <20050108074026.GA8595@lion.gg3.net>
+	<s5h7jmlv82j.wl@alsa2.suse.de> <20050110123342.GA243173@lion.gg3.net>
+	<s5hwtultnc8.wl@alsa2.suse.de> <20050110161559.GA248292@lion.gg3.net>
+	<s5h7jmkt8j9.wl@alsa2.suse.de> <20050112022402.GB9290@lion.gg3.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200501132244.07541.ico@fuse.net>
-Content-Disposition: inline
+Received: from smtp.blackdown.de (smtp.blackdown.de [213.239.206.42])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E7C022A4
+	for <alsa-devel@alsa-project.org>; Fri, 14 Jan 2005 07:13:42 +0100 (MET)
+In-Reply-To: <20050112022402.GB9290@lion.gg3.net> (Georgi Georgiev's message
+	of "Wed, 12 Jan 2005 11:24:02 +0900")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,37 +24,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: alsa-user@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 13 January 2005 22:44, Ivica Ico Bukvic wrote:
-> RME Hammerfall DSP: no buffers available
-> RME Hammerfall DSP: probe of 0000:02:00.0 failed with error -12
->
-> I guess this has something to do with RAM being fragmented. Please correct
-> me if I am wrong...
+Georgi Georgiev <chutz@gg3.net> writes:
 
-Never mind on that one. It seems that a simple restart of alsa service and 
-then reinserting of the hdsp pcmcia did the trick. Yet it is odd that this 
-does happen nonetheless...
+>> Index: alsa-kernel/core/ioctl32/ioctl32.c
+>> ===================================================================
+>> RCS file: /home/tiwai/cvs/alsa/alsa-kernel/core/ioctl32/ioctl32.c,v
+>> retrieving revision 1.30
+>> diff -u -r1.30 ioctl32.c
+>> --- alsa-kernel/core/ioctl32/ioctl32.c	15 Dec 2004 15:26:24 -0000	1.30
+>> +++ alsa-kernel/core/ioctl32/ioctl32.c	10 Jan 2005 16:59:33 -0000
+>> @@ -219,25 +219,10 @@
+>> 	struct sndrv_ctl_elem_id id;
+>> 	unsigned int indirect;	/* bit-field causes misalignment */
+>> union {
+>> -		union {
+>> -			s32 value[128];
+>> -			u32 value_ptr;
+>> -		} integer;
+>> -		union {
+>> -			s64 value[64];
+>> -			u32 value_ptr;
+>> -		} integer64;
+>> -		union {
+>> -			u32 item[128];
+>> -			u32 item_ptr;
+>> -		} enumerated;
+>> -		union {
+>> -			unsigned char data[512];
+>> -			u32 data_ptr;
+>> -		} bytes;
+>> -		struct sndrv_aes_iec958 iec958;
+>> +		s32 integer[128];	/* integer and boolean need conversion */
+>> +		unsigned char data[512];	/* others should be compatible */
+>> } value;
+>> -        unsigned char reserved[128];
+>> +        unsigned char reserved[128];	/* not used */
+>> };
 
-This brings me to another interesting issue and that is that my system fails 
-to unload the snd-hdsp once it is pulled out. As a matter of fact no logs 
-point to the fact that the card was even pulled out, yet /proc/asound 
-reflects that it is missing. Perhaps I should simply write some ugly daemon 
-that checks whether the soundcard still exists in /proc/asound and if it 
-doesn't to unload the module so that upon the next load it again 
-automatically uploads firmware... Any ideas how I could do this with little 
-or no impact on system performance?
+That breaks alignment on ppc64 again.  Fix:
 
-Apologies to all for my incessant barrage of stuff. Just trying my best to 
-provide devs with as much info as possible in order to get this pickle 
-solved :-)
+--- ioctl32.c.orig	2005-01-14 06:53:41.496899917 +0100
++++ ioctl32.c	2005-01-14 06:56:26.146675819 +0100
+@@ -220,6 +220,7 @@ struct sndrv_ctl_elem_value32 {
+ 	unsigned int indirect;	/* bit-field causes misalignment */
+         union {
+ 		s32 integer[128];	/* integer and boolean need conversion */
++		s64 longint[64];
+ 		unsigned char data[512];	/* others should be compatible */
+         } value;
+         unsigned char reserved[128];	/* not used */
+=
 
-Best wishes,
 
-Ico
+        Juergen
+
+-- 
+Juergen Kreileder, Blackdown Java-Linux Team
+http://www.blackdown.org/java-linux/java2-status/
 
 
 -------------------------------------------------------
