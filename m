@@ -1,73 +1,47 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000313]: Compilation error using 2.6.x kernel headers
-Date: Fri, 21 Jan 2005 00:31:03 +0100
-Message-ID: <aac3add6223ad5039513cc30d276815d@bugtrack.alsa-project.org>
+From: "Michael S. Tsirkin" <mst@mellanox.co.il>
+Subject: security hook missing in compat ioctl in 2.6.11-rc1-mm2
+Date: Fri, 21 Jan 2005 02:09:35 +0200
+Message-ID: <20050121000935.GA341@mellanox.co.il>
+References: <20050103011113.6f6c8f44.akpm@osdl.org> <20050105144043.GB19434@mellanox.co.il> <s5hd5wjybt8.wl@alsa2.suse.de> <20050105133448.59345b04.akpm@osdl.org> <20050106140636.GE25629@mellanox.co.il> <20050112203606.GA23307@mellanox.co.il> <20050112212954.GA13558@kroah.com> <20050112214326.GB14703@wotan.suse.de> <20050112225230.GA14590@kroah.com> <20050112151049.7473db7d.akpm@osdl.org>
+Reply-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3AE9A23A
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 00:31:03 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S261489AbVAUAJa@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20050119213818.55b14bb0.akpm@osdl.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andrew Morton <akpm@osdl.org>, Chris Wright <chrisw@osdl.org>, ak@suse.de
+Cc: Greg KH <greg@kroah.com>, tiwai@suse.de, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, VANDROVE@vc.cvut.cz
 List-Id: alsa-devel@alsa-project.org
 
+Hi!
+Security hook seems to be missing before compat_ioctl in mm2.
+And, it would be nice to avoid calling it twice on some paths.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=313> 
-======================================================================
-Reported By:                nimster
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   313
-Category:                   general
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             05-29-2004 20:16 CEST
-Last Modified:              01-21-2005 00:31 CET
-======================================================================
-Summary:                    Compilation error using 2.6.x kernel headers
-Description: 
-In my LFS (http://www.linuxfromscratch.org), I have a 2.6.6 kernel with
-2.6.3 kernel headers. Compilation of ALSA-lib fails with (this is actually
-1.0.5, but it failed with 1.0.4 too, with the same error).
+Chris Wright's patch addressed this in the most elegant way I think,
+by adding vfs_ioctl.
 
+Accordingly, this change:
 
+@@ -468,6 +496,11 @@ asmlinkage long compat_sys_ioctl(unsigne
+ 
+  found_handler:
+ 	if (t->handler) {
++		/* RED-PEN how should LSM module know it's handling 32bit? */
++		error = security_file_ioctl(filp, cmd, arg);
++		if (error)
++			goto out_fput;
++
+ 		lock_kernel();
+ 		error = t->handler(fd, cmd, arg, filp);
+ 		unlock_kernel();
 
+ from Andy's "some fixes" patch wont be needed.
 
-======================================================================
+Chris - are you planning to update your patch to -rc1-mm2?
+I'd like to see this addressed, after this I believe logically
+we'll get everything right, then I have a couple of small
+cosmetic patches, and I believe we'll be set.
 
-----------------------------------------------------------------------
- jdthood - 01-21-05 00:31 
-----------------------------------------------------------------------
-Is this report obsolete?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-29-04 20:16 nimster        New Issue                                    
-01-21-05 00:31 jdthood        Note Added: 0003336                          
-======================================================================
-
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by: IntelliVIEW -- Interactive Reporting
-Tool for open source databases. Create drag-&-drop reports. Save time
-by over 75%! Publish reports on the web. Export to DOC, XLS, RTF, etc.
-Download a FREE copy at http://www.intelliview.com/go/osdn_nl
+-- 
+I dont speak for Mellanox.
