@@ -1,12 +1,14 @@
-From: "Irene Paula" <X3023386pzqyz@multiads.com>
-Subject: Fri, 26 Nov 2004 05:58:58 -0600
-Date: Fri, 26 Nov 2004 05:58:58 -0600
-Message-ID: <774269@msandp.com>
-Reply-To: "Irene Paula" <X3023386pzqyz@multiads.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000680]: sounds continually stutters
+Date: Fri, 26 Nov 2004 14:14:32 +0100
+Message-ID: <1e9a9c1478848ac0f2ac2ee4c0b2a3dd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="3229578896204796352"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E313F244
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 14:14:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,48 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-announce@alsa-project.org
-Cc: alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org, alsa-user@alsa-project.org, andy@alsa-project.org, valentyn@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---3229578896204796352
-Content-Type: text/plain; charset=%CHARSET
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=680> 
+======================================================================
+Reported By:                jeremysanders
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   680
+Category:                   PCI - audigyls
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core
+Kernel Version:             kernel-2.6.9-1.6_FC2
+======================================================================
+Date Submitted:             11-26-2004 14:14 CET
+Last Modified:              11-26-2004 14:14 CET
+======================================================================
+Summary:                    sounds continually stutters
+Description: 
+Using Fedora Core 2 on an Athlon 64 system (x86_64), sound stutters
+continually using sound directed to the alsa driver. It sounds like
+someone is playing it underwater. This is using xmms. If I direct the
+sound via arts (which talks to the alsa driver), I get the same problem.
 
-nephrogenous ninnyism noibwood ninefold heteropathic hemiparasitic noncoloring heraldress noncontemplative klystron neuroses kubba heuristically hereto niminy hemibranch kochliarion nighttime kudzu Kitamat nephrostomial ninefold Kruman nemertinean Kurdish Koko Heracleum hexameron hemiform nonassimilating hendiadys hemiramph henpen herpetology noncome hemimetamorphosis heuristically neohexane kyat heterothallism Krag neuroglial nondelegate koyan nonconsideration heterochromous nonconstitutional nonbulkhead niddick nonbulbous neoplasma nephridium netwise neophyte neonychium knyaz korumburra Heteromi knapper kneadingly Klondiker ninnyism heteronomously neutroceptor neurospasm nineteenth nonconvergent hereward kotwal netleaf hemimellitene Hentenian hemitriglyph heptarchist heterodontism knicker kissproof hereditarily Kustenau heterokaryotic heterotropia heteropolarity korntunnur hepatatrophi
- a neuroticize Nespelim korin hereticator nigrities noncotyledonous heterograft netop nonad
- justable nonamputation hexachloride nerving neigh heteropodous newsworthiness nonanalyzed kirombo neurapophyseal kleptomanist knotroot hierologic hexamethylene Koniaga knacky Krishnaite kurmburra kopeck nonassault hexene nephelinic nerval hexamitiasis herby kochliarion Konia Nematoda Krishnaist Neptunean Kutenai nerveproof konimeter newsman nonadherent kjeldahlize nobody Neronic nominy hider Kua hernani hercynite neodamode kryokonite nonbasement nonbilabiate ninnyish noctivagant kiteflier hexode Neozoic hided Heracleopolite nicknamee Nembutal knuclesome hexogen hemipteran hexyl nomologist knosp herem hemometry neutral Hemerocallis nonbelligerent Krameriaceae nephrolysis nocuity nonannouncement Heteromi Kshatriyahood nocturn Nematelmia kynurine hexastylar nematologist nitrolamine hemic hemocytolysis nombril neophytism 
+If I set the sound output device to OSS (using alsa OSS emulation), the
+sound is fine. If I set arts to talk to oss, then the sound is fine too.
 
---3229578896204796352
-Content-Type: text/html; charset=%CHARSET
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+An additional issue is that kmix crashes on its startup with this card,
+but this is probably a kmix issue, as alsamixer and gnome-volume-control
+both work.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html><br><br>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DISO-8859=
--1">
-Would you REFlNANCE if you knew you'd SAVE TH0USANDS?<br>
-Or get a Lo an of $386,000 , you already qua1ified.
-<br><br>
-We'll get you lnterest as low as 2.53%.<br>
-Don't believe me? Fill out our small online questionaire and we'll show yo=
-u how.<br><br>
 
-Get the house/home and/or car you always wanted, it only takes 10 seconds =
-of your time:
-<a hREf=3D"http://www.bjgja.biz/adm/mortgage1.php?affiliateid=3D0054">Secu=
-re Online-Form 8710</a><br><br>
+======================================================================
 
-Have a nice day,,<br>
-Irene Paula
-<br><br></html>
------07240515769673789174818543553933875-----
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-26-04 14:14 jeremysanders  New Issue                                    
+11-26-04 14:14 jeremysanders  Distribution              => Fedora Core     
+11-26-04 14:14 jeremysanders  Kernel Version            => kernel-2.6.9-1.6_FC2
+======================================================================
 
---3229578896204796352--
 
 
 
