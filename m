@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - firmware 0000815]: missing DESTDIR support with hotplug dir
-Date: Thu, 13 Jan 2005 20:52:05 +0100
-Message-ID: <8168291e5fe148fdbafd11704322f470@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Audigy 2 NX USB
+Date: Thu, 13 Jan 2005 18:46:23 +0000
+Message-ID: <41E6C1FF.7010404@superbug.co.uk>
+References: <d27697d605011308157a93b066@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EB1542F6
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 20:52:05 +0100 (MET)
+In-Reply-To: <d27697d605011308157a93b066@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,87 +17,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Vlad - Andrei Lazar <clusty1@gmail.com>
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Vlad - Andrei Lazar wrote:
+> Hello,
+> 
+> Before I asked about an Audicy ZS PCMCIA and sadlly figured out that
+> it has no (and will never have) support for linux.
+> 
+> Is there or will there be any support for the Audigy 2 NX USB soundcard?
+> If not, what is the latest SB card that is supported.
+> 
+> Best,
+> Vlad
+> 
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=815> 
-======================================================================
-Reported By:                gvy
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - firmware
-Issue ID:                   815
-Category:                   
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             01-13-2005 20:21 CET
-Last Modified:              01-13-2005 20:52 CET
-======================================================================
-Summary:                    missing DESTDIR support with hotplug dir
-Description: 
-with intoruction of hotplug dir I had to kludge in RPM buildroot into
-configure parameters -- it doesn't belong there, it's rather install-time
-not compile-time (and definitely not configure-time).
-
-hardwiring /usr/lib is no good too -- bringing ilbdir in would be better
-too.
-======================================================================
-
-----------------------------------------------------------------------
- gvy - 01-13-05 20:48 
-----------------------------------------------------------------------
-Failed for me with exactly this (expanded rpm macro):
-
-/usr/bin/make 'INSTALL=/bin/install -p'
-prefix=/var/tmp/alsa-firmware-buildroot/usr
-exec_prefix=/var/tmp/alsa-firmware-buildroot/usr
-bindir=/var/tmp/alsa-firmware-buildroot/usr/bin
-sbindir=/var/tmp/alsa-firmware-buildroot/usr/sbin
-sysconfdir=/var/tmp/alsa-firmware-buildroot/etc
-datadir=/var/tmp/alsa-firmware-buildroot/usr/share
-includedir=/var/tmp/alsa-firmware-buildroot/usr/include
-libdir=/var/tmp/alsa-firmware-buildroot/usr/lib
-libexecdir=/var/tmp/alsa-firmware-buildroot/usr/lib
-localstatedir=/var/tmp/alsa-firmware-buildroot/var/lib
-sharedstatedir=/var/tmp/alsa-firmware-buildroot/usr/com
-mandir=/var/tmp/alsa-firmware-buildroot/usr/share/man
-infodir=/var/tmp/alsa-firmware-buildroot/usr/share/info install
-
-The inconsistency is that everything else gets installed just fine like
-before.
-%makeinstall DESTDIR=%buildroot would yield double prefix substitution for
-any other installation path, and I'm too dumb this evening to crank up a
-Makefile.* patch... so leaving the %configure parameter as is right now.
-
-PS: sorry for typos and thanks for your work, Takashi!  Domo arigato!
-
-----------------------------------------------------------------------
- tiwai - 01-13-05 20:52 
-----------------------------------------------------------------------
-OK, thanks for checking.
-
-Closing this now.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-13-05 20:21 gvy            New Issue                                    
-01-13-05 20:33 tiwai          Note Added: 0003199                          
-01-13-05 20:48 gvy            Note Added: 0003201                          
-01-13-05 20:52 tiwai          Status                   new => resolved     
-01-13-05 20:52 tiwai          Resolution               open => not an issue
-01-13-05 20:52 tiwai          Assigned To               => tiwai           
-01-13-05 20:52 tiwai          Note Added: 0003203                          
-======================================================================
-
+There might be Audigy ZS PCMCIA support if someone donates a card to me.
 
 
 
