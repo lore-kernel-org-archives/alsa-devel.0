@@ -1,15 +1,13 @@
-From: Peter Heatwole <peter599@gotnet.net>
-Subject: Re: SPDIF output finally working properly with CS4630
-Date: Wed, 24 Jul 2002 16:37:58 -0700
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: Inserting modules on the run.
+Date: Thu, 25 Jul 2002 08:54:48 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020724233758.GO1681@porky>
-References: <3D3DBDA2.10602@cucumelo.org> <20020724013400.GA5214@porky> <3D3E2D08.3070800@cucumelo.org> <20020724181919.GC1681@porky> <3D3EF4CA.1090504@cucumelo.org> <20020724201201.GI1681@porky> <3D3F0710.1060307@cucumelo.org> <20020724212315.GK1681@porky> <3D3F21CD.9090600@cucumelo.org>
+Message-ID: <3D3F3E48.70409@boosthardware.com>
+References: <E17XKRX-0007HC-00@usw-sf-list1.sourceforge.net> <3D3EBE7E.58C9604D@multitech.co.in>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3D3F21CD.9090600@cucumelo.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,51 +16,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Benny Sjostrand <gorm@cucumelo.org>
+To: Shaju Abraham <shaju@multitech.co.in>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 2002.07.24 14:53 Benny Sjostrand wrote:
-> Well, if you have access to a oscilloscope that can be programed to view 
-> the differential result
-> of the signals then probably you can proably view the digital data.
-> But i've never tested to do this, and don't have any access to a 
-> oscilloscope at home ...
-
-    Neither do I. =)
-
-> Then, do you know if your IEC958 is connected to CS4297A or CS4630 ??
-> If it is connected to the CS4297A then this patch will not provide any 
-> output on that IEC958 port.
-
-    Looking at the datasheets and schematics, it looks like the CS4630 uses
-AC97 codecs to actually process and output it's iec958 frames. I could
-easily be wrong, but the schematics for the CS4630-CM don't show the
-circuitry necessary to power and control an iec958 line. It shows a pin,
-which I assume links to the codec (in my case, a CS4297A). Is there
-a datasheet that could show me what you mean?
-
-[...]
-> This dump should not be that long!
-> Did you change anything in the code ? the SCB block
-> has always a fixed size of 16 Dwords. A new SCB block will
-> start on 0x0050.
-
-    No, I haven't changed a thing.
-
-> Well, that's what i can interpret from this outputs.
+Shaju Abraham wrote:
+> Hi all,
+>          This is about OSS emulation by ALSA.   When I modprobe my sound
+> card,  I find that the snd-pcm-oss.o and mixer-oss.o modules are not there
+> in the modules list.
 > 
-> Everything look basically OK.
-> Seems like you have loaded the module successfully and have not started
-> playing yet.
+> But when an OSS application is run, how does ALSA insert these two modules
+> on the fly?  Supposing I have manually inserted these two modules before
+> hand  and if ALSA again tries to insmod them, what will happen? could the
+> system crash 'cos of this?
+> 
+> Whenever ALSA is inserting the abv two modules on the run, it should be
+> possible for me to insert my own module along with the two mentioned abv,
+> isn't it?  Can u pls tell me where in the ALSA src code this piece of
+> action is happening and how to insert my own module on the run.
+> 
 
-    Strange. Well, if it _were_ the case that my card is using a CS4297A 
-for
-digital output, do you think that would cause this?
+You should use the /etc/modules.conf file
+
+There is a lot of information on how to use this in the alsa-wiki and 
+alsa howto.
+
+see the documentation link on the alsa webpage.
 
 
--- Peter Heatwole
-"Murphy was just a well known pessimist."
+
+
+> --shaju abraham
+> 
+> 
+> 
+> -------------------------------------------------------
+> This sf.net email is sponsored by:ThinkGeek
+> Welcome to geek heaven.
+> http://thinkgeek.com/sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
+> 
+
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
 
 
