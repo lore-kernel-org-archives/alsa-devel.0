@@ -1,15 +1,18 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: [Alsa-devel][Patch] usbmidi fixes
-Date: Wed, 31 Jul 2002 12:45:05 +0200
+From: "Karsten Wiese" <annabellesgarden@yahoo.de>
+Subject: AW: general audio card Q
+Date: Wed, 31 Jul 2002 13:20:24 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020731104505.GA498@tuba.home>
-References: <20020728213924.GA522@tuba.home> <3D469011.855453A7@ladisch.de> <200207301708.07066.plcl@telefonica.net> <3D46C107.2E108CEB@ladisch.de> <20020730181834.GA494@tuba.home> <3D47B5A1.752946D6@ladisch.de>
-Reply-To: martin-langer@gmx.de
+Message-ID: <DAELIEGDPLDDCIJPAICBIECECDAA.annabellesgarden@yahoo.de>
+References: <200207302324.BAA10183@alsa.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3D47B5A1.752946D6@ladisch.de>
+Received: from smtp012.mail.yahoo.com (smtp012.mail.yahoo.com [216.136.173.32])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id NAA18112
+	for <alsa-devel@alsa-project.org>; Wed, 31 Jul 2002 13:19:06 +0200
+In-Reply-To: <200207302324.BAA10183@alsa.alsa-project.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,45 +21,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Paul Davis <pbd@op.net>
+Cc: alsa-devel@alsa-project.org, l5gibson@hotmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 31, 2002 at 12:02:09PM +0200, Clemens Ladisch wrote:
-> 
-> 
-> These changes are desirable even if (apparently) they don't fix
-> Martin's problem.
-> 
+Paul wrote:
 
-The buffer overflow is fixed .... It looks like totally fixed!
-I do some more tests this evening. Maybe I find something else;-)
+> cards that do not use DMA should generally be considered inferior
+> because of the extra CPU cycles they force on the host system.
 
-So far: Thank you very much, Clemens.
+not generally. i.e. the pinnacle/fiji way is to map a piece of memory int=
+o
+the pc's memory space.
+thus an application using alsa-mmap can write (or read) directly into the
+cards pcm-memory.
+pretty efficiently, don't you think? (except that its ISA-memory)
+(it can do so with 2 or 3 periods per buffer).
+I don't see any drawback here caused by the lack of DMA.
 
-martin
+regards, Karsten
 
-
-
----------------
-
-tuba:~# modprobe snd-usb-midi
-tuba:~# rmmod snd-usb-midi 
-tuba:~# modprobe snd-usb-midi 
-tuba:~# cat /proc/asound/seq/clients 
-Client info
-  cur  clients : 2
-  peak clients : 2
-  max  clients : 192
-      
-Client   0 : "System" [Kernel]
-  Port   0 : "Timer" (Rwe-)
-  Port   1 : "Announce" (R-e-)
-Client  64 : "Evolution Electronics Ltd. MK-249C USB MIDI keyboard" [Kernel]
-  Port   0 : "MK-249C USB MIDI keyboard Port 0" (R-e-)
-  Port   1 : "MK-249C USB MIDI keyboard Port 1" (-We-)
-tuba:~# 
-    
+__________________________________________________________________=0D
+=0D
+Gesendet von Yahoo! Mail - http://mail.yahoo.de=0D
+M=F6chten Sie mit einem Gru=DF antworten? http://grusskarten.yahoo.de=0D
 
 
 -------------------------------------------------------
