@@ -1,14 +1,14 @@
-From: Josh Haberman <joshua@haberman.com>
-Subject: Re: Re: [Jackit-devel] alsa_driver_wait -> libasound?
-Date: 15 Jan 2003 16:14:21 -0800
+From: Brian Victor <bhv1@psu.edu>
+Subject: Re: General Guidelines?  (MIDI)
+Date: Wed, 15 Jan 2003 22:27:13 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1042676061.10961.175.camel@birdie>
-References: <200301142022.h0EKMmCg025158@spider.tela.com>
+Message-ID: <20030116032713.GA30510@bhv1.adelphia.net>
+References: <20030114212004.GA24898@bhv1.adelphia.net> <Pine.HPX.4.33n.0301151227400.2915-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200301142022.h0EKMmCg025158@spider.tela.com>
+Content-Disposition: inline
+In-Reply-To: <Pine.HPX.4.33n.0301151227400.2915-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,58 +17,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: jackit-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2003-01-14 at 12:23, Paul Davis wrote:
-> >2) start first linked stream (thus all in paralel or serial or combination 
-> >   sequence)
-> >3) poll the last stream handle for valid position
-> >
-> >And you don't need your complicate function.
-> 
-> i just can't agree with that. on return from JACK's alsa_driver_wait, the
-> caller knows:
-> 
->        * how many frames are available (rounded to whole periods)
->        * what delay was encountered in waiting for the data/space
->        * whether an xrun occured
->        * if some other error occured 
-> 
-> your proposed snd_pcm_wait_many() doesn't do any of that.
-> 
-> i think that josh's point was perhaps a little different than you are
-> thinking. i don't think he was suggesting a version of snd_pcm_wait()
-> that waited on multiple handles instead of just one. i think he was
-> suggesting a function that does something that most applications need:
-> 
-> to wait until a known-sized chunk of data/space (or multiple thereof)
-> is ready on *all* handles being used. since doing this involves much
-> more than just calling poll(), which is fundamentally all that
-> snd_pcm_wait() does, so would the multi-handle version.
+On Wed, Jan 15, 2003 at 12:43:18PM +0100, Clemens Ladisch wrote:
+>Running queues are visible in /proc/asound/seq/timers IIRC. And in theory,
+>ALSA should properly free queues/timers when doing ^C.
 
-You're right, that is really what I'm looking for.  Maybe I could have
-avoided confusion by not comparing it with snd_pcm_wait to begin with.
+Thanks once more.  I feel like I'm getting closer, but I'm still
+struggling.  This is my NoteOn code:
 
-More than anything else, what I want to avoid having to do is set up and
-interpret the results of poll() manually.  For example, I infer by
-reading the JACK code that POLLERR means an xrun was detected.  It would
-be much easier to receive this information from an ALSA function.
+void wxMidiQueue::NoteOn(const wxMidiOutput& port, int key,
+                         int velocity, int tick, int channel)
+{
+  snd_seq_event_t ev;
+  snd_seq_ev_clear(&ev);
+  snd_seq_ev_set_note(&ev, channel, key, velocity, 10);
+  snd_seq_ev_schedule_tick(&ev, m_queue, 0, tick);
+  snd_seq_ev_set_source(&ev, port.GetAlsaPort());
+  snd_seq_ev_set_subs(&ev);
+  snd_seq_event_output_direct(m_drv.GetAlsaSeq(), &ev);
+}
 
-So perhaps a revised function signature could be:
+For testing, I placed this in a for loop:
+for (x=0; x<400; ++x) queue->NoteOn(*out, x, 127, x, 0);
 
-   int snd_pcm_poll( snd_pcm_t **handles, int num_handles, int timeout )
+Monitoring /proc/asound/seq/queues shows the events being queued, but as
+soon as the queue starts, all 400 notes leave the queue instantly; none
+are played.  miniArp, from which this code is extracted nearly verbatim,
+will show the "queued tick events" rising and falling as notes are
+played and requeued.  The output of /proc/asound/seq/timer when running
+miniArp and my test program are identical.
 
-   returns:
-      the number of frames available on all handles, or negative if an 
-      error occured.  -EPIPE if an xrun occured, -ETIMEDOUT if not all
-      handles were ready before timeout.
+Clearly I'm doing something blatantly wrong, but I've compared my code
+to the sample's with a fine-tooth comb, and I can't for the life of me
+figure out what.  Can you see where the problem is?
 
-Originally I was going to write "returns the number of frames on all
-handles, rounded down to the greatest complete period," but I realized
-that the period size could be different for different handles.
+Thank you once again for your patience.
 
-Josh
+-- 
+Brian
 
 
 -------------------------------------------------------
