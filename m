@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [snd-intel8x0] distortion on PCM volume >> 50%
-Date: Sun, 30 Nov 2003 13:52:37 +0100 (CET)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: Tascam US-122: tascam_firmware-0.1 and alsa-firmware
+Date: Sun, 30 Nov 2003 16:26:15 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0311301350130.21602@pnote.perex-int.cz>
-References: <20031130100343.GA12681@zombie.inka.de>
- <Pine.LNX.4.58.0311301133500.21602@pnote.perex-int.cz> <20031130113624.GA1829@zombie.inka.de>
+Message-ID: <20031130152615.GB24063@tuba.home>
+References: <3FC60BAA.4060809@laposte.net> <200311271556.36745.annabellesgarden@yahoo.de> <20031127192437.GA561@tuba.home> <3FC8D323.4060206@laposte.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20031130113624.GA1829@zombie.inka.de>
+Content-Disposition: inline
+In-Reply-To: <3FC8D323.4060206@laposte.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,59 +17,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eduard Bloch <eb@zombie.inka.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: JoDaY <jo.day@laposte.net>
+Cc: Karsten Wiese <annabellesgarden@yahoo.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 30 Nov 2003, Eduard Bloch wrote:
+On Sat, Nov 29, 2003 at 06:10:59PM +0100, JoDaY wrote:
+> 
+> It's ok :) I'm sorry for my bad question ... I should have ask you where 
+> can I reach the US-122, my problem in fact is that I can't find this 
+> card in /dev in order to point a sound or midi player to it so that the 
+> US-122 make noise (sound :) ).
 
-> Moin Jaroslav!
-> Jaroslav Kysela schrieb am Sunday, den 30. November 2003:
-> 
-> > > I have some problems with a ac97 based sound card (Notebook built-in)
-> > > where the kernel driver works fine (except of not beeing able to
-> > > resample on-the-fly).
-> > > 
-> > > When I set the PCM mixer volume to more then 50%, I hear few sound
-> > > fragments. If I go over 75% I hear them all the time and on 100% PCM,
-> > > the sound is full of scratching fragments. You can get an example
-> > > catched with microphone on
-> > > http://sites.inka.de/W1752/alsa-distortion.ogg and the original is on
-> > > www.vorbis.com/music/Mists_of_Time-4T.ogg . First I suspected a speaker
-> > > problem since it sounds very similar to overloud speaker setting, but it
-> > > is not!
-> > 
-> > Are you sure that you don't have enable any other analog input? My 
-> > notebook has very noisy build-in microphone for example.
-> 
-> No, my microphone is not built-in and not attached, the mixer is set to 0.
-> 
-> > Also note that if you have value over 70% with most of AC'97 controls, the 
-> > analog gain is applied to the signal (thus you can really overdrive the 
-> > output or input).
-> 
-> After almost an hour playing different stuff with different settings
-> with the ALSA, Linux-Kernel and Windows driver, I have the following
-> assumption: both, Kernel driver and Windows driver are cheating! They do
-> not present the Bass/Treble boost controls and the PCM volume at 75% in
-> ALSA  is quite comparable with 100% PCM volume with other drivers,
-> having quite comparable quality when Bass/Treble boost were set to 0.
-> 
-> So what I wish for the future version of ALSA drivers: a module option
-> to set the real mixer scale for PCM (or other sources) between 0 and X
-> percent while the visible scale is between 0 and 100 percent and
-> recalculated internaly to 0..X%.
+The card should be listed in /proc/asound/cards.
 
-Yes, maybe we can do this in highter layers (our library - alsa-lib) in 
-future, but it's not our goal for the driver where hardware should be 
-described in most accurate way.
+aplay, arecord, aconnect and pmidi are running fine here (with alsa access).
 
-						Jaroslav
+What do you try? OSS access (/dev/dspX)?
+Have you ever run ./snddevices in alsa-driver?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+> I've also noticed that the Midi in LED is lighting, the US-122 's owner 
+> doesn't seem to have this when he uses it on windows.
+
+Hmmm, my LED is only burning when MIDI data is passing the port. But if you
+send weird data to the port it will burn until christmas, that's correct. I
+don't know how to reset it. I guess the solution is somewhere in the
+firmware, but the firmware is the original Tascam/Frontier firmware and
+we've never got any docs from them. And I fear we don't get them in the
+future :-( 
+Nevertheless my MIDI keyboard at MIDI IN doesn't produce errors and the LED
+is only blinking. Same with pmidi during sending data to MIDI OUT. In both
+cases it will stop blinking if no MIDI data is passing the ports.
+
+martin
+
+
+-- 
+The only nice thing about spam is that it doesn't ring.
 
 
 -------------------------------------------------------
