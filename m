@@ -1,9 +1,10 @@
-From: "=?gb2312?B?c3Vkb25n?=" <sudong@tcl.com>
-Subject: =?gb2312?B?SG93IHRvIHdyaXRlIGRyaXZlciBiYXNlZCBBTFNBIGZvciBBUk0gPw==?=
-Date: Fri, 26 Nov 2004 09:03:55 +0800 (CST)
-Message-ID: <41A680FB.000003.13942@TCLmail>
+From: MadDog1202@aol.com
+Subject: Via VT8237 support inquiry
+Date: Thu, 25 Nov 2004 20:19:16 EST
+Message-ID: <1ad.2bcc6ffd.2ed7de94@aol.com>
 Mime-Version: 1.0
-Content-Type: Multipart/Alternative; boundary="Boundary-=_xFDDbvsFoGmnVZFRpUhKZGcWFThF"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,31 +18,16 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+What is the status of support for the Via VT8237 audio features?
+What external CODEC chips are supported?  Specifically, is the
+Realtek ALC850 supported or will it be in the future?
 
---Boundary-=_xFDDbvsFoGmnVZFRpUhKZGcWFThF
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+It might be helpful to note that the VT8237 is used with Athlon 64
+CPUs.
 
-SGkNCiAgSSB3YW50IHRvIHdyaXRlIGEgQUMnOTcgc291bmQgZHJpdmVyIGZvciBBUk0gY3B1
-IGJhc2VkIEFMU0EuIEkNCmhhdmUgc2VlbiAid3JpdGluZyBhbiBBTFNBIGRyaXZlciIgd3Jp
-dHRlbiBieSBUYWthc2hpIEl3YWksIGJ1dCBpdA0KZm9jdXNlcyBtYWlubHkgb24gdGhlIFBD
-SSBzb3VuZGNhcmQuIEkgZG9uJ3QgZmluZCBhbnkgc291cmNlIGNvZGUgZm9yDQpBUk0gaW4g
-QUxTQSBkcml2ZXIuDQogIFdobyBjYW4gZ2l2ZSBtZSBhbnkgc3VnZ2VzdGlvbj8gV2hlcmUg
-Y2FuIEkgZmluZCBhbnkgb3BlbiBzb3VyY2UNCmNvZGUgb2YgYWM5NyBzb3VuZCBkcml2ZXIg
-YXMgcmVmZXJlbmNlPyANClRoYW5rcyENCg0KU3Vkb25nDQo=
---Boundary-=_xFDDbvsFoGmnVZFRpUhKZGcWFThF
-Content-Type: text/html; charset="gb2312"
-Content-Transfer-Encoding: base64
+(Neither of these are listed in the hardware support list.)
 
-SGk8YnI+ICBJIHdhbnQgdG8gd3JpdGUgYSBBQyc5NyBzb3VuZCBkcml2ZXIgZm9yIEFSTSBj
-cHUgYmFzZWQgQUxTQS4gSTxicj5oYXZlIHNlZW4gJnF1b3Q7d3JpdGluZyBhbiBBTFNBIGRy
-aXZlciZxdW90OyB3cml0dGVuIGJ5IFRha2FzaGkgSXdhaSwgYnV0IGl0PGJyPmZvY3VzZXMg
-bWFpbmx5IG9uIHRoZSBQQ0kgc291bmRjYXJkLiBJIGRvbid0IGZpbmQgYW55IHNvdXJjZSBj
-b2RlIGZvcjxicj5BUk0gaW4gQUxTQSBkcml2ZXIuPGJyPiAgV2hvIGNhbiBnaXZlIG1lIGFu
-eSBzdWdnZXN0aW9uPyBXaGVyZSBjYW4gSSBmaW5kIGFueSBvcGVuIHNvdXJjZTxicj5jb2Rl
-IG9mIGFjOTcgc291bmQgZHJpdmVyIGFzIHJlZmVyZW5jZT8gPGJyPlRoYW5rcyE8YnI+PGJy
-PlN1ZG9uZzxicj48YnI+Cgo=
---Boundary-=_xFDDbvsFoGmnVZFRpUhKZGcWFThF--
+(I humbly request that any responses be CC'd to me.)
 
 
 -------------------------------------------------------
