@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - lib 0000127]: aplay segfaults when attemptingto use "dmix" plugin with 1.0.3a libs
-Date: Fri, 16 Jul 2004 13:05:57 +0200 (CEST)
+Subject: [ALSA - driver 0000170]: pcm.c:2344: snd_pcm_area_copy: Assertion `0' failed, usb-audio, edirol ua-5
+Date: Fri, 16 Jul 2004 12:57:48 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716110557.C064126008@server.perex-int.cz>
+Message-ID: <20040716105748.4BA1326009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F1671255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 13:05:57 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9355C244
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:57:48 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,122 +22,65 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000127
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000170
 ======================================================================
-Reported By:                dandruczyk
+Reported By:                bgolenko
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     127
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Bug ID:                     170
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
 Status:                     closed
+Distribution:               Debian testing/unstable
+Kernel Version:             2.6.4
 ======================================================================
-Date Submitted:             03-09-2004 22:49 CET
-Last Modified:              07-16-2004 13:05 CEST
+Date Submitted:             03-30-2004 15:40 CEST
+Last Modified:              07-16-2004 12:57 CEST
 ======================================================================
-Summary:                    aplay segfaults when attemptingto use "dmix" plugin with 1.0.3a libs
+Summary:                    pcm.c:2344: snd_pcm_area_copy: Assertion `0' failed, usb-audio, edirol ua-5
 Description: 
-aplay still segfaults even with alsa-lib-1.0.3a installed
+Device Edirol UA-5 (USB)
+configuration - recording, 24 bit, 96000Hz
+Working correctly with arecord, but I want to have a
+nice GUI ;)
+I'm trying to setup snd-gtk-alsa (version 7.2-1). It is unable to work
+with S24_3LE sample format natively, so I tried to setup a pcm plug to
+convert it on the fly.
 
-aplay -v -Dplug:dmix horse.wav 
-Playing WAVE 'horse.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-Plug PCM: Rate conversion PCM (48000, sformat=S16_LE)
-Its setup is:
-stream       : PLAYBACK
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 11025
-period_size  : 5512
-period_time  : 125000
-tick_time    : 0
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 5512
-xfer_align   : 5512
-start_threshold  : 11024
-stop_threshold   : 11025
-silence_threshold: 0
-silence_size : 0
-boundary     : 1445068800
-Slave: Direct Stream Mixing PCM
+After selecting recording from the menu it shows a recording panel for a
+moment and than crashes with the message
+pcm.c:2344: snd_pcm_area_copy: Assertion `0' failed
 
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 48000
-exact rate   : 48000 (48000/1)
-msbits       : 16
-buffer_size  : 12000
-period_size  : 6000
-period_time  : 125000
-tick_time    : 0
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 6000
-xfer_align   : 6000
-start_threshold  : 12000
-stop_threshold   : 12000
-silence_threshold: 0
-silence_size : 0
-boundary     : 1572864000
-Hardware PCM card 0 'Intel 82801BA-ICH2' device 0 subdevice 0
-
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 48000
-exact rate   : 48000 (48000/1)
-msbits       : 16
-buffer_size  : 12000
-period_size  : 6000
-period_time  : 125000
-tick_time    : 10000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 6000
-xfer_align   : 6000
-start_threshold  : 1
-stop_threshold   : 1572864000
-silence_threshold: 0
-silence_size : 1572864000
-boundary     : 1572864000
-Segmentation fault
 
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-10-2004 17:23 CET 
+ bgolenko - 03-30-2004 15:43 CEST 
 ----------------------------------------------------------------------
-Duplicated bug.
+I forgot to mention - same behaviour with the latest CVS sources
+
+----------------------------------------------------------------------
+ perex - 03-31-2004 16:29 CEST 
+----------------------------------------------------------------------
+Yes, it was bug in alsa-lib (unimplemented code for 24-bit samples). It's
+fixed in CVS now.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-09-04 22:49 dandruczyk     New Bug                                      
-03-10-04 17:23 perex          Bugnote Added: 0000561                       
-03-10-04 17:23 perex          duplicate_id             0 => 117            
-03-10-04 17:23 perex          Assigned To               => perex           
-03-10-04 17:23 perex          Resolution               open => duplicate   
-03-10-04 17:23 perex          Status                   new => resolved     
-07-16-04 13:05 tiwai          Status                   resolved => closed  
+03-30-04 15:40 bgolenko       New Bug                                      
+03-30-04 15:40 bgolenko       Distribution              => Debian testing/unstable
+03-30-04 15:40 bgolenko       Kernel Version            => 2.6.4           
+03-30-04 15:43 bgolenko       Bugnote Added: 0000720                       
+03-30-04 15:49 bgolenko       Bug Monitored: bgolenko                      
+03-31-04 16:25 perex          Assigned To              Clemens Ladisch => perex
+03-31-04 16:29 perex          Bugnote Added: 0000723                       
+03-31-04 16:29 perex          Resolution               open => fixed       
+03-31-04 16:29 perex          Status                   assigned => resolved
+07-16-04 12:57 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
