@@ -1,12 +1,12 @@
-From: Peter Zubaj <pzad@pobox.sk>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: Implementing ALSA compatibility in OSS
-Date: Mon, 15 Nov 2004 14:11:24 +0100
-Message-ID: <200411151311.iAFDBKks005459@www5.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Date: Mon, 15 Nov 2004 14:13:46 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411151354510.12617-100000@studcom.urz.uni-halle.de>
+References: <Pine.LNX.4.58.0411151141220.9261@zeus.compusonic.fi>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.58.0411151141220.9261@zeus.compusonic.fi>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,33 +16,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: hannu@opensound.com
+To: Hannu Savolainen <hannu@opensound.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->This approach sounds interesting. Unfortunately my impression after
->looking at the code is that the plugin interface only works with PCM.
->Also
->the library seems to be build tightly around ALSA kernel drivers and
->taking ALSA's place as the "hardware" driver (for the default and hw:*
->devices).
+Hannu Savolainen wrote:
+> We are considering making our OSS software compatible with ALSA.
+> Our initial plan was to implement a version of libasound.so that
+> implements the required functionality in OSS way.
 
-AFAIK every interface (control, pcm, midi, ...) in alsa can have it's
-own plugins. These plugins can be compiled in lib and load at runtime
-through .asoundrc file. I think, it is possible to even create virtual
-user space soundcard. Only compilation depends on internal alsa-lib
-heades (*_local.h) and on kernel asound.h file.
-And these local headers can change at any time without warning.
+The plugin interface is there to avoid having to (re)implement most of
+libasound.
 
-But you should check LICENSE if you can use internal alsa-lib headers
-and asound.h header.
+All device types (pcm/rawmidi/ctl/seq/hwdep/timer) are implemented
+using plugins, although most of them have only a plugin named "hw" for
+the kernel driver.
 
-If you implement your own alsa-lib you will be always one (or more)
-step behind ALSA, and it will cost you too much. And missing functions
-implementations can by problems too.
+> However the problem is that there are more than 1500 snd_*
+> functions exported by libasound.so (of alsa-lib-1.0.7rc2). How
+> many of them are actually needed and how many of them are just
+> helpers used internally by the library.
 
-Peter Zubaj=0A____________________________________=0Ahttp://www.pobox.sk/ -=
- spolahliva a bezpecna prevadzka=0A=0A=0A
+Many of the xxx_set/get_yyy functions are just accessors for the yyy
+field of the (internal) xxx structure, to make the libray binary
+compatible if the structure changes.
+
+A plugin has to implement much less functions (see pcm_null.c for a
+simple example).
+
+> Is there any other official documentation for the pcm and mixer
+> interfaces in addition to the DOXYGEN stuff?
+
+Unfortunately, no.  The plugin interface isn't documented at all.
+
+> Is the ALSA library API frozen now or should we wait until the 2.0
+> version to avoid doing redundant work?
+
+I don't know of any plans to make (big) changes.
+
+> Another alternative is making OSS compatible with the ALSA's device driver
+> interface /dec/snd/*.
+
+This is an internal interface (that will change in future versions).
+
+> Is there any documentation written for it (nothing seems to be
+> available in the net)?
+
+Of course not, otherwise people would try to use it. ;-)
+(Unfortunately, sox does.)
+
+> Third alternative might be improving the OSS plugin for Jack. After
+> browsing the ALSA web site it looks like many pages recommend using Jack
+> instead of the ALSA library API. However are there any reasons to
+> implement a new version of libasound.so instead of improving the Jack
+> plugin?
+
+This depends on whether you want to be compatible with ALSA programs
+not using Jack.  Usually, non-'professional' application don't use
+Jack.
+
+
+Clemens
+
 
 
 -------------------------------------------------------
