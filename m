@@ -1,10 +1,13 @@
-From: Laurielle LEA <lauriellelea@yahoo.fr>
-Subject: Block mode ?
-Date: Fri, 18 Mar 2005 19:34:08 +0100 (CET)
-Message-ID: <20050318183408.71410.qmail@web25105.mail.ukl.yahoo.com>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: [PATCH] emu10k1: fix P16V breakage for	non	Audigy2
+ cards
+Date: Fri, 18 Mar 2005 19:52:58 +0000
+Message-ID: <423B319A.8080306@superbug.co.uk>
+References: <1110950511.19984.9.camel@mindpipe>	 <1110950832.19984.13.camel@mindpipe>  <4238A516.7070802@superbug.co.uk> <1111074813.23171.11.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1111074813.23171.11.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,36 +17,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
+Lee Revell wrote:
+> On Wed, 2005-03-16 at 21:28 +0000, James Courtier-Dutton wrote:
+> 
+>>Thank you for fixing the bug.
+>>The "unhandled interrupt" should be commented out. It is used for 
+>>reverse engineering certain features.
+>>
+> 
+> 
+> OK, updated patch attached.
+> 
+> Please apply to CVS ASAP, this is a bad bug!
+> 
+> Lee
+> 
+> 
 
-I new in this mailing-list.
-I want to program PCM capture and playback.
-My question is: should I set block open mode to
-SND_PCM_NONBLOCK or to 0. When block
-mode=3DSND_PCM_NONBLOCK, the readi function blocks the
-writei, and when block mode =3D 0, I don't hear what I
-say in the micro.
-
-Can you explain me please.
-Thanks a lot.
-
-Laurielle.
-
-
-=09
-
-=09
-	=09
-D=E9couvrez nos promotions exclusives "destination de la Tunisie, du Maro=
-c, des Bal=E9ares et la R=E9p. Dominicaine sur Yahoo! Voyages :
-http://fr.travel.yahoo.com/promotions/mar14.html
+I think that this "bad bug" will also effect Audigy 1 cards.
+Does that new if statement in the irq handler correctly exclude Audigy 1 
+cards ?
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
