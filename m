@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000990]: Failure to build "make: *** src/pcm/ext: No such file or directory."
-Date: Wed, 16 Mar 2005 12:51:39 +0100
-Message-ID: <3adfde06895a4734e52b5311b46c59a1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000996]: Noise when enabling dmix
+Date: Wed, 16 Mar 2005 12:52:55 +0100
+Message-ID: <ebad8ed8a98e1bcd27ac47f5921b374c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2F6341F6
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:51:40 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 379621F6
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:52:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,106 +21,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=990> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=996> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                daspooky
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   990
-Category:                   general
+Project:                    ALSA - driver
+Issue ID:                   996
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-14-2005 07:44 CET
-Last Modified:              03-16-2005 12:51 CET
+Date Submitted:             03-15-2005 16:25 CET
+Last Modified:              03-16-2005 12:52 CET
 ======================================================================
-Summary:                    Failure to build "make: *** src/pcm/ext: No such
-file or directory."
+Summary:                    Noise when enabling dmix
 Description: 
-Build of alsa-lib 1.0.9rc1 ends like this:
-
-Making all in utils
-make[2]: Entering directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1/utils'
-make[2]: Nothing to be done for `all'.
-make[2]: Leaving directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1/utils'
-make[2]: Entering directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-cd . && /bin/sh ./config.status Makefile
-config.status: creating Makefile
-make[2]: Leaving directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-make[2]: Entering directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-make[2]: Nothing to be done for `all-am'.
-make[2]: Leaving directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-make[1]: Leaving directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-/usr/bin/make -C src/pcm/ext jack CFLAGS="-g -Wall -O2"
-make: *** src/pcm/ext: No such file or directory.  Stop.
-make: *** [build-arch-stamp] Error 2
-build command failed in
-/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1
-Aborting.
-W: build directory not purged!
-
-The src/pcm/ext subdirectory does not exist.
-
-I attach the full build log.
+I get noise/static when i use the dmix plugin. When i use alsa without an
+.asoundrc file there is no problem. I noticed this since i upgraded alsa
+from 1.0.5 to 1.0.8. Version 1.0.5 didn't have this problem. I didn't try
+versions between 1.0.5 and 1.0.8. The oise dissapears when i lower the
+samplerate in asoundrc to 22000 KHz. Higher than that i get noise. 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-16-05 12:40 
+ tiwai - 03-16-05 12:52 
 ----------------------------------------------------------------------
->  It was fixed in CVS, so I have no idea why this happend on rc1.
-
-The failure was Debian-specific, induced by the disappearance of
-src/pcm/ext/ which our build script expected to be present.
-
-So I guess this report can be closed, unless you want to regard it
-as a request that the plugins tarball be created.
-
-----------------------------------------------------------------------
- tiwai - 03-16-05 12:51 
-----------------------------------------------------------------------
-Ah I see.
-
-I'm still not sure which is better: to create a new alsa-plugins tarball
-or to include it into alsa-tools tree.  But this should be a different
-bug-report.
-
-Now closing this.
+Does the noise occur constantly or occasionally?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 07:44 jdthood        New Issue                                    
-03-14-05 07:44 jdthood        File Added: alsa-lib_20050313jdth1.buildlog       
-            
-03-14-05 07:46 jdthood        File Added: 01_alpha_versioned_symbols.dpatch     
-              
-03-14-05 07:47 jdthood        File Added: 02_aclocal_libs_fix.dpatch            
-       
-03-15-05 22:41 jdthood        Note Added: 0003919                          
-03-15-05 22:55 rlrevell       Note Added: 0003921                          
-03-15-05 23:01 jdthood        Note Added: 0003922                          
-03-15-05 23:03 rlrevell       Note Added: 0003923                          
-03-15-05 23:12 jdthood        Note Added: 0003924                          
-03-16-05 12:33 tiwai          Note Added: 0003942                          
-03-16-05 12:40 jdthood        Note Added: 0003943                          
-03-16-05 12:51 tiwai          Status                   new => resolved     
-03-16-05 12:51 tiwai          Resolution               open => not an issue
-03-16-05 12:51 tiwai          Assigned To               => tiwai           
-03-16-05 12:51 tiwai          Note Added: 0003947                          
+03-15-05 16:25 daspooky       New Issue                                    
+03-15-05 16:27 daspooky       Issue Monitored: daspooky                    
+03-15-05 16:28 daspooky       Issue End Monitor: daspooky                    
+03-16-05 12:52 tiwai          Note Added: 0003948                          
 ======================================================================
 
 
