@@ -1,14 +1,14 @@
-From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Subject: Re: Alsa with development kernel and devfs.
-Date: Sat, 26 Apr 2003 13:27:19 +1000
+From: Nathaniel Gray <n8gray@caltech.edu>
+Subject: Alsa 0.9.0, intel8x0 staticky mess
+Date: Sat, 26 Apr 2003 01:14:22 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030426132719.403b03ae.erikd-alsa@mega-nerd.com>
-References: <20030426031621.60342.qmail@web10703.mail.yahoo.com>
+Message-ID: <200304260114.22164.n8gray@caltech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030426031621.60342.qmail@web10703.mail.yahoo.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,43 +20,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 25 Apr 2003 20:16:21 -0700 (PDT)
-Jake Burns <burnsjake@yahoo.com> wrote:
+I'm running Mandrake 9.1 with Alsa 0.9.0rc7, snd-intel8x0 driver, on a 
+Dell Inspiron 4150.  Here are some bits from lspci:
 
-> Sorry for the newbie like question but alsa has always
-> been confusing to me.  
-> 
-> I downloaded and installed the new 2.5.68 Linux kernel
+00:00.0 Host bridge: Intel Corp. 82845 845 (Brookdale) Chipset Host 
+Bridge (rev 04)
+00:1f.5 Multimedia audio controller: Intel Corp. 82801CA/CAM AC'97 Audio 
+(rev 02)
 
-Are you sure you want to be running on an unstable kernel? 
-A 2.4.X kernel would be much safer.
+Any sounds played end up degenerating into static fuzz after a short 
+period of time.  Occasionally I can successfully play a few seconds of 
+a song with XMMS, but usually it's impossible.  The OSS intel8x0 driver 
+doesn't have this problem, but I'd like to use Jack so I'm hoping to 
+get Alsa going successfully.
 
-> and compiled it with alsa directly into the kernel.  
-> 
-> (I hate modules!)
+Please let me know any further info I can provide.
 
-Do you have any rational reason for hating modules?
+Thank you,
+-n8
 
-> Anyway, I'm using devfs and now there is now /dev/dsp
-> link.  I know this probably isn't the best place to
-> ask but, how in the heck do I get this working?
-> 
-> I would prefer not to use modules.
-
-Since the vast majority of people use ALSA as a module, my guess is
-that you are pretty much on your own here. However, if you were using
-modules, there would probably be a whole bunch of people able to help.
-
-Good luck,
-Erik
 -- 
-+-----------------------------------------------------------+
-  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
-+-----------------------------------------------------------+
-"Don't be fooled by NT/Exchange propaganda. M$ Exchange is 
-just plain broken and NT cannot handle the sustained load 
-of a high-volume remote mail server"  
--- Eric S. Raymond in the Fetchmail FAQ
+>>>-- Nathaniel Gray -- Caltech Computer Science ------>
+>>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
+
 
 
 -------------------------------------------------------
