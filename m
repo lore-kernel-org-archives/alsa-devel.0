@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000892]: (snd_pcm_route_load_ttable) Invalid type for X - when using REAL numbers
-Date: Tue, 8 Feb 2005 15:06:03 +0100
-Message-ID: <00f20cf62d2b9864a7a381940595fb7a@bugtrack.alsa-project.org>
+Date: Tue, 8 Feb 2005 15:09:52 +0100
+Message-ID: <f9a862f414d4179ca800a998b4a0afeb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7577A249
-	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2005 15:06:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6C242249
+	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2005 15:09:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=892> 
 ======================================================================
@@ -37,7 +37,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             02-08-2005 15:06 CET
-Last Modified:              02-08-2005 15:06 CET
+Last Modified:              02-08-2005 15:09 CET
 ======================================================================
 Summary:                    (snd_pcm_route_load_ttable) Invalid type for X -
 when using REAL numbers
@@ -88,10 +88,17 @@ same.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ slammer - 02-08-05 15:09 
+----------------------------------------------------------------------
+Off course when I'm using INT number the pcm works fine!
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-08-05 15:06 slammer        New Issue                                    
+02-08-05 15:06 slammer        Issue Monitored: slammer                     
+02-08-05 15:09 slammer        Note Added: 0003533                          
 ======================================================================
 
 
