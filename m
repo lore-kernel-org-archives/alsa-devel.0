@@ -1,12 +1,16 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: [linux-audio-user] snd-hdsp+cardbus=distortion -- the sagacontinues (cardbus driver=culprit?) MORE UPDATE
-Date: Sun, 04 Apr 2004 18:18:33 -0400
+From: Tim Blechmann <TimBlechmann@gmx.net>
+Subject: Re: [linux-audio-user] snd-hdsp+cardbus=distortion -- the
+ sagacontinues (cardbus driver=culprit?) MORE UPDATE
+Date: Mon, 5 Apr 2004 11:33:20 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200404042218.i34MIXXh006897@dhin.linuxaudiosystems.com>
+Message-ID: <20040405113320.3ffa6ae5@laptop>
 References: <20040405011421.1279aa5a@laptop>
+	<200404042218.i34MIXXh006897@dhin.linuxaudiosystems.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Mon, 05 Apr 2004 01:14:21 +0200."
-             <20040405011421.1279aa5a@laptop>
+In-Reply-To: <200404042218.i34MIXXh006897@dhin.linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,23 +19,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tim Blechmann <TimBlechmann@gmx.net>
+To: Paul Davis <paul@linuxaudiosystems.com>
 Cc: linux-pcmcia@lists.infradead.org, ritsch@iem.at, Thomas Charbonnel <thomas@undata.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->and it HAS do be a software issue, since at least on ico's and my
->machine, the hdsp works flawless with winxp ... 
+> agreed. but its much more likely to be something about the cardbus
+> support under linux than the hdsp driver, and neither side (the
+> cardbus people or us hdsp people) knows the other side at all.
+to figure that out, someone who knows what's going on in the hdsp driver
+has to tell the pcmcia guys, how they access the hardware, so they have
+an idea what they have to look for ... 
 
-agreed. but its much more likely to be something about the cardbus
-support under linux than the hdsp driver, and neither side (the
-cardbus people or us hdsp people) knows the other side at all.
+if someone, who is actually familiar with the driver would do that, it
+would be very kind, since it would take me weeks or monthes to
+understand what's going on in the driver ... 
 
->the problem you have, is that a linux only problem or do you experience
->the same problems with windows?
+cheers...
 
-i have never run windows. sorry.
+ Tim                          mailto:TimBlechmann@gmx.de
+                              ICQ: 96771783
+--
+The only people for me are the mad ones, the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn,
+burn, like fabulous yellow roman candles exploding like spiders across
+the stars and in the middle you see the blue centerlight pop and
+everybody goes "Awww!"
+                                                          Jack Kerouac
 
---p
 
 
 -------------------------------------------------------
