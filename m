@@ -1,12 +1,14 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: ctl api questions
-Date: 11 Mar 2003 10:04:18 +0100
+From: Andrew de Quincey <adq_dvb@lidskialf.net>
+Subject: Audigy2 mixer not working
+Date: Tue, 11 Mar 2003 09:26:14 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1047373458.1906.13.camel@satellite.undata.org>
+Message-ID: <200303110926.14478.adq_dvb@lidskialf.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,30 +20,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi, am I being stupid, or do the mixer controls not work under the Audigy2.
 
-As you may know the hdsp has a variable number of channels depending on
-the sample rate. The card's internal routing is controlled by a matrix
-mixer. For convenience simple mixer ctls are defined at card
-initialization. When the number of channels change, I flag the .access
-field of the unused ctls with SNDRV_CTL_ELEM_READ and
-SNDRV_CTL_ELEM_INACTIVE. It seems to work fine with amixer (amixer
-controls doesn't show anymore the unused channels), but alsamixer gives
-the following error: function snd_mixer_load failed: Invalid argument.
-Any idea on what is going wrong ? 
+If I run alsamixer, I can adjust sliders.... but it has no effect on the 
+output. I can run other programs (e.g. xmms) simultaneously, and see the 
+silder changing in alsamixer, but again, it has no effect on the output.
 
-Another point: the matrix mixer is now (with patch II from Paul)
-read/write. In write mode it takes 3 parameters:
-source,destination,gain. With the amixer patch I submitted some days ago
-it is possible to actually read it, passing source and destination
-channels as parameters to the cget option. In the driver, the return
-values use the same structure as the parameters. Should I respect the
-parameters index (returning the gain value in value[2]) or should I
-consider that return values start at value[0] ?
+I _can_ hear sound, its just that I cannot change volume settings in software.
 
-Thomas
+Interestingly, I can send output to the correct speakers using "aplay -D 
+rear", "aplay -D front" etc...
 
+Can anyone give me any pointers as to how to fix this.. I'm not up (yet) on 
+ALSA's architecture. I _did_ see some files that looked something like mixer 
+definitions in /usr/share/alsa... 
 
+-- 
+adq
 
 
 -------------------------------------------------------
