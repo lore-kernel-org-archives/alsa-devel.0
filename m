@@ -1,14 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: AudioTrak Optoplay...
-Date: Wed, 04 Jun 2003 16:00:46 +0200 (METDST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: build changes
+Date: Wed, 04 Jun 2003 17:57:32 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0306041550170.749-100000@studcom.urz.uni-halle.de>
-References: <200306030848.43580.miller@penguinstation.net>
+Message-ID: <XFMail.20030604175732.pochini@shiny.it>
+References: <Pine.LNX.4.44.0306041339290.1174-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200306030848.43580.miller@penguinstation.net>
+In-Reply-To: <Pine.LNX.4.44.0306041339290.1174-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,34 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ross Miller <miller@penguinstation.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Ross Miller wrote:
-> On Tuesday 03 June 2003 01:03, Clemmens Ladisch wrote:
-> > Are you sure that the Optoplay supports _one_-channel output?
-> >
-> That's a good question - I'll try a stereo WAV later this evening after I get
-> off work.
 
-It doesn't, but your aplay command used the "default" device which
-automatically converts unsupported sample formats.
-Anyway, the problem is with the sample rate.
+On 04-Jun-2003 Jaroslav Kysela wrote:
+>> I tried to replace Rules.make with an older version and it works
+>> fine. How do I compile the driver for 0.9.4+ ?  I also would like
+>> to group all files in a subdir.
+>
+> Do you have a file alsa-driver/pci/echoaudio.patch?
 
-> lsusb -v:
-> [... many lines ...]
-> BTW: Is there any documentation available that explains what all these
-> fields mean?
+Yes... I removed it and now it compiles the main source, but it stops here:
 
-The official documentation for this are the USB 2.0 Specification, the USB
-Audio Specifications, and the USB Human Interface Device Specification
-from www.usb.org, but those are not quite easy to parse.
+make: *** No rule to make target `echoaudiogeneric/CDaffyDuck.c', needed by `echoaudiogeneric/CDaffyDuck.o'.  Stop.
+
+The Makefile contains this line:
+
+snd-echoaudio-objs := echoaudio.o echoaudiogeneric/OsSupportLinux.o [...]
+
+all .cpp sources in echoaudiogeneric/ have already been compiled. It shouldn't try
+to compile them again since object files are up to date.
 
 
-HTH
-Clemens
-
+Bye.
 
 
 
