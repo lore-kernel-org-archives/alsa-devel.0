@@ -1,14 +1,17 @@
-From: Mark Knecht <markknecht@comcast.net>
-Subject: Re: Why does Alsa sometimes not find the HDSP 9652?
-Date: Mon, 22 Dec 2003 08:28:23 -0800
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: m-audio uc33?
+Date: Mon, 22 Dec 2003 17:34:01 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1072110503.2274.1.camel@Wizard.knechthome.com>
-References: <200312221530.hBMFUxZJ015706@dhin.linuxaudiosystems.com>
+Message-ID: <20031222163400.GA826@tuba.home>
+References: <Pine.LNX.4.58.0312221548530.532@autumn>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200312221530.hBMFUxZJ015706@dhin.linuxaudiosystems.com>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id RAA00851
+	for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2003 17:29:24 +0100
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0312221548530.532@autumn>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,35 +20,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Justin Cormack <justin@street-vision.com>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Tim Goetze <tim@quitte.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2003-12-22 at 07:30, Paul Davis wrote:
-> >Justin,
-> >   I'm running Alsa-1.0.0rc2. How much more up to date could I be?
-> >
-> >   Also, this is an HDSP 9652 which has the firmware on the board. Why
-> >is a firmware loader required at all?
+On Mon, Dec 22, 2003 at 04:12:36PM +0100, Tim Goetze wrote:
+> this thing caught my interest:
 > 
-> its not. jaroslav used that phrase because the bug manifested itself
-> most clearly when loading firmware. it was a bit more general than
-> that however, since it affected interactions with the card in several
-> places. 
+> http://m-audio.com/index.php?do=products.main&ID=2505615704f241ab716639de0db48fef
 > 
-> --p
+> it's a control surface (faders, knobs etc) and seems to be able to
+> act as a MIDI I/O interface when connected via USB, which is the
+> only mode of operation i am interested in (out of MIDI interfaces).
+> 
+> having no practical USB MIDI experience yet, i'd like to hear from
+> the experts around here:
+> 
+> * is there a chance this thing will work right away?
+> * if not, does somebody have good contact to m-audio, i.e. is
+>   there a way to acquire/forward programming docs?
+> * if not, how hard do you expect reverse-engineering the protocol to
+>   be?
+> 
 
-Paul,
-   Did I miss a response somehow? I haven't received anything on this
-from Jaroslav.
+It looks like an evolution product:
+http://www.evolution.co.uk/products/evo_uc33e.htm
 
-   Can you offer any insight into the root cause of this problem? Why
-should lspci be able to see the card, but Alsa cannot start the driver?
-(going back tot he original post.)
+The evolution keyboards in the past were using normal USB MIDI drivers. Good
+chances that the uc33 is running in compliance with the specification, too.
+But I can't give a promise here. In case of uc33 it's not written in their 
+product description. Somewhere else?
 
-Thanks,
-Mark
+BTW: The controller knobs of my Evolution MK-249C are working fine and
+ALSA has no evolution quirks inside. I don't know a device of them which wasn't
+class compliant until now.
 
+The Evolution guys were very helpful in the past. They have also written a
+linux HOWTO for their keyboards. But now they are part of M-Audio and that
+can change a lot...
+
+martin
 
 
 -------------------------------------------------------
