@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001021]: codec_semaphore: semaphore is not ready [0x1][0x700300]
-Date: Tue, 29 Mar 2005 16:02:20 +0200
-Message-ID: <ce45b7d7ed1386b10e3f65efd1924f86@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
+Date: Tue, 29 Mar 2005 16:21:22 +0200
+Message-ID: <aa400f442e168f90a907d74bede829f0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 96610267
-	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 16:02:20 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87A3A267
+	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 16:21:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1021> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
 ======================================================================
-Reported By:                brujo66
+Reported By:                yure
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1021
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   881
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Linux Gentoo
-Kernel Version:             2.6.11-r4
 ======================================================================
-Date Submitted:             03-29-2005 16:02 CEST
-Last Modified:              03-29-2005 16:02 CEST
+Date Submitted:             02-03-2005 12:25 CET
+Last Modified:              03-29-2005 16:21 CEST
 ======================================================================
-Summary:                    codec_semaphore: semaphore is not ready
-[0x1][0x700300]
+Summary:                    Distorted sound with enabled dmix plugin
 Description: 
-Hi,
-
-I've tried to install ALSA by two ways: Using the Linux kernel modules and
-compiling ALSA with the original files.
-
-When the system load the 'snd-intel8x0' module, it produces the next
-messages, visibles by dmesg:
-
-PCI: Enabling device 0000:00:1f.5 (0005 -> 0007)
-ACPI: PCI interrupt 0000:00:1f.5[B] -> GSI 11 (level, low) -> IRQ 11
-PCI: Setting latency timer of device 0000:00:1f.5 to 64
-ALSA
-/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/intel8x0.c:582:
-codec_semaphore: semaphore is not ready [0x1][0x700300]
-[...] 
-[...]
-ALSA
-/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/intel8x0.c:582:
-codec_semaphore: semaphore is not ready [0x1][0x700300]
-intel8x0_measure_ac97_clock: measured 49228 usecs
-intel8x0: clocking to 48000
-ALSA
-/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/intel8x0.c:582:
-codec_semaphore: semaphore is not ready [0x1][0x700300]
-ALSA
-/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/intel8x0.c:596:
-codec_write 0: semaphore is not ready forregister 0x2
-
-Those are the unique kind of message that reports error on the system. 
-
-The module is loaded on the system, but the sound of the music is
-distorsionated .
-
-The only solution that i find is to use OSS (not ALSA with OSS
-compatibility).
-
-Sorry about my english.
+After 10-20 minutes listening music with xmms or beep-media-player I hear
+distorted sound. Appear noise.
+This problem is appear when enabled dmix plugin through configuration file
+~/.asoundrc.
 ======================================================================
+
+----------------------------------------------------------------------
+ tvignaud - 03-25-05 14:56 
+----------------------------------------------------------------------
+this option breaks artsd which eat all cpu power.
+it keep running ioctl from snd_pcm_hw_fast_tstamp() (libasound  from
+alsa-lib-1.0.8)
+
+----------------------------------------------------------------------
+ tiwai - 03-29-05 16:21 
+----------------------------------------------------------------------
+OK, now fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-29-05 16:02 brujo66        New Issue                                    
-03-29-05 16:02 brujo66        Distribution              => Linux Gentoo    
-03-29-05 16:02 brujo66        Kernel Version            => 2.6.11-r4       
+02-03-05 12:25 yure           New Issue                                    
+02-04-05 10:39 yure           Note Added: 0003497                          
+02-04-05 10:39 yure           Issue Monitored: yure                        
+02-04-05 14:53 tiwai          Note Added: 0003506                          
+02-04-05 15:30 yure           Note Added: 0003508                          
+02-04-05 15:36 yure           Note Added: 0003509                          
+02-23-05 13:35 yure           Note Added: 0003711                          
+02-23-05 19:23 tiwai          Note Added: 0003713                          
+02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
+
+02-23-05 19:24 tiwai          Note Added: 0003714                          
+02-23-05 19:33 tiwai          Note Added: 0003715                          
+02-24-05 22:09 tiwai          Note Added: 0003729                          
+02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
+       
+02-25-05 10:36 yure           Note Added: 0003732                          
+02-28-05 15:00 tvignaud       Note Added: 0003744                          
+02-28-05 15:22 yure           Note Added: 0003745                          
+02-28-05 15:26 warly          Note Added: 0003746                          
+03-11-05 13:06 tvignaud       Note Added: 0003887                          
+03-11-05 16:17 tiwai          Note Added: 0003891                          
+03-23-05 20:46 tiwai          Note Added: 0004187                          
+03-23-05 20:47 tiwai          File Added: dmix-slowptr.diff                    
+03-25-05 14:56 tvignaud       Note Added: 0004206                          
+03-29-05 16:21 tiwai          Note Added: 0004246                          
 ======================================================================
 
 
