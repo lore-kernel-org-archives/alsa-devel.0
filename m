@@ -1,11 +1,11 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Mailing list archive??
-Date: Tue, 12 Aug 2003 19:45:48 -0700 (PDT)
+From: Damien Sandras <dsandras@seconix.com>
+Subject: SND_PCM_OPEN_PLAYBACK & SND_PCM_OPEN_CAPTURE
+Date: 13 Aug 2003 12:05:04 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030813024548.95987.qmail@web21504.mail.yahoo.com>
-Reply-To: tsw@johana.com
+Message-ID: <1060769104.18854.2.camel@linuxzone>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,28 +15,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa development <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Off of a "sound card" subject, but is there an archive of this mailing
-list, and is it searchable??
+Hello,
 
-I just changed to the digest version, and in changing didn't see any
-thing like either of these.
+I would like to know if it is always possible to open the same device
+twice at the same time : once with SND_PCM_OPEN_PLAYBACK and once with
+SND_PCM_OPEN_CAPTURE.
 
-Of course, if not, could someone??
+I know it is not possible with OSS, but I wanted to know if ALSA makes
+it possible or if the device has to be opened only once with
+SND_PCM_OPEN_DUPLEX in that case.
 
-Thanks.
-
-=====
+Thanks a lot!
 -- 
-Tom Watson
-tsw@johana.com
+Damien Sandras <dsandras@seconix.com>
 
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
 
 
 -------------------------------------------------------
