@@ -1,9 +1,16 @@
-From: "thewade" <pdman@aproximation.org>
-Subject: Re: Alsa and hdspmixer segfault
-Date: Sat, 2 Oct 2004 22:44:45 -0600
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000562]: No AC3 sound playable through S/PDIF with certain amplifiers
+Date: Sun,  3 Oct 2004 10:38:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410030444.i934ijUa004509@sanctuary.aproximation.org>
+Message-ID: <20041003083826.08EB847005@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 676091F3
+	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 10:38:26 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 183C129215
+	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 10:38:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -12,69 +19,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> > Should I rebuild fltk?
-> 
-> Not always, but what shows the stack trace?
 
-I rebuilt fltk from source, then rebuilt hdspmixer.
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000562
+======================================================================
+Reported By:                herpes
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     562
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             10-03-2004 10:38 CEST
+Last Modified:              10-03-2004 10:38 CEST
+======================================================================
+Summary:                    No AC3 sound playable through S/PDIF with certain amplifiers
+Description: 
+This has already been on the mailing list, see also
+http://www.mail-archive.com/alsa-user%40lists.sourceforge.net/msg13822.html.
 
-I started with fltk-1.1.5rc2. That built but had many warnings. I
-moved the libraries installed by fltk-1.1.4-1.1.fc2.dag.x86_64.rpm
-and re-ran ldconfig. I then rebuilt and ran hdspmixer but had the
-same error as before, line 68 in hdspmixer.cxx (see end of email).
+When playing AC3 through the S/PDIF out on my Terratec 512i, I get no
+sound at all. Normal PCM and DTS streams work.
+======================================================================
 
-I tried to rebuild fltk-1.2.x but it didnt build.
-Then I tried fltk-2.0.x and that built fine, but hdspmixer
-complained about the declaration (or lack thereof) of many items.
-
-What should I do?
-Thanks!
--thewade
-
-hdspmixer build error with fltk-2.0.x:
-hdspmixer.cxx:29:31: FL/Fl_Preferences.H: No such file or directory
-In file included from HDSPMixerCard.h:30,
-                 from hdspmixer.cxx:31:
-HDSPMixerWindow.h:28:26: FL/Fl_Scroll.H: No such file or directory
-HDSPMixerWindow.h:29:24: FL/Fl_Menu.H: No such file or directory
-In file included from HDSPMixerWindow.h:48,
-                 from HDSPMixerCard.h:30,
-                 from hdspmixer.cxx:31:
-HDSPMixerSetup.h:30:32: FL/Fl_Round_Button.H: No such file or directory
-In file included from HDSPMixerWindow.h:48,
-                 from HDSPMixerCard.h:30,
-                 from hdspmixer.cxx:31:
-HDSPMixerSetup.h:46: error: ISO C++ forbids declaration of `Fl_Round_Button\' with no type
-HDSPMixerSetup.h:46: error: expected `;\' before \'*\' token
-(etcetera, etcetera...)
-
-back trace of hdspmixer and fltk-1.1.4-1.1.fc2.dag.x86_64.rpm:
-#0  0x0000003092b6d075 in cb2 () from /usr/lib64/libfltk.so.1.1
-#1  0x0000003092b6cc56 in innards () from /usr/lib64/libfltk.so.1.1
-#2  0x0000003092b6cdf0 in fl_draw_image () from /usr/lib64/libfltk.so.1.1
-#3  0x0000003092b6d34c in fl_draw_pixmap () from /usr/lib64/libfltk.so.1.1
-#4  0x0000003092b6d099 in fl_draw_pixmap () from /usr/lib64/libfltk.so.1.1
-#5  0x0000003092b3d37e in Fl_Group::draw_child () from /usr/lib64/libfltk.so.1.1
-#6  0x00000000004126b0 in HDSPMixerIOMixer::draw (this=0x58b0a0) at HDSPMixerIOMixer.cxx:79
-#7  0x0000003092b3d37e in Fl_Group::draw_child () from /usr/lib64/libfltk.so.1.1
-#8  0x0000003092b3d275 in Fl_Group::draw_children () from /usr/lib64/libfltk.so.1.1
-#9  0x0000003092b3d2d4 in Fl_Group::draw () from /usr/lib64/libfltk.so.1.1
-#10 0x0000003092b3d37e in Fl_Group::draw_child () from /usr/lib64/libfltk.so.1.1
-#11 0x0000003092b5041b in Fl_Scroll::draw_clip () from /usr/lib64/libfltk.so.1.1
-#12 0x0000003092b50bb6 in Fl_Scroll::draw () from /usr/lib64/libfltk.so.1.1
-#13 0x0000003092b3d37e in Fl_Group::draw_child () from /usr/lib64/libfltk.so.1.1
-#14 0x0000003092b3d275 in Fl_Group::draw_children () from /usr/lib64/libfltk.so.1.1
-#15 0x0000003092b3d2d4 in Fl_Group::draw () from /usr/lib64/libfltk.so.1.1
-#16 0x0000003092b60dda in Fl_Window::draw () from /usr/lib64/libfltk.so.1.1
-#17 0x0000003092b36f09 in Fl_Double_Window::flush () from /usr/lib64/libfltk.so.1.1
-#18 0x0000003092b36e0b in Fl_Double_Window::flush () from /usr/lib64/libfltk.so.1.1
-#19 0x0000003092b2af29 in Fl::flush () from /usr/lib64/libfltk.so.1.1
-#20 0x0000003092b2abdd in Fl::wait () from /usr/lib64/libfltk.so.1.1
-#21 0x0000003092b2acde in Fl::run () from /usr/lib64/libfltk.so.1.1
-#22 0x000000000040c489 in main (argc=1, argv=0x7fbffff838) at hdspmixer.cxx:86
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-03-04 10:38 herpes         New Bug                                      
+10-03-04 10:38 herpes         Distribution              => Debian          
+10-03-04 10:38 herpes         Kernel Version            => 2.6.8.1         
+======================================================================
 
 
 -------------------------------------------------------
