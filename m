@@ -1,14 +1,12 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: Re: HDSP driver update
-Date: 07 Apr 2003 15:07:13 +0200
+From: Frank Barknecht <fbar@footils.org>
+Subject: ALSA vs OSS: Some questions
+Date: Mon, 7 Apr 2003 16:50:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1049720707.1447.3.camel@satellite.undata.org>
-References: <E192VvZ-0000Px-00@dardilly>
+Message-ID: <20030407145029.GA19610@fliwatut.scifi>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E192VvZ-0000Px-00@dardilly>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,23 +15,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hallo,
 
-> >The card won't work until the firmware is uploaded with the hdspload
-> >tool. 
-> 
-> am i right in thinking that this means that the driver will load, but
-> the card won't actually work?
+I'm working on a Linux Audio article, where I also do provide a short
+comparison of ALSA vs. OSS. For this, because I'm in no way a hardware
+developer, I have some questions to make sure, I understand things
+correctly. Would someone with deeper insight in the OSS/ALSA internals
+help me and tell me, if the following assumptions are correct?
 
-The driver will load but only the hwdep interface will be created.
-The only way to interact with the card is through the defined hwdep
-ioctls. After the firmware is uploaded, all the remaining interfaces are
-created (midi, pcm, ctl), and the card is fully functional.
+I read, that OSS was hard to extent, for example to write drivers for
+modern hardware. Why is this so? 
 
+Is it, because OSS ties its model of programming too close to the
+hardware?
 
+Paul Davis said in its LAD keynot, that in the past we only had OSS
+and only had 16-bit interleaved stereo. From reading the OSS-developer
+docs, it seemed to me, that OSS does support more formats than 16-bit
+interl. stereo. So what can ALSA do in the format department, that OSS
+couldn't do?
+
+Can the ICE1712 chip server as an example for these difficulties? The
+ICE chip doesn't support CD-quality music (44.1 samplerate, 16-bit,
+stereo) in hardware, if I'm right? What format does it support? And
+how does ALSA help in getting this supported compared to OSS (which
+hasn't support for the ICE-cards)
+
+Thank you very much for your answers and facts.
+
+Regards,
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
