@@ -1,16 +1,16 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: [PATCH] Adds 24bit, 96khz support for multichannel
  playback on the Audigy 2 sound cards.
-Date: Sun, 13 Mar 2005 11:23:00 +0000
-Message-ID: <42342294.8080808@superbug.co.uk>
+Date: Sun, 13 Mar 2005 13:05:33 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0503131304410.1755@pnote.perex-int.cz>
 References: <423349A5.8020001@superbug.co.uk> <Pine.LNX.4.58.0503130906540.1755@pnote.perex-int.cz>
+ <42341B5F.20504@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Received: from anchor-post-32.mail.demon.net (anchor-post-32.mail.demon.net [194.217.242.90])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D91441D6
-	for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2005 12:23:01 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.58.0503130906540.1755@pnote.perex-int.cz>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D78B81E0
+	for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2005 13:18:35 +0100 (MET)
+In-Reply-To: <42341B5F.20504@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,27 +20,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
+To: James Courtier-Dutton <James@superbug.co.uk>
 Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Sat, 12 Mar 2005, James Courtier-Dutton wrote:
-> 
-> 
->>Please see readme.txt at 
->>http://www.alsa-project.org/~james/alsa-driver/p16v/
->>http://www.alsa-project.org/~james/alsa-driver/p16v/readme.txt
->>
-> 
-> Could you cleanup a bit your code before merging? It seems that there is 
-> alot of #if 0 .. #endif parts....
-> 
+On Sun, 13 Mar 2005, James Courtier-Dutton wrote:
 
-I have updated the p16v.c file as you requested. it is in 
-http://www.alsa-project.org/~james/alsa-driver/p16v/p16v.c
+> Jaroslav Kysela wrote:
+> > 
+> > 
+> > Could you cleanup a bit your code before merging? It seems that there is 
+> > alot of #if 0 .. #endif parts....
+> > 
+> 
+> The code inside the #if 0 .. #endif implements features that I have not 
+> yet finished merging. E.g. 24bit capture.
+> As I fix each section, the #if 0 etc. will be removed.
+> Would you prefer that I just remove all the current sections under #if 0 
+> and then add them back in as I get them working?
 
+Okay, applied the stripped version and new code slipped into 1.0.9rc1 
+(will be available in next minutes)...
 
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
