@@ -1,15 +1,13 @@
-From: Stuffed Crust <pizza@shaftnet.org>
-Subject: Re: Selectable async notification signal?
-Date: Thu, 11 Apr 2002 14:02:41 -0400
+From: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
+Subject: Re: PCM Rate Plugin
+Date: Fri, 12 Apr 2002 08:29:36 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020411140241.C15906@shaftnet.org>
-References: <20020407234548.A14312@shaftnet.org> <s5hzo0ajjbi.wl@alsa2.suse.de>
+Message-ID: <Pine.BSF.4.44.0204120813260.75335-100000@fest.stud.fee.vutbr.cz>
+References: <s5h1ydmky2s.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-md5;
-	protocol="application/pgp-signature"; boundary="DSayHWYpDlRfCAAQ"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hzo0ajjbi.wl@alsa2.suse.de>; from tiwai@suse.de on Thu, Apr 11, 2002 at 06:23:13PM +0200
+In-Reply-To: <s5h1ydmky2s.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,68 +16,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 11 Apr 2002, Takashi Iwai wrote:
 
---DSayHWYpDlRfCAAQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Hi Kasparek,
+>
+> > But for native ALSA recoding on frequency other that defined in card ends
+> > with "arecord" saying everything is fine, but created file contains just
+> > header. My driver is requested to capture on some near rate in this case.
+>
+> well, then it's a bug of alsa-lib.
+> could you explain the symptom more precisely?
 
-On Thu, Apr 11, 2002 at 06:23:13PM +0200, Takashi Iwai wrote:
-> int snd_pcm_async(snd_pcm_t *pcm, int sig, pid_t pid)
->=20
-> .. so you can pass your favorite signal to the 2nd argument.
->=20
-> or do i misunderstand your question?
+I have solved this yet. Original behavior (using "pcm.default") was:
 
-Yes, let me try to explain it a bit better.
+- using rate supported by card -> mono and stereo capture works
 
-BTW, This is for FreeSCI (http://freesci.linuxgames.com).
+- using non-standard rate -> just stereo works (that is native for the UDA
+  chip), for Mono "arecod" produces just 44bytes of header.
 
-The main process forks off a child to handle all of the sound-related
-stuff, and communicates with that child through a pair of pipes.  We use
-select()s to check for events, usually with a very small (~100ms max)
-timeout.  We need the timeout to enforce note timing.
+I solved this using own configuration:
 
-The child process is what opens the sound device.
+pcm.h3600 {
+type plug
+slave  {
+pcm {
+    type hw
+    card 0
+    }
+#format "S16_LE"
+#channels 2
+rate "unchanged"
+}
+}
 
-I wrote an ALSA PCM output plugin for FreeSCI which uses async PCM; ie
-I register a callback, and every period ALSA kicks in, executes the
-callback and fills its buffers.
+I need to specify the "rate" line. Then resampling and mono <-> stereo
+transformation works fine. I tried sample format conversion, but it does
+work well just with my configuration too. (I tried S|U 16 LE|BE, MU_LAW)
 
-Both on their own work just fine.  However, when I turn on the ALSA
-callback, the select()s block indefinately.   Since the select()s block,
-no note data gets fired off, which results in no sound.
+The card is UDA1341TS on H3600 (iPAQ) - native support just for U16_LE,
+stereo.
 
-I am not installing any SIGIO handler at all; The only ones installed in
-the child is SIGPIPE.
+Weel, I would like to ask one more question: The chip sipport not only
+16bit(LE) samples but 18 and 20 bits LE samples too. Would it be hard to
+update ALSA to support these sample sizes? Where should I look for
+informations when trying to get this running?
 
-I tried the snd_pcm_async() call; that didn't help.  What
-happens is the callback keeps kitting my custom signal, but meanwhile
-the select()s still block. =20
+Bye
 
-If I don't start the pcm device, then the select()s succeed.
+--
 
- - Pizza
---=20
-Solomon Peachy                                    pizzaATfucktheusers.org
-I ain't broke, but I'm badly bent.                           ICQ# 1318344
-Patience comes to those who wait.
-    ...It's not "Beanbag Love", it's a "Transanimate Relationship"...
-
---DSayHWYpDlRfCAAQ
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE8tc/BysXuytMhc5ERAqiXAJ43tNt7Pv5zGBPop/O1da64wnQokgCeMidT
-2mOyYQXF9M3Jap4h/Ly2a1c=
-=zL2s
------END PGP SIGNATURE-----
-
---DSayHWYpDlRfCAAQ--
+	Tomas Kasparek (sioux, xkaspa06)
+ 	 tomas.kasparek@[seznam.cz,volny.cz]
+	 linux@fit.vutbr.cz
+	student FIT VUT Brno
