@@ -1,14 +1,12 @@
-From: Mark J Roberts <mjr@znex.org>
-Subject: Re: Patch to fix LIN_OUT1 on Audigy2 cards (+ others)
-Date: Fri, 21 Mar 2003 03:11:08 -0600
+From: Andrei Boros <andrei@srr.ro>
+Subject: snd-opti92x-ad1848 problems
+Date: Thu, 20 Mar 2003 10:52:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030321091108.GA1324@znex>
-References: <200303120648.HAA27496@www1.pobox.sk> <200303122216.33901.adq_dvb@lidskialf.net> <20030318051812.GA1810@znex> <200303182213.12650.adq_dvb@lidskialf.net>
+Message-ID: <3E798142.B875E784@srr.ro>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <200303182213.12650.adq_dvb@lidskialf.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,163 +15,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrew de Quincey <adq_dvb@lidskialf.net>
-Cc: p z oooo <pzad@pobox.sk>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Andrew de Quincey:
-> Cool, I'll add that to my list
-> BTW, attached is my current state of analysis of the mixer devices.. not 
-> complete yet (been very busy recently).
-> 
-> If you can be bothered, can you confim what I've got so far?
 
-I've obviously had little success being bothered so far... I guess
-I'll post what I can right now.
+ I finally got the modules to compile and work. make-3.79 gave me a
+headache to install last night, but I got it in. 
 
-> * Tone
-> 
->   Switch to enable tone controls
->   Umuted: enabled
->   Muted: disabled
-> 
-> * Bass
-> 
->   Controls output Bass.
-> 
-> * Treble
-> 
->   Controls output Treble.
+ I built the snd-opti92x-ad848 module and attempted to use it:
 
-These work here too.
+isapnp configures the card as : 
+gate:/lib/modules/2.2.24/misc# isapnp /etc/isapnp.conf
+Board 1 has Identity 1f 08 00 00 00 24 09 14 3e:  OPT0924 Serial No
+134217728 [checksum 1f]
+OPT0924/134217728[0]{Pro Audio 16        }: Ports 0x220 0x130 0x380;
+IRQ7 DMA0 DMA1 --- Enabled OK
+OPT0924/134217728[1]{Game Port           }: Port 0x201; --- Enabled OK
+OPT0924/134217728[2]{MPU401              }: Port 0x300; IRQ5 --- Enabled
+OK
+/etc/isapnp.conf:263 -- Warning - resource conflict allocating IRQ5 (see
+/etc/isapnp.conf)
+OPT0924/134217728[5]{OPT924              }: Port 0x30D; IRQ5 --- Enabled
+OK
 
-> ? Surround
+(with or without MPU401 enabled and that shared IRQ is the same. anyway,
+I got no more spare irqs...)
 
-IIRC, with "aplay -D rear out.dat", this will control its volume.
+a modprobe snd-opti92x-ad1848 gives Device or resource busy.
+I tried to give it the parameters as isapnp=1, same.
+I gave it all the parameters with all settings as set by isapnp tool,
+same.
+Then, on a hunch, I gave changed the port from 220 to 530 (as I
+remembered this was the port it used to run on under windows as WSS)
 
-> * Wave
-> 
->   Master control volume of PCM data (and ONLY PCM data).
->   Volume controls work.
+I did: 
+ modprobe snd-opti92x-ad1848 isapnp=1 port=0x220 mpu_port=0x300
+fm_port=0x380 irq=7 mpu_irq=5 dma1=0
 
-Controls my line1 and spdif out. BTW, do you know how I can output
-to the rca spdif out ("Optical IEC958"), _without_ outputting to
-anything else? I want to run my iiwusynth output through an effects
-processor but I can't figure out how to do it properly without
-feedback.
+and the module loaded ok! 
 
-mjr$ aplay -D iec958 out.dat
-ALSA lib pcm_hw.c:1078:(snd_pcm_hw_open) open /dev/snd/pcmC1D3p failed: No such device
+I tried to play some sound file and I get :
+# aplay daffy12.wav
+Playing WAVE 'daffy12.wav' : Unsigned 8 bit, Rate 11025 Hz, Mono
+aplay: pcm_write:1025: write error: Input/output error
 
-is one thing i tried without success.
 
-Unrelated: it's interesting that my audigy1's line1 output was quite
-a bit louder than the audigy2's, though it had a worse noise floor
-even when turned down to a comparable level. Weirdly, the OSS driver
-for it was softer, about comparable to my audigy2 right now.
 
-> ? Wave Center
-> ? Wave LFE
-> ? Wave Surround
-
-All working here.
-
-> ? Music
-> ? Music Capture
-> * Line
-> 
->   Controls input from LIN_IN on card.
-> 
->   Mute/unmute works.
->   Volume controls work.
->   Needs to be selected as a capture input.
-> 
-> * Line2
-> 
->   Controls input from "Line 2"/"Mic 2" on drive.
->   Volume controls work.
-> 
-> ? Line2 Capture
-> * CD
-> 
->   Controls input from CD_IN on card.
->   Mute does not work.
->   Volume does not work.
->   Needs to be selected as a capture input.
->   Volume is controlled by Capture+AC97.
-> 
-> ? Mic
-> ? Mic Boost
-> ? Mic Select
-> ? Video
-> ? Phone
-> ? PC Speaker
-> * Aux
-> 
->   Controls input from AUX_IN on card.
->   Volume does not work.
->   Needs to be selected as a capture input.
->   Volume is controlled by Capture+AC97.
-> 
-> * Aux2
-> 
->   Controls input from Aux In 2 on drive.
->   Volume controls work.
-> 
-> ? Aux2 Capture
-> ? Mono Out
-
-All untested, sorry.
-
-> * Capture
-> 
->   Provides master control for all capturing.
-> 
->   Volume control works and affects all captures.
->   Select as a capture device to enable capture. Deselect to disable all capturing.
-
-I've been able to capture from spdif without turning up this
-slider... I'm not really sure about the specifics now.
-
-> ? Mix
-> ? Mix Mono
-> ? AC97
-> ? AC97 Capture
-> * Audigy Analog/Digital Output Jack
-> 
->   Controls switch between output on LIN_OUT1, LIN_OUT2, LIN_OUT3 and Digital-out-jack on card.
->   Needs the special creative speakers to take advantage of digital (Audigy/2 cannot encode AC3)
->   Can also passthrough pre-encoded AC3 (e.g. from a DVD)
-> 
->   Unmuted: Analogue output
->   Muted:   Digital output through
-> 
-> * Audigy CD
-> 
->   Controls input from CD_SPDIF connector.
-> 
-> ? Audigy CD Capture
-> ? External Amplifier Power Down
-
-All untested.
-
-> ? Optical IEC958
-> ? Optical IEC958 Capture
-
-These are my audigy-drive rca spdif sliders.
-
-> ? RCA SPDIF
-> ? RCA SPDIF Capture
-
-I don't know what these are supposed to do, given the above...
-
-Oh, and MIDI input is still an unresolved issue. No interrupts, etc,
-through the gameport and the drive. Output works on both. Maybe a
-problem with snd_emu10k1_intr_enable()? Without datasheets I am
-totally hopeless...
+-- 
+ing. Andrei Boros
+mailto:andrei@srr.ro / +40-21-303-1870
+Centrul pt. Tehnologia Informatiei
+Societatea Romana de Radiodifuziune
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+This SF.net email is sponsored by: Tablet PC.  
+Does your code think in ink? You could win a Tablet PC. 
+Get a free Tablet PC hat just for playing. What are you waiting for? 
+http://ads.sourceforge.net/cgi-bin/redirect.pl?micr5043en
