@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000351]: Too large I/O port region requested for gameport
-Date: Fri, 16 Jul 2004 12:50:12 +0200 (CEST)
+Subject: [ALSA - driver 0000207]: Mixer controls wrong with Intel Corp. 82801DB AC'97 Audio (rev 01)
+Date: Fri, 16 Jul 2004 12:51:16 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716105012.B103D26008@server.perex-int.cz>
+Message-ID: <20040716105116.225E026008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 28B2E255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:50:13 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 856D3255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:51:16 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,53 +22,59 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000351
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000207
 ======================================================================
-Reported By:                wiget
+Reported By:                biny
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     351
-Category:                   PCI - cmipci
+Bug ID:                     207
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               PLD Linux
-Kernel Version:             2.6.6-0.28
+Distribution:               Red Hat Linux 9
+Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             06-30-2004 12:02 CEST
-Last Modified:              07-16-2004 12:50 CEST
+Date Submitted:             04-13-2004 11:20 CEST
+Last Modified:              07-16-2004 12:51 CEST
 ======================================================================
-Summary:                    Too large I/O port region requested for gameport
+Summary:                    Mixer controls wrong with Intel Corp. 82801DB AC'97 Audio (rev 01)
 Description: 
-In me system gameport is available on 0x201, but on 0x208-0x20f I have "pnp
-00:0b". In cmipci.c for gameport is reserved 8 ioports (0x200-0x208 or
-0x201-0x209), but only first ioport is used by analog joystick driver
-(gameport_read() from include/linux/gameport.h use inb() if gameport
-driver doesn't define gameport->read()).
-Attached patch change request_region() calls for gameport to reserve only
-one ioport.
+Master and PCM mixer controls do affect to the volume correctly, but the
+balance does not affect to the balance.
+
+Some flash animation got the sound in some way wrong when I was using the
+OSS driver and then I changed to alsa to see whether it would work better.
+It doesn't. If I mute either left or right (not both), I think I get more
+bass, but it still doesn't sound correctly.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-30-2004 15:42 CEST 
+ biny - 05-10-2004 14:45 CEST 
 ----------------------------------------------------------------------
-already applied to cvs.
+Sorry, this bug is can be closed as invalid. (A plug was loosely
+connected.)
 
-thanks.
+----------------------------------------------------------------------
+ tiwai - 05-10-2004 15:40 CEST 
+----------------------------------------------------------------------
+ok, closed as you wished :)
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-30-04 12:02 wiget          New Bug                                      
-06-30-04 12:02 wiget          File Added: cmipci-joystick.patch                    
-06-30-04 12:02 wiget          Distribution              => PLD Linux       
-06-30-04 12:02 wiget          Kernel Version            => 2.6.6-0.28      
-06-30-04 15:42 tiwai          Bugnote Added: 0001350                       
-06-30-04 15:42 tiwai          Resolution               open => fixed       
-06-30-04 15:42 tiwai          Status                   assigned => resolved
-07-16-04 12:50 tiwai          Status                   resolved => closed  
+04-13-04 11:20 biny           New Bug                                      
+04-13-04 11:20 biny           Distribution              => Red Hat Linux 9 
+04-13-04 11:20 biny           Kernel Version            => 2.4.25          
+05-10-04 14:45 biny           Bugnote Added: 0001077                       
+05-10-04 15:40 tiwai          Bugnote Added: 0001078                       
+05-10-04 15:40 tiwai          Assigned To               => tiwai           
+05-10-04 15:40 tiwai          Resolution               open => not a bug   
+05-10-04 15:40 tiwai          Status                   new => resolved     
+07-16-04 12:51 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
