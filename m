@@ -1,13 +1,14 @@
-From: Kristof vansant <de_lupus@pandora.be>
-Subject: Re: I think MSI KT6 Delta-SR also needs   
-	VIA_DXS_NO_VRA in whitelist
-Date: Wed, 11 Feb 2004 18:54:54 +0100
+From: Frank Barknecht <fbar@footils.org>
+Subject: Re: Creamware Noah, snd-usb-audio capable?
+Date: Wed, 11 Feb 2004 19:00:13 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1076522094.2848.2.camel@D5E03F95.kabel.telenet.be>
+Message-ID: <20040211180013.GF6493@fliwatut.scifi>
+References: <20040210213617.GH10941@fliwatut.scifi> <Pine.HPX.4.33n.0402111036160.24733-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <Pine.HPX.4.33n.0402111036160.24733-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,39 +17,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-How can I see that it is enabled?
-I patched it and installed it.
+Hallo,
+Clemens Ladisch hat gesagt: // Clemens Ladisch wrote:
 
-At Wed, 11 Feb 2004 16:02:00 +0100,
-Kristof vansant wrote:
+> Frank Barknecht wrote:
+> > The main reason for my assumption is the value for bInterfaceNumber
+> > which is "3" or 0x03 as it should be according to the USB spec which
+> > requires for a "MIDI Adapter Standard MIDIStreaming Interface
+> > Descriptor" to have this field set as follows:
+> >
+> > Offset Field                Size  Value   Description
+> > ...
+> > 6      bInterfaceSubclass   1     0x03   MIDISTREAMING.
+> > ...
 > 
-> This: ?
+> The bInterfaceNumber field simply specifies the number (i.e., the
+> index) of the interface.  Interfaces must be numbered 0, 1, 2, etc.
 
-yes.
+Ah, my fault: I intended to write "bInterfaceSubclass" as in the
+spec quote... 
 
+> The problem is that bInterfaceClass isn't set to 1 (Audio).
 > 
-> 
-> 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/
-> A/8235 AC97 Audio Controller (rev 60)
-> 
-> 0000:00:11.5 Class 0401: 1106:3059 (rev 60)
->         Subsystem: 1462:5901
->         Flags: medium devsel, IRQ 11
->         I/O ports at d800
->         Capabilities: [c0] Power Management version 2
+> The class-specific descriptors are there (lsusb shows them as
+> "unknown" because it doesn't try to parse vendor-specific things), so
+> it should be possible to use the MIDI_STANDARD_INTERFACE quirk (see
+> below).
 
-could you test the attached patch?
+I'd love to test it, but I had to send back the device already. :(
+Could you test it? 
 
-
-thanks,
-
-Takashi
-
-
+ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
