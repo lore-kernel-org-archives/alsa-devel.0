@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000545]: midi note off ignored?! (i'm not sure that this is driver problem - correct me if wrong)
-Date: Wed, 10 Nov 2004 14:05:13 +0100
-Message-ID: <0a0c86e2a153bcf61d592be01ec0ecac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000626]: Oops on cat /dev/urandom > /dev/dsp
+Date: Wed, 10 Nov 2004 14:05:31 +0100
+Message-ID: <3795cec4282de3ce50f64401dfa191ce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 69EEC24A
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 14:05:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 73C32164
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 14:05:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,79 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=545> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=626> 
 ======================================================================
-Reported By:                vlajsa
-Assigned To:                pzad
+Reported By:                Luke-Jr
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   545
-Category:                   PCI - emu10k1
+Issue ID:                   626
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
+Status:                     assigned
 Distribution:               
-Kernel Version:             2.6.9-rc2
-Resolution:                 fixed
-Fixed in Version:           
+Kernel Version:             
 ======================================================================
-Date Submitted:             09-26-2004 17:34 CEST
+Date Submitted:             11-03-2004 15:14 CET
 Last Modified:              11-10-2004 14:05 CET
 ======================================================================
-Summary:                    midi note off ignored?! (i'm not sure that this is
-driver problem - correct me if wrong)
+Summary:                    Oops on cat /dev/urandom > /dev/dsp
 Description: 
-Using sequencer application (tested with rosegarden) and vkeybd produce
-some strange sustain-like channel-lock effect. With rosegarden midi note
-is played only once (only first that appeared in midi track) and others
-are corrctly sent to alsa but not audiable. That first note is pitch and
-velocity correct. With vkeybd this is some kind wierder - Every played
-note is audiable as it should, but effect is more like deep reverb on most
-instuments piano), and sustan like on looping instruments (organs)!
+Oops: kernel access of bad area, sig: 11
+[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+NIP: D253BD20 LR: D253C634 SP: CE547DB0 REGS: ce547d00 TRAP: 0300    Not
+tainted
+MSR: 00009032 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
+DAR: D254203C, DSISR: 40000000
+TASK = c07c77d0[7282] 'cat' THREAD: ce546000Last syscall: 4
+GPR00: 000007FC CE547DB0 C07C77D0 CF7B7B40 CFC38980 C063C8E0 00000200
+00000B03
+GPR08: 00000001 D2541840 000007FC D2541880 CF7B7B24 1001C140 00000000
+00000000
+GPR16: 00000001 CFC38980 C063C8E0 00000000 00000000 10015080 00000001
+00000000
+GPR24: 00000000 CFC400A0 CFC38980 D253BCD8 CFC38980 CF7B7BB0 CF7B7B40
+00000B03
+NIP [d253bd20] resample_expand+0x48/0x3a8 [snd_pcm_oss]
+LR [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
+Call trace:
+ [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
+ [d2539020] snd_pcm_plug_write_transfer+0x1cc/0x2a0 [snd_pcm_oss]
+ [d2534518] snd_pcm_oss_write2+0xb4/0x12c [snd_pcm_oss]
+ [d2536c94] snd_pcm_oss_write+0x220/0x26c [snd_pcm_oss]
+ [c0058320] vfs_write+0x114/0x13c
+ [c0058424] sys_write+0x4c/0x90
+ [c00063a0] ret_from_syscall+0x0/0x44
+
 ======================================================================
 
 ----------------------------------------------------------------------
- vlajsa - 10-20-04 18:22 
+ tiwai - 11-10-04 12:10 
 ----------------------------------------------------------------------
-Please close this one! I've upgraded to 1.0.7rc2 and all seems to be fine
+Compile with CONFIG_FRAME_POINTER=y in the kernel config.
+
+----------------------------------------------------------------------
+ Luke-Jr - 11-10-04 14:05 
+----------------------------------------------------------------------
+Don't see that option in my .config and according to "grep FRAME_POINTER
+`find -name Kconfig`", it is only available on ppc64 and m32r platforms.
+This system is an iBook running on a 900 MHz G3 (ppc), so the option
+doesn't seem to be available...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-04 17:34 vlajsa         New Issue                                    
-09-26-04 17:34 vlajsa         Kernel Version            => 2.6.9-rc2       
-10-20-04 18:22 vlajsa         Note Added: 0002217                          
-11-10-04 14:05 tiwai          Status                   assigned => resolved
-11-10-04 14:05 tiwai          Resolution               open => fixed       
+11-03-04 15:14 Luke-Jr        New Issue                                    
+11-09-04 18:51 tiwai          Note Added: 0002334                          
+11-09-04 19:22 Luke-Jr        Note Added: 0002345                          
+11-09-04 19:41 tiwai          Note Added: 0002349                          
+11-09-04 20:14 Luke-Jr        Note Added: 0002351                          
+11-10-04 12:10 tiwai          Note Added: 0002365                          
+11-10-04 14:05 Luke-Jr        Note Added: 0002373                          
 ======================================================================
 
 
