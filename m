@@ -1,10 +1,14 @@
-From: "=?gb2312?B?c3Vkb25n?=" <sudong@tcl.com>
-Subject: =?gb2312?B?UHJvYmxlbSBhYm91dCBQQ00gZGV2aWNlIG9uIGlNWDIxIGJvYXJk?=
-Date: Wed, 12 Jan 2005 21:54:37 +0800 (CST)
-Message-ID: <41E52C1D.000001.03386@TCLmail>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
+Date: Wed, 12 Jan 2005 15:03:36 +0100
+Message-ID: <f4792f60420677140f6951f03e2b7737@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: Multipart/Alternative; boundary="Boundary-=_HefCJxSntTpaeuIAWSpaAEuOQQfG"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F09A1209
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:03:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,32 +18,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-=_HefCJxSntTpaeuIAWSpaAEuOQQfG
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
+======================================================================
+Reported By:                pcmcginty
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   748
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Arch Linux
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             12-26-2004 06:50 CET
+Last Modified:              01-12-2005 15:03 CET
+======================================================================
+Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
+chipset choppy, plays to fast
+Description: 
+I've been spending a lot of time getting sound to work on my Sharp Actius
+MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
+ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
+2.6.10 kernel series cause the sound to become garbled as if the song is
+skipping through the music faster than it should. I have not tried ont he
+2.6.8 series. I can compile and try out if required. It is possible this
+is some other kernel issue, however I'm not sure how to track down where
+the kernel might be breaking the ALSA driver.
+======================================================================
 
-SGksZXZlcnlvbmU6DQpJIHdyaXRlIGFuIGF1aWRvIGRyaXZlciBmb3IgaU1YMjEgYm9hcmQg
-YmFzZWQgb24gQUxTQS4gSSBoYXZlIGxvYWRlZCB0aGUgDQpkcml2ZXIgbW9kdWxlIGFuZCBj
-cmVhdGVkIHRoZSBub2RlIGluIC9kZXYvc25kLiBCdXQgd2hlbiBJIHVzZWQgYXBsYXkgdG8g
-cGxheSANCmF1ZGlvIGZpbGUgLCBzdWNoIGFzICJhcGxheSAtRCAiaHc6MCwwIiAxLndhdiIs
-IGl0IHNhaWQgIlVua25vd24gdGhlIFBDTSANCmh3OjAsMCIuDQpXaHkgPz8gSG93IGNhbiBJ
-IHJlc29sdmUgdGhlIHByb2JsZW0/IA0KDQpUaGFua3MhDQoNCmFyZ28NCg0KDQo=
---Boundary-=_HefCJxSntTpaeuIAWSpaAEuOQQfG
-Content-Type: text/html; charset="gb2312"
-Content-Transfer-Encoding: base64
+----------------------------------------------------------------------
+ tiwai - 01-12-05 15:02 
+----------------------------------------------------------------------
+Did you try 1.0.8rc2?
 
-SGksZXZlcnlvbmU6PGJyPkkgd3JpdGUgYW4gYXVpZG8gZHJpdmVyIGZvciBpTVgyMSBib2Fy
-ZCBiYXNlZCBvbiBBTFNBLiBJIGhhdmUgbG9hZGVkIHRoZSA8YnI+ZHJpdmVyIG1vZHVsZSBh
-bmQgY3JlYXRlZCB0aGUgbm9kZSBpbiAvZGV2L3NuZC4gQnV0IHdoZW4gSSB1c2VkIGFwbGF5
-IHRvIHBsYXkgPGJyPmF1ZGlvIGZpbGUgLCBzdWNoIGFzICZxdW90O2FwbGF5IC1EICZxdW90
-O2h3OjAsMCZxdW90OyAxLndhdiZxdW90OywgaXQgc2FpZCAmcXVvdDtVbmtub3duIHRoZSBQ
-Q00gPGJyPmh3OjAsMCZxdW90Oy48YnI+V2h5ID8/IEhvdyBjYW4gSSByZXNvbHZlIHRoZSBw
-cm9ibGVtPyA8YnI+PGJyPlRoYW5rcyE8YnI+PGJyPmFyZ288YnI+PGJyPjxicj48YnI+Cgo=
---Boundary-=_HefCJxSntTpaeuIAWSpaAEuOQQfG--
+----------------------------------------------------------------------
+ tiwai - 01-12-05 15:03 
+----------------------------------------------------------------------
+Ah, ok, this happens also on CVS version...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-26-04 06:50 pcmcginty      New Issue                                    
+12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
+12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
+12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
+12-27-04 15:12 tiwai          Note Added: 0002961                          
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
+12-27-04 19:28 pcmcginty      Note Added: 0002973                          
+01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
+01-12-05 14:13 JonathanL      Note Added: 0003163                          
+01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
+    
+01-12-05 15:02 tiwai          Note Added: 0003164                          
+01-12-05 15:03 tiwai          Note Added: 0003165                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
