@@ -1,13 +1,12 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: RE:Creative/emu10k1 status?
-Date: Tue, 18 Nov 2003 08:18:21 +0100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: smart and automatic use of dmix and dsnoop - feature suggestion.
+Date: Tue, 18 Nov 2003 02:30:57 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311180718.hAI7ILOZ006781@www7.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
-Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Message-ID: <200311180730.hAI7Uvfx016560@oud.linuxaudiosystems.com>
+References: <200311180655.02528.pwk.linuxfan@gmx.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Tue, 18 Nov 2003 06:51:43 +0100."
+             <200311180655.02528.pwk.linuxfan@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,28 +15,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: kouhia@nic.funet.fi
-Cc: alsa-devel@lists.sourceforge.net
+To: Peter Kirk <pwk.linuxfan@gmx.de>
+Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I think, there is bug, (there are controls with same names for line1=20
-and line2)
-Try find text "Line LiveDrive Playback Volume" in alsa-driver/alsa-
-kernel/pci/emu10k1/emufx.c
-There will be 2 ocurence. Change second to "Line2 LiveDrive Playback=20
-Volume"
+>> 5) I think that this sound mixing problem might be better served by
+>> sound servers like jack.
+>
+>Hmmm,
+>
+>actualy I did have a very close look at jack, but the problem that I saw=20
+>(correct me if Im wrong here), is the fact that jack only works well if the=
+>=20
+>applications are specificaly geard to work with it. To quote the FAQ:
 
-Do same thing for "Line LiveDrive Capture Volume" -> "Line2 LiveDrive=20
-Capture Volume"
-and for
-"Line LiveDrive Capture Switch" -> "Line2 LiveDrive Capture Switch"
+this isn't an issue any more, in that ALSA supports output via JACK
+itself. apps don't behave the way real JACK clients would, but the
+sound is heard. i don't know if capture support works.
 
-Peter Zubaj
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=0ANeobmedzen=FD r=FDchly pr=EDstup na internet =
-u=BE od 666,- Sk mesa=E8ne!=0ANextra ADSLink. http://adsl.nextra.sk=0A
+jack is not intended to be a general purpose solution though. although
+i believe that its callback API is a better choice, things like
+PortAudio offer that with or without JACK. jack's main offering is low
+latency, sample synchronous execution. i guess if it really worked for
+everybody, it would be great. chances are that it might be slightly
+closer to working than dmix, but i don't really know (especially the
+capture part). making connections is also difficult - it puts quite a
+burden on the user.
+
+--p
 
 
 -------------------------------------------------------
