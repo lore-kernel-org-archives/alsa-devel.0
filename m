@@ -1,13 +1,14 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: help for a levelmeter
-Date: Thu, 17 Oct 2002 09:10:36 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: help needed on how to autoload snd-usb-midi
+Date: Thu, 17 Oct 2002 10:01:31 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DAE626C.7601185C@libero.it>
-References: <20021015224039.59921.qmail@web12207.mail.yahoo.com> <3DADC922.5000808@club-internet.fr>
+Message-ID: <Pine.HPX.4.33n.0210170959320.23026-100000@studcom.urz.uni-halle.de>
+References: <200210161849.29189@advent.drealm.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <200210161849.29189@advent.drealm.org.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,68 +17,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Laurent Georget <lgeorget2@club-internet.fr>
-Cc: karsten wiese <annabellesgarden@yahoo.de>, Devel Alsa <alsa-devel@lists.sourceforge.net>
+To: Peter L Jones <peter@drealm.org.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Laurent Georget wrote:
-> 
-> karsten wiese wrote:
-> > Laurent Georget:
-> >
-> >>  Hello,
-> >>
-> >>I 'd like to make a levelmeter program which would
-> >>display sound card
-> >>input/output
-> >>while the audio device is opened by another program.
-> >>I tried to use copy
-> >>plugin  , but now (since 0.9.0rc3 ) the
-> >>"snd_pcm_copy_open" give a "implicit
-> >>declaration of function"
-> >
-> > hmm, it is still declared in
-> > alsa-lib/include/pcm_plugin.h ...?
-> >
-> 
-> Hmm..  my fault, just have to include pcm_plugin.h
-> 
-> >
-> >
-> > (there is a jack meter client @
-> > http://plugin.org.uk/meterbridge/)
-> >
-> >
-> > regards, karsten
-> 
-> Thanks for responding!
-> 
-> Ok , I have seen it , but  it works with jack compatible programs, and
-> the levelmeter
-> i'm aiming at should work with Glame , as an example .
-> 
-> Anyway I can now try to experiment the copy_plugin : would you know some
-> program using
-> this plugin, which would make the thing easier !
-> 
+Peter L Jones wrote:
+> On Wednesday 16 Oct 2002 12:19, Clemens Ladisch wrote:
+> > It turns out there isn't any real advantage over a rawmidi driver, so I
+> > think I'll change the driver to use rawmidi in the next few days.
+>
+> Will this affect the code used when I'm playing (with) my USB MIDI keyboard?
+> (i.e. do I need to test it? ;-) )
 
-The correct plugin has already been written and available inside
-alsa-lib. 
+In theory, no.
+(In theory, there is no difference between theory and practice. :-)
 
-The name is pcm_meter, it's lockless and perfectly integrated with ALSA
-PCM chains.
 
-A sample implementation for curses level meter is already available and
-working.
+Regards
+Clemens
 
-It's very simple to add other *-meters, scopes, etc.
-
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
-
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
