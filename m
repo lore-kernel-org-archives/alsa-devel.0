@@ -1,17 +1,14 @@
-From: Glenn Maynard <g_sf@zewt.org>
-Subject: Re: [PATCH] Fixes: Re: intel8x0 has stopped working.
-Date: Thu, 5 Feb 2004 14:15:22 -0500
+From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: Re: sblive 4ch output w/ jack - asoundrc magic?
+Date: Thu, 05 Feb 2004 20:26:10 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040205191522.GE26089@zewt.org>
-References: <401E8BAE.6010802@superbug.demon.co.uk> <s5hn081uztv.wl@alsa2.suse.de> <401EA82D.3060702@superbug.demon.co.uk> <401ED94F.7080407@superbug.demon.co.uk> <Pine.LNX.4.58.0402031720190.8251@pnote.perex-int.cz> <40201EFF.9000903@superbug.demon.co.uk> <Pine.LNX.4.58.0402051154080.1864@pnote.perex-int.cz>
+Message-ID: <402298D2.706@folkwang-hochschule.de>
+References: <40217B62.5020604@folkwang-hochschule.de> <s5had3xa7sa.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from h0040333b7dc3.ne.mediaone.net (postfix@h00045a576c6a.ne.client2.attbi.com [65.96.98.23])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA05919
-	for <alsa-devel@alsa-project.org>; Thu, 5 Feb 2004 20:15:26 +0100
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0402051154080.1864@pnote.perex-int.cz>
+In-Reply-To: <s5had3xa7sa.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,35 +17,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 05, 2004 at 12:01:28PM +0100, Jaroslav Kysela wrote:
-> > My point is, I don't think setting start_threshold to buffer_size is 
-> > even "wrong" at all. Some people might want the buffer to be full before 
-> > it starts, and my patch allows for that.
-> 
-> It's not wrong semantics. I see - it's logical, but I don't want to follow
-> some rule as some API designers does - control magically some things. I
-> want that developer which uses our API knows what the library / driver
-> exactly does.
-> 
-> We have clear conditions when the stream is started. That's it.
+Takashi Iwai wrote:
+> At Thu, 05 Feb 2004 00:08:18 +0100,
+> Joern Nettingsmeier wrote:
+>=20
+>>[crossposted to alsa-devel and jackit-devel]
 
-If this isn't guaranteed to work, I'd suggest making it never work.
-Otherwise, programs will work on some hardware and not others, which is
-a case that should be minimized as much as possible; it's these kinds
-of subtle differences that make it very hard to write reliable (sound,
-video, etc) code.  I've had to play games with setting hardware settings:
-always set the sample rate even if I don't care, use a 32k buffer size
-and not a 4k or 8k one--in order to make it work on as many systems as
-possible without failing mysteriously or triggering alsa-lib asserts.
+[removed jackit-devel from cc:]
 
-(I don't quite understand why start_threashold == buffer_size doessn't
-mean "start when the buffer is full", though.)
+>>
+>>hi *!
+>>
+>>i'd like to use the rear outs of my sblive platinum with jack.
+>>
+>>the following works:
+>># aplay some.wav -Dfront &
+>># aplay someother.wav -Drear
+>>both signals end up at my mixer as expected, so it seems the devices=20
+>>are independent.
+>>
+>>front is hw:0,0 which is a duplex device.
+>>rear is hw:0,3 and is playback only.
+>=20
+> =20
+> hmm?  hw:0,3 isn't for the rear output...
 
--- 
-Glenn Maynard
+not?
+
+then what is it?
+
+and is hw:0,0 a four-channel out, two channel in device?
+
+i've had this card for a couple of years now, and i still don't=20
+understand a fraction of it...
+
+is the relationship of in and out jacks, mixer strips and alsa=20
+devices documented somewhere?
+
+
+regards,
+
+j=F6rn
+
+
+--=20
+"I never use EQ, never, never, never. I previously used to use mic
+positioning but I've even given up on that too."
+	- Jezar on http://www.audiomelody.com
+
+
+J=F6rn Nettingsmeier
+Kurf=FCrstenstr 49, 45138 Essen, Germany
+http://spunk.dnsalias.org (my server)
+http://www.linuxaudiodev.org (Linux Audio Developers)
+
+
+
 
 
 -------------------------------------------------------
