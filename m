@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
-Date: Fri, 28 Jan 2005 19:01:45 +0100
-Message-ID: <f56ba0fc35e3220a6aa3ba3e4b70f2b6@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0000801]: Persistent "max-amp" level on hdspmixer inputs
+Date: Fri, 28 Jan 2005 22:00:39 +0100
+Message-ID: <a7b49854704e84caa96ec14da11d193f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E5F2B206
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 19:01:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB58E20A
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 22:00:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,328 +24,81 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=801> 
 ======================================================================
-Reported By:                1g0R
-Assigned To:                
+Reported By:                kme
+Assigned To:                charbonnel
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   848
-Category:                   PCI - azx
+Project:                    ALSA - tools
+Issue ID:                   801
+Category:                   hdsp progs
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.8-ac8
+Status:                     assigned
 ======================================================================
-Date Submitted:             01-25-2005 15:28 CET
-Last Modified:              01-28-2005 19:01 CET
+Date Submitted:             01-10-2005 09:20 CET
+Last Modified:              01-28-2005 22:00 CET
 ======================================================================
-Summary:                    Intel HDA (C-Media 9880) SPDIF Out
+Summary:                    Persistent "max-amp" level on hdspmixer inputs
 Description: 
-When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
-output signal on SPDIF (Coax).
-I try:
-aplay -D hw:0,1 (<--digital out) else.wav
-the command run normally, but no output on spdif out.the same with xmms
-(with ALSA, on hw:0,1).
+HDSPmixer shows constant "max-amp" (actually -6db or so) levels at all
+times in the first 8 channels.  And when sound is played internally the
+middle row meters (playback) show the left channel with maxed-out levels
+while the right channel shows nothing.  Peak meters (yellow), however,
+appear to work normally.
 
+A screenshot of the mixer while playing a stereo soundfile routed to AN1+2
+and Analog (headphones) only with NOTHING connected to the inputs can be
+cound here:
+
+http://www.esm.rochester.edu/kevine/hdsp_screenshot.jpg
+
+Note that the outputs (bottom row) show proper levels as do the yellow
+peak meters in playback (Out 1+2).  
+
+Signal quality is unaffected.
 ======================================================================
 
 ----------------------------------------------------------------------
- nc - 01-28-05 03:07 
+ charbonnel - 01-27-05 21:47 
 ----------------------------------------------------------------------
-I am also having the same issues - when I unmute 'IEC958' with alsamixer,
-the 'Optical' light comes on on my receiver, but I can't get any audio out
-with 'aplay -D hw:0,1 <file>'. This is on a Debian unstable box with Alsa
-1.0.8.
-
-My motherboard is a MSI 915P board, I'm using the integrated audio. Audio
-seems to work ok from line out.
-
-chromium:/proc/asound/card0# cat /proc/asound/card0/codec#0
-Codec: C-Media CMI9880
-Address: 0
-Vendor Id: 0x434d4980
-Subsystem Id: 0x0
-Revision Id: 0x90402
-Default PCM: rates 0x540, bits 0x0e, types 0x1
-Default Amp-In caps: N/A
-Default Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x80 0x80
-Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x80 0x80
-Node 0x06 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x80 0x80
-Node 0x07 [Audio Output] wcaps 0x615: Stereo Digital Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x80 0x80
-  PCM: rates 0x000, bits 0x00, types 0x5
-Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-In vals: 0x80 0x80
-  PCM: rates 0x160, bits 0x02, types 0x0
-  Connection: 9
-     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
-Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-In vals: 0x80 0x80
-  PCM: rates 0x160, bits 0x02, types 0x0
-  Connection: 9
-     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
-Node 0x0a [Audio Input] wcaps 0x100791: Stereo Digital
-  PCM: rates 0x160, bits 0x0e, types 0x0
-  Connection: 1
-     0x13
-Node 0x0b [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01014110: Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x03
-Node 0x0c [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01813100: Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x04
-Node 0x0d [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01a19100: Mic at Ext Rear
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-  Connection: 1
-     0x05
-Node 0x0e [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x081033f: IN OUT HP
-  Pin Default 0x01011114: Line Out at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x06
-Node 0x0f [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x02214000: HP Out at Ext Front
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x10 [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x02a19000: Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x11 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0863: IN
-  Pin Default 0x19330000: CD at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x01450000: SPDIF Out at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x07
-Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
-  Pincap 0x0830: IN OUT
-  Pin Default 0x41c50000: SPDIF In at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x15 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x16 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x19 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1d [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1f [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01016112: Line Out at Ext Rear
-    Conn = 1/8, Color = Orange
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x20 [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x41011116: Line Out at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x23 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-  Amp-Out vals: 0x0f
+I just posted a patch on alsa-devel that should fix the problem, could you
+please try it ?
 
 ----------------------------------------------------------------------
- 1g0R - 01-28-05 19:01 
+ kme - 01-28-05 22:00 
 ----------------------------------------------------------------------
-I want to use coaxial spdif out.
-Here is my cat /proc/asound/card0/codec#0.
-I get no error message, but no sound too on spdif.
+Looks good!  The levels look great all around.  Many, many thanks.
 
-[igor@skynet VIDEO_TS]$ cat /proc/asound/card0/codec#0
-Codec: C-Media CMI9880
-Address: 0
-Vendor Id: 0x434d4980
-Subsystem Id: 0x0
-Revision Id: 0x90002
-Default PCM: rates 0x540, bits 0x0e, types 0x1
-Default Amp-In caps: N/A
-Default Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x06 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x07 [Audio Output] wcaps 0x615: Stereo Digital Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x80 0x80
-  PCM: rates 0x000, bits 0x00, types 0x5
-Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-In vals: 0x80 0x80
-  PCM: rates 0x160, bits 0x02, types 0x0
-  Connection: 9
-     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
-Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-In vals: 0x80 0x80
-  PCM: rates 0x160, bits 0x02, types 0x0
-  Connection: 9
-     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
-Node 0x0a [Audio Input] wcaps 0x100791: Stereo Digital
-  PCM: rates 0x160, bits 0x0e, types 0x0
-  Connection: 1
-     0x13
-Node 0x0b [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01014010: Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x03
-Node 0x0c [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01813000: Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x04
-Node 0x0d [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01a19000: Mic at Ext Rear
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-  Connection: 1
-     0x05
-Node 0x0e [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x081033f: IN OUT HP
-  Pin Default 0x01011014: Line Out at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x06
-Node 0x0f [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x82214100: HP Out at Ext Front
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x10 [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x82a19100: Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x11 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0863: IN
-  Pin Default 0x19330000: CD at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x01450000: SPDIF Out at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x07
-Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
-  Pincap 0x0830: IN OUT
-  Pin Default 0x01c50000: SPDIF In at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x15 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x16 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x19 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1d [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1f [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01016012: Line Out at Ext Rear
-    Conn = 1/8, Color = Orange
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x20 [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01012016: Line Out at Ext Rear
-    Conn = 1/8, Color = Grey
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x23 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-  Amp-Out vals: 0x05
-[igor@skynet VIDEO_TS]$
+However, for some reason I now get no audible signal from the front
+"Analog" headphone out, although the mixer shows proper levels.  I have
+tested with several headsets and a direct feed to monitors.
+
+This error (from restarting the alsasound service) looks pertinent:
+
+Restoring sound driver settings /usr/sbin/alsactl: set_control:930:
+warning: name mismatch (Passthru/Line Out) for control
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=21
+/usr/sbin/alsactl: set_control:930: warning: name mismatch (Line
+Out/Precise Pointer) for control
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=22
+/usr/sbin/alsactl: set_control:930: warning: name mismatch (ADAT Lock
+Status/Use Midi Tasklet) for control
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=23
+/usr/sbin/alsactl: set_control:932: warning: index mismatch (1/0) for
+control https://bugtrack.alsa-project.org/alsa-bug/view.php?id=23
+/usr/sbin/alsactl: set_control:1025: bad control.23.value type
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-25-05 15:28 1g0R           New Issue                                    
-01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
-01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
-01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
-01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
-01-28-05 02:56 nc             Issue Monitored: nc                          
-01-28-05 03:07 nc             Note Added: 0003423                          
-01-28-05 19:01 1g0R           Note Added: 0003434                          
+01-10-05 09:20 kme            New Issue                                    
+01-15-05 19:27 slick          Note Added: 0003212                          
+01-15-05 19:28 slick          Issue Monitored: slick                       
+01-15-05 19:32 slick          Note Added: 0003213                          
+01-27-05 21:47 charbonnel     Note Added: 0003422                          
+01-28-05 22:00 kme            Note Added: 0003436                          
 ======================================================================
 
 
