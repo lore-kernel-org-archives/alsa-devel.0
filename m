@@ -1,20 +1,11 @@
-From: Juergen Kreileder <jk@blackdown.de>
-Subject: Re: snd-ioctl32 is failing on x86_64 (no crashes, just errors)
-Date: Fri, 14 Jan 2005 07:13:39 +0100
-Message-ID: <87wtuga67g.fsf@blackdown.de>
-References: <20050106130649.GA253131@lion.gg3.net>
-	<s5h1xcxy0tj.wl@alsa2.suse.de> <20050108074026.GA8595@lion.gg3.net>
-	<s5h7jmlv82j.wl@alsa2.suse.de> <20050110123342.GA243173@lion.gg3.net>
-	<s5hwtultnc8.wl@alsa2.suse.de> <20050110161559.GA248292@lion.gg3.net>
-	<s5h7jmkt8j9.wl@alsa2.suse.de> <20050112022402.GB9290@lion.gg3.net>
+From: tmika@t-online.de (Thorsten Mika)
+Subject: Strange crackling noises
+Date: Fri, 14 Jan 2005 09:24:00 +0100
+Message-ID: <1CpMkT-10g39s0@fwd07.sul.t-online.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp.blackdown.de (smtp.blackdown.de [213.239.206.42])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E7C022A4
-	for <alsa-devel@alsa-project.org>; Fri, 14 Jan 2005 07:13:42 +0100 (MET)
-In-Reply-To: <20050112022402.GB9290@lion.gg3.net> (Georgi Georgiev's message
-	of "Wed, 12 Jan 2005 11:24:02 +0900")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +15,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Georgi Georgiev <chutz@gg3.net> writes:
+Hello list,
 
->> Index: alsa-kernel/core/ioctl32/ioctl32.c
->> ===================================================================
->> RCS file: /home/tiwai/cvs/alsa/alsa-kernel/core/ioctl32/ioctl32.c,v
->> retrieving revision 1.30
->> diff -u -r1.30 ioctl32.c
->> --- alsa-kernel/core/ioctl32/ioctl32.c	15 Dec 2004 15:26:24 -0000	1.30
->> +++ alsa-kernel/core/ioctl32/ioctl32.c	10 Jan 2005 16:59:33 -0000
->> @@ -219,25 +219,10 @@
->> 	struct sndrv_ctl_elem_id id;
->> 	unsigned int indirect;	/* bit-field causes misalignment */
->> union {
->> -		union {
->> -			s32 value[128];
->> -			u32 value_ptr;
->> -		} integer;
->> -		union {
->> -			s64 value[64];
->> -			u32 value_ptr;
->> -		} integer64;
->> -		union {
->> -			u32 item[128];
->> -			u32 item_ptr;
->> -		} enumerated;
->> -		union {
->> -			unsigned char data[512];
->> -			u32 data_ptr;
->> -		} bytes;
->> -		struct sndrv_aes_iec958 iec958;
->> +		s32 integer[128];	/* integer and boolean need conversion */
->> +		unsigned char data[512];	/* others should be compatible */
->> } value;
->> -        unsigned char reserved[128];
->> +        unsigned char reserved[128];	/* not used */
->> };
+I hope this (and not ALSA-user) is the right place for my question, so
+pls let me know if it isn't.
 
-That breaks alignment on ppc64 again.  Fix:
+I have to deal with a strange, but reproducable effect since the
+beginning of my linux audio experiences. It worsened it the last months,
+and up to now it almost leaves important programs unusable for me
+(ZynAddSubFX, MusE). After I had first thought that it was a JACK
+problem, I found a way to produce it without JACK.
 
---- ioctl32.c.orig	2005-01-14 06:53:41.496899917 +0100
-+++ ioctl32.c	2005-01-14 06:56:26.146675819 +0100
-@@ -220,6 +220,7 @@ struct sndrv_ctl_elem_value32 {
- 	unsigned int indirect;	/* bit-field causes misalignment */
-         union {
- 		s32 integer[128];	/* integer and boolean need conversion */
-+		s64 longint[64];
- 		unsigned char data[512];	/* others should be compatible */
-         } value;
-         unsigned char reserved[128];	/* not used */
-=
+The effect is some crackling noise, which appears under load when for
+example MusE plays ZynAddSubFX, but you can easily reproduce it in a
+more simple manner:
 
+1. Start ZynAddSubFX
+2. Select the "Soft Piano 1" sound.
+3. Open the "Virtual Keyboard" (vK)
+4. Move fast from left to right and back on the white keys, and after a
+short while you will hear this crackling.
 
-        Juergen
+My hardware: Duron 1GHz, 512MB RAM, SBLive rev07 (says lspci)
+My software: Linux 2.4.23-ck1, ALSA 1.0.8, ZynAddSubFX 2.1.1
+
+Any hint what to do about this? Lee Revell suggested (on the
+jackit-devel list) that this might be a driver error.
+
+Thanks in advance,
+
+  t.
 
 -- 
-Juergen Kreileder, Blackdown Java-Linux Team
-http://www.blackdown.org/java-linux/java2-status/
+Thorsten Mika                                  mailto: tmika@t-online.de
+Muenster / Germany                        +49 - (0) 251 - 200 76 83
+
+Public Key ID: 41338C37 -- http://www.keyserver.net
 
 
 -------------------------------------------------------
