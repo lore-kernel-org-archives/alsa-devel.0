@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000888]: Mic IN is not working with kernel 2.6.10 on Asus A8V Deluxe
-Date: Wed, 9 Feb 2005 17:16:07 +0100
-Message-ID: <b591fed4f6775d19ce85f68147c9e891@bugtrack.alsa-project.org>
+From: Chris White <chriswhite@gentoo.org>
+Subject: VT82C686 and MIDI fun
+Date: Thu, 10 Feb 2005 01:18:15 +0900
+Message-ID: <1107965895.8941.21.camel@secures>
+Reply-To: chriswhite@gentoo.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A603B26C
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 17:16:07 +0100 (MET)
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-p/NSfv0McDxLcePTj0qa"
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,70 +14,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=888> 
-======================================================================
-Reported By:                pv2c
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   888
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.10
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             02-06-2005 18:09 CET
-Last Modified:              02-09-2005 17:16 CET
-======================================================================
-Summary:                    Mic IN is not working with kernel 2.6.10 on Asus A8V
-Deluxe
-Description: 
-After upgrade from kernel 2.6.9 to 2.6.10 the mic in stopped to work on my
-Asus A8V Deluxe motherboard integrated soundcard. I'm using alsa kernel
-module via82xx and it seems that after adding support for revision 8237 it
-stops to work. So I obfuscated the
-#define VIA_REV_8237        0x60
-to a fake value and the mic started to work again.
-======================================================================
+--=-p/NSfv0McDxLcePTj0qa
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- pv2c - 02-09-05 13:25 
-----------------------------------------------------------------------
-I'm terribly sorry, for wasting Your time! Please discard this bugreport.
-The problem was only in mixer settings which weren't restored after the
-upgrade.
+Alright, so I thought I send this here just in case I RTFM wrong :P.  So
+basically, here's the deal.. I'm on a ppc system (2.6.9 kernel) using
+alsa driver 1.0.8 (latest), via82xx module (Via being the vendor, my
+model being in the subject line), and all a nice midi keyboard hooked up
+to the MIDI/Gameport with an adapater I got.  Now, I've tried the
+following without much success:
 
-----------------------------------------------------------------------
- tiwai - 02-09-05 17:16 
-----------------------------------------------------------------------
-No problem, now closing.
+1) I did the `modprobe snd-via82xx mpu_port=3D0x330` command to set the
+mpu port, which is what it's documented as, /dev/midi does nothing
+2) Ok, maybe my setup is jacked, so I tried hooking it up to my x86
+system, works like a charm
+3) I looked over the documentation.. which tells me to work with
+snd-mpu401.. but I thought that was depricated by snd-mpu401-uart?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-06-05 18:09 pv2c           New Issue                                    
-02-06-05 18:09 pv2c           Distribution              => Gentoo          
-02-06-05 18:09 pv2c           Kernel Version            => 2.6.10          
-02-06-05 18:13 pv2c           Note Added: 0003526                          
-02-09-05 11:46 tiwai          Note Added: 0003541                          
-02-09-05 13:25 pv2c           Note Added: 0003552                          
-02-09-05 17:16 tiwai          Status                   new => resolved     
-02-09-05 17:16 tiwai          Resolution               open => not an issue
-02-09-05 17:16 tiwai          Assigned To               => tiwai           
-02-09-05 17:16 tiwai          Note Added: 0003559                          
-======================================================================
+So.. that said.. I'm stuck here wondering what's going on.  It's either
+a) go buy a card or b) there's some serious endian going on.
+Comments/suggestions/flames welcome (though wait till I get the firesuit
+on).
 
+--=-p/NSfv0McDxLcePTj0qa
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: 
+	=?UTF-8?Q?=E3=81=93=E3=81=AE=E3=83=A1=E3=83=83=E3=82=BB=E3=83=BC?=
+	=?UTF-8?Q?=E3=82=B8=E3=81=AB=E3=81=AF=E3=83=87=E3=82=B8=E3=82=BF?=
+	=?UTF-8?Q?=E3=83=AB=E7=BD=B2=E5=90=8D=E3=81=95=E3=82=8C=E3=81=9F?=
+	=?UTF-8?Q?=E9=83=A8=E5=88=86=E3=81=8C=E3=81=82=E3=82=8A=E3=81=BE?=
+	=?UTF-8?Q?=E3=81=99?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
+
+iD8DBQBCCjfHFdQwWVoAgN4RAl6xAKDM4a1QOnwHg0yLorHCDB3T9pul+QCg1UZU
+UOIBm+ABPiWOjVRCCxnIHMQ=
+=SpyR
+-----END PGP SIGNATURE-----
+
+--=-p/NSfv0McDxLcePTj0qa--
 
 
 
