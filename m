@@ -1,13 +1,13 @@
-From: Jordi Mallach <jordi@debian.org>
-Subject: [PATCH] arecord without timelimit produces buggy wav files.
-Date: Wed, 18 Dec 2002 15:45:58 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Sequencer Input
+Date: Thu, 19 Dec 2002 09:13:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021218144558.GA24742@nubol.int.oskuro.net>
+Message-ID: <Pine.HPX.4.33n.0212190909130.1354-100000@studcom.urz.uni-halle.de>
+References: <20021218000609.GB12303@bhv1.adelphia.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <20021218000609.GB12303@bhv1.adelphia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,84 +16,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: stevenk@debian.org, madkiss@madkiss.org
+To: Brian Victor <bhv1@psu.edu>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Brian Victor wrote:
+> I'm using a MidiSport 1x1 and devfs.  The modules are loading, pmidi is
+> displaying the MidiSport and playing MIDI files through it just fine, so
+> I presume output through /dev/snd/seq is working.  cat /dev/snd/midiC0D0
+> displays approrpriate "garbage" characters, but cat /dev/snd/seq does
+> nothing,
 
---zYM0uCDKw75PZbzx
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is OK, /dev/snd/seq cannot be accessed as a byte stream, unlike some
+other devices. You have to use a program using the ALSA sequencer API to
+test sequencer input.
 
-[resent with my subscriber address... is someone moderating alsa-devel?]
+> and the seqdemo.c sample just sits there.
 
-Hello,
-
-Daniel Kobras reported a bug in arecord ages ago, against
-beta10a. Quoting:
-
-> When running arecord without timelimit (no -d option), the size of the
-> RIFF chunk in a wav file is not updated when the recording is finished.
-> The resulting wav causes trouble with some applications as the dummy
-> chunk size is negative. (Chunk sizes are spec'ed as signed integer.
-> Don't ask me why.) The following patch adds the proper fixup for the
-> RIFF chunk. Patch against version 0.9.0beta10a-2 of alsa-utils.
+seqdemo.c prints only those events sent to its port. Use aconnect to
+connect the 1x1 port to the seqdemo port.
 
 
---- aplay.c.orig	Sat Dec  1 21:26:46 2001
-+++ aplay.c	Fri Feb  1 18:11:39 2002
-@@ -1548,12 +1548,17 @@
- {				/* only close output */
- 	WaveChunkHeader cd;
- 	off_t length_seek;
-+	u_int rifflen;
- =09
- 	length_seek =3D sizeof(WaveHeader) +
- 		      sizeof(WaveChunkHeader) +
- 		      sizeof(WaveFmtBody);
- 	cd.type =3D WAV_DATA;
- 	cd.length =3D LE_INT(fdcount);
-+	rifflen =3D fdcount + 2*sizeof(WaveChunkHeader) + sizeof(WaveFmtBody) + 4;
-+	rifflen =3D LE_INT(rifflen);
-+	if (lseek(fd, 4, SEEK_SET) =3D=3D 4)
-+		write(fd, &rifflen, 4);
- 	if (lseek(fd, length_seek, SEEK_SET) =3D=3D length_seek)
- 		write(fd, &cd, sizeof(WaveChunkHeader));
- 	if (fd !=3D 1)
+HTH
+Clemens
 
-The current Debian packages have this patch applied, and the full bug
-log is in http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D131875.
-
-Thanks,
-Jordi
-
-PS: recently, new people started working on Debian's ALSA packages.
-We'll try to forward all the bugs and patches that have piled up against
-our packages in the previous era. What's the prefered way of reporting
-bugs and problems against alsa packages components?
---=20
-Jordi Mallach P=E9rez  --  Debian developer     http://www.debian.org/
-jordi@sindominio.net     jordi@debian.org     http://www.sindominio.net/
-GnuPG public key information available at http://oskuro.net/~jordi/
-
---zYM0uCDKw75PZbzx
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD4DBQE+AIomJYSUupF6Il4RArxfAJj67Dt/g9k1y6d8ay63CkjubcfbAKDJe/JL
-XsZa+HsxwIGavbdkD6q1kQ==
-=PV0d
------END PGP SIGNATURE-----
-
---zYM0uCDKw75PZbzx--
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by:
-With Great Power, Comes Great Responsibility 
-Learn to use your power at OSDN's High Performance Computing Channel
-http://hpc.devchannel.org/
+This SF.NET email is sponsored by: Order your Holiday Geek Presents Now!
+Green Lasers, Hip Geek T-Shirts, Remote Control Tanks, Caffeinated Soap,
+MP3 Players,  XBox Games,  Flying Saucers,  WebCams,  Smart Putty.
+T H I N K G E E K . C O M       http://www.thinkgeek.com/sf/
