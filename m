@@ -1,13 +1,15 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: status of usb audio driver
-Date: Wed, 12 Jun 2002 14:16:13 +0900
+Subject: [Fwd:  Multiple cards.]
+Date: Wed, 12 Jun 2002 19:16:59 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D06D91D.1080104@boosthardware.com>
-References: <s5h7klfdlrn.wl@alsa2.suse.de>
+Message-ID: <3D071F9B.1090302@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------090107090008070704040408"
+ boundary="------------060408040900020609020600"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from www7.networkshosting.com (www7.networkshosting.com [66.96.128.106])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id MAA22874
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2002 12:12:29 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,87 +18,191 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------090107090008070704040408
+--------------060408040900020609020600
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Takashi Iwai wrote:
+I originally sent this to jackit-devel but it should probably be 
+discussed on this list too.
+
+--------------060408040900020609020600
+Content-Type: message/rfc822;
+ name="Re: [Jackit-devel] Multiple cards."
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="Re: [Jackit-devel] Multiple cards."
+
+X-Mozilla-Status2: 00000000
+Return-Path: <jackit-devel-admin@lists.sourceforge.net>
+Delivered-To: boosth-pshirkey@boosthardware.com
+Received: (qmail 9516 invoked from network); 12 Jun 2002 08:53:00 -0000
+Received: from usw-sf-fw2.sourceforge.net (HELO usw-sf-list2.sourceforge.net) (216.136.171.252)
+  by -H with SMTP; 12 Jun 2002 08:53:00 -0000
+Received: from usw-sf-list1-b.sourceforge.net ([10.3.1.13] helo=usw-sf-list1.sourceforge.net)
+	by usw-sf-list2.sourceforge.net with esmtp (Exim 3.31-VA-mm2 #1 (Debian))
+	id 17I3tC-0001mf-00; Wed, 12 Jun 2002 01:54:02 -0700
+Received: from www7.networkshosting.com ([66.96.128.106])
+	by usw-sf-list1.sourceforge.net with smtp (Exim 3.31-VA-mm2 #1 (Debian))
+	id 17I3sP-0002qT-00
+	for <jackit-devel@lists.sourceforge.net>; Wed, 12 Jun 2002 01:53:13 -0700
+Received: (qmail 9432 invoked from network); 12 Jun 2002 08:51:42 -0000
+Received: from unknown (HELO boosthardware.com) (61.73.94.157)
+  by -H with SMTP; 12 Jun 2002 08:51:42 -0000
+Message-ID: <3D070D18.4050505@boosthardware.com>
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Organization: Boost Hardware
+User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.0.0) Gecko/20020529
+X-Accept-Language: en-us, en
+MIME-Version: 1.0
+To: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
+CC: "jackit-devel@lists.sourceforge.net"
+ <jackit-devel@lists.sourceforge.net>
+Subject: Re: [Jackit-devel] Multiple cards.
+References: <Pine.LNX.3.96.1020609234513.20161B-100000@planck.clarku.edu> <E17HH98-0005Ai-00@usw-sf-list1.sourceforge.net> <20020610155238.E6051@ecs.soton.ac.uk> <3D06E569.6080305@boosthardware.com> <3D06F382.ED7BCC17@folkwang-hochschule.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Sender: jackit-devel-admin@lists.sourceforge.net
+Errors-To: jackit-devel-admin@lists.sourceforge.net
+X-BeenThere: jackit-devel@lists.sourceforge.net
+X-Mailman-Version: 2.0.9-sf.net
+Precedence: bulk
+List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:jackit-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Id: Discussions about the development of JACK <jackit-devel.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=jackit-devel>
+X-Original-Date: Wed, 12 Jun 2002 17:58:00 +0900
+Date: Wed, 12 Jun 2002 17:58:00 +0900
+
+Joern Nettingsmeier wrote:
+> Patrick Shirkey wrote:
 > 
-> most of debug messages have been moved to snd_printdd().  that is,
-> to show such debug messages, you'll need to configure alsa-driver with
-> --with-debug=detect.  if your usb device doesn't work try this, and
-> send me the output of kernel messages together with the output of
-> lsusb.
+>>Sorry if I have missed the answer to this.
+>>
+>>Why doesn't a running jackd allow me access to all the cards in my system?
+>>
+>>Currently I can only access one card at a time. Should I be using the
+>>plughw layer in the .asoundrc file to fool jack into thinking they are
+>>all one card or is it just not a possibility to use jack for more than
+>>one card at a time if they are not sample synced?
+>>
+>>The reason I want to do this is so I can use my pro multi channel card
+>>for playback to my external mixer and my consumer card as a headphones
+>>playback device so that I can cue tracks in alsaplayer using two or
+>>three mixer channels in ardour for each alsaplayer gui. Latency isn't
+>>much of a prob for headphones at this point.
+>>
+>>I know I can do this if I only use one card but that means sacrificing
+>>the headphones because my card has four channels not six. It seems a
+>>shame as I do have two other cards giving me a total of four channels at
+>>24bit/96KHz and 6 channels at 16bit/48KHz these latter ones currently
+>>being redundant in a live situation.
+>>
+> 
+> 
+> i learned from jaroslav and takashi how to do that with a "multi" device
+> (i.e. some .asoundrc voodoo). i posted it to lad/lau and alsa-dev under
+> the subject 'Re: How to "connect" two audio devices with alsa?'. mark
+> rages added it to the wiki at
+> http://alsa.opensrc.org/index.php?page=TwoCardsAsOne.
+> 
+> still, as long as the cards are open, they *will* run out of sync. i
+> don't understand all of it, but my guess is you'd have to stop the cards
+> to be in sync again, i.e. the longer the session, the worse it gets.
+> works for me, though.
+> 
 > 
 
-Using the latest code this is all the info I can get for this card.
+In your example you don't say whether your cards have are stereo or mono 
+  channels.
 
-To refresh your memory.
-
-It appears that the card is being correctly found and registered but 
-that alsa cannot set up the pcm devices.
-
-There are two obvious things that are possibly directly related. One is 
-that the card is created in /proc/asound three times and the other is 
-the  AS_GENERAL descriptor not found error.
-
+I get this ouput when starting jack
 
 ----
-#cat: /proc/asound/dev/controlC2: File descriptor in bad state
-----
-#more /var/log/messages
+# jackd -R -v -d alsa -d ttable
+jackd 0.33.0
+Copyright 2001-2002 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
 
-Jun 12 13:52:27 mahine kernel: usb.c: registered new driver snd-usb-audio
-Jun 12 13:52:27 mahine kernel: ALSA usbaudio.c:1718: adding an output 
-interface
-3:0:%%j
-Jun 12 13:52:27 mahine kernel: ALSA usbaudio.c:1712: adding an input 
-interface 3
-:0:%%j
-Jun 12 13:52:27 mahine kernel: ALSA usbaudio.c:1718: adding an output 
-interface
-3:3:%%j
-Jun 12 13:52:27 mahine kernel: ALSA usbaudio.c:1712: adding an input 
-interface 3
-:3:%%j
-Jun 12 13:52:27 mahine kernel: ALSA usbaudio.c:1718: adding an output 
-interface
-3:6:%%j
-Jun 12 13:52:27 mahine kernel: ALSA usbaudio.c:1712: adding an input 
-interface 3
-:6:%%j
+3475 waiting for signals
+creating alsa driver ... ttable|1024|2|48000|swmon
+ALSA: no playback configurations available
+ALSA: cannot configure capture channel
+cannot load driver module alsa
+jack main caught signal 15
 -----
-usb.c: registered new driver snd-usb-audio
-ALSA usbaudio.c:1718: adding an output interface 3:0:%j
-ALSA usbaudio.c:1712: adding an input interface 3:0:%j
-ALSA usbaudio.c:1296: 3:1:1 : AS_GENERAL descriptor not found
-ALSA usbaudio.c:1296: 3:2:1 : AS_GENERAL descriptor not found
-devfs_register(unknown): could not append to parent, err: -17
-ALSA usbaudio.c:1718: adding an output interface 3:3:%j
-ALSA usbaudio.c:1712: adding an input interface 3:3:%j
-ALSA usbaudio.c:1381: 3:4:1 : non-supported sample bit 1 in 3 bytes
-ALSA usbaudio.c:1296: 3:4:2 : AS_GENERAL descriptor not found
-ALSA usbaudio.c:1381: 3:4:3 : non-supported sample bit 1 in 3 bytes
-ALSA usbaudio.c:1381: 3:5:1 : non-supported sample bit 1 in 3 bytes
-ALSA usbaudio.c:1296: 3:5:2 : AS_GENERAL descriptor not found
-ALSA usbaudio.c:1381: 3:5:3 : non-supported sample bit 1 in 3 bytes
-devfs_register(unknown): could not append to parent, err: -17
-ALSA usbaudio.c:1718: adding an output interface 3:6:%j
-ALSA usbaudio.c:1712: adding an input interface 3:6:%j
-ALSA usbaudio.c:1381: 3:7:1 : non-supported sample bit 1 in 3 bytes
-ALSA usbaudio.c:1296: 3:7:2 : AS_GENERAL descriptor not found
-ALSA usbaudio.c:1381: 3:7:3 : non-supported sample bit 1 in 3 bytes
-ALSA usbaudio.c:1381: 3:8:1 : non-supported sample bit 1 in 3 bytes
-ALSA usbaudio.c:1296: 3:8:2 : AS_GENERAL descriptor not found
-ALSA usbaudio.c:1381: 3:8:3 : non-supported sample bit 1 in 3 bytes
-devfs_register(unknown): could not append to parent, err: -17
-----
 
+Using the following in my .asoundrc file. I'm not sure if it is correct 
+as card0 has two stereo pcm devices. I'm not sure whether they are being 
+defined in the following or not.
+
+Does
+
+         slaves.a.channels 2
+
+refer to the pcm devices
+
+         eg. hw:0,0 and hw:0,1
+
+or the first two mono channels available on card0?
+
+         eg. left and right channels on hw:0,0
+
+----
+# create a virtual four-channel device with two soundcards:
+# iiuc, this is in fact two interleaved stereo streams in
+# different memory locations, so jack will complain that it
+# cannot get mmap-based access. see below.
+
+pcm.multi {
+         type multi;
+         slaves.a.pcm "hw:0,0";
+         slaves.a.channels 2;
+         slaves.b.pcm "hw:1,0";
+         slaves.b.channels 1;
+         bindings.0.slave a;
+         bindings.0.channel 0;
+         bindings.1.slave a;
+         bindings.1.channel 1;
+         bindings.2.slave b;
+         bindings.2.channel 0;
+#        bindings.3.slave a;
+#        bindings.3.channel 1;
+}
+# i do not really understand what it means to have
+# a ctl interface to a multi device. but jack will be
+# unhappy if there is no mixer to talk to, so we set
+# this to card 0.
+ctl.multi {
+         type hw;
+         card 0;
+}
+
+# this creates a 4channel interleaved pcm stream based on
+# the multi device. jack will work with this one.
+pcm.ttable {
+         type route;
+         slave.pcm "multi";
+         ttable.0.0 1;
+         ttable.1.1 1;
+         ttable.2.2 1;
+#        ttable.3.3 1;
+}
+# see above.
+ctl.ttable {
+         type hw;
+         card 0;
+}
+----
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
 For the discerning hardware connoisseur
@@ -104,1230 +210,19 @@ Http://www.boosthardware.com
 Http://www.boosthardware.com/LAU/guide/
 ========================================
 
---------------090107090008070704040408
-Content-Type: text/plain;
- name="lsusb-120602.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="lsusb-120602.txt"
+
+_______________________________________________________________
+
+Sponsored by:
+ThinkGeek at http://www.ThinkGeek.com/
+_______________________________________________
+Jackit-devel mailing list
+Jackit-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/jackit-devel
 
 
-Bus 002 Device 001: ID 0000:0000 Virtual Hub
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.00
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 
-  bDeviceProtocol         0 
-  bMaxPacketSize0         8
-  idVendor           0x0000 Virtual
-  idProduct          0x0000 Hub
-  bcdDevice            0.00
-  iManufacturer           0 
-  iProduct                2 USB UHCI-alt Root Hub
-  iSerial                 1 d400
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength           25
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0x40
-      Self Powered
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         9 Hub
-      bInterfaceSubClass      0 
-      bInterfaceProtocol      0 
-      iInterface              0 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               none
-        wMaxPacketSize          8
-        bInterval             255
-  Language IDs: (length=4)
-     0000 (null)((null))
 
-Bus 001 Device 001: ID 0000:0000 Virtual Hub
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.00
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 
-  bDeviceProtocol         0 
-  bMaxPacketSize0         8
-  idVendor           0x0000 Virtual
-  idProduct          0x0000 Hub
-  bcdDevice            0.00
-  iManufacturer           0 
-  iProduct                2 USB UHCI-alt Root Hub
-  iSerial                 1 cc00
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength           25
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0x40
-      Self Powered
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         9 Hub
-      bInterfaceSubClass      0 
-      bInterfaceProtocol      0 
-      iInterface              0 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               none
-        wMaxPacketSize          8
-        bInterval             255
-  Language IDs: (length=4)
-     0000 (null)((null))
-
-Bus 001 Device 002: ID 09da:0006 A4 Tech Co., Ltd. 
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               2.00
-  bDeviceClass            0 Interface
-  bDeviceSubClass         0 
-  bDeviceProtocol         0 
-  bMaxPacketSize0         8
-  idVendor           0x09da A4 Tech Co., Ltd.
-  idProduct          0x0006 
-  bcdDevice            1.00
-  iManufacturer           1 A4Tech
-  iProduct                2 USB Optical Mouse
-  iSerial                 0 
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength           34
-    bNumInterfaces          1
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0xa0
-      Remote Wakeup
-    MaxPower              100mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           1
-      bInterfaceClass         3 Human Interface Devices
-      bInterfaceSubClass      1 Boot Interface Subclass
-      bInterfaceProtocol      2 Mouse
-      iInterface              0 
-        HID Device Descriptor:
-          bLength                 9
-          bDescriptorType        33
-          bcdHID               1.00
-          bCountryCode            0
-          bNumDescriptors         1
-          bDescriptorType        34 Report
-          wDescriptorLength      54
-cannot get report descriptor
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               none
-        wMaxPacketSize          4
-        bInterval              10
-  Language IDs: (length=4)
-     0409 English(US)
-
-Bus 001 Device 003: ID 0763:2001 Midiman 
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.00
-  bDeviceClass            0 Interface
-  bDeviceSubClass         0 
-  bDeviceProtocol         0 
-  bMaxPacketSize0         8
-  idVendor           0x0763 Midiman
-  idProduct          0x2001 
-  bcdDevice            1.01
-  iManufacturer           1 M Audio
-  iProduct                2 USB AudioSport Quattro (tm)
-  iSerial                 0 
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          974
-    bNumInterfaces         10
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0x40
-      Self Powered
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0 
-      iInterface              2 USB AudioSport Quattro (tm)
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           52
-        bInCollection           2
-        baInterfaceNr( 0)       1
-        baInterfaceNr( 1)       2
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             5
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0 
-        iTerminal               0 
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             6
-        wTerminalType      0x0601 Analog Connector
-        bAssocTerminal          0
-        bSourceID               5
-        iTerminal               0 
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             1
-        wTerminalType      0x0601 Analog Connector
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0 
-        iTerminal               0 
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             2
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bSourceID               1
-        iTerminal               0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       4
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           5
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                17
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            3 Discrete
-        tSamFreq[ 0]        11025
-        tSamFreq[ 1]        22050
-        tSamFreq[ 2]        44100
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            9
-          Transfer Type            Isochronous
-          Synch Type               Adaptive
-        wMaxPacketSize        192
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        2
-      bAlternateSetting       4
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           2
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                17
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            3 Discrete
-        tSamFreq[ 0]        11025
-        tSamFreq[ 1]        22050
-        tSamFreq[ 2]        44100
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x85  EP 5 IN
-        bmAttributes           13
-          Transfer Type            Isochronous
-          Synch Type               Synchronous
-        wMaxPacketSize        192
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        3
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0 
-      iInterface              2 USB AudioSport Quattro (tm)
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           52
-        bInCollection           2
-        baInterfaceNr( 0)       4
-        baInterfaceNr( 1)       5
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             5
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0 
-        iTerminal               0 
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             6
-        wTerminalType      0x0601 Analog Connector
-        bAssocTerminal          0
-        bSourceID               5
-        iTerminal               0 
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             1
-        wTerminalType      0x0601 Analog Connector
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0 
-        iTerminal               0 
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             2
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bSourceID               1
-        iTerminal               0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        4
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        4
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           5
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                14
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           3
-        bBitResolution         24
-        bSamFreqType            2 Discrete
-        tSamFreq[ 0]        88200
-        tSamFreq[ 1]        96000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            9
-          Transfer Type            Isochronous
-          Synch Type               Adaptive
-        wMaxPacketSize        576
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        4
-      bAlternateSetting       3
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           5
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                20
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           3
-        bBitResolution         24
-        bSamFreqType            4 Discrete
-        tSamFreq[ 0]        11025
-        tSamFreq[ 1]        22050
-        tSamFreq[ 2]        44100
-        tSamFreq[ 3]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            9
-          Transfer Type            Isochronous
-          Synch Type               Adaptive
-        wMaxPacketSize        288
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        4
-      bAlternateSetting       4
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           5
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                20
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            4 Discrete
-        tSamFreq[ 0]        11025
-        tSamFreq[ 1]        22050
-        tSamFreq[ 2]        44100
-        tSamFreq[ 3]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            9
-          Transfer Type            Isochronous
-          Synch Type               Adaptive
-        wMaxPacketSize        192
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        5
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        5
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           2
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                14
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           3
-        bBitResolution         24
-        bSamFreqType            2 Discrete
-        tSamFreq[ 0]        88200
-        tSamFreq[ 1]        96000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x85  EP 5 IN
-        bmAttributes           13
-          Transfer Type            Isochronous
-          Synch Type               Synchronous
-        wMaxPacketSize        576
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        5
-      bAlternateSetting       3
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           2
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                20
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           3
-        bBitResolution         24
-        bSamFreqType            4 Discrete
-        tSamFreq[ 0]        11025
-        tSamFreq[ 1]        22050
-        tSamFreq[ 2]        44100
-        tSamFreq[ 3]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x85  EP 5 IN
-        bmAttributes           13
-          Transfer Type            Isochronous
-          Synch Type               Synchronous
-        wMaxPacketSize        288
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        5
-      bAlternateSetting       4
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           2
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                20
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            4 Discrete
-        tSamFreq[ 0]        11025
-        tSamFreq[ 1]        22050
-        tSamFreq[ 2]        44100
-        tSamFreq[ 3]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x85  EP 5 IN
-        bmAttributes           13
-          Transfer Type            Isochronous
-          Synch Type               Synchronous
-        wMaxPacketSize        192
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        6
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0 
-      iInterface              2 USB AudioSport Quattro (tm)
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           52
-        bInCollection           2
-        baInterfaceNr( 0)       7
-        baInterfaceNr( 1)       8
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             7
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0 
-        iTerminal               0 
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             8
-        wTerminalType      0x0601 Analog Connector
-        bAssocTerminal          0
-        bSourceID               7
-        iTerminal               0 
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             3
-        wTerminalType      0x0601 Analog Connector
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0 
-        iTerminal               0 
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             4
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bSourceID               3
-        iTerminal               0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        7
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        7
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           7
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                14
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           3
-        bBitResolution         24
-        bSamFreqType            2 Discrete
-        tSamFreq[ 0]        88200
-        tSamFreq[ 1]        96000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x04  EP 4 OUT
-        bmAttributes            9
-          Transfer Type            Isochronous
-          Synch Type               Adaptive
-        wMaxPacketSize        576
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        7
-      bAlternateSetting       3
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           7
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                20
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           3
-        bBitResolution         24
-        bSamFreqType            4 Discrete
-        tSamFreq[ 0]        11025
-        tSamFreq[ 1]        22050
-        tSamFreq[ 2]        44100
-        tSamFreq[ 3]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x04  EP 4 OUT
-        bmAttributes            9
-          Transfer Type            Isochronous
-          Synch Type               Adaptive
-        wMaxPacketSize        288
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        7
-      bAlternateSetting       4
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           7
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                20
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            4 Discrete
-        tSamFreq[ 0]        11025
-        tSamFreq[ 1]        22050
-        tSamFreq[ 2]        44100
-        tSamFreq[ 3]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x04  EP 4 OUT
-        bmAttributes            9
-          Transfer Type            Isochronous
-          Synch Type               Adaptive
-        wMaxPacketSize        192
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        8
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        8
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           4
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                14
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           3
-        bBitResolution         24
-        bSamFreqType            2 Discrete
-        tSamFreq[ 0]        88200
-        tSamFreq[ 1]        96000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x86  EP 6 IN
-        bmAttributes           13
-          Transfer Type            Isochronous
-          Synch Type               Synchronous
-        wMaxPacketSize        576
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        8
-      bAlternateSetting       3
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           4
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                20
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           3
-        bBitResolution         24
-        bSamFreqType            4 Discrete
-        tSamFreq[ 0]        11025
-        tSamFreq[ 1]        22050
-        tSamFreq[ 2]        44100
-        tSamFreq[ 3]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x86  EP 6 IN
-        bmAttributes           13
-          Transfer Type            Isochronous
-          Synch Type               Synchronous
-        wMaxPacketSize        288
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        8
-      bAlternateSetting       4
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0 
-      iInterface              0 
-      AudioControl Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           4
-        bDelay                  1 frames
-        wFormatTag              1 PCM
-      AudioControl Interface Descriptor:
-        bLength                20
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            4 Discrete
-        tSamFreq[ 0]        11025
-        tSamFreq[ 1]        22050
-        tSamFreq[ 2]        44100
-        tSamFreq[ 3]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x86  EP 6 IN
-        bmAttributes           13
-          Transfer Type            Isochronous
-          Synch Type               Synchronous
-        wMaxPacketSize        192
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x01
-            Sampling Frequency
-          bLockDelayUnits         0 Undefined
-          wLockDelay              0 Undefined
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        9
-      bAlternateSetting       0
-      bNumEndpoints           3
-      bInterfaceClass       255 Vendor Specific Class
-      bInterfaceSubClass      0 
-      bInterfaceProtocol      0 
-      iInterface              0 
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               none
-        wMaxPacketSize         32
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               none
-        wMaxPacketSize         32
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               none
-        wMaxPacketSize         32
-        bInterval               0
-  Language IDs: (length=4)
-     0409 English(US)
-
---------------090107090008070704040408
-Content-Type: text/plain;
- name="descr.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="descr.txt"
-
-M Audio USB AudioSport Quattro (tm)
-
-00: 09 02 ce 03 0a 01 00 40 00 09 04 00 00 00 01 01
-10: 00 02 0a 24 01 00 01 34 00 02 01 02 0c 24 02 05
-20: 01 01 00 02 03 00 00 00 09 24 03 06 01 06 00 05
-30: 00 0c 24 02 01 01 06 00 02 03 00 00 00 09 24 03
-40: 02 01 01 00 01 00 09 04 01 00 00 01 02 00 00 09
-50: 04 01 04 01 01 02 00 00 07 24 01 05 01 01 00 11
-60: 24 02 01 02 02 10 03 11 2b 00 22 56 00 44 ac 00
-70: 09 05 03 09 c0 00 01 00 00 07 25 01 01 00 00 00
-80: 09 04 02 00 00 01 02 00 00 09 04 02 04 01 01 02
-90: 00 00 07 24 01 02 01 01 00 11 24 02 01 02 02 10
-a0: 03 11 2b 00 22 56 00 44 ac 00 09 05 85 0d c0 00
-b0: 01 00 00 07 25 01 01 00 00 00 09 04 03 00 00 01
-c0: 01 00 02 0a 24 01 00 01 34 00 02 04 05 0c 24 02
-d0: 05 01 01 00 02 03 00 00 00 09 24 03 06 01 06 00
-e0: 05 00 0c 24 02 01 01 06 00 02 03 00 00 00 09 24
-f0: 03 02 01 01 00 01 00 09 04 04 00 00 01 02 00 00
-100: 09 04 04 01 01 01 02 00 00 07 24 01 05 01 01 00
-110: 0e 24 02 01 02 03 18 02 88 58 01 00 77 01 09 05
-120: 03 09 40 02 01 00 00 07 25 01 01 00 00 00 09 04
-130: 04 03 01 01 02 00 00 07 24 01 05 01 01 00 14 24
-140: 02 01 02 03 18 04 11 2b 00 22 56 00 44 ac 00 80
-150: bb 00 09 05 03 09 20 01 01 00 00 07 25 01 01 00
-160: 00 00 09 04 04 04 01 01 02 00 00 07 24 01 05 01
-170: 01 00 14 24 02 01 02 02 10 04 11 2b 00 22 56 00
-180: 44 ac 00 80 bb 00 09 05 03 09 c0 00 01 00 00 07
-190: 25 01 01 00 00 00 09 04 05 00 00 01 02 00 00 09
-1a0: 04 05 01 01 01 02 00 00 07 24 01 02 01 01 00 0e
-1b0: 24 02 01 02 03 18 02 88 58 01 00 77 01 09 05 85
-1c0: 0d 40 02 01 00 00 07 25 01 01 00 00 00 09 04 05
-1d0: 03 01 01 02 00 00 07 24 01 02 01 01 00 14 24 02
-1e0: 01 02 03 18 04 11 2b 00 22 56 00 44 ac 00 80 bb
-1f0: 00 09 05 85 0d 20 01 01 00 00 07 25 01 01 00 00
-200: 00 09 04 05 04 01 01 02 00 00 07 24 01 02 01 01
-210: 00 14 24 02 01 02 02 10 04 11 2b 00 22 56 00 44
-220: ac 00 80 bb 00 09 05 85 0d c0 00 01 00 00 07 25
-230: 01 01 00 00 00 09 04 06 00 00 01 01 00 02 0a 24
-240: 01 00 01 34 00 02 07 08 0c 24 02 07 01 01 00 02
-250: 03 00 00 00 09 24 03 08 01 06 00 07 00 0c 24 02
-260: 03 01 06 00 02 03 00 00 00 09 24 03 04 01 01 00
-270: 03 00 09 04 07 00 00 01 02 00 00 09 04 07 01 01
-280: 01 02 00 00 07 24 01 07 01 01 00 0e 24 02 01 02
-290: 03 18 02 88 58 01 00 77 01 09 05 04 09 40 02 01
-2a0: 00 00 07 25 01 01 00 00 00 09 04 07 03 01 01 02
-2b0: 00 00 07 24 01 07 01 01 00 14 24 02 01 02 03 18
-2c0: 04 11 2b 00 22 56 00 44 ac 00 80 bb 00 09 05 04
-2d0: 09 20 01 01 00 00 07 25 01 01 00 00 00 09 04 07
-2e0: 04 01 01 02 00 00 07 24 01 07 01 01 00 14 24 02
-2f0: 01 02 02 10 04 11 2b 00 22 56 00 44 ac 00 80 bb
-300: 00 09 05 04 09 c0 00 01 00 00 07 25 01 01 00 00
-310: 00 09 04 08 00 00 01 02 00 00 09 04 08 01 01 01
-320: 02 00 00 07 24 01 04 01 01 00 0e 24 02 01 02 03
-330: 18 02 88 58 01 00 77 01 09 05 86 0d 40 02 01 00
-340: 00 07 25 01 01 00 00 00 09 04 08 03 01 01 02 00
-350: 00 07 24 01 04 01 01 00 14 24 02 01 02 03 18 04
-360: 11 2b 00 22 56 00 44 ac 00 80 bb 00 09 05 86 0d
-370: 20 01 01 00 00 07 25 01 01 00 00 00 09 04 08 04
-380: 01 01 02 00 00 07 24 01 04 01 01 00 14 24 02 01
-390: 02 02 10 04 11 2b 00 22 56 00 44 ac 00 80 bb 00
-3a0: 09 05 86 0d c0 00 01 00 00 07 25 01 01 00 00 00
-3b0: 09 04 09 00 03 ff 00 00 00 07 05 81 03 20 00 01
-3c0: 07 05 82 02 20 00 00 07 05 02 02 20 00 00 
-
---------------090107090008070704040408--
+--------------060408040900020609020600--
 
 
 _______________________________________________________________
