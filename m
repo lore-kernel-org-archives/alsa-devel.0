@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000488]: stac946x.h is missing in CVS
-Date: Wed,  8 Sep 2004 13:21:30 +0200 (CEST)
+Date: Wed,  8 Sep 2004 13:29:46 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040908112130.1BBFC13002@server.perex-int.cz>
+Message-ID: <20040908112946.833CD13001@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C9FC62A8
-	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 13:21:30 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 2F23721005
-	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 13:21:30 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 31A75203
+	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 13:29:48 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,9 +20,9 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000488
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000488
 ======================================================================
 Reported By:                sashak
 Assigned To:                perex
@@ -36,12 +33,13 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   trivial
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
 Kernel Version:             2.6.7-gentoo-r13
+Resolution:                 fixed
 ======================================================================
 Date Submitted:             09-08-2004 13:21 CEST
-Last Modified:              09-08-2004 13:21 CEST
+Last Modified:              09-08-2004 13:29 CEST
 ======================================================================
 Summary:                    stac946x.h is missing in CVS
 Description: 
@@ -62,11 +60,19 @@ error: `STAC946X_MASTER_VOLUME' undeclared (first use in this function)
 ...
 ======================================================================
 
+----------------------------------------------------------------------
+ perex - 09-08-2004 13:29 CEST 
+----------------------------------------------------------------------
+I'm sorry, I missed this one. It's fixed in CVS now.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 09-08-04 13:21 sashak         New Bug                                      
 09-08-04 13:21 sashak         Kernel Version            => 2.6.7-gentoo-r13
+09-08-04 13:29 perex          Bugnote Added: 0001728                       
+09-08-04 13:29 perex          Resolution               open => fixed       
+09-08-04 13:29 perex          Status                   assigned => resolved
 ======================================================================
 
 
