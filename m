@@ -1,13 +1,12 @@
-From: =?utf-8?q?Marcus Ohdaci?= <abodelkseeaw@hansenarchitects.com>
-Subject: =?utf-8?q?Daily News - Rolex w?=
- =?utf-8?q?atches online?=
-Date: Sat, 30 Oct 2004 09:32:53 +0000
+From: "Dane May" <oxyidvxyoh@yahoo.com>
+Subject: (no subject)
+Date: Thu, 14 Oct 2004 15:23:38 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1CNpUl-0004lv-Fh@externalmx-1.sourceforge.net>
+Message-ID: <200410031405.i93YolTw000749__36028.656215831$1099135021$gmane$org@www3.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	 boundary="w7uQxnGLlVqWv"
+Content-Type: text/plain;
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Message-Id: <200410031405.i93YolTw000749@www3.gmail.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,51 +15,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?utf-8?q?Amelia Clizry?= <alsa-devel@lists.sourceforge.net>
+To: abramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hi again,
 
---w7uQxnGLlVqWv
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Here is Dane May. I write to you because we are accepting your mortgage ap=
+plication.
+Our office confirms you can get a $220.000 lo=C0n for a $252.00 per month =
+payment.
+Approval process will take 1 minute, so please fill out the form on our we=
+bsite:
 
-Real Replicas Wrist-Watches
 
-I offer this brands available as well:
+http://bulrush-delude.webrefi.net
 
-Rolex
-Vacheron Constantin
-Glashute Original
-Zenith
-Sinn
 
-http://xhomll.ghoy.com/rep/vron/oinm.cfm
---w7uQxnGLlVqWv
-Content-Type: text/html;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Thank you.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
-<STYLE></STYLE>
-</HEAD>
-<HTML>
-<BODY>
-<A href=3D"http://temsealykax.evif.com/r/vron/oucdi.cfm">
-Actual Replicas Watches
-</A><BR>
-I offer next trade names available too:<BR>
-Frank Muller<BR>
-Chopard<BR>
-Roger Dubuis<BR>
-Alain Silberstein<BR>
-Omega<BR>
-</BODY>
-</HTML></HTML>
---w7uQxnGLlVqWv--
+Best Regards Dane May
+First Account Manager
+
 
 
 
