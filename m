@@ -1,13 +1,19 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Justin Cormack <justin@street-vision.com>
 Subject: Re: matrix mixer control (Re: Complex mixer questio
-Date: Mon, 31 Mar 2003 16:12:14 +0200 (CEST)
+Date: 31 Mar 2003 15:20:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303311609570.1602-100000@pnote.perex-int.cz>
-References: <XFMail.20030331150304.pochini@shiny.it>
+Message-ID: <1049120453.1373.3.camel@lotte>
+References: <Pine.LNX.4.44.0303311307170.1602-100000@pnote.perex-int.cz>
+	<XFMail.20030331150304.pochini@shiny.it>
+	<20030331144500.GA20506@ee.unsw.edu.au>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <XFMail.20030331150304.pochini@shiny.it>
+Received: from tench.street-vision.com ([212.18.235.100])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA20606
+	for <alsa-devel@alsa-project.org>; Mon, 31 Mar 2003 16:21:07 +0200
+In-Reply-To: <20030331144500.GA20506@ee.unsw.edu.au>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,43 +22,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Paul Davis <paul@linuxaudiosystems.com>, Takashi Iwai <tiwai@suse.de>
+To: Matt Flax <flatmax@pgb.unsw.edu.au>
+Cc: core sound <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 31 Mar 2003, Giuliano Pochini wrote:
-
+On Mon, 2003-03-31 at 15:45, Matt Flax wrote:
+> I think this is a great step forward ... it will open the door for 3D 
+> array audio applications.
+> Typically these applications use 3D speaker arrays which each have 
+> individual gains set for each audio 'object'.
+> Consequently depending on an audio object's location in 3D space, will 
+> depend on the relative speaker gains for that particular audio object.
 > 
-> On 31-Mar-2003 Jaroslav Kysela wrote:
-> >> the case 2 is, IMO, the most straightforward way.  the info field will
-> >> have number of rows and columns, in addition to min, max and step
-> >> values.  the change in the alsa core wouldn't be too much.
-> > 
-> > I think that we simply touch the barrier given by 'struct
-> > sndrv_ctl_elem_id'. The identification which differentiate identical
-> > controls is only the 'index' value. If we don't use 'struct
-> > sndrv_ctl_elem_id' as the identification unit for read/writing of data,
-> > then we end with trouble with notification and other representation
-> > (single data unit locking, inactive flag etc). Imagine three or four
-> > dimensional data types. [...]
-> 
-> .count is an uint32. Ok, suppose we do not change it. Then the low
-> level driver has to tell user space apps that the index number
-> addresses elements in a W*H matrix, so the apps will locate the
-> cell at (x,y) by a simple index=x+W*y.
+> Consequently each audio object has its own mixer matrix. There is also a 
+> master mixer matrix for calibration - this generally occurs when you 
+> have external amplifiers which are different or not calibrated.
 
-Yes, except that the lowlevel driver won't tell that there is a matrix. It
-can be indentified by element name (string) or by the description in the
-user space. We decided to remove all mixer routing/connection/element
-types (except the value types) information from the kernel space to
-simplify drivers.
+You can already do this with the hdsp matrix mixer (in fact I have with
+8 speakers). Each channel has a mixer level for each speaker. For hdsp
+you get 26 playback channels, ie 26 objects (plus the capture channels
+too).
 
-						Jaroslav
+The thread is just about whether to tidy up the way the interface is
+exposed.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Justin
+
 
 
 
