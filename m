@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Tue, 4 Jan 2005 22:38:22 +0100
-Message-ID: <73b452e1024e1e29cc98ac129c8103fa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000784]: CMI 9739A PCM does not allow volume control only on/off (when on starts with full volume)
+Date: Tue, 4 Jan 2005 22:42:04 +0100
+Message-ID: <b3e81fba1f739102ab1ed2d9f6c7b611@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A7334261
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 22:38:22 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB55E261
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 22:42:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=784> 
 ======================================================================
-Reported By:                wzzrd
-Assigned To:                perex
+Reported By:                ajir
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   154
-Category:                   mixer
+Project:                    ALSA - driver
+Issue ID:                   784
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              01-04-2005 22:38 CET
+Date Submitted:             01-04-2005 20:34 CET
+Last Modified:              01-04-2005 22:42 CET
 ======================================================================
-Summary:                    Master volume only controls front output (emu10k1)
+Summary:                    CMI 9739A PCM does not allow volume control only
+on/off (when on starts with full volume)
 Description: 
-Setting the alsamixer Master Volume slider only controls the front two
-speakers. The rear speakers have to be controlled with the Wave Surround
-setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
-bug. If I'm wrong putting it here, sorry.
-
-It would be very convenient to be able to control all four speakers with
-the Master Volume setting and to have a Front and Rear slider to control
-the front and rear speakers individually.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000176 Master volume does not alters center, L...
-related to          0000172 Master volume control only controls fro...
+This issue was studied before but without any effect. Some says that this
+codec has different hadrware and it can not be controled.BUT WINDOWS
+DRIVER CAN CONTROL damn VOLUME. Please can it be fixed?
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 01-04-05 22:30 
+ rlrevell - 01-04-05 20:57 
 ----------------------------------------------------------------------
-Audigy is OK - this was fixed in past.
-
-SB Live is worse, because there is not one signal path from analog inputs
-to front speakers, but two (audigy has only one).
-
-If you are interested in fixing this, I can send you how SB Live alsa
-mixer looks now and how it should look after.
-
-This will fix - partially "master" control (this bug repport), spdif
-volume controls (for digital speakers) (another bug report) and signal
-distortion when using bass and treble controls (another bug report).
+Please, stop reporting this as a bug!  Besides I am sure there's already an
+open bug report for it.  The upcoming ALSA 1.0.8 release will have a
+"software volume" plugin that should solve the problem.
 
 ----------------------------------------------------------------------
- rlrevell - 01-04-05 22:38 
+ rlrevell - 01-04-05 22:42 
 ----------------------------------------------------------------------
-Yes, please send me this info, and I'll try to fix the driver.
+Update: try ALSA CVS.  This should work now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-23-04 17:31 wzzrd          New Issue                                    
-03-23-04 18:42 perex          View Status              @0@ => public       
-03-23-04 18:42 perex          Description Updated                          
-03-23-04 18:42 perex          Additional Information Updated                    
-03-23-04 18:43 perex          Status                   new => assigned     
-03-23-04 18:43 perex          Assigned To               => perex           
-03-26-04 20:21 djtm           Note Added: 0000708                          
-04-19-04 02:47 tarball        Issue Monitored: tarball                     
-04-19-04 21:23 perex          Relationship added       has duplicate 0000176
-05-24-04 22:51 delmonico      Note Added: 0001199                          
-10-22-04 16:44 perex          Relationship added       related to 0000172  
-10-23-04 01:09 djtm           Note Added: 0002253                          
-10-23-04 01:09 djtm           File Added: alsavol.sh                       
-10-23-04 01:10 djtm           Note Edited: 0002253                         
-11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
-01-04-05 21:01 Miwer          Note Added: 0003081                          
-01-04-05 21:11 rlrevell       Note Added: 0003082                          
-01-04-05 21:29 pzad           Note Added: 0003083                          
-01-04-05 21:38 rlrevell       Note Added: 0003084                          
-01-04-05 22:30 pzad           Note Added: 0003085                          
-01-04-05 22:38 rlrevell       Note Added: 0003086                          
+01-04-05 20:34 ajir           New Issue                                    
+01-04-05 20:34 ajir           Kernel Version            => 2.6.8.1         
+01-04-05 20:57 rlrevell       Note Added: 0003080                          
+01-04-05 22:42 rlrevell       Note Added: 0003087                          
 ======================================================================
 
 
