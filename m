@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000990]: Failure to build "make: *** src/pcm/ext: No such file or directory."
-Date: Tue, 15 Mar 2005 23:12:52 +0100
-Message-ID: <1ac59e847a8991842f0c17bb69f64124@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
+Date: Tue, 15 Mar 2005 22:32:08 +0100
+Message-ID: <a0a6e723ab06ea8afdd0af8e16196537@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 91458217
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 23:12:52 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 550D5152
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 22:32:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,89 +23,299 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=990> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                
+Reported By:                Q3Man
+Assigned To:                fmoraes
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   990
-Category:                   general
+Project:                    ALSA - driver
+Issue ID:                   752
+Category:                   PCI - emu10k1x
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
-Date Submitted:             03-14-2005 07:44 CET
-Last Modified:              03-15-2005 23:12 CET
+Date Submitted:             12-28-2004 05:12 CET
+Last Modified:              03-15-2005 22:32 CET
 ======================================================================
-Summary:                    Failure to build "make: *** src/pcm/ext: No such
-file or directory."
+Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
-Build of alsa-lib 1.0.9rc1 ends like this:
+I'm having some problems with alsa since 1.0.6a. Previously I just had the
+later versions masked, but now various kde packages require the latest
+alsa, so I'm having to tackle it now. ALSA seems to start normally,
+however I get this error in dmesg: 
+EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
 
-Making all in utils
-make[2]: Entering directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1/utils'
-make[2]: Nothing to be done for `all'.
-make[2]: Leaving directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1/utils'
-make[2]: Entering directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-cd . && /bin/sh ./config.status Makefile
-config.status: creating Makefile
-make[2]: Leaving directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-make[2]: Entering directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-make[2]: Nothing to be done for `all-am'.
-make[2]: Leaving directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-make[1]: Leaving directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-/usr/bin/make -C src/pcm/ext jack CFLAGS="-g -Wall -O2"
-make: *** src/pcm/ext: No such file or directory.  Stop.
-make: *** [build-arch-stamp] Error 2
-build command failed in
-/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1
-Aborting.
-W: build directory not purged!
+I also get this error when running alsamixer: 
+alsamixer: function snd_ctl_open failed for default: No such device 
 
-The src/pcm/ext subdirectory does not exist.
+And similar ones in other alsa programs. 
 
-I attach the full build log.
+Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
+code and it seems that the error is vaguely interrupt related, but I could
+not find the code that produces error -16. I've swapped interrupts around
+and disabled non-essential devices (usb, serial, parallel ports, removed
+network cards and sound cards - although that last one proved slightly
+less than helpful :) I've changed from having my bios manage irq's to
+having the OS handle them with zero success. 
+
+I've looked around for that error code in google for the last few weeks -
+since the release of 1.0.6a with limited success. Nothing relevant to my
+situation. 
+
+Important configs and error messages:
+$ lspci -v |grep audio -A4
+0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
+EMU10k1X
+        Subsystem: Creative Labs: Unknown device 1003
+        Flags: bus master, medium devsel, latency 32, IRQ 12
+        I/O ports at d000
+        Capabilities: [dc] Power Management version 2
+(It is an actual EMU10k1X and not the Dell bastardized version)
+
+$ /etc/init.d/alsasound start; dmesg |tail -n1
+ * Loading ALSA drivers...
+ * Using ALSA OSS emulation
+ * Loading: snd-mixer-oss
+ * Loading: snd-pcm-oss
+ * Loading: snd-seq-oss
+ * Running card-dependent scripts
+ * Restoring Mixer Levels                                                
+[ ok ]
+EMU10K1X: probe of 0000:00:09.0 failed with error -16
+
+$ uname -a
+Linux tobin1 2.6.9-gentoo-r9
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
+2004 i686 AMD
+Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
+
+If anyone needs any other config information, please let me know. Again,
+it works perfectly fine in 1.0.5a, the problems only appear in later
+versions.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-15-05 23:03 
+ Q3Man - 03-15-05 17:34 
 ----------------------------------------------------------------------
-rlrevell@mindpipe:~/cvs/alsa$ find -name pcm_jack.c
-./alsa-plugins/pcm/jack/pcm_jack.c
+I did some more testing on the issue last night. The bad news is that I was
+unable to find anything that improved my situation. The good news is I'm
+finding reports of the same issue on google now. 
+
+Links of note:
+http://www.thisishull.net/archive/index.php/t-69222.html
+http://sourceforge.net/mailarchive/forum.php?thread_id=5205670&forum_id=1751
+http://www.google.com/search?c2coff=1&q=emu10k1x+%22failed+with+error%22+%2B%22-16%22&btnG=Search
+
+Going back to my first instinct that it was an IRQ issue, I went through
+my bios and set the sound card to 3,4,5,7,9,10,11,12,14,15 (disabeling
+serial ports/ide controllers/parallel ports/network cards as appropriate)
+with no changes at all. I went through half a dozen kernel compiles
+(2.6.10-gentoo-r6) and a couple dozen alsa compiles (1.0.8) with no luck.
+
+I did however get a new error message:
+# /etc/init.d/alsasound start
+ * Loading ALSA modules...
+ *   Loading: snd-card-0...                                              
+[ ok ]
+ *   Loading: snd-seq-oss...                                             
+[ ok ]
+ * ERROR: Failed to load necessary drivers                               
+[ ok ]
+ * Restoring Mixer Levels...                                             
+[ ok ]
+
+However, the error message is just a result of a newer version of the
+init.d script and not generated by alsa. 
+
+I also played around with changing between emu10k1/emu10k1x with no real
+success. 
+
+>From the other postings about the issue on the above links, most responces
+seem to indicate that it is a configuration issue (although most of the
+responces also seem to degenerate into RTFM flames). I'm going to grab the
+latest knoppix cd and try it tonight. If it runs, at least I'll have a
+working frame of reference to check against.
 
 ----------------------------------------------------------------------
- jdthood - 03-15-05 23:12 
+ Q3Man - 03-15-05 22:32 
 ----------------------------------------------------------------------
-> ./alsa-plugins/pcm/jack/pcm_jack.c
+I've done some more research. It appears that the error -16 referrs to the
+device already being in use - at least that's what the error is in
+reference to the kernel which I assume alsa is just passing through.
 
-Does this mean that alsa-plugins will be shipped in a separate tarball?
+Google has been helpful this morning, and I tried a few new approaches
+that I hadn't thought of before. Speifically:
 
-No such tarball is visible on alsa's homepage.
+>From http://www.linuxforum.com/forums/index.php?showtopic=53033 :
+It appears that in some cases hotplug may attempt to load an oss driver
+for the card before alsa gets a chance. Although I had no oss drivers to
+load, I disabled hotplug and rebooted, with no noticeable change in my
+sound (although my poor usb mouse was quite upset at me). 
+
+From
+http://sourceforge.net/mailarchive/forum.php?forum_id=1751&style=flat&viewday=18&viewmonth=200402
+:
+It looks like someone had issues with isapnp and irq's. Although I don't
+have isapnp installed I went ahead and disabled isa support in the kernel
+bus options and recompiled. No noticeable change to alsa.
+
+From
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg12066.html
+(and more specifically
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg12089.html):
+More IO goodness, however here it appears that they are looking into io
+ports as well as irq's. a quick lspci and checking my /proc/interrupts and
+/proc/ioports turns up something interesting. The io ports are listed for
+the device like this:
+d000-d01f : 0000:00:09.0
+d400-d407 : 0000:00:09.1
+however the irq it is set to (currently 10) doesn't appear in
+/proc/interrupts:
+  8:          2          XT-PIC  rtc
+ 11:      54357          XT-PIC  nvidia
+I'm going to have to investigate this more. 
+
+There are a few other links that mention the problem as well, although
+none of them really get into a viable solution. For the interested, they
+are:
+http://archives.mandrakelinux.com/cooker/2004-03/msg03581.php
+http://lists.debian.org/debian-italian/2004/02/msg02411.html
+http://forum.mandrake.pl/lofiversion/index.php/t4148.html
+
+I guess right now my best shot is to try and figure out why the card isn't
+appearing under its irq in /proc/interrupts. I've already played around
+with various ACPI settings, and even disableing it with no success. If
+anyone has anything else to try, let me know. 
+
+# lspci -vv [snipped to relevant section]
+0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
+EMU10k1X
+        Subsystem: Creative Labs: Unknown device 1003
+        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin A routed to IRQ 10
+        Region 0: I/O ports at d000
+        Capabilities: [dc] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:09.1 Input device controller: Creative Labs [SB Live! Value] Input
+device controller
+        Subsystem: Creative Labs: Unknown device 1003
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32
+        Region 0: I/O ports at d400
+        Capabilities: [dc] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+# cat /proc/interrupts
+           CPU0
+  0:    1930069          XT-PIC  timer
+  1:         10          XT-PIC  i8042
+  2:          0          XT-PIC  cascade
+  5:     198204          XT-PIC  eth0
+  7:         56          XT-PIC  uhci_hcd, uhci_hcd, uhci_hcd
+  8:          2          XT-PIC  rtc
+ 11:     115336          XT-PIC  nvidia
+ 12:         66          XT-PIC  i8042
+ 14:       5243          XT-PIC  ide0
+ 15:         22          XT-PIC  ide1
+NMI:          0
+LOC:          0
+ERR:          0
+
+# cat /proc/ioports
+0000-001f : dma1
+0020-0021 : pic1
+0040-0043 : timer0
+0050-0053 : timer1
+0060-006f : keyboard
+0070-0077 : rtc
+0080-008f : dma page reg
+00a0-00a1 : pic2
+00c0-00df : dma2
+00f0-00ff : fpu
+0170-0177 : ide1
+01f0-01f7 : ide0
+02f8-02ff : serial
+0376-0376 : ide1
+03c0-03df : vga+
+  03c0-03df : vesafb
+03f6-03f6 : ide0
+03f8-03ff : serial
+0cf8-0cff : PCI conf1
+d000-d01f : 0000:00:09.0
+d400-d407 : 0000:00:09.1
+d800-d87f : 0000:00:0a.0
+  d800-d87f : sundance
+dc00-dc0f : 0000:00:11.1
+  dc00-dc07 : ide0
+  dc08-dc0f : ide1
+e000-e01f : 0000:00:11.2
+  e000-e01f : uhci_hcd
+e400-e41f : 0000:00:11.3
+  e400-e41f : uhci_hcd
+e800-e81f : 0000:00:11.4
+  e800-e81f : uhci_hcd
+
+dmesg errors upon loading module:
+PCI: Found IRQ 10 for device 0000:00:09.0
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/alsa-kernel/pci/emu10k1/emu10k1x.c:967:
+Model 1003 Rev 00000000 Serial 10031102
+EMU10K1X: probe of 0000:00:09.0 failed with error -16
+
+# modinfo snd-emu10k1x
+author:         Francisco Moraes <fmoraes@nc.rr.com>
+description:    EMU10K1X
+license:        GPL
+parm:           index:Index value for the EMU10K1X soundcard.
+parm:           id:ID string for the EMU10K1X soundcard.
+parm:           enable:Enable the EMU10K1X soundcard.
+vermagic:       2.6.10-gentoo-r6 K7 gcc-3.3
+depends:        snd,snd-pcm,snd-page-alloc,snd-rawmidi,snd-ac97-codec
+alias:          pci:v00001102d00000006sv*sd*bc*sc*i*
+
+# uname -a
+Linux tobin1 2.6.10-gentoo-r6
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Mar 15 12:09:09 PST
+2005 i686 AMD
+Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 07:44 jdthood        New Issue                                    
-03-14-05 07:44 jdthood        File Added: alsa-lib_20050313jdth1.buildlog       
-            
-03-14-05 07:46 jdthood        File Added: 01_alpha_versioned_symbols.dpatch     
-              
-03-14-05 07:47 jdthood        File Added: 02_aclocal_libs_fix.dpatch            
-       
-03-15-05 22:41 jdthood        Note Added: 0003919                          
-03-15-05 22:55 rlrevell       Note Added: 0003921                          
-03-15-05 23:01 jdthood        Note Added: 0003922                          
-03-15-05 23:03 rlrevell       Note Added: 0003923                          
-03-15-05 23:12 jdthood        Note Added: 0003924                          
+12-28-04 05:12 Q3Man          New Issue                                    
+12-28-04 05:12 Q3Man          File Added: einfo                            
+12-28-04 05:12 Q3Man          Distribution              => Gentoo          
+12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
+12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
+01-03-05 12:10 tiwai          Note Added: 0003054                          
+01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
+01-03-05 17:30 Q3Man          Note Added: 0003071                          
+01-16-05 14:54 fmoraes        Note Added: 0003216                          
+01-18-05 00:44 Q3Man          Note Added: 0003240                          
+01-20-05 02:23 Q3Man          Note Added: 0003322                          
+01-20-05 19:12 tiwai          Note Added: 0003332                          
+01-21-05 05:11 Q3Man          Note Added: 0003337                          
+01-21-05 11:14 tiwai          Note Added: 0003341                          
+01-22-05 23:24 fmoraes        Note Added: 0003382                          
+03-09-05 02:57 fmoraes        Note Added: 0003821                          
+03-15-05 17:34 Q3Man          Note Added: 0003916                          
+03-15-05 22:32 Q3Man          Note Added: 0003918                          
 ======================================================================
 
 
