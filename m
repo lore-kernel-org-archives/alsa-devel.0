@@ -1,14 +1,12 @@
-From: Juan Linietsky <coding@reduz.com.ar>
-Subject: bug  in ens1371/ens1370 joystick driver
-Date: Wed, 22 Oct 2003 23:59:16 -0300
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Occasional metallic sound when recording (cs46xx)
+Date: Wed, 22 Oct 2003 13:39:00 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200310222359.16532.coding@reduz.com.ar>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Message-ID: <200310221739.h9MHd0m1024945@oud.linuxaudiosystems.com>
+References: <20031022162219.GA29956@chapus.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-reply-to: Your message of "Wed, 22 Oct 2003 12:22:19 EDT."
+             <20031022162219.GA29956@chapus.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,22 +15,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "Eloy A. Paris" <peloy@chapus.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I apologize for not being able to send patches, but I dont know
-how to proper fix this.
+>This problem happens randomly but is very annoying, specially if I
+>program my PVR (MythTV) to automatically record a show - the show can
+>get recorded with metallic sound, which makes it very hard to understand
+>during playback.
+>
+>This is not MythTV-specific since I have been able to reproduce the
+>problem using other applications, like the Gnome sound recorder. It is
+>unrelated to full-duplex operation since when recording a show MythTV
+>doesn't open /dev/dsp for writing.
+>
+>I really have no idea about how to troubleshoot this. I don't think
+>the problem is hardware, but is driver-related instead.
 
-The ens1371 driver takes a joystick_port parameter with range 1..8
-but that same parameter is them put into a switch to detect io port
-values like 0x200, 0x208, etc. so the joystick will never be detected.
-I somewhat fixed this myself by forcing 0x200 as parameter
-and it worked well afterwards.
+its almost certainly a software problem in mythTV and gnome sound
+recorder. i've written code that does this several times - every time
+it takes me ages to figure out why, and then i can never remember when
+i do it the next time. its related to off-by-1 errors in processing
+incoming audio.
 
-I hope this report is of any help
-regards
-
-Juan Linietsky
+not necessarily, of course, just a point of view.
 
 
 
