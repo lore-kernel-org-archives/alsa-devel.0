@@ -1,17 +1,13 @@
 From: Dan Hollis <goemon@anime.net>
-Subject: Re: Support for Midiman Delta1010LT - No specs from
- MidiMan
-Date: Sun, 26 May 2002 16:03:03 -0700 (PDT)
+Subject: Re: Re: ALSA user documentation
+Date: Sun, 26 May 2002 17:19:22 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0205261602460.6338-100000@sasami.anime.net>
-References: <1022453622.1482.7.camel@idefix.homelinux.org>
+Message-ID: <Pine.LNX.4.44.0205261717520.6800-100000@sasami.anime.net>
+References: <20020517101014.24329.qmail@www7.networkshosting.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sasami.anime.net (anime.net [63.172.78.150])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA13193
-	for <alsa-devel@alsa-project.org>; Mon, 27 May 2002 01:03:34 +0200
-In-Reply-To: <1022453622.1482.7.camel@idefix.homelinux.org>
+In-Reply-To: <20020517101014.24329.qmail@www7.networkshosting.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,15 +16,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jean-Marc Valin <jean-marc.valin@hermes.usherb.ca>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, perex@suse.cz, martino_an@yahoo.com, ericg@midiman.net
+To: pshirkey@boosthardware.com
+Cc: martin-langer@gmx.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 26 May 2002, Jean-Marc Valin wrote:
-> 1010LT in sight. Marking it as supported in the list was a mistake (BTW,
-> from the chips on it, the 1010LT seems quite different from the 1010).
+On 17 May 2002 pshirkey@boosthardware.com wrote:
+> On 5/17/2002 - 04:06:26, Martin Langer  said:
+> > What about the soundcard matrix, I mean the email address on top of that page?
+> > I don't get an answer from there. Are you working on that page, too?
+> I can merge the page into the main website easily but I 
+> thought Dan was still around and the page seems to be
+> being regularly updated.
 
-What chips are on the 1010LT that are different from the 1010?
+Sorry Martin. I receive over 1,000 emails a day, sometimes something goes 
+un-noticed in between all the spam :-(
+
+> > Maybe we should integrate this information somewhere?
+
+Well, I hope to design a mechanism in the future where the list is 
+automatically generated from the alsa source code...
 
 -Dan
 -- 
