@@ -1,11 +1,10 @@
-From: Laurent Canet <lc@tekila.org>
-Subject: HPPA Harmony driver
-Date: Tue, 5 Nov 2002 10:39:55 +0100
+From: Janek Hiis <janekh@cvotech.com>
+Subject: [bug] unabe to choose default card id
+Date: Tue, 5 Nov 2002 11:41:48 +0200 (EET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021105103955.2f35f217.lc@tekila.org>
+Message-ID: <Pine.LNX.4.44.0211051141320.25588-100000@cat.cvo>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,27 +17,21 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-Hi there,
+I downloaded the alsa-driver from CVS and when trying to insert the driver
+it gives the following error :
 
-I'm working on the ALSA port of a linux audio driver. This is for the harmony chipset, which is found in some HP PA/RISC workstations.
-This chipset is relatively old (datasheets mentions 93), however it supports 16bit 48Khz stereo playback & recording. 
-The driver already exists in the 2.4 linux kernel, but to comply with plans for 2.6 kernel, we wish to switch it in an ALSA form.
+PCI: Setting latency timer of device 00:04.5 to 64
+ALSA ../alsa-kernel/core/init.c:178: unable to choose default card id 
+(82C686AB_8)
 
-I've converted most of the code (which still needs to be tested and debugged) to alsa 0.9, using dummy.c as a skeleton. 
-I have a question:
-- What is exactly the pointer function, what does it returns (in normal operation) ?
+Motherboard Asus K7M with onboard VIA VT82C686 AC97 Audio Controller
+with linux kernel 2.4.19
 
 
-Thank you in advance.
 
-(I'm sorry, due to badly configured mua, I send many bad mails to ml moderators, shame on me! :) )
-
---
-Laurent Canet
-PA/Linux ESIEE Team
-http://pateam.esiee.fr
-
+Janek Hiis
 
 
 
