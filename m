@@ -1,15 +1,14 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: Re: [PATCH] Maestro2 hw volume fix
-Date: Tue, 17 Feb 2004 18:51:34 +0200
+From: Hartmut Geissbauer <nwgbh@swissonline.ch>
+Subject: Re: Creamware Noah, snd-usb-audio capable?
+Date: Tue, 17 Feb 2004 18:04:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040217165134.GA16527@sci.fi>
-References: <20040217062041.GA6708@sci.fi> <s5h1xotyavv.wl@alsa2.suse.de>
+Message-ID: <1077037445.3938.15.camel@chief.local>
+References: <Pine.HPX.4.33n.0402171255310.21550-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h1xotyavv.wl@alsa2.suse.de>
+In-Reply-To: <Pine.HPX.4.33n.0402171255310.21550-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,61 +17,104 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 17, 2004 at 04:38:12PM +0100, Takashi Iwai wrote:
-> At Tue, 17 Feb 2004 08:20:41 +0200,
-> Ville Syrj=E4l=E4 wrote:
-> >=20
-> > [1  <text/plain; iso-8859-1 (quoted-printable)>]
-> > The attached patch fixes hardware volume buttons on my Dell Inspiron =
-7000=20
-> > laptop. The chip is ESS Maestro2 (0x125d:0x1968).
-> >=20
-> > I have no idea if this will break things for someone else. Since the=20
-> > datasheet didn't help me understand the registers involved I just pri=
-nted=20
-> > their contents and came up with the used bits.
-> >=20
-> > All registers had the following values in my tests:
-> > mute:     0x99
-> > vol down: 0x77
-> > vol up:   0xBB
->=20
-> these values (9, 7, b) are consistent always?
+Hi Clemens,
 
-So it would appear. I've tried hitting the buttons in various combination=
-s=20
-and the values have been consistent.
+Clemens Ladisch wrote:
+> > I tried it vice versa. (first unloading snd-usb-audio then plugging the
+> > device)
+> > Now it appears in /proc/bus/usb/devices
+> 
+> I guess "it" is the device and not the audio interfaces.
+> 
 
-The only thing that is a bit odd is that after hitting the mute button th=
-e=20
-next vol up/down doesn't generate an interrupt at all. Only the next pres=
-s=20
-after that actually works. But that is a hardware issue.
+OK, the device. But to me it looks like, the audio interfaces are
+detected correctly as well.
 
-> i'm also not sure whether it's hardware specific...
+-------------snip-------------------------- 
+T:  Bus=01 Lev=02 Prnt=02 Port=03 Cnt=01 Dev#=  3 Spd=12  MxCh= 0
+D:  Ver= 1.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  2
+P:  Vendor=1107 ProdID=0102 Rev= 1.00
+S:  Manufacturer=CreamWare GmbH
+S:  Product=CreamWare Noah Synthesizer
+C:* #Ifs= 1 Cfg#= 1 Atr=c0 MxPwr=  0mA
+I:  If#= 0 Alt= 0 #EPs= 6 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+E:  Ad=81(I) Atr=02(Bulk) MxPS=   8 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS=   8 Ivl=0ms
+E:  Ad=83(I) Atr=02(Bulk) MxPS=  32 Ivl=0ms
+E:  Ad=04(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+E:  Ad=85(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+E:  Ad=06(O) Atr=02(Bulk) MxPS=  16 Ivl=0ms
+C:  #Ifs= 5 Cfg#= 2 Atr=c0 MxPwr=  0mA
+I:  If#= 0 Alt= 0 #EPs= 4 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+E:  Ad=83(I) Atr=02(Bulk) MxPS=  32 Ivl=0ms
+E:  Ad=04(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+E:  Ad=85(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+E:  Ad=06(O) Atr=02(Bulk) MxPS=  16 Ivl=0ms
+I:  If#= 1 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00 Driver=(none)
+I:  If#= 2 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00 Driver=(none)
+I:  If#= 2 Alt= 1 #EPs= 2 Cls=01(audio) Sub=02 Prot=00 Driver=(none)
+E:  Ad=08(O) Atr=05(Isoc) MxPS= 184 Ivl=1ms
+E:  Ad=89(I) Atr=01(Isoc) MxPS=   3 Ivl=1ms
+I:  If#= 3 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00 Driver=(none)
+I:  If#= 3 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=(none)
+E:  Ad=87(I) Atr=0d(Isoc) MxPS= 184 Ivl=1ms
+I:  If#= 3 Alt= 2 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=(none)
+E:  Ad=87(I) Atr=0d(Isoc) MxPS= 368 Ivl=1ms
+I:  If#= 3 Alt= 3 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=(none)
+E:  Ad=87(I) Atr=0d(Isoc) MxPS= 552 Ivl=1ms
+I:  If#= 4 Alt= 0 #EPs= 2 Cls=01(audio) Sub=03 Prot=00 Driver=(none)
+E:  Ad=81(I) Atr=02(Bulk) MxPS=   8 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS=   8 Ivl=0ms
+--------------------snip end -----------------
 
-The device has a subsystem id 0x1028:0x0085 should there be a need to add=
-=20
-hw specific stuff.
+> > But the output /var/log/messages seems a little bit bad in the end.
+> >
+> > kernel: usb 1-2.4: configuration #1 chosen from 2 choices
+> > kernel: usb 1-2.4: registering 1-2.4:1.0 (config #1, interface 0)
+> > kernel: drivers/usb/core/usb.c: usb_hotplug
+> > usb.agent[2413]: Keeping default configuration with /sys//devices/pci0000:00/0000:00:02.0/usb1/1-2/1-2.4
+> > kernel: snd-usb-audio 1-2.4:1.0: usb_probe_interface
+> > kernel: snd-usb-audio 1-2.4:1.0: usb_probe_interface - got id
+> > kernel: usb 1-2.4: usb_disable_device nuking non-ep0 URBs
+> > kernel: usb 1-2.4: unregistering interface 1-2.4:1.0
+> 
+> The last two lines _may_ be correct when the configuration changes.
+> 
+> Could you try to re-load snd-usb-audio (now, hopefully, with the new
+> configuration)?
+> 
 
+No I'm not able, because snd-usb-audio is in use. Don't ask me from
+whom. lsmod won't tell me.
 
+Module                  Size  Used by
+snd_usb_audio          70710  1
 
-The code in maestro.tar.gz uses GPIO data register 0x60 to check for mute=
-=20
-button press. That would actually work on my system but I don't see much=20
-point in checking another register when 0x1C is enough.
+ERROR: Removing 'snd_usb_audio': Device or resource busy
 
-The vol up/down test in that code checks for difference between 0x1E and=20
-0x1F. That would not work on my system because all registers 0x1C-0x1F=20
-have identical values.
+It isn't released even if I unplug the device. 
 
---=20
-Ville Syrj=E4l=E4
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
+> 
+> If that doesn't work, it would be possible to write a separate program
+> that switches the configuration, so that the audio driver can be
+> loaded later.
+> 
+Am I right, that this separate program is handled by hotplug?
+
+Might the patch(the code in it) for usbaudio.c you posted before be
+helpfull for the program?
+
+BTW: How many devices/"cards" is the snd-usb-audio driver able to
+handle?
+
+Regards, Hartmut
+
+-- 
+Hartmut Geissbauer <nwgbh@swissonline.ch>
+
 
 
 -------------------------------------------------------
