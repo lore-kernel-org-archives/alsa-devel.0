@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000669]: Creative SB Live! 24-bit External (USB) works only at a minimal level.
-Date: Wed, 24 Nov 2004 00:51:20 +0100
-Message-ID: <9b30764fc4cfc729ab34f68e4ea1045b@bugtrack.alsa-project.org>
+From: "Yon Mercury" <swirlee@stickist.com>
+Subject: Re: Re: Echo driver
+Date: Tue, 23 Nov 2004 20:14:06 -0700
+Message-ID: <20041124031406.M70915@stickist.com>
+References: <20041123004518.M39311@stickist.com> <XFMail.20041123104138.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 126D22BD
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 00:51:21 +0100 (MET)
+In-Reply-To: <XFMail.20041123104138.pochini@shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,83 +16,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Giuliano,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=669> 
-======================================================================
-Reported By:                Henni
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   669
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo 2004.3
-Kernel Version:             2.6.9-cko3
-======================================================================
-Date Submitted:             11-23-2004 19:23 CET
-Last Modified:              11-24-2004 00:51 CET
-======================================================================
-Summary:                    Creative SB Live! 24-bit External (USB) works only
-at a minimal level.
-Description: 
-The Creative SB Live! 24-bit External is a "card" similar to the Audigy 2
-NX (probably its litte brother).
+Yes, the register dump was taken when the card was in. I tried manually
+changing latency timer and pci prefetch but with no success. Running:
 
-With the snd-usb-audio the ''only'' thing working is the stereo output. I
-read that the Audigy 2 NX works far better with the snd-usb-audio.
-Probably there is a way to get the SB Live! 24-bit on a similar lvl?
+setpci -s 00:0f latency_timer=c0
+setpci -s 00:0f 80.B=00
 
-PS: I added some informations about it as an attachment.
+Shows changed values in lspci.
+But still the driver fails to load when I do a 'modprobe snd-indigoio'. If I
+try a '/etc/init.d/pcmcia restart' to restart CardBus services, all the PCI
+settings return to their old values and I have to use setpci again.
 
-======================================================================
+This is getting to be a bit ridiculous. If this is a CardBus bridge issue,
+someone with a different bridge chip should be able to get the Echo card
+working, right? Does anyone out there on the list have audio working on a
+CardBus system that could test an Echo card? 
 
-----------------------------------------------------------------------
- pzad - 11-23-04 21:09 
-----------------------------------------------------------------------
-Hmm, did you tryed alsamixer ??? because there is capture volume too.
+Giuliano, have you heard from any of the other Echo Audio users who might have
+one of those cards?
 
-----------------------------------------------------------------------
- Henni - 11-24-04 00:51 
-----------------------------------------------------------------------
-Yes. I tried alsamixer. It shows only PCM Output and PCM Capture (I got
-"PCM capture" by using the "Show only Capture" option of alsamixer).
+If it is a CardBus bridge issue, then we could take it up with the PCMCIA-CS
+people. 
 
-I 'got' working the 4 and 6 channels Mode with mplayer by using the
-following option:
+On the other hand, is it possible that its an Echo driver issue?
 
-  mplayer $FILE -channels 4 (or 6) -ao alsa:device=default 
+Cheers,
+-Mercury
 
-(I have to use alsa:device=default because mplayer tries to use surround41
-or surround51 if you choose alsa and channels > 2 and this results in an
-error).
 
-But DigitalOut doesn't work as it should.
-
-If I choose mplayer $FILE -channels 4 the digital out works (testet with
-an Pioneer Home Cinema System with Optical In). With -channels 6 I get an
-underrun and with -ac hwac3 (for AC3 Passthrough) it doesn't work (there
-is no definition for the optical out).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-23-04 19:23 Henni          New Issue                                    
-11-23-04 19:23 Henni          File Added: output.txt                       
-11-23-04 19:23 Henni          Distribution              => Gentoo 2004.3   
-11-23-04 19:23 Henni          Kernel Version            => 2.6.9-cko3      
-11-23-04 19:58 Henni          Issue Monitored: Henni                       
-11-23-04 21:09 pzad           Note Added: 0002527                          
-11-24-04 00:51 Henni          Note Added: 0002540                          
-======================================================================
-
+On Tue, 23 Nov 2004 10:41:38 +0100 (CET), Giuliano Pochini wrote
+> On 23-Nov-2004 Yon Mercury wrote:
+> 
+> > OK, here's a comparison of the CardBus registers between Linux and Windows.
+> > As you can see, some registers are different-- take 0D for example.
+> 
+> I guess you got the register dump while the cards was in, didn't you 
+> ? Just to be sure :)  I'm asking this because the latency timer 
+> should be 0xC0, not 0x40.
+> 
+> > The question is, what registers are likely to be the ones we have to change?
+> 
+> Register 0x80 should be 00 (PCI prefetch disabled).
+> Register 0x0D should be C0 (latency timer, the driver should be
+> able to set it, so don't touch it).
+> 
+> I don't know about all other registers because I couldn't find
+> any documentation. Registers >=0x80 are chip-specific and they
+> are explained here: http://pcmcia-cs.sourceforge.net/specs/AP476IIE10.pdf
 
 
 
