@@ -1,14 +1,12 @@
-From: Chris Cannam <cannam@all-day-breakfast.com>
-Subject: non-running sequencer queues
-Date: Mon, 12 Jan 2004 17:19:56 +0000
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] amidi output file permissions
+Date: Mon, 12 Jan 2004 18:03:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200401121719.56879.cannam@all-day-breakfast.com>
+Message-ID: <Pine.HPX.4.33n.0401121758340.23817-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,23 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: andreas@huennebeck-online.de
 List-Id: alsa-devel@alsa-project.org
 
 
-I notice that if you send to a non-running sequencer queue an event 
-scheduled for exactly the current time of the queue, then the event 
-is delivered immediately: the queue doesn't wait to be started first.
-
-Is this intentional?  I had thought the main reason for allowing 
-queues to stop and start was to permit stuffing a queue with events 
-away from the pressure of time and then decide at leisure when to 
-start playing them, but that only seems to make sense if the queue is 
-guaranteed not to deliver any of them until you tell it to go.  If 
-it's intentional, what is the intended use?  (compared to not queuing 
-your event at all, that is.)
+set file permission bits for output file
 
 
-Chris
+Index: alsa-utils/amidi/amidi.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-utils/amidi/amidi.c,v
+retrieving revision 1.2
+diff -u -r1.2 amidi.c
+--- alsa-utils/amidi/amidi.c	5 Nov 2003 11:08:25 -0000	1.2
++++ alsa-utils/amidi/amidi.c	12 Jan 2004 16:57:42 -0000
+@@ -450,7 +450,7 @@
+ 		return 1;
+
+ 	if (receive_file_name) {
+-		receive_file = creat(receive_file_name, 0);
++		receive_file = creat(receive_file_name, 0666);
+ 		if (receive_file == -1) {
+ 			error("cannot create %s: %s", receive_file_name, strerror(errno));
+ 			return -1;
+
+
+
 
 
 
