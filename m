@@ -1,11 +1,10 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: au88x0 - Replace spdif frequency control by IEC958
- control
-Date: Wed, 23 Feb 2005 10:19:58 +0800
-Message-ID: <421BE84E.8030201@netvigator.com>
+From: Jeff Muizelaar <jeff@infidigm.net>
+Subject: [PATCH] au88x0 - do codec init more like windows does
+Date: Tue, 22 Feb 2005 22:35:06 -0500
+Message-ID: <20050223033505.GB6974@debian>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,52 +14,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: openvortex-dev@nongnu.org
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
->> 1) What is the difference between Consumer mode and Professional mode ?
+The following patch makes the codec init code act more like the windows
+code.
 
-> A different set of status bits.  See, for example, ALSA"s asoundef.h,
-> but it doesn"t have many explanations.
->
-> The main difference is that only consumer mode has the copyright bit
-> so that devices can automatically disable copying.
+Signed-off-by: Jeff Muizelaar <jeff@infidigm.net>
 
 
-The parameter 'spdif_mode' in the routine 
-vortex_spdif_init(vortex,spdif_sr,spdif_mode) in au88x0_core.c seems to 
-control AC3 passthrough.
-
-However the two memory mapped I/O VORTEX_SPDIF_CFG0 and 
-VORTEX_SPDIF_CFG1 seem to be write-only, return zero when read.
-
-The value of memory mapped I/O VORTEX_SPDIF_FLAGS are changing between 
-00138014 and 00138015
-
-1) Which bit in the IEC958 control is related to AC3 passthrough ?
-
-As vortex_spdif_init() only handle changing SPDIF sample rate.
-
-2) Do the driver need to initialise vortex->spdif_sr to 48000 or just 
-let alsactl restore the value from /etc/asound.state ?
-
-3) Is it correct to return the following value in 
-snd_vortex_spdif_mask_get() ?
-ucontrol->value.iec958.status[3] = IEC958_AES3_CON_FS;
-
-4) Is it correct to return the following value in 
-snd_vortex_spdif_default_get() ?
-ucontrol->value.iec958.status[1] =IEC958_AES1_CON_ORIGINAL | 
-IEC958_AES1_CON_DIGDIGCONV_ID;
-
-5) What additional kcontrol and routine are needed for SPDIF IN ?
-
-
-
-
-
-
+Index: pci/au88x0/au88x0_core.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_core.c,v
+retrieving revision 1.10
+diff -u -r1.10 au88x0_core.c
+--- pci/au88x0/au88x0_core.c	3 Jan 2005 12:08:24 -0000	1.10
++++ pci/au88x0/au88x0_core.c	23 Feb 2005 03:30:43 -0000
+@@ -2480,7 +2480,8 @@
+ 	int i;
+ 
+ 	for (i = 0; i < 32; i++) {
+-		hwwrite(vortex->mmio, (VORTEX_CODEC_CHN + (i << 2)), 0);
++		/* the windows driver writes -i, so we write -i */
++		hwwrite(vortex->mmio, (VORTEX_CODEC_CHN + (i << 2)), -i);
+ 		msleep(2);
+ 	}
+ 	if (0) {
+@@ -2502,7 +2503,7 @@
+ 		hwwrite(vortex->mmio, VORTEX_CODEC_CTRL, 0x00e8);
+ 	}
+ 	for (i = 0; i < 32; i++) {
+-		hwwrite(vortex->mmio, (VORTEX_CODEC_CHN + (i << 2)), 0);
++		hwwrite(vortex->mmio, (VORTEX_CODEC_CHN + (i << 2)), -i);
+ 		msleep(5);
+ 	}
+ 	hwwrite(vortex->mmio, VORTEX_CODEC_CTRL, 0xe8);
 
 
 -------------------------------------------------------
