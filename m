@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000913]: subwoofer not working
-Date: Thu, 17 Feb 2005 22:47:41 +0100
-Message-ID: <1c7c4c7279e6fad98be688752f0ed703@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
+Date: Thu, 17 Feb 2005 22:59:39 +0100
+Message-ID: <d39608faa0350a3a5628435dcb00f8b2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 452A026C
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 22:47:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 584F126E
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 22:59:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,60 +23,89 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=913> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
 ======================================================================
-Reported By:                matteo
-Assigned To:                
+Reported By:                wzzrd
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   913
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   154
+Category:                   mixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               debian/sarge
-Kernel Version:             2.6.11-rc4
+Status:                     assigned
 ======================================================================
-Date Submitted:             02-16-2005 19:39 CET
-Last Modified:              02-17-2005 22:47 CET
+Date Submitted:             03-23-2004 17:31 CET
+Last Modified:              02-17-2005 22:59 CET
 ======================================================================
-Summary:                    subwoofer not working
+Summary:                    Master volume only controls front output (emu10k1)
 Description: 
-hi, i got a ASUS W1000 laptop, sound's working now after the latest patch
-but i still can't get the subwoofer channel working, any suggestion ?
-I can hear it if i play a cd, but not from the pcm!
+Setting the alsamixer Master Volume slider only controls the front two
+speakers. The rear speakers have to be controlled with the Wave Surround
+setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
+bug. If I'm wrong putting it here, sorry.
 
-thx in advance
-
-Matteo
-
+It would be very convenient to be able to control all four speakers with
+the Master Volume setting and to have a Front and Rear slider to control
+the front and rear speakers individually.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000176 Master volume does not alters center, L...
+has duplicate       0000786 Master can't handle all channel
+related to          0000172 Master volume control only controls fro...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-17-05 20:31 
+ adamk75 - 02-17-05 22:01 
 ----------------------------------------------------------------------
-Try speaker-test in alsa-utils package whether the PCM output works.
+Just checking to see if there's an update on the status of this bug yet?
+
+Adam
 
 ----------------------------------------------------------------------
- matteo - 02-17-05 22:47 
+ rlrevell - 02-17-05 22:59 
 ----------------------------------------------------------------------
-it works from the speakers, but not from the subwoofer :\
-another thing in the alsamixer i got the "master mono" as integer and
-"master" as boolean, is it normal ?
-thx in advance!
+Please check the recent postings for alsa-user and alsa-devel lists before
+asking this question.  If you read them you would know that yes, it's
+being worked on,  and no, it's not fixed yet.
 
-Matteo
+If you want to pay me to work on this, please mail me privately. 
+Otherwise be patient.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-16-05 19:39 matteo         New Issue                                    
-02-16-05 19:39 matteo         File Added: ac97registers                    
-02-16-05 19:39 matteo         Distribution              => debian/sarge    
-02-16-05 19:39 matteo         Kernel Version            => 2.6.11-rc4      
-02-17-05 20:31 tiwai          Note Added: 0003637                          
-02-17-05 22:47 matteo         Note Added: 0003645                          
+03-23-04 17:31 wzzrd          New Issue                                    
+03-23-04 18:42 perex          View Status              @0@ => public       
+03-23-04 18:42 perex          Description Updated                          
+03-23-04 18:42 perex          Additional Information Updated                    
+03-23-04 18:43 perex          Status                   new => assigned     
+03-23-04 18:43 perex          Assigned To               => perex           
+03-26-04 20:21 djtm           Note Added: 0000708                          
+04-19-04 02:47 tarball        Issue Monitored: tarball                     
+04-19-04 21:23 perex          Relationship added       has duplicate 0000176
+05-24-04 22:51 delmonico      Note Added: 0001199                          
+10-22-04 16:44 perex          Relationship added       related to 0000172  
+10-23-04 01:09 djtm           Note Added: 0002253                          
+10-23-04 01:09 djtm           File Added: alsavol.sh                       
+10-23-04 01:10 djtm           Note Edited: 0002253                         
+11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
+01-04-05 21:01 Miwer          Note Added: 0003081                          
+01-04-05 21:11 rlrevell       Note Added: 0003082                          
+01-04-05 21:29 pzad           Note Added: 0003083                          
+01-04-05 21:38 rlrevell       Note Added: 0003084                          
+01-04-05 22:30 pzad           Note Added: 0003085                          
+01-04-05 22:38 rlrevell       Note Added: 0003086                          
+01-07-05 18:23 tiwai          Relationship added       has duplicate 0000786
+01-09-05 20:28 voroskoi       Issue Monitored: voroskoi                    
+01-27-05 00:58 adamk75        Issue Monitored: adamk75                     
+01-27-05 01:00 adamk75        Note Added: 0003418                          
+02-01-05 22:57 adamk75        Note Added: 0003475                          
+02-03-05 20:20 rlrevell       Note Added: 0003493                          
+02-17-05 22:01 adamk75        Note Added: 0003642                          
+02-17-05 22:59 rlrevell       Note Added: 0003646                          
 ======================================================================
 
 
