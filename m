@@ -1,8 +1,8 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] fix alsa-utils installation docs
-Date: Tue, 03 Dec 2002 09:26:26 +0100 (MET)
+Subject: [PATCH] fix for snd-vxp-lib Modules.dep entry
+Date: Tue, 03 Dec 2002 09:27:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0212030918110.17800-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0212030921320.17800-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
@@ -19,24 +19,25 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-In the list of commands for CVS compilation, autoheader was missing.
+snd-vxp-lib isn't a card driver
 
 
-Index: alsa-utils/INSTALL
+Index: alsa-driver/utils/Modules.dep
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-utils/INSTALL,v
-retrieving revision 1.3
-diff -u -r1.3 INSTALL
---- alsa-utils/INSTALL	26 Nov 2001 18:39:49 -0000	1.3
-+++ alsa-utils/INSTALL	3 Dec 2002 08:15:31 -0000
-@@ -25,6 +25,7 @@
- For compilation you can use these commands:
+RCS file: /cvsroot/alsa/alsa-driver/utils/Modules.dep,v
+retrieving revision 1.13
+diff -u -r1.13 Modules.dep
+--- alsa-driver/utils/Modules.dep	30 Oct 2002 16:44:22 -0000	1.13
++++ alsa-driver/utils/Modules.dep	3 Dec 2002 08:16:11 -0000
+@@ -18,6 +18,6 @@
+ |snd-msnd-pinnacle snd-pcm snd-seq-midi
 
- 	aclocal
-+	autoheader
- 	automake --foreign --copy --add-missing
- 	autoconf
- 	./configure
+ %dir linux/pcmcia/vx
+-|snd-vxp-lib snd-pcm
++snd-vxp-lib snd-pcm
+ |snd-vxpocket snd-vxp-lib
+ |snd-vxp440 snd-vxp-lib
+
 
 
 
