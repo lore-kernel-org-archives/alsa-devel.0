@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000477]: Problem with esound-alsa
-Date: Thu,  2 Sep 2004 17:32:51 +0200 (CEST)
+Subject: [ALSA - tools 0000436]: How to have sound to Digital and Analog at the same time ?
+Date: Wed,  1 Sep 2004 22:53:30 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040902153251.BC3DE14028@server.perex-int.cz>
+Message-ID: <20040901205330.E51D1E01F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 12328192
-	for <alsa-devel@alsa-project.org>; Thu,  2 Sep 2004 17:32:52 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id D16C91EB65
-	for <alsa-devel@alsa-project.org>; Thu,  2 Sep 2004 17:32:51 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 60E4923C
+	for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2004 22:53:31 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,78 +20,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000477
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000436
 ======================================================================
-Reported By:                zawadaa
-Assigned To:                
+Reported By:                tho_x_tran
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     477
-Category:                   PCI - ens1371
+Project:                    ALSA - tools
+Bug ID:                     436
+Category:                   ac3dec
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               PLD LINUX DISTRIBUTION
-Kernel Version:             <=2.6.9-rc1
+Status:                     assigned
 ======================================================================
-Date Submitted:             09-02-2004 17:32 CEST
-Last Modified:              09-02-2004 17:32 CEST
+Date Submitted:             08-12-2004 20:36 CEST
+Last Modified:              09-01-2004 22:53 CEST
 ======================================================================
-Summary:                    Problem with esound-alsa
+Summary:                    How to have sound to Digital and Analog at the same time ?
 Description: 
-On kernel-2.4 was no problem. After I upgraded to kernel-2.6 (even newest
-one) my sound record system does not work :-(
-IMPORTANT: may be that's not ALSA problem just esound but...
-
-I have 7 sound card (1 snd_via82xx and 6 snd_ens1371):
-On boot I set up all cards by alsactl -f $i restore $j (i=conf,
-j=cardid).
-After that I run 7 times on diffrent ports:
-esd -tcp -public -promiscuous -d hw:0 -port 16001 &
-that's all.
-On second computer, when I wont record some sound:
-
-/usr/bin/esdrec -s 192.168.2.206:16001|/usr/bin/lame -x -b 64 --lowpass 8
-- 1.mp3
-
-And it works bur only with first card (snd_via82xx)
-on snd_ens1371 I have nothing and on the sound server is just:
-------------------------------------------------
-[root@magazyn root]# esd -tcp -public -promiscuous -d hw:6 -port 16007
-- using device hw:6
-- accepting connections on port 16007
-ALSA lib pcm_hw.c:846:(snd_pcm_hw_close) close failed
-: Bad file descriptor
-ALSA lib pcm_hw.c:846:(snd_pcm_hw_close) close failed
-: Bad file descriptor
-ALSA lib pcm_hw.c:846:(snd_pcm_hw_close) close failed
-: Bad file descriptor
-ALSA lib pcm_hw.c:804:(snd_pcm_hw_munmap_status) status munmap failed:
-Invalid argument
-ALSA lib pcm_hw.c:823:(snd_pcm_hw_munmap_control) control munmap failed:
-Invalid argument
-free(): invalid pointer 0x8060220!
-Segmentation fault
---------------------------------------------------
-after 4th connection.
-
-I attached strace of that.
-
-When I switch from esound-alsa to esound-oss - 
-esd -tcp -public -promiscuous -d /dev/dsp6 -port 16007
-everything is OK (on 2.6 of course)
+I play Xine and Watch TV at the same time, and Xine audio can only go to
+Digital Opt out while TV sound goes to Analog front speakers only.  How
+can I make it go to both devices AT THE SAME TIME for all applications.
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 09-01-2004 22:53 CEST 
+----------------------------------------------------------------------
+Basically it's a job of application.
+ALSA doesn't decode AC3 by itself.
+So, apps should send both AC3-analog and AC3-passthru signals to
+different PCM (if possible).  And, this is not always possible
+on many motherboards...
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-02-04 17:32 zawadaa        New Bug                                      
-09-02-04 17:32 zawadaa        File Added: esd_strace.gz                    
-09-02-04 17:32 zawadaa        Distribution              => PLD LINUX DISTRIBUTION
-09-02-04 17:32 zawadaa        Kernel Version            => <=2.6.9-rc1     
+08-12-04 20:36 tho_x_tran     New Bug                                      
+08-12-04 20:36 tho_x_tran     File Added: asound.conf                      
+09-01-04 22:53 tiwai          Bugnote Added: 0001678                       
 ======================================================================
 
 
