@@ -1,15 +1,14 @@
-From: Josh Buhl <uzs33d@uni-bonn.de>
-Subject: Re: intel8x0 driver motorboots (gets caught in loop)
- in Quake 3
-Date: Fri, 14 Feb 2003 11:57:55 +0100
+From: Abramo Bagnara <abramo.bagnara@libero.it>
+Subject: Re: emu10k1 bug and patch (0.9.0rc7)
+Date: Fri, 14 Feb 2003 12:07:12 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E4CCBB3.7060300@uni-bonn.de>
-References: <3E4A8A39.9000608@uni-bonn.de>	<s5h4r78mrrr.wl@alsa2.suse.de>	<3E4B6E83.2070000@uni-bonn.de>	<s5hznp0lc2u.wl@alsa2.suse.de>	<3E4B77D1.3070904@uni-bonn.de> <s5hof5fjjmf.wl@alsa2.suse.de>
+Message-ID: <3E4CCDE0.F3B2D898@libero.it>
+References: <s5hptpwl75w.wl@alsa2.suse.de>
+		<Pine.LNX.4.44.0302132056020.1315-100000@pnote.perex-int.cz> <s5hr8abjkii.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hof5fjjmf.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,119 +17,97 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, Arnaud de Bossoreille de Ribou <arnaud.debossoreille@via.ecp.fr>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for continuing to look into this.
-
-> could you also give the contents of the ohter files there (hw_params,
-> sw_params, etc)?
-
-Here are polls taken while the sound is looping:
-
-
-josh@spleen:/proc/asound/card0/pcm0p/sub0$ cat hw_params
-access: MMAP_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 48000 (48000/1)
-period_size: 1024
-buffer_size: 16384
-tick_time: 10000
-OSS format: S16_LE
-OSS channels: 2
-OSS rate: 48000
-OSS period bytes: 4096
-OSS periods: 16
-
-josh@spleen:/proc/asound/card0/pcm0p/sub0$ cat sw_params
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 1024
-xfer_align: 1
-start_threshold: 1
-stop_threshold: 1073741824
-silence_threshold: 0
-silence_size: 0
-boundary: 1073741824
-
-josh@spleen:/proc/asound/card0/pcm0p/sub0$ cat status
-state: RUNNING
-trigger_time: 1045219754.742409
-tstamp      : 1045219994.302920
-delay       : -5523094
-avail       : 5539478
-avail_max   : 5539478
------
-hw_ptr      : 11499158
-appl_ptr    : 5976064
-
-josh@spleen:/proc/asound/card0/pcm0p/sub0$ cat status
-state: RUNNING
-trigger_time: 1045219754.742409
-tstamp      : 1045220044.890011
-delay       : -7951425
-avail       : 7967809
-avail_max   : 7967809
------
-hw_ptr      : 13927489
-appl_ptr    : 5976064
-
-josh@spleen:/proc/asound/card0/pcm0p/sub0$ cat info
-card: 0
-device: 0
-subdevice: 0
-stream: PLAYBACK
-id: Intel ICH
-name: SiS SI7012
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 0
-
-josh@spleen:/proc/asound/card0/pcm0p/sub0$ cat prealloc
-64
-
-
-
-
-
-
-
+Takashi Iwai wrote:
 > 
-> thanks,
+> At Thu, 13 Feb 2003 20:57:40 +0100 (CET),
+> Jaroslav wrote:
+> >
+> > On Thu, 13 Feb 2003, Takashi Iwai wrote:
+> >
+> > > At Mon, 10 Feb 2003 18:21:12 +0100,
+> > > Arnaud de Bossoreille de Ribou wrote:
+> > > >
+> > > > Hi, I discovered a bug in the emu10k1 driver which I'll explain here:
+> > > >
+> > > > I was developing an application which uses the timestamps given in the
+> > > > status of the device to send S/PDIF data to it. This app worked pretty
+> > > > well except that sometimes I heard sound discontinuities and then a
+> > > > constant time delay between the sound and the video.
+> > > >
+> > > > I finally found where was the problem, my results is based on the
+> > > > emu10k1-debug.patch file attached. The "frame" argument is equal to 0
+> > > > when the app gets the status of the device. With this patch applied I
+> > > > saw some output on the console exactly at the same time the bug occured.
+> > > > Adding a "else" after the "if" to prevent sw_ready from being updated
+> > > > fixed the problem and the output looked like
+> > > >
+> > > > ----------------
+> > > > plop 0 -1536 A B
+> > > > plop 0 1536 B A
+> > > > ----------------
+> > > >
+> > > > where B == A - 1536 (1536 is the period_size). These two lines were
+> > > > repeated a few times during playback.
+> > > >
+> > > > So the bug looks like a signedness problem since sw_ready is unsigned
+> > > > and there is a while(sw_ready > 0), which explain the constant delay,
+> > > > next in the "snd_emu10k1_fx8010_playback_transfer" function.
+> > >
+> > > this is because of the incorrect check of boundary-wrap.
+> > > the comparison below must be <= instead of <.
+> > > (or, it can be simply "diff < 0".)
+> > > if there only two periods, the original code cannot detect the
+> > > boundary-wrap.
+> > >
+> > >     if (diff) {
+> > > ==>         if (diff < -(snd_pcm_sframes_t) (runtime->boundary / 2))
+> > >                     diff += runtime->boundary;
+> > >             pcm->sw_ready += diff;
+> > >     }
+> > >
+> > > sw_ready should be unsigned safely.
+> > > please try the change above with the unsigned sw_ready.
+> >
+> > Not really. Note that the application can move the appl_ptr backward
+> > (using snd_pcm_rewind()). The problem is that pcm->appl_ptr is updated
+> > wrongly, thus calling function with frames == 0 twice or more causes
+> > different results. I'm working on a proper fix.
 > 
-> Takashi
+> ah, rewind take the appl_ptr back...
 > 
+> regarding to another appl_ptr update:
+> 
+> in pcm_lib.c snd_pcm_lib_read1/write1(), appl_ptr is set to 0 if it
+> comes over boundary.
+> 
+>                 appl_ptr += frames;
+>                 if (appl_ptr >= runtime->boundary) {
+>                         runtime->control->appl_ptr = 0;
+>                 } else {
+>                         runtime->control->appl_ptr = appl_ptr;
+>                 }
+> 
+> i'm not sure it's always safe (whether frame increment is aligned to
+> the boundary size).  is there problem to do like below?
+> 
+>                 if (appl_ptr >= runtime->boundary) {
+>                         runtime->control->appl_ptr = appl_ptr - runtime->boundary;
+>                 } else {
+>                         ...
+
+It's definitely harmless, but in this way you'd hide elsewhere placed
+bugs.
 
 -- 
-"When you wake up in the morning, Pooh," said Piglet at last,
-"what's the first thing you say to yourself?"
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
 
-"What's for breakfast?" said Pooh.  "What do you say, Piglet?"
-
-"I say, 'I wonder what's going to happen exciting today?'" said Piglet.
-
-Pooh nodded thoughtfully.  "It's the same thing," he said.
-
-	-- A.A. Milne
-
------------------------------------------------------
-http://www.nyfairuse.org/
-
-WTO + WIPO = DMCA http://www.anti-dmca.org
-
-Innovation vs Patent Inflation http://swpat.ffii.org/
-
-120000 voices and 400 Firms against logic patents
-http://www.noepatents.org/
------------------------------------------------------
-
-
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
