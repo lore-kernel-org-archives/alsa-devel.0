@@ -1,12 +1,17 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Problem compiling for linux 2.6
-Date: Thu, 29 Jan 2004 00:14:16 +0100
+From: Mario Loritz <loritz@fh-furtwangen.de>
+Subject: Re: config bug with sbawe and --with-isapnp=no
+Date: Wed, 28 Jan 2004 22:53:55 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040129001416.08a55e76.pochini@shiny.it>
+Message-ID: <200401282253.55133.loritz@fh-furtwangen.de>
+References: <200401221249.07577.loritz@fh-furtwangen.de> <s5hsmi3ufje.wl@alsa2.suse.de> <200401281645.43184.loritz@fh-furtwangen.de>
+Reply-To: loritz@fh-furtwangen.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200401281645.43184.loritz@fh-furtwangen.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,36 +20,15 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Thanks to all!
 
-It fails at line #113 of /Makefile :
+The sbawe driver is working in both configurations now.
+(alsa 1.0.2)
 
-        @for d in $(SUBDIRS); do if ! $(MAKE) -C $$d prepare; then exit 1; fi; done
-
-I have no idea why $(SUBDIRS) is an empty string:
-
-
-[Giu@Jay alsa-driver-1.0.2]$ ./cvscompile --with-cards=powermac --with-isapnp=no --with-sequencer=no --with-oss=no --with-kernel=/opt/KernelSrc/l26 --with-debug=full
-[...]
-copying file alsa-kernel/core/memalloc.c
-patching file memalloc.c
-/bin/sh: -c: line 1: syntax error near unexpected token `;'
-/bin/sh: -c: line 1: `for d in   ; do  make -C $d prepare;  done'
-make[1]: *** [prepare] Error 2
-make[1]: Leaving directory `/home/Giu/soft/alsa-driver-1.0.2/acore'
-make: *** [dep] Error 1
-[Giu@Jay alsa-driver-1.0.2]$ uname -a
-Linux Jay 2.6.2-rc1-ben1 #2 SMP Wed Jan 28 22:19:17 CET 2004 ppc unknown
-
-I'm using ALSA-1.0.2 after it was reuploaded. With linux 2.4 is compile just
-fine as usual. I'm using 2.6 for the first time... maybe I forgot to
-install/update something. :)
-
-
---
-Giuliano.
+Mario
 
 
 
