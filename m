@@ -1,13 +1,12 @@
-From: Anders Torger <torger@ludd.luth.se>
-Subject: Re: Why do I get broken pipe on write to a pcm in   statePREPARED?
-Date: Mon, 7 Oct 2002 15:19:19 +0200
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: Why do I get broken pipe on write to a pcm in  
+ statePREPARED?
+Date: Mon, 7 Oct 2002 15:57:40 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200210071319.g97DJJ008659@d1o87.telia.com>
-References: <Pine.HPX.4.33n.0209171615490.1084-100000@studcom.urz.uni-halle.de> <s5h65we4ksf.wl@alsa2.suse.de> <3DA178F1.769C6FFA@libero.it>
+Message-ID: <Pine.LNX.4.21.0210071519500.607-100000@summer.quitte>
+References: <3DA178F1.769C6FFA@libero.it>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <3DA178F1.769C6FFA@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -19,68 +18,70 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
 To: Abramo Bagnara <abramo.bagnara@libero.it>
-Cc: alsa-devel@lists.sourceforge.net, Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Anders Torger <torger@ludd.luth.se>, Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 07 October 2002 14.07, you wrote:
-> Takashi Iwai wrote:
-> > it CAN happen if you have multi-threads.
-> > the problem is that we have no option to block the poll.
+Abramo Bagnara wrote:
+
+>Takashi Iwai wrote:
+>> 
+>> it CAN happen if you have multi-threads.
+>> the problem is that we have no option to block the poll.
 >
-> If you have multi-thread you have other alternative to do that.
-> OTOH application can't detect *why* poll is blocking with the change
-> you advocate.
+>If you have multi-thread you have other alternative to do that.
+>OTOH application can't detect *why* poll is blocking with the change you
+>advocate.
 
-This is a non-issue. I think it is larger risk to search for the wrong 
-problem (like I did), that is beleiving that there is a buffer underrun 
-or similar. This type of blocking bug is very easy to detect and debug, 
-I don't think the bug-detection argument is important, and that is also 
-the only argument for the current behaviour (apart from that it is bad 
-to change APIs).
+as has been said before, it is fairly easy to detect this.
 
-> > > That apart I'm sure that to make a change in actual behaviour
-> > > between rcX and 1.0 is a professional suicide. However it's
-> > > _your_ professional suicide so... ;-)))
-> >
-> > yes, i know it well ;)
-> >
-> > i don't like to change this inevitably, too.
-> > and as mentioned above, i don't mind to add an option as sw_params,
-> > etc. for the new behavior.
-> >
-> > but the current behavior is incorrect from the interpretation of
-> > POSIX.  so this must be a bug.
-> > if we have to change it, then i would choose the new one, because
-> > it's more intuitive without exception.
+and to reiterate, if this happens in a single-threaded app
+the code is broken by design because it poll()s before 
+starting the pcm.
+
+i'm (we're) still waiting for your answers to these arguments. 
+
+>> but the current behavior is incorrect from the interpretation of
+>> POSIX.  so this must be a bug.
+>> if we have to change it, then i would choose the new one, because it's
+>> more intuitive without exception.
 >
-> As pointed by Clemens the current is the proper POSIX behaviour.
+>As pointed by Clemens the current is the proper POSIX behaviour.
 
-Perhaps you missed it, but he actually changed his mind, I have cited 
-below.
+clemens quoted the write(2) behaviour POSIX mandates. this has 
+nothing to do with the poll(2) behaviour.
 
------------------
+quoting www.opengroup.org/onlinepubs/007904975/functions/poll.html
+on POSIX-compliant poll events/revents flags:
 
-I think we have only two choices for POSIX-compliant write() behaviour 
-in the prepared state:
+<quote>
+POLLERR An error has occurred on the device or stream. [...]
+</quote>
 
-1) Don't allow any writes. Always return EPIPE.
-   (my interpretation above)
+which is not the case. in the scenario you describe (a single-
+threaded app polling before the pcm is started) the error is 
+within the calling code logic, but clearly not 'on the device 
+or stream'.
 
-2) Allow writes until the buffer is full, then block.
-   (Takashi's second interpretation)
+the same document goes on to say:
 
-The current ALSA implementation is an inconsistent mixture of both:
-returning EPIPE means that it is impossible to write, but then it should
-not have been possible for the first bufferfull to succeed.
+<quote>
+If none of the defined events have occurred on any selected file
+descriptor, poll() shall wait at least timeout milliseconds for an
+event to occur on any of the selected file descriptors. If the value
+of timeout is 0, poll() shall return immediately. If the value of
+timeout is -1, poll() shall block until a requested event occurs or
+until the call is interrupted.
+</quote>
 
-And we want to be able to fill the first buffer, so IMHO 2) is the way 
-to go.
+there's nothing in this document that says the poll implementation
+shall care about whether the condition polled for is likely or 
+unlikely to occur.
 
+it must be concluded that the current poll implementation violates
+the POSIX standard.
 
-Regards,
-Clemens
+tim
 
------------------------------
 
 
 -------------------------------------------------------
