@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000604]: sound loop problem
-Date: Thu, 28 Oct 2004 02:22:26 +0200
+Subject: [ALSA - driver 0000612]: Emu10k1's bass output sounds horrible
+Date: Thu, 28 Oct 2004 04:03:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <50696d5d196b45ca7d1893f3f6497bde@bugtrack.alsa-project.org>
+Message-ID: <6bffe2a8e5362acc7283d2c4b208eb69@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD1FC2CA
-	for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2004 02:22:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B91062CB
+	for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2004 04:03:29 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,136 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=604> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=612> 
 ======================================================================
-Reported By:                chomwitt
-Assigned To:                tiwai
+Reported By:                james
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   604
-Category:                   PCI - atiixp
+Issue ID:                   612
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               slackware10
+Distribution:               debian
 Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             10-26-2004 01:29 CEST
-Last Modified:              10-28-2004 02:22 CEST
+Date Submitted:             10-28-2004 04:03 CEST
+Last Modified:              10-28-2004 04:03 CEST
 ======================================================================
-Summary:                    sound loop problem
+Summary:                    Emu10k1's bass output sounds horrible
 Description: 
-i get a sound loop which gets correctet only 
-while moving the mouse!
+I have a stereo (nothing special) speaker and speakers hooked up to my
+computer.  The bass output sounds terrible.  it's distorted and sounds
+terrible at low volumes.  With oss, the bass is crystal clear.  i have to
+reduce the bass volume to 38 for it to sound respectible.  And at that
+level, the high notes are much louder and noticable than the bass ones.
+
+i think there is a 12db boost applied to the speakers by the AC'97 mixer. 
+ It would be nice if there was a way to disable this.
+
+i have the sb live value with digital output.  i'm not using digital
+output, so it's switched off.
+
+0000:00:0f.1 Input device controller: Creative Labs SB Live! MIDI/Game
+Port (rev 07)
+        Subsystem: Creative Labs Gameport Joystick
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR+ FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64
+        Region 0: I/O ports at dc00 [size=8]
+        Capabilities: [dc] Power Management version 1
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
 ======================================================================
-
-----------------------------------------------------------------------
- chomwitt - 10-28-04 02:17 
-----------------------------------------------------------------------
-aadebug output
-
-ALSA Audio Debug v0.0.8 - Thu Oct 28 01:02:33 EEST 2004
-http://alsa.opensrc.org/
-aadebug Kernel ----------------------------------------------------
-Linux garibaldh20 2.6.7
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=13 Thu Oct 28 00:25:29
-EEST 2004 i686 unknown
-unknown GNU/Linux
-Loaded Modules --------------------------------------------
-snd_pcm_oss            51368  0 
-snd_mixer_oss          19328  1 snd_pcm_oss
-snd_atiixp             18472  0 
-snd_ac97_codec         67920  1 snd_atiixp
-snd_pcm                80904  2 snd_pcm_oss,snd_atiixp
-snd_timer              22788  1 snd_pcm
-snd                    46820  6
-snd_pcm_oss,snd_mixer_oss,snd_atiixp,snd_ac97_codec,snd_pcm,snd_timer
-snd_page_alloc          9480  2 snd_atiixp,snd_pcm
-Proc Config -----------------------------------------------
-CONFIG_SND=m
-CONFIG_SND_TIMER=m
-CONFIG_SND_PCM=m
-CONFIG_SND_HWDEP=m
-CONFIG_SND_RAWMIDI=m
-CONFIG_SND_OSSEMUL=y
-CONFIG_SND_PCM_OSS=m
-CONFIG_SND_VERBOSE_PRINTK=y
-CONFIG_SND_MPU401_UART=m
-CONFIG_SND_OPL3_LIB=m
-CONFIG_SND_AD1816A=m
-CONFIG_SND_AC97_CODEC=m
-CONFIG_SND_ATIIXP=m
-CONFIG_SND_INTEL8X0=m
-CONFIG_SND_INTEL8X0M=m
-Modprobe Conf --------------------------------------------
-alias snd-card-0 snd-atiixp
-alias sound-slot-0 snd-atiixp
-Proc Asound -----------------------------------------------
-Advanced Linux Sound Architecture Driver Version 1.0.6a
-Compiled on Oct 28 2004 for kernel 2.6.7.
-0 [IXP            ]: ATIIXP - ATI IXP
-                     ATI IXP rev 0 at 0xe8003000, irq 10
-  0: [0- 0]: ctl
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
- 33:       : timer
-00-00: ATI IXP AC97 : ATI IXP AC97 : playback 1 : capture 1
-Dev Snd ---------------------------------------------------
-Warning: /dev/snd does not exist
-CPU -------------------------------------------------------
-model name	: Intel(R) Celeron(R) CPU 2.80GHz
-cpu MHz		: 2801.084
-RAM -------------------------------------------------------
-MemTotal:       191744 kB
-SwapTotal:      240932 kB
-Hardware --------------------------------------------------
-00:00.0 Host bridge: ATI Technologies Inc: Unknown device 5833 (rev 02)
-00:14.5 Multimedia audio controller: ATI Technologies Inc SoundMAX
-Integrated Digital Audio
-
-----------------------------------------------------------------------
- chomwitt - 10-28-04 02:22 
-----------------------------------------------------------------------
-some more information:
-
- this is the /proc/interrupt
-
-0:    5757032          XT-PIC  timer
-  1:       2574          XT-PIC  i8042
-  2:          0          XT-PIC  cascade
-  5:     100000          XT-PIC  ohci_hcd
-  9:          4          XT-PIC  acpi
- 10:       9584          XT-PIC  ohci_hcd, yenta, yenta, ATI IXP
- 11:          2          XT-PIC  ehci_hcd, ohci_hcd, ohci_hcd
- 12:        601          XT-PIC  i8042
- 14:      16262          XT-PIC  ide0
- 15:         21          XT-PIC  ide1
-NMI:          0 
-LOC:    5757240 
-ERR:          0
-
-
-lspci | grep -i audio
-00:14.5 Multimedia audio controller: ATI Technologies Inc SoundMAX 
-Integrated Digital Audio
-
-
-(someone suggested to me to remove apic,acpi,hpet from kernel.
-i did that , recompiled , but the problem remained )
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-26-04 01:29 chomwitt       New Issue                                    
-10-26-04 01:29 chomwitt       Distribution              => slackware10     
-10-26-04 01:29 chomwitt       Kernel Version            => 2.6.7           
-10-27-04 21:07 chomwitt       Note Added: 0002280                          
-10-28-04 02:14 chomwitt       Note Added: 0002281                          
-10-28-04 02:17 chomwitt       Note Added: 0002282                          
-10-28-04 02:22 chomwitt       Note Added: 0002283                          
+10-28-04 04:03 james          New Issue                                    
+10-28-04 04:03 james          Distribution              => debian          
+10-28-04 04:03 james          Kernel Version            => 2.6.7           
 ======================================================================
 
 
