@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000320]: FL is FL+FR and FR is FR+FL
-Date: Wed, 30 Jun 2004 15:36:48 +0200
+Subject: [ALSA - driver 0000344]: usx2y driver causes kernel oops
+Date: Wed, 30 Jun 2004 15:44:00 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <8c0cc8a497c6f763a45b03471315d203@bugtrack.alsa-project.org>
+Message-ID: <2eb0133efc6fad60a1ec9c230bc855d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -24,142 +24,128 @@ A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0320
+0344
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                Voluspa
-Assigned To:                pzad
+Reported By:                maggoi
+Assigned To:                karsten
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     320
-Category:                   PCI - emu10k1
+Bug ID:                     344
+Category:                   USB - usb-usx2y
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Homebrew
+Distribution:               Gentoo
 Kernel Version:             2.6.6
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-01-2004 10:12 CEST
-Last Modified:              06-30-2004 15:36 CEST
+Date Submitted:             06-24-2004 18:06 CEST
+Last Modified:              06-30-2004 15:44 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    FL is FL+FR and FR is FR+FL
+Summary:                    usx2y driver causes kernel oops
 Description:=20
-Card: Sound Blaster Live!
-Chip: SigmaTel STAC9758/59
+While playing a soundfile using my Tascam us-122 (Alsa Module snd-usx2y)
+after a few seconds the sound stutters and i get an Kernel oops.=20
+This is not happening if I use Jack.
+I'm using the latest alsa drivers 1.0.5. With kernel 2.6.6.=20
 
-Between 1.0.5rc1 and 1.0.5a the Front Left and Front Right signals are
-combined, which creates real crappy sound:
+dmesg:
+Debug: sleeping function called from invalid context at mm/slab.c:1996
+in_atomic():1, irqs_disabled():1
+ [<c01152f7>] __might_sleep+0xb7/0xe0
+ [<c013be33>] __kmalloc+0xa3/0xb0
+ [<c026dad1>] usb_alloc_urb+0x21/0x60
+ [<f89b3775>] snd_usX2Y_substream_prepare+0xd5/0x1c0 [snd_usb_usx2y]
+ [<f89b3397>] snd_usX2Y_urb_play_start+0xa7/0x170 [snd_usb_usx2y]
+ [<f89b35bf>] snd_usX2Y_pcm_play_trigger+0x3f/0x50 [snd_usb_usx2y]
+ [<f89490e8>] snd_pcm_do_start+0x28/0x30 [snd_pcm]
+ [<f8948dc9>] snd_pcm_action_single+0x39/0x70 [snd_pcm]
+ [<f8948f12>] snd_pcm_action_lock_irq+0x92/0x1e0 [snd_pcm]
+ [<c0112a8c>] do_page_fault+0x34c/0x54e
+ [<f894c4d7>] snd_pcm_common_ioctl1+0x167/0x2f0 [snd_pcm]
+ [<f894c6c0>] snd_pcm_playback_ioctl1+0x60/0x3b0 [snd_pcm]
+ [<c0150a32>] vfs_write+0xd2/0x130
+ [<c0162f20>] sys_ioctl+0x100/0x270
+ [<c010413b>] syscall_call+0x7/0xb
 
-Front Left speaker =3D Front Left + Front Right
-Front Right speaker =3D Front Right + Front Left
 
-Checking the new "Surround Mix" in alsamixer gets even more confusing:
-
-Front Left speaker =3D Front Left + Front Right + Center
-Front Right speaker =3D Front Right + Front Left + LFE
-
-There are no differences between the 1.0.5rc1 and 1.0.5a in the
-proc/asound/card0/codec97#0/ac97#0-0+regs
-
-Btw, the alsamixer options are getting really out of hand...
-Eg a new option called just "Front" (I keep it off since I can't hear any
-difference).
-
-Mvh
-Mats Johannesson
 
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- pzad - 06-08-2004 08:40 CEST=20
+ karsten - 06-24-2004 22:17 CEST=20
 ----------------------------------------------------------------------
-I think this AC97 codec problem.
+As a test please replace all occurrences of GFP_KERNEL in=20
+function snd_usX2Y_substream_prepare() with GFP_ATOMIC.
+That function is in alsa-driver/usb/usx2y/usbusx2yaudio.c.
 
-----------------------------------------------------------------------
- pzad - 06-23-2004 15:21 CEST=20
-----------------------------------------------------------------------
-Could you attach asound.state or amixer output.
-And I think, that ac97 register were changed, but there are not in proc
-output, because these are in diffrent pages.
+Thanks for debugging.
 
 ----------------------------------------------------------------------
- Voluspa - 06-24-2004 10:48 CEST=20
+ maggoi - 06-28-2004 09:51 CEST=20
 ----------------------------------------------------------------------
-OK, rechecked and the /proc-registers are set the same in 1.0.5rc1 and
-1.0.5a. Installed 1.0.5a without loading the rc1 asound.state, and
-handcrafted a new with alsamixer. Having set all options equal to rc1, th=
-e
-asound.state file indeed shows some differences.
-
-Uploading asound.state-1.0.5rc1, asound.state-1.0.5a and the diff
-asound.state-diff-1.0.5rc1-1.0.5a
+Thank's a lot, this has solved the issue. Will you include this fix in
+further versions?
 
 ----------------------------------------------------------------------
- pzad - 06-30-2004 09:00 CEST=20
+ maggoi - 06-28-2004 10:34 CEST=20
 ----------------------------------------------------------------------
-Could you try this patch ? It is already in alsa CVS.
-
-http://sourceforge.net/mailarchive/forum.php?thread_id=3D5027384&forum_id=
-=3D33141
+Sorry i was to fast. The old error message has gone, but after aprox. 10
+min. of listening to a mp3 file by xmms (alsa plugin) the sound becomes
+completely distorted. I don't if this dmesg output is alsa related:
+ALSA
+/var/tmp/portage/alsa-driver-1.0.5a/work/alsa-driver-1.0.5a/alsa-kernel/u=
+sb/usbmidi.c:149:
+urb status -108
+ALSA
+/var/tmp/portage/alsa-driver-1.0.5a/work/alsa-driver-1.0.5a/alsa-kernel/u=
+sb/usbmidi.c:134:
+usb_submit_urb: -32
+    ACPI-0279: *** Error: Looking up [BST0] in namespace,
+AE_ALREADY_EXISTS
+    ACPI-1133: *** Error: Method execution failed [\_SB_.BAT0._BST] (Node
+f7fbe928), AE_ALREADY_EXISTS
 
 ----------------------------------------------------------------------
- Voluspa - 06-30-2004 15:36 CEST=20
+ karsten - 06-28-2004 21:04 CEST=20
 ----------------------------------------------------------------------
-I'm glad that the code review you did amounted to _some_ kind of bugfix
-after
-me having sent you on a wild goose chase, Peter. This bug report can be
-closed, 'cos it's (probably) no bug at all. Sorry... Here's what
-happened:
-
-During the development of the STAC9758/59, I kept alsa-driver-1.0.4
-updated
-by patching in the relevant file changes (no CVS pulls, just manual
-changes).
-Last date was May 14. The _perceived_ breakage happened between that date
-and
-1.0.5rc1 - not 1.0.5a as I believed.
-
-1.0.4 + patches had /proc/asound/card0/codec97#0/ac97#0-0+regs
-[...]
-0:20 =3D 2000
-0:22 =3D 0000
-
-The bit in register 20 means "3D EFFECT ENABLED", but the "33" value I
-had
-set with the alsamixer tool didn't take effect (would show up as 0004 in
-register 22).
-
-1.0.5rc1 had /proc/asound/card0/codec97#0/ac97#0-0+regs
-[...]
-0:20 =3D 2000
-0:22 =3D 0004
-
-And we see the "LINE_OUT SEPARATION RATIO; (LOW)" of "3D stereo
-enhancement
-function, SigmaTel Surround 3D (SS3D), built into the AC'97 component".
-
-If mixing Front Left and Front Right signals is part of how a 3D effect
-is
-achieved, then this is no bug. But using a 5.1 speaker system I can only
-say
-that the effect sounds terrible... So, in the future I keep "3D Control -
-Switch [Off]".
-
-Now using alsa-driver-1.0.5a plus the CVS patch you referred to, and all'=
+The "ALSA......" lines are indeed ALSA-related. That issue is fixed in cv=
 s
-well.
+and shouldn't harm pcm playback.
+The ACPI errors could cause distortion.
+Please switch off the acpi-deamon.
+Here I would do this as su with "/etc/init.d/acpid stop".
+You could also use the kernel boot option acpi=3Doff.
+And yes, there will be a fix for the "Debug: sleeping function called fro=
+m
+invalid context" error. It will be a rearangement of some functions; more
+complicated than this test-fix.
 
-Once again, sorry about the fuzz.
+----------------------------------------------------------------------
+ maggoi - 06-29-2004 10:45 CEST=20
+----------------------------------------------------------------------
+Sorry, with alsa related i meant the acpi lines. But anyway, does this me=
+an
+that the usx2y driver will not work with acpi at all? I used my tascam
+us-122 under WinXP and had also issues with drop outs while acpi was
+switched on.
+Thanks for your efford.
+
+----------------------------------------------------------------------
+ tiwai - 06-30-2004 15:44 CEST=20
+----------------------------------------------------------------------
+You can set SNDRV_PCM_INFO_NONATOMIC_OPS to pcm->info field, so that
+prepare callback is called outside the spinlock.  See usbaudio.c.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -167,34 +153,23 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-01-04 10:12 Voluspa        New Bug                                    =
+06-24-04 18:06 maggoi         New Bug                                    =
  =20
-06-01-04 10:12 Voluspa        Distribution              =3D> Homebrew    =
+06-24-04 18:06 maggoi         Distribution              =3D> Gentoo      =
    =20
-06-01-04 10:12 Voluspa        Kernel Version            =3D> 2.6.6       =
+06-24-04 18:06 maggoi         Kernel Version            =3D> 2.6.6       =
    =20
-06-08-04 08:40 pzad           Bugnote Added: 0001294                     =
+06-24-04 22:17 karsten        Bugnote Added: 0001337                     =
  =20
-06-23-04 15:21 pzad           Bugnote Added: 0001335                     =
+06-28-04 09:51 maggoi         Bugnote Added: 0001343                     =
  =20
-06-24-04 10:47 Voluspa        File Added: asound.state-1.0.5rc1          =
-      =20
+06-28-04 10:34 maggoi         Bugnote Added: 0001344                     =
  =20
-06-24-04 10:48 Voluspa        Bugnote Added: 0001336                     =
+06-28-04 21:04 karsten        Bugnote Added: 0001346                     =
  =20
-06-24-04 10:48 Voluspa        File Added: asound.state-1.0.5a            =
-      =20
-
-06-24-04 10:49 Voluspa        File Added: asound.state-diff-1.0.5rc1-1.0.=
-5a    =20
-             =20
-06-28-04 09:14 pzad           Assigned To               =3D> pzad        =
-   =20
-06-28-04 09:14 pzad           Status                   new =3D> assigned =
-   =20
-06-30-04 09:00 pzad           Bugnote Added: 0001348                     =
+06-29-04 10:45 maggoi         Bugnote Added: 0001347                     =
  =20
-06-30-04 15:36 Voluspa        Bugnote Added: 0001349                     =
+06-30-04 15:44 tiwai          Bugnote Added: 0001351                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
