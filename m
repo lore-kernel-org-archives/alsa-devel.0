@@ -1,10 +1,10 @@
-From: "Adolph Tipton" <yibsgubgqvm@yahoo.com>
-Subject: (no subject)
-Date: Sat, 9 Oct 2004 06:36:10 -0700
+From: =?GB2312?B?1tC5+sDPsOXN+A==?= <kiudj@8jk.net>
+Subject: =?GB2312?B?vczE+tf2tPPAz7Dl?=
+Date: Sun, 31 Oct 2004 04:13:05 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410031409.i93ClaTw005909@www2.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
+Message-ID: <E1CNzoj-00072C-0w@sc8-sf-mx1.sourceforge.net>
+Reply-To: djkudj@8jh.net
+Content-Type: text/plain;charset="GB2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,28 +14,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: allegrogl-general@lists.sourceforge.net, alphatcl-developers@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net, althea-developers@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi again,
 
-Here is Adolph Tipton. I write to you because we are accepting your mortga=
-ge application.
-Our office confirms you can get a $220.000 lo=C0n for a $252.00 per month =
-payment.
-Approval process will take 1 minute, so please fill out the form on our we=
-bsite:
+●中国老板网，
+提供中国最专业，最便宜----教您做大老板的相关营销教材.
+★★★★★白手起家从中国老板网开始
 
-
-http://niggardly-imprimatur.webrefi.net
+●http://www.gd123.com
+●http://www.gd123.com
+●http://www.gd123.com
 
 
-Thank you.
 
-Best Regards Adolph Tipton
-First Account Manager
-
-
+★★★白手起家从中国老板网开始
 
 
 -------------------------------------------------------
