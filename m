@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Mon, 27 Dec 2004 21:47:53 +0100
-Message-ID: <695d83d1f98c4508ef8f9c2b46df9e12@bugtrack.alsa-project.org>
+Date: Mon, 27 Dec 2004 21:49:24 +0100
+Message-ID: <eae7ca5c3b43f45cac374b28263734a2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E0B3D268
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 21:47:53 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 53FBA10D
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 21:49:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-27-2004 21:47 CET
+Last Modified:              12-27-2004 21:49 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -54,17 +54,6 @@ driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
 successful in all other regards install of Fedora FC3.
 
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 12-27-04 21:31 
-----------------------------------------------------------------------
-Do you have .asoundrc (asound.conf) file in you home directory ?? If yes,
-remove it.
-
-Could you attach output of
-aplay -L
-and
-aplay -l
 
 ----------------------------------------------------------------------
  misnagid - 12-27-04 21:47 
@@ -406,6 +395,17 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7
 [root@ashkenazi jerry]#
 
+----------------------------------------------------------------------
+ misnagid - 12-27-04 21:49 
+----------------------------------------------------------------------
+By the way, what's your name?  I don't like not being able to say hello to
+you at the beginning of each email.
+
+Are we making any progress at all?
+
+Thanks,
+Jerry
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -451,6 +451,7 @@ Date Modified  Username       Field                    Change
 12-27-04 21:09 misnagid       Note Added: 0002975                          
 12-27-04 21:31 pzad           Note Added: 0002976                          
 12-27-04 21:47 misnagid       Note Added: 0002977                          
+12-27-04 21:49 misnagid       Note Added: 0002978                          
 ======================================================================
 
 
