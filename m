@@ -1,8 +1,8 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: hardware channel mixing [EMU10K1 DMA]
-Date: Tue, 07 Sep 2004 15:46:09 -0400
+Date: Tue, 07 Sep 2004 15:48:35 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1094586368.16954.119.camel@krustophenia.net>
+Message-ID: <1094586515.16954.123.camel@krustophenia.net>
 References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
 	 <1094254221.6575.94.camel@krustophenia.net>
 	 <1094260793.3727.19.camel@localhost>
@@ -42,8 +42,10 @@ On Tue, 2004-09-07 at 15:41, Jaroslav Kysela wrote:
 > no proper sample sync.
 > 
 
-Are you saying that you can't even do stereo playback and have the
-voices in sync?
+Well even if this is the case, the ASIO drivers certainly seem to work
+great.  What kinds of problems could this cause?
+
+Maybe it works because the capture channels are always in sync?
 
 Lee
 
