@@ -1,42 +1,37 @@
-From: Roger Williams <raw@qux.com>
-Subject: Re: CVS
-Date: 17 Jan 2003 13:25:59 -0500
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m3lm1jr5u0.fsf@grouper.coelacanth.com>
-References: <200301171316.06597.pieter.palmers@student.kuleuven.ac.be>
-	<m3wul3r6wp.fsf@grouper.coelacanth.com>
+From: "Isabelle" <isabelle@liveisabelle.com>
+Subject: Hi Remember me..!!?
+Date: Fri, 17 Jan 2003 23:06:20 +0400
+Sender: xdoclet-user-admin@lists.sourceforge.net
+Message-ID: <E18Zbyy-0002xl-00@panoramix.vasoftware.com>
+Reply-To: isabelle@liveisabelle.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <m3wul3r6wp.fsf@grouper.coelacanth.com>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <xdoclet-user-admin@lists.sourceforge.net>
+Errors-To: xdoclet-user-admin@lists.sourceforge.net
+List-Help: <mailto:xdoclet-user-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:xdoclet-user@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/xdoclet-user>,
+	<mailto:xdoclet-user-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/xdoclet-user>,
+	<mailto:xdoclet-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=xdoclet-user>
+To: alsa-devel@lists.sourceforge.net
+Cc: dri-devel@lists.sourceforge.net, freenet-dev@lists.sourceforge.net, jsdomapi-develop@lists.sourceforge.net, linux-usb-devel-admin@lists.sourceforge.net, perlunit-devel-admin@lists.sourceforge.net, twilight-devel@lists.sourceforge.net, xdoclet-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->>>>> Pieter Palmers <pieter.palmers@student.kuleuven.ac.be> writes:
-  >> Is it possible to make a snapshot available?
+=3Chtml=3E
+=3Chead=3E
+=3Ctitle=3EDo you remember me=3F=3C=2Ftitle=3E
+=3Cmeta http-equiv=3D=22Content-Type=22 content=3D=22text=2Fhtml=3B charset=3Dwindows-1252=22=3E
+=3C=2Fhead=3E
 
-This is the mirror site I was trying to remember:
+=3Cbody bgcolor=3D=22#FFFFFF=22 text=3D=22#000000=22=3E
+=3Cfont size=3D=225=22=3E=3Ca href=3D=22http=3A=2F=2Fwww=2Eliveisabelle=2Ecom=22=3Ehttp=3A=2F=2Fwww=2Emyfreelivecam=2Ecom=2Fisabelle=3C=2Fa=3E=3C=2Ffont=3E 
+=3C=2Fbody=3E
+=3C=2Fhtml=3E
 
-http://www.tux.org/pub/sites/ftp.alsa-project.org/cvsexport/2003-01-14.tar.bz2
 
-is the latest HEAD snapshot
-
-or grab .../cvsroot/2003-01-14.tar.bz2 -- really gzipped -- for the
-complete CVSROOT.
-
--- 
-Roger Williams <raw@qux.com>
-Qux Tool & Die, Middleborough, Massachusetts
-// Omne tulit punctum qui misquit utile dulci //
 
 
 -------------------------------------------------------
