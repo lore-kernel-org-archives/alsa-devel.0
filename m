@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: troubles programming with the sequencer
-Date: Mon, 26 Jan 2004 14:52:59 +0100 (MET)
+Subject: Re: sequencer filter client
+Date: Mon, 26 Jan 2004 14:57:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0401261447190.24795-100000@studcom.urz.uni-halle.de>
-References: <20040123190532.1f335a80.brix82@libero.it>
+Message-ID: <Pine.HPX.4.33n.0401261453170.24795-100000@studcom.urz.uni-halle.de>
+References: <4011916D.4040601@colorado.edu>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20040123190532.1f335a80.brix82@libero.it>
+In-reply-to: <4011916D.4040601@colorado.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,50 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Brix <brix82@libero.it>
+To: Garett Shulman <shulmang@colorado.edu>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Brix wrote:
-> My code doesn't return any error, i just can't hear anything. If i
-> do it via the RawMIDI API, it works fine (but it's, bleahh,
-> horrible to use).
+Garett Shulman wrote:
+> Hello, I am trying to create a very simple midi filter client for the
+> alsa sequencer based on aseqview-0.1.4. I have alsa 0.9.8. This code
+> shows the input and the output port in aconnect when executed. And, when
+> the raw_midi client is connected The callback does get called when I
+> play keys on my piano. However, Its as though the message is getting
+> sent back to this client and  not on to the next client.
 >
-> I thought it was because i didn't assign any path/instrument to
-> the midi channels,
-
-The default instrument is 0 (grand piano).
-
-> so i tried to set them via RawMIDI, but it still doesn't work.
-
-You can send program change messages with the sequencer, too.
-
-> void set_chan_instr( int chan, int instrument ) {
->   int ch = 0xC0 + chan;
->   snd_rawmidi_write(handle_out, &ch, 1);
-
-This does not work on big-endian machines, use char for ch.
-
->   // now we try to set up channel 0 via RawMIDI
->   snd_rawmidi_open( NULL, &handle_out, "hw:0,1", 0)
->   // ok, let's assign instrument #4
->   set_chan_instr( 0, 4 );
-
-If the rawmidi device is already opened, it may not be possible for
-the sequencer to open it, too.  Call snd_rawmidi_close, or leave this
-code out altogether.
-
->   // let's play! (we hope..)
->   snd_seq_event_output(seq, &ev);
->   snd_seq_drain_output(seq);
->   snd_seq_start_queue(seq, queue, NULL);
->   snd_seq_drain_output(seq);
->
->   return 0;
+> int process_event(port_t *p, int type, snd_seq_event_t *ev, int *priate_data)
+> {
+>     port_write_event(p, ev, 0);
 > }
 
-Directly after starting the queue, the program exists, and the queue
-gets destroyed.  Try snd_seq_sync_output.
+The event will be sent to the destination as specified in ev->dest.
+For events you have just received, the destination is your own
+client/port.
+
+Call snd_seq_ev_set_source(ev, ?) to set your source port, and call
+snd_seq_ev_set_subs(ev) to specify that the event is to be sent to all
+ports subscribed to your port.
 
 
 HTH
