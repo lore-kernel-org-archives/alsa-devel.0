@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Wed, 24 Nov 2004 23:24:39 +0100
-Message-ID: <27445b16c901aebd6a14273fbb146560@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000548]: Format not supported by Webcam
+Date: Thu, 25 Nov 2004 14:23:09 +0100
+Message-ID: <abcea2a22bf43c9d64552c796d1c6fb8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 57A65270
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 23:24:39 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 95F041DC
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2004 14:23:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,102 +24,224 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=548> 
 ======================================================================
-Reported By:                bons78
-Assigned To:                
+Reported By:                djtm
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   167
-Category:                   SPARC - cs4231
+Issue ID:                   548
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   trivial
 Priority:                   normal
-Status:                     new
-Distribution:               debian/unstable
-Kernel Version:             linux-2.6.4+
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.8.1-ck6
 ======================================================================
-Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-24-2004 23:24 CET
+Date Submitted:             09-28-2004 15:57 CEST
+Last Modified:              11-25-2004 14:23 CET
 ======================================================================
-Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
+Summary:                    Format not supported by Webcam
 Description: 
-alsamixer crashes system hard when snd-ioctl32 is loaded.
-System still responds to some sysrq commands (sync remount boot show) -
-sysrq (term killall) has no effect.
-There's no chance to do any other keyboard input. No logs, no traps, no
-oops. Machine still responds to ping,(even port 22 stays open) but login
-via ssh is not possible. 
+1 [webcam         ]: USB-Audio - USB Device 0x46d:0x8b4
+                     USB Device 0x46d:0x8b4 at usb-0000:00:02.1-2, full
+speed
 
-alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
-does not crash the system then.
-So I suspect a problem in the ioctl32 wrapper.
-
-
-
+Only supports: 16_le, 44100, mono.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-24-04 14:52 
+ djtm - 09-28-04 16:26 
 ----------------------------------------------------------------------
-The new patch is togher with a hack.  Please give a try.
+(now with 48000khz)
+ecasound -f 16,1,48000 -i:alsa,hw:1,0 -o:alsa,default -D
+
+USB Device 0x46d:0x8b4 at usb-0000:00:02.1-2, full speed : USB Audio
+
+Capture:
+  Status: Running
+    Interface = 2
+    Altset = 1
+    URBs = 5 [ 4 4 4 4 4 ]
+    Packet Size = 90
+    Momentary freq = 44100 Hz
+  Interface 2
+    Altset 1
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (NONE)
+    Rates: 44100
+  Interface 2
+    Altset 2
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (NONE)
+    Rates: 22050
+  Interface 2
+    Altset 3
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (NONE)
+    Rates: 11025
+  Interface 2
+    Altset 4
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (NONE)
+    Rates: 8000
+
+
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 8,96 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 9,11 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 30,73 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 11,68 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 1,41 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 10,66 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 13,59 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 1,17 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 6,06 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,49 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 7,76 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 1,00 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 12,17 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 28,51 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 13,82 ms long.
+(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
+least 0,01 ms long.
+
+Ecasound bug?
 
 ----------------------------------------------------------------------
- eradicator - 11-24-04 23:24 
+ djtm - 11-25-04 14:23 
 ----------------------------------------------------------------------
-You should leave out the defined(CONFIG_SPARC64) as no architecture exports
-that symbol in 2.6.7... I'm testing it out now...
+ecasound -f 16,1,44100 -i:alsa,hw:1,0 -o:alsa,default -D
+cat /proc/asound/card1/stream0
+USB Device 0x46d:0x8b4 at usb-0000:00:02.0-2, full speed : USB Audio
+
+Capture:
+  Status: Running
+    Interface = 2
+    Altset = 1
+    URBs = 5 [ 4 4 4 4 4 ]
+    Packet Size = 90
+    Momentary freq = 44100 Hz
+  Interface 2
+    Altset 1
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (NONE)
+    Rates: 44100
+  Interface 2
+    Altset 2
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (NONE)
+    Rates: 22050
+  Interface 2
+    Altset 3
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (NONE)
+    Rates: 11025
+  Interface 2
+    Altset 4
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (NONE)
+    Rates: 8000
+
+
+and while getting 32000hz:
+ecasound -f 16,1,32000 -i:alsa,hw:1,0 -o:alsa,default -D
+
+cat /proc/asound/card1/stream0
+USB Device 0x46d:0x8b4 at usb-0000:00:02.0-2, full speed : USB Audio
+
+Capture:
+  Status: Running
+    Interface = 2
+    Altset = 1
+    URBs = 5 [ 4 4 4 4 4 ]
+    Packet Size = 90
+    Momentary freq = 44100 Hz
+  Interface 2
+    Altset 1
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (NONE)
+    Rates: 44100
+  Interface 2
+    Altset 2
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (NONE)
+    Rates: 22050
+  Interface 2
+    Altset 3
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (NONE)
+    Rates: 11025
+  Interface 2
+    Altset 4
+    Format: S16_LE
+    Channels: 1
+    Endpoint: 4 IN (NONE)
+    Rates: 8000
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 00:02 bons78         New Issue                                    
-03-30-04 00:02 bons78         Distribution              => debian/unstable 
-03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
-04-13-04 19:41 tiwai          Note Added: 0000795                          
-07-04-04 22:32 weeve          Note Added: 0001381                          
-07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
-11-19-04 05:45 weeve          Note Added: 0002474                          
-11-19-04 05:46 weeve          Issue Monitored: weeve                       
-11-19-04 05:55 rlrevell       Note Added: 0002475                          
-11-20-04 10:23 eradicator     Note Added: 0002478                          
-11-20-04 11:14 eradicator     Note Added: 0002479                          
-11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
- 
-11-20-04 16:36 sjoerd         Note Added: 0002480                          
-11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
-11-21-04 03:05 eradicator     Note Added: 0002482                          
-11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:39 eradicator     Note Added: 0002485                          
-11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:50 eradicator     Note Added: 0002486                          
-11-21-04 11:57 eradicator     Note Added: 0002487                          
-11-21-04 12:54 sjoerd         Note Added: 0002488                          
-11-21-04 17:44 sjoerd         Note Added: 0002489                          
-11-21-04 21:26 eradicator     Note Added: 0002490                          
-11-21-04 21:36 eradicator     Note Added: 0002491                          
-11-21-04 22:46 sjoerd         Note Added: 0002492                          
-11-22-04 00:08 eradicator     Note Added: 0002493                          
-11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
-            
-11-22-04 00:49 eradicator     Note Added: 0002494                          
-11-22-04 16:22 tiwai          Note Added: 0002508                          
-11-23-04 10:16 eradicator     Note Added: 0002514                          
-11-23-04 15:34 tiwai          Note Added: 0002515                          
-11-23-04 15:36 tiwai          File Added: ioctl32-user-alloc.diff               
-    
-11-24-04 10:26 eradicator     Note Added: 0002544                          
-11-24-04 12:53 eradicator     Note Added: 0002553                          
-11-24-04 13:01 eradicator     Note Added: 0002556                          
-11-24-04 13:01 tiwai          Note Added: 0002557                          
-11-24-04 13:09 tiwai          Note Added: 0002559                          
-11-24-04 14:29 eradicator     Note Added: 0002563                          
-11-24-04 14:52 tiwai          Note Added: 0002564                          
-11-24-04 14:53 tiwai          File Added: ioctl32-user-alloc-hack.diff          
-         
-11-24-04 23:24 eradicator     Note Added: 0002582                          
+09-28-04 15:57 djtm           New Issue                                    
+09-28-04 15:57 djtm           Distribution              => Debian          
+09-28-04 15:57 djtm           Kernel Version            => 2.6.8.1-ck6     
+09-28-04 16:13 Clemens LadischNote Added: 0001950                          
+09-28-04 16:13 Clemens LadischNote Edited: 0001950                         
+09-28-04 16:24 djtm           Note Added: 0001952                          
+09-28-04 16:26 djtm           Note Added: 0001953                          
+11-25-04 14:23 djtm           Note Added: 0002590                          
 ======================================================================
 
 
