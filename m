@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
-Date: Fri, 18 Feb 2005 21:32:07 +0100
-Message-ID: <a0b92a6b4537da621af788cc0714c2bc@bugtrack.alsa-project.org>
+Date: Fri, 18 Feb 2005 21:39:21 +0100
+Message-ID: <af138c4e6a79088a9f95318600bc5acb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 962CB242
-	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 21:32:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4ED0E237
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 21:39:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Ununtu
 Kernel Version:             2.6.11-rc3
 ======================================================================
 Date Submitted:             02-17-2005 20:16 CET
-Last Modified:              02-18-2005 21:32 CET
+Last Modified:              02-18-2005 21:39 CET
 ======================================================================
 Summary:                    intel8x0 ACPI suspend/resume trouble
 Description: 
@@ -79,19 +79,17 @@ Christophe
 ======================================================================
 
 ----------------------------------------------------------------------
- christophe - 02-18-05 21:16 
-----------------------------------------------------------------------
-Looks like we have different problems.
-
-Did you try APM?
-
-I will try again to see if the problem disappears with APM.
-
-----------------------------------------------------------------------
  alexs81 - 02-18-05 21:32 
 ----------------------------------------------------------------------
 never tried with apm.
 maybe I'll try when I get some spare time
+
+----------------------------------------------------------------------
+ rlrevell - 02-18-05 21:39 
+----------------------------------------------------------------------
+Can someone try the OSS driver (i8x0-audio IIRC) and see if it has the same
+problem?  This would be extremely helpful in tracking down the bug.  If
+the OSS driver works the fix is easy.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -113,6 +111,7 @@ Date Modified  Username       Field                    Change
 02-18-05 21:13 alexs81        Note Added: 0003661                          
 02-18-05 21:16 christophe     Note Added: 0003662                          
 02-18-05 21:32 alexs81        Note Added: 0003663                          
+02-18-05 21:39 rlrevell       Note Added: 0003664                          
 ======================================================================
 
 
