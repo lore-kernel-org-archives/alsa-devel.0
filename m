@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000919]: Master volume doesn't control rear speakers...
-Date: Fri, 18 Feb 2005 12:41:57 +0100
-Message-ID: <795a5cb8b452564d1f2fe1931727f0b8@bugtrack.alsa-project.org>
+Date: Fri, 18 Feb 2005 13:00:23 +0100
+Message-ID: <2bd9b28cc10d1d1cd245b603ff2db1b2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A90A206
-	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 12:41:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 62AF423D
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 13:00:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=919> 
 ======================================================================
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-18-2005 12:41 CET
-Last Modified:              02-18-2005 12:41 CET
+Last Modified:              02-18-2005 13:00 CET
 ======================================================================
 Summary:                    Master volume doesn't control rear speakers...
 Description: 
@@ -48,10 +48,16 @@ If I adjust the master volume in alsamixer, the rear speaker volume isn't
 affected at all.
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 02-18-05 13:00 
+----------------------------------------------------------------------
+It's a feature of ac97 codec.  Not a bug.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-18-05 12:41 adamk75        New Issue                                    
+02-18-05 13:00 tiwai          Note Added: 0003650                          
 ======================================================================
 
 
