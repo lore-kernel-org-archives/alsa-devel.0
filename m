@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000731]: snd-ioctl32 problems on sparc linux
-Date: Wed, 16 Mar 2005 20:26:31 +0100
-Message-ID: <aabcd6fb6a724eaa487f033e20878cdb@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000174]: CVS build problem
+Date: Wed, 16 Mar 2005 22:18:37 +0100
+Message-ID: <4ffd183a3e9025e7a2e8788c73b7b803@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8AC39227
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 20:26:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5957A231
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 22:18:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,95 +23,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=731> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=174> 
 ======================================================================
-Reported By:                eradicator
+Reported By:                bgolenko
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   731
-Category:                   CORE - pcm
+Project:                    ALSA - lib
+Issue ID:                   174
+Category:                   general
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r10
 ======================================================================
-Date Submitted:             12-19-2004 13:21 CET
-Last Modified:              03-16-2005 20:26 CET
+Date Submitted:             03-31-2004 17:36 CEST
+Last Modified:              03-16-2005 22:18 CET
 ======================================================================
-Summary:                    snd-ioctl32 problems on sparc linux
+Summary:                    CVS build problem
 Description: 
-Some 32bit alsa programs fail on sparc64, but when these programs are
-compiled in 64bit mode, they work fine.  Same version of alsa-lib in both
-cases.
-
-
-32bit $ timidity -Os Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mid 
-...
-Text: Reset All Controller
-Now Loading..ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR
-failed: Broken pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-Terminated sig=0x02
-
-The strace can be found in bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167 as I originally
-mentioned it there. 
-When doing this, you hear the first tone, and then the failed ioctl occur
-(so it's not on the first one)...
-
-32bit $ aoss mpg123 Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mp3
-System lockup... I just noticed this one, so I haven't been able to debug,
-but I'm betting it's more get_fs() == KERNEL_DS and accessing __user mem
-problems...
-using alsa-oss version 1.0.7
-
+gcc -shared  .libs/conf.o .libs/confmisc.o .libs/input.o .libs/output.o
+.libs/async.o .libs/error.o .libs/dlmisc.o .libs/socket.o .libs/shmarea.o
+.libs/userfile.o -Wl,--whole-archive control/.libs/libcontrol.a
+mixer/.libs/libmixer.a ordinary_mixer/.libs/libordinarymixer.a
+pcm/.libs/libpcm.a ordinary_pcm/.libs/libordinarypcm.a
+rawmidi/.libs/librawmidi.a timer/.libs/libtimer.a hwdep/.libs/libhwdep.a
+seq/.libs/libseq.a instr/.libs/libinstr.a compat/.libs/libcompat.a
+alisp/.libs/libalisp.a -Wl,--no-whole-archive  -lm -ldl -lpthread 
+-Wl,-soname -Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
+/usr/bin/ld: .libs/libasound.so.2.0.0: undefined versioned symbol name
+snd_pcm_hw_params_get_buffer_size_max@ALSA_0.9
+/usr/bin/ld: failed to set dynamic section sizes: Bad value
+collect2: ld returned 1 exit status
+make[2]: *** [libasound.la] Error 1
+make[2]: Leaving directory `/home/bartek/tomove/alsa-cvs/alsa-lib/src'
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-16-05 12:26 
+ perex - 04-15-04 20:30 
 ----------------------------------------------------------------------
-Interesting.  It means that snd-seq-oss influences on PCM?
-
-BTW, any chance to use the new compat layer (compat_ioctl vfs) on sparc?
+It looks like gcc/binutils problem. You may try to compile library with
+--with-versioned=no option.
 
 ----------------------------------------------------------------------
- eradicator - 03-16-05 20:26 
+ jdthood - 03-16-05 22:18 
 ----------------------------------------------------------------------
-Actually, it looks like it is/was actually a problem in alsa-lib.  I
-updated to alsa-lib-1.0.8, and now I have audio playback.  However, the
-audio is playing at about 2x the expected rate (Actually it's more like
-12/7 the normal rate)  I tested it for 2 minutes to determine that.
-
-I believe this is resulting from data being dropped in the stream because
-the audio "jitters" at about 5Hz.  The data in between these jitters
-sounds correct, but the "jitter" appears to be a skip over certain sound. 
-The Scherzo in Dvorak's Symphony No 9 from the New World provides a good
-showcase for this as parts of it are very quiet aside from very short
-tones.  When plying through ALSA, some of these tones are skipped which
-leads me to conclude that it's pcm data being dropped rather than a
-timescale going on.
-
-What version introduced the new compat_ioctl vfs?
+This can probably be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-19-04 13:21 eradicator     New Issue                                    
-12-19-04 13:21 eradicator     Distribution              => Gentoo          
-12-19-04 13:21 eradicator     Kernel Version            => 2.6.9-gentoo-r10
-12-21-04 18:44 tiwai          Note Added: 0002901                          
-12-22-04 07:39 eradicator     Note Added: 0002907                          
-12-22-04 11:58 tiwai          Note Added: 0002908                          
-03-16-05 11:23 eradicator     Note Added: 0003936                          
-03-16-05 11:41 eradicator     Note Added: 0003938                          
-03-16-05 12:26 tiwai          Note Added: 0003939                          
-03-16-05 20:26 eradicator     Note Added: 0003964                          
+03-31-04 17:36 bgolenko       New Issue                                    
+04-15-04 20:30 perex          Note Added: 0000822                          
+03-16-05 22:18 jdthood        Note Added: 0003965                          
 ======================================================================
 
 
