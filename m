@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000969]: ice1724 & Gainward hollywood@home 7.1 bad EEPROM version
-Date: Mon, 7 Mar 2005 20:55:29 +0100
-Message-ID: <c1006722fa1b8657e04219f903374956@bugtrack.alsa-project.org>
+Date: Mon, 7 Mar 2005 20:54:45 +0100
+Message-ID: <8f967e56a589b98dbad96adf6eb9bbba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E6AC21D2
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2005 20:55:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E23981D2
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2005 20:54:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,12 +21,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue is now in status NEW (again)
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=969> 
 ======================================================================
 Reported By:                bnolsen
-Assigned To:                
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   969
@@ -34,12 +34,12 @@ Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
 Date Submitted:             03-07-2005 19:47 CET
-Last Modified:              03-07-2005 20:55 CET
+Last Modified:              03-07-2005 20:54 CET
 ======================================================================
 Summary:                    ice1724 & Gainward hollywood@home 7.1 bad EEPROM
 version
@@ -72,8 +72,6 @@ Date Modified  Username       Field                    Change
 03-07-05 20:53 perex          Category                 0_compilation problem_!!!
 => PCI - ice1724
 03-07-05 20:54 perex          Note Added: 0003809                          
-03-07-05 20:55 perex          Assigned To              perex =>            
-03-07-05 20:55 perex          Status                   assigned => new     
 ======================================================================
 
 
