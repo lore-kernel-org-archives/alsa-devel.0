@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Wed, 19 Jan 2005 16:08:17 +0100
-Message-ID: <c571a16ad8cd73c3a57783ecc72b9144@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: William <walsac3@orthoset.com>
+Subject: Re: [PATCH] emu10k1 multichannel support
+Date: Wed, 19 Jan 2005 14:38:12 GMT
+Message-ID: <200501191438.OAA11750@orthoset.com>
+References: <1106091073.24484.60.camel@krustophenia.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 71BCE26D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:08:17 +0100 (MET)
+In-Reply-To: <1106091073.24484.60.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,85 +14,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+>
+> As promised, here's an updated patch to add real multichannel playback
+> support (and improved multichannel capture) to the emu10k1 driver.
+> 
+> http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v001.patch
+> 
+> Please test it and report any problems.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
-======================================================================
-Reported By:                1g0R
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   822
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     feedback
-Distribution:               FC3
-Kernel Version:             2.6.10-ac8
-======================================================================
-Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-19-2005 16:08 CET
-======================================================================
-Summary:                    CMI9880 (IHDA) alsamixer no controll
-Description: 
-The compile went fine.
-I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
-I cant raise the trigger.
-No SPDIF out.
-======================================================================
+I tested it on 2.6.10 with alsa 1.0.8 and have found what looks like
+a possible problem with the emu10k1 synth support.
+Soundfonts still load ok but despite mixer levels being ok
+("Music=Master=...etc...=100%") there is no sound at all when using the
+emu10k1 wavetable synth, e.g. with aplaymidi.
 
-----------------------------------------------------------------------
- 1g0R - 01-19-05 15:46 
-----------------------------------------------------------------------
-I can change the volume only in alsaplayer.
-A cant change in alsamixer,kmix,xmms.(PCM and MASTER)
+> I am especially interested in any regressions that impact regular
+> PCM playback (the hw:0,0 device).
 
-----------------------------------------------------------------------
- tiwai - 01-19-05 16:08 
-----------------------------------------------------------------------
-Did you use "default" PCM?  It creates "PCM" volume when it's once used.
+PCM playback and recording both seem to work ok.
 
-So, run first "aplay foo.wav" then try alsamixer, etc.
-Once after you get the PCM, this should be restored via alsactl at the
-next boot time.
+> QuickStart:
+> 
+> $ jackd -R -v -d alsa -P hw:0,3 -C hw:0,2 -S
+> 
+> This also adds some new register info including a per channel half loop
+> interrupt that I have discovered by reverse engineering the Windows drivers.
+> Improvements over previous versions:
 
-Again, this card has no "Master" volume - only PCM volume (via softvol
-plugin) is possible to change.
+Excellent work!  Very well done.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-16-05 19:06 1g0R           New Issue                                    
-01-16-05 19:06 1g0R           Distribution              => FC3             
-01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
-01-17-05 15:05 tiwai          Status                   new => resolved     
-01-17-05 15:05 tiwai          Resolution               open => not an issue
-01-17-05 15:05 tiwai          Assigned To               => tiwai           
-01-17-05 15:05 tiwai          Note Added: 0003235                          
-01-17-05 15:05 tiwai          Assigned To              tiwai =>            
-01-17-05 16:43 1g0R           Status                   resolved => feedback
-01-17-05 16:43 1g0R           Resolution               not an issue => reopened
-01-17-05 16:43 1g0R           Note Added: 0003238                          
-01-17-05 16:43 1g0R           Assigned To               => tiwai           
-01-18-05 14:01 1g0R           Note Added: 0003249                          
-01-18-05 14:01 1g0R           Issue Monitored: 1g0R                        
-01-18-05 17:57 tiwai          Note Added: 0003254                          
-01-19-05 13:33 1g0R           Note Added: 0003264                          
-01-19-05 14:25 tiwai          Note Added: 0003265                          
-01-19-05 14:36 1g0R           Note Added: 0003272                          
-01-19-05 14:40 tiwai          Note Added: 0003275                          
-01-19-05 14:59 1g0R           Note Added: 0003280                          
-01-19-05 15:16 tiwai          Note Added: 0003281                          
-01-19-05 15:46 1g0R           Note Added: 0003289                          
-01-19-05 16:08 tiwai          Note Added: 0003290                          
-======================================================================
-
-
+William
 
 
 -------------------------------------------------------
