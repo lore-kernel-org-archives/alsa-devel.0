@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000988]: No errors, but no sound output
-Date: Tue, 22 Mar 2005 19:42:03 +0100
-Message-ID: <a26ec58bbedccde7127987c04da20bc2@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001005]: [PATCH] pcm_dmix.c:92: error: static declaration of 'shm_sum_discard' follows non-static declaration
+Date: Tue, 22 Mar 2005 19:49:20 +0100
+Message-ID: <ebe68736ad5fa826bc6896d0ea56d431@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E73FA102
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 19:42:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4178287
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 19:49:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,82 +21,178 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=988> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1005> 
 ======================================================================
-Reported By:                madCoder
-Assigned To:                
+Reported By:                jdthood
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   988
-Category:                   PCI - cs46xx
+Project:                    ALSA - lib
+Issue ID:                   1005
+Category:                   general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               gentoo
-Kernel Version:             2.6.11-gentoo-r2
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-14-2005 00:35 CET
-Last Modified:              03-22-2005 19:42 CET
+Date Submitted:             03-22-2005 09:03 CET
+Last Modified:              03-22-2005 19:49 CET
 ======================================================================
-Summary:                    No errors, but no sound output
+Summary:                    [PATCH] pcm_dmix.c:92: error: static declaration of
+'shm_sum_discard' follows non-static declaration
 Description: 
-Sound was working fine in linux kernel 2.6.9 with ALSA version 1.0.6.  I
-upgraded the kernel to 2.6.11-gentoo-r2, which contains ALSA version
-1.0.8, and now I get no sound at all.  There are no error messages, the
-kernel modules are loaded properly and appear to be working fine.  Playing
-a file in XMMS, the spectrum analyzer shows that it should be playing
-sound, but I get nothing from the speakers.
+http://bugs.debian.org/300792
 
-I've already checked that all the mixer channels are unmuted and turned
-up, including DAC.  I know I'm not the only one, nor is this chipset the
-only one, that has had this problem, so is it something in the core that
-is causing all these problems, or are there just that many chipsets that
-have suddenly developed the inability to produce sound?
+-------- Forwarded Message --------
+From: Andreas Jochens <aj@andaco.de>
+Reply-To: Andreas Jochens <aj@andaco.de>, 300792@bugs.debian.org
+To: Debian Bug Tracking System <submit@bugs.debian.org>
+Subject: [Pkg-alsa-devel] Bug#300792: alsa-lib: FTBFS (ppc64/gcc-4.0):
+static declaration of 'shm_sum_discard' follows non-static declaration
+Date: Mon, 21 Mar 2005 22:42:00 +0100
+Package: alsa-lib
+Severity: normal
+Tags: patch
 
-lsmod, lspci, and /proc output are attached in Additional Info
+When building 'alsa-lib' on ppc64 with gcc-4.0,
+I get the following error:
+
+pcm_dmix.c: At top level:
+pcm_dmix.c:92: error: static declaration of 'shm_sum_discard' follows
+non-static declaration
+pcm_dmix.c:84: error: previous implicit declaration of 'shm_sum_discard'
+was here
+pcm_dmix.c:221:2: warning: #warning Please, recode mix_areas1() routine to
+your architecture...
+pcm_dmix.c: In function 'mix_areas1':
+pcm_dmix.c:247: error: invalid lvalue in assignment
+pcm_dmix.c:248: error: invalid lvalue in assignment
+pcm_dmix.c:249: error: invalid lvalue in assignment
+pcm_dmix.c:253:2: warning: #warning Please, recode mix_areas2() routine to
+your architecture...
+pcm_dmix.c: In function 'mix_areas2':
+pcm_dmix.c:279: error: invalid lvalue in assignment
+pcm_dmix.c:280: error: invalid lvalue in assignment
+pcm_dmix.c:281: error: invalid lvalue in assignment
+make[3]: *** [pcm_dmix.lo] Error 1
+make[3]: Leaving directory `/alsa-lib-1.0.8/src/pcm'
+
+With the attached patch 'alsa-lib' can be compiled
+on ppc64 using gcc-4.0.
+
+Regards
+Andreas Jochens
+
+diff -urN ../tmp-orig/alsa-lib-1.0.8/src/conf.c ./src/conf.c
+--- ../tmp-orig/alsa-lib-1.0.8/src/conf.c	2004-10-05 17:33:04.000000000
++0200
++++ ./src/conf.c	2005-03-21 22:30:08.619865849 +0100
+@@ -2486,6 +2486,8 @@
+ 				snd_config_searcha, snd_config_searchva);
+ }
+ 
++static int snd_config_hooks(snd_config_t *config, snd_config_t
+*private_data);
++
+ /**
+  * \brief Searches for a node in a configuration tree and expands hooks.
+  * \param config Handle to the root of the configuration (sub)tree to
+search.
+@@ -2496,7 +2498,6 @@
+  */
+ int snd_config_search_hooks(snd_config_t *config, const char *key,
+snd_config_t **result)
+ {
+-	static int snd_config_hooks(snd_config_t *config, snd_config_t
+*private_data);
+ 	SND_CONFIG_SEARCH(config, key, result, \
+ 					err = snd_config_hooks(config, NULL); \
+ 					if (err < 0) \
+@@ -2504,6 +2505,8 @@
+ 			 );
+ }
+ 
++static int snd_config_hooks(snd_config_t *config, snd_config_t
+*private_data);
++
+ /**
+  * \brief Searches for a node in a configuration tree, expanding aliases
+and hooks.
+  * \param root Handle to the root configuration node containing alias
+@@ -2516,7 +2519,6 @@
+  */
+ int snd_config_searcha_hooks(snd_config_t *root, snd_config_t *config,
+const char *key, snd_config_t **result)
+ {
+-	static int snd_config_hooks(snd_config_t *config, snd_config_t
+*private_data);
+ 	SND_CONFIG_SEARCHA(root, config, key, result,
+ 					snd_config_searcha_hooks,
+ 					err = snd_config_hooks(config, NULL); \
+diff -urN ../tmp-orig/alsa-lib-1.0.8/src/pcm/pcm_dmix.c
+./src/pcm/pcm_dmix.c
+--- ../tmp-orig/alsa-lib-1.0.8/src/pcm/pcm_dmix.c	2005-01-11
+18:42:49.000000000 +0100
++++ ./src/pcm/pcm_dmix.c	2005-03-21 22:07:17.000000000 +0100
+@@ -53,12 +53,13 @@
+  *
+  */
+ 
++static int shm_sum_discard(snd_pcm_direct_t *dmix);
++
+ /*
+  *  sum ring buffer shared memory area 
+  */
+ static int shm_sum_create_or_connect(snd_pcm_direct_t *dmix)
+ {
+-	static int shm_sum_discard(snd_pcm_direct_t *dmix);
+ 	struct shmid_ds buf;
+ 	int tmpid, err;
+ 	size_t size;
+@@ -244,9 +245,9 @@
+ 		} while (*sum != old_sample);
+ 		if (!--size)
+ 			return;
+-		((char *)src) += src_step;
+-		((char *)dst) += dst_step;
+-		((char *)sum) += sum_step;
++		src = ((char *)src) + src_step;
++		dst = ((char *)dst) + dst_step;
++		sum = ((char *)sum) + sum_step;
+ 	}
+ }
+ 
+@@ -276,9 +277,9 @@
+ 		} while (*sum != old_sample);
+ 		if (!--size)
+ 			return;
+-		((char *)src) += src_step;
+-		((char *)dst) += dst_step;
+-		((char *)sum) += sum_step;
++		src = ((char *)src) + src_step;
++		dst = ((char *)dst) + dst_step;
++		sum = ((char *)sum) + sum_step;
+ 	}
+ }
+ 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000963 Sounc card is mute
-======================================================================
 
 ----------------------------------------------------------------------
- madCoder - 03-19-05 04:07 
+ tiwai - 03-22-05 19:49 
 ----------------------------------------------------------------------
-That did fix it, actually.  It's kind of strange that it wasn't necessary
-in 1.0.6, but in 1.0.8 it is.  Oh well.  Thanks for the tip.
-
-----------------------------------------------------------------------
- tiwai - 03-22-05 19:42 
-----------------------------------------------------------------------
-External Amplifier turns on/off the amplifier on the board if exists.
-Turning off this will save the energy consumption a little bit.
-
-Just to be sure:  please stop the ALSA driver once, then remove (or move)
-/etc/asound.state, then restart ALSA again to get the "system default"
-state.
-Is "External Amplifier" control turned on or off as default?
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 00:35 madCoder       New Issue                                    
-03-14-05 00:35 madCoder       Distribution              => gentoo          
-03-14-05 00:35 madCoder       Kernel Version            => 2.6.11-gentoo-r2
-03-14-05 00:37 madCoder       Issue Monitored: madCoder                    
-03-16-05 12:56 tiwai          Note Added: 0003950                          
-03-17-05 00:05 madCoder       File Added: asound.state                     
-03-17-05 00:06 madCoder       Note Added: 0003973                          
-03-17-05 00:08 madCoder       Note Edited: 0003973                         
-03-18-05 18:19 tiwai          Note Added: 0004002                          
-03-19-05 00:16 madCoder       Note Added: 0004008                          
-03-19-05 04:07 madCoder       Note Added: 0004009                          
-03-19-05 04:08 madCoder       Issue End Monitor: madCoder                    
-03-22-05 15:13 jdthood        Relationship added       duplicate of 0000963
-03-22-05 19:42 tiwai          Note Added: 0004128                          
+03-22-05 09:03 jdthood        New Issue                                    
+03-22-05 19:49 tiwai          Status                   new => resolved     
+03-22-05 19:49 tiwai          Resolution               open => fixed       
+03-22-05 19:49 tiwai          Assigned To               => tiwai           
+03-22-05 19:49 tiwai          Note Added: 0004129                          
 ======================================================================
 
 
