@@ -1,8 +1,8 @@
 From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: Re: why wouldn't Mandrake ship 8.2 with alsa 0.9?
-Date: Fri, 29 Mar 2002 04:01:18 -0800 (PST)
+Subject: maudio usb quattro
+Date: Fri, 29 Mar 2002 04:04:38 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020329120119.1639A36F9@sitemail.everyone.net>
+Message-ID: <20020329120439.2EACA2756@sitemail.everyone.net>
 Reply-To: pshirkey@boosthardware.com
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -16,12 +16,12 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: fn ln <neplace1@yahoo.ca>, alsa <alsa-devel@lists.sourceforge.net>
+To: alsa <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-The main difference is that the 0.9 series is an almost complete re write of the 0.5 series to change some basic design flaws that were discovered while designing 0.5 which make it a more professional oriented set of drivers.
+Before I sell this card would it be useful to keep it around as a potential debugging device or is it highly unlikely that midiman will allow this to be supported in ALSA?
 
-It also has better midi support I think.
+
 
 --
 Patrick Shirkey - Boost Hardware Ltd
@@ -30,24 +30,6 @@ Http://www.boosthardware.com
 Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
 
 
---- fn ln <neplace1@yahoo.ca> wrote:
->
->hi,
->
->does anybody have any idea why wouldn't Mandrake ship 8.2 with alsa 0.9?
->
->can anyone point me to main differences (in terms of functionality and compatibility)
->between alsa 0.5 and alsa 0.9 ?
->
->thanks john
->
->______________________________________________________________________ 
->Find, Connect, Date! http://personals.yahoo.ca
->
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 _____________________________________________________________
 Want a new web-based email account ? ---> http://www.firstlinux.net
