@@ -1,13 +1,14 @@
-From: mru@users.sourceforge.net (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
-Subject: Re: plughw versus hw (fwd)
-Date: Thu, 31 Jul 2003 11:02:56 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: about usb midi endpoints quirks
+Date: Thu, 31 Jul 2003 13:19:08 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xptjr3w73.fsf@users.sourceforge.net>
-References: <Pine.LNX.4.53.0307302230580.14824@spring>
+Message-ID: <Pine.HPX.4.33n.0307311309240.10293-100000@studcom.urz.uni-halle.de>
+References: <20030730194936.GA21226@tuba.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <20030730194936.GA21226@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,23 +17,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Martin Langer <martin-langer@gmx.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-barat@medien.uni-weimar.de writes:
+Martin Langer wrote:
+> On Wed, Jul 30, 2003 at 09:58:18AM +0200, Clemens Ladisch wrote:
+> > The MIDI quirk structure has separate fields for input and
+> > output endpoints, so you must not use 0x80 in this case.
+>
+> must not???
+>
+> It doesn't work with the 0x80 flag!!!
+> Only the 0x00 flag works! That was the point I've tried to explain.
 
-> i read that plughw does some magic conversion for samplerate and stuff. 
-> how does this magic work. whats the main differenc in the concept of hw 
-> and plughw. 
+And this is exactly the same what I tried to say. "you must not" =
+"you are not allowed to".
 
-hw interfaces directly to the physical card.  Thus you can only use
-modes supported by the hardware.  plughw will detect whether the
-hardware can do what you are requesting, and automatically convert the
-data to something that can be played, at the expense of CPU time.
 
--- 
-Måns Rullgård
-mru@users.sf.net
+Regards
+Clemens
+
 
 
 
