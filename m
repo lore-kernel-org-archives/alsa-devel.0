@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000281]: "mic as center/lfe" no longer available
-Date: Fri, 16 Jul 2004 12:49:39 +0200 (CEST)
+Subject: [ALSA - driver 0000136]: Fatal uninstall script
+Date: Fri, 16 Jul 2004 12:48:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716104939.B185C26008@server.perex-int.cz>
+Message-ID: <20040716104812.480F926008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF2FD255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:49:39 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 80827255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:48:12 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,62 +22,48 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000281
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000136
 ======================================================================
-Reported By:                hengelman
-Assigned To:                tiwai
+Reported By:                idea
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     281
-Category:                   PCI - intel8x0
+Bug ID:                     136
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   tweak
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             2.6.6 (or 2.4.26)
+Distribution:               Mandrake
+Kernel Version:             2.6.3-4mdk
 ======================================================================
-Date Submitted:             05-17-2004 14:09 CEST
-Last Modified:              07-16-2004 12:49 CEST
+Date Submitted:             03-15-2004 11:43 CET
+Last Modified:              07-16-2004 12:48 CEST
 ======================================================================
-Summary:                    "mic as center/lfe" no longer available
+Summary:                    Fatal uninstall script
 Description: 
-The "mic as center/lfe" option cannot be used anymore.
-In version 1.0.3 the option is available.
-
-I've got an asus-a7n8x mainboard.
-
+When uninstalling alsa driver with 'make uninstall', complete
+/lib/modules/`uname -r`/kernel/sound directory is deleted, including
+important soundcore.ko and other modules. This means, no other (or even
+alsa again) sound driver could be installed and loaded (many unresolved
+symbols apear in dmesg).
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-17-2004 15:05 CEST 
+ perex - 03-27-2004 14:02 CET 
 ----------------------------------------------------------------------
-try ALSA cvs version.
-
-----------------------------------------------------------------------
- hengelman - 05-17-2004 19:47 CEST 
-----------------------------------------------------------------------
-CVS version works perfectly.
-
-Thanks...
-
-----------------------------------------------------------------------
- tiwai - 05-18-2004 11:21 CEST 
-----------------------------------------------------------------------
-ok, closed now.
+Fixed in CVS.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-17-04 14:09 hengelman      New Bug                                      
-05-17-04 14:09 hengelman      Kernel Version            => 2.6.6 (or 2.4.26)
-05-17-04 15:05 tiwai          Bugnote Added: 0001131                       
-05-17-04 19:47 hengelman      Bugnote Added: 0001136                       
-05-18-04 11:21 tiwai          Bugnote Added: 0001137                       
-05-18-04 11:21 tiwai          Assigned To               => tiwai           
-05-18-04 11:21 tiwai          Resolution               open => fixed       
-05-18-04 11:21 tiwai          Status                   new => resolved     
-07-16-04 12:49 tiwai          Status                   resolved => closed  
+03-15-04 11:43 idea           New Bug                                      
+03-15-04 11:43 idea           Distribution              => Mandrake        
+03-15-04 11:43 idea           Kernel Version            => 2.6.3-4mdk      
+03-27-04 14:02 perex          Bugnote Added: 0000711                       
+03-27-04 14:02 perex          Resolution               open => fixed       
+03-27-04 14:02 perex          Status                   assigned => resolved
+07-16-04 12:48 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
