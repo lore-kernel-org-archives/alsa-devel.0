@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000725]: intel8x0, chip  CMI9761A - no volume control, sound mixer broken
-Date: Tue, 14 Dec 2004 22:19:39 +0100
-Message-ID: <d3c58dbc02642fb7f626674609c53417@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000609]: No Mixer control for Ouput on CMI9880
+Date: Tue, 14 Dec 2004 22:21:41 +0100
+Message-ID: <ddd3a09f80ff048bd4974657c257fd6c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 22C2C18B
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 22:19:40 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 370871E0
+	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 22:21:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=725> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=609> 
 ======================================================================
-Reported By:                atiounkine
+Reported By:                Grazy
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   725
-Category:                   PCI - intel8x0
+Issue ID:                   609
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               RXART
-Kernel Version:             2.6.9
+Distribution:               Debian
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             12-13-2004 21:44 CET
-Last Modified:              12-14-2004 22:19 CET
+Date Submitted:             10-27-2004 00:10 CEST
+Last Modified:              12-14-2004 22:21 CET
 ======================================================================
-Summary:                    intel8x0, chip  CMI9761A - no volume control, sound
-mixer broken
+Summary:                    No Mixer control for Ouput on CMI9880
 Description: 
-Hello
- We have a problem  with sound mixer with Intel AC97 interface and 
-CMI9761A in motherboard PC-Chips 909G version 1.0 with Linux.
-  The problem is: sound mixer is not working at all,
-   the sound level by default is high.
-
-  The new kernel was downloaded from this address:
-http://http.us.debian.org/debian/pool/main/k/kernel-image-2.6.9-i386/
-kernel-image-2.6.9-1-686_2.6.9-2_i386.deb
-
-  Sound system is ALSA and driver used is "snd_intel8x0" .
-If you have information how resolve this problem please send me it.
-
-  Thank you.
-    Iouri
-
+The CMI9880 chip on my MotherBoard is detect by the snd-azx module.
+But there is only one mixer control for "Capture" and two mute switch for
+"Line" and "Mic". But nothing to control the output volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-14-04 22:19 
+ jdthood - 12-12-04 14:01 
 ----------------------------------------------------------------------
-This is not a bug.  Your device probably does not have a hardware volume
-control.  To reduce the volume, decrease the output level in the
-application.
+Bug also reported at http://bugs.debian.org/281546
+
+----------------------------------------------------------------------
+ rlrevell - 12-14-04 22:21 
+----------------------------------------------------------------------
+Since the hardware has no volume control this is not a bug.  Decrease the
+output level in your application to reduce volume.  Or turn your speakers
+down.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-13-04 21:44 atiounkine     New Issue                                    
-12-13-04 21:44 atiounkine     Distribution              => RXART           
-12-13-04 21:44 atiounkine     Kernel Version            => 2.6.9           
-12-14-04 22:19 rlrevell       Note Added: 0002823                          
+10-27-04 00:10 Grazy          New Issue                                    
+10-27-04 00:10 Grazy          Distribution              => Debian          
+10-27-04 00:10 Grazy          Kernel Version            => 2.6.8           
+10-27-04 02:36 cltien         Note Added: 0002270                          
+11-08-04 09:22 madsend        Note Added: 0002310                          
+11-08-04 09:25 madsend        Issue Monitored: madsend                     
+11-08-04 21:02 cltien         Note Added: 0002313                          
+12-12-04 14:01 jdthood        Note Added: 0002814                          
+12-14-04 00:10 gaima          Issue Monitored: gaima                       
+12-14-04 22:21 rlrevell       Note Added: 0002824                          
 ======================================================================
 
 
