@@ -1,17 +1,12 @@
-From: Unlimited Movies Download <shivjeet@spinalsoothers.com>
-Subject: Downl0ad Holiday Music
-Date: Wed, 15 Dec 2004 10:48:25 +0300
-Message-ID: <2590885222.20390@isinet.com>
+From: Tony Senerchia <asenerchia@gmail.com>
+Subject: SB Live! 24-bit
+Date: Tue, 14 Dec 2004 18:15:24 +0100
+Message-ID: <ea64723604121409157e09503e@mail.gmail.com>
+Reply-To: Tony Senerchia <asenerchia@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 94264268
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 17:21:01 +0100 (MET)
-Received: from amfi-pc.otenet.gr (amfi-pc.otenet.gr [195.170.2.187])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 402613E0D1
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 17:20:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,64 +16,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello
+First, thanks for having built a driver for this card! I can finally
+hear something!
 
-Un limited
-Music and MP 3 songs
-Movies
-Games
-Software
-TV Shows
-Song Lyrics
-Audio Books
+Second, what I hear is not what it should be. I don't know what to
+give as a bug report, but I installed the alsa-cvs and it used the
+ca0106 (is that right?) for the card. The sound works, but it is more
+than 1x when played in XMMS. I used XMMS because it gave me the most
+options for configuration of the alsa driver.
 
-Download anything you could possibly want 
-in three simple, fast, and easy steps
-START DOWNLOADING NOW
-This service is Safe, Secure and Legal
+The device hw(0;1) seemed to work the best, the others (up to hw(0;3)
+I think) seemed to only give output to one speaker or not at all. I
+don't think the bass is getting anything (I can't hear anything).
 
-http://www.holidaydownloadclub.com/xmas.html
+Is it possible to get some sort of configuration support for some of
+the options on this card (like how many speakers to use)?
 
-If you are a beginner, no need to worry,
-we will show you how to do it from start to finish
-We have made it so easy, you will be downloading anything 
-you could possibly want  
-This Service Comes with
+Really, thanks a lot for what you've done already!
 
-More  Bonuses
+Patiently yours,
 
-DVD Copying Software
-MP3 Burning Software
-Anti-Virus Software
-Game Copying Software
-Pop-Up, Spyware, Adware Killer Software
-
-http://www.holidaydownloadclub.com/xmas.html
-
-Even More Benefits : 
-
-Latest FileSharing Software
-In-Depth Visual Tutorials
-Internet History Cleaner
-Privacy Protection Software
-Access to 90000000 Songs
-Unlimited Technical Support
-Stay Legal  Do not Get Sued
-
-
-Lifetime Membership is $34.95
-Check out to Join Now and Start Downloading in Minutess
-
-http://www.holidaydownloadclub.com/xmas.html
-
-
-Regards
-Wilma Geiger
-Affilate Manager
-Multimedia Download Center
+Tony Senerchia
 
 
 -------------------------------------------------------
