@@ -1,50 +1,72 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: migrating from old to new alsa-api
-Date: Sat, 24 Apr 2004 16:52:36 +0100
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <408A8D44.7030405@superbug.demon.co.uk>
-References: <Pine.LNX.4.56.0404221556500.4307@spring>
+From: "Ivica Ico Bukvic" <ico@fuse.net>
+Subject: RE: [Alsa-devel] dxs_support and via82xx (yet once more) -- some new findings
+Date: Sat, 24 Apr 2004 14:02:32 -0400
+Sender: alsa-user-admin@lists.sourceforge.net
+Message-ID: <20040424180235.XUEA26114.smtp2.fuse.net@64BitBadass>
+References: <s5hisfqmxkp.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.56.0404221556500.4307@spring>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: barat@medien.uni-weimar.de
-Cc: alsa-devel@lists.sourceforge.net
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <s5hisfqmxkp.wl@alsa2.suse.de>
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-barat@medien.uni-weimar.de wrote:
-> Hi,
-> i need some clarifying about how the defines ALSA_PCM_OLD_HW_PARAMS_API 
-> etc. behaves.
-> for alsa-1.x its clear that if the app uses the new api i have to define 
-> ALSA_PCM_NEW_HW_PARAMS_API, but what is for the case if i have an app with 
-> the new api and the user uses only alsa9? is alsa1.x then backwards 
-> compatible?
-> 
-> regards
-> 
-> Zsolt Barat
-> 
+> yes, the module name still consists of snd- prefix.
+> the snd_ prefix was dropped from the module OPTIONS.
+> (e.g. dxs_support would have been named as snd_dxs_support in the old
+>  versions.)
 
+Oh, I see now. Thank you very much for explaining that.
 
-ALSA_PCM_NEW_HW_PARAMS_API etc. is for use with alsa0.9.x
-That define is assumed to be the default for alsa1.x.x
+Now, when I do put in an option into the modules.conf specifying a different
+dxs mode, am I still supposed to get the same message in my syslog about
+picking trying dxs=1 or 4 or does that message show up only when no options
+have been successfully parsed?
 
-ALSA_PCM_OLD_HW_PARAMS_API is for use with alsa1.x.x to make it behave 
-like "alsa0.9.x without the ALSA_PCM_NEW_HW_PARAMS_API".
+I am asking this since even when I am 100% sure that my syntax is/was ok I
+would still get the message no matter what option was specified in
+modules.conf. I tried hacking via82xx.c file where I would hardwire my
+vendor/card ID into the list of known cards and changing it that way and the
+card worked the same no matter which options I chose, so I decided to leave
+it at DXS_ENABLE (or 1 if I am not mistaken). This is the only way how I
+would disable that message from appearing in syslog.
 
-Summary: -
-To make your code work with bother alsa 0.9.x and 1.x.x, use 
-ALSA_PCM_NEW_HW_PARAMS_API etc. and then write your code to the 1.x.x api.
+What kind of difference am I supposed to notice by changing dxs in order to
+figure out the best option anyhow?
+
+As it is right now I can play 4 simultaneous streams and they all sound ok
+(no apparent glitches etc.). But this is the case no matter which option I
+pick.
+
+> BTW, i assume that are you using 2.4 kernel.  is it right?
+
+No, I am working with 2.6.3 and 2.6.5 (both patched).
+
+Finally, I've observed one extremely interesting phenomenon. I did notice
+that when compiling preemptive versions of these kernels that I get tons of
+xruns even when using aplay talking directly to hw:0. I literally need at
+least buffer of 512 for aplay to play ok. I also noticed that certain
+applications (i.e. frozen-bubble) would play stuff a bit faster than they
+ought to be played (although I am not sure whether this is linked to a
+particular alsa driver version or the preempt stuff).
+
+With preemptive flag disabled, everything seems to be ok. 
+
+Best wishes,
+
+Ico
+
 
 
 
