@@ -1,14 +1,14 @@
-From: Nick Arnold <nick.arnold@nautronix.com.au>
-Subject: Re: HDSP 9652: Input channel corruption
-Date: Fri, 10 Oct 2003 16:55:26 +0800
+From: "Paul Berry" <pnberry@gustavus.ak.us>
+Subject: Re: configure error with alsa-driver-0.9.7a
+Date: Fri, 10 Oct 2003 01:54:25 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031010165526.A10106@nautronix.com.au>
-References: <20031009111238.B5188@nautronix.com.au> <1065672448.3693.12.camel@Wizard.knechthome.com>
+Message-ID: <000501c38f14$beaafa60$7ff8e589@farnorth>
+References: <000901c38e45$961d5c20$91f8e589@farnorth> <s5hu16i90cg.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1065672448.3693.12.camel@Wizard.knechthome.com>; from markknecht@comcast.net on Wed, Oct 08, 2003 at 09:07:28PM -0700
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,106 +17,98 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi and thanks for the reply,
+Thank you for the patch Takashi and here is what came of it.
 
-> > We connect a sine wave to the first 12 channels and record them, and see
-> > three channels -- 0, 4, and 8 -- are "corrupted".  The remaining channels
-> > appear to be well-formed and look as we expect them to.
-> 
-> When you say the 'first 12 channels', are you speaking of the
-> alsa:playback channels, or are you attaching a sine wave the the ADAT
-> input channels from an external source? I'm not clear on that.
+I'm kinda green at this so this is what I did with the patch. I copied it to
+the alsa-driver-0.9.7a/acore/ folder and ran:
+patch -b --verbose memalloc.c <memalloc-nopci.dif
 
-Okay, as usual I'm being ambiguous. :( Sorry.  We attached a signal generator
-to the ADAT input channels and used our software to record the first 12
-capture channels of the HDSP.  (Also, I'm talking about the first 12 96KHz
-channels -- ie. the first 24 48KHz channels.)
+everything seemed to go fine so I restarted the make process and here is the
+tail of what followed (the memalloc.o file was created as well):
 
-> > It seems most likely to be some code in the driver, or perhaps the mixer
-> > is responsible for this incorrect ordering.
-> 
-> OK, first, I apologize, but Thomas and I never looked at 96KHz
-> operation, and to the best of my knowledge it was only our debug that
-> went into the Aug. 27th patch. I think this means you are on new ground.
+<snip>----------------------------------------------------------------------
+---------
+/lib/modules/2.2.20alsa/build/include/linux/pci.h:1518:20: warning: pasting
+would not give a valid preprocessing token
+In file included from memory_wrapper.c:18:
+pci_compat_22.c: In function `snd_pci_compat_match_device':
+pci_compat_22.c:83: dereferencing pointer to incomplete type
+pci_compat_22.c:83: dereferencing pointer to incomplete type
+pci_compat_22.c:83: dereferencing pointer to incomplete type
+pci_compat_22.c:84: dereferencing pointer to incomplete type
+pci_compat_22.c:84: `PCI_ANY_ID' undeclared (first use in this function)
+pci_compat_22.c:84: (Each undeclared identifier is reported only once
+pci_compat_22.c:84: for each function it appears in.)
+pci_compat_22.c:84: dereferencing pointer to incomplete type
+pci_compat_22.c:85: dereferencing pointer to incomplete type
+pci_compat_22.c:85: dereferencing pointer to incomplete type
+pci_compat_22.c:86: dereferencing pointer to incomplete type
+pci_compat_22.c:86: dereferencing pointer to incomplete type
+pci_compat_22.c:87: dereferencing pointer to incomplete type
+pci_compat_22.c:87: dereferencing pointer to incomplete type
+pci_compat_22.c:88: dereferencing pointer to incomplete type
+pci_compat_22.c:88: dereferencing pointer to incomplete type
+pci_compat_22.c:90: increment of pointer to unknown structure
+pci_compat_22.c:90: arithmetic on pointer to an incomplete type
+pci_compat_22.c: In function `snd_pci_announce_device':
+pci_compat_22.c:100: dereferencing pointer to incomplete type
+pci_compat_22.c:101: dereferencing pointer to incomplete type
+pci_compat_22.c:117: dereferencing pointer to incomplete type
+pci_compat_22.c: In function `snd_pci_compat_register_driver':
+pci_compat_22.c:129: dereferencing pointer to incomplete type
+pci_compat_22.c:130: warning: implicit declaration of function
+`pci_for_each_dev'
+pci_compat_22.c:130: parse error before `{'
+pci_compat_22.c:132: `map' undeclared (first use in this function)
+pci_compat_22.c:126: warning: `dev' might be used uninitialized in this
+function
+pci_compat_22.c:134: warning: control reaches end of non-void function
+pci_compat_22.c: At top level:
+pci_compat_22.c:135: parse error before `return'
+pci_compat_22.c: In function `snd_pci_compat_unregister_driver':
+pci_compat_22.c:142: dereferencing pointer to incomplete type
+pci_compat_22.c:143: parse error before `{'
+pci_compat_22.c:145: `map' undeclared (first use in this function)
+pci_compat_22.c:146: dereferencing pointer to incomplete type
+pci_compat_22.c:147: dereferencing pointer to incomplete type
+pci_compat_22.c: At top level:
+pci_compat_22.c:152: parse error before `}'
+pci_compat_22.c: In function `snd_pci_compat_set_power_state':
+pci_compat_22.c:221: warning: implicit declaration of function
+`snd_pci_compat_find_capability'
+make[1]: *** [memory_wrapper.o] Error 1
+make[1]: Leaving directory `/usr/local/src/alsa-driver-0.9.7a/acore'
+make: *** [compile] Error 1
+[root@FarNorth alsa-driver-0.9.7a]#
 
-No need for you to appologize. :)  As it happens I've managed to be ambiguous
-and misleading again: 
+If this is an obscure bug that only occurs in my case then I don't want to
+waste your time tracking it down as the old drivers do work, but if all this
+is good for the cause then I'm game to see it through.
 
-The card is running as a slave device (autosync) off a 48KHz clock
-source.  Our AD/DA is running in double speed mode so we're getting 96KHz
-sampling rate of the raw data.  Our recording software knows we're doing
-double speed and does the interleaving.  So, as far as the driver is
-concerned we are running at 48KHz.  (And, to be clear: there were no problems
-with this setup when we swapped back to a DIGI 9652.)
+Thank you very much for your efforts.
 
-This might mean we're back on familar ground?
- 
-> Thomas and I saw a similar problem at 44.1KHz with ADAT input signals at
-> one point. In hdspmixer I was getting green audio and yellow peak
-> information that did not make sense. I do not remember how I came to the
-> conclusion that there was an ordering problem, but Thomas pretty quickly
-> found it once I pointed it out. Possibly we only fixed normal speed
-> operation and missed the double speed equivalent problem.
+Sincerely,
+Paul
 
-This sounds promising, however as I just described we're in normal speed too.
-So there seems to still be a problem in normal speed ...
+----- Original Message -----
+From: "Takashi Iwai" <tiwai@suse.de>
+To: "Paul Berry" <pnberry@gustavus.ak.us>
+Cc: <alsa-devel@lists.sourceforge.net>
+Sent: Thursday, October 09, 2003 2:22 AM
+Subject: Re: [Alsa-devel] configure error with alsa-driver-0.9.7a
 
-To elaborate on the problem again: seeing corruption on 96KHz channels 0, 4,
-and 8.  It appears as though every second sample on these channels is wrong.
-Since two 48KHz channels are being combined it seems to indicate that one of
-the 48KHz channels is okay, but the other has something wrong.  
 
-One explanation that fits what we've observed is a mystery sample (A) on one
-of the channels:
-
-    48KHz channel 1:  A 0 2 4 6 ...
-    48KHz channel 0:  1 3 5 7 9 ...
-
-So what we expect (assuming "A" had not been inserted into the stream):
-
-    0 1 2 3 4 5 6 7 ...
-
-But we observe instead:
-
-    A 1 0 3 2 5 4 7 6 9 ...
-
-It feels like an off-by-one bug, but one which apparently only effects every
-fourth 96KHz channel -- ie. every fourth pair of 48KHz channels; or, if my
-hypothesis above is correct, every eighth 48KHz channel.
-
-> > The questions are:
-> >     - could this be a bug, perhaps in the hdsp driver?
+> please try the patch attached below.  (it's already on cvs.)
 >
-> I think possibly yes.
-> 
-> >     - alternatively, could this be due to some mixer setting that has been
-> >       turned on by default unbeknownst to us?  if so, how can we turn this
-> >       off?
 >
-> I do not think this is likely, or at least I do not know of anything you
-> can do.
-> 
-> > any help much appreciated,
+> ciao,
 >
-> I think I'm not helping much...
+> Takashi
+>
 
-On the contrary.  Its very reassuring to hear we share the same feeling as to
-the location of the problem (ie. the driver).  Your help is gratefully
-received :)
-
-nick.
-
---
-This email is confidential and intended solely for the use of the individual to whom it is addressed.  Any views or opinions presented are solely those of the author and do not necessarily represent those of Nautronix Ltd.
-
-If you are not the intended recipient, you have received this email in error and use, dissemination, forwarding, printing, or copying of this email is strictly prohibited.  If you have received this email in error please contact the sender.
-
-Although our computer systems use active virus protection software, and we take various measures to reduce the risk of viruses being transmitted in e-mail messages and attachments sent from this company, we cannot guarantee that such
-e-mail messages and attachments are free from viruses on receipt.  It is a condition of our using e-mail to correspond with you, that any and all liability on our part arising directly or indirectly out of any virus is excluded.
-Please ensure that you run virus checking software on all e-mail messages and attachments before reading them.
 
 
 -------------------------------------------------------
