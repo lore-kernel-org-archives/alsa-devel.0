@@ -1,8 +1,8 @@
 From: Frank Barknecht <fbar@footils.org>
 Subject: Re: ALSA vs OSS: Some questions
-Date: Mon, 7 Apr 2003 18:14:27 +0200
+Date: Mon, 7 Apr 2003 18:28:55 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030407161427.GC20285@fliwatut.scifi>
+Message-ID: <20030407162854.GD20285@fliwatut.scifi>
 References: <20030407145029.GA19610@fliwatut.scifi> <Pine.LNX.4.44.0304071710240.32290-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -20,11 +20,18 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hallo Jaroslav,
+Hallo,
 
-thank you very much for your answers and explanations.
+Jaroslav Kysela hat gesagt: // Jaroslav Kysela wrote:
+> OSS can handle more formats, of course. But, the main difference
+> between ALSA and OSS is that OSS doesn't handle non-interleaved
+> sample buffers at all in the mmap mode. 
 
-Greetings,
+I got another question here: Am I right to assume, that mmap mode is
+used, because it is the most efficient or is there hardware, that
+requires mmapped access?
+
+ciao
 -- 
  Frank Barknecht                               _ ______footils.org__
 
