@@ -1,13 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000951]: Fix bugs with early IRQs mishandling, missing silence fill, and wrong timing calculations
-Date: Fri, 4 Mar 2005 11:57:33 +0100
-Message-ID: <7609622266a656c468d279f27cf4f73b@bugtrack.alsa-project.org>
+From: Ian Kumlien <pomac@vapor.com>
+Subject: [snd_ca0106] volume, oss-emu etc
+Date: Fri, 04 Mar 2005 16:05:29 +0100
+Message-ID: <1109948729.21021.91.camel@debian>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 189371A4
-	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2005 11:57:34 +0100 (MET)
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-7LgX8674s5EHOelbLMmY"
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,234 +13,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-user@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=951> 
-======================================================================
-Reported By:                charles_levert
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   951
-Category:                   CORE - pcm
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.4.22
-======================================================================
-Date Submitted:             02-28-2005 21:26 CET
-Last Modified:              03-04-2005 11:57 CET
-======================================================================
-Summary:                    Fix bugs with early IRQs mishandling, missing
-silence fill, and wrong timing calculations
-Description: 
-A patch is forthcoming.
+--=-7LgX8674s5EHOelbLMmY
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Here is the text from the patch preamble.
+Hi,=20
 
-    This patch is against alsa-driver-1.0.8.
-    It covers:
-        alsa-kernel/core/pcm_lib.c
-        alsa-kernel/include/pcm.h
-        alsa-kernel/core/pcm_native.c
-        alsa-kernel/core/oss/pcm_oss.c
-    The main changes are in the first listed file.
+I dunno how many others that has suffered from this... I just bought a
+new machine and i thought i was getting a safer bet going with one that
+had a soundcard from creative (i was hoping for EMU10k1 chip but..).=20
 
-    An original bug description was filed
-    under "[ALSA - driver] PCI - cmipci":
-        <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=946>
-    since the problems were first observed on this hardware.
+I now use snd_ca0106 which is compiled from alsa-driver 1.0.8 and it
+works but there is some issues.
 
-    The patch fixes the following problems:
+The worst one first:
+There is no master volume, no pcm volume... I can only change the
+individual channel volumes. This doesn't help me, i doubt it helps
+anyone... Channel variance is something that should be tweaked once or
+twice not constantly imho. Also with gnome volume thingies this problem
+compounds... Right now selecting front works, but which front? digital
+or analog? I will have sound coming from both...=20
 
-     -- Properly handle early IRQs in
-        snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c.
+And now some words on OSS emu:
+It seems like this card defaults to a higher hertz than common oss, so
+you get samples that play too quick and some clipping noises... I have
+noticed that if you play something long enough it will eventually work
+but that's not fun...
 
-        This does occur, at least with CMI8738MC6 hardware.
+The same clipping noise can happen with apps using alsa... it doesn't
+happen with the gstreamer framework though.
 
-        This bug had a major impact that caused the DMAs
-        to run for too long and irritating noise to be
-        heard at the end of playback.
+Common commandline mpg123 works (uses oss) but, f.ex. xmms doesn't work.
+The OSS mixer doesn't work either...
 
-     -- Properly compute estimated time of next interrupt
-        in snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c;
-        this is no longer done with a
-        "... % runtime->period_size" kludge (which didn't
-        even attempt to round to nearest instead of merely
-        truncating).
+If something plays via OSS, alsa won't work stating that it's busy...
+But playing multiple streams over alsa seems to work.
 
-     -- Test whether hw_avail is big enough to handle
-        the next runtime->period_size in
-        snd_pcm_update_hw_ptr_post() in pcm_lib.c,
-        otherwise call snd_pcm_tick_prepare() to
-        tentatively set up a timer if needed (to be able
-        to take earlier action in that case).
+That's about it from now, I guess i have been spoiled coming from
+emu10k1 on OSS...=20
 
-     -- Centralize all folding of values with regard to
-        runtime->boundary in the new snd_pcm_next_buf()
-        function in pcm_lib.c.
+PS. CC: since I'm not subbed.
+	alsa-devel was added as a initial post, if you use reply-to-all
+	from alsa-user, please drop it since it might not be appreciated
+	by them =3D).
+DS.
 
-        All relevant values are now systematically in
-        coherent synchronization without resorting to the
-        ugly and error-prone "value %= runtime->boundary"
-        kludge all over the place; unobvious wrapping
-        conditions testing is no longer needed in these
-        places.
+--=20
+Ian Kumlien <pomac () vapor ! com> -- http://pomac.netswarm.net
 
-        A safe zone worth one runtime->buffer_size is now
-        kept on the left side of the operating interval,
-        just like it was the case for the right side;
-        this is necessary for proper simplified operation.
+--=-7LgX8674s5EHOelbLMmY
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-     -- Direct manipulations of values with respect to
-        runtime->boundary needed to be brought in line
-        with new proper practices (and thus simplified)
-        in pcm.h, pcm_lib.c, pcm_native.c, and pcm_oss.c.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
 
-     -- Isolate the second part of
-        snd_pcm_playback_silence() in the new
-        snd_pcm_playback_silence_fill() function in
-        pcm_lib.c.
+iD8DBQBCKHk57F3Euyc51N8RApbNAJ4nJ1LKyScs/LDxycHKUhLn8r/qYwCfbdRP
+ed8or5WgtGYttw2ruPgxjHk=
+=jh/w
+-----END PGP SIGNATURE-----
 
-        This makes the code more readable since the
-        task this performs should not be confused with
-        what is done in the remaining first part of
-        snd_pcm_playback_silence().
-
-        The isolated code is unchanged.
-
-     -- Rewrite the remaining first part of
-        snd_pcm_playback_silence() to properly handle all
-        situations, including computing minimum silence
-        insertion even when "runtime->silence_size == 0".
-
-        This is needed for proper operation of the aplay
-        program, for one, and is much more forgiving on the
-        user; insertion of silence samples in user space
-        was always useless and a wrong solution anyway (but
-        user space specification of kernel space silence
-        insertion is useful and still very much supported).
-
-        The code is now much more straightforward to read.
-
-        Updates of runtime->control->appl_ptr (due
-        to the user writing samples) and updates to
-        runtime->status->hw_ptr (due to the audio hardware
-        consuming samples) are now _both_ properly
-        accounted for in all cases; the new code makes
-        this much more obvious.
-
-     -- All calls to snd_pcm_playback_silence() in
-        pcm_lib.c and pcm_native.c must no longer be under
-        the "runtime->silence_size > 0" condition.
-
-     -- Properly perform rounded-up integer division in
-        snd_pcm_system_tick_set() in pcm_lib.c.
-
-        This only had a minor impact.
-
-     -- Properly compute distance to next interrupt in
-        snd_pcm_tick_prepare() in pcm_lib.c; again, avoid
-        using any "... % runtime->period_size" kludge.
-
-     -- The usage of runtime->rate in
-        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
-        regarless of other changes.
-
-        The impact was that the timer was systematically
-        set to 1 single tick when it needed to be set to
-        typically hundreds of ticks.
-
-     -- The usage of runtime->sleep_min in
-        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
-        regarless of other changes.
-
-        The impact was that the number of ticks for
-        the timer was not properly adjusted up to what
-        sleep_min is documented to mean, when needed.
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000946 Early playback DMA IRQ with CMI8738MC6 ...
-======================================================================
-
-----------------------------------------------------------------------
- perex - 03-04-05 11:01 
-----------------------------------------------------------------------
-Yes, my fault, I overlooked the conversion from microseconds to ticks in
-snd_pcm_system_tick_set().
-
-Renaming snd_pcm_tick_set() to snd_pcm_timer_set() and renaming argument
-from "ticks" to "us" seems like a good idea to me. Could you provide a
-patch including your fix, please? I will apply it immediately. Thanks.
-
-
-
-----------------------------------------------------------------------
- charles_levert - 03-04-05 11:57 
-----------------------------------------------------------------------
-There you go:  "timer_usec.0b05.patch".
-
-This includes the same changes as
-"rate-sleep-ticks.0b03x.patch" with the new names, since
-they are a consequence of moving to a microsecond calling
-convention.
-
-I used "usec" instead of "us", although "s" is the standard
-SI symbol, because it's less ambiguous while still short.
-It's also what's used in "struct timeval" ("tv_usec").
-
-I produced the patch against CVS and tweaked it by hand
-since my main patch also changed neighboring lines, but I
-successfully tested it with "patch --dry-run" against CVS,
-so it should work.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-28-05 21:26 charles_levert New Issue                                    
-02-28-05 21:26 charles_levert Kernel Version            => 2.4.22          
-02-28-05 21:29 charles_levert File Added: early-irqs.patch                    
-03-01-05 09:36 perex          Relationship added       related to 0000946  
-03-01-05 09:40 perex          Note Added: 0003755                          
-03-01-05 11:15 charles_levert Note Added: 0003757                          
-03-02-05 09:22 Clemens LadischNote Added: 0003761                          
-03-02-05 13:01 charles_levert Note Added: 0003768                          
-03-02-05 13:39 perex          Note Added: 0003771                          
-03-02-05 14:53 charles_levert Note Added: 0003776                          
-03-03-05 14:21 charles_levert File Added: hz-int-div.0b03.patch                 
-  
-03-03-05 14:22 charles_levert File Added: rate-sleep-ticks.0b03.patch           
-        
-03-03-05 14:23 charles_levert File Added: appl_ptr-boundary.0b03.patch          
-         
-03-03-05 14:23 charles_levert File Added: early-irqs.0b03.patch                 
-  
-03-03-05 14:37 charles_levert Note Added: 0003786                          
-03-03-05 15:03 perex          Note Added: 0003787                          
-03-03-05 15:33 charles_levert File Added: rate-sleep-ticks.0b03x.patch          
-         
-03-03-05 15:34 charles_levert Note Added: 0003788                          
-03-03-05 15:52 perex          Note Added: 0003789                          
-03-03-05 16:05 perex          Note Added: 0003790                          
-03-03-05 20:30 rlrevell       Note Added: 0003792                          
-03-04-05 03:34 charles_levert Note Added: 0003795                          
-03-04-05 04:46 charles_levert Note Added: 0003797                          
-03-04-05 06:26 charles_levert Note Added: 0003798                          
-03-04-05 11:00 perex          Note Added: 0003799                          
-03-04-05 11:01 perex          Note Edited: 0003799                         
-03-04-05 11:47 charles_levert File Added: timer_usec.0b05.patch                 
-  
-03-04-05 11:57 charles_levert Note Added: 0003800                          
-======================================================================
-
+--=-7LgX8674s5EHOelbLMmY--
 
 
 
