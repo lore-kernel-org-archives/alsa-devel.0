@@ -1,13 +1,11 @@
-From: Dan Hollis <goemon@anime.net>
-Subject: Re: Writing a driver for this card: your thoughts?
-Date: Thu, 6 Jun 2002 18:39:46 -0700 (PDT)
+From: Siu Kam Ming <ming@thizlinux.com>
+Subject: Volume problem on SiS 7012.
+Date: Fri, 7 Jun 2002 18:28:09 +0800 (HKT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0206061838560.19926-100000@sasami.anime.net>
-References: <3D00AE55.11120.9CD4ED3@localhost>
+Message-ID: <Pine.LNX.4.21.0206071806530.9315-200000@ns1>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: MULTIPART/MIXED; BOUNDARY="-2033526186-474951556-1023445689=:9315"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D00AE55.11120.9CD4ED3@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,26 +14,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Eliot Blennerhassett <bigblen@xtra.co.nz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 7 Jun 2002, Eliot Blennerhassett wrote:
-> > What's minimum latency possible with the card?
-> Historically our cards have very large buffers that contain seconds of audio, so 
-> that they can keep playing flawlessly even if the CPU or network gets bogged 
-> down.  Whether this is used or not is up to the application though.
-> Low latency has not been a design goal.  I would say the latency is between 
-> about 3000 to 5000 samples depending on processing details.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-So it would be accurate to say this card is not suitable for live 
-performance, but is mainly targeted toward post-production and archive 
-broadcast?
+---2033526186-474951556-1023445689=:9315
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 
--Dan
--- 
-[-] Omae no subete no kichi wa ore no mono da. [-]
+Hi,
 
+I have a machine which use SiS chipset. For the result of lspci I known it
+is using SiS 7012 as sound chip. It can play sound. But I can not tune the
+volume for PCM channel. The volume of PCM channel only has 2 levels, mute
+and maxmium. As the volume level of PCM  in mixer is not 0, the output
+sound is maxmium. But this is not happen on playing CD. The CD channel
+works normally. 
+
+I try the module from Kernel 2.4.18 and alsa 0.9.0rc1. They have the same
+result. I attached the result of lspci with this mail. 
+
+Does anyone know how to solve this problem?
+
+Regards,
+Ming
+
+---2033526186-474951556-1023445689=:9315
+Content-Type: TEXT/plain; name="lspci-result.txt"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.21.0206071828090.9315@ns1>
+Content-Description: 
+Content-Disposition: attachment; filename="lspci-result.txt"
+
+MDA6MDAuMCBIb3N0IGJyaWRnZTogU2lsaWNvbiBJbnRlZ3JhdGVkIFN5c3Rl
+bXMgW1NpU106IFVua25vd24gZGV2aWNlIDA2NTENCjAwOjAxLjAgUENJIGJy
+aWRnZTogU2lsaWNvbiBJbnRlZ3JhdGVkIFN5c3RlbXMgW1NpU10gNTU5MS81
+NTkyIEFHUA0KMDA6MDIuMCBJU0EgYnJpZGdlOiBTaWxpY29uIEludGVncmF0
+ZWQgU3lzdGVtcyBbU2lTXSA4NUM1MDMvNTUxMw0KMDA6MDIuMiBFdGhlcm5l
+dCBjb250cm9sbGVyOiBTaWxpY29uIEludGVncmF0ZWQgU3lzdGVtcyBbU2lT
+XSBTaVM5MDAgMTAvMTAwIEV0aGVybmV0IChyZXYgOTEpDQowMDowMi4zIEZp
+cmVXaXJlIChJRUVFIDEzOTQpOiBTaWxpY29uIEludGVncmF0ZWQgU3lzdGVt
+cyBbU2lTXSBPSENJIENvbXBsaWFudCBGaXJlV2lyZSBDb250cm9sbGVyDQow
+MDowMi41IElERSBpbnRlcmZhY2U6IFNpbGljb24gSW50ZWdyYXRlZCBTeXN0
+ZW1zIFtTaVNdIDU1MTMgW0lERV0NCjAwOjAyLjYgTW9kZW06IFNpbGljb24g
+SW50ZWdyYXRlZCBTeXN0ZW1zIFtTaVNdOiBVbmtub3duIGRldmljZSA3MDEz
+IChyZXYgYTApDQowMDowMi43IE11bHRpbWVkaWEgYXVkaW8gY29udHJvbGxl
+cjogU2lsaWNvbiBJbnRlZ3JhdGVkIFN5c3RlbXMgW1NpU10gU2lTNzAxMiBQ
+Q0kgQXVkaW8gQWNjZWxlcmF0b3IgKHJldiBhMCkNCjAwOjAzLjAgVVNCIENv
+bnRyb2xsZXI6IFNpbGljb24gSW50ZWdyYXRlZCBTeXN0ZW1zIFtTaVNdIDcw
+MDEgKHJldiAwZikNCjAwOjAzLjEgVVNCIENvbnRyb2xsZXI6IFNpbGljb24g
+SW50ZWdyYXRlZCBTeXN0ZW1zIFtTaVNdIDcwMDEgKHJldiAwZikNCjAwOjAz
+LjIgVVNCIENvbnRyb2xsZXI6IFNpbGljb24gSW50ZWdyYXRlZCBTeXN0ZW1z
+IFtTaVNdIDcwMDEgKHJldiAwZikNCjAwOjAzLjMgVVNCIENvbnRyb2xsZXI6
+IFNpbGljb24gSW50ZWdyYXRlZCBTeXN0ZW1zIFtTaVNdOiBVbmtub3duIGRl
+dmljZSA3MDAyDQowMTowMC4wIFZHQSBjb21wYXRpYmxlIGNvbnRyb2xsZXI6
+IFNpbGljb24gSW50ZWdyYXRlZCBTeXN0ZW1zIFtTaVNdOiBVbmtub3duIGRl
+dmljZSA2MzI1DQo=
+---2033526186-474951556-1023445689=:9315--
 
 _______________________________________________________________
 
