@@ -1,11 +1,11 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000773]: Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
-Date: Sat, 1 Jan 2005 01:21:49 +0100
-Message-ID: <20050101002149.8EB24336@alsa.alsa-project.org>
+Date: Sat, 1 Jan 2005 02:27:17 +0100
+Message-ID: <20050101012717.E344D33B@alsa.alsa-project.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8EB24336
-	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 01:21:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E344D33B
+	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 02:27:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,7 +20,7 @@ List-Id: alsa-devel@alsa-project.org
 
 Audigy2 Value - SB0400 card
 Audigy2 Value- AUX-In and LINE-IN no sound
-Message-ID: <fcdcd6fa986b91698b071ed5eb4f235a@bugtrack.alsa-project.org>
+Message-ID: <661501e21949de12c17b9d9ed9efc120@bugtrack.alsa-project.org>
 X-Priority: 3
 X-Mailer: PHPMailer [version 1.72]
 MIME-Version: 1.0
@@ -28,7 +28,7 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="iso-8859-1"
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=773> 
 ======================================================================
@@ -46,7 +46,7 @@ Distribution:               1.08rc1
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             01-01-2005 01:21 CET
-Last Modified:              01-01-2005 01:21 CET
+Last Modified:              01-01-2005 02:27 CET
 ======================================================================
 Summary:                    Kernel 2.6.10 with ALSA 1.08rc1 from CVS
 (12/30/2004)
@@ -67,12 +67,18 @@ xmms cannot find sound card.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 01-01-05 02:27 
+----------------------------------------------------------------------
+Did you set the capture levels to maximum for those sources?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-01-05 01:21 hodgesw        New Issue                                    
 01-01-05 01:21 hodgesw        Distribution              => 1.08rc1         
 01-01-05 01:21 hodgesw        Kernel Version            => 2.6.10          
+01-01-05 02:27 rlrevell       Note Added: 0003029                          
 ======================================================================
 
 
