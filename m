@@ -1,14 +1,22 @@
-From: Ian Campbell <icampbell@arcom.com>
-Subject: pxa2xx ac97 driver
-Date: Fri, 11 Feb 2005 11:59:41 +0000
-Message-ID: <1108123181.3181.23.camel@icampbell-debian>
+From: Marcel Holtmann <marcel@holtmann.org>
+Subject: Re: External PCM plugin SDK
+Date: Fri, 11 Feb 2005 13:15:19 +0100
+Message-ID: <1108124119.18099.23.camel@pegasus>
+References: <s5hd5vau4c3.wl@alsa2.suse.de>
+	 <1107958458.13863.43.camel@pegasus> <s5hvf91stls.wl@alsa2.suse.de>
+	 <1107959869.13863.62.camel@pegasus> <s5hoeetsqua.wl@alsa2.suse.de>
+	 <1107970036.13863.77.camel@pegasus> <s5hfz05skp2.wl@alsa2.suse.de>
+	 <1107971323.13863.90.camel@pegasus> <s5hy8dwr5ue.wl@alsa2.suse.de>
+	 <1108038565.15974.20.camel@pegasus> <s5h7jlg1fyf.wl@alsa2.suse.de>
+	 <1108057507.15974.97.camel@pegasus> <s5h1xbo1ey9.wl@alsa2.suse.de>
+	 <1108058761.15974.107.camel@pegasus> <s5hwttgz36p.wl@alsa2.suse.de>
+	 <s5hvf90z2qr.wl@alsa2.suse.de> <1108062270.15974.117.camel@pegasus>
+	 <s5hll9vz7z9.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from webapps.arcom.com (webapps.arcom.com [194.200.159.168])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AAC501C3
-	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2005 12:59:45 +0100 (MET)
+In-Reply-To: <s5hll9vz7z9.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +26,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nicolas Pitre <nico@cam.org>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Nico,
+Hi Takashi,
 
-I've just grabbed your pxa2xx audio driver from alsa CVS and given it a
-go on my PXA255 based board. I'm running 2.6.10 with the DMA mmap API
-backported. I got it working pretty quick with only a couple of issues
--- thanks!
+> > > ... and doesn't work as it is, unfortunately :-<
+> > > 
+> > > dlcose() is called after snd_pcm_close().
+> > > We may need to build object caches in alsa-lib.
+> > > This will improve the perfomance eventually, too.
+> > 
+> > questions is what will break if you change it. The only official plugin
+> > is the Jack plugin, right? So be bad and change this stuff and then fix
+> > the plugins.
+> 
+> The compatibility will be kept, I think.  Only the plugins with a
+> keep-alive flag are excluded from dlclose, and the objects are reused
+> at the next open.
 
-First issue was minor: I think *_EOC only exist on PXA270, or at least
-they aren't documented on the 255 and the symbols aren't defined for
-CONFIG_PXA25x so I wrapped them in CONFIG_PXA27x. I don't know if it
-would hurt to write to the reserved bits on 255...
+but I think we still should implement something like init() and exit()
+of the objects. Otherwise it would not be possible to handle this in a
+correct way and we will get memory leaks and unclosed descriptors.
 
-Second issue is a bit strange. The code in the reset function does:
-	GCR = GCR_COLD_RST;
-	GCR |= GCR_PRIRDY_IEN|GCR_SECRDY_IEN;
-	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
-which either causes a hang or causes repeated interrupts so that it is
-impossible to see what is going on (didn't see anything from a printk in
-the irq handler though). I changed it to 
-	GCR = GCR_COLD_RST;
-	GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
-	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
-which matches the way the old OSS driver did the reset and now the
-driver works great.
+Regards
 
-I don't understand this though since the documentation would appear to
-suggest that the PRIRDY way makes more sense. I guess it's possible that
-it is related to 255 errata #30 ("Invalid AC'97 interrupt during cold
-reset") but I'm not sure...
+Marcel
 
-Anyway, here is the patch for the changes I made, what do you think?
-
-Signed-off-by: Ian Campbell <icampbell@arcom.com>
-
-Index: 2.6/sound/arm/pxa2xx-ac97.c
-===================================================================
---- 2.6.orig/sound/arm/pxa2xx-ac97.c	2005-02-11 10:38:07.000000000 +0000
-+++ 2.6/sound/arm/pxa2xx-ac97.c	2005-02-11 11:33:40.659553892 +0000
-@@ -115,7 +117,7 @@
- 	udelay(50);
- #else
- 	GCR = GCR_COLD_RST;
--	GCR |= GCR_PRIRDY_IEN|GCR_SECRDY_IEN;
-+	GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
- 	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
- #endif
- 
-@@ -157,12 +159,14 @@
- 		gsr_bits |= status;
- 		wake_up(&gsr_wq);
- 
-+#ifdef CONFIG_PXA27x
- 		/* Although we don't use those we still need to clear them
- 		   since they tend to spuriously trigger when MMC is used
- 		   (hardware bug? go figure)... */
- 		MISR = MISR_EOC;
- 		PISR = PISR_EOC;
- 		MCSR = MCSR_EOC;
-+#endif
- 
- 		return IRQ_HANDLED;
- 	}
-
-Cheers,
-Ian.
--- 
-Ian Campbell, Senior Design Engineer
-                                        Web: http://www.arcom.com
-Arcom, Clifton Road,                    Direct: +44 (0)1223 403 465
-Cambridge CB1 7EA, United Kingdom       Phone:  +44 (0)1223 411 200
 
 
 
