@@ -1,52 +1,56 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: intel8x0.c
-Date: Tue, 30 Mar 2004 19:28:38 +0200 (CEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403301927530.23263@pnote.perex-int.cz>
-References: <20040330172002.20748.qmail@web25102.mail.ukl.yahoo.com>
+From: "Ivica Ico Bukvic" <ico@fuse.net>
+Subject: RE: [linux-audio-user] snd-hdsp+cardbus=distortion -- the sagacontinues (cardbus driver=culprit?) UPDATE: 99.9% sure it is the cardbus driver yenta_socket
+Date: Tue, 30 Mar 2004 14:15:10 -0500
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <20040330191504.WSHZ17964.smtp2.fuse.net@64BitBadass>
+References: <20040330090053.A3956@flint.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040330172002.20748.qmail@web25102.mail.ukl.yahoo.com>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
-Cc: ALSA LIST <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+In-Reply-To: <20040330090053.A3956@flint.arm.linux.org.uk>
+To: 'Russell King' <rmk+lkml@arm.linux.org.uk>
+Cc: 'A list for linux audio users' <linux-audio-user@music.columbia.edu>, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-pcmcia@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 30 Mar 2004, Brian Furey wrote:
-
+> -----Original Message-----
+> From: Russell King [mailto:rmk@arm.linux.org.uk] On Behalf Of Russell King
+> Sent: Tuesday, March 30, 2004 3:01 AM
+> To: Ivica Ico Bukvic
+> Cc: 'A list for linux audio users'; alsa-devel@lists.sourceforge.net;
+> linux-kernel@vger.kernel.org; linux-pcmcia@lists.infradead.org
+> Subject: Re: [linux-audio-user] snd-hdsp+cardbus=distortion -- the
+> sagacontinues (cardbus driver=culprit?) UPDATE: 99.9% sure it is the
+> cardbus driver yenta_socket
 > 
-> Right Jaroslav,
->    that means i would modify intel8x0.c to include a
-> call to 
-> snd_pcm_hw_params_get_period_size() or
-> snd_pcm_hw_params_get_period_time() in the appropriate
-> place. Write the values returned say to a text file.
-> Recompile the ALsa driver and re-insert it into the
-> kernel.Start my application and check contents of text
-> file.
-> Am I right in saying this?
+> On Tue, Mar 30, 2004 at 12:52:11AM -0500, Ivica Ico Bukvic wrote:
+> > 6) Pester alsa-dev, lau, and kernel/pcmcia people to death begging for
+> help
+> > :-)
+> >
+> > IN-PROGRESS :-)
+> 
+> What needs to happen is that the card driver author needs to investigate
+> what is going on, and, if it seems related to the core PCMCIA core or
+> the socket driver, we need to get involved.
+> 
+> IOW, linux-pcmcia people don't debug card drivers.
+> 
 
-I'm talking about application not the driver.
-Why you need to modify driver?
+To add to what Tim mentioned, I think that the driver is fine as it does
+work on select notebooks and desktops (the card can be plugged into either
+PCI card or PCMCIA cardbus). Yet, in these select instances it does not work
+even though neither the cardbus driver nor the actual card driver do not
+report any particular problems. Hence the only logical explanation is that
+there is something wrong with the pcmcia controller driver.
 
-						Jaroslav
+This card does tax the throughput of the cardbus like no other card I can
+think of, hence the problem may be more widespread, but exhibits itself just
+in this case where the cardbus is being pushed to its limits. Yet, the
+hardware is not the issue when the same notebook/soundcard combo works
+flawlessly in WinXP.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Hope this helps!
 
-
--------------------------------------------------------
-This SF.Net email is sponsored by: IBM Linux Tutorials
-Free Linux tutorial presented by Daniel Robbins, President and CEO of
-GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+Ico
