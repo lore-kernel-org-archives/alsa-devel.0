@@ -1,14 +1,16 @@
-From: Lars Heineken <Lars.Heineken@gmx.de>
+From: Tommi Sakari Uimonen <tuimonen@cc.hut.fi>
 Subject: Re: Opening dev/dsp takes very long
-Date: Sat, 20 Mar 2004 17:59:56 +0100
+Date: Sat, 20 Mar 2004 19:13:22 +0200 (EET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <405C788C.7000000@gmx.de>
-References: <Pine.HPX.4.33n.0403160917290.14608-100000@studcom.urz.uni-halle.de> <4056BF90.2060005@gmx.de> <405AE7B8.6080603@gmx.de> <405B6CFD.9070303@gmx.de> <405B88B1.3070204@superbug.demon.co.uk> <405BFEB2.9040402@gmx.de> <Pine.LNX.4.58.0403201420340.1816@pnote.perex-int.cz> <405C6CAA.9030709@gmx.de> <Pine.LNX.4.58.0403201708340.1816@pnote.perex-int.cz>
+Message-ID: <Pine.OSF.4.58.0403201910360.119382@kosh.hut.fi>
+References: <Pine.HPX.4.33n.0403160917290.14608-100000@studcom.urz.uni-halle.de>
+ <4056BF90.2060005@gmx.de> <405AE7B8.6080603@gmx.de> <405B6CFD.9070303@gmx.de>
+ <405B88B1.3070204@superbug.demon.co.uk> <405BFEB2.9040402@gmx.de>
+ <Pine.LNX.4.58.0403201420340.1816@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0403201708340.1816@pnote.perex-int.cz>
+In-Reply-To: <Pine.LNX.4.58.0403201420340.1816@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,40 +19,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> It affects both, but ALSA API does the setup of stream parameters once, 
-> but OSS API does this multiple times because there is no way to distict 
-> the configuration phase and the working phase, thus we must reconfigure
-> after settings of all parameters.
-> 
-> If you strace aplay then you'll see that one ALSA ioctl has exactly same 
-> 0.5 sec peek.
+> It's related to the snd-ice1712 driver and hardware which has the cs8427
+> transciever. I've added cs8427_timeout module option, so you can
 
-Thanks a lot for your help, I would have never found that by myself.
+I have M-Audio Audiophile and suffer from this also, but I'm not sure if
+it has cs8427.
 
-To test it, i modified these lines (an ugly hack, for sure)
-
-snd_cs8427_reg_write(cs8427, CS8427_REG_CLOCKSOURCE, 
-chip->regmap[CS8427_REG_CLOCKSOURCE]);
-         //udelay(200);
-         chip->regmap[CS8427_REG_CLOCKSOURCE] |= CS8427_RUN | 
-CS8427_RXDILRCK;
-         snd_cs8427_reg_write(cs8427, CS8427_REG_CLOCKSOURCE, 
-chip->regmap[CS8427_REG_CLOCKSOURCE]);
-         //udelay(200);
-         snd_i2c_unlock(cs8427->bus);
-         end_time = 0; //jiffies + HZ / 2;
-
-..and it works like a charm on my Terratec EWX24/96. After the next 
-release I'll test the module option.
-
-Thanks again,
-
-Lars.
+2.4.24 with ll+pe
+alsa 0.9.8
 
 
+If I'm not totally wrong, the earlier 0.9 series didn't suffer from this,
+but it's long time ago so can't remember.
+
+Tommi
 
 
 -------------------------------------------------------
