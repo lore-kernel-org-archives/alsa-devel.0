@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Fri, 21 Jan 2005 21:05:03 +0100
-Message-ID: <da73a8e5e8a1801c7a5de63f915cfc73@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000736]: modprobe snd-azx still gives segmentation fault
+Date: Fri, 21 Jan 2005 21:05:06 +0100
+Message-ID: <7ca088806f196257d57ac34dab49f4f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6EF18158
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:05:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D53E158
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:05:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,124 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=736> 
 ======================================================================
-Reported By:                1g0R
-Assigned To:                tiwai
+Reported By:                fermier
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   822
+Issue ID:                   736
 Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
-Status:                     feedback
-Distribution:               FC3
-Kernel Version:             2.6.10-ac8
+Status:                     new
+Distribution:               Mandrake 10.1 Offficial
+Kernel Version:             2.3.8.1-12mdk
 ======================================================================
-Date Submitted:             01-16-2005 19:06 CET
+Date Submitted:             12-20-2004 07:40 CET
 Last Modified:              01-21-2005 21:05 CET
 ======================================================================
-Summary:                    CMI9880 (IHDA) alsamixer no controll
+Summary:                    modprobe snd-azx still gives segmentation fault
 Description: 
-The compile went fine.
-I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
-I cant raise the trigger.
-No SPDIF out.
+After having read the other errors reported for the CMI9880 sound chip and
+that the CVS version has been fixed, I downloaded the latest CVS version
+of the alsa-driver.  ./configure and make seem to complete without errors.
+ After a make install a modprobe snd-azx still gives a segmentation fault
+just like the normal tarred ball install and the previous CVS gave.  After
+a modprobe snd-azx gave the segmentation fault a /sbin/lsmod hangs and
+becomes a zombie process the same is true for modprobe -r snd or modprobe
+-r snd-azx
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 01-21-05 21:03 
+ fermier - 01-21-05 13:10 
 ----------------------------------------------------------------------
-in /alsa-lib
-./configure
-........
-.....
-config.status: creating src/ordinary_pcm/Makefile
-config.status: creating src/rawmidi/Makefile
-config.status: creating src/timer/Makefile
-config.status: creating src/hwdep/Makefile
-config.status: creating src/seq/Makefile
-config.status: creating src/instr/Makefile
-config.status: creating src/compat/Makefile
-config.status: creating src/alisp/Makefile
-config.status: creating src/conf/Makefile
-config.status: creating src/conf/cards/Makefile
-config.status: creating src/conf/pcm/Makefile
-config.status: creating alsalisp/Makefile
-config.status: creating aserver/Makefile
-config.status: creating test/Makefile
-config.status: creating utils/Makefile
-config.status: creating utils/alsa-lib.spec
-config.status: creating utils/alsa.pc
-config.status: creating include/config.h
-config.status: executing depfiles commands
-[root@skynet alsa-lib-1.0.8]#
+Well, actually I did this before I wanted to continue with the bug
+reporting here and I can report that version 1.0.8 still gives the
+segmentation fault the minute one does the modprobe.  I see no difference
+at all between the same problem in 1.0.7 and 1.0.8.  Do you need again the
+kernel log messages
 
 ----------------------------------------------------------------------
- 1g0R - 01-21-05 21:05 
+ tiwai - 01-21-05 21:05 
 ----------------------------------------------------------------------
-make
-........
-........
-....
-creating alsalisp
-make[1]: Leaving directory
-`/usr/local/src/cmi9880/alsa-lib-1.0.8/alsalisp'
-Making all in test
-make[1]: Entering directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/test'
-make[1]: Nothing to be done for `all'.
-make[1]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/test'
-Making all in utils
-make[1]: Entering directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/utils'
-make[1]: Nothing to be done for `all'.
-make[1]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/utils'
-make[1]: Entering directory `/usr/local/src/cmi9880/alsa-lib-1.0.8'
-make[1]: Nothing to be done for `all-am'.
-make[1]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8'
-[root@skynet alsa-lib-1.0.8]#  
-ok
+I guess it's not the problem of ALSA.
+Or somewhat wrong compile option is passed.
+
+Does it happen when you load snd-dummy?  I guess yes.
+
+Anyway I have no idea.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-16-05 19:06 1g0R           New Issue                                    
-01-16-05 19:06 1g0R           Distribution              => FC3             
-01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
-01-17-05 15:05 tiwai          Status                   new => resolved     
-01-17-05 15:05 tiwai          Resolution               open => not an issue
-01-17-05 15:05 tiwai          Assigned To               => tiwai           
-01-17-05 15:05 tiwai          Note Added: 0003235                          
-01-17-05 15:05 tiwai          Assigned To              tiwai =>            
-01-17-05 16:43 1g0R           Status                   resolved => feedback
-01-17-05 16:43 1g0R           Resolution               not an issue => reopened
-01-17-05 16:43 1g0R           Note Added: 0003238                          
-01-17-05 16:43 1g0R           Assigned To               => tiwai           
-01-18-05 14:01 1g0R           Note Added: 0003249                          
-01-18-05 14:01 1g0R           Issue Monitored: 1g0R                        
-01-18-05 17:57 tiwai          Note Added: 0003254                          
-01-19-05 13:33 1g0R           Note Added: 0003264                          
-01-19-05 14:25 tiwai          Note Added: 0003265                          
-01-19-05 14:36 1g0R           Note Added: 0003272                          
-01-19-05 14:40 tiwai          Note Added: 0003275                          
-01-19-05 14:59 1g0R           Note Added: 0003280                          
-01-19-05 15:16 tiwai          Note Added: 0003281                          
-01-19-05 15:46 1g0R           Note Added: 0003289                          
-01-19-05 16:08 tiwai          Note Added: 0003290                          
-01-19-05 16:25 1g0R           Note Added: 0003291                          
-01-19-05 18:39 1g0R           File Added: asound.state                     
-01-19-05 18:39 1g0R           File Added: codec#0                          
-01-19-05 18:40 1g0R           Note Added: 0003315                          
-01-19-05 18:44 tiwai          Note Added: 0003316                          
-01-19-05 21:53 1g0R           Note Added: 0003318                          
-01-19-05 21:58 1g0R           Note Added: 0003319                          
-01-20-05 00:13 1g0R           File Added: alsamixer.png                    
-01-20-05 00:18 1g0R           File Added: alsamixer.jpg                    
-01-21-05 12:15 tiwai          Note Added: 0003345                          
-01-21-05 20:53 1g0R           Note Added: 0003352                          
-01-21-05 20:55 tiwai          Note Added: 0003353                          
-01-21-05 21:03 1g0R           Note Added: 0003354                          
-01-21-05 21:05 1g0R           Note Added: 0003355                          
+12-20-04 07:40 fermier        New Issue                                    
+12-20-04 07:40 fermier        Distribution              => Mandrake 10.1
+Offficial
+12-20-04 07:40 fermier        Kernel Version            => 2.3.8.1-12mdk   
+12-20-04 08:31 rlrevell       Note Added: 0002868                          
+12-20-04 13:04 fermier        Note Added: 0002871                          
+12-20-04 13:05 fermier        Note Added: 0002872                          
+12-20-04 14:27 tiwai          Note Added: 0002873                          
+12-20-04 15:35 fermier        Note Added: 0002877                          
+12-20-04 15:38 tiwai          Note Added: 0002878                          
+12-20-04 16:01 fermier        Note Added: 0002879                          
+12-20-04 16:05 tiwai          Note Added: 0002881                          
+12-20-04 16:06 tiwai          Note Added: 0002882                          
+12-20-04 16:23 fermier        Note Added: 0002884                          
+12-20-04 16:34 tiwai          Note Added: 0002885                          
+12-20-04 17:32 fermier        Note Added: 0002889                          
+12-20-04 17:40 tiwai          Note Added: 0002891                          
+12-20-04 18:10 fermier        Note Added: 0002893                          
+01-20-05 19:18 tiwai          Note Added: 0003334                          
+01-21-05 13:10 fermier        Note Added: 0003346                          
+01-21-05 21:05 tiwai          Note Added: 0003356                          
 ======================================================================
 
 
