@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Fri, 19 Nov 2004 05:45:39 +0100
-Message-ID: <3cbfe813e4945a9e071d4cef3c5c168b@bugtrack.alsa-project.org>
+Date: Fri, 19 Nov 2004 05:55:39 +0100
+Message-ID: <cc9302236b1c3f3ffbf8f1de5c916531@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD26D1C8
-	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2004 05:45:39 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F98FEB
+	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2004 05:55:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian/unstable
 Kernel Version:             linux-2.6.4+
 ======================================================================
 Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-19-2004 05:45 CET
+Last Modified:              11-19-2004 05:55 CET
 ======================================================================
 Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
@@ -60,16 +60,18 @@ So I suspect a problem in the ioctl32 wrapper.
 ======================================================================
 
 ----------------------------------------------------------------------
- weeve - 07-04-04 22:32 
-----------------------------------------------------------------------
-Just an update to say that this is still valid up through 2.6.7-bk12
-
-----------------------------------------------------------------------
  weeve - 11-19-04 05:45 
 ----------------------------------------------------------------------
 >From a recent thread on the sparclinux mailing list
 <http://marc.theaimsgroup.com/?t=110017101000004&r=1&w=2>, get_fs() ==
 KERNEL_DS will always cause a SPARC64 machne to hang.
+
+----------------------------------------------------------------------
+ rlrevell - 11-19-04 05:55 
+----------------------------------------------------------------------
+That mailing list thread refers to an ALSA patch that fixes the problem and
+which was not posted.  It would help if you could get that patch and post
+it here.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -81,6 +83,8 @@ Date Modified  Username       Field                    Change
 07-04-04 22:32 weeve          Note Added: 0001381                          
 07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
 11-19-04 05:45 weeve          Note Added: 0002474                          
+11-19-04 05:46 weeve          Issue Monitored: weeve                       
+11-19-04 05:55 rlrevell       Note Added: 0002475                          
 ======================================================================
 
 
