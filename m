@@ -1,19 +1,16 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Re: bug tracking?
-Date: Tue, 20 May 2003 11:01:21 +0900
+From: Josh Green <jgreen@users.sourceforge.net>
+Subject: Re: [linux-audio-dev] SBLive again
+Date: 19 May 2003 19:19:26 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EC98C71.4090904@boosthardware.com>
-References: <s5h3cjgfuwn.wl@alsa2.suse.de>	<Pine.LNX.4.44.0305151112200.9877-100000@pnote.perex-int.cz>	<s5hznloeej6.wl@alsa2.suse.de>	<3EC3680A.60904@boosthardware.com> <s5hy918e5hq.wl@alsa2.suse.de>
+Message-ID: <1053397166.8187.8.camel@SillyPuddy>
+References: <3EC7A0C2.8060507@gmx.de> <20030519130245.GB6003@loco.zait.wlan>
+	 <1053384516.7951.8.camel@SillyPuddy>
+	 <200305201142.05828.lists@n12turbo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id EAA23672
-	for <alsa-devel@alsa-project.org>; Tue, 20 May 2003 04:25:29 +0200
-Received: from www2.webhosting.cx (www2.webhosting.cx [207.44.198.86])
-	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id EAA15462
-	for <alsa-devel@alsa-project.org>; Tue, 20 May 2003 04:15:23 +0200
+In-Reply-To: <200305201142.05828.lists@n12turbo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,54 +19,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, ALSA development <alsa-devel@alsa-project.org>
+To: LAD <linux-audio-dev@music.columbia.edu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+I'm CC'ing the ALSA devel list, perhaps someone there has some answers
+concerning pops/clicks with full duplex and SB Live cards.
 
+On Mon, 2003-05-19 at 18:42, Tarragon Allen wrote:
+> On Tuesday 20 May 2003 08:49, Josh Green wrote:
+> > The problem that I mentioned, in regard to full duplex, doesn't relate
+> > to clipping I don't think. From what I experienced I think its a problem
+> > with the record and playback buffers getting out of sync (like say if
+> > you tried to do full duplex with 2 different sound cards). Things would
+> > be perfectly fine, then a few little pops and clicks which would
+> > gradually get worse until an overrun occurs, then back to being okay
+> > again (sometimes I would do something to purposefully cause an overrun,
+> > to get things synchronized again). As far as I can tell this is probably
+> > an ALSA problem, although my tests using OSS were inconclusive (or to
+> > rephrase, I can't remember :) I think the OSS SB Live drivers might be
+> > able to do full duplex, would be interested to test it again to see if
+> > it is indeed an ALSA specific problem. What version of ALSA are you
+> > using Lukas?  Cheers.
+> > 	Josh Green
 > 
-> i'm familiar with bugzilla (not as an adamin but as a user :) and am
-> satisfied almost with it.  it's enough powerful.
-> but bugzilla has many configurations and we'll need to find out the
-> fitting one for our purpose.
+> Just for reference, I'm seeing the same behaviour using Ardour. The pops and 
+> clicks only occur when I'm recording, and yes, I'm using full duplex mode. If 
+> I turn off record mode the symptoms dissappear, and reappear as soon as I go 
+> to record again - until there is a very minor xrun and it all clears up for a 
+> while (usually about 15-20 minutes between instances, that I've noticed).
+> 
+> Alsa 0.9.2, SBLive! Value, Kernel 2.4.20.
+> 
 
-I'm looking at it now. The first thing that jumps out at me is that all 
-users have to login to make a submission online.
+Okay, it was like 2 years ago when I was complaining about this same
+problem. Just wanted to make sure it was indeed a new version of ALSA.
 
-IMO that will make it less likely for people to submit reports. However 
-the rest of the system is very slick so I'm not sure what direction to 
-take. There doesn't seem to be a way to turn of the login as it seems to 
-be crucial to making sure the system works.
+> t
 
-If we use bugzilla I will need full access to the mysql database on the 
-server. I could code something with less features in php. It would work 
-slower but it will work.
-
-Of course I would much prefer to have access to the mysql database as I 
-can do some other funky things for the install docs then too. Like a 
-card rating system.
-
-I have written to Jaroslav about this before but have never received an 
-answer. I realise that I could be a huge security risk but I'm happy to 
-sign some papers if that is what is required. I will send you my PO box 
-address privately if that needs to be done.
-
-So my Suse friends. What does the boss say?
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
+Cheers.
+	Josh Green
 
 
 
