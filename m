@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: emu10k1.h + ctl id
-Date: Fri, 13 Aug 2004 15:02:56 +0200 (CEST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
+Date: Fri, 13 Aug 2004 15:17:38 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408131451450.1779@pnote.perex-int.cz>
-References: <200408131235.i7DCZfAo021971@www4.pobox.sk>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20040813131738.BD3FF1102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200408131235.i7DCZfAo021971@www4.pobox.sk>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A33127E
+	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2004 15:17:39 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,39 +16,98 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzad@pobox.sk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 13 Aug 2004, Peter Zubaj wrote:
 
-> Hi,
-> 
-> emu10k1 driver exports some hwdep ioctls. 
-> Some of them use emu10k1_fx8010_control_gpr_t struct (definied in
-> emu10k1.h).
-> There is one member snd_ctl_elem_id_t id.
-> Problem is that alsa try to hide internal structs from users space and
-> this member needs to be accessible from userspace program.
-> Can I change id member to something like this ?
-> 
-> insigned int iface; or this can be sndrv_ctl_elem_iface iface ????
-> unsigned char name[44];
-> unsigned int index;
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000328
+======================================================================
+Reported By:                aaronkaplan
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     328
+Category:                   PCI - nm256
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.5-1.358
+======================================================================
+Date Submitted:             06-08-2004 23:13 CEST
+Last Modified:              08-13-2004 15:17 CEST
+======================================================================
+Summary:                    snd-nm256 freezes Dell Latitude LS
+Description: 
+My Dell Latitude LS with an NM256AV hangs when I insert the
+snd-nm256 module.
 
-I prefer to redefine the snd_ctl_elem_id_t (for example
-emu10k1_ctl_elem_id_t). The public data from emu10k1.h should be
-moved to alsa-lib/include/sound/emu10k1.h at first and applications
-should use only '#include <alsa/sound/emu10k1.h>' header file.
+The OSS driver works fine.
 
-I've commited an initial version of alsa/sound/emu10k1.h now.
+======================================================================
 
-						Jaroslav
+----------------------------------------------------------------------
+ tiwai - 06-30-2004 16:55 CEST 
+----------------------------------------------------------------------
+Does the attached patch have any effect?
+If not, please show the output of lspci -nv.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+----------------------------------------------------------------------
+ aaronkaplan - 07-01-2004 16:03 CEST 
+----------------------------------------------------------------------
+No difference with the patch.  I'm attaching the output from lspci.
+
+----------------------------------------------------------------------
+ fridolin - 08-13-2004 01:33 CEST 
+----------------------------------------------------------------------
+Hi!
+
+
+I have got a similar problem. My computer is a Latitude Cpi-R 400GT.
+
+The machine hangs not immediately after inserting the nm-nm256 module, but
+it freezes always when accessing the soundcard (by invoking alsamixer).
+
+The similarity is, that I have already tried to activate/deactivate the
+old "latitude_workaround"-thing, but this doesn't help.
+
+The older OSS-driver works for me, too. 
+
+
+I'm using the latest stable driver (alsa-driver-1.0.5.tar.bz2) compiled
+over a linux 2.4.24-kernel.
+
+----------------------------------------------------------------------
+ fridolin - 08-13-2004 12:46 CEST 
+----------------------------------------------------------------------
+I've also tried alsa-driver-1.0.5a, but it shows the same crashing.
+
+----------------------------------------------------------------------
+ fridolin - 08-13-2004 15:17 CEST 
+----------------------------------------------------------------------
+With 1.0.6rc2, the driver doesn't crash any more.
+
+I'm sorry that I haven't tried out this before, but when compiling on a
+slow machine and after tens of reboots, one day goes by very soon.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-08-04 23:13 aaronkaplan    New Bug                                      
+06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
+06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
+06-08-04 23:13 aaronkaplan    Bug Monitored: aaronkaplan                    
+06-30-04 16:55 tiwai          Bugnote Added: 0001362                       
+06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                    
+07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
+07-01-04 16:03 aaronkaplan    Bugnote Added: 0001370                       
+08-13-04 01:33 fridolin       Bugnote Added: 0001559                       
+08-13-04 12:46 fridolin       Bugnote Added: 0001562                       
+08-13-04 15:17 fridolin       Bugnote Added: 0001564                       
+======================================================================
 
 
 -------------------------------------------------------
