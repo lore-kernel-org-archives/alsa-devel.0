@@ -1,13 +1,15 @@
-From: Chris Cannam <cannam@all-day-breakfast.com>
-Subject: Re: Sequencer documentation follow-up
-Date: Mon, 30 Jun 2003 16:12:12 +0100
+From: Denis Sbragion <d.sbragion@infotecna.it>
+Subject: Re: EWX 24/96 SPDIF input problem with 0.9.4 (and
+  "compiler.h")
+Date: Mon, 30 Jun 2003 17:55:39 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F00534C.7060706@all-day-breakfast.com>
-References: <20030608220629.A7532@octothorpe.dyndns.org> <s5hof0fljw0.wl@alsa2.suse.de>
+Message-ID: <5.1.0.14.1.20030630171403.0206b8e8@pop3.infotecna.lcl>
+References: <s5hn0fzljm8.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.44.0306301651490.13946-100000@pnote.perex-int.c
+ z>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,49 +18,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Drake Wilson <drake@libcom.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Sun, 8 Jun 2003 22:06:30 -0400,
-> Drake Wilson wrote:
-> 
->>... I have a draft, or part thereof.  It is in similar spirit to the
->>module overviews in the API reference, and I hope it to be of some
->>use, if not optimal.
->>[...]
+Hello Jaroslav and Takashi,
 
-I missed this until now.  Just to add that the meanings of the
-various SND_SEQ_PORT_TYPE flags were covered in a discussion on
-this list a few weeks ago.
+At 16.53 30/06/2003 +0200, Jaroslav Kysela wrote:
+...
+>Sorry for late reply. My EWS 24/96 does not have this problem. I suggest
+>to create a control which will turn on/off the V bit checking. I also
+>suggest to verify the cable connection.
 
-It seems that the SND_SEQ_PORT_TYPE_* flags describe the sort of
-events that a port understands and not necessarily what it does
-with them.  The discussion here arose from a desire to query
-these flags in order to attempt to distinguish MIDI soft synths
-and on-card hardware synths from other MIDI applications such as
-sequencers: it turns out that this is not possible.
+don't worry for the late reply, I know you're always so busy with the many 
+ALSA development tasks. I'm not in a hurry cause I can always switch back 
+to 0.9.3. In the meantime I've done many tests that may help find where the 
+problem is. Here are some informations:
 
-For example, I believe it turned out that PORT_TYPE_APPLICATION
-indicates a port expecting application-specific events, not just
-a port that happens to belong to a software application.  That is,
-a MIDI soft synth would not necessarily be expected to set this
-flag.  Similarly, PORT_TYPE_SYNTH indicates that the port has the
-ability to do (non-MIDI) direct synthesis, and again a MIDI soft
-synth or a driver for a soundcard MIDI synth would not be expected
-to set this flag unless it was also capable of direct synthesis.
-So "port is attached to a synthesizer device" is unfortunately an
-inadequate and misleading description for PORT_TYPE_SYNTH, as
-ports attached to MIDI synth devices will generally not have this
-flag set.  I found all this most confusing, but that's probably
-because I don't really know anything about non-MIDI clients.
+- I tested using BruteFIR and arecord. Things change between the two.
+- Using the 0.9.4 drivers "downgraded" with just the cs8427 module from 
+0.9.3, both BF and arecord work like a charm.
+- Using the 0.9.4 cs8427 module arecord works but BF doesn't. No error pops 
+up, BF just wait forever for samples to come in.
+- If I try arecord immediately after killing BF it doesn't work either, 
+again no error, just endless wait. But if I go to alsamixer and switch the 
+sample rate from SPDIF to any value and then back to SPDIF before starting 
+arecord, arecord starts to work again.
 
-Look for the subject "Sequencer port type flags" in the archives
-(in early May this year) for more details.
+Of course I've already double checked any cabling problem.
 
+I digged into BF to see if it does something weird that may fools the 
+driver, even disabling parts of the code to see if there's any particular 
+action that cause the driver to fail, but had no success. What BF does is 
+not that much different from what arecord does, at least it looks ok to me, 
+though I'm not an expert with ALSA programming. I checked also the driver 
+to see if there's something wrong with the new reset code, double checking 
+it against the newest cs8427 data sheet where the reset procedure is 
+explained, but also here everything looks ok. I tried disabling just the V 
+bit, and played also with many other cs8427 settings, but again no success. 
+I also upgraded from the old 2.4.7 kernel to a newest 2.4.20, and nothing 
+has changed.
+         Some other informations. The V bit with older drivers caused 
+problems only when lowering the volume on my CD player, which changes also 
+the SPDIF output volume (pretty weird, I know). Below a given threshold the 
+soundcard started with glitches and distortion, muting completely if I 
+lowered the volume a bit more. So may be it's just the CDP that outputs 
+something that the cs8427 sees as invalid. Anyway listening to the sound 
+with the V bit disabled doesn't show any audible distortion even well below 
+the glitching threshold, but may be the cs8427 is catching something which 
+is not audible under normal conditions. I think the suggestion of creating 
+a control to switch the V bit on and off would be an ideal solution.
+         Finally some other small bugs which you may be interested in fixing:
 
-Chris
+- If I load the ice1712 driver and sets the DAC volumes to 100% using 
+"alsactl restore" from a prevoius "alsactl store" the right channel remains 
+muted. Alsamixer reports it as being at 100%, but no sound from it. I have 
+to change the volume back  using amixer or alsamixer to get the channel 
+unmuted. This is laying around since 0.9.0rc5. It's just an annoying quirk. 
+I already checked in the drivers to see if there's something wrong but 
+found nothing.
+- If I set the volume of the ADCs to 0, do an "alsactl store" and then an 
+"alsactl restore", the ADC volume of both channels is set to 101, when 100 
+should be the maximum value, but both ADCs are anyway muted. This has 
+started since 0.9.2 or 0.9.1, I'm not sure, but was not present in 0.9.0rc5.
+- The sample rate loops between 48000 to 8000 when changed from alsamixer 
+in one direction, go up to 96000, then SPDIF and the stop with no looping 
+there when changed the other way around.
+
+Hopes this helps. I hope to have the time to check the CVS version. 
+Unfortunately I'm a bit busy.
+
+Bye,
+--
+	Denis Sbragion
+	InfoTecna
+	Tel: +39 0362 805396, Fax: +39 0362 805404
+	URL: http://www.infotecna.it
 
 
 
