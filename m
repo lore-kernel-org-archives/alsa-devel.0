@@ -1,13 +1,13 @@
-From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
-Subject: RE: Sound Card Driver
-Date: Mon, 20 Dec 2004 17:47:23 +0800
-Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D5C9@cm-msg-02.cmedia.com.tw>
+From: "Martijn Sipkema" <martijn@entmoot.nl>
+Subject: Re: Re: [Jackit-devel] irq handler top half timestamps
+Date: Mon, 20 Dec 2004 11:57:56 +0100
+Message-ID: <007001c4e682$c366aec0$161b14ac@boromir>
+References: <200412102051.iBAKphFL012668@localhost.localdomain> <1102712509.29919.46.camel@krustophenia.net> <20041211015610.1798af34@mango.fruits.de> <1102735047.14237.8.camel@krustophenia.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,24 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: kshriyan@redhat.com
-Cc: rlrevell@joe-job.com, alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>, Florian Schmidt <mista.tapas@gmx.net>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, Jaroslav Kysela <perex@suse.cz>, Ingo Molnar <mingo@elte.hu>, jackit-devel@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+[...]
+> > When exactly is snd_pcm_period_elapsed called? Is it called from the
+> > ALSA driver interrupt handler (excuse, if this question is stupid, i'm
+> > not too well versed (mildly speaking) when it comes to driver hacking)?
+> > Is it the first thing in the irq handling routine?
+> 
+> If the device supports interrupts at the period boundary like most sound
+> cards it's the only thing in the ALSA interrupt handler:
+> 
+> static void snd_emu10k1_pcm_efx_interrupt(emu10k1_t *emu, unsigned int status)
+> {
+>         snd_pcm_period_elapsed(emu->pcm_capture_efx_substream);
+> }
+> 
+> If the device uses a timer to generate interrupts at a fixed frequency
+> then you have to manually compare the frames processed to the period
+> size and call snd_pcm_period_elapsed if the period has indeed elapsed.
 
-9880 is a Azalia codec, but it can also be used as an AC97 codec, please =
-check if your system has AC97 controller (PCI ID 266E) or azalia =
-controller (2668).
+(sorry, a bit off-topic)
+Does that mean that ALSA will always have a large (relative to the interrupt
+frequency) scheduling jitter for cards that interrupt at a fixed frequency?
+Or is it possible to have ALSA return samples immediately after they become
+available?
 
-ChenLi Tien
------Original Message-----
-From:	Kaushal Shriyan [mailto:kshriyan@redhat.com]
-Sent:	2004/12/20 [=ACP=B4=C1=A4@] =A4W=A4=C8 01:55
-To:	Tien,  C.L. - =A5=D0=A9=D3=C2=A7
-Cc:	rlrevell@joe-job.com; alsa-devel@lists.sourceforge.net
-Subject:	RE: [Alsa-devel] Sound Card Driver
 
+--ms
 
 
 
