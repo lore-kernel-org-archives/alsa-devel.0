@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000699]: [PATCH] Document --config option on alsaconf man page
-Date: Thu, 2 Dec 2004 09:03:57 +0100
-Message-ID: <d8d4e2d90fe29e04b999957036cfc724@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000700]: IEC958 Capture and Universe support
+Date: Thu, 2 Dec 2004 09:59:05 +0100
+Message-ID: <90421f5ae4abc09595ecdcb0fa8df6ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5A04323A
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 09:03:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0999C1C1
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 09:59:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=699> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=700> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                ungod
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   699
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   700
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-02-2004 08:57 CET
-Last Modified:              12-02-2004 09:03 CET
+Date Submitted:             12-02-2004 09:59 CET
+Last Modified:              12-02-2004 09:59 CET
 ======================================================================
-Summary:                    [PATCH] Document --config option on alsaconf man
-page
+Summary:                    IEC958 Capture and Universe support
 Description: 
-The alsaconf man page fails to mention alsaconf's --config option.  Here is
-a patch to fix this.
+I had some spare time, so I thought I would continue adding features to the
+aureon driver. The attached patch is the result:
 
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+Summary: IEC958 Capture mixer controls and Universe support
+
+ * Added SPI read routine
+ * Added IEC958 Capture mixer controls
+ * Improved Universe support
+ * Headphone Amp renamed to External Amplifier
+ * Fixed GPIO bug in Prodigy code (There is no GPIO23 on ICE1724)
+ 
+Signed-off-by: Peter Christensen <peter@developers.dk>
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 12-02-04 08:58 
-----------------------------------------------------------------------
-Oh, darn.  I just noticed that this fixed in 1.0.7.  Sorry -- please close
-this.
-
-----------------------------------------------------------------------
- jdthood - 12-02-04 09:03 
-----------------------------------------------------------------------
-It would be helpful if the various ALSA man pages listed options in
-alphabetical order in the OPTIONS section.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-02-04 08:57 jdthood        New Issue                                    
-12-02-04 08:57 jdthood        File Added:
-alsaconf_doc_config_20041202jdth1.patch                    
-12-02-04 08:58 jdthood        Note Added: 0002675                          
-12-02-04 09:03 jdthood        Note Added: 0002676                          
+12-02-04 09:59 ungod          New Issue                                    
+12-02-04 09:59 ungod          File Added: aureon-misc.diff                    
 ======================================================================
 
 
