@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000736]: modprobe snd-azx still gives segmentation fault
-Date: Mon, 20 Dec 2004 16:23:48 +0100
-Message-ID: <0e25965fc0fb1dcef394f2d77198f6df@bugtrack.alsa-project.org>
+Date: Mon, 20 Dec 2004 16:34:06 +0100
+Message-ID: <111f94a118d65a493219572aa597ef83@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 858122CE
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 16:23:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 76BB3243
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 16:34:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Mandrake 10.1 Offficial
 Kernel Version:             2.3.8.1-12mdk
 ======================================================================
 Date Submitted:             12-20-2004 07:40 CET
-Last Modified:              12-20-2004 16:23 CET
+Last Modified:              12-20-2004 16:34 CET
 ======================================================================
 Summary:                    modprobe snd-azx still gives segmentation fault
 Description: 
@@ -53,12 +53,6 @@ a modprobe snd-azx gave the segmentation fault a /sbin/lsmod hangs and
 becomes a zombie process the same is true for modprobe -r snd or modprobe
 -r snd-azx
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 12-20-04 16:06 
-----------------------------------------------------------------------
-Also, don't forget to compile with --with-debug option (as best
---with-debug=detect).  This will help to detect the buggy point.
 
 ----------------------------------------------------------------------
  fermier - 12-20-04 16:23 
@@ -89,6 +83,14 @@ root@khazad alsa-driver]# modprobe snd-azx
 Segmentation fault
 [root@khazad alsa-driver]#
 
+----------------------------------------------------------------------
+ tiwai - 12-20-04 16:34 
+----------------------------------------------------------------------
+You reported that there is an Oops.  That doesn't help at all.  Please
+attach the texts below that (including the stack trace)!
+
+For reading the messages, use dmesg command or look at /var/log/messages.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -106,6 +108,7 @@ Offficial
 12-20-04 16:05 tiwai          Note Added: 0002881                          
 12-20-04 16:06 tiwai          Note Added: 0002882                          
 12-20-04 16:23 fermier        Note Added: 0002884                          
+12-20-04 16:34 tiwai          Note Added: 0002885                          
 ======================================================================
 
 
