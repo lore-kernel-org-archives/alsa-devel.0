@@ -1,43 +1,45 @@
-From: Tim Blechmann <TimBlechmann@gmx.net>
-Subject: Re: [linux-audio-user] snd-hdsp+cardbus+M6807 notebook=distortion
- -- FIXED!
-Date: Tue, 13 Apr 2004 00:06:08 +0200
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <20040413000608.0489b896@laptop>
-References: <20040412082801.A3972@flint.arm.linux.org.uk>
-	<20040412144103.PIXB8029.smtp1.fuse.net@64BitBadass>
+From: Stephen Hassard <steve@hassard.net>
+Subject: Envy24HT mixer restore problem with M-Audio Revolution 7.1 + Alsa
+ 1.0.4
+Date: Mon, 12 Apr 2004 20:24:14 -0700
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <407B5D5E.4020603@hassard.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
-In-Reply-To: <20040412144103.PIXB8029.smtp1.fuse.net@64BitBadass>
-To: Ivica Ico Bukvic <ico@fuse.net>
-Cc: 'Russell King' <rmk+lkml@arm.linux.org.uk>, daniel.ritz@gmx.ch, 'Thomas Charbonnel' <thomas@undata.org>, ccheney@debian.org, linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi all,
+Hi there,
 
-i installed windows to check if there is anything happening to the
-cardbus registers when working on a supported system... the cardbus
-registers, beside the pci registers, are the same as on the linux system
-... 
-i haven't been able to play back some sounds, because rme's driver disc
-only contains the win2k driver ...
+I've got an Envy24HT based M-Audio Revolution 7.1 and have a issue with 
+Alsa 1.0.4.
 
-i have no idea, what this might tell us ... it's not a very good feeling
-if someone who seem to have the same problem as yourself finds the
-reason for his problem, but it doesn't seem to be the reason of your
-problem ... anyway, let's hope the best...
+When I set my 'DAC' and 'DAC1' channels to sane values (they correspond 
+to L+R audio) and save my mixer settings via 'alsactl store', reboot and 
+restore the settings via 'alsactl restore', my mixer settings appear to 
+be normal in alsamixer, but I find that my left channel ('DAC') is 
+mutted until I change the volume of 'DAC'. As soon as I touch the mixer 
+for the 'DAC' channel, audio output is restored.
 
-cheers...
+I didn't notice this a few revisions back, so I think a bug crept in 
+recently ..
 
- Tim                          mailto:TimBlechmann@gmx.de
-                              ICQ: 96771783
---
-The only people for me are the mad ones, the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn,
-burn, like fabulous yellow roman candles exploding like spiders across
-the stars and in the middle you see the blue centerlight pop and
-everybody goes "Awww!"
-                                                          Jack Kerouac
+Thanks,
+Steve
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: IBM Linux Tutorials
+Free Linux tutorial presented by Daniel Robbins, President and CEO of
+GenToo technologies. Learn everything from fundamentals to system
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
