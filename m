@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000244]: aplay loops like a broken record with YMF-724F
-Date: Tue, 9 Nov 2004 16:19:01 +0100
-Message-ID: <7bd9b17ea35a7cf03a932cbff80da329@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0000436]: How to have sound to Digital and Analog at the same time ?
+Date: Tue, 9 Nov 2004 16:16:51 +0100
+Message-ID: <92a4e908597db47ff21e6306b1525a1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C539D247
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:19:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1ACA7244
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:16:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=244> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=436> 
 ======================================================================
-Reported By:                dant
+Reported By:                tho_x_tran
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   244
-Category:                   PCI - ymfpci
+Project:                    ALSA - tools
+Issue ID:                   436
+Category:                   ac3dec
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             2.4.26-1.ll.rh90.ccrma
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-28-2004 04:18 CEST
-Last Modified:              11-09-2004 16:19 CET
+Date Submitted:             08-12-2004 20:36 CEST
+Last Modified:              11-09-2004 16:16 CET
 ======================================================================
-Summary:                    aplay loops like a broken record with YMF-724F
+Summary:                    How to have sound to Digital and Analog at the same
+time ?
 Description: 
-I have downloaded the latest kernel and Alsa RPMs from CCRMA site and was
-able to get the sound drivers to work
-for Yamaha YMF-724F sound card.
-
-KMidi seems to play fine.  The only problem so far that I can see is
-'aplay' with WAV files.
-
-Here is what I tried:
-
-[root@linux sounds]# aplay email.wav
-Playing WAVE 'email.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Mono
-ALSA lib pcm_hw.c:523:(snd_pcm_hw_drain) SNDRV_PCM_IOCTL_DRAIN failed:
-Input/output error
-
-This sound was supposed to play once.  I hear a repeat of this sound 20
-times exactly.  I tried all other wave files with the same results!  It
-sounds like a broken record up to 20 times.
-
-I have scanned google and found only two references where others have
-reported simliar results but no response fixes were given.
-
-Help!
-
-Best regards!
-Dan Thurman
-dant@cdkkt.com
+I play Xine and Watch TV at the same time, and Xine audio can only go to
+Digital Opt out while TV sound goes to Analog front speakers only.  How
+can I make it go to both devices AT THE SAME TIME for all applications.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-30-04 10:56 
+ tiwai - 09-01-04 22:53 
 ----------------------------------------------------------------------
-the symoptom looks like an IRQ problem.
-if you have PNP-OS setting in BIOS, try to turn it off.
+Basically it's a job of application.
+ALSA doesn't decode AC3 by itself.
+So, apps should send both AC3-analog and AC3-passthru signals to
+different PCM (if possible).  And, this is not always possible
+on many motherboards...
 
 ----------------------------------------------------------------------
- perex - 09-07-04 16:53 
+ perex - 09-07-04 16:38 
 ----------------------------------------------------------------------
-Yes, it looks like a general IRQ problem. Please, ask on lkml or enter this
-problem to kernel's bugzilla.
+Application problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-28-04 04:18 dant           New Issue                                    
-04-28-04 04:18 dant           Kernel Version            =>
-2.4.26-1.ll.rh90.ccrma
-04-30-04 10:55 tiwai          Category                 0_compilation problem_!!!
-=> PCI - ymfpci
-04-30-04 10:56 tiwai          Note Added: 0000974                          
-09-07-04 16:53 perex          Status                   assigned => resolved
-09-07-04 16:53 perex          Resolution               open => fixed       
-09-07-04 16:53 perex          Note Added: 0001718                          
-11-09-04 16:19 tiwai          Status                   resolved => closed  
+08-12-04 20:36 tho_x_tran     New Issue                                    
+08-12-04 20:36 tho_x_tran     File Added: asound.conf                      
+09-01-04 22:53 tiwai          Note Added: 0001678                          
+09-07-04 16:38 perex          Status                   assigned => resolved
+09-07-04 16:38 perex          Resolution               open => fixed       
+09-07-04 16:38 perex          Note Added: 0001712                          
+11-09-04 16:16 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
