@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000570]: Sparse mixer for RME96
-Date: Mon, 29 Nov 2004 16:11:31 +0100
-Message-ID: <f0c2d8adaea3389a705c46db1dff7c88@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000688]: Errors in testing gcc and ld in the sparc and sparc64 sections of the configure file
+Date: Mon, 29 Nov 2004 16:12:19 +0100
+Message-ID: <9867cb089a2ae51f11a18bcf95351afe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 32A0A2C8
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 16:11:32 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C3452C9
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 16:12:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=570> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=688> 
 ======================================================================
-Reported By:                ungod
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   570
-Category:                   PCI - RME 96
+Issue ID:                   688
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     feedback
 Distribution:               
 Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
-Date Submitted:             10-07-2004 10:59 CEST
-Last Modified:              11-29-2004 16:11 CET
+Date Submitted:             11-28-2004 19:36 CET
+Last Modified:              11-29-2004 16:12 CET
 ======================================================================
-Summary:                    Sparse mixer for RME96
+Summary:                    Errors in testing gcc and ld in the sparc and
+sparc64 sections of the configure file
 Description: 
-Noticed that almost all mixer controls was identified as PCM controles, so
-I did a small patch.
-
-Summary: RME96 Mixer fix
-
- - Fix mixer bugs
-
-Signed-off-by: Peter Chrisensen <peter@developers.dk>
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000681 alsamixer, rmedigicontrol and rme96 ker...
-has duplicate       0000682 alsamixer, rmedigicontrol and rme96 ker...
+Here is a patch to fix the configure script so that it less incorrectly
+tests gcc and ld functionality on sparc and sparc64.  You will want to fix
+configure.in, of course.
 ======================================================================
 
 ----------------------------------------------------------------------
- ungod - 10-07-04 18:05 
+ tiwai - 11-29-04 15:49 
 ----------------------------------------------------------------------
-I see. Strange. Anyway, didn't even know that there was such a tool. I'll
-mention that to the dude on #alsa I made the patch for.
+Ah, you're right.  I checked only sparc64.
+
+Now fixed on CVS.
 
 ----------------------------------------------------------------------
- tiwai - 11-29-04 16:11 
+ jdthood - 11-29-04 16:12 
 ----------------------------------------------------------------------
-Now applied to CVS.
+I have updated from cvs but the bug is still there.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-07-04 10:59 ungod          New Issue                                    
-10-07-04 10:59 ungod          File Added: rme96-mixerfix.diff                   
-
-10-07-04 14:11 tiwai          Note Added: 0002030                          
-10-07-04 14:12 tiwai          Note Added: 0002031                          
-10-07-04 18:05 ungod          Note Added: 0002036                          
-11-29-04 16:01 tiwai          Relationship added       related to 0000681  
-11-29-04 16:04 tiwai          Relationship added       has duplicate 0000682
-11-29-04 16:11 tiwai          Status                   new => resolved     
-11-29-04 16:11 tiwai          Resolution               open => fixed       
-11-29-04 16:11 tiwai          Assigned To               => tiwai           
-11-29-04 16:11 tiwai          Note Added: 0002648                          
+11-28-04 19:36 jdthood        New Issue                                    
+11-28-04 19:36 jdthood        File Added:
+alsa-driver-configure.jdth20041128.patch                    
+11-29-04 15:25 tiwai          Note Added: 0002637                          
+11-29-04 15:38 jdthood        Note Added: 0002641                          
+11-29-04 15:39 jdthood        Note Edited: 0002641                         
+11-29-04 15:40 jdthood        Note Edited: 0002641                         
+11-29-04 15:49 tiwai          Status                   assigned => resolved
+11-29-04 15:49 tiwai          Resolution               open => fixed       
+11-29-04 15:49 tiwai          Note Added: 0002645                          
+11-29-04 16:12 jdthood        Status                   resolved => feedback
+11-29-04 16:12 jdthood        Resolution               fixed => reopened   
+11-29-04 16:12 jdthood        Note Added: 0002649                          
 ======================================================================
 
 
