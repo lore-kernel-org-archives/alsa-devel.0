@@ -1,21 +1,16 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: possible fix for alsa-oss fopen() [Patch]
-Date: Wed, 16 Jun 2004 12:19:04 +0200
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: Re: rmmod snd-es1968 crashes my laptop...
+Date: Wed, 16 Jun 2004 00:30:08 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040616121904.64fd0d46@mango.fruits.de>
-References: <20040611012753.360c48ae@mango.fruits.de>
-	<20040611200601.100405ea@mango.fruits.de>
-	<20040614145532.1e823e15@mango.fruits.de>
-	<20040615192436.1ca50786@mango.fruits.de>
-	<s5hn033svac.wl@alsa2.suse.de>
+Message-ID: <200406160030.08458.annabellesgarden@yahoo.de>
+References: <200406132023.48894.annabellesgarden@yahoo.de> <200406150051.00056.annabellesgarden@yahoo.de> <s5hwu29axq0.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id EEA8027E
-	for <alsa-devel@alsa-project.org>; Wed, 16 Jun 2004 12:13:43 +0200 (MEST)
-In-Reply-To: <s5hn033svac.wl@alsa2.suse.de>
+In-Reply-To: <s5hwu29axq0.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,34 +20,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 16 Jun 2004 11:32:11 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+Am Dienstag 15 Juni 2004 13:04 schrieb Takashi Iwai:
+> At Tue, 15 Jun 2004 00:50:59 +0200,
+>
+> Karsten Wiese wrote:
+> > Am Montag 14 Juni 2004 15:39 schrieb Takashi Iwai:
+> > > At Sun, 13 Jun 2004 20:23:48 +0200,
+> >
+> > This patch keeps the "snd_es1968_set_acpi(chip, ACPI_D3);":
+>
+> (snip)
+>
+> > I think its OK to commit with comment:
+> >
+> > 	- Prevent shared Interrupts from other devices
+> > 	  causing crash on device free.
+> >
+> > (Analysis:
+> > the crash was induced when the usb interrupt was still reached to
+> > snd_es1968_interrupt:
+> > the value "event = inb(chip->io_port + 0x1A)" will possibly be != 0 cause
+> > the device went into high Z state, so snd_es1968_interrupt falsely tries
+> > to handle the alien interrupt....
+> > by telling kernel that the module doesn't handle interrupts any more
+> > before switching the device into powersave mode we keep the system sane.
+> > or so....)
+>
+> Then we should move free_irq() itself before releasing other
+> resources.  calling snd_es1968_set_acpi() after release io's is
+> invalid.
+>
+> How about the attached patch?
 
-http://www.affenbande.org/~tapas/alsa-oss-1.0.5-artsdsp-rip.tar.bz2
-> > > > http://www.affenbande.org/~tapas/alsa-oss-fopen.patch
-> > > 
-> > > anybody out there?
-> > > 
-> > 
-> > hmm, i know it's a little hacky, but here it works fine. So please
-> > let me know, what's wrong with it. License issues? Sorry, i'm not a
-> > telepathic so i have to ask.. 
-> 
-> sorry, just lack of time...
-> it's also GPL, so the license should be ok.
+Agreed. Works fine here.
 
-Ah, ok, sorry to be so noisy.. Take your time and have look at it when your time allows. 
-
-Thanks
-
-Flo
-
--- 
-Palimm Palimm!
-
+Karsten
 
 
 -------------------------------------------------------
