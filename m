@@ -1,16 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: future ALSA development
-Date: Tue, 24 Jun 2003 15:04:22 +0200 (CEST)
+From: ehasenle@spamcop.net
+Subject: 6fire mixer question
+Date: Tue, 24 Jun 2003 11:51:47 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306241501260.1838-100000@pnote.perex-int.cz>
-References: <XFMail.20030624145235.pochini@shiny.it>
+Message-ID: <1056469907.de5920e7344ad@webmail.spamcop.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (UNKNOWN@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA29688
-	for <alsa-devel@alsa-project.org>; Tue, 24 Jun 2003 15:05:06 +0200
-In-Reply-To: <XFMail.20030624145235.pochini@shiny.it>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,35 +16,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 24 Jun 2003, Giuliano Pochini wrote:
+Hello.
 
-> Lisp should be fine, although it's not very user-friendly. But what the
-> interpreter is supposed to do ?  Is it possible to create an ordinary
-> mixer control that the hw doesn't support ?  For example: a card may not
-> have an hw master volume control, but the ordinary mixer has to provide
-> it. Is the lisp config file generic enough to provide a function to
-> emulate the master volume control it by changing the volume controls
-> of all single channels ?  It's not trivial at all to do such a thing
-> with a "normal" config file, but it's possible with an interpreter. The
-> question is: is it worth the effort ?  Or is it better to force all
-> lowlevel drivers to provide a minimal set of ordinary controls ?
+Why do usual mixer applications fail with the Terratec DMX 6fire (maybe also
+other envy24 cards)? I have to use gamix/envy24control in order to set the
+levels. I find it convenient to set the playback level using xmms which also
+relies on the mixer interface. What needs to be done in order to make the driver
+interfacing with the standard mixer interface?
 
-I think that it's worth to let define multiple virtual mixer devices for
-multichannel cards (if required) and I can find more examples in this
-area. You cannot do that in the kernel space without adding more code and
-this is exactly what we do not want.
+As a side node: if xmms finishes with a song gamix segfaults. Is this known?
+What can be the reason?
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
+TIA
+Eduard.
 
 
 -------------------------------------------------------
