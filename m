@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Audigy2 P16V testing
-Date: Fri, 07 Jan 2005 21:11:29 +0000
-Message-ID: <41DEFB01.4080004@superbug.co.uk>
-References: <20050107121731.GA3982@school.ioffe.ru>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000787]: Headphone == Master if plugged
+Date: Fri, 7 Jan 2005 21:07:34 +0100
+Message-ID: <92b8b190e19e5adbaec6763af360c33e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050107121731.GA3982@school.ioffe.ru>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3794D24B
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 21:07:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,39 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dmitry Baryshkov <mitya@school.ioffe.ru>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dmitry Baryshkov wrote:
-> Hello,
-> 
-> Please correct me if this is wrong place for this post.
-> 
-> I tried testing p16v patch from www.alsa-project.org/~james/p16v
-> (the last one, where p16v is merged with emu10k1).
-> I applied patch & copied p16v.c to alsa 1.0.8rc2. emu10k1 driver
-> compiled & inserted successfully. But when I tried to play self-generated
-> SE32_LE@96Khz wav file (aplay -D hw:0,3 test.wav) I got no sound & a
-> lot of messages in kernel log (attached).
-> 
-> I'm using kernel 2.6.9.
-> 
-> Just in case here is related part of lspci -v:
-> 
 
-That driver is not supposed to work yet.
-See the readme.txt file.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=787> 
+======================================================================
+Reported By:                Nafallo
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   787
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu Linux 5.10 (hoary)
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             01-06-2005 02:04 CET
+Last Modified:              01-07-2005 21:07 CET
+======================================================================
+Summary:                    Headphone == Master if plugged
+Description: 
+When I'm using headphones the master volume meter changes to headphones
+volume meter, making me unable to use gnome-hotkeys to turn the volume
+up/down (i.e. they change master that's inactivated by headphones).
+======================================================================
 
-I previously called it README.txt, but for some reason the web server 
-decided to hide the README.txt file, and only displays it if I rename it 
-to readme.txt
+----------------------------------------------------------------------
+ tiwai - 01-07-05 18:21 
+----------------------------------------------------------------------
+Isn't it nice to have separate volume controls for different outputs ;)
 
-Summary:
-That file is only there for the purposes of backup, while I work in it.
+ATM, I'm not sure which fix (or implemention) would be the right way.
+We can use the soft-volume control, or bind both volumes in the driver,
+and hide the headphone volume.
 
-Cheers
-James
+----------------------------------------------------------------------
+ Nafallo - 01-07-05 21:07 
+----------------------------------------------------------------------
+I would vote for binding them together, with or without hiding (risc of
+confusing existing users).
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-06-05 02:04 Nafallo        New Issue                                    
+01-06-05 02:04 Nafallo        Distribution              => Ubuntu Linux 5.10
+(hoary)
+01-06-05 02:04 Nafallo        Kernel Version            => 2.6.9           
+01-06-05 02:13 Nafallo        Issue Monitored: Nafallo                     
+01-07-05 18:21 tiwai          Note Added: 0003109                          
+01-07-05 21:07 Nafallo        Note Added: 0003121                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
