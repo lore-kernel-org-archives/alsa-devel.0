@@ -1,15 +1,13 @@
-From: Martin Langer <martin-langer@gmx.de>
+From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: MIDI+USB - one way?
-Date: Sat, 3 Aug 2002 02:21:19 +0200
+Date: Sun, 04 Aug 2002 00:56:01 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020803002119.GD1372@tuba.home>
+Message-ID: <3D4BFD11.2040905@boosthardware.com>
 References: <20020802001554.48f2f13a.mis@creazone.com> <3D4ABCA6.9E126597@ladisch.de> <3D4AD766.4030908@boosthardware.com> <200208030128.53390.plcl@telefonica.net>
-Reply-To: martin-langer@gmx.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <200208030128.53390.plcl@telefonica.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,33 +20,26 @@ To: Pedro Lopez-Cabanillas <plcl@telefonica.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 03, 2002 at 01:28:52AM +0200, Pedro Lopez-Cabanillas wrote:
-> 
-> As a side note, the name "card" is not very appropiate in the USB land. They 
-> are all external devices, (MIDI adaptors, keyboards, drum controllers and 
-> surely soon guitars, wind controllers, etc.), connected by the USB cable to 
-> the computer or USB hub. Another surprising issue is that in the ALSA 
-> soundcard matrix there is no one Roland/Edirol device. The snd-usb-driver 
-> works with a couple of MIDI  adapters and synthesizers from Roland, as you 
-> can see at Clemens page: 
-> http://www.informatik.uni-halle.de/~ladischc/usbmidid.html
-> 
-> We have also a report from Martin Langer, that his MK-249C USB MIDI keyboard 
-> >from Evolution Electronics Ltd. works with the snd-usb-midi driver.
-> http://www.evolution.co.uk/products/keyboards_01.htm
+Pedro Lopez-Cabanillas wrote:
+>
+> First, I need to say that perhaps I'm not the best source of information, as 
+> I've been here, or as an ALSA user for a short time, and because my poor 
+> english. So please, if I'm wrong on something let me know and correct my 
+> mistakes.
 > 
 
-Let's say, the time of a general midi-interface is over since USB is coming
-more and more to the midi world! 
+Thanks Pedro and Martin. I have made some additions for the usb-midi docs.
 
-Do we need an usb-midi device matrix? Up to now we have not much devices, but 
-the list is growing and alsa midi documents are rare. Perhaps we should 
-change this situation and start with a small midi-matrix or a general
-usb-matrix. 
 
-It's just an idea. 
 
-martin
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
+
 
 
 -------------------------------------------------------
