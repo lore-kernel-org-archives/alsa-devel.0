@@ -1,14 +1,14 @@
-From: Rafal Mazurkiewicz <ramazur@eportal.pl>
-Subject: Prywaty-zacja
-Date: 30 Dec 2004 14:34:14 +0100
-Message-ID: <20041230133417.B5CC91DB@alsa.alsa-project.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000760]: alsa 32-bit emulation hangs computer
+Date: Thu, 30 Dec 2004 15:04:03 +0100
+Message-ID: <b5534a42eab84c170e08967d68b44a51@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/html
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from eportal.pl (m236.class147.petrotel.pl [217.28.147.236])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5CC91DB
-	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 14:34:17 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0BA0E2DF
+	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 15:04:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,48 +21,60 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-885=
-9-2">
-</head>
-<body>
 
-<p style=3D"text-align: justify; line-height: 16pt; margin-top: 6.0pt">
-<span style=3D"font-size: 12.0pt"><br>
-W ostatnim czasie CA IB przeprowadzi=B3o bardzo korzystn=B1 (dla CA IB) t=
-ransakcj=EA z=20
-PZU. Wed=B3ug szacunkowej oceny analityk=F3w i doradc=F3w inwestycyjnych =
-PZU S.A.=20
-straci=B3o na tej operacji co najmniej 100 mln z=B3otych. Rynek&nbsp;zasz=
-okowa=B3a zani=BFona=20
-warto=B6=E6 transakcji zakupu przez CA IB akcji trzech funduszy NFI. W&nb=
-sp;nagrod=EA CA IB=20
-zostaje zaproszone przez ministra skarbu&nbsp; do z=B3o=BFenia ofert na d=
-oradztwo=20
-przy prywatyzacji PZU SA. To co robi MSP mo=BFna by nazwa=E6 grotesk=B1, =
-gdyby nie=20
-fakt, =BFe za &#8222;dobr=B1 zabaw=EA&#8221; p=B3aci ca=B3e spo=B3ecze=F1=
-stwo. W&nbsp;sprawie transakcji z PZU=20
-pani Alicja Kornasiewicz i CA IB powinni dosta=E6 zaproszenie, lecz do=20
-prokuratury.</span></p>
-<p style=3D"text-align: justify; margin-top:0">
-<font size=3D"2"><u>=ACr=F3d=B3o:</u><br>
-PKO BP i reszta =B6wiata&nbsp;
-<a href=3D"http://www.issues.150m.com/raport/pko-bp.htm">
-http://www.issues.150m.com/raport/pko-bp.htm</a> </font></p>
-<p style=3D"text-align: justify; margin-top:-6pt">
-<font size=3D"2"><u>Inne strony:</u></font><font size=3D"3"><br>
-</font><font size=3D"2">
-<a href=3D"http://zls.mimuw.edu.pl/KTM/archiwum/706427344.txt">
-http://zls.mimuw.edu.pl/KTM/archiwum/706427344.txt</a><br>
-<a href=3D"http://www.geocities.com/readares/">
-http://www.geocities.com/readares/</a><br>
-<a href=3D"http://www.kurier.iap.pl/zdanie/zdanie.php">
-http://www.kurier.iap.pl/zdanie/zdanie.php</a> </font></p>
-<BR>&nbsp;</p>
-</body>
-</html>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=760> 
+======================================================================
+Reported By:                bugfood
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   760
+Category:                   OTHERS
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Debian 64-bit, &quot;gcc-3.4 flavor&quot;
+Kernel Version:             2.6.10, 64-bit
+======================================================================
+Date Submitted:             12-30-2004 07:28 CET
+Last Modified:              12-30-2004 15:04 CET
+======================================================================
+Summary:                    alsa 32-bit emulation hangs computer
+Description: 
+I'm working on setting up the 64-bit port of Debian on my computer. So far
+so good, except that running 32-bit alsa programs within a chroot causes
+the computer to hang and become almost completely unresponsive; all I can
+do is use magic SysRq to reboot. There are no messages from the kernel in
+/var/log/messages or reported to the console.
+
+64-bit alsa programs work fine
+64-bit oss programs work fine
+32-bit oss programs work fine
+
+I've tested with an SB Live and with my motherboard's onboard i810 audio -
+both have the same problem.
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 12-30-04 15:04 
+----------------------------------------------------------------------
+It's fixed in the recent ALSA.  Try ALSA 1.0.8rc1.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-30-04 07:28 bugfood        New Issue                                    
+12-30-04 07:28 bugfood        File Added: config-2.6.10                    
+12-30-04 07:28 bugfood        Distribution              => Debian 64-bit,
+"gcc-3.4 flavor"
+12-30-04 07:28 bugfood        Kernel Version            => 2.6.10, 64-bit  
+12-30-04 15:04 tiwai          Note Added: 0003021                          
+======================================================================
 
 
 
