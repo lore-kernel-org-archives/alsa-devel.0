@@ -1,14 +1,14 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: Re: patch #1 for hdsp MIDI
-Date: 14 Jan 2003 14:11:18 +0000
+From: Christian Guggenberger <Christian.Guggenberger@physik.uni-regensburg.de>
+Subject: Re: oops while unloading snd-intel8x0
+Date: Tue, 14 Jan 2003 13:28:26 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1042553484.1245.0.camel@Godzilla>
-References: <200301131334.h0DDYL810629@linuxaudiosystems.com>
+Message-ID: <20030114132826.E22124@pc9391.uni-regensburg.de>
+References: <20030110123732.GE986@electra.intern.planb.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200301131334.h0DDYL810629@linuxaudiosystems.com>
+In-Reply-To: <20030110123732.GE986@electra.intern.planb.de>; from Enrik.Berkhan@planb.de on Fri, Jan 10, 2003 at 13:37:32 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,58 +17,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Enrik Berkhan <Enrik.Berkhan@planb.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul,
-   Thanks for looking onto this. We'll try to get it into the Alsa RPM
-and tested soon.
-
-Cheers,
-Mark
-
-On Mon, 2003-01-13 at 13:34, Paul Davis wrote:
-> Index: hdsp.c
-> ===================================================================
-> RCS file: /cvsroot/alsa/alsa-kernel/pci/rme9652/hdsp.c,v
-> retrieving revision 1.16
-> diff -u -u -r1.16 hdsp.c
-> --- hdsp.c      7 Jan 2003 10:36:32 -0000       1.16
-> +++ hdsp.c      13 Jan 2003 13:32:32 -0000
-> @@ -817,10 +817,18 @@
->  
->  static inline int snd_hdsp_midi_output_possible (hdsp_t *hdsp, int id)
->  {
-> +       int fifo_bytes_used;
-> +
->         if (id) {
-> -               return (hdsp_read(hdsp, HDSP_midiStatusOut1) & 0xff) < 128;
-> +               fifo_bytes_used = hdsp_read(hdsp, HDSP_midiStatusOut1) & 0xff;
->         } else {
-> -               return (hdsp_read(hdsp, HDSP_midiStatusOut0) & 0xff)< 128;
-> +               fifo_bytes_used = hdsp_read(hdsp, HDSP_midiStatusOut0) & 0xff;
-> +       }
-> +
-> +       if (fifo_bytes_used < 128) {
-> +               return  128 - fifo_bytes_used;
-> +       } else {
-> +               return 0;
->         }
->  }
+On 10.01.2003   13:37 Enrik Berkhan wrote:
+> Hi,
 > 
+> At Tue, 10 Dec 2002 08:39:35 -0800, Takashi Iwai wrote:
+> > At Tue, 10 Dec 2002 13:50:31 +0100, Christian Guggenberger wrote:
+> > > I get following oops while unloading snd-intel8x0 on a Dell Optiplex 260
+> > hmm, it's a new type of oops, which i've never seen.
 > 
-> -------------------------------------------------------
-> This SF.NET email is sponsored by: FREE  SSL Guide from Thawte
-> are you planning your Web Server Security? Click here to get a FREE
-> Thawte SSL guide and find the answers to all your  SSL security issues.
-> http://ads.sourceforge.net/cgi-bin/redirect.pl?thaw0026en
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> I had the same problem using a Gericom Frontman (SiS 7012). It turned out
+> that unregistering the joystick_driver while no joystick had been found
+> on init caused the oops. Proposed patch:
+> 
+---snip---
 
+ahh, this one also fixes the oops I got that Dell GX260!
 
+thanx,
+
+Christian
 
 
 -------------------------------------------------------
