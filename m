@@ -1,12 +1,14 @@
-From: Phil Kerr <phil@plus24.com>
-Subject: RC5 driver make fail (usbaudio.c)
-Date: Thu, 24 Oct 2002 15:01:08 +0100
+From: Matthias Saou <matthias@rpmforge.net>
+Subject: Re: RC5 driver make fail (usbaudio.c)
+Date: Thu, 24 Oct 2002 16:24:27 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200210241501.08075.phil@plus24.com>
+Message-ID: <20021024162427.73330e57.matthias@rpmforge.net>
+References: <200210241501.08075.phil@plus24.com>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="------------Boundary-00=_W9OHDEI5POWQ22V9QUMQ"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200210241501.08075.phil@plus24.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,184 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Once upon a time, Phil wrote :
 
---------------Boundary-00=_W9OHDEI5POWQ22V9QUMQ
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+> 100% stock RH 8.0 installed an hour before with a es1371 card.
+> 
+> It's failed at:
+> 
+> In file included from usbaudio.c:2:
+> ../alsa-kernel/usb/usbaudio.c: In function `snd_usb_roland_ua100_hack':
+> ../alsa-kernel/usb/usbaudio.c:1938: initializer element is not constant
+> ../alsa-kernel/usb/usbaudio.c:1938: (near initialization for 
+> `midi_quirk.data')
+> make[1]: *** [usbaudio.o] Error 1
+> make[1]: Leaving directory `/home/phil/installs/alsa-driver-0.9.0rc5/usb'
+> make: *** [compile] Error 1
 
-Takashi,
+Strange, I've had no problems whatsoever on a fully updated vanilla Red Hat
+Linux 8.0 system (kernel 2.4.18-17.8.0), compiling all drivers just like
+you did.
 
-Attached is the configure and make dump of alsa-drivers-rc5 (webserver=20
-timestamp 10/24/2002  02:47:00 PM).
+Matthias
 
-100% stock RH 8.0 installed an hour before with a es1371 card.
-
-It's failed at:
-
-In file included from usbaudio.c:2:
-=2E./alsa-kernel/usb/usbaudio.c: In function `snd_usb_roland_ua100_hack':
-=2E./alsa-kernel/usb/usbaudio.c:1938: initializer element is not constant
-=2E./alsa-kernel/usb/usbaudio.c:1938: (near initialization for=20
-`midi_quirk.data')
-make[1]: *** [usbaudio.o] Error 1
-make[1]: Leaving directory `/home/phil/installs/alsa-driver-0.9.0rc5/usb'
-make: *** [compile] Error 1
-
-
-Regards,
-Phil
-
---------------Boundary-00=_W9OHDEI5POWQ22V9QUMQ
-Content-Type: application/x-bzip2;
-  name="alsa-driver-rc5-errors.txt.bz2"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="alsa-driver-rc5-errors.txt.bz2"
-
-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
-
-
---------------Boundary-00=_W9OHDEI5POWQ22V9QUMQ--
-
+-- 
+Clean custom Red Hat Linux rpm packages : http://freshrpms.net/
+Red Hat Linux release 7.3 (Valhalla) running Linux kernel 2.4.18-10acpi
+Load : 0.09 0.14 0.21
 
 
 -------------------------------------------------------
