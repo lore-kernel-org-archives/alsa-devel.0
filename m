@@ -1,11 +1,12 @@
-From: Lawrence Abbott <lawrieabbott@iprimus.com.au>
-Subject: Envy24control, Hoontech DSP24 + C-port  fix
-Date: Sat, 08 Jun 2002 00:28:55 +0800
+From: vollmer.philipp@t-online.de (Philipp Vollmer)
+Subject: Alsa Programming Examples
+Date: Fri, 7 Jun 2002 22:14:11 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D00DF47.3000609@iprimus.com.au>
+Message-ID: <200206072212.56183.do1ypv@linux>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070502030005040000040504"
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,45 +19,35 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070502030005040000040504
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Hello to all ALSA developers!
 
-FWIW, Ive had a problem with Envy24 control not showing all the  audio 
-routing options under the patchbay/router tab (H/W outs 1 to 8 not 
-shown). I found that  adding a couple of lines to 
-alsa-driver-0.9.0rc1/alsa-kernel/pci/ice1712.c fixes the problem for me 
-:)   (see patch).
+I had compiled the examples of the Programming HOWTO succesfully!!!
+I saw many programming mistakes in these files. I don't think ANSI C supp=
+orts=20
+polymorphism! So I had to take parts out of other running code and put it=
+=20
+into the example.
+But now, after a few changes I could run the program which starts to send=
+=20
+Random PCM Data to the interface.
 
-Lawrie
+Now I have following problem:
+Although the program compiled succesfully I get following output:
 
+how1: pcm_params.c:2136: snd_pcm_hw_refine: Assertion && params failed.
+Canceled
 
---------------070502030005040000040504
-Content-Type: text/plain;
- name="ice1712.c.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ice1712.c.patch"
+What is the problem?
+( My conditions:
+CMI8738
+ALSA 0.90 driver and library
+)
 
-diff -Naur old/ice1712.c new/ice1712.c
---- old/ice1712.c	Fri Jun  7 23:10:00 2002
-+++ new/ice1712.c	Fri Jun  7 23:48:24 2002
-@@ -3773,6 +3773,9 @@
- 	case ICE1712_SUBDEVICE_DELTA1010:
- 		ice->num_adcs = ice->num_dacs = ice->num_total_dacs = 8;
- 		break;
-+	case ICE1712_SUBDEVICE_STDSP24:
-+                ice->num_adcs = ice->num_dacs = ice->num_total_dacs = 8;
-+                break;
- 	case ICE1712_SUBDEVICE_EWS88D:
- 		has_i2c = 1;
- 		break;
+Yours Philipp Vollmer
 
---------------070502030005040000040504--
 
 
 _______________________________________________________________
 
 Don't miss the 2002 Sprint PCS Application Developer's Conference
-August 25-28 in Las Vegas -- http://devcon.sprintpcs.com/adp/index.cfm
+August 25-28 in Las Vegas - http://devcon.sprintpcs.com/adp/index.cfm?source=osdntextlink
