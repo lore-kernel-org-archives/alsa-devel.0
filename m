@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000800]: Sound is Corrupted or terribe quality.
-Date: Wed, 16 Mar 2005 13:27:41 +0100
-Message-ID: <092f3a84b5ca96d88edcbd02f01b8424@bugtrack.alsa-project.org>
+From: "Eric" <milou@skybear.net>
+Subject: (no subject)
+Date: Wed, 16 Mar 2005 13:38:33 +0100 (CET)
+Message-ID: <1612.132.168.64.149.1110976713.squirrel@132.168.64.149>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4715215
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 13:27:41 +0100 (MET)
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,76 +14,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I want to use a 9860 laptop provided with realtek ALC880 azalia sound
+system. I have also a PATA hard disk on a FastTrack 378 newly supported b=
+y
+the linux kernel (don't know if it is important or not for my alsa
+problem).
+I installed an ubuntu distrib (development branch). So I have kernel 2.6.=
+10.
+I installed alsa-1.0.8 from an alsa-source package on a 2.6.10 kernel fro=
+m
+hoary, recompiled, and installed. So now I have snd-azx.
+When I modprobe snd-azx, it loads, but it complains about
+"azx_get_response timeout" a lot of time, then complains about "no AFG
+node found" for snd_hda_codecs. And finally the sound card is not
+recognized.
+cat /proc/asound/cards -> no sound card.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=800> 
-======================================================================
-Reported By:                abonilla
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   800
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             01-10-2005 03:20 CET
-Last Modified:              03-16-2005 13:27 CET
-======================================================================
-Summary:                    Sound is Corrupted or terribe quality.
-Description: 
-Sound goes out just like if the jack was not propperly plugged. bad Sound
-Quality.
-======================================================================
+I found this piece of code from a patch from last alsa code patch
+(alsa-bk-2005-03-11.patch). It seems the problems comes from that pieces
+of code ...
 
-----------------------------------------------------------------------
- tiwai - 01-10-05 14:56 
-----------------------------------------------------------------------
-Try 1.0.8rc2.
++/* receive a response */
++static unsigned int azx_get_response(struct hda_codec *codec)
++{
++ azx_t *chip =3D codec->bus->private_data;
++ int timeout =3D 50;
++
++ while (chip->rirb.cmds) {
++ if (! --timeout) {
++ snd_printk(KERN_ERR "azx_get_response timeout\n");
++ chip->rirb.rp =3D azx_readb(chip, RIRBWP);
++ chip->rirb.cmds =3D 0;
++ return -1;
++ }
++ msleep(1);
++ }
++ return chip->rirb.res; /* the last value */
++}
 
-----------------------------------------------------------------------
- jdthood - 03-16-05 13:27 
-----------------------------------------------------------------------
-It seems that this problem persists in 1.0.8.
+and
 
---- Forwarded from http://bugs.debian.org/299459 ---
+/* FIXME: support for multiple AFGs? */
++	codec->afg =3D look_for_afg_node(codec);
++	if (! codec->afg) {
++		snd_printk(KERN_ERR "hda_codec: no AFG node found\n");
++		snd_hda_codec_free(codec);
++		return -ENODEV;
++      }
 
-poor quality problem: When I play any sound file I hear this sound and 
-rustle.
+I cannot get it work. Is it a bug ? Did I miss something ???
 
-> Can you describe the problem in more detail?  Does changing the output
-> level of the tuner (if you have some way of doing this) make any
-> difference?
-
-Changing volume level only regulated sound and rustle volume.
-This problem as seem re majority of sound file but not all (not all 
-frequency ??).
-
-If this is helpful I can send file, with recording sound with rustle.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-10-05 03:20 abonilla       New Issue                                    
-01-10-05 03:20 abonilla       Distribution              => Debian          
-01-10-05 03:20 abonilla       Kernel Version            => 2.6.9           
-01-10-05 14:56 tiwai          Note Added: 0003134                          
-03-16-05 13:27 jdthood        Note Added: 0003956                          
-======================================================================
-
-
+milou
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
