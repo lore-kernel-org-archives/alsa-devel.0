@@ -1,13 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000953]: corrupted file in alsa-driver CVS
-Date: Wed, 2 Mar 2005 14:20:25 +0100
-Message-ID: <f570e52e1ab9e17dfe553ec677eb69f2@bugtrack.alsa-project.org>
+From: Michael Geis <michaelgeis11@yahoo.com>
+Subject: removing events from queue according to tag
+Date: Wed, 2 Mar 2005 03:58:58 -0800 (PST)
+Message-ID: <20050302115858.69453.qmail@web51902.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 92ED51F3
-	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 14:20:25 +0100 (MET)
+Content-Type: text/plain; charset=us-ascii
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,90 +13,112 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi, 
+I am trying to remove events from a queue after having
+scheduled them with a tag. The following minimal
+program re-produces the problem. If I choose to remove
+events not acc. to tag but all events in the queue
+(via SND_SEQ_REMOVE_OUTPUT), things work fine. 
+I.e. only the first note out of ten should is played.
+Have I overlooked sth obvious regarding tags? 
+Any suggestions on are much appreciated.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=953> 
-======================================================================
-Reported By:                Wummel
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   953
-Category:                   OTHERS
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 won't fix
-Fixed in Version:           
-======================================================================
-Date Submitted:             03-01-2005 12:05 CET
-Last Modified:              03-02-2005 14:20 CET
-======================================================================
-Summary:                    corrupted file in alsa-driver CVS
-Description: 
-When running cvs2cl command, I get the following error:
-cvs log: Logging kernel
-cvs [log aborted]: unrecognized operation '\x9' in
-/cvsroot/alsa/alsa-driver/kernel/Attic/mixer.c,v
-Problem reading log input (pid/exit/signal/core: 32710/1/0/0)
+//demo.cpp
+//compile with g++ demo.cpp -o demo -lasound
+#include <alsa/asoundlib.h>
+using namespace std;
 
-I think the mentioned file is corrupted (as suggested while googling for
-this error).
-======================================================================
+int main() {
+    snd_seq_t* seq;
+    snd_seq_open(&seq,"default",SND_SEQ_OPEN_DUPLEX,
+0);
+    int client_id=snd_seq_client_id(seq);
+    int queue = snd_seq_alloc_queue(seq);       
+    snd_seq_start_queue(seq,queue,NULL);
+    snd_seq_drain_output(seq);
+    unsigned int  capability=SND_SEQ_PORT_CAP_READ|
+SND_SEQ_PORT_CAP_SUBS_READ;
+    int
+port_id=snd_seq_create_simple_port(seq,"",capability,SND_SEQ_PORT_TYPE_APPLICATION);
+    //fill in source and destination
+    snd_seq_addr_t sender, dest;
+    sender.client = client_id;
+    sender.port =  port_id;
+    dest.client =  128;
+    dest.port = 0;
+ 
+    //add them to the subscription
+    snd_seq_port_subscribe_t *subs;
+    snd_seq_port_subscribe_alloca(&subs);
+    snd_seq_port_subscribe_set_sender(subs, &sender);
+    snd_seq_port_subscribe_set_dest(subs, &dest);
+    snd_seq_port_subscribe_set_queue(subs,queue);
+    snd_seq_port_subscribe_set_time_update(subs, 1);
+    snd_seq_port_subscribe_set_time_real(subs, 1);
+    snd_seq_subscribe_port(seq, subs);
 
-----------------------------------------------------------------------
- Wummel - 03-01-05 12:06 
-----------------------------------------------------------------------
-The web interface also gives a traceback:
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-driver/kernel/Attic/mixer.c?rev=1.89&view=log
+    //repeat the same note of length 1 second ten
+times.    
+    int tag=1;
+    int channel=0;
+    int pitch=64;
+    int dynamics=64;
+    for(int i=0;i<10;++i) {
+      snd_seq_event_t ev;
+      snd_seq_ev_clear(&ev);
+      snd_seq_ev_set_subs(&ev);
+      snd_seq_ev_set_source(&ev, port_id);
+      ev.tag=tag;      
+      snd_seq_real_time_t time_stamp;
+      //nanosecond component
+      time_stamp.tv_nsec=0;
+      //send NoteOn event
+      time_stamp.tv_sec=i;
+      snd_seq_ev_schedule_real(&ev, queue,
+0,&time_stamp);	 
+     
+snd_seq_ev_set_noteon(&ev,channel,pitch+i,dynamics);
+      snd_seq_event_output(seq, &ev);
+      //send NoteOff event
+      time_stamp.tv_sec=i+1;
+      snd_seq_ev_schedule_real(&ev, queue,
+0,&time_stamp);	 
+     
+snd_seq_ev_set_noteoff(&ev,channel,pitch+i,dynamics);
+      snd_seq_event_output(seq, &ev);
 
-Traceback (most recent call last):
-  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/viewcvs.py", line 2730, in
-main
-    request.run_viewcvs()
-  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/viewcvs.py", line 353, in
-run_viewcvs
-    self.view_func(self)
-  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/viewcvs.py", line 1591, in
-view_log
-    show_revs = request.repos.filelog(request.path_parts, rev, options)
-  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/vclib/bincvs/__init__.py",
-line 193, in filelog
-    filtered_revs = _file_log(revs, tags, default_branch, rev)
-  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/vclib/bincvs/__init__.py",
-line 703, in _file_log
-    taginfo['HEAD'] = _add_tag('HEAD', taginfo['MAIN'].co_rev)
-  File "/usr/local/viewcvs-pre-1.0-sf.net/lib/vclib/bincvs/__init__.py",
-line 373, in _add_tag
-    tag = Tag(tag_name, revision.string)
-AttributeError: 'NoneType' object has no attribute 'string'
+      snd_seq_free_event(&ev);
+    }
+    snd_seq_drain_output(seq);
+    //erase tag
+    snd_seq_remove_events_t* remove;;
+    snd_seq_remove_events_alloca(&remove);
+//   
+snd_seq_remove_events_set_condition(remove,SND_SEQ_REMOVE_OUTPUT);
+    
+snd_seq_remove_events_set_condition(remove,SND_SEQ_REMOVE_TAG_MATCH);
+ 
+    snd_seq_remove_events_set_tag(remove, tag);
+    snd_seq_remove_events(seq,remove);
+    snd_seq_drain_output(seq);
+    sleep(10);
+    return 0;
+}
 
-----------------------------------------------------------------------
- perex - 03-02-05 14:20 
-----------------------------------------------------------------------
-Yes, this corruption has caused probably an older version of CVS server. As
-far as I know, it cannot be fixed (maybe, we can remove this file from CVS
-manually). Skip this file..
+Thanks in advance,
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-01-05 12:05 Wummel         New Issue                                    
-03-01-05 12:06 Wummel         Note Added: 0003759                          
-03-02-05 14:20 perex          Status                   new => resolved     
-03-02-05 14:20 perex          Resolution               open => won't fix   
-03-02-05 14:20 perex          Assigned To               => perex           
-03-02-05 14:20 perex          Note Added: 0003775                          
-======================================================================
+Michael
 
 
+	
+		
+__________________________________ 
+Celebrate Yahoo!'s 10th Birthday! 
+Yahoo! Netrospective: 100 Moments of the Web 
+http://birthday.yahoo.com/netrospective/
 
 
 -------------------------------------------------------
