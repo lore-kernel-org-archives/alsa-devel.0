@@ -1,8 +1,11 @@
-From: Andrew Burgess <aab@cichlid.com>
-Subject: Oops: iMic, alsa cvs, 2.4.23-pre2
-Date: Sun, 31 Aug 2003 14:30:38 -0700
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: dmix bugs. sounds very broken up.
+Date: Mon, 01 Sep 2003 01:59:18 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200308312130.h7VLUcJ32453@cichlid.com>
+Message-ID: <3F5299E6.7040408@superbug.demon.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -12,47 +15,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-NULL pointer dereference
+I have found two problems with using the dmix alsa device name.
+1) snd_pcm_hw_params_can_pause (params)  causes alsa-lib to assert!
 
-Trace; f09b16bf <[usb-ohci]dl_del_list+40f/460>
-Trace; c0119619 <process_timeout+19/20>
-Trace; f09b255b <[usb-ohci]hc_interrupt+10b/1a0>
-Trace; c0109080 <handle_IRQ_event+60/a0>
-Trace; c010929b <do_IRQ+8b/e0>
-Trace; c0105420 <default_idle+0/40>
-Trace; c010bd18 <call_do_IRQ+5/d>
-Trace; c0105420 <default_idle+0/40>
-Trace; c010544c <default_idle+2c/40>
-Trace; c01054c2 <cpu_idle+42/60>
-Trace; c011d42b <call_console_drivers+5b/120>
-Trace; c011d607 <printk+a7/170>
+2) Sound is broken up.
+a) It can only function with 2 periods, why is that? Having 8 periods
+might be better, although "front" works fine with 2 periods, but "dmix"
+with 2 periods fails.
+b) Of the 2 periods, it sounds like sound is only being played from one
+of the periods, with silence for the other period.
 
-I run:
+Summary: -
+If I use device name "front", there are no problems with sound output.
+If I use device name "dmix", there are the above problems.
 
-  arecord -D imic --rate 44100 -f S16_LE - | aplay -
-
-and then press ^C
-
-I get:
-
-A few URB timeouts the first time but the kernel stayed up.
-Then the oops the 2nd time I ran it and a hard hang (had to use
-a pencil for the backtrace :-).
-
-kernel 2.4.23-pre2 (because it has a new batch of USB patches)
-alsa-cvs
-dual athlon mb
-Griffin iMic
-Creative Soundblaster-Live!
-
-PS Any chance the alsa cvs could set its version to something other
-than 0.9.6? At least 0.9.6-cvs or maybe some actual cvs version
-that would make sense to developers? Maybe the build script could
-detect it was running in a cvs tree and grab the version from the cvs info?
-If I were a cvs guru I'd send a patch...
+Cheers
+James
 
 
 
