@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000797]: Make alsaconf able to put snd-usb-audio to modules file
-Date: Sun, 9 Jan 2005 22:01:49 +0100
-Message-ID: <8ed76e352e62108f6be5baaed270008e@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Is Audigy 2 ZS Notebook support planned ???
+Date: Sun, 09 Jan 2005 16:03:08 -0500
+Message-ID: <1105304589.3325.98.camel@krustophenia.net>
+References: <1808.84.97.247.135.1105300288.squirrel@mail.advences.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE34E268
-	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2005 22:01:49 +0100 (MET)
+In-Reply-To: <1808.84.97.247.135.1105300288.squirrel@mail.advences.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,43 +17,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: YHAMOUDI@ADVENCES.COM
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2005-01-09 at 20:51 +0100, YHAMOUDI@ADVENCES.COM wrote:
+> It's a 10K2 compatible, 24/96 PCMCIA card .
+> Thanx for any reply
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=797> 
-======================================================================
-Reported By:                christeck
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   797
-Category:                   alsaconf
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-09-2005 22:01 CET
-Last Modified:              01-09-2005 22:01 CET
-======================================================================
-Summary:                    Make alsaconf able to put snd-usb-audio to modules
-file
-Description: 
-alsaconf does not detect USB cards; this would be great.
+It won't be supported unless Creative decides to release docs or a
+driver.
 
-If one is found, snd-usb-audio could automatically be added to the
-destination file.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-09-05 22:01 christeck      New Issue                                    
-======================================================================
-
+Lee  
 
 
 
