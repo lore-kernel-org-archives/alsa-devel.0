@@ -1,13 +1,15 @@
-From: "Vrihad Shoonya" <vrihad@softhome.net>
-Subject: Re: Is there plans to support SiS7019?
-Date: Tue, 17 Aug 2004 10:12:51 +0530 (IST)
+From: GCZ <geeceezee@free.fr>
+Subject: Re: alsamixer idea
+Date: Thu, 19 Aug 2004 09:19:47 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <34115.192.168.0.10.1092717771.squirrel@dev.datamax.co.in>
-References: <200408171057.i7HAvbv9012682@www6.pobox.sk>
+Message-ID: <41245493.6060701@free.fr>
+References: <1092897987.8432.98.camel@krustophenia.net>
+Reply-To: geeceezee@free.fr
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200408171057.i7HAvbv9012682@www6.pobox.sk>
+In-Reply-To: <1092897987.8432.98.camel@krustophenia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,74 +18,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzad@pobox.sk>
-Cc: alsa-devel@lists.sourceforge.net, clemens@ladisch.de, tiwai@suse.de
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
 
-Thanks Peter, for the sugggestions.
+> Why not just make the mixer controls horizontal?  You would easily be
+> able to fit them all on the screen, with the full names, or at least you
+> could truncate them to something reasonable like 32 characters, and you
+> would still have the same amount of space for the mixer.  The only
+> drawback I see is that it might not be cross-cultural, though I don't
+> see why the volume increasing left to right is any less intuitive than
+> bottom to top.
+> 
+> At the very least it could have a horizontal mode that could be toggled.
 
->The simplest I think is:
->
-> add in trident.h
->
-> #ifndef PCI_DEVICE_ID_SI_7019
-> #define PCI_DEVICE_ID_SI_7019		0x7019
-> #endif
->
-> after
->
-> #ifndef PCI_DEVICE_ID_SI_7018
-> #define PCI_DEVICE_ID_SI_7018		0x7018
-> #endif
->
-> and change this
-> #define TRIDENT_DEVICE_ID_SI7018
-> ((PCI_VENDOR_ID_SI<<16)|PCI_DEVICE_ID_SI_7018)
->
-> to
-> #define TRIDENT_DEVICE_ID_SI7018
-> ((PCI_VENDOR_ID_SI<<16)|PCI_DEVICE_ID_SI_7019)
->
-> and in trident.c change line
-> { 0x1039, 0x7018, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },	/* SiS SI7018
-> PCI Audio */
-> to
-> { 0x1039, 0x7019, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },	/* SiS SI7018
-> PCI Audio */
->
-> If driver will load it will still print sis7018 (but this is not problem).
-
-
-I made the changes as specified by you. The configuration options were
---with-cards=dummy,seq-dummy,ad1848,cmipci,trident,als4000 --with-oss=yes
---with-sequencer=yes --with-debug=full --with-kernel=/usr/src/linux
-
-The alsa-driver-1.0.6a package is built and installed successfully.
-I made following entry in /etc/modules.conf
-
-alias snd-card-0 snd-trident
-alias sound-slot-0 snd-trident
-
-Now when I do modprobe snd-trident, I get following errors
-
-/lib/modules/2.4.18/kernel/sound/acore/snd.o: unresolved symbol
-unregister_sound_special
-/lib/modules/2.4.18/kernel/sound/acore/snd.o: unresolved symbol
-register_sound_special
-/lib/modules/2.4.18/kernel/sound/acore/snd.o: insmod
-/lib/modules/2.4.18/kernel/sound/acore/snd.o failed
-/lib/modules/2.4.18/kernel/sound/acore/snd.o: insmod snd-trident failed
-
-There is no message in syslog, even though I have set debug=full in
-configure option.
-
-The AC97 codec chip I am using is AD1881A.
-
-Got any pointer for more debugging?
-
--vrihad
-
++1
 
 
 -------------------------------------------------------
