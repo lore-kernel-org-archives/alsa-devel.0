@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000687]: Cannot build gentoo-ebuild for 1.0.7
-Date: Wed, 1 Dec 2004 16:01:04 +0100
-Message-ID: <b99e59c5c326d9ef13263af46a284f08@bugtrack.alsa-project.org>
+Date: Wed, 1 Dec 2004 16:35:11 +0100
+Message-ID: <04541051234f68579bd7741eaee66eb3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BF5142BE
-	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2004 16:01:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BD2002E3
+	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2004 16:35:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.6.9-ck2
 ======================================================================
 Date Submitted:             11-28-2004 19:06 CET
-Last Modified:              12-01-2004 16:01 CET
+Last Modified:              12-01-2004 16:35 CET
 ======================================================================
 Summary:                    Cannot build gentoo-ebuild for 1.0.7
 Description: 
@@ -56,12 +56,6 @@ warning: implicit declaration of function `pte_offset'
 /var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7/acore/memory_wrapper.c:47:
 warning: assignment makes pointer from integer without a cast
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 11-29-04 17:20 
-----------------------------------------------------------------------
-Apparently the configure couldn't detect vmalloc_to_page().
-Do you have config.log for this check?
 
 ----------------------------------------------------------------------
  ebichu - 12-01-04 16:01 
@@ -136,6 +130,12 @@ configure: failed program was:
 | }
 configure:6021: result: "no"
 
+----------------------------------------------------------------------
+ tiwai - 12-01-04 16:35 
+----------------------------------------------------------------------
+Check whether /usr/src/linux/include/asm-i386/mach-default/mach_mpspec.h
+exists.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -146,6 +146,8 @@ Date Modified  Username       Field                    Change
 11-29-04 16:41 m_wright       Note Added: 0002653                          
 11-29-04 17:20 tiwai          Note Added: 0002655                          
 12-01-04 16:01 ebichu         Note Added: 0002665                          
+12-01-04 16:01 ebichu         Issue Monitored: ebichu                      
+12-01-04 16:35 tiwai          Note Added: 0002666                          
 ======================================================================
 
 
