@@ -1,21 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: hardware channel mixing [EMU10K1 DMA]
-Date: Tue, 07 Sep 2004 02:53:10 -0400
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: [Alsa-user] Audigy multichannel and line-in did not work in	Linux 2.6.7
+Date: Tue, 7 Sep 2004 09:18:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1094539989.16954.71.camel@krustophenia.net>
-References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
-	 <1094254221.6575.94.camel@krustophenia.net>
-	 <1094260793.3727.19.camel@localhost>
-	 <1094408916.4445.13.camel@krustophenia.net>
-	 <Pine.LNX.4.58.0409061347340.8854@linux.local>
-	 <1094503299.29921.78.camel@krustophenia.net>
-	 <1094519360.3727.13.camel@localhost>
-	 <1094532469.16954.15.camel@krustophenia.net>
+Message-ID: <200409070718.i877IHol013713@www3.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97783256-1804289383-1094541498=:13712"
+Content-Transfer-Encoding: 8BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1094532469.16954.15.camel@krustophenia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,41 +16,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mjander@users.sourceforge.net
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: rlrevell@joe-job.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2004-09-07 at 00:47, Lee Revell wrote:
-> OK, I think I got it.  The OSS driver uses the interval timer for
-> playback.  The ALSA driver does not use the timer interrupt at all, and
-> the OSS driver does not seem to use the channel loop interrupt at all.  
-> 
-> The interval timer seems to be intended exactly for this use; I am a bit
-> baffled as to why was the channel loop interrupt, a relatively obscure
-> feature, was chosen as the playback interrupt source.
-> 
-> I should have a patch in a day or two to eliminate the extra voice. 
-> Looks like this will also allow the driver to support real multichannel
-> PCM playback rather than the current kludge of alsa plugins using
-> multiple stereo and mono PCMs for 5.1, etc.
-> 
+--97783256-1804289383-1094541498=:13712
+Content-Type: TEXT/plain; CHARSET=US-ASCII
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-The above is almost right; this will eliminate the extra voice for
-regular PCM playback, system sounds, etc but will not give you sample
-accurate synchronized full duplex operation like kX ASIO.  The only way
-to do this is to have all the period_elapsed callbacks for the linked
-capture/playback streams run atomically in the same interrupt handler. 
+Hi,
 
-This can be achieved by adding another multichannel playback device,
-corresponding to the hw;0,2 FXBus, and use the efx_capture interrupt for
-playback.  When these playback channels are opened a voice is allocated
-and added to the efx capture device;s linked linked list of playback
-streams.  This _has_ to be how the ASIO drivers work.
+There is check for channel count (1,2,4,8).
+Attached patch will add suppor for 16,32,64.
 
-I should have a patch fairly soon.
+Could you test this ??? I tryed 32 and 64 channels an looks like it
+works. I can not test (no time to do this) if recorded data are good.
+Maybe if you remove this check completly hardware will work with 10
+channels too, who know.
 
-Lee
+Peter Zubaj
+=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
+bte radost svojmu telefonu=0A
+--97783256-1804289383-1094541498=:13712
+Content-Type: APPLICATION/octet-stream; name="efx_channels.diff"
+Content-Transfer-Encoding: BASE64
 
+ZGlmZiAtdSAtciBhbHNhLWRyaXZlci0xLjAuNmEtb2xkL2Fsc2Eta2VybmVs
+L3BjaS9lbXUxMGsxL2VtdXBjbS5jIGFsc2EtZHJpdmVyLTEuMC42YS9hbHNh
+LWtlcm5lbC9wY2kvZW11MTBrMS9lbXVwY20uYwotLS0gYWxzYS1kcml2ZXIt
+MS4wLjZhLW9sZC9hbHNhLWtlcm5lbC9wY2kvZW11MTBrMS9lbXVwY20uYwky
+MDA0LTA3LTE0IDE2OjE0OjU0LjAwMDAwMDAwMCArMDAwMAorKysgYWxzYS1k
+cml2ZXItMS4wLjZhL2Fsc2Eta2VybmVsL3BjaS9lbXUxMGsxL2VtdXBjbS5j
+CTIwMDQtMDktMDYgMTk6NTU6MTkuMDAwMDAwMDAwICswMDAwCkBAIC0xMDky
+LDYgKzEwOTIsNyBAQAogCWVtdTEwazFfdCAqZW11ID0gc25kX2tjb250cm9s
+X2NoaXAoa2NvbnRyb2wpOwogCXVuc2lnbmVkIGludCBudmFsWzJdLCBiaXRz
+OwogCWludCBuZWZ4ID0gZW11LT5hdWRpZ3kgPyA2NCA6IDMyOworCWludCBu
+ZWZ4YiA9IGVtdS0+YXVkaWd5ID8gNyA6IDY7CiAJaW50IGNoYW5nZSwgaWR4
+OwogCQogCW52YWxbMF0gPSBudmFsWzFdID0gMDsKQEAgLTExMDAsOCArMTEw
+MSwxNCBAQAogCQkJbnZhbFtpZHggLyAzMl0gfD0gMSA8PCAoaWR4ICUgMzIp
+OwogCQkJYml0cysrOwogCQl9Ci0JaWYgKGJpdHMgIT0gMSAmJiBiaXRzICE9
+IDIgJiYgYml0cyAhPSA0ICYmIGJpdHMgIT0gOCkKKwkJCisJZm9yIChpZHgg
+PSAwOyBpZHggPCBuZWZ4YjsgaWR4KyspCisJCWlmICgxIDw8IGlkeCA9PSBi
+aXRzKQorCQkJYnJlYWs7CisJCisJaWYgKGlkeCA+PSBuZWZ4YikKIAkJcmV0
+dXJuIC1FSU5WQUw7CisKIAlzcGluX2xvY2tfaXJxKCZlbXUtPnJlZ19sb2Nr
+KTsKIAljaGFuZ2UgPSAobnZhbFswXSAhPSBlbXUtPmVmeF92b2ljZXNfbWFz
+a1swXSkgfHwKIAkJKG52YWxbMV0gIT0gZW11LT5lZnhfdm9pY2VzX21hc2tb
+MV0pOwo=
+
+--97783256-1804289383-1094541498=:13712--
 
 
 -------------------------------------------------------
