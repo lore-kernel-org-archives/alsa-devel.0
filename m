@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000543]: Noisy sound, broken mixer with via8235 (driver regression)
-Date: Wed, 13 Oct 2004 10:48:40 +0200 (CEST)
+Subject: [ALSA - driver 0000572]: spdif hw entry fails to work in multi
+Date: Wed, 13 Oct 2004 10:49:07 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041013084840.7B32C1B00B@server.perex-int.cz>
+Message-ID: <20041013084907.A4F821B00B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC187268
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 10:48:40 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DACA8268
+	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 10:49:07 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,191 +22,193 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000543
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000572
 ======================================================================
-Reported By:                obsidian
-Assigned To:                
+Reported By:                ramendik
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     543
-Category:                   PCI - via82xx
+Bug ID:                     572
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.8-1-k7
+Status:                     feedback
+Distribution:               RH-based
+Kernel Version:             2.6.8.1, with alsa 1.0.7rc1 plus patches from bug 0000505
 ======================================================================
-Date Submitted:             09-25-2004 23:15 CEST
-Last Modified:              10-13-2004 10:48 CEST
+Date Submitted:             10-08-2004 02:27 CEST
+Last Modified:              10-13-2004 10:49 CEST
 ======================================================================
-Summary:                    Noisy sound, broken mixer with via8235 (driver regression)
+Summary:                    spdif hw entry fails to work in multi
 Description: 
-Sound is "shimmery" or "staticky" - noticeably bad. Mixer "master volume"
-has no effect. "PCM volume" cannot be adjusted. "DXS https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001" volume has an
-effect but not "correct" - i.e. zero != silent. I do get the message (at
-boot): 
+After bug 0000505 was fixed, hw:0,0 only plays to analog devices, and
+hw:0,4 to spdif. As one needs output in both, I tried to use .asoundrc ,
+and therefore needed to use the "multi" pcm type in order to unite these
+two (and then route). This is what I put in .asoundrc
 
-via82xx: Assuming DXS channels with 48k fixed sample rate.
-         Please try dxs_support=1 or dxs_support=4 option
-         and report if it works on your machine.
+pcm.whole {
+    type multi
+    slaves.a.pcm "hw:0,0"
+    slaves.a.channels 2
+    slaves.b.pcm "hw:0,4"
+    slaves.b.channels 2
+    bindings.0.slave a
+    bindings.0.channel 0
+    bindings.1.slave a
+    bindings.1.channel 1
+    bindings.2.slave b
+    bindings.2.channel 0
+    bindings.3.slave b
+    bindings.3.channel 1
+}
 
-This is a big prob. on this particular machine, which is supposed to
-connect to the stereo and play mp3s, among other things.
+pcm.rt {
+    type route
+    slave.pcm "whole"
+    ttable.0.0 1
+    ttable.1.1 1
+    ttable.0.2 1
+    ttable.1.3 1
+}
 
-Sound works normally outside Linux, and in Linux 2.4 with some Alsa 0.9.*.
-But with Linux 2.6 and alsa 1.0.5/6, bleah.
+The ttable may be wrong - I could not find a sane description anywhere -
+but I tried many variants, and besides, playing to "whole" bypasses this.
 
-I have been googling and troubleshooting all day. Here's what I've already
-tried:
+So here's what I get when playing to "rt" OR to "whole" via alsaplayer :
 
-dxs_support=1, 2, 3 and 4 
+$ alsaplayer -d whole test.wav 
+error on set_channels (2)
+Unavailable hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 64
+CHANNELS: 4
+RATE: 44100
+PERIOD_TIME: (181 371520)
+PERIOD_SIZE: [8 16384]
+PERIOD_BYTES: [64 131072]
+PERIODS: [1 1024]
+BUFFER_TIME: (181 371520)
+BUFFER_SIZE: [8 16384]
+BUFFER_BYTES: [64 131072]
+TICK_TIME: 1000
+error on set_channels (2)
+Unavailable hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 64
+CHANNELS: 4
+RATE: 44100
+PERIOD_TIME: (181 371520)
+PERIOD_SIZE: [8 16384]
+PERIOD_BYTES: [64 131072]
+PERIODS: [1 1024]
+BUFFER_TIME: (181 371520)
+BUFFER_SIZE: [8 16384]
+BUFFER_BYTES: [64 131072]
+TICK_TIME: 1000
+failed to configure output device...trying OSS
 
-This makes zero difference, so I thought I might be doing it wrong; I
-tried it in modprobe.conf, modprobe.d/sound, and manually as an argument
-to modprobe, i.e. "modprobe snd-via82xx dxs_support=1", also with both
-rmmod'ing all alsa-related modules and rebooting altogether. 
+then alsaplayer hangs until interrupted.
 
-Is there any way to tell if a dxs_support or other argument has been acted
-on? It really felt like they were all ignored. I could never get that
-original message to happen anytime but at boot, not matter what I did.
-modprobe -v did show an "insmod" line with the parameter(s) on it,
-though.
-
-ac97_quirk=0,1,2,3,4
-
-No effect.
-
-Various kernel boot parameters, both alone and in combination with the
-above:
-
-noapic, nolapic, acpi=off, and pci=noacpi.
-
-No effect. (BTW, I am currently running with all 4.) 
-
-Frustrating, because it seemed from searching a great many people have the
-exact same problem I do, but none of the many, varying "worked for me"
-answers have helped me.
-
-I'm a developer, somewhat kernel-savvy, and at your disposal. What do we
-try first?
+When I comment out everything related to slave b, "whole" seems to work
+(without spdif output, of course). So this seems like a bug in the spdif
+device.
 ======================================================================
 
 ----------------------------------------------------------------------
- obsidian - 09-26-2004 01:09 CEST 
+ tiwai - 10-08-2004 12:13 CEST 
 ----------------------------------------------------------------------
-Still no solution, but there are new details.
+Use this:
 
-By loading snd-via82xx from /etc/modules, and putting the driver options
-on the line in that file, I was finally able to get them to take effect
-(i.e. items available in the mixer would change, 48k message wouldn't
-display, etc). I ran through the tests again (rebooting every time) with
-different values of dxs_settings and ac97_quirk. 
+pcm.rt {
+    type route
+    slave.pcm whole
+    slave.channels 4
+    ttable.0.0 1
+    ttable.1.1 1
+    ttable.0.2 1
+    ttable.1.3 1
+}
 
-ac97_quirk seemed to have no effect anyway.
-
-By varying dxs_settings I observed dxs volume controls disappearing from
-alsamixer with some values. Otherwise everything was the same ("shimmery"
-sound, master volume ignored, etc) and so this only had the effect of
-making it impossible to influence the volume altogether.
-
-----------------------------------------------------------------------
- obsidian - 09-26-2004 01:24 CEST 
-----------------------------------------------------------------------
-One more thing: I observed this in alsamixer. Surprised it hasn't popped up
-in too many other places, but I noticed that the chip (CM9739) correlates
-exactly with the same mixer issues I'm having:
-
-Card: VIA 8235
-Chip: C-Media Electronics CMI9739
-
-See:
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg10120.html
-
-This doesn't overlap with sound quality issues, however.
+and run with -d rt .
 
 ----------------------------------------------------------------------
- obsidian - 09-26-2004 02:27 CEST 
+ ramendik - 10-08-2004 12:29 CEST 
 ----------------------------------------------------------------------
-I upgraded to the current BIOS. No effect.
+Thanks. This has worked.
 
-----------------------------------------------------------------------
- SirPreme - 10-11-2004 15:13 CEST 
-----------------------------------------------------------------------
-I have the same problem and I couldn't find a way to solve this. I'm using
-a via82xx, too.
+A definite must for the FAQ, and a link to this should be present in the
+soundcard matrix for i865 - which at this point is not even available. 
+But I'll refile this as a documentation bug. Please close this one.
 
-This is what makes it working on 2.4, I think:
-If you compile OSS together with your soundcard into the kernel (or as a
-module), it works fine, but then you donnot use real ALSA.. :/
-
-Please, fix this bug..
+Actually, the absence of a *decent* documentation of the route type is
+another documentation bug. And, as a professional tech writer I'm
+qualified to fix this. I'll write to alsa-devel to offer my services.
 
 ----------------------------------------------------------------------
- tiwai - 10-11-2004 15:56 CEST 
+ tiwai - 10-08-2004 12:42 CEST 
 ----------------------------------------------------------------------
-You should try dxs_support=4.  It works on more mobos.
+Yes, we know the documentation problems :-<
+Any help would be appreciated.
 
-Don't change ac97_quirk for CM9739.
-The CM9739 has no PCM volume control indeed.
-You need the software volume control in each app.
+BTW, it's possible to implement the analog and spdif simultaneous
+output on ICH4 without data duplication.  I'll try a hack later.
 
-----------------------------------------------------------------------
- obsidian - 10-12-2004 02:06 CEST 
-----------------------------------------------------------------------
-I already tried setting dxs_support to 4. This only had the effects I
-described above - did not fix the problem.
-
-What can we try next?
+Anyway, I close this bug now.
 
 ----------------------------------------------------------------------
- tiwai - 10-12-2004 13:06 CEST 
+ tiwai - 10-11-2004 15:39 CEST 
 ----------------------------------------------------------------------
-Try dxs_support=2, then you'll have no DXS multi-channel control.
-This should be identical with the kernel OSS/Free driver.
+Could you try the attached patch?  With this patch, the signal to
+hw:0,0 will be routed to the spdif, too.
 
-If this doesn't fix the sound quality, it's because the output level
-is too big (due to the lack of DAC attenuation control).  Try to
-reduce the signal level in software.  E.g. xmms ALSA output has
-the software volume control.
-
-With dxs_support=4 (or 1), you have VIA DXS volume control, and can
-reduce the playback volume with this control, too.
-Note that the control seems inear, so it's peaky.
+This behavior should be switched by either a module parameter or a
+mixer control because someone may want to use analog and SPDIF
+separately to play different streams.
 
 ----------------------------------------------------------------------
- obsidian - 10-13-2004 04:49 CEST 
+ ramendik - 10-13-2004 06:43 CEST 
 ----------------------------------------------------------------------
-When I tried dxs_settings=2 before, it did not fix the issue. The sound was
-shimmery no matter what software was the audio source, and no matter what
-the intensity of the sound. 
+The patch has failed.
 
-With other dxs_settings values, the sound was shimmery whether the 1st dxs
-channel's volume was set high, low or anywhere in between. It was actually
-the most noticeable when the sound was quiet. 
+(I tried to apply it over 1.0.7rc1 plus the bug 505 patches.)
 
-What else can I try?
+The reason is probably that it's over CVS. Rather than play around with
+patches, perhaps you can simply attach intel8x0.c so I could replace the
+entire file?
+
+Alternatively I can pull alsa-cvs, of course. Should I do this?
 
 ----------------------------------------------------------------------
- tiwai - 10-13-2004 10:48 CEST 
+ tiwai - 10-13-2004 10:49 CEST 
 ----------------------------------------------------------------------
-As another FAQ, if you have 'IEC958 Input Monitor' is on, turn it off.
+Try 1.0.7rc2.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-25-04 23:15 obsidian       New Bug                                      
-09-25-04 23:15 obsidian       Distribution              => Debian Sarge    
-09-25-04 23:15 obsidian       Kernel Version            => 2.6.8-1-k7      
-09-26-04 01:09 obsidian       Bugnote Added: 0001913                       
-09-26-04 01:24 obsidian       Bugnote Added: 0001914                       
-09-26-04 02:27 obsidian       Bugnote Added: 0001915                       
-10-11-04 15:13 SirPreme       Bugnote Added: 0002078                       
-10-11-04 15:56 tiwai          Bugnote Added: 0002080                       
-10-12-04 02:06 obsidian       Bugnote Added: 0002086                       
-10-12-04 13:06 tiwai          Bugnote Added: 0002090                       
-10-13-04 04:49 obsidian       Bugnote Added: 0002109                       
-10-13-04 10:48 tiwai          Bugnote Added: 0002116                       
+10-08-04 02:27 ramendik       New Bug                                      
+10-08-04 02:27 ramendik       Distribution              => RH-based        
+10-08-04 02:27 ramendik       Kernel Version            => 2.6.8.1, with alsa 1.0.7rc1 plus patches from bug 0000505
+10-08-04 02:31 ramendik       Bug Monitored: ramendik                      
+10-08-04 12:13 tiwai          Bugnote Added: 0002045                       
+10-08-04 12:29 ramendik       Bugnote Added: 0002048                       
+10-08-04 12:42 tiwai          Bugnote Added: 0002049                       
+10-08-04 12:42 tiwai          Assigned To               => tiwai           
+10-08-04 12:42 tiwai          Resolution               open => not a bug   
+10-08-04 12:42 tiwai          Status                   new => resolved     
+10-11-04 15:39 tiwai          Bugnote Added: 0002079                       
+10-11-04 15:39 tiwai          Resolution               not a bug => reopened
+10-11-04 15:39 tiwai          Status                   resolved => feedback
+10-11-04 15:39 tiwai          File Added: ich-analog-spdif-dup.dif                    
+10-13-04 06:43 ramendik       Bugnote Added: 0002110                       
+10-13-04 10:49 tiwai          Bugnote Added: 0002117                       
 ======================================================================
 
 
