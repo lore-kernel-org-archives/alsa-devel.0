@@ -1,18 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [Jackit-devel] irq handler top half timestamps
-Date: Thu, 16 Dec 2004 13:35:18 -0500
-Message-ID: <1103222119.23735.2.camel@krustophenia.net>
-References: <200412102051.iBAKphFL012668@localhost.localdomain>
-	 <1102712509.29919.46.camel@krustophenia.net>
-	 <20041211015610.1798af34@mango.fruits.de>
-	 <20041211032214.5121a003@mango.fruits.de>
-	 <20041216003255.6e65360b@mango.fruits.de> <20041216091812.GE11047@elte.hu>
-	 <20041216173353.4348dd15@mango.fruits.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
+Date: Thu, 16 Dec 2004 21:06:31 +0100
+Message-ID: <93ac67d6b8be5713a659efca1f88f3b7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041216173353.4348dd15@mango.fruits.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E6E6D218
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 21:06:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,21 +18,114 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tapas <tapas@affenbande.org>
-Cc: Ingo Molnar <mingo@elte.hu>, Florian Schmidt <mista.tapas@gmx.net>, Paul Davis <paul@linuxaudiosystems.com>, Jaroslav Kysela <perex@suse.cz>, jackit-devel@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-12-16 at 17:33 +0100, tapas wrote:
-> Fons Adriaenssen wrote to me that he tried snd_pcm_get_trigger_tstamp(),
-> but he always got the same value back. Since the docs are rather sparse
-> i want to ask the alsa-devs about exactly how to use the
-> snd_pcm_get_trigger_tstamp() call.
 
-Because trigger_tstamp only gets updated in the trigger callback, when
-the PCM is stopped, started, or paused.  I will have to check the code
-to see what you use for the irq timestamp.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
+======================================================================
+Reported By:                footcow
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   666
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             11-23-2004 01:31 CET
+Last Modified:              12-16-2004 21:06 CET
+======================================================================
+Summary:                    Simply no sound ... no line ... no mixer
+Description: 
+I have compiled the last release : 1.0.7 stable.
+But I do not have any sound, no line ... no mixer ... :(
 
-Lee
+I have an AsusTek P5GD2 motherboard with lspci -v :
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+        Subsystem: Asustek Computer, Inc.: Unknown device 813d
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70]
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
+
+
+The snd_azx module is well loaded :
+lsmod : 
+snd_azx                30920  1
+snd_pcm                95112  1 snd_azx
+snd_timer              25476  1 snd_pcm
+snd                    54500  5 snd_azx,snd_pcm,snd_timer
+snd_page_alloc         10120  1 snd_pcm
+
+If I run alsamixer I get this :
+$ alsamixer
+No mixer elems found
+
+If I run alsamixergui, I get 3 columns:
+Line is emplty and can't change
+Same for Mic
+I can only move values for a third column called Capt.
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 12-16-04 18:32 
+----------------------------------------------------------------------
+Other people confirmed that the driver works with this codec chip, so your
+problem must be a configuration issue.
+
+The driver has been updated again recently, so try always the latest CVS
+version.
+
+The chip has really no hardware volume control at all.  See the datasheet
+of CMI9880.
+
+----------------------------------------------------------------------
+ footcow - 12-16-04 21:06 
+----------------------------------------------------------------------
+OK ... you can close this bug ...
+It's running with the last CVS version ! ;o)
+I'm so happy ... many thanks for your job !
+
+So strange that the hardware do not have any volume control !
+But it's running ... that's the best thing !
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-23-04 01:31 footcow        New Issue                                    
+11-23-04 01:31 footcow        Distribution              => Debian          
+11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
+11-23-04 21:49 footcow        Note Added: 0002530                          
+12-08-04 19:54 tiwai          Note Added: 0002791                          
+12-08-04 23:56 footcow        Note Added: 0002795                          
+12-09-04 11:27 tiwai          Note Added: 0002799                          
+12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
+12-09-04 11:34 tiwai          Note Added: 0002800                          
+12-09-04 12:11 tiwai          Note Added: 0002801                          
+12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
+  
+12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
+12-10-04 22:08 footcow        Note Added: 0002808                          
+12-10-04 22:08 footcow        File Added: alsamix.png                      
+12-11-04 17:40 tiwai          Note Added: 0002811                          
+12-12-04 00:58 footcow        Note Added: 0002813                          
+12-12-04 00:59 footcow        File Added: alsamix2.png                     
+12-16-04 18:32 tiwai          Note Added: 0002836                          
+12-16-04 21:06 footcow        Note Added: 0002841                          
+======================================================================
+
 
 
 
