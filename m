@@ -1,19 +1,12 @@
-From: Richard Bown <bownie@bownie.com>
-Subject: Re: Reverse engineering from Windows 2000 WDM drivers?
-Date: Sat, 11 May 2002 16:43:13 +0100
+From: Paul Davis <pbd@op.net>
+Subject: Re: Terratec DMX Xfire 1024
+Date: Sat, 11 May 2002 17:57:42 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205111643.13276.bownie@bownie.com>
-References: <3CDBDD6F.F67EEA8F@informatik.uni-kl.de> <3CDD353C.5020505@superbug.demon.co.uk>
-Reply-To: bownie@bownie.com
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Message-ID: <200205112156.g4BLuuT19388@post2.fast.net>
+References: <7630657.1021132367130.JavaMail.valter5@jippii.fi>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from msgdirector1.onetel.net.uk (IDENT:mirapoint@msgdirector1.onetel.net.uk [212.67.96.148])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA03462
-	for <alsa-devel@alsa-project.org>; Sat, 11 May 2002 17:50:44 +0200
-In-Reply-To: <3CDD353C.5020505@superbug.demon.co.uk>
+In-Reply-To: Your message of "Sat, 11 May 2002 18:52:47 +0300."
+             <7630657.1021132367130.JavaMail.valter5@jippii.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,19 +15,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: James@superbug.demon.co.uk, =?iso-8859-1?q?J=FCrgen=20Zimmermann?= <jnzimmer@informatik.uni-kl.de>
-Cc: alsa-devel@alsa-project.org
+To: valter5@jippii.fi
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-[YAMAHA SW1000XG]
+>Hello.
+>
+>I've noticed that there isn't any conversation of Terratec's Windows 
+>control panel to Linux. Since it's very important for all the owners of 
+>this sound card, since it controls: playback, record, digital inputs and 
+>outputs, midi, 3D settings - and, the most important thing - EQ!
+>
+>This EQ is DMX Xfire 1024's (headphone) amplifier, and it's very 
+>important when listening to music, watching videos etc - I would 
+>recommend that somebody should somehow try to convert this control panel 
+>to Linux!
 
-Oh wow.  I've got one of these too.  Great card and I'd _love_ to get
-it working with ALSA - I can offer my enthusiasm if nothing else.
+assuming that the driver permits modification of the relevant hardware
+state, then alsactl or amixer can be used to do all of the above.
 
-R
--- 
-http://www.all-day-breakfast.com/rosegarden
-http://www.bownie.com
+whether its a good idea to write per-card graphical user interface
+control utilities is an idea that has encountered some differing views
+in the past. i know its common in the windows/macos world, but this is
+not the windows/macos world, and its far from a given that such an
+approach is correct, useful, efficient, etc.
+
+--p
 
 _______________________________________________________________
 
