@@ -1,14 +1,17 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: latencytest for PPC?
-Date: Mon, 18 Oct 2004 15:21:06 +0200 (CEST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: soundcard matrix broken
+Date: Mon, 18 Oct 2004 15:31:10 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20041018152106.pochini@shiny.it>
-References: <20041018123725.GA2154@palantir7.mph.eclipse.net>
+Message-ID: <1098106270.4173c59e3a9c2@www3.webhosting.cx>
+References: <20041016124617.2d3b46eb@mango.fruits.de> <20041018124433.2883b056@mango.fruits.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041018123725.GA2154@palantir7.mph.eclipse.net>
+Received: from www3.webhosting.cx (www3.webhosting.cx [207.44.248.26])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 76B6B2D3
+	for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2004 15:31:18 +0200 (MEST)
+In-Reply-To: <20041018124433.2883b056@mango.fruits.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,32 +20,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: MPH Kernel <opendev@mph.eclipse.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: Florian Schmidt <mista.tapas@gmx.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Looks like someone is fixing it to work again.
 
-On 18-Oct-2004 MPH Kernel wrote:
-> Hi,
+If you need any hints about anything let me know. I am still unable to
+contribute code and will likely be out of action for a couple of months l=
+onger
+but can dredge my memory if needed.
+
+Good idea to convert to xml...
+
+
+
+Quoting Florian Schmidt <mista.tapas@gmx.net>:
+
+> On Sat, 16 Oct 2004 12:46:17 +0200
+> Florian Schmidt <mista.tapas@gmx.net> wrote:
 >
-> Anyone have a latency testing tool for PPC?
-> The latest working version I have is latencytest 0.42, but it
-> never detects any xruns (where alsa does). So I'm suspicious
-> of it's output.
+> >
+> > Hi,
+> >
+> > it seems that the soundcard matrix lists only a subset of all known
+> > soundcard types/manufacturers.
+>
+> the last entry when selecting All Manufacturers is Creative labs. Every=
+thing
+> alphabetically coming after Creative Labs is missing.
+>
+> flo
+>
+>
+> -------------------------------------------------------
+> This SF.net email is sponsored by: IT Product Guide on ITManagersJourna=
+l
+> Use IT products in your business? Tell us what you think of them. Give =
+us
+> Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out =
+more
+> http://productguide.itmanagersjournal.com/guidepromo.tmpl
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
 
-I think you can use aplay as-is... just choose a very short
-buffer size to make long latencies cause an xrun.
 
+ --
+ Patrick Shirkey - Boost Hardware Ltd.
+ Http://www.boosthardware.com
+ Http://www.djcj.org/ - The Linux Audio Users guide
+ Http://www.djcj.org/gigs - Gigs Guide Korea
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-> latencytest 0.5.5 won't work for PPC. It depends on RTC stuff
-> not present in the gen_rtc module.
+ Being on stage with the band in front of crowds shouting, "Get off! No!
+ We want normal music!", I think that was more like acting than anything
+ I've ever done.
 
-Perhaps someone already added the required features to make
-latencytest work, but I'm not sure. Search in the archives.
-
-
---
-Giuliano.
+ Goldie, 8 Nov, 2002
+ The Scotsman
 
 
 -------------------------------------------------------
