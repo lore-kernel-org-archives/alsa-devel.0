@@ -1,15 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: configure and compile errors (possibly because of gcc
- 3.3)
-Date: Fri, 20 Jun 2003 09:23:41 +0200 (METDST)
+From: Maarten de Boer <mdeboer@iua.upf.es>
+Subject: kernel-2.5.72: /proc/asound/dev missing
+Date: Fri, 20 Jun 2003 14:43:22 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0306200912570.9190-100000@studcom.urz.uni-halle.de>
-References: <20030619132925.68cb59bd.hanno@gmx.de>
+Message-ID: <20030620144322.3afea401.mdeboer@iua.upf.es>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20030619132925.68cb59bd.hanno@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,36 +15,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Hanno =?ISO-8859-15?Q?B=F6ck?= <hanno@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hanno B=F6ck wrote:
-> Kernel compiler: gcc-Version 3.3 (Gentoo Linux 1.4, PVR 3.3)
-> Used compiler:   gcc (GCC) 3.3 (Gentoo Linux 1.4, PVR 3.3)
-> ...
-> Decoded kernel compiler: type=3Dgcc-Version version=3D3.3
-> Decoded used compiler:   type=3Dgcc         version=3D3.3
->
-> Well, the kernel compiler and the used compiler are definitely the =
-same.
 
-Well, the identification strings aren't (not exactly).
+Hello,
 
-> checking for kernel version... 2.4.21-ac1
-> ...
-> serialmidi.c: In function `open_tty': serialmidi.c:158: error: inva=
-lid operands to binary >
+I just upgraded to kernel 2.5.72 (I want to do some LL testing), with the
+alsa driver as included in the kernel. The modules load, but I don't get
+/proc/asound/dev (to which, as I understand, /dev/snd should link). I don't
+use devfs.
 
-The -ac patch changes the count field's type to atomic_t. Change the
-offending line to:
+Any suggestions?
 
-=09if (atomic_read(&tty->count) > 1) {
+Maarten
 
+-----------------------------------------------------------------------------
 
-HTH
-Clemens
+$ grep SND /usr/src/linux-2.5.72/.config  | grep -v "not set"
+CONFIG_SND=m
+CONFIG_SND_SEQUENCER=m
+CONFIG_SND_OSSEMUL=y
+CONFIG_SND_MIXER_OSS=m
+CONFIG_SND_PCM_OSS=m
+CONFIG_SND_SEQUENCER_OSS=y
+CONFIG_SND_VIRMIDI=m
+CONFIG_SND_EMU10K1=m
+CONFIG_SND_USB_AUDIO=m
 
+$ lsmod
+Module                  Size  Used by
+snd_emu10k1            60804  0
+snd_rawmidi            12160  1 snd_emu10k1
+snd_pcm                54528  1 snd_emu10k1
+snd_timer              13056  1 snd_pcm
+snd_seq_device          4100  2 snd_emu10k1,snd_rawmidi
+snd_ac97_codec         34308  1 snd_emu10k1
+snd_page_alloc          4484  2 snd_emu10k1,snd_pcm
+snd_util_mem            1664  1 snd_emu10k1
+snd_hwdep               4352  1 snd_emu10k1
+snd                    27296  8 snd_emu10k1,snd_rawmidi,snd_pcm,snd_timer,snd_seq_device,snd_ac97_codec,snd_util_mem,snd_hwdep
+
+$ ls -l /proc/asound/
+total 0
+lrwxrwxrwx    1 root     root            5 Jun 20 14:35 Live -> card0
+dr-xr-xr-x    7 root     root            0 Jun 20 14:35 card0
+-r--r--r--    1 root     root            0 Jun 20 14:35 cards
+-r--r--r--    1 root     root            0 Jun 20 14:35 devices
+-r--r--r--    1 root     root            0 Jun 20 14:35 hwdep
+-r--r--r--    1 root     root            0 Jun 20 14:35 modules
+dr-xr-xr-x    2 root     root            0 Jun 20 14:35 oss
+-r--r--r--    1 root     root            0 Jun 20 14:35 pcm
+dr-xr-xr-x    2 root     root            0 Jun 20 14:35 seq
+-r--r--r--    1 root     root            0 Jun 20 14:35 timers
+-r--r--r--    1 root     root            0 Jun 20 14:35 version
 
 
 
