@@ -1,16 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: David Lloyd <dmlloyd@tds.net>
 Subject: Re: DMIX and capture stream
-Date: Mon, 5 Jan 2004 17:21:40 +0100 (CET)
+Date: Mon, 5 Jan 2004 10:29:01 -0600 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401051710250.1862@pnote.perex-int.cz>
-References: <Pine.LNX.4.58.0401021421520.4466@tomservo.workpc.tds.net>
- <200401040507.i0457Qbv005994@dhin.linuxaudiosystems.com>
- <20040104145223.25bddac3.mista.tapas@gmx.net> <Pine.LNX.4.58.0401041746270.12698@ultros>
- <3FF8FD7C.60508@boosthardware.com> <Pine.LNX.4.58.0401051001130.8705@tomservo.workpc.tds.net>
+Message-ID: <Pine.LNX.4.58.0401051020560.8705@tomservo.workpc.tds.net>
+References: <200401040507.i0457Qbv005994@dhin.linuxaudiosystems.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0401051001130.8705@tomservo.workpc.tds.net>
+In-Reply-To: <200401040507.i0457Qbv005994@dhin.linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,57 +16,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: David Lloyd <dmlloyd@tds.net>
-Cc: Patrick Shirkey <pshirkey@boosthardware.com>, alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: ALSA Mailing List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 5 Jan 2004, David Lloyd wrote:
+On Sun, 4 Jan 2004, Paul Davis wrote:
 
-> On Mon, 5 Jan 2004, Patrick Shirkey wrote:
+> >I'm working on changing DMIX to allow clients to open the capture stream.  
 > 
-> > David Lloyd wrote:
-> >
-> > Recent discussion of this has made it clear that in the near future
-> > Jaroslav and Takashi are planning on implementing better
-> > interoperability between dmix and dsnoop.
-> > 
-> > It's not high on the list of priorities because there are already other
-> > software mixing apps/deamons that work. It is high on the list of
-> > desired features though :)
-> 
-> But these mixers do not work for all applications; the application has to 
-> support it.  Therefore I wouldn't say they "work", becuase they do not 
-> solve the problem of allowing multiple applications to use the sound 
-> device without having to be coded up specially.
+> i don't get it. dmix is for playback, not capture. what would be the
+> semantics of this?
 
-No and no and no. The 90% percent of problems are caused that the dmix, 
-dsnoop and dshare plugins have special setup to debug / show the 
-communication problems with the ALSA applications.
+That is exactly the problem!  DMIX is for playback.  DSNOOP is for 
+capture.  Where is the module that is for both?  Why, oh why, did they not 
+simply make ONE MODULE in the first place??
 
-I am sure that most of ALSA applications work without any modification. 
-Other applications are badly coded and these plugins simply show the 
-problems with them. That's ok. Tell the application developers that 
-they do not follow API.
+The semantics would be (rather would have been) that if someone tries to
+open the capture stream through the dmix plugin, it will "pass through" to
+the slave.  This means that while many apps can open playback stream, only 
+one would be able to open capture without blocking.
 
-OSS emulation has different problems, because their mmap() / fragment 
-implementation has restrictions which are difficult to follow in some 
-cases. But I think that if the buffering parameters are set correctly, 
-many applications will also work.
+It would have been ideal to integrate dsnoop functionality, but I deemed 
+that this was a bit too complicated for an initial implementation.
 
-The third major problem is rate resampling. The most of cheap cards work 
-only with 48kHz. I will dig to this problem more deeply in the near 
-future.
+Of course at this point, I'm ready to forget it.  I've got too many things 
+going on to justify not just buying a new sound card, much as that 
+irritates me.
 
-Having the mixing code in the kernel is only a new pain which does not 
-solve the problem. If there's a bug in dmix, it's easy to solve it. It's 
-much more easy than doing this job in the kernel.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+- D
 
 
 -------------------------------------------------------
