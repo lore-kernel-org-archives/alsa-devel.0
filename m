@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsa-1.0.1 and linux-2.2.25
-Date: Wed, 21 Jan 2004 10:33:26 +0100 (CET)
+From: "Andreas Kuckartz" <A.Kuckartz@ping.de>
+Subject: Bugtracking system
+Date: 21 Jan 2004 11:48:20 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401211032150.2010@pnote.perex-int.cz>
-References: <20040121005347.29ECB4955@marimba.home.net>
+Message-ID: <02ff01c3e00c$176a07c0$a501a8c0@computer2>
+References: <a662904be22869df6c18097e559e8a7b@localhost.localdomain> <1074646711.2067.15.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040121005347.29ECB4955@marimba.home.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,54 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ted <ted@nowtsfree.freeserve.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-user@lists.sourceforge.net, 	 <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 21 Jan 2004, Ted wrote:
+In response to the recent discussions on alsa-user (regarding "complaints"
+about the state of ALSA) I would like to make two suggestions:
 
-> Hello, thanks for including fixes for my previous problems
-> loading alsa modules into linux-2.2.25. Unfortunately, a new
-> problem appeared in alsa-driver-1.0.1. It compiles happily,
-> but will not load:
-> 
-> /lib/modules/2.2.25/misc/snd-page-alloc.o:
-> 	unresolved symbol snd_wrapper_request_region
-> 
-> I suspect the cause is a recent change to the file
-> 	alsa-driver-1.0.1/acore/pci_compat_22.c
-> 
-> I managed to load the modules by changing acore/pci_compat_22.c:
-> 356c356
-> <               snd_wrapper_request_region(pci_resource_start(pdev, bar),
-> ---
-> >               request_region(pci_resource_start(pdev, bar),
-> 
-> but confess to not fully understand the code, so please check this.
+1. Decide which bugtracking system should be used.
 
-It looks ok, applied.
+Currently there is one for ALSA at Sourceforge (see
+http://sourceforge.net/tracker/?group_id=27464&atid=390601) and there is
+another one at kernel.org (see http://bugzilla.kernel.org/ Choose
+Category=Drivers and Component=Sound and click the search button)
 
-> Now a longer standing problem. I have not been able to use alsa since
-> the alsa-lib API changed, because I still get bad data passed by
-> pcm.c:6442		snd_pcm_hw_params_set_period_time_near(),
-> to
-> pcm.c:3782		__snd_pcm_hw_params_set_period_time_near(),
-> on its way to
-> pcm_params.c:786	snd_pcm_hw_param_set_near().
->
-> I configured alsa-lib with
-> ./configure --prefix=/usr --with-versioned=no --with-debug=yes \
-                            ^^^^^^^^^^^^^^^^^^^
+As you can see there are lots of very old open entries in the Sourceforge
+system. Maybe the problems have already been resolved, maybe not. If a bug
+has been assigned to anyone at all then to Jaroslav Kysela ("perex").
+Obviously Jaroslav will not be able to handle all these problems himself.
 
-This was the problem. I've fixed the code in CVS and sent you this patch 
-in the separate mail.
+The kernel.org system mainly contains more recent entries (for kernel
+versions 2.5 and 2.6) but also includes a small number of OSS-related
+problems.
 
-						Jaroslav
+I clearly prefer Bugzilla to the sourceforge bugtracking system.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+2. Add a link to the choosen bugtracking system (or - better - to a new
+"bugtracking"-page on the site or the wiki) prominently to the front page of
+http://alsa-project.org. Currently an inexperienced visitor has difficulties
+to find the bugtracking system or might not even look for it at all if
+he/she does not see it mentioned on the front page.
+
+Cheers,
+Andreas
+
 
 
 -------------------------------------------------------
