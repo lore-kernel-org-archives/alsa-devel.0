@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Wed, 19 Jan 2005 21:53:11 +0100
-Message-ID: <46599c70e83d3ee6a826f6c6c5f805d2@bugtrack.alsa-project.org>
+Date: Wed, 19 Jan 2005 21:58:18 +0100
+Message-ID: <52e82bf7a11c127b3ab67157ec91d9ec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D82A522E
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 21:53:11 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1D02E290
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 21:58:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC3
 Kernel Version:             2.6.10-ac8
 ======================================================================
 Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-19-2005 21:53 CET
+Last Modified:              01-19-2005 21:58 CET
 ======================================================================
 Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
@@ -51,12 +51,6 @@ No SPDIF out.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 18:44 
-----------------------------------------------------------------------
-You configured the driver as the secondary card?
-Then "default" doesn't work.  Use "default:1" instead.
-
-----------------------------------------------------------------------
  1g0R - 01-19-05 21:53 
 ----------------------------------------------------------------------
 Hi,
@@ -65,6 +59,13 @@ No its default.
 [root@skynet cmi9880]# aplay chevrolet.wav
 aplay: test_wavefile:689: can't play not PCM-coded WAVE-files
 I try, i try....
+
+----------------------------------------------------------------------
+ 1g0R - 01-19-05 21:58 
+----------------------------------------------------------------------
+okay i found a pcm coded wav
+[root@skynet cmi9880]# aplay accessed.wav
+Playing WAVE 'accessed.wav' : Unsigned 8 bit, Rate 11025 Hz, Mono
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -98,6 +99,7 @@ Date Modified  Username       Field                    Change
 01-19-05 18:40 1g0R           Note Added: 0003315                          
 01-19-05 18:44 tiwai          Note Added: 0003316                          
 01-19-05 21:53 1g0R           Note Added: 0003318                          
+01-19-05 21:58 1g0R           Note Added: 0003319                          
 ======================================================================
 
 
