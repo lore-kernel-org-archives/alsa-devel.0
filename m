@@ -1,10 +1,14 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: [PATCH] display EFGH sends in proc file for audigy
-Date: Wed, 17 Nov 2004 14:17:48 -0500
-Message-ID: <1100719069.6930.38.camel@krustophenia.net>
+Subject: Re: [PATCH/RFC] emu10k1 multichannel PCM
+Date: Wed, 17 Nov 2004 17:48:36 -0500
+Message-ID: <1100731717.1428.14.camel@krustophenia.net>
+References: <1100300857.19038.14.camel@krustophenia.net>
+	 <1100405924.16103.23.camel@krustophenia.net>
+	 <1100672577.5832.7.camel@krustophenia.net>  <s5his84si8l.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-bneBZQ3+0J0duhVc/Aim"
+Content-Type: multipart/mixed; boundary="=-aWAo38q/v/JvJvNpML0N"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5his84si8l.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,72 +18,219 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
-Cc: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <James@superbug.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-bneBZQ3+0J0duhVc/Aim
+--=-aWAo38q/v/JvJvNpML0N
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-Currently we only display the first four sends even on the Audigy which
-has 8 sends.  This obscures the fact that we set sends EFGH all to zero
-by default which is technically illegal.  (Though it seems to work, the
-kX Windows driver sets these last 4 sends to high channels (62-24) and
-never sets two sends to the same address as the header file instructs).
+On Wed, 2004-11-17 at 14:44 +0100, Takashi Iwai wrote:
+> The code looks alsmot fine.  Please keep the 8-letter tab stop for
+> indentation
 
-This patch adds display of sends EFGH in the /proc file.
+I noticed while cleaning my code that emumixer.c is a little whitespace
+damaged.  Here is a small patch to clean it up.  This patch only changes
+whitespace.  The changes should not be controversial, the style is
+preserved.  I send this so that I do not perpetuate it by copy and paste
+coding.
 
 Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
 
+Lee
 
-
---=-bneBZQ3+0J0duhVc/Aim
-Content-Description: 
-Content-Disposition: attachment; filename=audigy-proc-add-efgh-sends.patch
-Content-Type: text/x-patch; charset=ANSI_X3.4-1968
+--=-aWAo38q/v/JvJvNpML0N
+Content-Disposition: attachment; filename=emumixer-whitespace-cleanup.patch
+Content-Type: text/x-patch; name=emumixer-whitespace-cleanup.patch; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 7bit
 
-Index: alsa/alsa-kernel/pci/emu10k1/emuproc.c
+Index: alsa-trivial/alsa-kernel/pci/emu10k1/emumixer.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emuproc.c,v
-retrieving revision 1.21
-diff -u -r1.21 emuproc.c
---- alsa/alsa-kernel/pci/emu10k1/emuproc.c	6 Sep 2004 15:05:19 -0000	1.21
-+++ alsa/alsa-kernel/pci/emu10k1/emuproc.c	17 Nov 2004 19:11:50 -0000
-@@ -175,7 +175,7 @@
- 	};
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emumixer.c,v
+retrieving revision 1.26
+diff -u -r1.26 emumixer.c
+--- alsa-trivial/alsa-kernel/pci/emu10k1/emumixer.c	17 Aug 2004 10:16:03 -0000	1.26
++++ alsa-trivial/alsa-kernel/pci/emu10k1/emumixer.c	17 Nov 2004 22:43:49 -0000
+@@ -54,7 +54,7 @@
+ 	ucontrol->value.iec958.status[2] = (emu->spdif_bits[idx] >> 16) & 0xff;
+ 	ucontrol->value.iec958.status[3] = (emu->spdif_bits[idx] >> 24) & 0xff;
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+-        return 0;
++	return 0;
+ }
  
- 	emu10k1_t *emu = entry->private_data;
--	unsigned int val;
-+	unsigned int val, val1;
- 	int nefx = emu->audigy ? 64 : 32;
- 	char **outputs = emu->audigy ? audigy_outs : creative_outs;
- 	int idx;
-@@ -184,6 +184,8 @@
- 	val = emu->audigy ?
- 		snd_emu10k1_ptr_read(emu, A_FXRT1, 0) :
- 		snd_emu10k1_ptr_read(emu, FXRT, 0);
-+	if (emu->audigy)
-+		val2 = snd_emu10k1_ptr_read(emu, A_FXRT2, 0);
- 	snd_iprintf(buffer, "Card                  : %s\n",
- 		    emu->audigy ? "Audigy" : (emu->APS ? "EMU APS" : "Creative"));
- 	snd_iprintf(buffer, "Internal TRAM (words) : 0x%x\n", emu->fx8010.itram_size);
-@@ -195,6 +197,11 @@
- 			    (val >> 8) & 0x3f,
- 			    (val >> 16) & 0x3f,
- 			    (val >> 24) & 0x3f);
-+		snd_iprintf(buffer, "Effect Send Routing   : E=%i, F=%i, G=%i, H=%i\n",
-+			    val1 & 0x3f,
-+			    (val1 >> 8) & 0x3f,
-+			    (val1 >> 16) & 0x3f,
-+			    (val1 >> 24) & 0x3f);
- 	} else {
- 		snd_iprintf(buffer, "Effect Send Routing   : A=%i, B=%i, C=%i, D=%i\n",
- 			    (val >> 16) & 0x0f,
+ static int snd_emu10k1_spdif_get_mask(snd_kcontrol_t * kcontrol,
+@@ -64,7 +64,7 @@
+ 	ucontrol->value.iec958.status[1] = 0xff;
+ 	ucontrol->value.iec958.status[2] = 0xff;
+ 	ucontrol->value.iec958.status[3] = 0xff;
+-        return 0;
++	return 0;
+ }
+ 
+ static int snd_emu10k1_spdif_put(snd_kcontrol_t * kcontrol,
+@@ -87,27 +87,27 @@
+ 		emu->spdif_bits[idx] = val;
+ 	}
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+-        return change;
++	return change;
+ }
+ 
+ static snd_kcontrol_new_t snd_emu10k1_spdif_mask_control =
+ {
+ 	.access =	SNDRV_CTL_ELEM_ACCESS_READ,
+-        .iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
+-        .name =         SNDRV_CTL_NAME_IEC958("",PLAYBACK,MASK),
++	.iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name =         SNDRV_CTL_NAME_IEC958("",PLAYBACK,MASK),
+ 	.count =	4,
+-        .info =         snd_emu10k1_spdif_info,
+-        .get =          snd_emu10k1_spdif_get_mask
++	.info =         snd_emu10k1_spdif_info,
++	.get =          snd_emu10k1_spdif_get_mask
+ };
+ 
+ static snd_kcontrol_new_t snd_emu10k1_spdif_control =
+ {
+-        .iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
+-        .name =         SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT),
++	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name =         SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT),
+ 	.count =	4,
+-        .info =         snd_emu10k1_spdif_info,
+-        .get =          snd_emu10k1_spdif_get,
+-        .put =          snd_emu10k1_spdif_put
++	.info =         snd_emu10k1_spdif_info,
++	.get =          snd_emu10k1_spdif_get,
++	.put =          snd_emu10k1_spdif_put
+ };
+ 
+ 
+@@ -165,7 +165,7 @@
+ 			ucontrol->value.integer.value[(voice * num_efx) + idx] = 
+ 				mix->send_routing[voice][idx] & mask;
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+-        return 0;
++	return 0;
+ }
+ 
+ static int snd_emu10k1_send_routing_put(snd_kcontrol_t * kcontrol,
+@@ -199,18 +199,18 @@
+ 		}
+ 	}
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+-        return change;
++	return change;
+ }
+ 
+ static snd_kcontrol_new_t snd_emu10k1_send_routing_control =
+ {
+ 	.access =	SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_INACTIVE,
+-        .iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
+-        .name =         "EMU10K1 PCM Send Routing",
++	.iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name =         "EMU10K1 PCM Send Routing",
+ 	.count =	32,
+-        .info =         snd_emu10k1_send_routing_info,
+-        .get =          snd_emu10k1_send_routing_get,
+-        .put =          snd_emu10k1_send_routing_put
++	.info =         snd_emu10k1_send_routing_info,
++	.get =          snd_emu10k1_send_routing_get,
++	.put =          snd_emu10k1_send_routing_put
+ };
+ 
+ static int snd_emu10k1_send_volume_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo)
+@@ -236,7 +236,7 @@
+ 	for (idx = 0; idx < 3*num_efx; idx++)
+ 		ucontrol->value.integer.value[idx] = mix->send_volume[idx/num_efx][idx%num_efx];
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+-        return 0;
++	return 0;
+ }
+ 
+ static int snd_emu10k1_send_volume_put(snd_kcontrol_t * kcontrol,
+@@ -268,18 +268,18 @@
+ 		}
+ 	}
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+-        return change;
++	return change;
+ }
+ 
+ static snd_kcontrol_new_t snd_emu10k1_send_volume_control =
+ {
+ 	.access =	SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_INACTIVE,
+-        .iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
+-        .name =         "EMU10K1 PCM Send Volume",
++	.iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name =         "EMU10K1 PCM Send Volume",
+ 	.count =	32,
+-        .info =         snd_emu10k1_send_volume_info,
+-        .get =          snd_emu10k1_send_volume_get,
+-        .put =          snd_emu10k1_send_volume_put
++	.info =         snd_emu10k1_send_volume_info,
++	.get =          snd_emu10k1_send_volume_get,
++	.put =          snd_emu10k1_send_volume_put
+ };
+ 
+ static int snd_emu10k1_attn_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo)
+@@ -303,7 +303,7 @@
+ 	for (idx = 0; idx < 3; idx++)
+ 		ucontrol->value.integer.value[idx] = mix->attn[idx];
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+-        return 0;
++	return 0;
+ }
+ 
+ static int snd_emu10k1_attn_put(snd_kcontrol_t * kcontrol,
+@@ -331,18 +331,18 @@
+ 		}
+ 	}
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+-        return change;
++	return change;
+ }
+ 
+ static snd_kcontrol_new_t snd_emu10k1_attn_control =
+ {
+ 	.access =	SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_INACTIVE,
+-        .iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
+-        .name =         "EMU10K1 PCM Volume",
++	.iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name =         "EMU10K1 PCM Volume",
+ 	.count =	32,
+-        .info =         snd_emu10k1_attn_info,
+-        .get =          snd_emu10k1_attn_get,
+-        .put =          snd_emu10k1_attn_put
++	.info =         snd_emu10k1_attn_info,
++	.get =          snd_emu10k1_attn_get,
++	.put =          snd_emu10k1_attn_put
+ };
+ 
+ static int snd_emu10k1_shared_spdif_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo)
+@@ -363,7 +363,7 @@
+ 		ucontrol->value.integer.value[0] = inl(emu->port + A_IOCFG) & A_IOCFG_GPOUT0 ? 1 : 0;
+ 	else
+ 		ucontrol->value.integer.value[0] = inl(emu->port + HCFG) & HCFG_GPOUT0 ? 1 : 0;
+-        return 0;
++	return 0;
+ }
+ 
+ static int snd_emu10k1_shared_spdif_put(snd_kcontrol_t * kcontrol,
+@@ -394,7 +394,7 @@
+ 		outl(reg | val, emu->port + HCFG);
+ 	}
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+-        return change;
++	return change;
+ }
+ 
+ static snd_kcontrol_new_t snd_emu10k1_shared_spdif __devinitdata =
 
---=-bneBZQ3+0J0duhVc/Aim--
+--=-aWAo38q/v/JvJvNpML0N--
 
 
 
