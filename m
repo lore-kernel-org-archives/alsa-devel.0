@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000576]: PCM device number wrong for iec958 on emu10k1
-Date: Sat,  9 Oct 2004 18:23:22 +0200 (CEST)
+Subject: [ALSA - lib 0000544]: Sound freezes (but can be restarted OK) after kernel locked for a long time
+Date: Sat,  9 Oct 2004 20:02:01 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041009162322.F11943E00F@server.perex-int.cz>
+Message-ID: <20041009180201.30CD63E00F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C5661E4
-	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 18:23:23 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 118432CFD0
-	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 18:23:23 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A6CCA291
+	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 20:02:01 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,79 +20,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000576
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000544
 ======================================================================
-Reported By:                jdthood
+Reported By:                sasa
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Bug ID:                     576
-Category:                   general
+Bug ID:                     544
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             10-09-2004 18:23 CEST
-Last Modified:              10-09-2004 18:23 CEST
+Date Submitted:             09-26-2004 10:44 CEST
+Last Modified:              10-09-2004 20:02 CEST
 ======================================================================
-Summary:                    PCM device number wrong for iec958 on emu10k1
+Summary:                    Sound freezes (but can be restarted OK) after kernel locked for a long time
 Description: 
-Package: libasound2
-Version: 1.0.6-2
-Severity: normal
-Tags: patch
-
-Hi,
-
-passthrough of AC3 sound from xine with my Soundblaster
-Live Value does not work any more with the current version
-of ALSA. Xine reported snd_pcm_open(), no such device. I
-suspect that the number of the iec958 PCM device has been
-erroneously changed in EMU10K1.conf. After changing it
-(back?) to 3, it works correctly, like with previous
-versions. See the following mini-patch:
-
---- /usr/share/alsa/cards/EMU10K1.conf~ 2004-09-26 19:17:05.000000000
-+0200
-+++ /usr/share/alsa/cards/EMU10K1.conf  2004-10-08 22:29:14.000000000
-+0200
-@@ -223,7 +223,7 @@
-	slave.pcm {
-		type hw
-		card $CARD
--		device 2
-+               device 3
-        }
-        hooks.0 {
-                type ctl_elems
-									
-This may probably the same as bug https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0274951.
-
-Best Regards,
-Martin (L)
-
--- System Information:
-Debian Release: 3.1
-  APT prefers testing
-  APT policy: (500, 'testing')
-Architecture: i386 (i686)
-Kernel: Linux 2.6.7-1-386
-Locale: LANG=C, LC_CTYPE=C
-
-Versions of packages libasound2 depends on:
-ii  libc6                       2.3.2.ds1-16 GNU C Library: Shared
-libraries an
-
--- no debconf information
+When doing an intensive task that locks the kernel (such as fixating
+CD-ROM, initializing Lucent modem chipset) when even the mouse pointer
+stops moving for half a second or so, sound from xmms stops playing until
+I press stop and play again.
+Interesting thing is that this only happens when MMAP is on. When I turn
+it off, the sound freezes for a second and after that continues.
 ======================================================================
+
+----------------------------------------------------------------------
+ sasa - 09-26-2004 10:58 CEST 
+----------------------------------------------------------------------
+Sorry, mistake - it occurs when MMAP is ON.
+Additional info:
+Also I should note that I am using NVidia NForce chipset (Asus A7N8X-E D.
+motherboard) and I am using
+acpi=noirq pci=noacpi
+in order to boot my system. And there is sometimes a lost interrupt 11
+(used by IDE and soundcard as well but the lost interrupt is thown during
+IDE initilization so it is probably caused by IDE).
+
+----------------------------------------------------------------------
+ lee - 09-26-2004 12:03 CEST 
+----------------------------------------------------------------------
+Sounds like an XMMS bug.  Does the same thing happen with aplay?
+
+----------------------------------------------------------------------
+ sasa - 09-26-2004 12:25 CEST 
+----------------------------------------------------------------------
+I cannot reproduce it with aplay. You are probably right, it is a XMMS
+bug.
+Thanks.
+
+----------------------------------------------------------------------
+ jtimonen - 10-09-2004 20:02 CEST 
+----------------------------------------------------------------------
+I can confirm this bug exists also with nforce2 chipset + xmms-1.2.10-r6
+(gentoo). No other applications suffer from this.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-09-04 18:23 jdthood        New Bug                                      
+09-26-04 10:44 sasa           New Bug                                      
+09-26-04 10:58 sasa           Bugnote Added: 0001916                       
+09-26-04 10:59 sasa           Bug Monitored: sasa                          
+09-26-04 12:03 lee            Bugnote Added: 0001918                       
+09-26-04 12:25 sasa           Bugnote Added: 0001919                       
+10-09-04 20:02 jtimonen       Bugnote Added: 0002062                       
 ======================================================================
 
 
