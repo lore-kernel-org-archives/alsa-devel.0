@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000648]: aplay -Dspdif produces choppy (beating?) audio from DTS .wav files
-Date: Mon, 20 Dec 2004 14:42:57 +0100
-Message-ID: <15c9a520b5b9b70b6ea1f321edba98c1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000345]: Echo with SB Audigy and microphone input
+Date: Mon, 20 Dec 2004 14:43:33 +0100
+Message-ID: <22ae5b51d43207a1ae27084f53be773c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA5732E7
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 14:42:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 149802E7
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 14:43:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=648> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=345> 
 ======================================================================
-Reported By:                duanev
+Reported By:                quinn
 Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   648
+Issue ID:                   345
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Mandrake 10.1
-Kernel Version:             Preemptable 2.6.8 kernel
-Resolution:                 fixed
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-14-2004 04:24 CET
-Last Modified:              12-20-2004 14:42 CET
+Date Submitted:             06-26-2004 11:57 CEST
+Last Modified:              12-20-2004 14:43 CET
 ======================================================================
-Summary:                    aplay -Dspdif produces choppy (beating?) audio from
-DTS .wav files
+Summary:                    Echo with SB Audigy and microphone input
 Description: 
-Sound produced by aplay is not smooth - audio is "chopped up" or appears to
-"beat" at about 5Hz.
+When in "loopback" recording mode, where the recorded audio from the
+microphone is played back (Easiest example would be the Recorder plugin
+for XMMS), even when every other capture channel is at zero volume and the
+sound is output through headphones, microphone input still echos
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 11-17-04 18:21 
+ pzad - 09-07-04 09:28 
 ----------------------------------------------------------------------
-Hmm good question.  Takashi-san. can we close this, marking it as a
-duplicate of bug 646?
+I tested again this. I think, your echo comes from headphones.
+Try to only record from mic (set same volume for mic as you used for
+loopback mode). Then try to play some music through headphone at some good
+volume level (same as you used for mic loopback). Then check what you
+recorded - if you hear music, then this comes from your headphone.
 
 ----------------------------------------------------------------------
- tiwai - 11-18-04 17:37 
+ pzad - 11-18-04 17:48 
 ----------------------------------------------------------------------
-Closed now.
+Not response for long time. I still think, that this echo comes from
+headphones.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-14-04 04:24 duanev         New Issue                                    
-11-14-04 04:24 duanev         Distribution              => Mandrake 10.1   
-11-14-04 04:24 duanev         Kernel Version            => Preemptable 2.6.8
-kernel
-11-14-04 04:41 rlrevell       Note Added: 0002406                          
-11-14-04 10:02 pzad           Note Added: 0002407                          
-11-17-04 07:02 duanev         Note Added: 0002433                          
-11-17-04 18:21 rlrevell       Note Added: 0002437                          
-11-18-04 17:37 tiwai          Status                   assigned => resolved
-11-18-04 17:37 tiwai          Resolution               open => fixed       
-11-18-04 17:37 tiwai          Note Added: 0002449                          
-12-20-04 14:42 tiwai          Status                   resolved => closed  
+06-26-04 11:57 quinn          New Issue                                    
+07-12-04 13:37 pzad           Note Added: 0001410                          
+08-06-04 15:03 pzad           Note Added: 0001541                          
+08-06-04 15:03 pzad           Status                   assigned => feedback
+08-06-04 15:15 quinn          Note Added: 0001542                          
+08-30-04 12:14 pzad           Note Added: 0001668                          
+08-31-04 23:25 quinn          Note Added: 0001675                          
+09-07-04 09:28 pzad           Note Added: 0001702                          
+11-18-04 17:48 pzad           Status                   feedback => resolved
+11-18-04 17:48 pzad           Resolution               open => not an issue
+11-18-04 17:48 pzad           Note Added: 0002451                          
+12-20-04 14:43 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
