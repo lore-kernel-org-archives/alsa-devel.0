@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000332]: Unable to enable 'Mic as Center/LFE'
-Date: Sun, 20 Mar 2005 15:45:32 +0100
-Message-ID: <6a601ca1f80c0659da899da0e4e3b002@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000398]: aplay produces no sound on short wav files through dmix
+Date: Sun, 20 Mar 2005 15:49:48 +0100
+Message-ID: <3cc109bace3289fce6d47bc1a1b03716@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 764F6D8
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 15:45:32 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0116A259
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 15:49:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,47 +23,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=332> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=398> 
 ======================================================================
-Reported By:                Johan Gorter
+Reported By:                raveng
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   332
-Category:                   alsamixer
+Issue ID:                   398
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             06-11-2004 09:12 CEST
-Last Modified:              03-20-2005 15:45 CET
+Date Submitted:             07-19-2004 16:21 CEST
+Last Modified:              03-20-2005 15:49 CET
 ======================================================================
-Summary:                    Unable to enable 'Mic as Center/LFE'
+Summary:                    aplay produces no sound on short wav files through
+dmix
 Description: 
-In the alsa versions I have used thus far (1.0.3 and 1.0.5) I am unable to
-enable the 'Mic as Center/LFE' option of my onboard AC '97. Alsamixer
-cannot change its value from 0 and record / mute is also disabled. I
-tracked the problem by using alsactl to store the settings. This results
-in a file where this option (nr 47 on my system) is an Integer with the
-comment that the value may be from 0 to 0. On other systems I found out
-that this is supposed to be a Boolean which can be switched on and off.
+Wav files shorter than about 0.157 seconds produce no sound under aplay and
+dmix. No error message is given, and it looks like it should be working.
+If I add silence to the file to make the duration longer, it plays fine.
+Also, if I direct aplay to use the hardware directly, it plays the
+original file just fine.  Tested on both ens1371 and i810 audio.
+
+Other media players (xmms, mplayer, and artsplay) all play the same file
+correctly with dmix. It is only the ALSA-provided aplay that seems to have
+difficulty.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 15:45 
+ leahcim - 12-07-04 03:58 
 ----------------------------------------------------------------------
-Submitter: Please test the latest ALSA release and report whether or not
-this remains a problem.  If it is still a problem, please tell us what
-sound card you have and what ALSA modules you are using.  Also send your
-asound.state file.
+Reducing buffer_size in asound.conf to some small value (eg. 2K for
+/usr/share/sounds/pop.wav, and 1K for /usr/share/sounds/KDE_Click.wav)
+made the sounds audible again.
+
+Obviously this will make things underrunny, so I instead opted to increase
+the length of the sound files. I have a useful shell script that consists
+of the line:
+
+   (sox -p "$@" -t raw -r 44100 -w -s -c2 -;dd if=/dev/zero bs=1024
+count=40 2>/dev/null)|aplay -M -N -q - -f cd &
+
+...and point the KDE system notification external player at the script (I
+don't use artsd).
+
+The number 40 above isn't an exact figure; there might still be -really-
+short sounds that still won't play.
+
+The 'aplay -R125000' hack didn't make a difference for me until I used
+smaller numbers. Hmm, perhaps that will be a nicer alternative to my dd
+hack...
+
+----------------------------------------------------------------------
+ jdthood - 03-20-05 15:49 
+----------------------------------------------------------------------
+Is this still a problem in aplay 1.0.8?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-04 09:12 Johan Gorter   New Issue                                    
-01-22-05 03:26 rhal           Issue Monitored: rhal                        
-03-20-05 15:45 jdthood        Note Added: 0004093                          
+07-19-04 16:21 raveng         New Issue                                    
+07-28-04 02:08 lesieur        Note Added: 0001478                          
+12-07-04 03:24 leahcim        Issue Monitored: leahcim                     
+12-07-04 03:58 leahcim        Note Added: 0002745                          
+03-20-05 15:49 jdthood        Note Added: 0004095                          
 ======================================================================
 
 
