@@ -1,17 +1,12 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: DMIX and capture stream
-Date: Tue, 6 Jan 2004 22:38:28 +0100
+From: Kristof vansant <de_lupus@pandora.be>
+Subject: [PATCH] for vx make bug on kernel 2.6!!!! add to cvs plz
+Date: Tue, 06 Jan 2004 23:53:22 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040106223828.39d2c233.mista.tapas@gmx.net>
-References: <Pine.LNX.4.58.0401051113381.8705@tomservo.workpc.tds.net>
-	<200401051741.i05HfCXl007120@dhin.linuxaudiosystems.com>
-	<s5h1xqe2rjp.wl@alsa2.suse.de>
-	<Pine.LNX.4.58.0401061105040.8705@tomservo.workpc.tds.net>
+Message-ID: <1073429602.2670.14.camel@d51528079.kabel.telenet.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0401061105040.8705@tomservo.workpc.tds.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,23 +18,48 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 6 Jan 2004 11:05:52 -0600 (CST)
-David Lloyd <dmlloyd@tds.net> wrote:
+Before I added this line alsa-driver would have make error on vxp440.c
+and vxpocket.c . This patch should keep the driver working with kernel
+2.4 to. Can someone test it and add it to the CVS. 
 
-> This patch works great - I'm now able to use TeamSpeak (which opens 
-> capture and playback through oss) at the same time as xmms.
-> 
-
-Cool.. this sounds good. Great news! Thanks, Takashi.. Is there a chance
-of this getting into cvs? Is this actually a replacement for the
-pcm.dspX definition? or is it still possible to define it the old way?
-
-Flo
-
-P.S.: I myself didn't try it, cause my SC does hw mixing anyway..
+[root@d51528079 vx]# cat vxkernel26.patch
+--- ./vxp440.c.kernel26 2004-01-06 20:40:30.757564000 +0100
++++ ./vxp440.c  2004-01-06 20:44:50.167564000 +0100
+@@ -1,11 +1,13 @@
+ #include <linux/config.h>
+ #include <linux/version.h>
+  
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
+ #if defined(CONFIG_MODVERSIONS) && !defined(__GENKSYMS__) &&
+!defined(__DEPEND__)
+ #define MODVERSIONS
+ #include <linux/modversions.h>
+ #include "sndversions.h"
+ #endif
++#endif
+  
+ #include "config.h"
+ #include "adriver.h"
+--- ./vxpocket.c.kernel26       2004-01-06 23:41:09.047564000 +0100
++++ ./vxpocket.c        2004-01-06 23:43:34.537564000 +0100
+@@ -1,11 +1,13 @@
+ #include <linux/config.h>
+ #include <linux/version.h>
+  
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
+ #if defined(CONFIG_MODVERSIONS) && !defined(__GENKSYMS__) &&
+!defined(__DEPEND__)
+ #define MODVERSIONS
+ #include <linux/modversions.h>
+ #include "sndversions.h"
+ #endif
++#endif
+  
+ #include "config.h"
+ #include "adriver.h"
 
 -- 
-hrrrm! 
+lupus  (Kristof Vansant Belgium)
 
 
 
