@@ -1,11 +1,11 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] emu10k1: /proc cleanup
-Date: Wed, 16 Feb 2005 11:21:11 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0502161121020.2600@pnote.perex-int.cz>
-References: <1108497762.7826.37.camel@krustophenia.net>
+Subject: Re: [PATCH 0/8] emu10k1 multichannel support
+Date: Wed, 16 Feb 2005 11:22:50 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0502161122340.2600@pnote.perex-int.cz>
+References: <1108514291.3772.19.camel@krustophenia.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <1108497762.7826.37.camel@krustophenia.net>
+In-Reply-To: <1108514291.3772.19.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,12 +21,11 @@ List-Id: alsa-devel@alsa-project.org
 
 On Tue, 15 Feb 2005, Lee Revell wrote:
 
-> This patch adds a "voices" /proc entry for debugging the voice
-> allocator.  It also increases the size of the ptr_regs files to display
-> the values for all channels.  Finally it updates the names of the EFX
-> recording inputs from "???" to "FXBUS2_*".
+> This series of patches adds a 16 channel non interleaved PCM playback
+> device, hw:x,3, to the emu10k1 driver.  It also adds support for the
+> newly discovered per channel half loop interrupt.
 
-Applied thanks.
+All patches were applied to CVS.
 
 						Jaroslav
 
