@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000958]: noisy output on low sample rate files when using dmix
-Date: Thu, 24 Mar 2005 01:40:51 +0100
-Message-ID: <81c373df2d3483b88e522c82991bc6cc@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000353]: No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
+Date: Thu, 24 Mar 2005 02:28:07 +0100
+Message-ID: <baa8767490ef490789d3195d4f0be7a8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C7A682AA
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 01:40:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2C7E625D
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 02:28:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,76 +23,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=958> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=353> 
 ======================================================================
-Reported By:                mtraum
+Reported By:                JSchmitt
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   958
-Category:                   mixer
+Issue ID:                   353
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             03-02-2005 21:23 CET
-Last Modified:              03-24-2005 01:40 CET
+Date Submitted:             06-30-2004 19:36 CEST
+Last Modified:              03-24-2005 02:28 CET
 ======================================================================
-Summary:                    noisy output on low sample rate files when using
-dmix
+Summary:                    No sound as startup of KDE 3.2.3, errormessage in
+snd_pcm_hw.c
 Description: 
-When using dmix, I get noise when playing files with low sample rates. The
-level of noise increases the lower the sample rate is. This noise does not
-exist when playing files without dmix, and I'm playing them with 'aplay'.
+When I try to start X with KDE 3.2.3, I will get the following error
+mesages:
 
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
 
-Files sampled at 44100 have no noticeable noise (at least for me), so I'm
-assumming there's a problem with the resampling algorithm.
-
-Just to be sure, I generated some test tones with sgen
-(http://www.comp.leeds.ac.uk/jj/linux/siggen.html). You can clearly hear
-the noise on these samles, which I am attaching.
+I will not get any sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- grabner - 03-24-05 00:39 
+ tiwai - 03-22-05 19:56 
 ----------------------------------------------------------------------
-I confirm in a slightly different situation: playing through plughw on a
-device with fixed sampling rate (39063Hz), even without dmix.
-
-The bug is in src/pcm/pcm_rate.c at line 128 (or line 194 for 16 bit
-samples), where the last frame of a period is repeated if no more frames
-are available. This adds to the original signal a peak with an amplitude
-proportional to the slope of the signal at this point, which is larger for
-higher frequency signals or lower sampling rates.
-
-A working solution to this problem existed in alsa-lib up to version
-1.0.7, where the last frame of each period was available when processing
-the next period. However, for reasons unknown to me, this method has been
-replaced by a broken algorithm in version 1.0.8, which causes the noise
-reported in this issue.
-
-A note to the previous posters on this topic: could you please check if
-the problem also occurs with alsa-lib 1.0.7? This would verify if we are
-actually talking about the same thing, and help fixing it.
+With ALSA 1.0.9, this message is no longer shown.
+If you still see this message, the lib wasn't updated properly.
 
 ----------------------------------------------------------------------
- Rottwang - 03-24-05 01:40 
+ rob_hughes - 03-24-05 02:28 
 ----------------------------------------------------------------------
-I had no problems with 1.0.7 and 1.0.8-rc1 was fine too (I'm using it now).
+Please check your log again.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-02-05 21:23 mtraum         New Issue                                    
-03-02-05 21:23 mtraum         File Added: testtones.tar.gz                    
-03-02-05 22:08 hamel_g        Note Added: 0003781                          
-03-13-05 09:43 Rottwang       Note Added: 0003901                          
-03-22-05 00:01 eradicator     Issue Monitored: eradicator                    
-03-24-05 00:39 grabner        Note Added: 0004188                          
-03-24-05 00:39 grabner        Issue Monitored: grabner                     
-03-24-05 01:40 Rottwang       Note Added: 0004189                          
+06-30-04 19:36 JSchmitt       New Issue                                    
+07-06-04 18:33 JSchmitt       Issue Monitored: JSchmitt                    
+07-15-04 14:20 perex          Note Added: 0001433                          
+07-15-04 17:57 JSchmitt       Note Added: 0001436                          
+08-17-04 06:11 samy           Note Added: 0001572                          
+08-17-04 06:11 samy           Issue Monitored: samy                        
+10-23-04 22:41 rob_hughes     Note Added: 0002256                          
+10-23-04 22:50 rob_hughes     Issue Monitored: rob_hughes                    
+10-23-04 23:27 rob_hughes     Note Added: 0002258                          
+10-25-04 01:08 rob_hughes     Note Edited: 0002256                         
+03-19-05 09:06 jdthood        Note Added: 0004011                          
+03-19-05 12:08 rob_hughes     Note Added: 0004034                          
+03-19-05 12:38 jdthood        Note Added: 0004035                          
+03-21-05 04:01 rob_hughes     Note Added: 0004115                          
+03-22-05 19:56 tiwai          Note Added: 0004130                          
+03-24-05 02:28 rob_hughes     Note Added: 0004190                          
 ======================================================================
 
 
