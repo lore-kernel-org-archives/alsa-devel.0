@@ -1,18 +1,15 @@
 From: Maarten de Boer <mdeboer@iua.upf.es>
-Subject: Re: Detecting alsa sequencer (dis)connects
-Date: Wed, 15 May 2002 14:21:55 +0200
+Subject: Re: Re: Failed to compile HDSP driver from the CVS
+Date: Wed, 15 May 2002 14:29:09 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020515142155.19ffff43.mdeboer@iua.upf.es>
-References: <E177ee9-0003uZ-00@bitone.upf.es>
-	<s5hy9em7k1h.wl@alsa2.suse.de>
+Message-ID: <20020515142909.5da8bb3d.mdeboer@iua.upf.es>
+References: <000601c1fb4b$7cd77ae0$ac1f830a@ico>
+	<E177cnG-0003WZ-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from iuamtg.upf.es (iuamtg.upf.es [193.145.55.151])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA12677
-	for <alsa-devel@alsa-project.org>; Wed, 15 May 2002 14:24:01 +0200
-In-Reply-To: <s5hy9em7k1h.wl@alsa2.suse.de>
+In-Reply-To: <E177cnG-0003WZ-00@usw-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,19 +18,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Paul Davis <pbd@op.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> you can connect a port of aconnectgui to the system port.
-> the system port will broadcast a notification with
-> SND_SEQ_EVENT_CLIENT/PORT_START, and PORT_SUBSCRIBED/UNSUBSCRIBED
-> events if the corresponding action occurs.  checking events can be
-> done just like others via poll or select.
-> of course, it would be better to ignore the connection of aconnectgui
-> itself and the system port.
+> No, thats not the issue. It might be a CVS sync issue at sf.net, as
+> well. The "anonymous" CVS repository is sometimes 6hrs behind the
+> "login" CVS repository.
 
-Thanks Takashi, that works very well.
+Wow! That is really very bad! Is this a known problem? Is sf working
+on this? I wonder why the login and anonymous repositories are 
+different in the first place...
 
 Maarten
 
