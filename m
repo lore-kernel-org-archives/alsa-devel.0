@@ -1,45 +1,73 @@
-From: Georgi Georgiev <chutz@gg3.net>
-Subject: snd-ioctl32 is failing on x86_64 (no crashes, just errors)
-Date: Thu, 6 Jan 2005 22:06:50 +0900
-Message-ID: <20050106130649.GA253131@lion.gg3.net>
+From: "Michael S. Tsirkin" <mst@mellanox.co.il>
+Subject: [PATCH] make standard conversions work with compat_ioctl.
+Date: Thu, 6 Jan 2005 15:41:44 +0200
+Message-ID: <20050106134144.GA25629@mellanox.co.il>
+Reply-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from tiger.gg3.net (142.13.111.219.st.bbexcite.jp [219.111.13.142])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AC460255
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2005 14:06:53 +0100 (MET)
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262820AbVAFNkR@vger.kernel.org>
 Content-Disposition: inline
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: hch@infradead.org, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, tiwai@suse.de, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
 List-Id: alsa-devel@alsa-project.org
 
-Running a 32-bit version of any application fails with:
+Hello!
+Quoting r. Andrew Morton (akpm@osdl.org) "Re: [PATCH] deprecate (un)register_ioctl32_conversion":
+> "Michael S. Tsirkin" <mst@mellanox.co.il> wrote:
+> >  Christoph, I know you want to remove the inode parameter :)
+> > 
+> >  Otherwise I think -mm1 has the final version of the replacement.
+> 
+> I merged Christoph's verion of the patch into -mm.
 
-amixer: Mixer hw:0 load error: Invalid argument
+Unfortunately, in -mm2 version, it seems that once a driver
+implements compat_ioctl, the standard ioctls like FIOQSIZE
+stop working for it, and so
+do standard commands implemented with COMPATIBLE_IOCTL.
 
-for example. I have snd-ioctl32 loaded properly (lsmod shows it).
+The simplest solution is, I think, to do as Arnd Bergmann suggested,
+and go back to the hash lookup if compat_ioctl returns -ENOIOCTLCMD.
 
-Kernel is vanilla 2.6.10 and I just tried it with version 1.0.8rc2 of
-alsa-driver. Also, alsa-lib and alsa-utils version 1.0.8rc2 are
-installed in my 64-bit environment, and also in the 32-bit chroot env
-where I am trying to run amixer from. The distro is Gentoo, and I also
-have their alsa-headers-1.0.8_rc2 installed in the 32-bit chroot.
+To make it easy to use the same function for unlocked_ioctl
+and for ioctl_compat, for unlocked_ioctl the code -ENOIOCTLCMD
+shall be translated to -EINVAL.
 
--- 
-\/   Georgi Georgiev   \/  Professor: Doomsday device? Ah, now the     \/
-/\    chutz@gg3.net    /\ ball's in Farnsworth's court. I suppose I    /\
-\/  +81(90)6266-1163   \/ could part with one and still be feared.     \/
+Attached patch is for -mm2, applies over 2.6.10 as well with 
+ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.10/2.6.10-mm2/broken-out/ioctl-rework-2.patch
 
+MST
 
--------------------------------------------------------
-The SF.Net email is sponsored by: Beat the post-holiday blues
-Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
-It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
+Handle generic ioctl commands by falling back on static
+conversion functions in fs/compat_ioctl.c on -ENOIOCTLCMD code.
+
+Signed-off-by: Michael S. Tsirkin <mst@mellanox.co.il>
+
+diff -rup linux-2.6.10/fs/compat.c linux-2.6.10-ioctls/fs/compat.c
+--- linux-2.6.10/fs/compat.c	2005-01-06 17:54:13.234156872 +0200
++++ linux-2.6.10-ioctls/fs/compat.c	2005-01-06 17:37:38.110438672 +0200
+@@ -440,8 +440,10 @@ asmlinkage long compat_sys_ioctl(unsigne
+ 		if (!filp->f_op->ioctl)
+ 			goto do_ioctl;
+ 	} else if (filp->f_op->compat_ioctl) {
++		/* compat_ioctl returns -ENOIOCTLCMD on unhandled command. */
+ 		error = filp->f_op->compat_ioctl(filp, cmd, arg);
+-		goto out_fput;
++		if (error != -ENOIOCTLCMD)
++			goto out_fput;
+ 	}
+ 
+ 	down_read(&ioctl32_sem);
+diff -rup linux-2.6.10/fs/ioctl.c linux-2.6.10-ioctls/fs/ioctl.c
+--- linux-2.6.10/fs/ioctl.c	2005-01-06 17:54:13.235156720 +0200
++++ linux-2.6.10-ioctls/fs/ioctl.c	2005-01-06 18:00:10.463849704 +0200
+@@ -26,6 +26,9 @@ static long do_ioctl(struct file *filp, 
+ 
+ 	if (filp->f_op->unlocked_ioctl) {
+ 		error = filp->f_op->unlocked_ioctl(filp, cmd, arg);
++		if (error == -ENOIOCTLCMD)
++			error = -EINVAL;
++		goto out;
+ 	} else if (filp->f_op->ioctl) {
+ 		lock_kernel();
+ 		error = filp->f_op->ioctl(filp->f_dentry->d_inode,
