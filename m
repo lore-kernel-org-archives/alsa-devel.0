@@ -1,12 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: trigger problems.
-Date: Wed, 14 Jul 2004 13:52:45 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: trigger problems.
+Date: Wed, 14 Jul 2004 14:51:41 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40F52C9D.60704@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.58.0407141451160.1770@pnote.perex-int.cz>
+References: <40F52C9D.60704@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <40F52C9D.60704@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,48 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I am writing a alsa driver for the audigyls and p16v.
-The output on these sound cards can work in 1 of two ways.
-1) 1 substream with 8 channels, and one interrupt request per period.
-For 5.1 output, we just use alsa.conf to map the user's application 
-channels into the correct channels of the 8 channel substream.
-2) 4 substreams with 2 channels each.
-For 5.1 output, we just use 3 substreams, front, rear, center_lfe.
-The problem with this is that we then have a separate interrupt per 
-substream, resulting in 3 times more interrupts. The substreams are also 
-not in sample sync with each other, because the trigger for each 
-substream is executed one after the other, instead of in one go.
+On Wed, 14 Jul 2004, James Courtier-Dutton wrote:
 
-I don't know why exactly, maybe some audio experts can help, but (1) 
-sounds a lot better than (2). I would not think that loosing sample sync 
-would make so much difference, but that is the only thing that I see 
-different between (1) and (2).
+> If we could have a single trigger call, I could start all the hardware 
+> substreams at the same time with a single outl() call.
 
-So, because of this, I have a feature request for alsa-driver.
-If a user app opens the sound device in such a way that a single stream 
-from the app gets converted into multiple substreams to the same sound 
-card hardware, can we have a single trigger call for all substreams.
+It's already possible. Study trident_main.c or ens1370.c code.
 
-If we could have a single trigger call, I could start all the hardware 
-substreams at the same time with a single outl() call.
+						Jaroslav
 
-To achieve this, I suggest we change the current:
-static int snd_pcm_trigger_playback(
-         snd_pcm_substream_t *substream,
-         int cmd)
-to
-static int snd_pcm_trigger_playback(
-         snd_pcm_substream_t **substream,
-	int number_of_substreams,
-         int cmd)
-
-
-Any comments ?
-
-James
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
