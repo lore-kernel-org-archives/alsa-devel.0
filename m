@@ -1,47 +1,52 @@
-From: Gerd Knorr <kraxel@bytesex.org>
-Subject: Re: [Alsa-devel] Problem with Avermedia 771
-Date: Thu, 21 Oct 2004 10:59:08 +0200
-Sender: linux-dvb-bounce@linuxtv.org
-Message-ID: <20041021085908.GC32566@bytesex>
-References: <s5hwtxlh0wg.wl@alsa2.suse.de> <Pine.HPX.4.33n.0410210908100.7031-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000591]: Please allow control of shm gid
+Date: Thu, 21 Oct 2004 10:49:09 +0200
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <1d305dc3fb0b02023cb1a0178b483f92@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-dvb-bounce@linuxtv.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0410210908100.7031-100000@studcom.urz.uni-halle.de>
-Errors-to: linux-dvb-bounce@linuxtv.org
-List-help: <mailto:ecartis@linuxtv.org?subject=help>
-List-unsubscribe: <mailto:ecartis@linuxtv.org?subject=unsubscribe%20linux-dvb>
-List-software: Ecartis version 1.0.0
-List-subscribe: <mailto:ecartis@linuxtv.org?subject=subscribe%20linux-dvb>
-List-owner: <mailto:listmaster@convergence.de>
-List-post: <mailto:linux-dvb@linuxtv.org>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Gerd Knorr <kraxel@suse.de>, Jaroslav Kysela <perex@suse.cz>, Holger Waechtler <holger@qanu.de>, dvb list <linux-dvb@linuxtv.org>, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 079CF310
+	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2004 10:49:09 +0200 (MEST)
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> A centralized card list looks more advantageous now ...
 
-Hmm, along these lines maybe?
+The following issue has been SUBMITTED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D591>=20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Issue History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+10-21-04 10:49 jdthood        New Issue                                  =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-   Gerd
 
-==============================[ cut here ]==============================
 
-enum bt878_func1 {
-	BT878_FUNC1_IS_UNKNOWN = 0,
-	BT878_FUNC1_IS_AUDIO,
-	BT878_FUNC1_IS_DVB,
-	BT878_FUNC1_IS_OTHER,
-};
 
-struct bt878_entry {
-	u16    subvendor;
-	u16    subdevice;
-	char   *name;
-	enum bt878_func1 func1;      /* what PCI function 1 is used for?    */
-	int    bttv_id;              /* for bttv, index into bttv_tvcards[] */
-	int    audio_rate;           /* for alsa/btaudio, sample rate       */
-};
-
-const struct bt878_entry* bt878_db_lookup(struct pci_dev *pci);
+-------------------------------------------------------
+This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
+Use IT products in your business? Tell us what you think of them. Give us
+Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out more
+http://productguide.itmanagersjournal.com/guidepromo.tmpl
