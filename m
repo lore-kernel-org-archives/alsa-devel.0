@@ -1,12 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: [Donations] Audigy LS
-Date: Sat, 29 May 2004 12:34:17 +0100
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: Xruns with Audiophile 2496 M-audio
+Date: Sat, 29 May 2004 13:44:40 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40B87539.7050104@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.58.0405291329280.566@autumn>
+References: <20040529114908.2118135c@pentium233.krystal.net>
+ <Pine.LNX.4.58.0405291234350.566@autumn> <20040529131601.641aa202@pentium233.krystal.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20040529131601.641aa202@pentium233.krystal.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,30 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Remi Bernhard <rgbmlist2@free.fr>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-A linux user, Greg Turpin (from Colorado, USA), kindly donated an Audigy 
-LS to me, so that I could try to provide an Audigy LS driver to the ALSA 
-project.
-As you all know, I have already been relatively successful and now have 
-sound coming from the Front Speakers, and hope to improve support soon.
+[Remi Bernhard]
+>So i have 2.6.5 kernel, and not 2.4.x. Do you think i should install
+>2.4.25 instead ?
 
-Is there anywhere on the alsa web site where Sponsors or Donations are 
-recognised. I think it would be nice if this kind act by Greg Turpin was 
-documented on the ALSA web site somewhere.
+i do think so because i never saw any hard facts about latency posted
+for the 2.6 series, while 2.4.x-ll is well documented and proven to
+work quite well here and elsewhere.
 
-For anyone interested, the latest highly experimental (might crash your 
-system) driver is at
-http://www.superbug.demon.co.uk/alsa/
-I just use that url as a backup for my in progress work, so it will 
-likely have printk statements all over it, to help me try to find out 
-how the Audigy LS works. I added a few more comments regarding all the 
-registers, but that is about all that it has extra over the last post to 
-  alsa-devel list.
+it _could_ also be that your graphics subsystem is hogging the PCI bus
+for long enough to cause xruns, but that is mostly guessing since i
+never laid my hands on a linux box with nvidia hardware. i take it
+you're not running graphics-intensive applications while testing the
+audio subsystem anyway.
 
-Cheers
-James
+as Jan has pointed out, make sure your IDE subsystem is using DMA on
+all devices, too. (man hdparm)
+
+tim
 
 
 -------------------------------------------------------
