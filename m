@@ -1,15 +1,14 @@
-From: David Lloyd <dmlloyd@tds.net>
-Subject: Re: DMIX and capture stream
-Date: Mon, 5 Jan 2004 11:27:57 -0600 (CST)
+From: "Ed Wildgoose" <Ed@Wildgooses.com>
+Subject: Re: Jack-Alsa plugin - problems
+Date: Mon, 5 Jan 2004 17:28:28 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401051126560.8705@tomservo.workpc.tds.net>
-References: <200401040507.i0457Qbv005994@dhin.linuxaudiosystems.com>
- <Pine.LNX.4.58.0401051020560.8705@tomservo.workpc.tds.net>
- <Pine.LNX.4.58.0401051725380.1862@pnote.perex-int.cz>
+Message-ID: <056801c3d3b1$55b95fb0$5d40a8c0@FRiskMan.com>
+References: <200401051402.i05E259r020637@dhin.linuxaudiosystems.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0401051725380.1862@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,21 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA Mailing List <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 5 Jan 2004, Jaroslav Kysela wrote:
+> >"You cannot set callbacks on an active client
+> >cannot connect alsaP:out_000
+> > to alsa_pcm:playback_1"
+>
+> if these clients really do call snd_pcm_close() when ffwd'ing, then
+> there must be some mistake in the ALSA JACK plug, because it should
+> close the client down. if they do not call snd_pcm_close() then i am
+> not sure what the ALSA JACK plug might be doing.
 
-> What's your problems? ALSA applications should offer you to set the
-> playback and capture devices independently. If you bother with the OSS
-> emulation, simply change the code in oss_dsp_open() -
-> alsa-oss/alsa-oss.c. Perhaps, we can do it for you.
+I can check the code, but I suspect that they dont call pcm_close.  I think
+the channel is paused and new data loaded.
 
-That is EXACTLY what I want.  Exactly!  And that is what I will try next, 
-but if you want to do it it would be greatly appreciated.
+However, the point is slightly moot.  Nothing at all comes out, the app
+appears to hang, and in the case of mplayer, it only gets these errors after
+the delay gets so large that overflows occur and mplayer obviously shuffles
+forward a bit to get back in sync.  It appears that JACK is not accepting
+anything from the alsa client and they are just blocking.
 
-- D
+Neither mplayer, xmms, or mythtv can get anything into Jack as far as I can
+tell.  There is nothing in the Jack log though...
+
 
 
 -------------------------------------------------------
