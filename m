@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000883]: Odd Mixer Controls with i810 on Fujitsu S6210
-Date: Fri, 4 Feb 2005 13:02:01 +0100
-Message-ID: <7896104a1b1bf003cad8267a654bf112@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
+Date: Fri, 4 Feb 2005 13:04:25 +0100
+Message-ID: <1b88c603fb21eca746249b87654738fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DCF3F1E4
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 13:02:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 69AA11E4
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 13:04:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,69 +23,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=883> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
 ======================================================================
-Reported By:                tonym
-Assigned To:                
+Reported By:                Quietti
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   883
-Category:                   PCI - intel8x0
+Issue ID:                   306
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
-Date Submitted:             02-04-2005 12:35 CET
-Last Modified:              02-04-2005 13:02 CET
+Date Submitted:             05-25-2004 20:35 CEST
+Last Modified:              02-04-2005 13:04 CET
 ======================================================================
-Summary:                    Odd Mixer Controls with i810 on Fujitsu S6210
+Summary:                    compiles, but no sound comes out
 Description: 
-I have some very odd mixer controls with my integrated i810 audio
-lspci -v -n -s 00:1f.5
-0000:00:1f.5 Class 0401: 8086:24c5 (rev 03)
-        Subsystem: 10cf:1253
-        Flags: bus master, medium devsel, latency 0, IRQ 11
-        I/O ports at 1c00
-        I/O ports at 18c0 [size=64]
-        Memory at d0100c00 (32-bit, non-prefetchable) [size=512]
-        Memory at d0100800 (32-bit, non-prefetchable) [size=256]
-        Capabilities: [50] Power Management version 2
+This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
 
+The kernel compiles fine, the snd_powermac module loads without any error,
+but no sound comes up.
 
-List of controls and what they do:
-control.2 Master Playback Volume - no effect (so l/r doesn't work either)
-control.4 Headphone Playback Volume - controls all vol, headphones and
-speakers
-control.6 Master Mono Playback Volume - no effect
-control.8 PC Speaker Playback Volume - no effect
-control.23 PCM Playback Volume - Works as should
-control.33 External Amplifier - disables the builtin speakers, headphones
-still work
-
-Other controls I deemed irrelevent...
-
-I suspect this is just a quirk of this laptop, but I don't know what info
-you need, so please ask me.
+Running alsamixer gives me a mixer screen where none of the sliders can be
+moved.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-04-05 13:02 
+ Quietti - 02-04-05 09:22 
 ----------------------------------------------------------------------
-Try ac97_quirk=hp_only option.  If this works, attach the output of "lspci
--nv" and the contents of /proc/asound/card0/codec97#0/* files.
+ALSA 1.0.8 (as found in kernel 2.6.11-rc3) is also broken).
 
-(BTW "PC Speaker" controls the internal beep sound routing.)
+----------------------------------------------------------------------
+ tiwai - 02-04-05 13:04 
+----------------------------------------------------------------------
+Well sorry, I can't work on this driver.  I have no ppc hardware at all and
+don't want to read through the whole darwin codes.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-04-05 12:35 tonym          New Issue                                    
-02-04-05 12:35 tonym          Distribution              => Gentoo          
-02-04-05 12:35 tonym          Kernel Version            => 2.6.10          
-02-04-05 13:02 tiwai          Note Added: 0003498                          
+05-25-04 20:35 Quietti        New Issue                                    
+05-25-04 20:35 Quietti        File Added: asound.state                     
+05-25-04 20:35 Quietti        Distribution              => Debian          
+05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
+vanilla.
+05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
+05-28-04 21:18 tiwai          Note Added: 0001274                          
+05-28-04 21:37 Quietti        Note Added: 0001275                          
+07-25-04 20:16 Quietti        Note Added: 0001473                          
+09-08-04 06:32 Quietti        Note Added: 0001726                          
+10-20-04 00:38 Quietti        Note Added: 0002209                          
+01-06-05 18:14 Quietti        Note Added: 0003093                          
+01-06-05 18:27 rlrevell       Note Added: 0003094                          
+01-06-05 19:43 Quietti        Note Added: 0003095                          
+01-07-05 00:00 Quietti        Note Added: 0003096                          
+01-07-05 00:19 Quietti        Note Added: 0003097                          
+01-07-05 00:30 Quietti        Note Added: 0003098                          
+01-14-05 00:53 Quietti        Note Added: 0003206                          
+02-04-05 09:22 Quietti        Note Added: 0003496                          
+02-04-05 13:04 tiwai          Note Added: 0003499                          
 ======================================================================
 
 
