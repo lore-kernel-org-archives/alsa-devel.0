@@ -1,23 +1,10 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: ALSA CVS deadlock (2.4.18)?
-Date: Sun, 17 Mar 2002 18:26:07 +0000
+From: "James H. Cloos Jr." <cloos@jhcloos.com>
+Subject: alsa.sf.net
+Date: 17 Mar 2002 15:26:58 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3C94DFBF.1080302@yahoo.com>
+Message-ID: <m3wuwbndnx.fsf@lugabout.jhcloos.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Received: from mta01-svc.ntlworld.com (mta01-svc.ntlworld.com [62.253.162.41])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA29780
-	for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2002 19:26:14 +0100
-Received: from wittsend.underworld ([80.0.71.165])
-          by mta01-svc.ntlworld.com
-          (InterMail vM.4.01.03.27 201-229-121-127-20010626) with ESMTP
-          id <20020317182607.ZYNA9422.mta01-svc.ntlworld.com@wittsend.underworld>
-          for <alsa-devel@alsa-project.org>;
-          Sun, 17 Mar 2002 18:26:07 +0000
-Received: from yahoo.com (twopit [192.168.0.2])
-	by wittsend.underworld (8.12.1/8.12.1) with ESMTP id g2HIQ7dS009364
-	for <alsa-devel@alsa-project.org>; Sun, 17 Mar 2002 18:26:07 GMT
+Content-Type: multipart/mixed; boundary="=-=-="
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -26,13 +13,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Oops! That last email was badly titled! The lockup was in the ALSA 
-modules, not xine...
+--=-=-=
 
-Chris
+Perhaps someone in the alsa group at sf could upload something like
+one of the files attached below to:
+
+    alsa.sf.net:/home/groups/a/al/alsa/htdocs/index.php 
+
+so anyone going to alsa.sf.net at least gets redirected to either the
+project page at sf or to alsa-project.org....
+
+first redirects to sf.net/projects/alsa.  The 2nd to alsa-project.org.
+
+-JimC
+
+
+--=-=-=
+Content-Type: text/x-php
+Content-Disposition: attachment; filename=index.php
+Content-Description: Index to redirect to the project page
+
+<?php
+// Main index for ALSA project at SourceForge
+// Just forward to project page for now
+Header("Location: http://sourceforge.net/projects/alsa/");
+?>
+
+--=-=-=
+Content-Type: text/x-php
+Content-Disposition: attachment; filename=index.php
+Content-Description: Index to redirect to real homepage
+
+<?php
+// Main index for ALSA project at SourceForge
+// Just forward to the real homepage
+Header("Location: http://alsa-project.org/");
+?>
+
+--=-=-=--
 
 
 _______________________________________________
