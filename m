@@ -1,15 +1,15 @@
-From: mru@users.sourceforge.net (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
-Subject: Re: Memory leaks in alsa-lib
-Date: Tue, 26 Aug 2003 15:14:25 +0200
+From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Subject: Re: Two sound cards, only sound out of one
+Date: Sun, 24 Aug 2003 20:37:49 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xwud0zhla.fsf@users.sourceforge.net>
-References: <Pine.LNX.4.44.0308261432320.29234-100000@pnote.perex-int.cz>
+Message-ID: <20030824203749.27d69196.erikd-alsa@mega-nerd.com>
+References: <20030824121353.06de39c8.erikd-alsa@mega-nerd.com>
+	<20030824095120.49055.qmail@web40613.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0308261432320.29234-100000@pnote.perex-int.cz> (Jaroslav
- Kysela's message of "Tue, 26 Aug 2003 14:33:44 +0200 (CEST)")
+In-Reply-To: <20030824095120.49055.qmail@web40613.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,31 +18,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela <perex@suse.cz> writes:
+On Sun, 24 Aug 2003 10:51:20 +0100 (BST)
+Chris Rankin <rankincj@yahoo.com> wrote:
 
->>   PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND =20
->>  7148 mru       11   0 25160  27m 2740 S  0.0 12.4   0:00.08 tcvp    =20
->>=20
->> Now the man page for top tells me that "VIRT =3D SWAP + RES", so unles=
-s
->> a negative amount has been swapped (what would that mean?), something
->> strange is going on.  The odd thing is that this happens only when I
->> use the ALSA output module.  Could it be that alsa-lib triggers some
->> bug somewhere in top, or in the kernel?  This seems a little unlikely,
->> though.
->
-> I will try to investigate this problem.
+> Just checking the obvious: have you plugged any
+> speakers into the second sound card?
 
-I seems to be a kernel problem.  See my recent post to linux-kernel on
-the subject for more details.
+Errr, headphones actually. Do you think speakers would be better? :-)
 
---=20
-M=E5ns Rullg=E5rd
-mru@users.sf.net
+Jokes aside, card0 works just as I would expect it to and card1 is
+completely silent.
+
+Erik
+-- 
++-----------------------------------------------------------+
+  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
++-----------------------------------------------------------+
+Journalist: Microsoft CEO Steve Ballmer has finally said Linux 
+            is the No. 1 threat to Windows. What's your response to that? 
+Linus     : "Tag, you're it." I don't care. They've had a lot of 
+            enemies in their time. Let them fight one enemy that
+            doesn't care for a change. 
 
 
 -------------------------------------------------------
