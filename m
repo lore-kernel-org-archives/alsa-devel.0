@@ -1,14 +1,13 @@
-From: Adam K Kirchhoff <adamk@voicenet.com>
-Subject: Re: Re: Yamaha 754 question...
-Date: Mon, 20 May 2002 12:36:53 -0400 (EDT)
+From: =?iso-8859-1?Q?J=F6rn?= Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: Re: Re: [Alsa-user] Request for test of powermac driver
+Date: Mon, 20 May 2002 22:36:06 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.BOS.4.10.10205201234100.1286-100000@sorrow.ashke.com>
-References: <Pine.LNX.4.10.10205160909330.1876-100000@sorrow.ashke.com>
+Message-ID: <3CE95E36.A6122F19@folkwang-hochschule.de>
+References: <s5hn0v15p95.wl@alsa2.suse.de> <20020520104117.7f18005a.mis@creazone.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.10.10205160909330.1876-100000@sorrow.ashke.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,39 +16,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Michal Seta <mis@creazone.com>
+Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Michal Seta wrote:
+> =
 
-On Thu, 16 May 2002, Adam K Kirchhoff wrote:
+> Hi,
+> =
 
-> >
-> > hmm, init can be called multiple times.  i forgot it.
-> >
-> > the following is the revised patch.
-> > now ac3_init and _done are called at module init/end stage, so there
-> > will be no problems any more to switch 2ch/4ch accidentally.
-> > could you give a try?
-> 
-> I haven't had a chance to thoroughly test it, but I gave it a quick shot
-> this morning.  Using the same method that I was able to replicate the
-> problem last time (playing a file with xmms and alsaplayer and then
-> killing alsaplayer), I was unable to make it happen again.  
-> 
-> I'll try some more after I get home from work tonight.
+> I'm having trouble compiling the new powermac driver:
+> =
 
-Sorry for the delay in getting back to you...
+> gcc -DALSA_BUILD -D__KERNEL__ -DMODULE=3D1 -I/home/mis/CVS/alsa-driver/=
+include -I/usr/src/linux/include -O2 -D__powerpc__ -fsigned-char -fno-bui=
+ltin -msoft-float -ffixed-r2 -Wno-uninitialized -mmultiple -mstring -DLIN=
+UX -Wall -Wstrict-prototypes -fomit-frame-pointer -pipe  -DKBUILD_BASENAM=
+E=3Dpowermac   -c -o powermac.o powermac.c
+> ../alsa-kernel/ppc/powermac.c:40: warning: `snd_enable' defined but not=
+ used
+> gcc -DALSA_BUILD -D__KERNEL__ -DMODULE=3D1 -I/home/mis/CVS/alsa-driver/=
+include -I/usr/src/linux/include -O2 -D__powerpc__ -fsigned-char -fno-bui=
+ltin -msoft-float -ffixed-r2 -Wno-uninitialized -mmultiple -mstring -DLIN=
+UX -Wall -Wstrict-prototypes -fomit-frame-pointer -pipe  -DKBUILD_BASENAM=
+E=3Dpmac   -c -o pmac.o pmac.c
+> In file included from pmac.c:1:
+> ../alsa-kernel/ppc/pmac.c: In function `snd_pmac_new':
+> ../alsa-kernel/ppc/pmac.c:1353: structure has no member named `mode'
+> make[1]: *** [pmac.o] Error 1
+> make[1]: Leaving directory `/home/mis/CVS/alsa-driver/ppc'
+> make: *** [compile] Error 1
 
-I have tested this patch as rigorously as I think possible :-)  I have
-been unable to get it to break and switch from 4ch to 2ch (or vice versa)
-after a number of hours of playing games, mp3s, videos, etc.  Seems to
-work great here.
+that's a typo. change "mode" to "model".
 
-Adam
-
-
+j=F6rn
 
 _______________________________________________________________
-Hundreds of nodes, one monster rendering program.
-Now that's a super model! Visit http://clustering.foundries.sf.net/
+
+Don't miss the 2002 Sprint PCS Application Developer's Conference
+August 25-28 in Las Vegas -- http://devcon.sprintpcs.com/adp/index.cfm
