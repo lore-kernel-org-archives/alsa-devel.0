@@ -1,14 +1,9 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Re: Sudden ISA DMA problems
-Date: Mon, 18 Feb 2002 23:47:11 +0000 (GMT)
-Message-ID: <20020218234711.30566.qmail@web13104.mail.yahoo.com>
+From: German Gomez Garcia <german@piraos.com>
+Subject: SBLive SPDIF output under SMP.
+Date: Tue, 19 Feb 2002 01:21:10 +0100 (CET)
+Message-ID: <Pine.LNX.4.44.0202190116450.2045-100000@hal9000.piraos.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Received: from web13104.mail.yahoo.com (web13104.mail.yahoo.com [216.136.174.149])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id AAA14160
-	for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2002 00:47:14 +0100
-In-Reply-To: <Pine.LNX.4.31.0202181411530.505-100000@pnote.perex-int.cz>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,35 +12,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: Chris Rankin <rankincj@yahoo.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa mailing list <Alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
- --- Jaroslav Kysela <perex@suse.cz> wrote:
-> We use
-> GFP_ATOMIC|GFP_DMA like pci_allocate_consistent().
+	Hello,
 
-OK, I've hacked about a bit and it's not the presence
-of GFP_ATOMIC that causes trouble but the absence of
-GFP_DMA.
+	I would like to know if S/PDIF output of AC3 frames is supported
+in the ALSA emu10k1 driver under SMP, I was unable to make it work, I've
+tried ac3play (from alsaplayer) and latest ALSA CVS and also opensource
+emu10k1 driver and the play-ac3 utils that comes with it. I have a
+Cambridge Soundworks DTT2500 external Dolby Digital decoder, when I load
+the emu10k1 opensource driver I get the following info about my SBLive
+card:
 
-Note that the current code in snd_malloc_isa_pages()
-is:
+Creative EMU10K1 PCI Audio Driver, version 0.18, 00:59:28 Feb 19 2002
+EMU10K1 rev 5 model 0x8040 found, IO at 0x1800-0x181f, IRQ 19
+ac97_codec: AC97 Audio codec, id: 0x8384:0x7609 (SigmaTel STAC9721/23)
 
-  dma_area = snd_malloc_pages(size,
-GFP_ATOMIC|GFP_KERNEL);
+It's a SBLive Platinum (with the LiveDrive II) and I'm connecting the
+DTT2500 to the LiveDrive II's coaxial spdif output.
 
-Without the GFP_DMA, ISA DMA transfers on my machine
-do not work. GFP_DMA|GFP_ATOMIC|GFP_KERNEL is OK.
+	I'm running it on a dual Athlon 1.4 Thunderbird in a Tyan TigerMP,
+any ideas??
 
-Chris
+	Regards,
 
+	- german
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+-------------------------------------------------------------------------
+German Gomez Garcia          | Send email with "SEND GPG KEY" as subject
+<german@piraos.com>          | to receive my GnuPG public key.
+
 
 _______________________________________________
 Alsa-devel mailing list
