@@ -1,9 +1,9 @@
 From: Laurent Georget <lgeorget2@club-internet.fr>
 Subject: Re: help for a levelmeter
-Date: Fri, 18 Oct 2002 11:27:05 +0200
+Date: Fri, 18 Oct 2002 11:00:27 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DAFD3E9.8090400@club-internet.fr>
-References: <20021015224039.59921.qmail@web12207.mail.yahoo.com>		<3DADC922.5000808@club-internet.fr> <3DAE626C.7601185C@libero.it> <87r8ep9ca1.fsf@sulphur.joq.us> <3DAF2236.EA2A74BD@libero.it>
+Message-ID: <3DAFCDAB.1090204@club-internet.fr>
+References: <20021016220528.EF3E0E081@relay-4m.club-internet.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -17,75 +17,43 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Devel Alsa <alsa-devel@lists.sourceforge.net>
+Cc: Paul Davis <pbd@op.net>
 List-Id: alsa-devel@alsa-project.org
 
-Abramo Bagnara wrote:
-> Jack O'Quin wrote:
-> 
->>Abramo Bagnara <abramo.bagnara@libero.it> writes:
->>
->>
->>>The correct plugin has already been written and available inside
->>>alsa-lib.
->>>
->>>The name is pcm_meter, it's lockless and perfectly integrated with ALSA
->>>PCM chains.
->>>
->>>A sample implementation for curses level meter is already available and
->>>working.
->>>
->>>It's very simple to add other *-meters, scopes, etc.
->>
->>That's great!
->>
->>Is there any user-level documentation for all this cool stuff?
+Paul Davis wrote:
+>    [ please forward to alsa-devel@lists.sourceforge.net. i still
+>      cannot post there. 
+>    ]
 > 
 > 
-> Ehm... guess what...
+>>Anyway I can now try to experiment the copy_plugin : would you know some 
+>>program using
+>>this plugin, which would make the thing easier !
 > 
-> No, wait: I wrote some lines in asoundrc.txt:
 > 
->   type meter            # Meter PCM
->   slave STR             # Slave name (see pcm_slave)
->   # or
->   slave {               # Slave definition or name
->     pcm STR             # Slave PCM name
->     # or
->     pcm { }             # Slave PCM definition
->   }
->   [frequency INT]       # Updates per second
->   scopes {              # Scopes
->     ID STR              # Scope name (see pcm_scope)
->   # or
->     ID { }              # Scope definition (see pcm_scope)
->   }
+> programs don't "use" a plugin. its just a function of which PCM device
+> they are told to open. the code they contain is no different whether
+> they are accessing a hardware PCM device, a "plughw" PCM device, or a
+> "copy" PCM device.
 > 
-> # PCM scope type definition
-> pcm_scope_type.NAME {
->   [lib STR]             # Library file (default libasound.so)
->   [open STR]            # Open function (default
-> _snd_pcm_scope_NAME_open)
-> }
-> 
-> # PCM scope definition
-> pcm_scope.NAME {
->   type STR              # Scope type
->   ...
-> }
-> 
-> The rest is obvious, of course ;-)))
-> 
+> --p
 
-Excellent!
 
-Well, you wrote  that there is a sample implementation of this pcm_meter ,
-but I can't find it (searched in alsa tools / utils , and searched  with 
-google with no good result)
+Ok, thanks for explanation !
+Does asking  "a program using snd_pcm_copy  family function" would be 
+correct ?
 
-Anyway, i'm going on trying to use it
+(or using snd_pcm_meter functions, as Abramo Bagnara  said later on the 
+thread)
 
-Thanks
 
+In fact, the relation between plugins you define in .asoundrc and their 
+relative c function
+is not clear to me , so I'm now going to figure out out how it works, 
+but if you have lights
+on the subject,  it would be ok.
+
+As you can see, i'm an unexperienced developper so be patient  ...
 Laurent
 
 
