@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000505]: SPDIF sound distorted on non-48000 rates
-Date: Fri, 24 Sep 2004 12:14:49 +0200 (CEST)
+Subject: [ALSA - driver 0000525]: Sound does not work
+Date: Fri, 24 Sep 2004 12:18:29 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924101449.9F2742A006@server.perex-int.cz>
+Message-ID: <20040924101829.B01E62A001@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC877298
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 12:14:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A93E298
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 12:18:29 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,106 +22,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000505
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000525
 ======================================================================
-Reported By:                ramendik
+Reported By:                ao314
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     505
+Bug ID:                     525
 Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
+Reproducibility:            random
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               RH-based
-Kernel Version:             2.6.8.1
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             09-19-2004 10:03 CEST
-Last Modified:              09-24-2004 12:14 CEST
+Date Submitted:             09-23-2004 10:00 CEST
+Last Modified:              09-24-2004 12:18 CEST
 ======================================================================
-Summary:                    SPDIF sound distorted on non-48000 rates
+Summary:                    Sound does not work
 Description: 
-I have an Intel ICH AC97 sound subsystem, on an Intel i865 motherboard(ASUS
-P4P800). It has an analog output and an SPDIF output.When I play 48Khz
-files, thinks are OK on all outputs. But when I play 44.1 Khz files, the
-sound on the SPDIF output is audibly distorted. The analog output is OK.
-
-I am using the 2.6.8.1 kernel, and tried both the ALSA inside it (1.0.4)
-and newer alsa-driver 1.0.7rc1. This same problem shows up with 2.6.6 and
-2.6.7 kernels. So apparently it's present across several versons of ALSA.
-
+Sometimes, after the computer has been off for a while the sound refuses to
+work. Rebooting a couple of times seems to "fix" it.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-23-2004 18:37 CEST 
+ tiwai - 09-23-2004 18:16 CEST 
 ----------------------------------------------------------------------
-Which ac97 codec?  Please attach /proc/asound/card0/codec97#0/* files.
-Also, check the IEC958 status bits (run iecset) during playback of
-44.1kHz samples.
+What is the exact behavior, "refuses to work" ?
 
 ----------------------------------------------------------------------
- ramendik - 09-23-2004 19:50 CEST 
+ ao314 - 09-24-2004 12:18 CEST 
 ----------------------------------------------------------------------
-Well, iecset showed 48000 Hz during the playback of 44100 Hz samples. So
-apparently this is the bug. Here is the full result:
-
-# iecset
-Mode: consumer
-Data: audio
-Rate: 48000 Hz
-Copyright: protected
-Emphasis: none
-Category: PCM coder
-Original: original
-Clock: 1000 ppm
-
-----------------------------------------------------------------------
- ramendik - 09-23-2004 19:52 CEST 
-----------------------------------------------------------------------
-I have uploaded both files from /proc/asound/card0/codec97#0/ .
-
-----------------------------------------------------------------------
- ramendik - 09-23-2004 19:58 CEST 
-----------------------------------------------------------------------
-BTW, "iecset rate 44100" does make things better on 44100 Hz - but breaks
-them on 48000.
-
-----------------------------------------------------------------------
- tiwai - 09-23-2004 20:06 CEST 
-----------------------------------------------------------------------
-How about the attached patch (it's already applied to CVS).
-
-----------------------------------------------------------------------
- ramendik - 09-23-2004 22:16 CEST 
-----------------------------------------------------------------------
-Unfortunately the patch did NOT help. The distortion is in place, and when
-a 44100 Hz file is played (using mplayer), iecset still shows a 48000 Hz
-sample rate.
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 12:14 CEST 
-----------------------------------------------------------------------
-What shows /proc/asound/cards entry?  If it's ICH4, ICH5 or ESB,
-try hw:0,2 PCM for SPDIF output.
+Basically there is no sound and the stuff I've tried fiddling around with
+won't get the sound back including:
+1. reinstalling alsa drivers
+2. trying to set sound levels - both with alsamixer - which complains no
+device found and the little volume control in the bottom right - which
+can't be set
+3. Alsaconf, can't find any soundcards at the end even though it seems to
+correctly determine I have an nForce. 
+The only thing that works is reseting the computer.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-19-04 10:03 ramendik       New Bug                                      
-09-19-04 10:03 ramendik       Distribution              => RH-based        
-09-19-04 10:03 ramendik       Kernel Version            => 2.6.8.1         
-09-19-04 10:05 ramendik       Bug Monitored: ramendik                      
-09-23-04 18:37 tiwai          Bugnote Added: 0001831                       
-09-23-04 19:50 ramendik       Bugnote Added: 0001839                       
-09-23-04 19:51 ramendik       File Added: ac97#0-0                         
-09-23-04 19:52 ramendik       File Added: ac97#0-0+regs                    
-09-23-04 19:52 ramendik       Bugnote Added: 0001843                       
-09-23-04 19:58 ramendik       Bugnote Added: 0001845                       
-09-23-04 20:06 tiwai          Bugnote Added: 0001846                       
-09-23-04 20:06 tiwai          File Added: intel-spdif-fix.dif                    
-09-23-04 22:16 ramendik       Bugnote Added: 0001852                       
-09-24-04 12:14 tiwai          Bugnote Added: 0001871                       
+09-23-04 10:00 ao314          New Bug                                      
+09-23-04 10:00 ao314          Distribution              => Fedora Core 2   
+09-23-04 10:00 ao314          Kernel Version            => 2.6.8           
+09-23-04 14:29 ao314          Bug Monitored: ao314                         
+09-23-04 18:16 tiwai          Bugnote Added: 0001827                       
+09-24-04 12:07 ao314          Bug End Monitor: ao314                       
+09-24-04 12:18 ao314          Bugnote Added: 0001873                       
 ======================================================================
 
 
