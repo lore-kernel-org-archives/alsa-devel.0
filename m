@@ -1,8 +1,8 @@
 From: Richard Cochran <cochran@cs.umass.edu>
 Subject: Re: documentation - yeah right!
-Date: Wed, 21 May 2003 11:59:21 -0400
+Date: Wed, 21 May 2003 12:09:28 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030521115921.B793@loki.cs.umass.edu>
+Message-ID: <20030521120928.C793@loki.cs.umass.edu>
 References: <20030521104349.A793@loki.cs.umass.edu> <200305211518.h4LFI2jE027163@mail.cs.umass.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -21,105 +21,31 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 On Wed, May 21, 2003 at 11:24:35AM -0400, Paul Davis wrote:
-> >it only to be "more complex". In contrast, the OSS modules work with
-> >a simple 'insmod' command. In fairness, I expect this problem to go
-> >away with kernel 2.6, now that Alsa is part of the kernel.
-> 
-> in fairness, that whole paragraph was unfair for exactly that reason.
+> Nobody disagress with the sentiment of the original poster. At least a
+> half-dozen to a dozen people have wandered onto this list and said
+> they would write documentation. It hasn't happened. Why? Its not
+> because its considered to be useless. It hasn't happened because
+> nobody has the time or inclination to write it. So far. Thats
+> all. There is no opposition to higher level documentation, only a lack
+> of time or motivation.
 
-Unfair, perhaps, yet true. Getting alsa to work with a 2.4.x kernel
-today is not exactly easy.
+It is really hard to write higher level documentation after the
+project is finished!
 
-> the i/o side of things, the OSS API for configuring the parameters is
-> inadequate, and moreover, one cannot interpose between the app and the
-> driver, requiring lots of things to be put into the kernel that don't
-> belong there (format conversion, SR conversion, etc. etc.).
-> ALSA doesn't look like read/write/open/close: if you use those calls,
-> then everything on the other side of them has to be in the kernel.
+With a name like "Advanced Linux Sound Architecture", I would expect
+to be able to read about:
 
-I don't agree that OSS conversion would have to be in the kernel. You
-could simply pipe all of your audio through sox using simple shell
-commands! Clunky, yes, but it would work.
+1. What is advanced (over OSS) in Alsa?
 
-More to the point, I can imagine a user library to provide:
+2. What is the architecture?
 
-  write_conversion(int fd, //open file descriptor
-                   void* buf, //samples to write
-                   int buflen, //length of buffer
-                   sometype fmtin, //format of buffer
-                   sometype fmtout, //desired conversion
-                   sometype alg //desired conversion algorithm
-                   );
+Any pointers (white papers, articles, email postings, anything!) to
+material on these questions would be appreciated.
 
-  read_conversion() //you get the idea
-
-Mixing can be done using a fifo. It would not be hard to shadow the
-OSS ioctl with similar library routines for apps that need to mix with
-other apps (like desktop beeps and so forth). Serious audio apps
-probably want exclusive DSP access, anyhow.
-
-> >4. I could not find a design document for the Alsa way. "Architecture"
-> >is in the name, but what is the architecture? Is it only apparent in
-> >the driver sources? Alsa promises to deliver better audio performance
-> >and more functionality, but how will the Alsa architecture provide
-> >this?
-> 
-> it already has provided it. it offers generic ways to do things that
-> were simply impossible or at best very tricky with OSS. the plug_hw
-> layer in ALSA has no equivalent for OSS, anywhere.
-
-Where is this 'it'. Where can I read the document?
-
-I don't know what "plug_hw" is or what it provides. I would _love_ to
-read about it. I would like to know what is impossible with OSS that
-is easy with Alsa, specifically.
-
-> >figure the design out later" approach is sometimes needed, but for an
-> >ambitious idea like Alsa, with long term goals, it would be good to
-> >have some kind of design thought out, and spelled out in black and
-> >white.
-> 
-> actually, many people disagree with this. there were many changes to
-> the design of ALSA that occured over the last 2 years and were
-> prompted by coming to terms with what the requirements actually were,
-> which in turn occured because of new types of audio interfaces
-> appearing that challenged the assumptions on which OSS and earlier
-> versions of ALSA were built.
-
-Yes, sometimes you need to go back to the drawing board. I cannot say
-whether Alsa needs this or not. I do find that "ever adapting" the old
-code to new problems eventually finds a limit.
-
-> >It seems to me that the main problem with OSS is the uneven quality of
-> >the drivers, not the overall design. OSS would only need better
-> >drivers and a user space library like alsa-lib, for rate/format
-> >conversion and mixing.
-> 
-> there is no such library, and the programmer would have to use it
-> explicitly (because of the lack of redirection i mentioned above),
-> rather than implicitly.
-
-The same may be said of Alsa: every app needs to use it. I have no
-problem with this idea. I only wonder what the design of Alsa is.
-
-If we have a good, standard, user library, then everyone will use it!
-
-> its the overall design of OSS that is the problem - the quality of
-> the drivers is generally very good.
-
-Really? Why does not i810 offer duplex audio, then?
-
-> > Howto use the ALSA API - Paul Davis has also written a brief explanation.
-> > http://www.op.net/~pbd/alsa-audio.html
-> 
-> this link is not broken. it points to the new location (my ISP changed).
-
-I followed the link to the new location, but I could not locate "Howto
-use the ALSA API".
-
-Thanks,
+Thanks again,
 
 Richard
+
 
 
 
