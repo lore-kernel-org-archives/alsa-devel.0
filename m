@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000440]: Gateway Solo 250 nma2 - no soundcard detected
-Date: Wed, 18 Aug 2004 15:45:35 +0200 (CEST)
+Subject: [ALSA - driver 0000414]: sb cant grab irq 65535
+Date: Wed, 18 Aug 2004 16:23:50 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040818134535.0483F1102F@server.perex-int.cz>
+Message-ID: <20040818142350.07D071102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5B68A273
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 15:45:35 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 494CA290
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 16:23:50 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,81 +22,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000440
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000414
 ======================================================================
-Reported By:                thelight
-Assigned To:                tiwai
+Reported By:                montjoie
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     440
-Category:                   PCI - nm256
+Bug ID:                     414
+Category:                   ISA - sb8
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.6-1.435.2.3
+Status:                     new
+Distribution:               Debian Testing
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             08-14-2004 19:38 CEST
-Last Modified:              08-18-2004 15:45 CEST
+Date Submitted:             07-30-2004 11:20 CEST
+Last Modified:              08-18-2004 16:23 CEST
 ======================================================================
-Summary:                    Gateway Solo 250 nma2 - no soundcard detected
+Summary:                    sb cant grab irq 65535
 Description: 
-The laptops specs say it has a 'neomagic nma 2' sound card onboard. From
-what I can tell this is some sort of NeoMagic nm256 equivalent.
+Laptop toshiba satelitte CD2520CDS
+Soundcard WSS & sb built in
 
-My main problem is that I simply get no sound. The fedora core 2 program
-system-config-soundcard doesnt actually detect a soundcard at all. Im
-using the 1.0.3 rpms of alsa which came with fedora. 
+Alsa say when loading sb driver:
+"sb cant grab irq 65535" three times
+I try both to make sb module and to built in sb in the kernel(no modules)
+but it make the same.
+I compile alsaconf ant try but no change.(on a kernel discution i saw a
+man that say to do that).
+I change all hardware config (irq dma etc..) but no change.
+I try to force irq= when loading module but no change
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-18-2004 11:59 CEST 
+ montjoie - 08-02-2004 18:13 CEST 
 ----------------------------------------------------------------------
-2.6 kernel can load the unused modules.
-I guess the PCI id of your device isn't listed on the supported
-id table in nm256 driver.
-
-Check it via lspci and try to add it to the pci_id table.
-(Note that this may likely cause hang-up :)
+bug also in 2.6.8-rc2 and 2.6.5
 
 ----------------------------------------------------------------------
- thelight - 08-18-2004 15:37 CEST 
+ tiwai - 08-02-2004 18:18 CEST 
 ----------------------------------------------------------------------
-Ive looked through the output of lspci -vv and no sound device is actually
-listed there. The only output relating to neomagic is this which appears
-to be for video:
+You have to give irq module parameter for sb8 module.
 
-00:02.0 VGA compatible controller: Neomagic Corporation NM2160 [MagicGraph
-128XD] (rev 01) (prog-if 00 [VGA])
-        Subsystem: Neomagic Corporation MagicGraph 128XD
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap- 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 128 (4000ns min, 63750ns max)
-        Interrupt: pin A routed to IRQ 10
-        Region 0: Memory at fd000000 (32-bit, prefetchable)
-        Region 1: Memory at fea00000 (32-bit, non-prefetchable) [size=2M]
-        Region 2: Memory at fed00000 (32-bit, non-prefetchable) [size=1M]
+Which parameter did you use exactly?
 
 ----------------------------------------------------------------------
- tiwai - 08-18-2004 15:45 CEST 
+ montjoie - 08-18-2004 16:23 CEST 
 ----------------------------------------------------------------------
-Could you show the output of lspci -vv and lspci -nv?
-Also, to be sure, check ISA PnP devices (see /sys/bus/pnp/devices/*),
-too (an Acer laptop has the opl3sax compatible chip connected with
-nm256).
+on kernel 2.4.26 no error
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-14-04 19:38 thelight       New Bug                                      
-08-14-04 19:38 thelight       Distribution              => Fedora Core 2   
-08-14-04 19:38 thelight       Kernel Version            => 2.6.6-1.435.2.3 
-08-18-04 11:59 tiwai          Bugnote Added: 0001577                       
-08-18-04 15:37 thelight       Bugnote Added: 0001582                       
-08-18-04 15:45 tiwai          Bugnote Added: 0001584                       
+07-30-04 11:20 montjoie       New Bug                                      
+07-30-04 11:20 montjoie       Distribution              => Debian Testing  
+07-30-04 11:20 montjoie       Kernel Version            => 2.6.7           
+08-02-04 18:12 montjoie       Bug Monitored: montjoie                      
+08-02-04 18:13 montjoie       Bugnote Added: 0001520                       
+08-02-04 18:18 tiwai          Bugnote Added: 0001522                       
+08-18-04 16:23 montjoie       Bugnote Added: 0001585                       
 ======================================================================
 
 
