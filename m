@@ -1,53 +1,61 @@
-From: "Mathieu Rondonneau" <mathieu.rondonneau@polymtl.ca>
-Subject: aplay playback-pointer
-Date: Mon, 12 Apr 2004 00:24:30 -0500
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <000901c4204e$6f0b3580$0403a8c0@win2K>
-References: <20040412013949.NJOP1634.smtp3.fuse.net@64BitBadass>
+From: Russell King <rmk+lkml@arm.linux.org.uk>
+Subject: Re: [linux-audio-user] snd-hdsp+cardbus+M6807 notebook=distortion -- FIXED!
+Date: Mon, 12 Apr 2004 08:28:01 +0100
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <20040412082801.A3972@flint.arm.linux.org.uk>
+References: <200404120145.22679.daniel.ritz@gmx.ch> <20040412013949.NJOP1634.smtp3.fuse.net@64BitBadass>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Mathieu Rondonneau <mathieu.rondonneau@polymtl.ca>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20040412013949.NJOP1634.smtp3.fuse.net@64BitBadass>; from ico@fuse.net on Sun, Apr 11, 2004 at 09:39:43PM -0400
+To: Ivica Ico Bukvic <ico@fuse.net>
+Cc: daniel.ritz@gmx.ch, 'Tim Blechmann' <TimBlechmann@gmx.net>, 'Thomas Charbonnel' <thomas@undata.org>, ccheney@debian.org, linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Sun, Apr 11, 2004 at 09:39:43PM -0400, Ivica Ico Bukvic wrote:
+> Hi all! Great news! I managed to fix the issue in Linux. As I suspected it
+> was the same problem like in Windows after suspend as the distortion was
+> similar.
 
-I'm writting an audio driver and i have some trouble.
+Don't think the problem is 100% solved just yet - there's still work
+to do.
 
-when i use:
- dd if=file.wav of=/dev/audio0
-the oss part of the ALSA driver seams to be used and some sound (not good
-sound but noise) are coming out. (the playback_pointer operator is called)
+You haven't said which kernel version you're using to test this out
+on; 2.6.5 contains some fixes for the CB1410 in these areas, and it
+would be useful to know if these are working.
 
-but when i use aplay:
- aplay file.wav
-nothing coming out, and the playback_pointer operator is not called.
-nothing is called between the start and the stop trigger.
+So, as per my previous mail and at risk of sounding like a stuck
+record^wCD, which kernel version are you using for this test?
 
-Maybe someone could tell me why the aplay command doesn't call the
-playback_pointer.
-Do i need to implement some specific functions in order to use aplay?
+Have you also tried only changing a limited subset of these
+registers?  The reason this is important is that just immitating
+the working scenario out right doesn't really tell us very much.
 
-Thanks for any help.
+You should be able to tweak these while the card is playing, so
+you could try setting them all to the "working" state, play back
+the audio, and then try undoing each change individually.
 
-regards,
-Mathieu Rondonneau
+> 2) PREFERRED: hdsp driver needs to adjust the cardbus controller latency
 
+No.  Drivers should not fiddle with other parts of the system they
+don't own, and the HDSP driver does not own the cardbus controller.
+I suspect that the CB1410 quirk needs to force the latency timer at
+startup.
 
+> 3) FOR FURTHER INVESTIGATION: Does linux hdsp driver force the f0 value upon
+> the 0x81 register or is it that in Linux one simply cannot select d0 value
+> for whatever reason
 
--------------------------------------------------------
-This SF.Net email is sponsored by: IBM Linux Tutorials
-Free Linux tutorial presented by Daniel Robbins, President and CEO of
-GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+I suspect it may be caused by using a byte access to a longword-sized
+register.  0x81 is supposed to be accessed via:
+
+setpci -s a.0 0x80.l
+
+which of course means its bits 8 to 15.
+
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
+                 2.6 Serial core
