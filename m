@@ -1,14 +1,11 @@
-From: Glenn Maynard <g_sf@zewt.org>
-Subject: Re: problems using select() on alsa pcm.
-Date: Thu, 25 Mar 2004 16:44:24 -0500
+From: "guan yim" <guanyim@hotmail.com>
+Subject: Re: Test: SBLive! (C) 2003 need extra effort on Rear Analog Output
+Date: Fri, 26 Mar 2004 06:41:19 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040325214423.GB13484@zewt.org>
-References: <200403250408.i2P48qDC021625@dhin.linuxaudiosystems.com> <003301c41253$919b5c00$161b14ac@boromir> <s5h65ct58md.wl@alsa2.suse.de>
+Message-ID: <Sea2-F452ufyWOxbCJn00023c48@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h65ct58md.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,21 +14,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: pzad@pobox.sk
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 25, 2004 at 03:00:58PM +0100, Takashi Iwai wrote:
-> > Why is select deprecated?
-> 
-> because select is just a wrapper of poll in fact (on linux)?
+Hi pzad,
 
-So?  There are a few other operating systems out there, and select() is
-very portable.
+Thanks for your attention. Please let me know how do I check for that?
 
-(select isn't deprecated; it's simply not Linus's API to deprecate. :)
+Regards,
+guanyim
 
--- 
-Glenn Maynard
+
+>From: p z oooo <pzad@pobox.sk>
+>Reply-To: p z oooo <pzad@pobox.sk>
+>To: guanyim@hotmail.com
+>CC: alsa-devel@lists.sourceforge.net
+>Subject: Re: [Alsa-devel] Test: SBLive! (C) 2003 need extra effort on Rear 
+>Analog Output
+>Date: Thu, 25 Mar 2004 15:39:31 +0100
+>
+>Hi,
+>
+>What AC97 codec uses SB Live 2003 ???
+>Maybe for rear channels is used AC97 too and by default is rear
+>volume set to 0 and control is removed to avoid duplicite.
+>
+>Peter Zubaj
+>
+>
+>
+>====================== REKLAMA ========================
+>Spolocnost SUN Microsystems uviedla na trh novy server Sun Fire V20z
+>zalozeny procesoroch AMD Opteron.
+>Viac informacii najdete na : http://www.somi.sk/sun/v20z.php
+>=======================================================
+>
+>
+>
+>-------------------------------------------------------
+>This SF.Net email is sponsored by: IBM Linux Tutorials
+>Free Linux tutorial presented by Daniel Robbins, President and CEO of
+>GenToo technologies. Learn everything from fundamentals to system
+>administration.http://ads.osdn.com/?ad_id70&alloc_id638&op=click
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@lists.sourceforge.net
+>https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+_________________________________________________________________
+Help STOP SPAM with the new MSN 8 and get 2 months FREE*  
+http://join.msn.com/?page=features/junkmail
+
 
 
 -------------------------------------------------------
