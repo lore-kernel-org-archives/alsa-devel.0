@@ -1,12 +1,15 @@
-From: Friedrich.Ewaldt@gmx.de
-Subject: CS46xx 4 channel?
-Date: Thu, 18 Jul 2002 12:16:03 +0200 (MEST)
+From: Paul Davis <pbd@op.net>
+Subject: opening control devices with "hw:N,M"
+Date: Thu, 18 Jul 2002 09:03:26 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <12392.1026987363@www3.gmx.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Message-ID: <200207181303.g6ID3Qq25729@op.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA07855
+	for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2002 15:01:47 +0200
+Received: from unknown (HELO op.net) ([209.92.100.76]) (envelope-sender <pbd@op.net>)
+          by newmx1.fast.net (qmail-ldap-1.03) with SMTP
+          for <alsa-devel@alsa-project.org>; 18 Jul 2002 13:01:34 -0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,53 +18,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+why doesn't this work:
 
-I've just found the following message at the vmlinuz mail archive:
+    snd_ctl_open (&handle, "hw:0,0", ...)
 
-*****************
-My sound card is a Hercules Fortissimo II (Cirrus Logic CrystalClear 
-SoundFusion Audio Accelerator CS4624).
+it means that you can't use the same standard name format for control
+devices as PCM devices, which is a bit of problem for programs that
+need to open both but only want to require the user to specify a
+single name ...
 
-The are three problems to be addressed:
-
-1. I am know using the kernel oss driver, and it works nice; except for 
-the mixer channel labeling. 'mixctlr' segfaults, but 
-'gnome-volume-control' works fine. The problem is that the main volume 
-control controls the front speakers while the 'pcm' controls the main 
-volume and 'pcm2' the read speakers.
-
-2. The alsa driver only works in 2-channel mode. Does anyone here knows 
-an alsa guy and can forward the info the the kernel driver already 
-supports 4-channels?
-
-3. The headphones output does not work with either driver, even though 
-there is a control for it on the kernel drivers.
-
-Thanks.
-
---
-Eugenio Diaz, BSEE/BSCE
-Linux Engineer
-getnito@yahoo.com
-****************
-So, my quetion is:
-Is there a chance to get 4 channel output working on the cs4624 now?
-That would be great.
-
-Thanks,
-fritz_e
-
-
-
-
--- 
-GMX - Die Kommunikationsplattform im Internet.
-http://www.gmx.net
-
+--p
 
 
 -------------------------------------------------------
