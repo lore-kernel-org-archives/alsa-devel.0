@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000686]: No surround sound
-Date: Sun, 30 Jan 2005 13:40:35 +0100
-Message-ID: <ef2a8c6a2847ef291284bfb6249c91ae@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [2.6 patch] usbusx2yaudio.c: remove an unused variable
+Date: Sun, 30 Jan 2005 14:03:14 +0100
+Message-ID: <20050130130314.GL3185@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 185D91C7
-	for <alsa-devel@alsa-project.org>; Sun, 30 Jan 2005 13:40:35 +0100 (MET)
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id AC2141AE
+	for <alsa-devel@alsa-project.org>; Sun, 30 Jan 2005 14:03:15 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,79 +18,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: greg@kroah.com, perex@suse.cz
+Cc: alsa-devel@alsa-project.org, linux-usb-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+In 2.6.11-rc a completely unused variable was added, resulting in the 
+following compile warning:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=686> 
-======================================================================
-Reported By:                dziegiel
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   686
-Category:                   PCI - audigyls
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo Linux
-Kernel Version:             2.4.26-gentoo-r9
-======================================================================
-Date Submitted:             11-28-2004 15:45 CET
-Last Modified:              01-30-2005 13:40 CET
-======================================================================
-Summary:                    No surround sound
-Description: 
-I can`t enable surround sound on my 5.1 speakers.
-In xmms with alsa-plugin i get stereo with 2 Front speakers[low-quality
-sound] ,but with oss i get 2 Front and Center[they work fine]without
-Rear.
-In movies[I`ve tried several players] I have the same problem.
-When I type:
-mplayer -ao alsa1x -channels 6 movie.avi
-I get:
+<--  snip  -->
+
 ...
-alsa-init: soundcard set to surround51
-ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
-definition (id: surround51, value: cards.pcm.surround51)
-alsa-init: playback open error:
-Z&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=322;y argument
+  CC      sound/usb/usx2y/usx2yhwdeppcm.o
+In file included from sound/usb/usx2y/usx2yhwdeppcm.c:53:
+sound/usb/usx2y/usbusx2yaudio.c: In function `usX2Y_urbs_allocate':
+sound/usb/usx2y/usbusx2yaudio.c:418: warning: unused variable `ep'
 ...
 
-I`ve tried everything with alsamixer, but with no result.
-PS.
-Sorry for my English.
-======================================================================
+<--  snip  -->
 
-----------------------------------------------------------------------
- dziegiel - 01-30-05 12:38 
-----------------------------------------------------------------------
-cat /proc/asound/cards :
 
-0 [AUDIGYLS       ]: AudigyLS - AUDIGYLS
-                     AudigyLS [SB0310] at 0xe400 irq 9
+This patch removes this unused variable.
 
-----------------------------------------------------------------------
- jcdutton - 01-30-05 13:40 
-----------------------------------------------------------------------
-Upgrade alsa-driver and alsa-lib to latest versions, and use the snd-ca0106
-module instead of the snd-audigyls module.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-28-04 15:45 dziegiel       New Issue                                    
-11-28-04 15:45 dziegiel       Distribution              => Gentoo Linux    
-11-28-04 15:45 dziegiel       Kernel Version            => 2.4.26-gentoo-r9
-12-06-04 23:34 jcdutton       Note Added: 0002743                          
-12-06-04 23:34 jcdutton       Status                   assigned => feedback
-01-30-05 12:38 dziegiel       Note Added: 0003441                          
-01-30-05 13:40 jcdutton       Note Added: 0003442                          
-======================================================================
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
+--- linux-2.6.11-rc2-mm2-full/sound/usb/usx2y/usbusx2yaudio.c.old	2005-01-30 12:26:58.000000000 +0100
++++ linux-2.6.11-rc2-mm2-full/sound/usb/usx2y/usbusx2yaudio.c	2005-01-30 12:27:03.000000000 +0100
+@@ -415,7 +415,6 @@
+ 	unsigned int pipe;
+ 	int is_playback = subs == subs->usX2Y->subs[SNDRV_PCM_STREAM_PLAYBACK];
+ 	struct usb_device *dev = subs->usX2Y->chip.dev;
+-	struct usb_host_endpoint *ep;
+ 
+ 	pipe = is_playback ? usb_sndisocpipe(dev, subs->endpoint) :
+ 			usb_rcvisocpipe(dev, subs->endpoint);
 
 
 
