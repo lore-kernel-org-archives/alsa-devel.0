@@ -1,14 +1,11 @@
-From: Anders Torger <torger@ludd.luth.se>
-Subject: Digi96 driver question
-Date: Tue, 4 May 2004 04:43:29 +0200
+From: Robin Cook <rcook@wyrms.net>
+Subject: Creative MP3+ or Hercules Muse Pocket
+Date: Mon, 03 May 2004 23:32:27 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405040443.29706.torger@ludd.luth.se>
+Message-ID: <1083645143.18667.22.camel@pheuri>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-vJERKzAKJJ8aibX+CHe6"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,19 +18,35 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-On the page 
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=RME&card=Digi96%
-2F8+PAD&chip=FPGA&module=rme96
+--=-vJERKzAKJJ8aibX+CHe6
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-in says under "known bugs":
+Trying to find out if either or both of the Creative Soundblaster MP3+
+or the Hercules Muse Pocket usb sound cards are supported by the usb
+driver in ALSA?
 
- - 96kHz and 88.2kHz not accessible via PCM interface 
+If so are is there anything special that needs to be done to get them
+setup under alsa?
 
-What does that mean? The card and driver does work in 96 and 88.2 kHz, I 
-know that since I wrote the driver... but if there is some sort of bug, 
-I'd like to know.
+Thanks
+CuZnDragon
+Robin Cook
 
-/Anders Torger
+--=-vJERKzAKJJ8aibX+CHe6
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+
+iD8DBQBAlxzVX/PXxBKTNeMRAjTnAJwJA8OP/YPdLZDN4fIprvKr+oLgYQCeKl31
+Guc6sMp1Ax3dqfjg/MPGD/0=
+=u3Z5
+-----END PGP SIGNATURE-----
+
+--=-vJERKzAKJJ8aibX+CHe6--
+
 
 
 -------------------------------------------------------
