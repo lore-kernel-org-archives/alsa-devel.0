@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000163]: Noisy sound
-Date: Fri, 1 Apr 2005 22:51:56 +0200
-Message-ID: <646b62593e686a6300682dd3a9b24ac9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000200]: White noise when sound driver is loaded
+Date: Fri, 1 Apr 2005 22:50:05 +0200
+Message-ID: <c8fc758210eccc2a16421865a492321f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 14BDA235
-	for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2005 22:51:57 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2942E22B
+	for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2005 22:50:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=163> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=200> 
 ======================================================================
-Reported By:                eduardolinux
+Reported By:                mbribeiro
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   163
-Category:                   PCI - via82xx
+Issue ID:                   200
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware
-Kernel Version:             2.4.22
+Distribution:               gentoo-linux
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             03-29-2004 15:39 CEST
-Last Modified:              04-01-2005 22:51 CEST
+Date Submitted:             04-11-2004 19:55 CEST
+Last Modified:              04-01-2005 22:50 CEST
 ======================================================================
-Summary:                    Noisy sound
+Summary:                    White noise when sound driver is loaded
 Description: 
-I have a ECS K7VTA3v5 maniboard with a KT333 chipset with a onboard sound
-witch uses the via82cxxx_audio module on OSS. Well, I tried to use ALSA on
-Slackware 9.1 (kernel 2.4.22) and the sound has a noisy background sound.
+Since kernel 2.6.3 I started to have problem with sound. In 2.6.3 sound
+stoped working and locked up artsd in kde, in 2.6.5 worked again but the
+sound is very poor with a background noise and very, very poor to use with
+xmame and artsd as I used to do. I have an ens1371 SB and I worked fine
+with winxp and alsa, now it just works fine with winxp (no hardware
+problem I guess). In kernel 2.6.5 I tried to use the latest version
+available and installed alsa 1.0.4-r1 from gentoo's ebuild and the problem
+is still there.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-13-04 19:44 
+ jdthood - 04-01-05 22:50 
 ----------------------------------------------------------------------
-try a different value of dxs_support module option.
-
-----------------------------------------------------------------------
- jdthood - 04-01-05 22:51 
-----------------------------------------------------------------------
-Submitter: Has there been any improvement with more recent ALSA releases?
+Submitter: Has there been any improvement in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-29-04 15:39 eduardolinux   New Issue                                    
-03-29-04 15:39 eduardolinux   Distribution              => Slackware       
-03-29-04 15:39 eduardolinux   Kernel Version            => 2.4.22          
-04-06-04 09:56 robin_root     Issue Monitored: robin_root                    
-04-13-04 19:44 tiwai          Note Added: 0000797                          
-04-01-05 22:51 jdthood        Note Added: 0004293                          
+04-11-04 19:55 mbribeiro      New Issue                                    
+04-11-04 19:55 mbribeiro      Distribution              => gentoo-linux    
+04-11-04 19:55 mbribeiro      Kernel Version            => 2.6.5           
+04-01-05 22:50 jdthood        Note Added: 0004291                          
 ======================================================================
 
 
