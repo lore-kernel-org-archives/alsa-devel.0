@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - firmware 0000778]: xbox parameter sets AC97_SCAP_DETECT_BY_VENDOR wrongly
-Date: Mon, 3 Jan 2005 16:58:55 +0100
-Message-ID: <c198402e929896eec93e439a69538d59@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000697]: alsa-driver tarball contains .cvsignore files
+Date: Mon, 3 Jan 2005 16:55:28 +0100
+Message-ID: <ef4a54e7b073777c55941d1c021e36e7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C0D8B2CB
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:58:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB5D428B
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:55:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=778> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=697> 
 ======================================================================
-Reported By:                julian
-Assigned To:                
+Reported By:                jdthood
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - firmware
-Issue ID:                   778
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   697
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-02-2005 18:53 CET
-Last Modified:              01-03-2005 16:58 CET
+Date Submitted:             12-01-2004 21:03 CET
+Last Modified:              01-03-2005 16:55 CET
 ======================================================================
-Summary:                    xbox parameter sets AC97_SCAP_DETECT_BY_VENDOR
-wrongly
+Summary:                    alsa-driver tarball contains .cvsignore files
 Description: 
-the xbox parameter was designed to avoid failed detection of the AC97
-codec.
-according to the header file AC97_SCAP_DETECT_BY_VENDOR is a flag to ALLOW
-detection. Therefore AC97_SCAP_DETECT_BY_VENDOR should be set in scaps if
-the xbox 
-parameter is false, not true.
-
-The logic in ac97-codec is not consistent either.
-
-To avoid bad AC97 probes, either AC97_SCAP_AUDIO or AC97_SCAP_SKIP_AUDIO
-should be set if the xbox parameter is set.
+The 1.0.7 alsa-driver tarball contains .cvsignore files.
 ======================================================================
 
 ----------------------------------------------------------------------
- julian - 01-02-05 20:21 
+ jdthood - 12-02-04 15:52 
 ----------------------------------------------------------------------
-ignore the patch for ac97-codec.c for now - it loads OK but crashes my xbox
-when I try to play something with xine.
-
-The bug and the intel8x0.c points are valid.
-
-Julian
+No big problem.  It's just ugly.  Or even "fugly" as my colleague put it.
 
 ----------------------------------------------------------------------
- julian - 01-03-05 16:58 
+ tiwai - 12-02-04 16:12 
 ----------------------------------------------------------------------
-OK - I'm starting to understand - xboxes HAVE readble vendor registers but
-not readable other registers, so the sense of the original code was
-correct. I think t he comments could be improved but please close/delete
-this bug. I'll raise something more sensible if I get to the point of
-knowing what I'm on about and have something useful to contribute.
-
-Julian
+Ok, now fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-02-05 18:53 julian         New Issue                                    
-01-02-05 18:53 julian         File Added: x                                
-01-02-05 18:56 julian         Issue Monitored: julian                      
-01-02-05 20:21 julian         Note Added: 0003047                          
-01-03-05 16:58 julian         Note Added: 0003069                          
+12-01-04 21:03 jdthood        New Issue                                    
+12-02-04 15:46 tiwai          Note Added: 0002683                          
+12-02-04 15:52 jdthood        Note Added: 0002684                          
+12-02-04 16:12 tiwai          Status                   new => resolved     
+12-02-04 16:12 tiwai          Resolution               open => fixed       
+12-02-04 16:12 tiwai          Assigned To               => tiwai           
+12-02-04 16:12 tiwai          Note Added: 0002686                          
+01-03-05 16:55 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
