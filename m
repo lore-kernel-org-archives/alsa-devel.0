@@ -1,13 +1,12 @@
-From: Abramo Bagnara <abramo@alsa-project.org>
+From: Paul Davis <pbd@op.net>
 Subject: Re: Re: About integer64
-Date: Thu, 09 May 2002 14:32:50 +0200
+Date: Thu, 09 May 2002 08:57:05 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CDA6C72.42150590@alsa-project.org>
-References: <E175llC-0006zb-00@usw-sf-list1.sourceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Message-ID: <E175nSs-0005qq-00@usw-sf-list1.sourceforge.net>
+References: <3CDA6C72.42150590@alsa-project.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: Your message of "Thu, 09 May 2002 14:32:50 +0200."
+             <3CDA6C72.42150590@alsa-project.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,48 +15,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
+To: Abramo Bagnara <abramo@alsa-project.org>
 Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
-> 
-> >
-> >I don't think that's a bad thing to have support for 64 bit integers
-> >(perhaps for future use, who knows), but I think that to use this to
-> >store a fixed point float is a big mistake.
-> >
-> >If you think for it you realize that it's *not* an integer and
-> >applications are betrayed in their expectation.
-> 
-> in this case, it *is* an integer. your original question was about why
-> its 64 bits - i think that comes from the fixed point internal
-> arithmetic. but the end result is a straightforward 64 bit little
-> endian integer that needs scaling to get the actual RMS value.
+>What I'm misunderstanding? I tend to interpret the former and the latter
+>statements in a contradictory way.
 
-You wrote:
+my reading of the "docs" (the Mac OS X driver and utilities) is that
+RME haven't figured out a way to truncate the 64 bit fixed point
+representation to a 32 bit integer using the Xilinx FPGA. they have
+figured out how to render it as a 64 bit integer. so, they do the math
+using a fixed point representation, then transform to 64 bit integer
+when storing it in the register. the final part of the transform is
+done by the host CPU, in our case up in user space since we can't do
+float math conveniently in the kernel.
 
-> It seems that the 64 bit-ness comes from it being some
-> kind of fixed point representation - the value that you read from the
-> registers need scaling (in user space, presumably) by a floating point
-> transformation to actually become true RMS values. so its not so much
-> they they need 64 bits of precision, more that the hardware needs to
-> do the math with this type of data format. keep in mind the
-> computation is all being done on a Xilinx FPGA, not a DSP chip, so the
-> arithmetic options are (at this time) a bit limited.
+does that make it clearer?
 
-What I'm misunderstanding? I tend to interpret the former and the latter
-statements in a contradictory way.
-
--- 
-Abramo Bagnara                       mailto:abramo@alsa-project.org
-
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
-
-ALSA project               http://www.alsa-project.org
-It sounds good!
+--p
 
 _______________________________________________________________
 
