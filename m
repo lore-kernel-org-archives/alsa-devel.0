@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] fix amixer load error messages
-Date: Tue, 24 Feb 2004 10:38:27 +0100 (CET)
+From: Michael Huijsmans <mgh@telering.at>
+Subject: Hercules Digifire [cs46xx] gameport troubles
+Date: Tue, 24 Feb 2004 10:50:32 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402241037390.1883@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0402241009050.6462-100000@studcom.urz.uni-halle.de>
+Message-ID: <20040224105032.0f1a1ea0.mike@marune.alastor>
+Reply-To: mgh@telering.at
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0402241009050.6462-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,27 +16,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 24 Feb 2004, Clemens Ladisch wrote:
+Hi, 
+the soundcard gameport doesn't entirely work with my analog joystick
+(Logitech Wingman Light, 3 axes, 2 buttons) on the gameport of the
+ Hercules Digifire 7.1; the two buttons do work, however, no axis movement
+is registered. 
 
-> fix error messages for snd_mixer_load
+The gameport is initialized on alsa startup, the relevant modules are loaded:
+joydev, gameport, analog, input. 
 
-Applied. Thanks.
+dmesg says:
+input0: Analog 4-axis 4-button joystick at gameport0.0 [ADC port]
 
-> BTW: yesterday's change to alsa-lib's asequencer.h hasn't been
-> committed yet
+jstest does this:
+$ jstest /dev/js0
+Joystick (Analog 4-axis 4-button joystick) has 4 axes and 4 buttons. Driver version is 2.1.0.
+Testing ... (interrupt to exit)
+Axes:  0:     0  1:     0  2:-32753  3:-31409 Buttons:  0:off  1:off  2:off  3:off 
+...
+(Buttons 0 and 1 are registered when pressed, the axis values don't change when moving 
+the stick.)
 
-Yes, my fault. Fixed now.
+and dmesg:
+analog.c: 0 out of 4718 reads (0%) on gameport0 failed
 
-						Jaroslav
+changing the analog.o kernel module js= parameter doesn't change things,
+the same behaviour occurs with alsa disabled and the kernel joystick module cs461x 
+loaded (i.e. only the buttons are registered)
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Any ideas what's going on?
+Thanks,
+Mike
+
 
 
 -------------------------------------------------------
