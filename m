@@ -1,17 +1,12 @@
-From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Subject: Re: Two sound cards, only sound out of one
-Date: Fri, 29 Aug 2003 16:57:19 +1000
+From: Joshua Haberman <joshua@haberman.com>
+Subject: questions about card detection
+Date: 29 Aug 2003 02:04:24 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030829165719.68400c00.erikd-alsa@mega-nerd.com>
-References: <20030824121353.06de39c8.erikd-alsa@mega-nerd.com>
-	<s5hptiu80km.wl@alsa2.suse.de>
-	<20030829132114.4f0ef4f6.erikd-alsa@mega-nerd.com>
-	<1062130583.3028.0.camel@Wizard.knechthome.com>
+Message-ID: <1062147863.5596.15.camel@trimble1dhcp30.ups.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1062130583.3028.0.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,41 +15,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@comcast.net>
-Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 28 Aug 2003 21:16:23 -0700
-Mark Knecht <markknecht@comcast.net> wrote:
+Two questions.
 
-> I'm sure you've tried this, but if the card that doesn't work in this
-> configuration is the only card in the system, does it work?
+First: Is it possible to determine the maximum number of channels for a
+sound card that is in use by another application?  My method for
+detecting the number of channels is:
 
-I'm sure I had tried this, but I thought i would try it again.
+- open the pcm
+- use the hw_params API to determine the number of channels
 
-Got inside the box, unplugged the good card, tried the other one, no good, 
-unplugged the bad card, plugged in the good card, still no good, plugged 
-in both cards, still no good. Scrounged around for another Es1371 based 
-card, plugged that in by itself and it worked.
+But if another application has the sound card open, it cannot be opened
+again and therefore the hw_params API cannot be used!
 
-Anyway to cut a long story short, after about 200 reboots and at least
-twice that in plugging/unplugging cards, I have the original two cards
-in the machine, in their two original slots and they both work.
+Second question: what is the meaning and intended use of the
+card,device,subdevice design of ALSA?  I thought this would become clear
+to be once I bought a multichannel card, but now I own an Audiophile
+2496 and it's still a mystery.
 
-I have no idea what the problem was. If it ever happens again, I won't
-know how to fix it.
+"Card" I understand -- I can hold a card in my hand.  But what is a
+"device" and a "subdevice?"  When are they ever used, and how?
 
-Erik
--- 
-+-----------------------------------------------------------+
-  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
-+-----------------------------------------------------------+
-"An older MS internal whitepaper from August 2000 on switching 
-Hotmail, which MS acquired in 1997, from front-end servers 
-running FreeBSD and back-end database servers running Solaris 
-to a whole farm running Win2K, reads like a veritable sales 
-brochure for UNIX" 
--- http://www.theregister.co.uk/content/4/28226.html
+Josh
 
 
 -------------------------------------------------------
