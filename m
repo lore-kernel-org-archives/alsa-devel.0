@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000364]: Driver for VIRTUAL/DUMMY card(s) that forward/mix to real cards
-Date: Sat, 8 Jan 2005 11:05:44 +0100
-Message-ID: <d7c2306248a44ceb830e8bc9b5e29146@bugtrack.alsa-project.org>
+From: Alan Jenkins <aj504@student.cs.york.ac.uk>
+Subject: Re: SiS 7012 with snd_intel8x0 is silent
+	[aj504@student.cs.york.ac.uk]
+Date: Sat, 08 Jan 2005 10:07:41 +0000
+Message-ID: <1105178860.10436.13.camel@localhost>
+References: <1105049276.12514.11.camel@localhost>
+	 <1105105972l.10186l.0l@localhost> <s5h3bxdw4az.wl@alsa2.suse.de>
+	 <1105133121.21211.3.camel@localhost>  <1105175786l.10260l.0l@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-rT+PoVsLaYTghalXNE6n"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7E4B22BE
-	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 11:05:44 +0100 (MET)
+In-Reply-To: <1105175786l.10260l.0l@localhost>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +19,165 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=364> 
-======================================================================
-Reported By:                bonbons
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   364
-Category:                   OTHERS
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             07-04-2004 13:33 CEST
-Last Modified:              01-08-2005 11:05 CET
-======================================================================
-Summary:                    Driver for VIRTUAL/DUMMY card(s) that forward/mix to
-real cards
-Description: 
-As all sound devices can only be opened with exclusive access, and there
-are quite a few close-source programs that interact with "/dev/dspX"
-(OSS), would it be possible to have virtual cards that would mix to the
-real one(s)?
+--=-rT+PoVsLaYTghalXNE6n
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-======================================================================
+Ooops...
 
-----------------------------------------------------------------------
- bonbons - 01-08-05 11:05 
-----------------------------------------------------------------------
-Is there no interest for such a driver?
+1) The mail copied to the list has just the one file inline; the one
+sent to tiwai@suse.de directly has all the requested files attached.
 
-This would allow to use closed-source apps that just support old-style OSS
-and don't work (correctly) over wrappers (some browser plugins, VMWare and
-others). In addition it could be used to get rid of sound-daemons, using
-dmix plugin and routing non-alsa apps through that virtual-pcm driver!
+2) I'm not sure that the /etc/asound.state I attached would have been
+consistent with the settings I described (and the files from /proc).  I
+applied the settings after booting using alsamixer, but they disappear
+on the next boot (on 2.6.10 only).  Therefore I attach /etc/asound.state
+after applying the settings with alsamixer AND restarting the runlevel
+script.
 
-Use: same as for virtualmidi, but for PCMs!
+Also, just to be clear I do not have a digital output socket on my
+computer.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-04-04 13:33 bonbons        New Issue                                    
-01-08-05 11:05 bonbons        Note Added: 0003128                          
-======================================================================
+--=-rT+PoVsLaYTghalXNE6n
+Content-Disposition: attachment; filename=asound.state
+Content-Type: text/plain; name=asound.state; charset=UTF-8
+Content-Transfer-Encoding: base64
 
+c3RhdGUuU0k3MDEyIHsNCgljb250cm9sLjEgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0
+ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnTWFzdGVy
+IFBsYXliYWNrIFN3aXRjaCcNCgkJdmFsdWUgdHJ1ZQ0KCX0NCgljb250cm9sLjIgew0KCQljb21t
+ZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIElOVEVHRVINCgkJY29tbWVu
+dC5yYW5nZSAnMCAtIDMxJw0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdNYXN0ZXIgUGxheWJhY2sg
+Vm9sdW1lJw0KCQl2YWx1ZS4wIDMxDQoJCXZhbHVlLjEgMzENCgl9DQoJY29udHJvbC4zIHsNCgkJ
+Y29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBCT09MRUFODQoJCWlm
+YWNlIE1JWEVSDQoJCW5hbWUgJ0NlbnRlciBQbGF5YmFjayBTd2l0Y2gnDQoJCXZhbHVlIHRydWUN
+Cgl9DQoJY29udHJvbC40IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1l
+bnQudHlwZSBJTlRFR0VSDQoJCWNvbW1lbnQucmFuZ2UgJzAgLSAzMScNCgkJaWZhY2UgTUlYRVIN
+CgkJbmFtZSAnQ2VudGVyIFBsYXliYWNrIFZvbHVtZScNCgkJdmFsdWUgMzENCgl9DQoJY29udHJv
+bC41IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBCT09M
+RUFODQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0xGRSBQbGF5YmFjayBTd2l0Y2gnDQoJCXZhbHVl
+IHRydWUNCgl9DQoJY29udHJvbC42IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJ
+CWNvbW1lbnQudHlwZSBJTlRFR0VSDQoJCWNvbW1lbnQucmFuZ2UgJzAgLSAzMScNCgkJaWZhY2Ug
+TUlYRVINCgkJbmFtZSAnTEZFIFBsYXliYWNrIFZvbHVtZScNCgkJdmFsdWUgMzENCgl9DQoJY29u
+dHJvbC43IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBC
+T09MRUFODQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ1N1cnJvdW5kIFBsYXliYWNrIFN3aXRjaCcN
+CgkJdmFsdWUuMCB0cnVlDQoJCXZhbHVlLjEgdHJ1ZQ0KCX0NCgljb250cm9sLjggew0KCQljb21t
+ZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIElOVEVHRVINCgkJY29tbWVu
+dC5yYW5nZSAnMCAtIDMxJw0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdTdXJyb3VuZCBQbGF5YmFj
+ayBWb2x1bWUnDQoJCXZhbHVlLjAgMzENCgkJdmFsdWUuMSAzMQ0KCX0NCgljb250cm9sLjkgew0K
+CQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJ
+aWZhY2UgTUlYRVINCgkJbmFtZSAnUEMgU3BlYWtlciBQbGF5YmFjayBTd2l0Y2gnDQoJCXZhbHVl
+IHRydWUNCgl9DQoJY29udHJvbC4xMCB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJw0K
+CQljb21tZW50LnR5cGUgSU5URUdFUg0KCQljb21tZW50LnJhbmdlICcwIC0gMTUnDQoJCWlmYWNl
+IE1JWEVSDQoJCW5hbWUgJ1BDIFNwZWFrZXIgUGxheWJhY2sgVm9sdW1lJw0KCQl2YWx1ZSAxNQ0K
+CX0NCgljb250cm9sLjExIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1l
+bnQudHlwZSBCT09MRUFODQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ01pYyBQbGF5YmFjayBTd2l0
+Y2gnDQoJCXZhbHVlIHRydWUNCgl9DQoJY29udHJvbC4xMiB7DQoJCWNvbW1lbnQuYWNjZXNzICdy
+ZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgSU5URUdFUg0KCQljb21tZW50LnJhbmdlICcwIC0g
+MzEnDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ01pYyBQbGF5YmFjayBWb2x1bWUnDQoJCXZhbHVl
+LjAgMzENCgkJdmFsdWUuMSAzMQ0KCX0NCgljb250cm9sLjEzIHsNCgkJY29tbWVudC5hY2Nlc3Mg
+J3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBCT09MRUFODQoJCWlmYWNlIE1JWEVSDQoJCW5h
+bWUgJ01pYyBCb29zdCAoKzIwZEIpJw0KCQl2YWx1ZSB0cnVlDQoJfQ0KCWNvbnRyb2wuMTQgew0K
+CQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJ
+aWZhY2UgTUlYRVINCgkJbmFtZSAnTGluZSBQbGF5YmFjayBTd2l0Y2gnDQoJCXZhbHVlIHRydWUN
+Cgl9DQoJY29udHJvbC4xNSB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJw0KCQljb21t
+ZW50LnR5cGUgSU5URUdFUg0KCQljb21tZW50LnJhbmdlICcwIC0gMzEnDQoJCWlmYWNlIE1JWEVS
+DQoJCW5hbWUgJ0xpbmUgUGxheWJhY2sgVm9sdW1lJw0KCQl2YWx1ZS4wIDMxDQoJCXZhbHVlLjEg
+MzENCgl9DQoJY29udHJvbC4xNiB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJw0KCQlj
+b21tZW50LnR5cGUgQk9PTEVBTg0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdDRCBQbGF5YmFjayBT
+d2l0Y2gnDQoJCXZhbHVlIHRydWUNCgl9DQoJY29udHJvbC4xNyB7DQoJCWNvbW1lbnQuYWNjZXNz
+ICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgSU5URUdFUg0KCQljb21tZW50LnJhbmdlICcw
+IC0gMzEnDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0NEIFBsYXliYWNrIFZvbHVtZScNCgkJdmFs
+dWUuMCAzMQ0KCQl2YWx1ZS4xIDMxDQoJfQ0KCWNvbnRyb2wuMTggew0KCQljb21tZW50LmFjY2Vz
+cyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xFQU4NCgkJaWZhY2UgTUlYRVINCgkJ
+bmFtZSAnVmlkZW8gUGxheWJhY2sgU3dpdGNoJw0KCQl2YWx1ZSB0cnVlDQoJfQ0KCWNvbnRyb2wu
+MTkgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIElOVEVH
+RVINCgkJY29tbWVudC5yYW5nZSAnMCAtIDMxJw0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdWaWRl
+byBQbGF5YmFjayBWb2x1bWUnDQoJCXZhbHVlLjAgMzENCgkJdmFsdWUuMSAzMQ0KCX0NCgljb250
+cm9sLjIwIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBC
+T09MRUFODQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0F1eCBQbGF5YmFjayBTd2l0Y2gnDQoJCXZh
+bHVlIHRydWUNCgl9DQoJY29udHJvbC4yMSB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRl
+Jw0KCQljb21tZW50LnR5cGUgSU5URUdFUg0KCQljb21tZW50LnJhbmdlICcwIC0gMzEnDQoJCWlm
+YWNlIE1JWEVSDQoJCW5hbWUgJ0F1eCBQbGF5YmFjayBWb2x1bWUnDQoJCXZhbHVlLjAgMzENCgkJ
+dmFsdWUuMSAzMQ0KCX0NCgljb250cm9sLjIyIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3Jp
+dGUnDQoJCWNvbW1lbnQudHlwZSBCT09MRUFODQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ1BDTSBQ
+bGF5YmFjayBTd2l0Y2gnDQoJCXZhbHVlIHRydWUNCgl9DQoJY29udHJvbC4yMyB7DQoJCWNvbW1l
+bnQuYWNjZXNzICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgSU5URUdFUg0KCQljb21tZW50
+LnJhbmdlICcwIC0gMzEnDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ1BDTSBQbGF5YmFjayBWb2x1
+bWUnDQoJCXZhbHVlLjAgMzENCgkJdmFsdWUuMSAzMQ0KCX0NCgljb250cm9sLjI0IHsNCgkJY29t
+bWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBFTlVNRVJBVEVEDQoJCWNv
+bW1lbnQuaXRlbS4wIE1pYw0KCQljb21tZW50Lml0ZW0uMSBDRA0KCQljb21tZW50Lml0ZW0uMiBW
+aWRlbw0KCQljb21tZW50Lml0ZW0uMyBBdXgNCgkJY29tbWVudC5pdGVtLjQgTGluZQ0KCQljb21t
+ZW50Lml0ZW0uNSBNaXgNCgkJY29tbWVudC5pdGVtLjYgJ01peCBNb25vJw0KCQljb21tZW50Lml0
+ZW0uNyBQaG9uZQ0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdDYXB0dXJlIFNvdXJjZScNCgkJdmFs
+dWUuMCAnTWl4IE1vbm8nDQoJCXZhbHVlLjEgJ01peCBNb25vJw0KCX0NCgljb250cm9sLjI1IHsN
+CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBCT09MRUFODQoJ
+CWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0NhcHR1cmUgU3dpdGNoJw0KCQl2YWx1ZSB0cnVlDQoJfQ0K
+CWNvbnRyb2wuMjYgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50
+eXBlIElOVEVHRVINCgkJY29tbWVudC5yYW5nZSAnMCAtIDE1Jw0KCQlpZmFjZSBNSVhFUg0KCQlu
+YW1lICdDYXB0dXJlIFZvbHVtZScNCgkJdmFsdWUuMCAxNQ0KCQl2YWx1ZS4xIDE1DQoJfQ0KCWNv
+bnRyb2wuMjcgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBl
+IEVOVU1FUkFURUQNCgkJY29tbWVudC5pdGVtLjAgTWl4DQoJCWNvbW1lbnQuaXRlbS4xIE1pYw0K
+CQlpZmFjZSBNSVhFUg0KCQluYW1lICdNb25vIE91dHB1dCBTZWxlY3QnDQoJCXZhbHVlIE1peA0K
+CX0NCgljb250cm9sLjI4IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1l
+bnQudHlwZSBFTlVNRVJBVEVEDQoJCWNvbW1lbnQuaXRlbS4wIE1pYzENCgkJY29tbWVudC5pdGVt
+LjEgTWljMg0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdNaWMgU2VsZWN0Jw0KCQl2YWx1ZSBNaWMx
+DQoJfQ0KCWNvbnRyb2wuMjkgew0KCQljb21tZW50LmFjY2VzcyByZWFkDQoJCWNvbW1lbnQudHlw
+ZSBJRUM5NTgNCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIENvbiBNYXNr
+Jw0KCQl2YWx1ZSAnMGZmZjAwMGYwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMCcNCgl9DQoJY29udHJvbC4zMCB7DQoJCWNvbW1lbnQuYWNj
+ZXNzIHJlYWQNCgkJY29tbWVudC50eXBlIElFQzk1OA0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdJ
+RUM5NTggUGxheWJhY2sgUHJvIE1hc2snDQoJCXZhbHVlIGNmMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDANCgl9DQoJY29udHJv
+bC4zMSB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgSUVD
+OTU4DQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0lFQzk1OCBQbGF5YmFjayBEZWZhdWx0Jw0KCQl2
+YWx1ZSAnMDA4MjAwMDIwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMCcNCgl9DQoJY29udHJvbC4zMiB7DQoJCWNvbW1lbnQuYWNjZXNzICdy
+ZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgQk9PTEVBTg0KCQlpZmFjZSBNSVhFUg0KCQluYW1l
+ICdJRUM5NTggUGxheWJhY2sgU3dpdGNoJw0KCQl2YWx1ZSB0cnVlDQoJfQ0KCWNvbnRyb2wuMzMg
+ew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIElOVEVHRVIN
+CgkJY29tbWVudC5yYW5nZSAnMCAtIDMnDQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0lFQzk1OCBQ
+bGF5YmFjayBBQzk3LVNQU0EnDQoJCXZhbHVlIDMNCgl9DQoJY29udHJvbC4zNCB7DQoJCWNvbW1l
+bnQuYWNjZXNzICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgRU5VTUVSQVRFRA0KCQljb21t
+ZW50Lml0ZW0uMCBBbmFsb2cNCgkJY29tbWVudC5pdGVtLjEgRGlnaXRhbA0KCQlpZmFjZSBNSVhF
+Ug0KCQluYW1lICdJRUM5NTggUGxheWJhY2sgU291cmNlJw0KCQl2YWx1ZSBBbmFsb2cNCgl9DQoJ
+Y29udHJvbC4zNSB7DQoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5
+cGUgQk9PTEVBTg0KCQlpZmFjZSBNSVhFUg0KCQluYW1lICdJRUM5NTggQ2FwdHVyZSBWYWxpZCBT
+d2l0Y2gnDQoJCXZhbHVlIHRydWUNCgl9DQoJY29udHJvbC4zNiB7DQoJCWNvbW1lbnQuYWNjZXNz
+ICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgQk9PTEVBTg0KCQlpZmFjZSBNSVhFUg0KCQlu
+YW1lICdJRUM5NTggQ2FwdHVyZSBNb25pdG9yJw0KCQl2YWx1ZSB0cnVlDQoJfQ0KCWNvbnRyb2wu
+Mzcgew0KCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScNCgkJY29tbWVudC50eXBlIEJPT0xF
+QU4NCgkJaWZhY2UgTUlYRVINCgkJbmFtZSAnSUVDOTU4IENhcHR1cmUgU3dpdGNoJw0KCQl2YWx1
+ZSBmYWxzZQ0KCX0NCgljb250cm9sLjM4IHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUn
+DQoJCWNvbW1lbnQudHlwZSBCT09MRUFODQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0xpbmUtSW4g
+QXMgU3Vycm91bmQnDQoJCXZhbHVlIHRydWUNCgl9DQoJY29udHJvbC4zOSB7DQoJCWNvbW1lbnQu
+YWNjZXNzICdyZWFkIHdyaXRlJw0KCQljb21tZW50LnR5cGUgQk9PTEVBTg0KCQlpZmFjZSBNSVhF
+Ug0KCQluYW1lICdNaWMgQXMgQ2VudGVyL0xGRScNCgkJdmFsdWUgdHJ1ZQ0KCX0NCgljb250cm9s
+LjQwIHsNCgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnDQoJCWNvbW1lbnQudHlwZSBCT09M
+RUFODQoJCWlmYWNlIE1JWEVSDQoJCW5hbWUgJ0V4dGVybmFsIEFtcGxpZmllcicNCgkJdmFsdWUg
+dHJ1ZQ0KCX0NCn0NCn==
 
+--=-rT+PoVsLaYTghalXNE6n--
 
 
 -------------------------------------------------------
