@@ -1,17 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: How does one alter the main mixer volume (or any
- other mixer level) in ALSA from a command line (via a simple system call)?
-Date: Thu, 6 Mar 2003 08:48:35 +0100 (CET)
+From: "Ronny V. Vindenes" <s864@lstud.ii.uib.no>
+Subject: [PATCH] alsa-utils rpm spec update
+Date: Thu, 6 Mar 2003 13:29:28 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303060846100.1206-100000@pnote.perex-int.cz>
-References: <000601c2e39d$900ce510$aa1f830a@ICO>
+Message-ID: <Pine.LNX.4.44.0303061326570.24704-200000@bladlus.ii.uib.no>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-198984259-1046953768=:24704"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA05247
-	for <alsa-devel@alsa-project.org>; Thu, 6 Mar 2003 08:48:30 +0100
-In-Reply-To: <000601c2e39d$900ce510$aa1f830a@ICO>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,43 +14,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ivica Bukvic <ico@fuse.net>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 6 Mar 2003, Ivica Bukvic wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-> Hi all,
-> 
-> I have this small question:
-> 
-> Is it possible (I presume it is) to alter mixer settings in Alsa by
-> invoking some kind of a system call using shell (i.e. how the RME hdsp
-> can have its stuff altered)?
+--8323328-198984259-1046953768=:24704
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 
-Use amixer.
+Cleanup the alsa-utils rpm spec:
+ * removed wrongly included doc file
+ * changed BuildRoot from /var/tmp to %{_tmppath}
+ * use standard rpm macros for %build & %install
+ * updated dependencies
 
-> If so, what is the range of values that describe the loudest and softest
-> levels?
+-- 
+Ronny V. Vindenes <sublett@dc-s.com>
 
-You may specify levels in percent (0%-100%). If you are asking, how the 
-levels are related to dB, then we don't offer this information.
+--8323328-198984259-1046953768=:24704
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name="alsa-utils.spec.in.patch"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.44.0303061329280.24704@bladlus.ii.uib.no>
+Content-Description: 
+Content-Disposition: attachment; filename="alsa-utils.spec.in.patch"
 
-Our idea is to describe the hardware over alsa-lib (via some configuration 
-files which will describe accurately the hardware). But it's not a goal 
-for the near future.
-
-> Finally, are these levels standardized?
-
-Nope.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
+LS0tIC90bXAvYWxzYS11dGlscy5zcGVjLmluCTIwMDMtMDMtMDUgMjM6NTQ6
+MzQuMDAwMDAwMDAwICswMTAwDQorKysgYWxzYS11dGlscy5zcGVjLmluCTIw
+MDMtMDMtMDYgMDA6MTI6MDkuMDAwMDAwMDAwICswMTAwDQpAQCAtOCwxNSAr
+OCwyMiBAQA0KIENvcHlyaWdodDogR1BMDQogR3JvdXA6IFN5c3RlbS9MaWJy
+YXJpZXMNCiBTb3VyY2U6IGZ0cDovL2Z0cC5hbHNhLXByb2plY3Qub3JnL3B1
+Yi91dGlscy9hbHNhLXV0aWxzLSV7dmVyfS50YXIuYnoyDQotQnVpbGRSb290
+OiAvdmFyL3RtcC9hbHNhLXV0aWxzLSV7dmVyfQ0KK0J1aWxkUm9vdDogJXtf
+dG1wcGF0aH0vJXtuYW1lfS0le3ZlcnNpb259LXJvb3QNCiBVUkw6IGh0dHA6
+Ly93d3cuYWxzYS1wcm9qZWN0Lm9yZw0KLVJlcXVpcmVzOiBhbHNhLWxpYiBh
+bHNhLWRyaXZlcg0KK1JlcXVpcmVzOiBhbHNhLWxpYiBuY3Vyc2VzDQorQnVp
+bGRSZXF1aXJlczogYWxzYS1saWItZGV2ZWwgbmN1cnNlcy1kZXZlbA0KIA0K
+ICVkZXNjcmlwdGlvbg0KIA0KIEFkdmFuY2VkIExpbnV4IFNvdW5kIEFyY2hp
+dGVjdHVyZSAoQUxTQSkgLSBVdGlscw0KIA0KICVjaGFuZ2Vsb2cNCisqIFRo
+dSBNYXIgIDYgMjAwMyBSb25ueSBWLiBWaW5kZW5lcyA8c3VibGV0dEBkYy1z
+LmNvbT4NCisNCistIHJlbW92ZWQgd3JvbmdseSBpbmNsdWRlZCBkb2MgZmls
+ZQ0KKy0gY2hhbmdlZCBCdWlsZFJvb3QgZnJvbSAvdmFyL3RtcCB0byAle190
+bXBwYXRofQ0KKy0gdXNlIHN0YW5kYXJkIHJwbSBtYWNyb3MgZm9yICVidWls
+ZCAmICVpbnN0YWxsDQorLSB1cGRhdGVkIGRlcGVuZGVuY2llcw0KIA0KICog
+VHVlIE5vdiAyMCAyMDAxIEphcm9zbGF2IEt5c2VsYSA8cGVyZXhAc3VzZS5j
+ej4NCiANCkBAIC0zNiwyNCArNDMsMjAgQEANCiAlcHJlcA0KICVzZXR1cA0K
+ICVidWlsZA0KLQ0KLS4vY29uZmlndXJlIC0tcHJlZml4PSVfcHJlZml4IC0t
+bWFuZGlyPSVfbWFuZGlyDQorJWNvbmZpZ3VyZQ0KIG1ha2UNCiANCiAlaW5z
+dGFsbA0KLVsgLW4gIiRSUE1fQlVJTERfUk9PVCIgLWEgIiRSUE1fQlVJTERf
+Uk9PVCIgIT0gLyBdICYmIHJtIC1yZiAkUlBNX0JVSUxEX1JPT1QNCi0NCi1t
+a2RpciAtcCAkUlBNX0JVSUxEX1JPT1QvJV9wcmVmaXgvYmluICRSUE1fQlVJ
+TERfUk9PVC8lX21hbmRpci9tYW4xDQotDQotbWFrZSBERVNURElSPSIkUlBN
+X0JVSUxEX1JPT1QiIGluc3RhbGwNCitbICIkUlBNX0JVSUxEX1JPT1QiICE9
+ICIvIiBdICYmIHJtIC1yZiAkUlBNX0JVSUxEX1JPT1QNCislbWFrZWluc3Rh
+bGwNCiANCiAlY2xlYW4NCi1bIC1uICIkUlBNX0JVSUxEX1JPT1QiIC1hICIk
+UlBNX0JVSUxEX1JPT1QiICE9IC8gXSAmJiBybSAtcmYgJFJQTV9CVUlMRF9S
+T09UDQorWyAiJFJQTV9CVUlMRF9ST09UIiAhPSAiLyIgXSAmJiBybSAtcmYg
+JFJQTV9CVUlMRF9ST09UDQogDQogJWZpbGVzDQogJWRlZmF0dHIoLSwgcm9v
+dCwgcm9vdCkNCiANCi0lZG9jIENoYW5nZUxvZyBDT1BZSU5HIFJFQURNRSBj
+b25maWcuc3RhdHVzDQorJWRvYyBDaGFuZ2VMb2cgQ09QWUlORyBSRUFETUUN
+CiANCiAle19wcmVmaXh9L3NiaW4vKg0KICV7X3ByZWZpeH0vYmluLyoNCg==
+--8323328-198984259-1046953768=:24704--
 
 
 -------------------------------------------------------
