@@ -1,15 +1,11 @@
-From: Peter Heatwole <peter599@gotnet.net>
-Subject: Re: Cirrus Logic S/PDIF
-Date: Wed, 22 May 2002 08:27:17 -0700
+From: tomasz motylewski <T.Motylewski@bfad.de>
+Subject: Linux driver for cs4281 with TWO cs4299 codecs?
+Date: Wed, 22 May 2002 17:59:55 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020522152717.GA858@porky>
-References: <Pine.LNX.4.33.0205221005060.612-100000@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.21.0205221707300.12692-100000@mailserver.intern.bfad.de>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.33.0205221005060.612-100000@pnote.perex-int.cz>; from perex@suse.cz on Wed, May 22, 2002 at 01:06:09 -0700
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,25 +14,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Peter Heatwole <peter599@gotnet.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: twoller@crystal.cirrus.com
+Cc: pcaudio@crystal.cirrus.com, alsa-devel@lists.sourceforge.net, peter wachtendorf <pew@bfad.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 2002.05.22 01:06 Jaroslav Kysela wrote:
-> I haven't S/PDIF register in the CS4294 datasheet. Do you have CS4298
-> datasheet?
 
-    Yes, the CS4294 doesn't have an S/PDIF pin. It's for quad speaker 
-output,
-and is normally paired with something like the CS4297A for S/PDIF (as is 
-the
-case with the Santa Cruz). And here's the CS4298 datasheet I'm using:
+I hope you do not mind that I have contacted you directly.
 
-http://www.cirrus.com/pubs/pubs_current/4298.pdf
+I would like to ask whether anyone has developed a driver for cs4281 working in
+a dual codec sound card.
 
+We have developed such a card, and it works fine with a single cs4299 codec,
+but current alsa-driver-0.9.0rc1 fails with:
 
--- Peter Heatwole
-"Murphy was just a well known pessimist."
+ALSA ../alsa-kernel/pci/cs4281.c:1455: DLLRDY not seen
+CS4281 soundcard not found or device busy
+
+when we connect another codec configured as slave (no quartz signal on
+secondary, but SYNC, BIT_CLK, SDATA_OUT, SDATA_IN, RESET connected).
+
+I have tried to increase the timeout to 1 s, but without any result.
+
+Any advice?
+
+Is the programming manual cs4281tm.pdf available at
+http://www.alsa-project.org/alsa/ftp/manuals/cirrus/cs4281tm.pdf the most
+recent one?
+
+Best regards,
+--
+Tomasz Motylewski
+
+BFAD GmbH & Co. KG
 
 
 _______________________________________________________________
