@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000886]: alsactl store = crash
-Date: Tue, 22 Feb 2005 10:01:25 +0100
-Message-ID: <64dfbb8618123923a4c0143be8a657ed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000908]: suport for ESI Juli@ - ICE1724
+Date: Tue, 22 Feb 2005 10:07:04 +0100
+Message-ID: <4d4db700238e60a2ddae2a5a1fb7d602@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9CC90174
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 10:01:25 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41C60174
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 10:07:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,98 +21,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=886> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=908> 
 ======================================================================
-Reported By:                udasoft
+Reported By:                arsen
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   886
-Category:                   PCI - azx
+Issue ID:                   908
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   crash
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
+Status:                     assigned
 Distribution:               Gentoo
-Kernel Version:             2.6.10
-Resolution:                 fixed
-Fixed in Version:           
+Kernel Version:             2.6.11-rc4
 ======================================================================
-Date Submitted:             02-06-2005 16:01 CET
-Last Modified:              02-22-2005 10:01 CET
+Date Submitted:             02-14-2005 19:38 CET
+Last Modified:              02-22-2005 10:07 CET
 ======================================================================
-Summary:                    alsactl store = crash
+Summary:                    suport for ESI Juli@ - ICE1724
 Description: 
-I have a Intel D915PBL Motherboard with High Definition Audio Controller
-(ICH6 Family).
+Hello. I have soundcard ESI Juli@ on chipset ICE1724.
+I tried run her with alsa 1.0.8 on kernel 2.6.10 and 2.6.11.
+Unfortunely soundcard don't work. In my logs i found that:
 
-When I save the state of mixer with alsactl, receive this error:
+- ice1724: No matching model found for ID 0x31305345
+- ice1724: Invalid EEPROM (size = 120)
+- ICE1724: probe of 0000:00:0a.0 failed with error -5
+- ALSA device list:
+- No soundcards found
 
-udasoftware root # alsactl  store
-Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-PREEMPT SMP
-Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
-snd_seq_midi_event snd_seq snd_seq_device snd_azx snd_hda_codec snd_pcm
-snd_timer snd snd_page_alloc nvidia
-CPU:    0
-EIP:    0060:[<00000000>]    Tainted: P      VLI
-EFLAGS: 00010282   (2.6.10-gentoo-r6)
-EIP is at 0x0
-eax: f2264580   ebx: f705a400   ecx: 00000023   edx: ee59fe4c
-esi: f2264580   edi: ffffffe7   ebp: f705a54c   esp: ee59fe30
-ds: 007b   es: 007b   ss: 0068
-Process alsactl (pid: 16709, threadinfo=ee59f000 task=c191f020)
-Stack: f8b2efca f2264580 ee59fe4c 00000110 f2264600 00000000 f2264664
-00000022
-       00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-              00000000 00000000 00000000 00000000 00000000 00000000
-00000000 00000000
-              Call Trace:
-               [<f8b2efca>] snd_ctl_elem_info+0x7a/0x190 [snd]
-                [<f8b2fffa>] snd_ctl_ioctl+0x25a/0x390 [snd]
-                 [<c016f8ba>] sys_ioctl+0xca/0x230
-                  [<c01031af>] syscall_call+0x7/0xb
-                  Code:  Bad EIP value.
-                   Segmentation fault
+I know that other cards work correctly on this chipset and
+if it's necesarry i could help in tests of driver for this
+soundcard.
 ======================================================================
-
-----------------------------------------------------------------------
- udasoft - 02-18-05 22:19 
-----------------------------------------------------------------------
-I have mistaken :(
-I don't clean the sound directory in /lib/modules/... and I used the old
-module snd-azx.
-
-In cvs version of asla i don't found the snd-azx because it is substituted
-from snd-hda-intel.
-
-The snd-hda-intel seems to work perfectly ;)
-(alsactl store don't crash)
-
-Tnx, U D A.
-
-----------------------------------------------------------------------
- perex - 02-22-05 10:01 
-----------------------------------------------------------------------
-Fixed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-06-05 16:01 udasoft        New Issue                                    
-02-06-05 16:01 udasoft        Distribution              => Gentoo          
-02-06-05 16:01 udasoft        Kernel Version            => 2.6.10          
-02-09-05 11:54 tiwai          Note Added: 0003544                          
-02-09-05 19:35 udasoft        Note Added: 0003562                          
-02-14-05 19:48 tiwai          Note Added: 0003606                          
-02-18-05 22:19 udasoft        Note Added: 0003667                          
-02-22-05 10:01 perex          Status                   new => resolved     
-02-22-05 10:01 perex          Resolution               open => fixed       
-02-22-05 10:01 perex          Assigned To               => perex           
-02-22-05 10:01 perex          Note Added: 0003695                          
+02-14-05 19:38 arsen          New Issue                                    
+02-14-05 19:38 arsen          Distribution              => Gentoo          
+02-14-05 19:38 arsen          Kernel Version            => 2.6.11-rc4      
+02-15-05 07:32 arsen          Issue Monitored: arsen                       
+02-22-05 10:07 perex          Status                   new => assigned     
+02-22-05 10:07 perex          Assigned To               => perex           
 ======================================================================
 
 
