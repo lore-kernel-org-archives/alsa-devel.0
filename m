@@ -1,9 +1,15 @@
-From: Juhana Sadeharju <kouhia@nic.funet.fi>
-Subject: Re: Broken emu10k/SB Live driver?
-Date: Thu, 10 Oct 2002 21:37:44 +0300
+From: Peter L Jones <peter@drealm.org.uk>
+Subject: Re: snd_ prefix for module options
+Date: Thu, 10 Oct 2002 19:49:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021010183748Z23071-7588+6998@nic.funet.fi>
+Message-ID: <200210101949.04523@advent.drealm.org.uk>
+References: <s5hfzvh2fid.wl@alsa2.suse.de> <200210091937.05652@advent.drealm.org.uk> <87u1juxoit.fsf@sulphur.joq.us>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <87u1juxoit.fsf@sulphur.joq.us>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,86 +18,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+To: Jack O'Quin <joq@io.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Karsten Wiese <annabellesgarden@yahoo.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On the SB Live problems: recorded signal levels differs from MS Windows
-driver, and the capture faders of alsamixer seems to do nothing.
-I posted this to alsa-user as well if there are people who has
-the SB Live card. Please join us for testing.
+On Thursday 10 Oct 2002 17:11, Jack O'Quin wrote:
+[snip]
+> I don't mean to single out Peter for this one statement.  But, I am
+> totally frustrated with the attitude that ALSA is only for power users
+> and that it's OK to introduce spurious incompatibilities on a whim.
+>
+> The excuse that 0.9 is not a "release" is wearing thin these days.
+> Since 0.5, which *is* a release, is "no longer supported", what are
+> ordinary users expected to run?  OSS?
+>
+> ALSA is part of the 2.5 kernel now.  It is mainstream Linux software,
+> good technology, needed by many users.  Isn't it about time to start
+> thinking and acting that way?
 
-If I start to understand how the SB Live driver works, then I will
-fix the driver myself. But I would like to have reports from other
-SB Live users if their driver works the same way.
+Hi Jack - don't mind singling me out!
 
- -*-
+In principle, I'd agree entirely with you but
 
-Below are the settings which works for Drive/line-in2 (Line LiveDrive)
-recording. All other faders are 0, mute switches are on, and capture
-switches are off.
+(a) ALSA 0.9.0-rc3 is not ALSA 0.9.0.  Once it is, it will really be too late 
+until ALSA 1.0.0
 
-name                   | capture switch | mute switch | level
--------------------------------------------------------------
-PCM                    | <none>         | off         | 100
-Line LiveDrive         | off            | <none>      | 100
-Line LiveDrive Capture | <none>         | <none>      | 0
-Capture                | on             | <none>      | 0
-Mix                    | on             | <none>      | 0
-AC97 Capture           | <none>         | <none>      | 100
+(b) Kernel 2.5.x is really a poor argument :-).  Again, if ALSA has module 
+parms begining snd_ in 2.6.x, then it's stuck with it for a long time.
 
-<none> means that there is no such a switch.
+(I'm hoping (a) == (b) myself.)
 
-Line LiveDrive's capture switch has no effect.   Strange!
-Line LiveDrive's level must be 100 because it controls both the monitor
-signal and the capture signal gains.
-Line LiveDrive Capture's level has no effect.    Strange!
-Capture level 0 seems to mean unity gain.
-Mix level is fixed to 0.
+I agree, any breakage is bad breakage but waiting will make it worse and I 
+think it should be done (should have been done earlier but it should still be 
+done).
 
-Where all those controls are physically located? A flow diagram could
-also help in understanding all the relations.
-
-By seeing the whole signal path diagram of Alsa, I could check if there
-is a direct signal path from Line LiveDrive to disk with all gains
-inbetween set to unity. Is there such a path?
-
- -*-
-
-MS Windows driver allows one to set the quality of the resamplers
-(48000 Hz to/from 44100 Hz). Are those resamplers in firmware or
-in dsp code of emu10k1? Does Alsa use those resamplers or has
-equivalents? Could Alsa be programmed to allow an application
-software to use those resamplers? Or are the resamplers tied up
-to A/D and D/A conversion?
-
-Does emu10k1 work at a user settable sample rate? 44100 Hz? 32000Hz?
-
-MS Windows driver has a good sounding reverb. Could this reverb dsp
-code be extracted from the MS Windows driver and used "as is" in Alsa?
-
- -*-
-
-Alsamixer shows the following additional controls only if alsamixer
-is executed at the play time. What they are? The controls are not
-available at record time.
-
-name                     |  value (left right)
--------------------------------------------------------
-EMU10K1 PCM              |         100  100
-EMU10K1 PCM              |         100  100
-EMU10K1 PCM Send         |         100  100
-EMU10K1 PCM Send         |         0    100
-EMU10K1 PCM Send         |         0    0
-EMU10K1 PCM Send         |         0    0
-EMU10K1 PCM Send Routing |         0    7
-EMU10K1 PCM Send Routing |         20   0
-EMU10K1 PCM Send Routing |         13   13
-EMU10K1 PCM Send Routing |         7    7
-
-
-Best Regards,
-
-Juhana
+-- Peter
 
 
 -------------------------------------------------------
