@@ -1,14 +1,16 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: emu10k1 device naming
-Date: Sun, 25 Jul 2004 12:53:10 +0200
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: Re: Hammerfall (hdsp) initialization problem
+Date: Sun, 25 Jul 2004 13:16:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040725125310.389c4ce5@mango.fruits.de>
-References: <1090729766.1952.7.camel@mindpipe>
+Message-ID: <1090754189.15178.8.camel@localhost>
+References: <1090607568.17750.7.camel@modemcable182.55-70-69.mc.videotron.ca>
+	 <20040724100520.26b4ac8f@laptop>
+	 <1090734488.3156.2.camel@modemcable182.55-70-69.mc.videotron.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1090729766.1952.7.camel@mindpipe>
+In-Reply-To: <1090734488.3156.2.camel@modemcable182.55-70-69.mc.videotron.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,43 +19,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, tiwai@suse.de, pzad@pobox.sk
+To: Jean-Marc Valin <Jean-Marc.Valin@USherbrooke.ca>
+Cc: Tim Blechmann <TimBlechmann@gmx.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 25 Jul 2004 00:29:27 -0400
-Lee Revell <rlrevell@joe-job.com> wrote:
 
-> Now that the emu10k1 driver supports low latency, multichannel capture,
-> it would be useful to rearrange the devices.  Currently you have to use
-> hw:0,0 for playback, and hw:0,2 for capture.  This works down to 32
-> frames (you have to record more than 2 channels to get 32 frames,
-> because 512 bytes is the smallest period JACK supports).  JACK requires
-> the playback and capture device to be the same for both directions.
-
-Actually jack supports period sizes smaller than 512 frames. I can easily start jackd with a period size of 64 frames. This is not a limitation of jackd but rather of your soundcard.
-
+> > that's a known problem with the hdsp driver, a lot of continuous memory
+> > has to be allocated, which can more likely be done on a freshly booted
+> > machine ...
+> > the best solution: keep the cardbus interface plugged into the slot all
+> > the time ... if you start the computer, the memory will be allocated
 > 
-> The current hw:0,0 device could be moved to hw:0,2.  This is the best
-> arrangement, because these are the only two devices that it makes sense
-> to use for full-duplex.  The hw:0,2 playback device is a special AC3
-> passthrough device, there is no capture device that corresponds to it. 
-> The same applies to the current hw:0,0 (ADC capture) and hw:0,1 (mic
-> capture - 8000 Hz) devices, there is no corresponding playback device.
+> Actually, I suspect there's more than that. I've tried running a program
+> that malloc()'s 1 GB of memory (the amount of RAM I have), writes to it
+> and then free()'s it, so there's lots of memory available after that.
+> Still doesn't work (and obviously there's lots of continuous memory
+> available).
 > 
-> It was suggsted to use the 'asym' PCM plugin for this, but JACK does not
-> support using a PCM as the device name, you need to give it a hardware
-> device.
+> 	Jean-Marc
 
-jackd also supports using non hw pcm devices. it should only spit out a warning to the user.. I just tried and besides some other weird behaviour it hardlocked my machine.. So this might be a bug that should be reported to the jack people.. But by design it should work..
+The problem is that for the preallocation to work, the card has to be
+inserted and recognized (the preallocation code scans for the pci vendor
+and device ids), so this is a cardbus specific issue. If the card is not
+inserted when the preallocation is run, then it will default at probing
+time to the standard snd_dma_alloc_pages which is more and more likely
+to fail as your uptime rises. The only solution would be to preallocate
+the memory anyway, but most user won't need this. Takashi, how about a
+kernel/compile time option forcing preallocation for cardbus hdsp owners
+?
 
-One other thing that bothers me about jack is that it requires a ctl device by the same name as the used pcm device [which is only needed in the case of hw monitoring].. For people who don't need hw monitoring, this should not be required.. I'll write to jackit-devel about this [forwarding this mail :)]..
+Thomas
 
-Flo
-
--- 
-Palimm Palimm!
-http://affenbande.org/~tapas/
 
 
 
