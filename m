@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000469]: volume of sblive mic recording too low
-Date: Sat, 18 Sep 2004 01:39:39 +0200 (CEST)
+Date: Sat, 18 Sep 2004 01:48:01 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040917233939.762FD4B011@server.perex-int.cz>
+Message-ID: <20040917234801.E5E0A4B011@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE7B1329
-	for <alsa-devel@alsa-project.org>; Sat, 18 Sep 2004 01:39:39 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5AA63329
+	for <alsa-devel@alsa-project.org>; Sat, 18 Sep 2004 01:48:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Debian
 Kernel Version:             2.6.8
 ======================================================================
 Date Submitted:             08-28-2004 01:36 CEST
-Last Modified:              09-18-2004 01:39 CEST
+Last Modified:              09-18-2004 01:48 CEST
 ======================================================================
 Summary:                    volume of sblive mic recording too low
 Description: 
@@ -124,6 +124,14 @@ alsactl -f cannot_capture.state store
 Hmm... please discard the last attachment (09-18-04 01:33 can_capture.txt),
 I was distracted and really need to clean up my messy home directory.
 
+----------------------------------------------------------------------
+ wouter - 09-18-2004 01:48 CEST 
+----------------------------------------------------------------------
+For what it's worth, sliding the "Capture" from 0% to 1% while recording
+produces a little pop before muting the record source, which seems to
+indicate something is modified; it's not a gradual change, like for
+instance sliding the "AC97 Capture" or any normal volume slider is.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -140,6 +148,9 @@ Date Modified  Username       Field                    Change
 09-17-04 10:35 pzad           Bugnote Added: 0001777                       
 09-18-04 01:33 wouter         File Added: can_capture.txt                    
 09-18-04 01:39 wouter         Bugnote Added: 0001780                       
+09-18-04 01:40 wouter         File Added: can_capture.state                    
+09-18-04 01:41 wouter         File Added: cannot_capture.state                    
+09-18-04 01:48 wouter         Bugnote Added: 0001781                       
 ======================================================================
 
 
