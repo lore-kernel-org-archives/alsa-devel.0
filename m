@@ -1,11 +1,11 @@
 From: MAILER-DAEMON@alsa-project.org (Mail Delivery System)
 Subject: Undelivered Mail Returned to Sender
-Date: Wed, 22 Sep 2004 05:19:39 +0200 (MEST)
+Date: Wed, 22 Sep 2004 08:26:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040922031939.65853373@alsa.alsa-project.org>
+Message-ID: <20040922062650.848A3233@alsa.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: multipart/report; report-type=delivery-status;
-	boundary="B61AD372.1095823179/alsa.alsa-project.org"
+	boundary="84D03223.1095834410/alsa.alsa-project.org"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,7 +20,7 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a MIME-encapsulated message.
 
---B61AD372.1095823179/alsa.alsa-project.org
+--84D03223.1095834410/alsa.alsa-project.org
 Content-Description: Notification
 Content-Type: text/plain
 
@@ -38,48 +38,90 @@ delete your own text from the attached returned message.
 
 <alsa-devel@lists.sourceforge.net> (expanded from
     <alsa-devel@alsa-project.org>): host mail.sourceforge.net[66.35.250.206]
-    said: 550 SPAM: This message scored 11.5 points. Congratulations! (in reply
-    to end of DATA command)
+    said: 550-SPAM: This message appears to be spam (5.3 points). 550-- 550-If
+    you believe this message was classified as spam in error, 550-please open a
+    Support Request at the URL below. 550-(Please include this message in any
+    Support Request). 550-- 550-- 550-Spam Filtering performed by
+    sourceforge.net. 550-See http://spamassassin.org/tag/ for more details.
+    550-Report problems to
+    http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-0.5
+    X_PRIORITY_HIGH        Sent with 'X-Priority' set to high 550-0.0
+    SF_CHICKENPOX_SLASH    BODY: Text interparsed with / 550-0.0
+    SF_CHICKENPOX_COLON    BODY: Text interparsed with : 550-0.0
+    SF_CHICKENPOX_APOSTROPHE BODY: Text interparsed with ' 550-0.0
+    SF_CHICKENPOX_PERIOD   BODY: Text interparsed with . 550-0.0
+    SF_CHICKENPOX_EQUAL    BODY: Text interparsed with = 550-0.1 HTML_60_70
+    BODY: Message is 60% to 70% HTML 550-0.0 HTML_MESSAGE           BODY: HTML
+    included in message 550-0.1 MIME_HTML_ONLY         BODY: Message only has
+    text/html MIME parts 550-2.2 HTML_IMAGE_ONLY_02     BODY: HTML: images with
+    0-200 bytes of words 550-2.2 RCVD_IN_BL_SPAMCOP_NET RBL: Received via a
+    relay in bl.spamcop.net 550 [Blocked - see
+    <http://www.spamcop.net/bl.shtml?24.225.243.64>] (in reply to end of DATA
+    command)
 
---B61AD372.1095823179/alsa.alsa-project.org
+--84D03223.1095834410/alsa.alsa-project.org
 Content-Description: Delivery report
 Content-Type: message/delivery-status
 
 Reporting-MTA: dns; alsa.alsa-project.org
-X-ALSA's-E-mail-Delivery-System-Queue-ID: B61AD372
+X-ALSA's-E-mail-Delivery-System-Queue-ID: 84D03223
 X-ALSA's-E-mail-Delivery-System-Sender: rfc822; alsa-devel@alsa-project.org
-Arrival-Date: Wed, 22 Sep 2004 05:19:36 +0200 (MEST)
+Arrival-Date: Wed, 22 Sep 2004 08:26:48 +0200 (MEST)
 
 Final-Recipient: rfc822; alsa-devel@lists.sourceforge.net
 Original-Recipient: rfc822; alsa-devel@alsa-project.org
 Action: failed
 Status: 5.0.0
 Diagnostic-Code: X-ALSA's-E-mail-Delivery-System; host
-    mail.sourceforge.net[66.35.250.206] said: 550 SPAM: This message scored
-    11.5 points. Congratulations! (in reply to end of DATA command)
+    mail.sourceforge.net[66.35.250.206] said: 550-SPAM: This message appears to
+    be spam (5.3 points). 550-- 550-If you believe this message was classified
+    as spam in error, 550-please open a Support Request at the URL below.
+    550-(Please include this message in any Support Request). 550-- 550--
+    550-Spam Filtering performed by sourceforge.net. 550-See
+    http://spamassassin.org/tag/ for more details. 550-Report problems to
+    http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-0.5
+    X_PRIORITY_HIGH        Sent with 'X-Priority' set to high 550-0.0
+    SF_CHICKENPOX_SLASH    BODY: Text interparsed with / 550-0.0
+    SF_CHICKENPOX_COLON    BODY: Text interparsed with : 550-0.0
+    SF_CHICKENPOX_APOSTROPHE BODY: Text interparsed with ' 550-0.0
+    SF_CHICKENPOX_PERIOD   BODY: Text interparsed with . 550-0.0
+    SF_CHICKENPOX_EQUAL    BODY: Text interparsed with = 550-0.1 HTML_60_70
+    BODY: Message is 60% to 70% HTML 550-0.0 HTML_MESSAGE           BODY: HTML
+    included in message 550-0.1 MIME_HTML_ONLY         BODY: Message only has
+    text/html MIME parts 550-2.2 HTML_IMAGE_ONLY_02     BODY: HTML: images with
+    0-200 bytes of words 550-2.2 RCVD_IN_BL_SPAMCOP_NET RBL: Received via a
+    relay in bl.spamcop.net 550 [Blocked - see
+    <http://www.spamcop.net/bl.shtml?24.225.243.64>] (in reply to end of DATA
+    command)
 
---B61AD372.1095823179/alsa.alsa-project.org
+--84D03223.1095834410/alsa.alsa-project.org
 Content-Description: Undelivered Message
 Content-Type: message/rfc822
 
 Received: by alsa.alsa-project.org (ALSA's E-mail Delivery System)
-	id B61AD372; Wed, 22 Sep 2004 05:19:36 +0200 (MEST)
+	id 84D03223; Wed, 22 Sep 2004 08:26:48 +0200 (MEST)
 Delivered-To: alsa-devel@alsa-project.org
-Received: from alsa-project.org (modemcable240.62-203-24.mc.videotron.ca [24.203.62.240])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C7A1371
-	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 05:19:36 +0200 (MEST)
-Message-ID: <07b301c4a053$c4ed05ee$24a384d3@jici>
-From: "Jordan Lando" <alsa-devel@alsa-project.org>
-To: <alsa-devel@alsa-project.org>
+Received: from alsa-project.org (host-24-225-243-64.patmedia.net [24.225.243.64])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 22CFF21E
+	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 08:26:48 +0200 (MEST)
+Message-ID: <059601c4a06d$44a56bea$792310fb@ATLCOPDL31-dmatkovich>
+From: "Marcus Firth" <alsa-devel@alsa-project.org>
 Subject: (no subject)
-Date: Tue, 21 Sep 2004 23:19:15 -0400
+Date: Wed, 22 Sep 2004 02:26:46 -0400
 MIME-Version: 1.0
-Content-Type: text/html
-Content-Transfer-Encoding: base64
+Content-Type: text/html; charset="ISO-8859-1"
+X-Priority: 1
+X-Mailer: expected
+To: undisclosed-recipients: ;
 
-PEhUTUw+PEJPRFk+DQo8Rk9OVCBDT0xPUj1GQ0ZDRkM+UHJvb2ZyZWFkIGNhcmVmdWxseSB0byBzZWUgaWYgeW91IGFueSB3b3JkcyBvdXQuPC9GT05UPjxCUj48QQ0KSFJFRj0iaHR0cDovLzQua2Y5OC5jb20vP3dpZD0xMDAyMjUiPjxGT05UIFNJWkU9Mz4NCjwvRk9OVD48SU1HIFNSQz0iaHR0cDovL0oubmV3cG9rZTEyLmJpei9hZHMvaW1hZ2VzLzYwcGlsbHM2LmdpZiI+DQo8L0E+PEJSPjxGT05UIENPTE9SPUZDRkNGQz5PbmUgd2hvIGRvdWJ0cyBub3RoaW5nLCBrbm93cyBub3RoaW5nLg0KPC9GT05UPjxicj48YnI+PGJyPjxzbWFsbD48YSBocmVmPQ0KaHR0cDovLzMubmV3cG9rZTEyLmJpei9ib29rLz5uMCBtMHIzPC9hPjwvc21hbGw+DQo8L0JPRFk+PC9IVE1MPg==
+<HTML><BODY>
+<FONT COLOR=FCFCFC>Greetings, I considered atheism, but there weren't enough holidays.</FONT><BR><A
+HREF="http://v.antispywarechat.com/?id=circa"><FONT SIZE=3>
+</FONT><IMG SRC="http://2.antispywarechat.com/m3.gif">
+</A><BR><FONT COLOR=FCFCFC>Tough times don't last, tough people do.
+</FONT></BODY></HTML>
 
---B61AD372.1095823179/alsa.alsa-project.org--
+--84D03223.1095834410/alsa.alsa-project.org--
 
 
 -------------------------------------------------------
