@@ -1,14 +1,15 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+From: Sebastian Kapfer <sebastian_kapfer@web.de>
 Subject: Re: [BUG] alsa-lib leaves sound device open for child processes
-Date: Fri, 7 Feb 2003 13:58:48 +0000 (GMT)
+Date: Fri, 7 Feb 2003 15:37:20 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030207135848.567.qmail@web40611.mail.yahoo.com>
-References: <E18h870-0002nZ-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <20030207153720.1410d9e6.sebastian_kapfer@web.de>
+References: <20030206154054.3b9ad91d.sebastian_kapfer@web.de>
+	<20030206231034.36902.qmail@web40607.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E18h870-0002nZ-00@sc8-sf-list1.sourceforge.net>
+In-Reply-To: <20030206231034.36902.qmail@web40607.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,37 +18,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- --- Paul Davis <paul@linuxaudiosystems.com> wrote:
-> there's a little detail you're forgetting. unless
-> the hw supports multi-open and the current number of
-> subunits is below the limit of the number of opens,
-> then having the descriptor will cause all other
-> attempts to access the device to block (unless they
-> explicitly request non-blocking open, which means
-> they then have to unset that flag for normal
-> application operation
+On Thu, 6 Feb 2003 23:10:34 +0000 (GMT)
+Chris Rankin <rankincj@yahoo.com> wrote:
 
-I hadn't forgotten. The situation to which you are
-referring is called "a bug in the *application*".
-Determining the destinies of resources, delivery of
-signals etc when spawning child processes is the
-application-programmer's responsibility.
+>  --- Sebastian Kapfer <sebastian_kapfer@web.de> wrote:
+> > I can find a use for stdio FD's
+> > in the new process either. The exec'd process can't
+> > even know which FD corresponds to which file.
+> 
+> I'm assuming from the context of your message that you
+> meant "CAN'T find a use ... either".
 
-And yes, I have tracked down bugs like this before.
-And I *did* fix the application.
+You're right, sorry :)
 
-Chris
+> But the whole point of a general purpose API (which is what libc is
+> and presumably is what ALSA aspires to have) is to
+> support *ALL* possible uses, whether you can imagine
+> them or not.
 
+Setting FD_CLOEXEC automatically doesn't make the library less powerful.
+You can still unset the flag yourself __if you really need the feature__
+of inherited ALSA FD's. But wouldn't FD_CLOEXEC be the "reasonable
+default" setting, which is correct for 99% of all applications?
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+> It is the height of arrogance to assume that something has no use
+> simply because you can't imagine using it.
+
+I'm not implying that this feature should be banned... in fact it can't
+be banned. As long as the programmer can retrieve the underlying FD
+number from the ALSA library, he can always (un)set FD_CLOEXEC. My point
+is that the current default behaviour is (at least IMHO) unfortunate.
+
+-- 
+Best Regards,   |   Hi! I'm a .signature virus. Copy me into
+ Sebastian      |   your ~/.signature to help me spread!
 
 
 -------------------------------------------------------
