@@ -1,15 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: One drop-out per xrun?
-Date: Thu, 11 Dec 2003 11:47:06 +0100 (CET)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Which API for MIDI?
+Date: Thu, 11 Dec 2003 12:14:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312111145000.20863@pnote.perex-int.cz>
-References: <200312110300.hBB300vq020366@oud.linuxaudiosystems.com>
- <Pine.LNX.4.58.0312110915530.20863@pnote.perex-int.cz>
- <20031211101422.GA28400@bth05w.ABSp.alcatel.be>
+Message-ID: <Pine.HPX.4.33n.0312111119080.1515-100000@studcom.urz.uni-halle.de>
+References: <200312101450.hBAEoXeN019193@oud.linuxaudiosystems.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20031211101422.GA28400@bth05w.ABSp.alcatel.be>
+In-reply-to: <200312101450.hBAEoXeN019193@oud.linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,41 +17,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alfons Adriaensen <fons.adriaensen@alcatel.be>
+To: Paul Davis <paul@linuxaudiosystems.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 11 Dec 2003, Alfons Adriaensen wrote:
+Paul Davis wrote:
+> >Sending/receiving sysex has always been possible AFAIK.  It's
+> >certainly possible now.
+>
+> its bounded by size limits that have to (re)set in advance. when i
+> tried to download new firmware (1MB+) via SYSEX to an Alesis ADAT, it
+> was very difficult to discover this limitation.
 
-> On Thu, Dec 11, 2003 at 09:21:01AM +0100, Jaroslav Kysela wrote:
-> 
-> > To be 100% correct, in the driver, there is very small window where the 
-> > hardware might be in xrun state, but we cannot detect this situation:
-> > 
-> > 	disable_interrupts();
-> > 	pos = get_current_position();
-> > 	<--- DMA transfer occured here and position (pos) was
-> > 	     on last valid sample -->
-> > 	if (xrun(pos))
-> > 		do_xrun_handling();
-> > 	enable_interrupts();
-> 
-> I'm involved in the development of an application (sonar) where the
-> continuity of the signal is essential, but a few corrupted samples
-> every now and then won't do any harm (the S/N ratio is -60 dB anyway). 
-> Is it possible in ALSA to make the driver just ignore short xruns,
-> and continue without the need to restart ?
+Yes; it's a problem that ALSA wants to handle each sysex as one large
+chunk.
 
-Yes, stop_threshold is what you want to set. If this value is equal to 
-boundary (sw_params) no xruns are detected. If this value is above ring 
-buffer size, then xruns will be detected later.
+This problem occurs in another situation, too: in Standard MIDI files,
+a sysex command can be split into multiple parts to be sent at
+specific times, but it's impossible to do this with the ALSA
+sequencer.  (Well, it's possible, but the documentation says that each
+SYSEX event must contain a complete sysex command.)
 
-						Jaroslav
+I think the sequencer should be changed to allow splitting of sysex
+commands.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+
+Regards,
+Clemens
+
+
 
 
 -------------------------------------------------------
