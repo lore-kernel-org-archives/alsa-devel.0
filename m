@@ -1,8 +1,8 @@
 From: "Arve Knudsen" <aknuds-1@broadpark.no>
 Subject: Re: Problem writing to PCM plugin
-Date: Wed, 11 Aug 2004 16:00:25 +0200
+Date: Wed, 11 Aug 2004 17:06:20 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <opsckmizg3fmr65f@mail.broadpark.no>
+Message-ID: <opsckpkuvbfmr65f@mail.broadpark.no>
 References: <Pine.HPX.4.33n.0408111544140.15385-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain; format=flowed; delsp=yes; charset=iso-8859-1
@@ -21,12 +21,20 @@ To: Clemens Ladisch <clemens@ladisch.de>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Actually the plugin is of type "plug", and according to snd_pcm_dump it =20
-seems ALSA-lib takes care of converting the sample format. Only getting t=
-o =20
-know the plugin system here ...
+Based on your suggestion I rewrote the plugin, so it wraps a route plugin=
+. =20
+And now things work as I would expect. I must say I'm still confused on =20
+the issue, as I haven't found any explanation why my original approach =20
+wouldn't work. What's the difference between defining a translation table=
+ =20
+directly inside a "plug" plugin, and aggregating a slave "route" plugin =20
+within a "plug"?
 
-Regards
+Sort of weird that the plugin caused an assertion only when used in =20
+combination with the nForce2 chip, and not the Hammerfall (just silent =20
+operation).
+
+Thanks
 
 Arve Knudsen
 
@@ -49,6 +57,17 @@ On Wed, 11 Aug 2004 15:45:29 +0200 (METDST), Clemens Ladisch =20
 > Clemens
 >
 >
+>
+>
+> -------------------------------------------------------
+> SF.Net email is sponsored by Shop4tech.com-Lowest price on Blank Media
+> 100pk Sonic DVD-R 4x for only $29 -100pk Sonic DVD+R for only $33
+> Save 50% off Retail on Ink & Toner - Free Shipping and Free Gift.
+> http://www.shop4tech.com/z/Inkjet_Cartridges/9_108_r285
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 
