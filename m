@@ -1,12 +1,14 @@
-From: Jerry <jerryau001@yahoo.com.au>
-Subject: Hercules Game Theater XP 7.1 ALSA driver installation help...
-Date: Wed, 12 Nov 2003 01:02:13 +1000
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: recording problems with snd-cs46xx (was: Re: Re:
+ Alsa-devel digest, Vol 1 #810 - 3 msgs)
+Date: Tue, 11 Nov 2003 22:26:53 +0200 (EET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FB0F9F5.1050505@yahoo.com.au>
+Message-ID: <Pine.LNX.4.44.0311112221120.32192-100000@ecabase.localdomain>
+References: <20021030000513.GG15048@draal.physics.wisc.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20021030000513.GG15048@draal.physics.wisc.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,27 +17,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Bob McElrath <bob+alsa-devel@mcelrath.org>
+Cc: Benny Sjostrand <gorm@cucumelo.org>, Peter Heatwole <peter599@gotnet.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hey everyone,
+Hi,
 
-I'm new to Linux, and this list.  I have just installed RedHat 9.0 and 
-updated my kernel to 2.4.20-20.9.
-My problem is, that no matter what I try, I can't get my soundcard to 
-work.  I have followed the installation guide for ALSA drivers, and it 
-seemed to install it, but when I use the Soundcard Detection program to 
-test my card, it gives me the "The cs46xx driver could not be loaded. 
-This soundcard may not be compatible with Red Hat Linux." error.
-When I view the startup log, it doesn't seem to load the Soundcard at all.
-Did anyone get this card to work, and if so, could you please give me 
-some pointers as to what I might be doing wrong?
-And/or are there any "simple" guides out there, that would explain how 
-to install the ALSA driver on this platform for the Game Theater XP 7.1 
-soundcard?
+this issue is over a year old, but in case someone stumbles on
+to the same problem. The solution is already documented at
 
-Thanks,
-    Jerry
+   http://alsa.opensrc.org/index.php?page=cs46xx
+
+... but it took me a while to find it. :)
+
+On Tue, 29 Oct 2002, Bob McElrath wrote:
+
+>>>Recording still seems to not work.  I still get about a 1Hz ticking in
+> I cannot record anything at all, from any input (I haven't tried from
+> SPDIF -- I don't have a reliable SPDIF source anyway)  I get the 1Hz
+
+I had this very same problem with alsa-driver-0.9.8. The problem turned 
+out to be that I had not selected 'ADC' as a capture source in alsamixer. 
+So you need to select all three: 'ADC', 'Mic' and 'Capture' for the 
+recording to work properly.
+
+PS Tested with IBM Thinkpad models T20 and T21.
+
+-- 
+ http://www.eca.cx
+ Audio software for Linux!
 
 
 
