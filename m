@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000479]: [Patch] VIA based AC97 modem driver
-Date: Tue, 9 Nov 2004 16:21:44 +0100
-Message-ID: <5de815d7d48d15bee4c32f450b8b6c3c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000244]: aplay loops like a broken record with YMF-724F
+Date: Tue, 9 Nov 2004 16:19:01 +0100
+Message-ID: <7bd9b17ea35a7cf03a932cbff80da329@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 722AF244
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:21:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C539D247
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:19:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=479> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=244> 
 ======================================================================
-Reported By:                sashak
-Assigned To:                sashak
+Reported By:                dant
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   479
-Category:                   PCI - via82xx
+Issue ID:                   244
+Category:                   PCI - ymfpci
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     closed
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.4.26-1.ll.rh90.ccrma
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-02-2004 21:24 CEST
-Last Modified:              11-09-2004 16:21 CET
+Date Submitted:             04-28-2004 04:18 CEST
+Last Modified:              11-09-2004 16:19 CET
 ======================================================================
-Summary:                    [Patch] VIA based AC97 modem driver
+Summary:                    aplay loops like a broken record with YMF-724F
 Description: 
-New 'via82xx_modem.c' driver supports VIA based AC97 modems. (tested with
-2.6.8.1). The patch (for alsa-driver) is uploaded.
+I have downloaded the latest kernel and Alsa RPMs from CCRMA site and was
+able to get the sound drivers to work
+for Yamaha YMF-724F sound card.
+
+KMidi seems to play fine.  The only problem so far that I can see is
+'aplay' with WAV files.
+
+Here is what I tried:
+
+[root@linux sounds]# aplay email.wav
+Playing WAVE 'email.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Mono
+ALSA lib pcm_hw.c:523:(snd_pcm_hw_drain) SNDRV_PCM_IOCTL_DRAIN failed:
+Input/output error
+
+This sound was supposed to play once.  I hear a repeat of this sound 20
+times exactly.  I tried all other wave files with the same results!  It
+sounds like a broken record up to 20 times.
+
+I have scanned google and found only two references where others have
+reported simliar results but no response fixes were given.
+
+Help!
+
+Best regards!
+Dan Thurman
+dant@cdkkt.com
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 09-08-04 16:40 
+ tiwai - 04-30-04 10:56 
 ----------------------------------------------------------------------
-Uploaded patch is for 'alsa-lib' conf: VIA82XX-MODEM card definition.
+the symoptom looks like an IRQ problem.
+if you have PNP-OS setting in BIOS, try to turn it off.
 
 ----------------------------------------------------------------------
- tiwai - 09-08-04 17:03 
+ perex - 09-07-04 16:53 
 ----------------------------------------------------------------------
-I forgot to commit my patch.
-
-We don't need to add a new file since the configuration is
-identical with ICH-MODEM.  The alias is added to CVS now.
+Yes, it looks like a general IRQ problem. Please, ask on lkml or enter this
+problem to kernel's bugzilla.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-02-04 21:24 sashak         New Issue                                    
-09-02-04 21:24 sashak         File Added: via-modem.patch                    
-09-03-04 15:52 tiwai          Status                   assigned => resolved
-09-03-04 15:52 tiwai          Resolution               open => fixed       
-09-03-04 15:52 tiwai          Note Added: 0001692                          
-09-08-04 16:36 sashak         Status                   resolved => feedback
-09-08-04 16:36 sashak         Resolution               fixed => reopened   
-09-08-04 16:36 sashak         Note Added: 0001729                          
-09-08-04 16:40 sashak         Note Added: 0001730                          
-09-08-04 17:03 tiwai          Status                   feedback => resolved
-09-08-04 17:03 tiwai          Resolution               reopened => fixed   
-09-08-04 17:03 tiwai          Note Added: 0001731                          
-11-09-04 16:21 tiwai          Status                   resolved => closed  
+04-28-04 04:18 dant           New Issue                                    
+04-28-04 04:18 dant           Kernel Version            =>
+2.4.26-1.ll.rh90.ccrma
+04-30-04 10:55 tiwai          Category                 0_compilation problem_!!!
+=> PCI - ymfpci
+04-30-04 10:56 tiwai          Note Added: 0000974                          
+09-07-04 16:53 perex          Status                   assigned => resolved
+09-07-04 16:53 perex          Resolution               open => fixed       
+09-07-04 16:53 perex          Note Added: 0001718                          
+11-09-04 16:19 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
