@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000435]: No current support for the ICH6R & ALC880 devices
-Date: Wed, 19 Jan 2005 16:50:07 +0100
-Message-ID: <2be7ccf205f8408576733bacc2f4a4dc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Date: Wed, 19 Jan 2005 16:50:27 +0100
+Message-ID: <8db5e620f8daa489b97870191bfd7681@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7CF0F26D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:50:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 848F726D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:50:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,100 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=435> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
 ======================================================================
-Reported By:                snaketails
+Reported By:                brentcfisher
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   435
-Category:                   PCI - intel8x0
+Issue ID:                   671
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
 Distribution:               Gentoo
-Kernel Version:             2.6.7
+Kernel Version:             2.6.8.1
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-12-2004 02:50 CEST
+Date Submitted:             11-24-2004 06:36 CET
 Last Modified:              01-19-2005 16:50 CET
 ======================================================================
-Summary:                    No current support for the ICH6R & ALC880 devices
+Summary:                    ALSA sound cuts out w/ message: ALSA
+sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
 Description: 
-As this is a new mobo, there is no driver configuration that supports this
-newer buss interface devices, so there is no sound from the mobo.
-The inability for the mobo to run SATA under Linux is not an issue here,
-as I am using the SiS SATA driver, only issue is sound
+Particularily noticeable when watching a DVD via xine using AC3 Pass
+Through.  Sound will cut out momentarily (usually for no more than a
+second).  The skip is always accompanied by multiples of this message in
+the /var/log/messages file:
+
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+
+These messages appear in the log file once or twice a minute although the
+sound only noticable cuts out every few minutes .  Very annoying on an
+HTPC.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 12-12-04 14:02 
+ tiwai - 12-16-04 18:23 
 ----------------------------------------------------------------------
-"Crackling sound" also reported at http://bugs.debian.org/281546
+Thanks for confirmation.  I apply the patch to CVS now.
+Let's resolve this issue as FIXED.
 
 ----------------------------------------------------------------------
- tiwai - 12-15-04 16:12 
+ tiwai - 12-16-04 18:25 
 ----------------------------------------------------------------------
-Fixed in the latest CVS version of azx driver.
+Oops, I found that I already did apply the change together with another
+fix.
+So, the fixed version is already in the CVS ;)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-12-04 02:50 snaketails     New Issue                                    
-08-12-04 02:50 snaketails     Distribution              => Gentoo          
-08-12-04 02:50 snaketails     Kernel Version            => 2.6.7           
-08-12-04 07:32 pzad           Note Added: 0001551                          
-08-13-04 02:03 snaketails     Note Added: 0001560                          
-08-16-04 06:01 snaketails     Note Added: 0001569                          
-08-18-04 04:28 snaketails     Note Added: 0001575                          
-08-18-04 11:53 tiwai          Note Added: 0001576                          
-08-23-04 06:33 snaketails     Note Added: 0001610                          
-12-12-04 14:02 jdthood        Note Added: 0002815                          
-12-15-04 16:12 tiwai          Status                   new => resolved     
-12-15-04 16:12 tiwai          Resolution               open => fixed       
-12-15-04 16:12 tiwai          Assigned To               => tiwai           
-12-15-04 16:12 tiwai          Note Added: 0002826                          
-12-15-04 16:12 tiwai          Assigned To              tiwai =>            
+11-24-04 06:36 brentcfisher   New Issue                                    
+11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
+11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
+11-24-04 06:47 brentcfisher   Note Added: 0002541                          
+11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
+11-24-04 23:50 squarooticus   Note Added: 0002584                          
+11-25-04 01:59 brentcfisher   Note Added: 0002585                          
+11-25-04 06:45 squarooticus   Note Added: 0002586                          
+12-02-04 19:34 tiwai          Note Added: 0002694                          
+12-06-04 02:24 brentcfisher   Note Added: 0002725                          
+12-07-04 18:24 tiwai          Note Added: 0002753                          
+12-07-04 18:24 tiwai          File Added: via-pointer-fix.diff                  
+ 
+12-08-04 05:03 brentcfisher   Note Added: 0002774                          
+12-08-04 12:13 tiwai          Note Added: 0002779                          
+12-08-04 16:33 brentcfisher   Note Added: 0002786                          
+12-08-04 16:35 tiwai          Note Added: 0002787                          
+12-08-04 16:36 tiwai          File Added: via-pointer-fix2.diff                 
+  
+12-08-04 17:02 brentcfisher   Note Added: 0002789                          
+12-09-04 15:35 tiwai          Note Added: 0002803                          
+12-09-04 15:35 tiwai          File Added: via-pointer-fix3.diff                 
+  
+12-10-04 16:59 brentcfisher   Note Added: 0002807                          
+12-11-04 23:30 brentcfisher   Note Added: 0002812                          
+12-12-04 03:14 squarooticus   Issue Monitored: squarooticus                    
+12-12-04 03:14 squarooticus   Issue End Monitor: squarooticus                   
+
+12-15-04 16:13 tiwai          Note Added: 0002827                          
+12-15-04 16:13 tiwai          File Added: via-pointer-fix4.diff                 
+  
+12-16-04 17:53 brentcfisher   Note Added: 0002831                          
+12-16-04 18:23 tiwai          Status                   new => resolved     
+12-16-04 18:23 tiwai          Resolution               open => fixed       
+12-16-04 18:23 tiwai          Assigned To               => tiwai           
+12-16-04 18:23 tiwai          Note Added: 0002833                          
+12-16-04 18:23 tiwai          Assigned To              tiwai =>            
+12-16-04 18:25 tiwai          Note Added: 0002834                          
 01-19-05 16:50 tiwai          Status                   resolved => closed  
 ======================================================================
 
