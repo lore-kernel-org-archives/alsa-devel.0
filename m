@@ -1,9 +1,12 @@
 From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: alsa-lib resamping error
-Date: Wed, 22 Jan 2003 12:38:31 -0500
+Subject: Re: hdsp multiface pci.
+Date: Wed, 22 Jan 2003 13:19:16 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301221738.h0MHcVq22269@linuxaudiosystems.com>
+Message-ID: <200301221814.h0MIEnx0013504@spider.tela.com>
+References: <m3znpvhi19.fsf@grouper.coelacanth.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "20 Jan 2003 12:01:38 EST."
+             <m3znpvhi19.fsf@grouper.coelacanth.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,15 +15,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Roger Williams <raw@qux.com>
+Cc: markknecht@attbi.com, Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-if you try to play a 22.05kHz stream on hardware that supports 32kHz
-and 44.1kHz but not 22.05kHz, alsa-lib's plughw layer chooses to use
-32kHz and resamples. this seems like an error to me: it would be much
-better to choose 44.1kHz and do simple integer resampling. that is:
-the search for the best rate should first try integer multiples and
-divisors of the desired rate, not the "closest" rate.
+>This would explain why snd_hdsp works (i.e. you can playback and
+>record through the default I/O), although amixer doesn't do anything:
+>the driver doesn't have to set up any default connections, because
+>those are part of the FPGA reset state.  I would be surprised if
+
+actually, the driver does have to set up default connections, which
+are zero gain for every possible routing unless the line_outs_monitor
+option is set to a non-zero value. in that case, all h/w input streams
+and all s/w playback streams are routed at unity gain to the two line
+out channels, with stereo assignment following an odd->left,
+even->right mapping.
+
+as i've told mark independently, the hdsp-9652 has different register
+assignments for the mixer, and until recently i did not have that
+information from rme. the hdsp-9652 effectively has no mixer at this
+time on linux.
 
 --p
 
