@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000664]: ac97_quirk with SIS 7012 [ALC202] don't permit to have sound from the headphones, only internal speakers work.
-Date: Wed, 23 Mar 2005 15:41:08 +0100
-Message-ID: <23e44e6535f3f9fd45de67252c9f0912@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000225]: No PCM-mixer on Epox 8RDA3I and no sound
+Date: Wed, 23 Mar 2005 15:45:00 +0100
+Message-ID: <8092bec87778a7e93f4b0f71ac720179@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 19BB326B
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 15:41:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC5FD22A
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 15:45:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,75 +21,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=664> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=225> 
 ======================================================================
-Reported By:                ignition
-Assigned To:                tiwai
+Reported By:                qeldroma
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   664
+Issue ID:                   225
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
-Status:                     feedback
-Distribution:               GNU/Linux Slackware 10.0
-Kernel Version:             2.4.28
+Status:                     new
+Distribution:               gentoo 2004.1
+Kernel Version:             2.6.5-gentoo-dev-sources
 ======================================================================
-Date Submitted:             11-22-2004 18:29 CET
-Last Modified:              03-23-2005 15:41 CET
+Date Submitted:             04-20-2004 10:50 CEST
+Last Modified:              03-23-2005 15:45 CET
 ======================================================================
-Summary:                    ac97_quirk with SIS 7012 [ALC202] don't permit to
-have sound from the headphones, only internal speakers work.
+Summary:                    No PCM-mixer on Epox 8RDA3I and no sound
 Description: 
-module: intel8x0
-card: SiS SI7012
-chip: Realtek ALC202 rev 0
+I recently changed from a leadtek nforce2 board to the epox nforce2 board.
+AFAIK, they got both the same onboard audio chip, so i didn't changed any
+setting i had done for the leadtek, because i could keep them in my eyes.
 
-All ok but when I plug a jack from the headphones (or hi-fi system), there
-is no sound.
-And when I plug a jack halfway, I hear mono sound with bad quality from
-internal speaker AND from the headphones.
+But now, all is working well (xmms even shows the equalizer going up and
+down!), but i can't hear anything.
+
+First i thought, sthg. is muted, but a look at "alsamixer" told me, that
+all is up and unmuted. Only PCM is not changeable and keeps at 0%.
+
+>From the leadtek i know, that PCM is the main-volume tab in alsa, so i
+think, that this broken PCM-mixer is the reason fro the broken alsa.
+
+Btw, i am not the only person with this fault.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000014 No sound from external speakers (laptop)
-======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-22-04 18:48 
+ qeldroma - 04-20-04 12:39 
 ----------------------------------------------------------------------
-This is a long-standing problem.
-Will look at this problem later again.
+No sound, no feature ;-)
+
+If it's not this mixer, sthg. else must be the cause.
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 15:41 
+ jdthood - 03-23-05 15:45 
 ----------------------------------------------------------------------
-This issue wasn't actually resolved.
+Submitter: Problems like this are often the result of faulty mixer
+settings.
+Were you ever able to resolve the problem, e.g., by adjusting mixer
+settings
+with gamix or by upgrading your ALSA drivers to the latest release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-04 18:29 ignition       New Issue                                    
-11-22-04 18:29 ignition       File Added: report                           
-11-22-04 18:29 ignition       Distribution              => GNU/Linux Slackware
-10.0
-11-22-04 18:29 ignition       Kernel Version            => 2.4.28          
-11-22-04 18:48 tiwai          Relationship added       duplicate of 0000014
-11-22-04 18:48 tiwai          Duplicate ID             0 => 14             
-11-22-04 18:48 tiwai          Status                   new => resolved     
-11-22-04 18:48 tiwai          Resolution               open => duplicate   
-11-22-04 18:48 tiwai          Assigned To               => tiwai           
-11-22-04 18:48 tiwai          Note Added: 0002510                          
-11-22-04 18:51 ignition       Issue Monitored: ignition                    
-11-22-04 18:52 ignition       Issue End Monitor: ignition                    
-12-06-04 14:58 dale           Issue Monitored: dale                        
-01-20-05 18:52 jorge2         Issue Monitored: jorge2                      
-03-23-05 15:41 jdthood        Status                   resolved => feedback
-03-23-05 15:41 jdthood        Resolution               duplicate => reopened
-03-23-05 15:41 jdthood        Note Added: 0004163                          
+04-20-04 10:50 qeldroma       New Issue                                    
+04-20-04 10:50 qeldroma       Distribution              => gentoo 2004.1   
+04-20-04 10:50 qeldroma       Kernel Version            =>
+2.6.5-gentoo-dev-sources
+04-20-04 12:28 tiwai          Note Added: 0000871                          
+04-20-04 12:39 qeldroma       Note Added: 0000873                          
+03-23-05 15:45 jdthood        Note Added: 0004165                          
 ======================================================================
 
 
