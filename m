@@ -1,16 +1,11 @@
-From: yodaiken@ti.com
-Subject: D-V-D-Moviez for d-o-w-n-l-o-a-d-i-n-g
-Date: Sat, 27 Nov 2004 08:24:12 +0000
-Message-ID: <G0E8AIDIF3820DFK@ti.com>
-References: <J00GAHFK3B17C3I2@alsa-project.org>
+From: Peter Christensen <peter@developers.dk>
+Subject: Mixer control names out of control?
+Date: Sat, 27 Nov 2004 10:26:40 +0100
+Message-ID: <41A84850.5000604@developers.dk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from ?rnddg[2]?.?rnddg[2]?.?rnddg[2]?.?rnddg[2]? (175.Red-81-36-228.pooles.rima-tde.net [81.36.228.175])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 7E1CF253
-	for <alsa-devel@alsa-project.org>; Sat, 27 Nov 2004 09:24:30 +0100 (MET)
-In-Reply-To: <J00GAHFK3B17C3I2@alsa-project.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,23 +15,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-http://24.93.107.59:8180/dvp/
+Hello,
 
+Am I the only one feeling that the names of the mixer controls in ALSA is somewhat out of control? Especially when it comes to IEC958.
 
-8221 594 47243 955 629156=20
-8048 547 16408 713 768483
-7783 312 56837 223 794344
-2266 024 51729 663 788461
+First of all, the AC97 driver uses the name "IEC958 Playback SPSA". What's wrong with "IEC958 Playback Volume"?
 
+Next, quite a few drivers do not use the SNDRV_CTL_NAME_IEC958 macro, whose purpose I suppose is to ensure that alle IEC958 mixer controls follow a 
+common naming syntax. Anyway, alot of drivers for some reason uses "Output" and "Input" instead of "Playback" and "Capture". Is this on purpose?
 
+The reason I make such a fuss about it, is that I wanted to make a structured organized mixer for GTK, so that people don't have to use the sometimes 
+messy and confusing alsamixer and gnome volume control (in general, all mixers based on the ALSA Simple Mixer controls). But then it struck me that 
+the simple mixer did have some potentional, and the chaos basically was based on poor sorting of elements (which you can do manually in your program), 
+its inability to detect several "new" mixer control names such as (Front,Rear,Side, etc.), and then the inability to have both a Switch and a Route 
+element with the same name (The ice1724 driver was force to use "IEC958 Output Switch" instead of "IEC958 Playback Switch" due to this).
+It is my belief, that if the simple mixer library routines was updated, and the mixer elements got proper names, the world would be alot better.
 
-Leave me alone! http://24.93.107.59:8180/dvp/rm.php?rm=3Dalsa-devel@alsa-=
-project.org
+But is this simple caused by programmers not truely knowing the ALSA naming conversion or is there some deper sence in this?
 
+I did consider makine a patch which changed the whole naming thing, but it would probably be to vital for people to accept?!
 
+Thanks
+   Peter Christensen
 
 
 -------------------------------------------------------
