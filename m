@@ -1,13 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: trident driver bug
-Date: Wed, 19 Mar 2003 21:20:05 +0100 (CET)
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: dsnoop, dshare and dmix plugins
+Date: 19 Mar 2003 12:51:51 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303192117070.1351-100000@pnote.perex-int.cz>
-References: <20030319201849.GA14297@tuba.home>
+Message-ID: <1048107111.8198.45.camel@cmn37.Stanford.EDU>
+References: <Pine.LNX.4.44.0303191801460.1351-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030319201849.GA14297@tuba.home>
+Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA25674
+	for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2003 21:52:33 +0100
+In-Reply-To: <Pine.LNX.4.44.0303191801460.1351-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,38 +20,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Martin Langer <martin-langer@gmx.de>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 19 Mar 2003, Martin Langer wrote:
-
-> On Wed, Mar 19, 2003 at 01:10:02PM -0500, Paul Davis wrote:
-> > there still appears to be a bug in the trident driver. i have been
-> > running jack with a period size of 1024, and it works fine. when i
-> > change that to 4096 frames, the kernel does a hard oops, with the oops
-> > occuring in enable_hlt(). the rest of the trace doesn't make much
-> > sense, and i cannot feed it to ksymoops because the machine locks
-> > hard.  what can i do to make it eas(y|ier) to debug?
-> > 
+> Sure. First example is for the dmix plugin and ice1712 (10 playback 
+> channels - last two are S/PDIF, so this configuration allows sharing of 
+> the S/PDIF jack):
 > 
-> ... just having a short view to the sourcecode, I saw that the maxbuffer for
-> playback is bigger than the rest (spdif, capture,..). Maybe this is a bug,
-> but I don't have either the hardware nor the documentation for the trident.
-> So it's possible that I'm totally wrong here...
-> 
-> ... it's just an idea to change that buffersize to the smaller buffersize 
-> like capture/spdif (128*1024) instead of original size (256*1024).
+> pcm.dmix_spdif {
+>         type dmix
+>         ipc_key 5678293
 
-Trident's NX playback hardware supports the 256kB ring buffer. It seems 
-like some weird bug in the DMA allocation routines.
+Hmm, sorry for my ignorance, but what does this number mean and where
+does it come from? (BTW, thanks for the examples!)
 
-						Jaroslav
+-- Fernando
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 
