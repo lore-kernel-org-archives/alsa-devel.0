@@ -1,14 +1,14 @@
 From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Build-in mixer
-Date: Fri, 17 Oct 2003 09:31:27 +0200 (CEST)
+Date: Fri, 17 Oct 2003 09:41:27 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0310170930500.1221@pnote.perex-int.cz>
-References: <3F8D3936.2080106@kky.zcu.cz> <200310151240.h9FCeluU021976@oud>
- <s5hy8vminw2.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.53.0310170938390.1221@pnote.perex-int.cz>
+References: <s5hy8vminw2.wl@alsa2.suse.de> <200310151453.h9FErp5f001376@oud>
+ <s5hsmluilzg.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hy8vminw2.wl@alsa2.suse.de>
+In-Reply-To: <s5hsmluilzg.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,42 +23,41 @@ List-Id: alsa-devel@alsa-project.org
 
 On Wed, 15 Oct 2003, Takashi Iwai wrote:
 
-> At Wed, 15 Oct 2003 08:40:47 -0400,
+> At Wed, 15 Oct 2003 10:53:51 -0400,
 > Paul Davis wrote:
 > >
-> > >Well, i am not author of this program actually. It is xmms plugin
-> > >allowing  to use ALSA for sound output (alsa-xmms-0.9). I only wanted to
-> > >modify it, to be able to use dmix. I see, that it is out of my abilities
-> > >:-(  and, so i will have to conctact the author of it and ask him to
-> > >correct it. It is pitty, because it will take time (if they ever do it).
-> > >I thought, that ALSA interface is not dependent on way, how it is opened
-> > >(because the same code with "hw:0:0" instead of "default" worked
-> > >perfectly) or did not i comprehend anything?. I would like to
-> > >understant, why opening "hw:0:0" works and only replacing it by
-> > >"default" does not. It seems to mee very dificult for developpers....
+> > >it's not related with threads, but it invokes a fork for a server
+> > >process (a main control only, doesn't do mixing stuffs).
+> > >it looks like there is something wrong with this together with xmms.
+> > >i've seen that Xlib got a spurious async.
+> > >magically enough, the attached patch seems to fix.
 > >
-> > it would have helped enormously if you had stated that you were
-> > talking about alsa-xmms up front. its a known and important piece of
-> > code, and one that someone here is much more likely to fix than (sorry
-> > to say) your own pet project.
+> > >From http://www.gtk.org/faq/#AEN477
 > >
-> > takashi or jaroslav - does using dmix involve any threads? could the
-> > alsa-xmms plugin be making calls to some xmms error code from a
-> > non-GUI thread?
+> > ----------------------------------------------------------------------
+> > 5.5. Why does this strange 'x io error' occur when I fork() in my GTK+ app?
+> > Why does this strange 'x io error' occur when I fork() in my GTK+ app?
+> >
+> > This is not really a GTK+ problem, and the problem is not related to
+> > fork() either. If the 'x io error' occurs then you probably use the
+> > exit() function in order to exit from the child process.
+> >
+> > When GDK opens an X display, it creates a socket file descriptor. When
+> > you use the exit() function, you implicitly close all the open file
+> > descriptors, and the underlying X library really doesn't like this.
+> >
+> > The right function to use here is _exit().
 >
-> it's not related with threads, but it invokes a fork for a server
-> process (a main control only, doesn't do mixing stuffs).
-> it looks like there is something wrong with this together with xmms.
-> i've seen that Xlib got a spurious async.
-> magically enough, the attached patch seems to fix.
->
-> Jaroslav, what is the reason of the second fork?  to daemonize?
+> oh yeah, that's it.  replacing two exit() calls in pcm_direct.c with
+> _exit() fixes the problem indeed.
+> thanks for the info!
 
-Yes, we need completely to detach from parent.
+I think that only one replacement makes sense - in
+snd_pcm_direct_server_create(). Fixed in CVS now.
 
-> hmm, i still got many underruns.  something broken atm...
-
-I will look on this. Sorry, I was not available for two days.
+BTW: An user already reported that _exit() should be used, but he didn't
+explain the reason, so I posponed the change to see, if it's really
+necessary.
 
 						Jaroslav
 
