@@ -1,15 +1,12 @@
-From: Anders Torger <torger@ludd.luth.se>
-Subject: Re: Why do I get broken pipe on write to a pcm instatePREPARED?
-Date: Thu, 10 Oct 2002 17:03:58 +0200
+From: Miha Tomsic <miha.tomsic@guest.arnes.si>
+Subject: Problem with alsamixer, amixer
+Date: 10 Oct 2002 17:08:11 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200210101503.g9AF3v029782@d1o87.telia.com>
-References: <Pine.LNX.4.33.0210101620250.701-100000@pnote.perex-int.cz>
+Message-ID: <1034262491.1337.230.camel@josef>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.33.0210101620250.701-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,48 +15,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, Clemens Ladisch <clemens@ladisch.de>
+To: alsa devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 10 October 2002 16.21, Jaroslav Kysela wrote:
-> On Thu, 10 Oct 2002, Anders Torger wrote:
-> > On Thursday 10 October 2002 04.15, James Courtier-Dutton wrote:
-> > > I don't understand which applications prefer: -
-> > > 1) "PREPARED: return POLLOUT until the buffer is full, then
-> > > return POLLERR." and which would prefer (as suggested): -
-> > > 2) "PREPARED: return POLLOUT until the buffer is full, then
-> > > BLOCK."
-> > >
-> > > As I understand it, the poll works correctly in RUNNING state?
-> > > I think (2) would basically kill all single thread apps so on
-> > > balance, I think (1) is the best to go with for now.
-> > >
-> > > The application I have thought of is that an application might
-> > > want to fill many file handles/streams buffers but keep them in
-> > > PREPARED state. Then release all the channels at the same time so
-> > > that they play in sync. But for that one does not need to do any
-> > > polling in PREPARED state. One just does snd_pcm_write until one
-> > > gets an error.
-> >
-> > This is possible to do with (1) as well, actually it is only a
-> > slight difference. You will need to have non-blocking write in the
-> > above example, or else you are not sure that you fill the buffer at
-> > all, for example if the output buffer is 2048 frames, and you try
-> > to write 4096, which currently returns an error in blocking mode,
-> > but still the output buffer will be empty.
->
-> Not true. The output buffer will be filled up and then EPIPE error
-> will be returned. So first write 4096 results with 2048 and second
-> with EPIPE.
+	Hello!
 
-Uhmm... but if you use my own write() call wrappers, then my 
-description is correct... eh... I guess I have used them too much :-)
+This is an old problem I reported a year or so ago. 
 
-Anyway, it still is possible to do the given scenario with (1), but you 
-need to put the file descriptor into non-blocking mode first of course.
+I have SBPCI 128 with ak4531 codec. The problem is that I can't set
+capture to certain channels (the channels that are using capture route
+CD, Line, PCM 1) if they are muted. Or if capture is already set, muting
+those channels will switch capture off.
 
-/Anders
+This is happening if I am using alsamixer or amixer with sset. If I am
+using amixer with cset I can set anything I want. 
+
+I guess the problem lies in the ak4531 and the way simple controls are
+handled. I don't know enough about alsa internals so poking around the
+sources of alsamixer, amixer and ak4531 didn't help me understand what
+should I do to make it working.
+
+What is the relation of sset to cset ? 
+
+Can this be addressed generally or should there be a workaround for
+ak4531?
+
+Thanks and take care,
+
+	Miha...
+
+
+
+
+
 
 
 -------------------------------------------------------
