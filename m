@@ -1,16 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: PCMCIA In Kernel Or In ALSA Driver?
-Date: Wed, 25 Jun 2003 20:51:33 +0200 (CEST)
+From: "Eliot Blennerhassett" <bigblen@icqmail.com>
+Subject: Re: AudioScience driver
+Date: Wed, 25 Jun 2003 14:58:23 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306252050580.1838-100000@pnote.perex-int.cz>
-References: <01d401c33b42$139c5a40$1c02a8c0@win98>
+Message-ID: <20030625145823.9192.h003.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (UNKNOWN@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA25038
-	for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2003 20:52:31 +0200
-In-Reply-To: <01d401c33b42$139c5a40$1c02a8c0@win98>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,29 +16,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Len Moskowitz <vze24hrw@verizon.net>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
+Cc: fredg@salemradiolabs.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 25 Jun 2003, Len Moskowitz wrote:
+Fred thanks for your feedback
 
-> Hi to all,
-> 
-> We're setting up a PDAudio-CF card.
-> 
-> I note that the  configuration asks whether we want kernel or ALSA PCMCIA
-> support: does it
-> matter to the PDAudio-CF card driver?
+> I've tried building things with the patch, and have some questions:
 
-Yes, both should be enabled (kernel + ALSA PCMCIA support).
+> 1)  Your directions tell me to execute a './cvsconfigure' command (at the root 
+> of the ALSA source tree).  There is no such command in the 0.9.4 tree (at 
+> least in the tarball).  Does this patch require use of a checked-out CVS 
+> tree?
 
-						Jaroslav
+Sorry Fred, I misremembered the script name...
+I meant ./cvscompile  in alsa-driver-0.9.4/
+This rebuilds the dependencies so that snd-asihpi is known about and can be
+built.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+> 2)  What is the name of the module that this should generate?  'snd-asihpi' is 
+> coming up as not found.
 
+Correct
+
+3)  What is the exact relationship between the ALSA module and 'asihpi'?  Does 
+one need to be loaded for the other to work?  Exactly what is dependent upon 
+what?  An example 'modules.conf' setup would be very helpful here!
+
+snd-asihpi needs asihpi.  This is covered automatically by the "depmod -a" that
+happens at the end of a make install.
+So if you "modprobe snd-asihpi" all the underlying alsa modules + asihpi will
+get loaded.
+
+All I have in my modules.conf is "alias snd-card-0 snd-asihpi"
+
+A note about Card indices
+snd-asihpi will try to assign the ALSA device index to be the same as the card
+index set by the jumpers on the card.  But if the ALSA driver for another card
+has already been loaded, then the ASI card will get the next available ALSA card
+index instead.
+
+> ... proposed install locations for user lib and include files
+
+Good idea.
+how about /usr/include/asihpi/hpi.h
+
+(thinking maybe /hpi/ is not distinctive enough.
+
+- Eliot
+
+Eliot Blennerhassett
+AudioScience Inc.
+--
+Junk footer beyond this point. Read at your own risk.
+
+
+-------------------------------------------------------------
+Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
 
 
 -------------------------------------------------------
