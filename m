@@ -1,13 +1,14 @@
 From: "Vrihad Shoonya" <vrihad@softhome.net>
 Subject: Re: Is there plans to support SiS7019?
-Date: Thu, 19 Aug 2004 19:01:25 +0530 (IST)
+Date: Thu, 19 Aug 2004 19:07:06 +0530 (IST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <2878.192.168.0.30.1092922285.squirrel@dev.datamax.co.in>
-References: <200408191314.i7JDEEAK015224@www4.pobox.sk>
+Message-ID: <2903.192.168.0.30.1092922626.squirrel@dev.datamax.co.in>
+References: <34863.192.168.0.10.1092904274.squirrel@dev.datamax.co.in>
+     <Pine.HPX.4.33n.0408191306530.11486-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain;charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200408191314.i7JDEEAK015224@www4.pobox.sk>
+In-Reply-To: <Pine.HPX.4.33n.0408191306530.11486-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,26 +17,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzad@pobox.sk>
-Cc: clemens@ladisch.de, alsa-devel@lists.sourceforge.net, perex@suse.cz
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->>It looks that the driver must be written from scratch,
->>because hardware is different from SI7018 and SI7012.
->
-> I don't expect alsa driver for this soon, because this
-> is not common hardware. This means, this is not standard
-> pc soundcard (or chipset). This is used in STB, PDA,
-> embeded systems... .
-> For this is more used OSS drivers, because of alsa-lib size.
-That is true. But the problem with OSS driver is that
-recording is problematic.
 
-> PS: I wonder about existence of NetBSD patch, because I
-> found this:
-The info was still under NDA when we got it. But they have
-agreed now that info on audio section and code can be
-released to third parties as they have stopped development.
+
+> It might help if we can take a look at the source.
+>
+> Google finds a NetBSD patch at
+> <http://www.yasuoka.net/~yasuoka/sis7019.html>, so it's possible.
+
+I can provide the source if you need it. But again it is for OSS
+not alsa.
+
+I want to find out how much time is needed to make the
+driver from scratch if hardware specs are available. I have
+no prior experience on this.
 
 -vrihad
 
