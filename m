@@ -1,22 +1,13 @@
-From: =?ISO-8859-2?Q?Adam_Tla=B3ka?= <atlka@pg.gda.pl>
-Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Sat, 28 Aug 2004 21:10:55 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
+Date: Sat, 28 Aug 2004 22:37:27 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4130D8BF.8030502@pg.gda.pl>
-References: <Pine.HPX.4.33n.0408181538550.24798-100000@studcom.urz.uni-halle.de>	<1092842830.13603.3.camel@localhost.localdomain>	<20040818181350.2b38e875@mango.fruits.de>	<Pine.LNX.4.58.0408181918160.1769@pnote.perex-int.cz>	<20040818201535.1f49a128@mango.fruits.de>	<Pine.LNX.4.58.0408191050220.1779@pnote.perex-int.cz>	<s5h8ycbv4s9.wl@alsa2.suse.de>	<Pine.LNX.4.58.0408191225170.1779@pnote.perex-int.cz>	<4129D6A2.7020801@pg.gda.pl> <s5hoel1hny9.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040828203727.329FF2F002@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sunrise.pg.gda.pl (sunrise.pg.gda.pl [153.19.40.230])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E044523D
-	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2004 21:11:45 +0200 (MEST)
-Received: from pg.gda.pl (host-ip149-240.crowley.pl [62.111.240.149])
-	(authenticated bits=0)
-	by sunrise.pg.gda.pl (8.12.11/8.12.11) with ESMTP id i7SJBdqO016418
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NOT)
-	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2004 21:11:44 +0200 (CEST)
-In-Reply-To: <s5hoel1hny9.wl@alsa2.suse.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 968411B1
+	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2004 22:37:27 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -28,77 +19,139 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-[2004-08-23 17:30] Takashi Iwai:
->>>>Can "network sound device" work with the mmap, too?
->>>I think yes, it can, but the real output will be more delayd. So, it won't 
->>>be much useable for the strict real-time applications.
-If "network" mode for OSS ALSA emulation in kernel will give us worse
-results than real OSS then I prefer to use real OSS drivers :-(
-- on the same machine. Playing quake or other MMAP mode games with
-networked sound  is not a real target anyway.
 
-> effects.  Hence, what I see here is only the demand of
-> "compatibility".  From the performance perspective, there is no reason
-> to force mmap.
-Of course I agree with that. It can't be perfect because of emulation but
-should be here for some old apps - and should work properly with them.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000432
+======================================================================
+Reported By:                Cyrille
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     432
+Category:                   PCI - atiixp-modem
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware 10
+Kernel Version:             2.4.24
+======================================================================
+Date Submitted:             08-08-2004 19:02 CEST
+Last Modified:              08-28-2004 22:37 CEST
+======================================================================
+Summary:                    Impossible de se connecter : NODIALTONE
+Description: 
+I've got a TOSHIBA SATELITTE A30 222 laptop
+Sound card and modem are based upon ATI IXP
+But I'm not able to run modem in spite of the differents bug-report on
+ALSA web site
+(https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
+-
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
+ -
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000417
+) and on Unixtrix.com (http://www.unixtrix.com/)
 
+Even if I do like Ronis or Netstar say -bugtrack.alsa-project :
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
+-, I'm always in the same situation : compilation is OK, modem driver OK
+but I'm not able to connect : NODIALTONE
+======================================================================
 
-I imagine sound system as some layered structure:
+----------------------------------------------------------------------
+ sashak - 08-25-2004 19:11 CEST 
+----------------------------------------------------------------------
+There is similar problem - some BIOSes doesn't report valid MODEM_PRESENT
+bit in ATI_REG_CMD register (reg 003, bit 27 - look in
+'/proc/asound/card1/atiixp'). Device behaviuor in this case is identical
+to reported here - DMA works ok, line still be disconnected.
 
-program
-|
-v
-dev -> redirecting, routing and up/down mixing kernel layer
-                |                                           |
-                v                                           v
-           kernel device driver                       net
-                |
-                v
-           hardware
+Uploaded patch solves the problem.
 
-in ALSA it looks like
+----------------------------------------------------------------------
+ netstar - 08-26-2004 01:18 CEST 
+----------------------------------------------------------------------
+Additional problems with patch when applied to alsa CVS.  All conditions
+necessary are met.
 
-program
-|
-v
-alsalib (plugins for routing, resampling and mixing) -> kernel driver -> 
-hardware
-                                                                    -> 
-net (in the future)
+----------------------------------------------------------------------
+ netstar - 08-26-2004 18:54 CEST 
+----------------------------------------------------------------------
+Forget that, now working fine, congratulations.
 
-I prefer normal Unix way (device and standard functions plus ioctl) so 
-if we can
-do a kernel module which does routing, redirecting and resampling on top of
-free OSS module we could obtain full functionality without any change
-in OSS programs.  But that's OSS not ALSA.
+----------------------------------------------------------------------
+ Cyrille - 08-26-2004 21:46 CEST 
+----------------------------------------------------------------------
+Concretrely, does it mean the current version of alsa driver will not run
+with this hardware ?
+Thanx
 
-In ALSA we need some kernel module which routes virtual OSS channels from
-kernel space to user space in ALSA lib emulation. I don't know how effective
-it will be but if we decided to mix in lib then this is the only way.
+----------------------------------------------------------------------
+ Cyrille - 08-26-2004 21:47 CEST 
+----------------------------------------------------------------------
+Oups, I've got not see the last Netstar message...
+I try to test it...
 
-By the way in ALSA README we read about full OSS ALSA compatibility.
-But this is not true!!!
-No mixer calls on dsp stream, no multichannel streams (4...7.1)
-are possible with OSS emulation, DMA mode broken.
-I just can't abandon using OSS because of that :-(.
+----------------------------------------------------------------------
+ Cyrille - 08-27-2004 15:41 CEST 
+----------------------------------------------------------------------
+Hello
+I have try Sashak's tip but the upload patch don't solve the problem.
+Always the same error message : NODIALTONE.
+(with alsa-driver/lib/... 1.0.6 ; test with slmodem-2.9.9 unless patch and
+with Ronis's patch).
+At your mind, is there really no hope to run it ?
 
-There are many sound daemons apps.
-I just don't want to link an app with all their libraries. It should 
-just open
-and use sound device - kernel module should communicate with deamon
-to hide its presence before an app - that is the proper way IMHO.
-Standard Unix approach plus some message passing method if we can't
-do all in kernel.
+----------------------------------------------------------------------
+ netstar - 08-28-2004 04:24 CEST 
+----------------------------------------------------------------------
+It seems that the new patch fixes the issues.  Note:  The earlier 
+"fixed" slmodem package on my site was actually broken, attaching a fixed
+version to this page and updating the file on my site.
 
-So what is the future of Linux sound??
+----------------------------------------------------------------------
+ Cyrille - 08-28-2004 13:49 CEST 
+----------------------------------------------------------------------
+Hi
+I've tried the slmodemd-fixed with alsa-driver-1.0.6a and always same
+situation : NO DIALTONE...
+An idea ?
 
-Regards
--- 
-Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
-System  & Network Administration Group           ~~~~~~
-Computer Center,  Gdansk University of Technology, Poland
-PGP public key:   finger atlka@sunrise.pg.gda.pl
+----------------------------------------------------------------------
+ netstar - 08-28-2004 19:49 CEST 
+----------------------------------------------------------------------
+You could first try to download the whole of ALSA-CVS, building and
+installing.
+
+----------------------------------------------------------------------
+ sashak - 08-28-2004 22:37 CEST 
+----------------------------------------------------------------------
+Also run ATX3 command before ATDT.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-08-04 19:02 Cyrille        New Bug                                      
+08-08-04 19:02 Cyrille        Distribution              => Slackware 10    
+08-08-04 19:02 Cyrille        Kernel Version            => 2.4.24          
+08-08-04 19:02 Cyrille        Bug Monitored: Cyrille                       
+08-25-04 19:04 sashak         File Added: atiixp_modem.patch                    
+08-25-04 19:11 sashak         Bugnote Added: 0001624                       
+08-26-04 01:16 netstar        File Added: debugging.tar.gz                    
+08-26-04 01:18 netstar        Bugnote Added: 0001630                       
+08-26-04 18:54 netstar        Bugnote Added: 0001634                       
+08-26-04 21:46 Cyrille        Bugnote Added: 0001636                       
+08-26-04 21:47 Cyrille        Bugnote Added: 0001637                       
+08-27-04 15:41 Cyrille        Bugnote Added: 0001644                       
+08-27-04 19:33 tiwai          Assigned To              tiwai => sashak     
+08-28-04 04:24 netstar        Bugnote Added: 0001660                       
+08-28-04 04:33 netstar        File Added: slmodemd.tar.gz                    
+08-28-04 04:40 netstar        File Added: slmodemd-fixed.tar.gz                    
+08-28-04 13:49 Cyrille        Bugnote Added: 0001661                       
+08-28-04 19:49 netstar        Bugnote Added: 0001662                       
+08-28-04 22:37 sashak         Bugnote Added: 0001663                       
+======================================================================
 
 
 -------------------------------------------------------
