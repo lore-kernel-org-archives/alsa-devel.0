@@ -1,12 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: [PATCH] Detection of Audigy 2 ZS
-Date: Wed, 14 Jul 2004 12:43:27 -0400
+From: Werner Schweer <ws@seh.de>
+Subject: snd-usb-usx2y 0.7.1 against cvs head:               please test it!
+Date: Wed, 14 Jul 2004 18:46:11 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1089823407.2104.34.camel@mindpipe>
+Message-ID: <200407141846.11517.ws@seh.de>
+References: <200407131155.43747.annabellesgarden@yahoo.de> <42174.195.245.190.94.1089805075.squirrel@www.rncbc.org> <s5h1xjeaat2.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h1xjeaat2.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,58 +19,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: Takash Karsten Wiese <annabellesgarden@yahoo.de>, Martin Langer <martin-langer@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
-Detect Augigy2 ZS (emu->model == 0x2002).
-Fix typo in log message and some magic numbers. 
+testing on 2.6.7-bk20 i get the following message when starting
+JACK:
 
-Index: pci/emu10k1/emu10k1_main.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c,v
-retrieving revision 1.35
-diff -u -r1.35 emu10k1_main.c
---- pci/emu10k1/emu10k1_main.c  29 Jun 2004 16:10:33 -0000      1.35
-+++ pci/emu10k1/emu10k1_main.c  14 Jul 2004 16:42:38 -0000
-@@ -119,8 +119,10 @@
-        snd_emu10k1_ptr_write(emu, SOLEH, 0, 0);
- 
-        if (emu->audigy){
--               snd_emu10k1_ptr_write(emu, 0x5e, 0, 0xf00); /* ?? */
--               snd_emu10k1_ptr_write(emu, 0x5f, 0, 0x3); /* ?? */
-+               /* set SPDIF bypass mode */
-+               snd_emu10k1_ptr_write(emu, SPBYPASS, 0, SPBYPASS_FORMAT);
-+               /* enable rear left + rear right AC97 slots */
-+               snd_emu10k1_ptr_write(emu, AC97SLOT, 0, AC97SLOT_REAR_RIGHT | AC97SLOT_REAR_LEFT);
-        }
- 
-        /* init envelope engine */
-@@ -329,7 +331,7 @@
-        if (emu->audigy)
-                snd_emu10k1_ptr_write(emu, A_DBG, 0, A_DBG_SINGLE_STEP);
-        else
--               snd_emu10k1_ptr_write(emu, DBG, 0, 0x8000);
-+               snd_emu10k1_ptr_write(emu, DBG, 0, EMU10K1_DBG_SINGLE_STEP);
- 
-        /* disable channel interrupt */
-        snd_emu10k1_ptr_write(emu, CLIEL, 0, 0);
-@@ -682,12 +684,13 @@
-                /* Audigy 2 EX has apparently no effective AC97 controls
-                 * (for both input and output), so we skip the AC97 detections
-                 */
--               snd_printdd(KERN_INFO "Audigy2 EX is detected. skpping ac97.\n");
-+               snd_printdd(KERN_INFO "Audigy2 EX is detected. skipping ac97.\n");
-                emu->no_ac97 = 1;
-        }
- 
--       if (emu->revision == 4) {
--               /*  FIXME - Audigy 2 ZS detection */
-+       if (emu->revision == 4 && emu->model == 0x2002) {
-+               /* Audigy 2 ZS */
-+               snd_printdd(KERN_INFO "Audigy2 ZS is detected. setting 7.1 mode.\n");
-                emu->spk71 = 1;
-        }
- 
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed: Broken 
+pipe
+could not start playback (Broken pipe)
+jackd watchdog: timeout - killing jackd
+
+the system log says:
+
+Jul 14 18:40:53 t10 vmunix: 
+ALSA /home/ws/projects/alsa/alsa-driver/kbuild/../usb/usx2y/usbusx2yaudio.c:246: 
+-28
+Jul 14 18:40:53 t10 vmunix: 
+ALSA /home/ws/projects/alsa/alsa-driver/kbuild/../usb/usx2y/usbusx2yaudio.c:347: 
+Sequence Error!(ep=10;nuc=1,frame=860)
+Jul 14 18:40:53 t10 vmunix: 
+ALSA /home/ws/projects/alsa/alsa-driver/kbuild/../usb/usx2y/usbusx2yaudio.c:347: 
+Sequence Error!(ep=8;nuc=1,frame=860)
+
+/werner
 
 
 
