@@ -1,14 +1,17 @@
-From: Ryan Underwood <nemesis-lists@icequake.net>
-Subject: Re: cs4248 / thinkpad 755 / 755c , patch suggestions
-Date: Thu, 3 Jul 2003 11:38:32 -0500
+From: "Thomas Charbonnel" <thomas@undata.org>
+Subject: Re: future ALSA development
+Date: Thu, 3 Jul 2003 18:05:08 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030703163832.GC24005@dbz.icequake.net>
-References: <20030702202955.GW24005@dbz.icequake.net> <s5hwuezequq.wl@alsa2.suse.de>
+Message-ID: <32900.81.50.18.84.1057248308.squirrel@www.undata.org>
+References: <Pine.LNX.4.44.0306222010030.1838-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hwuezequq.wl@alsa2.suse.de>
+Received: from undata.org (12-186-106-62.kaptech.net [62.106.186.12])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA24591
+	for <alsa-devel@alsa-project.org>; Thu, 3 Jul 2003 17:58:09 +0200
+In-Reply-To: <Pine.LNX.4.44.0306222010030.1838-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,58 +20,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+> Hello all,
+>
+> 	here are my next goals for the ALSA library development (short
+> term). I invite all developers to comment these directions.
+>
 
-Hi Takashi,
+[...]
 
-On Thu, Jul 03, 2003 at 02:29:01PM +0200, Takashi Iwai wrote:
-> At Wed, 2 Jul 2003 15:29:55 -0500,
-> Ryan Underwood wrote:
-> > 
-> > 1) What is ALSA's policy on module options?  For example, would it be
-> > okay to add an option like "thinkpad" to the ad1848 module, so that
-> > inserting it with "thinkpad=1" would cause the necessary ports to be
-> > prodded?
-> 
-> this looks like a feasible solution.
+> * initiate a development of a graphical tool which will manage
+>   the alsa configuration files (~/.asoundrc)
+>   - we need a rapid development tool; I slowly became a fan of python
+> and
+>     Qt has rich number of widgets; python + PyQt seems to me a good idea
+>   - using python requires to write a GPLed ALSA 0.9 -> python wrapper
+>
 
-Ok, I will post a patch soon.
+One point I would like to bring to focus is how sound hardware state
+persistance is dealt with. The limits of alsactl are showing up with
+hardware like the hdsp, were the card might not be fully initialized (or
+not even present yet, e.g. cardbus) at boot time. We're more and more
+likely to have to deal with such external hotpluggable devices (pcmcia,
+firewire, usb), where full initialization can happen any time after the
+boot process, and we can't expect the average user to be scripting around.
 
-> > 2) Since the chip's power mode can be controlled through a write to that
-> > port (bit 2 on, cs4248 power on; bit 2 off, cs4248 power off), would it
-> > be a good idea to add the _suspend, _resume, and _set_power_state
-> > functions within a #ifdef CONFIG_PM block, like in other drivers?
-> 
-> yep.  we haven't done that just becase of lack of hardware.
-> if you can write and test it, it would be greatly appreciated.
+IMHO state restoration could be :
+* triggered by the driver, at the appropriate time, depending maybe on
+some system configuration options.
+* initiated by the user, through the configuration GUI.
 
-Fine, it will be modelled after the other code for ISA chips like
-OPL3-SA2.  The code will only be called if a thinkpad is being used, because
-only the thinkpad has the hardware to disable and enable the chip.
+We could have a default configuration restored by the driver at
+initialization time, and a set of named configurations the user could
+save/restore/set as default using the GUI.
 
-I don't even know for sure if it is a power management feature since there
-is no documentation for it, but I'm having trouble coming up with
-another explanation for what i've found out about cs4248 in the thinkpad.
+There are probably other ways to handle this, I'm waiting for your comments.
+
+Thomas
 
 
-For power management code, I had another idea which is probably stupid.
-What about a generic ALSA "aggressive power management" setting for
-laptops.  The difference would be that instead of paying attention to
-the system's power management state, the sound chips would be turned off
-(suspend) when the open count reaches zero as well as immediately after
-initialization, and only resumed when a device open is attempted.  It
-would introduce some delay on device opens, but it would ensure that the
-sound chips are only enabled when they are actually being in use.
 
-Of course, there are probably complications I didn't think of, but it is
-a feature I would like to have to maximize battery life.
-
-Thanks!
-
--- 
-Ryan Underwood, <nemesis at icequake.net>, icq=10317253
 
 
 -------------------------------------------------------
