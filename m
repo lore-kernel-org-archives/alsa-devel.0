@@ -1,9 +1,13 @@
-From: Dan Hollis <goemon@anime.net>
+From: Bob Ham <node@users.sourceforge.net>
 Subject: Re: audio via ethernet (was: dolby digital output)
-Date: Mon, 18 Feb 2002 15:11:11 -0800 (PST)
-Message-ID: <Pine.LNX.4.44.0202181508150.28925-100000@sasami.anime.net>
+Date: 18 Feb 2002 23:12:17 +0000
+Message-ID: <1014073938.17973.68.camel@insanity>
+References: <NGBBLNODKDFPBFMBBFAFOECBCBAA.James@superbug.demon.co.uk>
+	<3C71333C.1C775561@hardco.de> <1014070231.17973.8.camel@insanity>
+	<3C7187A7.E45BD28A@hardco.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 In-Reply-To: <3C7187A7.E45BD28A@hardco.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -14,23 +18,28 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: stef <stef@hardco.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19 Feb 2002, stef wrote:
+On Mon, 2002-02-18 at 23:00, stef wrote:
+
 > Anyway, which software/protocol/service do you use for
 > your clock synchronisation? _very_ interesting!
 
-Probably ntp. Works well, multicast mode should be excellent for this.
+The mother of all time protocols, NTP
 
-BTW if you use fixed size packets on fullduplex ethernet (as gibson's 
-magic does), then sync should not be much of a problem. IIRC they also 
-include synchronization data in the packets so that synchronization is 
-easy.
+http://www.eecis.udel.edu/~mills/ntp.htm
 
--Dan
 -- 
-[-] Omae no subete no kichi wa ore no mono da. [-]
+Bob Ham: bob@ham.org
+
+My music: http://mp3.com/obelisk_uk
+GNU Hurd: http://hurd.gnu.org/
+Do your bit for UK drugs law reform: http://www.angeldeclaration.com/
+
+A pessimist expects the weather to get worse.
+An optimist hopes it will improve.
+A realist adjusts the sails.
 
 
 _______________________________________________
