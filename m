@@ -1,8 +1,8 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: Re: btw
-Date: Fri, 18 Oct 2002 01:31:04 +0900
+Date: Fri, 18 Oct 2002 01:32:33 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DAEE5C8.5050306@boosthardware.com>
+Message-ID: <3DAEE621.9080508@boosthardware.com>
 References: <20021014191214.GB6704@undertone.org> <20021014192959.GA6792@undertone.org> <20021014193407.GA6821@undertone.org> <s5h8z106km8.wl@alsa2.suse.de> <20021015175750.GA8918@undertone.org> <s5hof9u666f.wl@alsa2.suse.de> <20021016194055.GA11982@undertone.org> <s5h8z0x5v3r.wl@alsa2.suse.de> <20021017134235.GA14241@undertone.org> <20021017144440.GA14352@undertone.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
@@ -17,22 +17,18 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: mark@undertone.org
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 mark@undertone.org wrote:
+> 
+> (I have a feeling that the pcm in/out works just fine and I'm not
+> using the alsa software properly . . )
+> 
 
->>Given the output above, I'm probably doing something rather silly
->>again with regards to some kind of random compatibility issue. I am
->>still running the mixer with the debug hack you put in.
->>
+There is a quick toot for aplay/arecord
 
-I was having some problems with my usb card which seemed related to the 
-uhci controller and they went away when I upgraded the kernel. Are you 
-using a kernel newer then 2.4.19?
-
-
-
+http://www.djcj.org/LAU/quicktoots/
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
