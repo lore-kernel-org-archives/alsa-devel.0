@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001034]: (potential) problems introduced with the " improved stream linking and plugin code cleanups" patch by perex
-Date: Sun, 3 Apr 2005 17:42:39 +0200
-Message-ID: <70810c7c02f6438ebd5c2b607a827422@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: echoaudio - soundcards matrix update
+Date: Sun, 3 Apr 2005 16:17:40 +0200
+Message-ID: <20050403161740.4efecba4.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="Multipart=_Sun__3_Apr_2005_16_17_40_+0200_.xODd0as+BXOQGqc"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7181E1DD
-	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 17:42:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,96 +15,309 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1034> 
-======================================================================
-Reported By:                modax
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1034
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             04-03-2005 17:42 CEST
-Last Modified:              04-03-2005 17:42 CEST
-======================================================================
-Summary:                    (potential) problems introduced with the " improved
-stream linking and plugin code cleanups" patch by perex
-Description: 
-I'm not an alsa developer so I hadn't known anything about alsa internals
-up until I started debugging alsa-lib to fix an annoying bug I was having
-with alsa 1.0.9rc1 and above. I'm not sure whether my patch/suggestions
-are 100% correct or the best way fix to those bugs.
-
-The initial problem I'm refering to is described in bug#1009 note
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0004275. I narrowed my
-search of the regression down to the big patch,
-which was submitted to alsa-lib CVS on 2005-01-20 by perex. The patch
-cleans up plugin code. Unfortunately, some things have been overlooked by
-the author. Firstly, I'll start with my problem and a fix for it.
-
-As I described in note
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0004275, I had problems
-with -Dsurround51 on my
-NFORCE board. The root of the problem was a combination of two plugins -
-route and hooks - used in surround51 configuration. Later I learned, that
-removing one of them helped, but they both wouldn't work. The portion of
-code which is to blame for the regression can be seen in
-hooks-channel-info-fix.patch (attached). Just compare the original
-pcm_hooks.c:snd_pcm_hooks_channel_info() (before "2005-01-20" patch) and
-pcm_generic.c:snd_pcm_generic_channel_info(), which was supposed to
-replace it. They are completely different functions. Other plugins which
-are likely to suffer from the same bug are:
-  * pcm_file.c
-  * pcm_plug.c
-
-However, most other plugins used
-pcm_plugin.c:snd_pcm_plugin_channel_info() before the "2005-01-20" patch.
-It shares the same code with snd_pcm_generic_channel_info(). So this issue
-raises a few question:
-  * Is snd_pcm_generic_channel() as it is now valid? At least pcm_hooks
-and likely pcm_file and pcm_plug don't work with it.
-  * If it's valid, there is a necessity to create another generic
-function, which clones the code previously provided by
-snd_pcm_{hooks,file,plug}_channel_info() functions.
-
-The attached patch solves the problem for me, but it is not an universal
-solution. The patch should be applied against CVS as of 2005-01-21 or
-later.
-
-And now here it comes some other remarks regarding the "2005-01-20"
-patch.
-  * I guess, snd_pcm_plugin_fast_ops.status = snd_pcm_generic_status in
-pcm_plugin.c is incorrect because it makes snd_pcm_plugin_status()
-reduntant and these functions don't share the same code.
-  * Plugins which haven't been "cleaned up" by the "2005-01-20" patch
-include:
-    - pcm_meter.c
-    - pcm_null.c
-    - pcm_share.c
-    - pcm_shm.c
-    The latter two seem to be kinda different beasts whereas the first two
-shouldn't be too difficult to "_generic_"'ize.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-03-05 17:42 modax          New Issue                                    
-04-03-05 17:42 modax          File Added: hooks-channel-info-fix.diff           
-        
-======================================================================
+--Multipart=_Sun__3_Apr_2005_16_17_40_+0200_.xODd0as+BXOQGqc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
 
+Attached is an update for the echoaudio driver. It's the same as the current
+one with all <not_in_cvs> tags removed.
+
+BTW, <not_in_cvs> allows me to put a link to the page that hosted the driver
+before inclusion, which has a lot of info that users may find useful. Is
+there another way to publish such a link ?
+
+
+--
+Giuliano.
+
+--Multipart=_Sun__3_Apr_2005_16_17_40_+0200_.xODd0as+BXOQGqc
+Content-Type: text/xml;
+ name="vendor-Echoaudio.xml"
+Content-Disposition: attachment;
+ filename="vendor-Echoaudio.xml"
+Content-Transfer-Encoding: 7bit
+
+<?xml version="1.0" encoding="US-ASCII"?>
+<alsacards>
+  <vendor>
+    <name>Echo Digital Audio Corporation</name>
+    <link>http://www.echoaudio.com</link>
+  </vendor>
+
+  <device>
+    <module>darla20</module>
+    <product>
+      <name>Darla</name>
+    </product>
+    <chip>
+      <name>Motorola 56301</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="8"/>
+    <has_analog_in count="2"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device>
+    <module>gina20</module>
+    <product>
+      <name>Gina</name>
+    </product>
+    <chip>
+      <name>Motorola 56301</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="8"/>
+    <has_analog_in count="2"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device>
+    <module>layla20</module>
+    <product>
+      <name>Layla</name>
+    </product>
+    <chip>
+      <name>Motorola 56301, FPGA</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="10"/>
+    <has_analog_in count="8"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_midi_out count="1"/>
+    <has_midi_in count="1"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>darla24</module>
+    <product>
+      <name>Darla24</name>
+    </product>
+    <chip>
+      <name>Motorola 56301</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="8"/>
+    <has_analog_in count="2"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>gina24</module>
+    <product>
+      <name>Gina24</name>
+      <link>http://www.echoaudio.com/Products/Discontinued/Gina24/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56301 or 56361, FPGA</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="8"/>
+    <has_analog_in count="2"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_toslink_out count="1"/>
+    <has_toslink_in count="1"/>
+    <has_adat_out count="1"/>
+    <has_adat_in count="1"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>layla24</module>
+    <product>
+      <name>Layla24</name>
+      <link>http://www.echoaudio.com/Products/Discontinued/Layla24/index.php</link>
+    </product>
+    <product>
+      <name>Layla24-CARDBUS</name>
+      <link>http://www.echoaudio.com/Products/CardBus/Laptop/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361, FPGA</name>
+    </chip>
+    <pci_bus/>
+    <pcmcia/>
+    <has_analog_out count="8"/>
+    <has_analog_in count="8"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_toslink_out count="1"/>
+    <has_toslink_in count="1"/>
+    <has_adat_out count="1"/>
+    <has_adat_in count="1"/>
+    <has_midi_out count="1"/>
+    <has_midi_in count="1"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>mona</module>
+    <product>
+      <name>Mona</name>
+      <link>http://www.echoaudio.com/Products/Discontinued/Mona/index.php</link>
+    </product>
+    <product>
+      <name>Mona-CARDBUS</name>
+      <link>http://www.echoaudio.com/Products/CardBus/Laptop/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56301 or 56361, FPGA</name>
+    </chip>
+    <pci_bus/>
+    <pcmcia/>
+    <has_analog_out count="6"/>
+    <has_analog_in count="4"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_toslink_out count="1"/>
+    <has_toslink_in count="1"/>
+    <has_adat_out count="1"/>
+    <has_adat_in count="1"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>mia</module>
+    <product>
+      <name>Mia</name>
+      <link>http://www.echoaudio.com/Products/Discontinued/Mia/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="2"/>
+    <has_analog_in count="2"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_mixing/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>mia</module>
+    <product>
+      <name>Mia-midi</name>
+      <link>http://www.echoaudio.com/Products/PCI/MiaMIDI/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="2"/>
+    <has_analog_in count="2"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_midi_out count="1"/>
+    <has_midi_in count="1"/>
+    <has_mixing/>
+  </device>
+
+  <device category="pro">
+    <module>indigo</module>
+    <product>
+      <name>Indigo</name>
+      <link>http://www.echoaudio.com/Products/Discontinued/Indigo/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361</name>
+    </chip>
+    <pcmcia/>
+    <has_analog_out count="2"/>
+    <has_mixing/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>indigoio</module>
+    <product>
+      <name>Indigo IO</name>
+      <link>http://www.echoaudio.com/Products/CardBus/IndigoIO/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361</name>
+      <link></link>
+    </chip>
+    <pcmcia/>
+    <has_analog_out count="2"/>
+    <has_analog_in count="2"/>
+    <has_mixing/>
+  </device>
+
+  <device category="pro">
+    <module>indigodj</module>
+    <product>
+      <name>Indigo DJ</name>
+      <link>http://www.echoaudio.com/Products/CardBus/IndigoDJ/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361</name>
+    </chip>
+    <pcmcia/>
+    <has_analog_out count="4"/>
+    <has_mixing/>
+  </device>
+
+  <device category="pro">
+    <module>gina3g</module>
+    <product>
+      <name>Gina 3G</name>
+      <link>http://www.echoaudio.com/Products/PCI/Gina3G/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361, FPGA</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="6"/>
+    <has_analog_in count="2"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_toslink_out count="1"/>
+    <has_toslink_in count="1"/>
+    <has_adat_out count="1"/>
+    <has_adat_in count="1"/>
+    <has_midi_out count="1"/>
+    <has_midi_in count="1"/>
+  </device>
+
+  <device category="pro">
+    <module>layla3g</module>
+    <product>
+      <name>Layla 3G</name>
+      <link>http://www.echoaudio.com/Products/PCI/Layla3G/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361, FPGA</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="8"/>
+    <has_analog_in count="8"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_toslink_out count="1"/>
+    <has_toslink_in count="1"/>
+    <has_adat_out count="1"/>
+    <has_adat_in count="1"/>
+    <has_midi_out count="1"/>
+    <has_midi_in count="1"/>
+  </device>
+
+</alsacards>
+
+
+
+--Multipart=_Sun__3_Apr_2005_16_17_40_+0200_.xODd0as+BXOQGqc--
 
 
 -------------------------------------------------------
