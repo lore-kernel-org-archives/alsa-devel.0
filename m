@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
-Date: Wed, 13 Oct 2004 23:46:50 +0200 (CEST)
+Subject: [ALSA - driver 0000370]: CMedia 8768 Support
+Date: Thu, 14 Oct 2004 01:24:16 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041013214650.B22DD1B00B@server.perex-int.cz>
+Message-ID: <20041013232416.4C7211B00B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 52F9D301
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 23:46:51 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A2AD32FF
+	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 01:24:16 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,303 +22,297 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000523
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000370
 ======================================================================
-Reported By:                pharm
-Assigned To:                
+Reported By:                drbobguy
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     523
-Category:                   PCI - via82xx
+Bug ID:                     370
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             09-22-2004 22:48 CEST
-Last Modified:              10-13-2004 23:46 CEST
+Date Submitted:             07-07-2004 04:59 CEST
+Last Modified:              10-14-2004 01:24 CEST
 ======================================================================
-Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
+Summary:                    CMedia 8768 Support
 Description: 
-I have a Biostar IDEQ 210V minipc. As well as 6 channel analog out (which
-appears to work, at least stereo analog out does for certain) there are
-two digital (optical) SPDIF outputs. Unfortunately I can't get anything to
-recognise these -- mplayer complains about the lack of IEC958 mixer
-entries if I try to use the hwac3 output, and if I point the 
-alsa output at any of the list of hardware outputs I get nothing from the
-digital amp -- it doesn't appear to get any signal.
+I've recently built a new computer with an on-board CMedia 8768 chip.  This
+chip is not listed as one of the supported CMedia chips (8738, etc.),
+although I suspect that is because it is so new.  Just wanted to let you
+guys know it apparently doesn't work with the standard cmipci driver (at
+least I think I'm doing everthing correctly -- I have a decent amount of
+Linux experience but I'm no guru).  Here is what I see though:
 
-Assuming I'm not doing something dumb, is there anything else I should
-try? I've tried all the ac97_quirk options.
+The card is recognized in /proc/asound as a CMedia 8738M6.  However, if I
+use a mixer like amixer or gnome-alsamixer none of the mixer settings I
+change will take effect (and I am running these as root).
+
+Any advice or comments would be appreciated.  I'd be happy to help if you
+think there is a possible fix.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-23-2004 18:25 CEST 
+ drbobguy - 07-07-2004 05:03 CEST 
 ----------------------------------------------------------------------
-Could you try the attached patch?
-(Note that it's totally untested.)
-
-----------------------------------------------------------------------
- pharm - 09-23-2004 22:09 CEST 
-----------------------------------------------------------------------
-What am I looking for? It seems to detect OK:
-/proc/asound/card0/codec97#0/ac97#0-0 contains the new ID string.
-
-but there's no sound output :( (unless I've fouled up the mixer -- will
-check again)
-
-Is there stuff I can twiddle to see what works? I'll have a spelunk
-through the patch, but I'm not familiar with the alsa internals
-unfortunately...
+By the way I'm on an AMD 64 machine if that makes a difference.
 
 ----------------------------------------------------------------------
- tiwai - 09-24-2004 12:03 CEST 
+ robg - 07-27-2004 05:26 CEST 
 ----------------------------------------------------------------------
-What about th spdif output with the patch?
-(make sure to use 1.0.7rc, not 1.0.6a)
+Is there any progress on a driver for this chip?
+It is used on the Soltek EQ3801 amd64 computer and a lot of people in
+forums on other websites are interested in sound support.
 
-----------------------------------------------------------------------
- pharm - 09-24-2004 12:28 CEST 
-----------------------------------------------------------------------
-Ah. Think I may have applied it to 1.0.6a. Will retest!
-
-----------------------------------------------------------------------
- pharm - 09-24-2004 13:34 CEST 
-----------------------------------------------------------------------
-Ah ha. With patch applied to 1.0.7rc1 the rear SPDIF now lights up.
-Still no sound out of analogue or digital outputs as far as I can hear
-though.
-
-cheers, Phil
+I have the same problems as listed by drbobguy. I tested it under 64bit
+kernel 2.6.7 I believe he did as well. I can setup a 32bit kernel and
+retest if you fell its useful.
 
 ----------------------------------------------------------------------
- tiwai - 09-24-2004 14:33 CEST 
+ tiwai - 07-30-2004 16:56 CEST 
 ----------------------------------------------------------------------
-Can you try ac3dec in alsa-utils package for testing SPDIF output?
-Run with -C option so that it works in the ac3 passthru mode.
+Any datasheet available?
 
-----------------------------------------------------------------------
- tiwai - 09-24-2004 15:29 CEST 
-----------------------------------------------------------------------
-Could you try the second patch?  Revert the last patch before applying the
-new one.
-Reboot your machine after installing the new driver to be sure.
-
-Also, if this still doesn't work, try to remove lines in
-alsa-kernel/pci/ac97/ac97_patch.c:1910,
-
-	/* FIXME: set up GPIO */
-	snd_ac97_write_cache(ac97, 0x70, 0x0100);
-	snd_ac97_write_cache(ac97, 0x72, 0x0020);
+I don't know of...
 
 ----------------------------------------------------------------------
- pharm - 09-24-2004 15:57 CEST 
+ drbobguy - 07-31-2004 02:46 CEST 
 ----------------------------------------------------------------------
-$ ./tools/extract_ac3 dolby-aurora.vob | ./ac3dec -C
-Using PCM device 'plug:iec958:{AES0 0x2 AES1 0x82 AES2 0x0 AES3 0x2}'
-ALSA lib setup.c:548:(add_elem) Cannot obtain info for CTL elem
-(MIXER,'IEC958 Playback AC97-SPSA',0,0,0): No such file or directory
-snd_pcm_open: No such file or directory
-Output open failed
+I found this file off the CMedia website (I've attached it here):
 
-$ ./tools/extract_ac3 dolby-aurora.vob | ./ac3dec -C -D hw:0,0
-Using PCM device 'hw:0,0'
-AC3 Stream 48.0 KHz 448 kbps
-
-but no sound from the latter with either hw:0,0 or hw:0,1
+http://www.cmedia.com.tw/doc/CMI8768%20Datasheet%20Rev%200.9.pdf
 
 ----------------------------------------------------------------------
- tiwai - 09-24-2004 16:05 CEST 
+ robg - 07-31-2004 06:10 CEST 
 ----------------------------------------------------------------------
-Let's try take3 patch.
+The file from cmedia website does not contain any info for programming the
+chip unfortunately.  I have sent an email to cmedia requesting full
+information.  Will advise when I get a response.
 
-----------------------------------------------------------------------
- pharm - 09-24-2004 16:31 CEST 
-----------------------------------------------------------------------
-with or without the GPIO lines? (Currently compiling with)
+Since the chip gives an ID of CMI8738-MC6 it may be very close to the
+existing driver.
 
-----------------------------------------------------------------------
- pharm - 09-24-2004 16:43 CEST 
-----------------------------------------------------------------------
-OK. No joy :( -- precisely the same results as before. There's no IEC958
-mixer entry, so -C fails, while using -C -D hw:0,1 or hw:0,0 gets no
-audible output.
-
-Incidentally, with your patches, should I be expecting analogue audio to
-work? I can switch back to the 1.0.6a modules & analogue audio works, but
-I get no analogue audio out with any of the patches so far.
-
-cheers, Phil
+In the interim, is there any more information we can provide from /proc
+that is useful?
 
 ----------------------------------------------------------------------
- tiwai - 09-24-2004 17:08 CEST 
+ robg - 10-08-2004 05:17 CEST 
 ----------------------------------------------------------------------
-Looks like this codec doesn't set extended ID register properly
-for SPDIF.  Ok, I added a workaround.  Try take4 patch.
+Finally get some feedback from Cmedia.  Following is copy of email
+exchanges. I will attach documentation also received.
 
-Did you get analog outs on 1.0.7rc1 without patches?
-If so, keep using 1.0.7.  
+---------------------------------------------------------------
+Date: Thu, 07 Oct 2004 15:41:28 +0800
+From: "Liang, Jason - ???" <jason.liang@cmedia.com.tw>
+Subject: RE: [Fwd: technical information for 8768]
+To: Rob Gordon <snip>
+Cc: "Tien,  C.L. - ???" <cltien@cmedia.com.tw>,
+ "Yao, Alan - ???" <alanyao@cmedia.com.tw>,
+ "Chang, Kinkon - ???" <kinkon.chang@cmedia.com.tw>
 
-The GPIO section might affect the analog outputs, too.
-I have no clue what they do.
+Dear Rob,
+ 
+I'm sorry I missed your previous mail. I enclosed 8768 datasheet, register
+spec and programming guide to you. 8768 is basically modified from 8738
+and hence the 8738 programming guide is applicable. Hope them helpful.
+Shall you have any specific question or further need, you can tell us
+then.
+ 
+BTW, our Linux driver developer is Chen-Li Tien (in CC list) and he is
+also working on this. You can have a talk if you would like.  
+ 
+Regards,
+Jason
+-----Original Message-----
+From: Rob Gordon [snip]
+Sent: Thursday, October 07, 2004 10:00 AM
+To: Liang, Jason 
+Subject: [Fwd: technical information for 8768]
 
-Anyway, please attach /proc/asound/card0/codec97#0/* files
-and /etc/asound.state after "alsactl store" for both
-with and without the patch (i.e. analog working and not working).
 
-----------------------------------------------------------------------
- pharm - 09-24-2004 17:33 CEST 
-----------------------------------------------------------------------
-Success! take4 gives me digital out with ac3dec -C
+Dear Mr. Liang,
 
-Analogue out is still broken -- I've attached the register details as
-requested.
+I am still looking for information on programming the 8768 soundchip.
+Can you provide a contact so I can can pursue this information.
 
-cheers, Phil
+Thank you for your time,
+Rob
 
-----------------------------------------------------------------------
- tiwai - 09-24-2004 17:39 CEST 
-----------------------------------------------------------------------
-If you compiled the drver with debug option (CONFIG_SND_DEBUG=y), you
-can change the AC97 register value directly by writing to the proc
-file.
 
-Try the following (as root):
+-------- Original Message --------
+Subject: technical information for 8768
+Date: Fri, 03 Sep 2004 01:19:11 -0600
+From: Rob Gordon <snip>
+To: jason.liang@cmedia.com.tw
 
-    echo 64 3038 > /proc/asound/card0/codec97#0/ac97#0-0+regs
+Dear Mr Liang,
 
-If this solves the analog-out problem, we need to figure out which
-bit affects it...
+I am working with the ALSA linux sound media team to implement a driver
+for the new 8768 soundchip.  This is currently used in the Soltek EQ3801
+computer and there is a lot of interest in the Linux community to obtain
+a working driver.
 
-----------------------------------------------------------------------
- pharm - 09-24-2004 17:41 CEST 
-----------------------------------------------------------------------
-Analogue out isn't being echoed to the SPDIF either -- only AC3 output is
-working at this point. cheers, Phil
+Since the technical details and an open source driver were available for
+the 8738, I was hoping that the same level of information would be
+published for the 8768 as well.
 
-----------------------------------------------------------------------
- tiwai - 09-24-2004 17:45 CEST 
-----------------------------------------------------------------------
-Did you try like the following?
+I am willing to work on the driver development if sufficient technical
+documentation is provided, assuming a driver has not been prepared
+already.
 
-   % aplay -Dplug:spdif foo.wav
+I have tried contacting the support group at Cmedia
+(support@cmedia.com.tw ) several times but have not received any reply.
 
-----------------------------------------------------------------------
- pharm - 09-24-2004 17:58 CEST 
-----------------------------------------------------------------------
-Ah, no: I thought the sound would be mirrored automatically.
+Can you assist in obtaining the information required or provide the name
+of a contact person who could help?
 
-Success all round then! With aplay -Dplug:spdif sound.wav I get sound out
-from
-the SPDIF and having done the echo to the ac97 registers I get analogue
-audio out from aplay sound.wav
+Thank-you for your time.
 
-Any specific bits I should be twiddling in the ac97 registers?
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 18:06 CEST 
-----------------------------------------------------------------------
-Could you try each bit on/off and check which bit affects the
-behavior?
-I guess it's either bit 9 (0200) or bit 5 (0020).
-
-Also, try 'Line-In As Surround' and 'Mic-As-Center' on/off
-with 4.0/5.1 analog outputs.  You can use ac3dec like
-
-    % ac3dec -4 foo.ac3
-    % ac3dec -6 foo.ac3
-
-for 4.0 and 5.1 analog outputs, respectively.
+Regards,
+Rob Gordon
 
 ----------------------------------------------------------------------
- pharm - 09-27-2004 09:56 CEST 
+ tiwai - 10-08-2004 12:49 CEST 
 ----------------------------------------------------------------------
-I'll give it a go when I get some time this week. Last I checked, 4 channel
-sound worked, but 6 (ie Mic-as-center) didn't seem to. Will check again to
-confirm.
+A good news!  It will help for debugging.  Thanks.
 
 ----------------------------------------------------------------------
- tiwai - 09-27-2004 15:16 CEST 
+ tiwai - 10-08-2004 15:26 CEST 
 ----------------------------------------------------------------------
-To make sure, I uploaded my lastest patch (take5).
+According to the datasheet, CM8768 seems almost backward compatible
+with CM8738 (6ch).
+
+What did you mean in the original post, "none of the mixer settings I
+change will take effect"?  Isn't the mixer value changed at all, or
+you get only the silent output, although the playback looks as if
+working?
 
 ----------------------------------------------------------------------
- tiwai - 10-12-2004 14:59 CEST 
+ tiwai - 10-08-2004 15:36 CEST 
 ----------------------------------------------------------------------
-Did you try the latest one?  Nevertheless, alsa-driver-1.0.7rc2 already
-includes the patch.  You can try it instead.
-
-----------------------------------------------------------------------
- pharm - 10-12-2004 15:10 CEST 
-----------------------------------------------------------------------
-Apologies -- busy during last week. It's all compiled up, but I haven't had
-time to actually test it :( Should have a spare few minutes tomorrow
-hopefully.
-
-cheers, Phil
+Also, attach /etc/asound.state and /proc/asound/card0/cmipci for
+debugging.
 
 ----------------------------------------------------------------------
- pharm - 10-13-2004 23:46 CEST 
+ patrick - 10-09-2004 09:30 CEST 
 ----------------------------------------------------------------------
-OK. I must have been confused before. After going through all the options,
-it appears that analogue audio still doesn't work with any of the 1.0.7
-patches so far. 1.0.6a works, but not for 6 channel surround -- 4 channels
-appears to work ok, but when decoding 5.1, nothing is heard on the extra 2
-audio channels (this is with one of the Dolby DTS sample files). Apologies
-for the misleading info. I must have switched back to the original modules
-at some point :(
+When I run a command like "amixer set Master 10" I get what looks like
+proper output. The adjustments don't seem to stick though. Volume for
+Master/PCM etc are always listed at 100% in alsamixer and even after
+issuing the unmute command for PCM it is always listed as muted.
 
-So the only remaining option is presumably a binary chop of the
-differences between the ac93 register values for 1.0.6a and 1.0.7rc2. Not
-something I have time for tonight -- maybe at the weekend.
+But if I try to use the ncurses program alsamixer none of the settings are
+adjustable. Likewise if I try to use beep-media-player it says it "can't
+open audio."
 
-Incidentally, an additional extra -- this box actually has 2 SPDIF in/out
-ports (front and back). The current working one is the rear SPDIF. Just
-FYI.
+So yeah, I can't get any sound out of it and most audio programs either
+give an error about not being able to access the device or just sit there
+and do nothing (like aplay).
 
-thanks again for the coding efforts, Phil
+If you need any more information let me know, I'll try to help as best I
+can. Thank you!
+
+ps: Linux Kawaii64 2.6.9-rc3-nitro2 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000002 Sat Oct 9 03:24:19 EDT 2004 x86_64
+AMD Athlon(tm) 64 Processor 3000+ AuthenticAMD GNU/Linux
+
+edited on: 10-09-04 09:30
+
+----------------------------------------------------------------------
+ robg - 10-10-2004 04:48 CEST 
+----------------------------------------------------------------------
+I get the same problems as patrick for amixer and alsamixer operation.  To
+verify proper alsa setup, I disabled the 8768 in bios and installed a SB
+es1371 and all controls and audio output works.
+I use AMD 64-bit kernel 2.6.8-rc2.
+I will attach /etc/asound.state and /proc/asound/card0/cmipci as
+suggested.
+
+----------------------------------------------------------------------
+ robg - 10-10-2004 04:57 CEST 
+----------------------------------------------------------------------
+I checked and my /etc/asound.state and /proc/asound/card0/cmipci were
+identical to those uploaded by patrick so I didn't upload them.
+
+Using aplay I get the following error:
+
+#aplay /usr/lib/mozilla/res/samples/test.wav
+ Playing WAVE '/usr/lib/mozilla/res/samples/test.wav' : Unsigned 8 bit,
+Rate
+ 22050 Hz, Mono
+ aplay: pcm_write:1115: write error: Input/output error
+
+----------------------------------------------------------------------
+ tiwai - 10-13-2004 16:37 CEST 
+----------------------------------------------------------------------
+The register dump is all ff, that is, the driver is reading wrong I/O
+ports.
+Can you show the output of "lspci -xvv" ?
+
+----------------------------------------------------------------------
+ tiwai - 10-13-2004 16:37 CEST 
+----------------------------------------------------------------------
+Also, please use 1.0.7-rc2 for avoid unnecessary differences.
+
+----------------------------------------------------------------------
+ patrick - 10-14-2004 01:24 CEST 
+----------------------------------------------------------------------
+0000:02:08.0 Multimedia audio controller: C-Media Electronics Inc CM8738
+(rev 10)
+        Subsystem: C-Media Electronics Inc CMI8738/C3DX PCI Audio Device
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32 (500ns min, 6000ns max)
+        Interrupt: pin A routed to IRQ 12
+        Region 0: I/O ports at d300
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+00: f6 13 11 01 05 00 10 02 10 00 01 04 00 20 00 00
+10: 01 d3 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+20: 00 00 00 00 00 00 00 00 00 00 00 00 f6 13 11 01
+30: 00 00 00 00 c0 00 00 00 00 00 00 00 0c 01 02 18
+
+
+If you want the entire output let me know, this was the only listing
+referring to the cmedia card.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-04 22:48 pharm          New Bug                                      
-09-22-04 22:48 pharm          Distribution              => Debian unstable 
-09-22-04 22:48 pharm          Kernel Version            => 2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
-09-23-04 18:25 tiwai          Bugnote Added: 0001829                       
-09-23-04 18:26 tiwai          File Added: cm9761-add.dif                    
-09-23-04 22:09 pharm          Bugnote Added: 0001851                       
-09-24-04 09:28 pharm          Bug Monitored: pharm                         
-09-24-04 12:03 tiwai          Bugnote Added: 0001869                       
-09-24-04 12:28 pharm          Bugnote Added: 0001877                       
-09-24-04 13:34 pharm          Bugnote Added: 0001882                       
-09-24-04 14:33 tiwai          Bugnote Added: 0001886                       
-09-24-04 15:29 tiwai          Bugnote Added: 0001890                       
-09-24-04 15:29 tiwai          File Added: cm9761-add-take2.dif                    
-09-24-04 15:57 pharm          Bugnote Added: 0001892                       
-09-24-04 16:05 tiwai          Bugnote Added: 0001893                       
-09-24-04 16:05 tiwai          File Added: cm9761-add-take3.dif                    
-09-24-04 16:31 pharm          Bugnote Added: 0001894                       
-09-24-04 16:43 pharm          Bugnote Added: 0001895                       
-09-24-04 17:08 tiwai          Bugnote Added: 0001896                       
-09-24-04 17:08 tiwai          File Added: cm9761-add-take4.dif                    
-09-24-04 17:23 pharm          File Added: 1.0.7rc1-ac97#0-0                    
-09-24-04 17:24 pharm          File Added: 1.0.7rc1-ac97#0-0+regs                    
-09-24-04 17:32 pharm          File Added: take4-ac97#0-0                    
-09-24-04 17:32 pharm          File Added: take4-ac97#0-0+regs                    
-09-24-04 17:33 pharm          Bugnote Added: 0001897                       
-09-24-04 17:39 tiwai          Bugnote Added: 0001898                       
-09-24-04 17:41 pharm          Bugnote Added: 0001899                       
-09-24-04 17:45 tiwai          Bugnote Added: 0001900                       
-09-24-04 17:58 pharm          Bugnote Added: 0001901                       
-09-24-04 18:06 tiwai          Bugnote Added: 0001902                       
-09-27-04 09:56 pharm          Bugnote Added: 0001933                       
-09-27-04 15:16 tiwai          Bugnote Added: 0001939                       
-09-27-04 15:17 tiwai          File Added: cm9761-add-take5.dif                    
-10-12-04 14:59 tiwai          Bugnote Added: 0002102                       
-10-12-04 15:10 pharm          Bugnote Added: 0002105                       
-10-13-04 23:46 pharm          Bugnote Added: 0002135                       
+07-07-04 04:59 drbobguy       New Bug                                      
+07-07-04 04:59 drbobguy       Distribution              => Gentoo          
+07-07-04 04:59 drbobguy       Kernel Version            => 2.6.7           
+07-07-04 05:03 drbobguy       Bugnote Added: 0001390                       
+07-27-04 05:26 robg           Bugnote Added: 0001475                       
+07-30-04 16:56 tiwai          Bugnote Added: 0001493                       
+07-31-04 02:46 drbobguy       File Added: CMI8768.pdf                      
+07-31-04 02:46 drbobguy       Bugnote Added: 0001508                       
+07-31-04 06:10 robg           Bugnote Added: 0001509                       
+08-22-04 22:13 masanetz       Bug Monitored: masanetz                      
+09-06-04 18:02 patrick        Bug Monitored: patrick                       
+10-08-04 05:17 robg           Bugnote Added: 0002043                       
+10-08-04 05:18 robg           File Added: CMI8768 register spec v1.0.pdf                    
+10-08-04 05:19 robg           File Added: Programming Guide to CMI8738 PCI Audio Chip_v16_0311.pdf                    
+10-08-04 12:49 tiwai          Bugnote Added: 0002050                       
+10-08-04 15:26 tiwai          Bugnote Added: 0002053                       
+10-08-04 15:36 tiwai          Bugnote Added: 0002054                       
+10-09-04 09:05 patrick        File Added: asound.state                     
+10-09-04 09:08 patrick        File Added: cmipci                           
+10-09-04 09:29 patrick        Bugnote Added: 0002061                       
+10-09-04 09:30 patrick        Bugnote Edited: 0002061                      
+10-10-04 04:48 robg           Bugnote Added: 0002064                       
+10-10-04 04:57 robg           Bugnote Added: 0002065                       
+10-13-04 16:37 tiwai          Bugnote Added: 0002126                       
+10-13-04 16:37 tiwai          Bugnote Added: 0002127                       
+10-14-04 01:24 patrick        Bugnote Added: 0002136                       
 ======================================================================
 
 
