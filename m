@@ -1,14 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Bluetooth headsets, and ALSA
-Date: Thu, 12 Aug 2004 09:45:38 +0200 (METDST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000428]: unresolved symbols in snd-pcm.ko on alpha linux-2.6.7
+Date: Thu, 12 Aug 2004 11:09:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0408120944540.8551-100000@studcom.urz.uni-halle.de>
-References: <20040812030758.27108.qmail@web60803.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Message-ID: <20040812090918.E49611102E@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20040812030758.27108.qmail@web60803.mail.yahoo.com>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 617701A0
+	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 11:10:51 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 063E2D572
+	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 11:09:19 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,23 +19,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tsw@johana.com
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Tom Watson wrote:
-> Given that bluetooth headsets exist, and they do digitize sound (and reverse).
-> Has anyone gotten them to work (ALSA, or otherwise) to digitize sound into a
-> file, or to playback something (just about anything might do).
 
-There is an experimental patch:
-http://www.dcs.gla.ac.uk/~jp/snd-bt-sco/
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000428
+======================================================================
+Reported By:                svetljo
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     428
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Mandrake cooker
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             08-06-2004 21:15 CEST
+Last Modified:              08-12-2004 11:09 CEST
+======================================================================
+Summary:                    unresolved symbols in snd-pcm.ko on alpha linux-2.6.7
+Description: 
+trying to compile latest alsa driver 1.0.6-rc1
+results in unresolved symbols at module link time
+in snd-pcm.ko
 
+gcc-3.4 , linux-2.6.7
 
-HTH
-Clemens
+here is the message:
+*** Warning: "__ioremap" [sound/core/snd-pcm.ko] undefined!
+*** Warning: "virt_to_phys" [sound/core/snd-pcm.ko] undefined!
 
+which results in unusable alsa drivers
+======================================================================
 
+----------------------------------------------------------------------
+ svetljo - 08-12-2004 11:09 CEST 
+----------------------------------------------------------------------
+just to add a note
+that 1.0.6-rc2 has the same problem
+whereas 1.0.5a and the in-kernel alsa 
+build OK
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-06-04 21:15 svetljo        New Bug                                      
+08-06-04 21:15 svetljo        Distribution              => Mandrake cooker 
+08-06-04 21:15 svetljo        Kernel Version            => 2.6.7           
+08-11-04 19:31 svetljo        Bug Monitored: svetljo                       
+08-12-04 11:09 svetljo        Bugnote Added: 0001552                       
+======================================================================
 
 
 -------------------------------------------------------
