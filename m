@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000849]: aplay apparently plays mono wav files using OSS, but plays stereo wav files using ALSA
-Date: Sun, 20 Mar 2005 13:45:19 +0100
-Message-ID: <9aca661ecd80be590507363785223421@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
+Date: Sun, 20 Mar 2005 14:47:48 +0100
+Message-ID: <d7c67469ac62fc18aaaf429059853f1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE5CB250
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 13:45:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 26227255
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 14:47:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,59 +23,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=849> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=846> 
 ======================================================================
-Reported By:                vapspwi
+Reported By:                Envel
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   849
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   846
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             01-26-2005 20:15 CET
-Last Modified:              03-20-2005 13:45 CET
+Date Submitted:             01-24-2005 13:44 CET
+Last Modified:              03-20-2005 14:47 CET
 ======================================================================
-Summary:                    aplay apparently plays mono wav files using OSS, but
-plays stereo wav files using ALSA
+Summary:                    Can't hear sound from one of the surround speaker,
+while other is working (speakers are functional).
 Description: 
-Anytime I play a mono wav file (11, 22, or 44 kHz, 8 or 16 bit) using
-aplay, the output is routed to all 26 playback channels of my HDSP 9652
-card (observed using hdspmixer).  Based on some web research, it appears
-that this is because aplay is using OSS to play the mono wav file.  When I
-play a stereo wav file (11, 22, or 44 kHz, 8 or 16 bit) using aplay, the
-output is routed only to playback channels 1 and 2 of the HDSP 9652,
-apparently because aplay is using ALSA to play the stereo wav file.
+With options "Line-In as surround" and "Duplicate front" the right surround
+speaker is not working, while others are functional. After uninstalling
+ALSA 1.0.8 and installing againg ALSA 1.0.7 with the same mixer
+configuration the error is not occures. SoundCard: nForce2 Audio Codec,
+Driver: snd-intel8x0, 4 speakers.
+p.s. sorry for my English.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000902 Some channels not working
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-31-05 19:01 
+ stephenv - 03-20-05 04:53 
 ----------------------------------------------------------------------
-I guess you meant aplay instead of alsamixer?
-
-Anyway, aplay has nothing to do with OSS.  It can't.  Never ever.
-
-What is the problem?  The behavior to routing the channels depends on the
-configuration of "plug" layer.  As default, only first channels are copied
-except for mono stream.  You can change this policy in your ~/.asoundrc. 
-See the alsa-lib's reference.
+tried it with 2.6.11 kernel, same thing. No sound out of rear right
+surround speaker
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:45 
+ jor - 03-20-05 14:47 
 ----------------------------------------------------------------------
-This one can be closed.
+When you try alsa driver 1.0.9rc1, make sure its not still using your old
+kernel module, look at /proc/asound/version to make sure it's 1.0.9rc1.
+
+Or you could upgrade the whole kernel, but plain 2.6.11 still has the bug.
+Try 2.6.11.5 (note the .5 at the end, new kernel versioning for 'stable'
+kernel with only small bugfixes, can be downloaded at normal kernel
+sources like kernel.org).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-26-05 20:15 vapspwi        New Issue                                    
-01-26-05 20:16 vapspwi        Issue Monitored: vapspwi                     
-01-26-05 23:46 vapspwi        Issue End Monitor: vapspwi                    
-01-31-05 19:01 tiwai          Note Added: 0003455                          
-03-20-05 13:45 jdthood        Note Added: 0004088                          
+01-24-05 13:44 Envel          New Issue                                    
+01-24-05 13:44 Envel          Kernel Version            => 2.6.8.1         
+01-25-05 15:18 tiwai          Note Added: 0003402                          
+01-28-05 08:17 ivantheviking  Issue Monitored: ivantheviking                    
+01-28-05 08:19 ivantheviking  File Added: asound.state                     
+01-28-05 08:20 ivantheviking  File Added: ac97#0-0                         
+01-28-05 08:21 ivantheviking  File Added: ac97#0-0+regs                    
+01-28-05 08:30 ivantheviking  Note Added: 0003424                          
+01-29-05 17:13 ivantheviking  Note Added: 0003438                          
+03-01-05 00:03 stephenv       Issue Monitored: stephenv                    
+03-01-05 00:06 stephenv       Note Added: 0003752                          
+03-02-05 01:19 ivantheviking  Note Edited: 0003438                         
+03-04-05 22:53 slammer        Note Added: 0003802                          
+03-04-05 22:55 slammer        Issue Monitored: slammer                     
+03-07-05 00:12 stephenv       File Added: svs.tar                          
+03-08-05 18:43 jor            Issue Monitored: jor                         
+03-08-05 19:03 jor            Note Added: 0003816                          
+03-09-05 18:43 tiwai          Note Added: 0003834                          
+03-09-05 18:43 tiwai          Note Added: 0003835                          
+03-09-05 19:24 jor            Note Added: 0003845                          
+03-10-05 03:27 stephenv       Note Added: 0003847                          
+03-10-05 11:55 slammer        Note Added: 0003848                          
+03-10-05 13:17 slammer        Note Added: 0003850                          
+03-10-05 14:36 tiwai          Relationship added       has duplicate 0000902
+03-10-05 18:03 stephenv       Note Added: 0003869                          
+03-10-05 23:28 slammer        Note Added: 0003875                          
+03-16-05 14:49 tiwai          Note Added: 0003959                          
+03-16-05 16:41 stephenv       Note Added: 0003962                          
+03-19-05 18:06 jor            Note Added: 0004059                          
+03-20-05 04:03 stephenv       Note Added: 0004071                          
+03-20-05 04:53 stephenv       Note Added: 0004072                          
+03-20-05 14:47 jor            Note Added: 0004089                          
 ======================================================================
 
 
