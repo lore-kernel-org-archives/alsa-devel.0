@@ -1,15 +1,13 @@
-From: Glenn Maynard <glenn@zewt.org>
-Subject: snd_pcm_wait returning EPIPE
-Date: Thu, 7 Oct 2004 11:26:34 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000566]: Doesn't save nor restore mixer settings (volumes set to 0)
+Date: Thu,  7 Oct 2004 17:46:29 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041007152634.GK12858@zewt.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <20041007154629.5B3142100C@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from h0040333b7dc3.ne.mediaone.net (h00045a576c6a.ne.client2.attbi.com [65.96.98.23])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 94E461D0
-	for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2004 17:26:38 +0200 (MEST)
-Content-Disposition: inline
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B7AEE255
+	for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2004 17:46:29 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,26 +19,57 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I've disabled the underrun state, eg. setting
-snd_pcm_sw_params_set_stop_threshold to dsnd_pcm_sw_params_get_boundary,
-which results in EPIPE never being returned from snd_pcm_wait (as I wanted),
-so I can handle underruns myself.  I'm opening hw:0 directly, to avoid
-resampling.
 
-However, I'm receiving a report of a system returning EPIPE:
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000566
+======================================================================
+Reported By:                pmatil
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     566
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.4.22
+======================================================================
+Date Submitted:             10-05-2004 17:36 CEST
+Last Modified:              10-07-2004 17:46 CEST
+======================================================================
+Summary:                    Doesn't save nor restore mixer settings (volumes set to 0)
+Description: 
+No error messages, init-scripts work but doesn't save nor restore mixer
+settings. At boot, volumes are 0% but not muted. After setting the mixer
+settings, doing alsactl store / alsactl restore works and actually saves
+mixer settings to the default file. Still after boot/reboot settings have
+been reset and also the file has been cleared (all volumes = 0). Card is
+Terratec DMX Xfire 1024...(cs46xx)
+======================================================================
 
-https://sourceforge.net/tracker/index.php?func=detail&aid=1035604&group_id=37892&atid=421366
-https://sourceforge.net/tracker/download.php?group_id=37892&atid=421366&file_id=103978&aid=1035604
+----------------------------------------------------------------------
+ tiwai - 10-06-2004 11:35 CEST 
+----------------------------------------------------------------------
+I doubt it's a driver problem if calling alsactl manually works...
 
-This is apparently on an x86-64 system.
+----------------------------------------------------------------------
+ pmatil - 10-07-2004 17:46 CEST 
+----------------------------------------------------------------------
+OK, so I should put this note into what category? The initscript somehow
+resets the file that the mixer settings are in...
 
-Is this a known problem?  Am I probably doing something wrong that just
-happens to usually work?  I'm treating EPIPE as an unexpected condition,
-since it's not clear why it would happen here; should I have it call
-snd_pcm_prepare() and retry anyway?
-
--- 
-Glenn Maynard
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-05-04 17:36 pmatil         New Bug                                      
+10-05-04 17:36 pmatil         Distribution              => Debian GNU/Linux
+10-05-04 17:36 pmatil         Kernel Version            => 2.4.22          
+10-06-04 11:35 tiwai          Bugnote Added: 0002020                       
+10-07-04 17:46 pmatil         Bugnote Added: 0002034                       
+======================================================================
 
 
 -------------------------------------------------------
