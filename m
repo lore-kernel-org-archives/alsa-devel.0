@@ -1,13 +1,13 @@
-From: Patrick Boettcher <patrick.boettcher@desy.de>
+From: "Eliot Blennerhassett" <bigblen@icqmail.com>
 Subject: Re: DigiDesign MBox USB Audio device
-Date: Tue, 6 Apr 2004 00:50:18 +0200 (CEST)
+Date: Mon, 05 Apr 2004 16:36:31 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0404060048390.21693@pub2.ifh.de>
-References: <Pine.HPX.4.33n.0404051750110.25421-100000@studcom.urz.uni-halle.de>
+Message-ID: <20040405163631.22897.h005.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0404051750110.25421-100000@studcom.urz.uni-halle.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,16 +19,28 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+TAS1020:
 
-small supplement:
+http://focus.ti.com/docs/prod/folders/print/tas1020b.html
 
-http://vaasa.wi-bw.tfh-wildau.de/~pboettch/digi_mbox/
+"The TAS1020B integrated circuit (IC) is a universal serial bus (USB) peripheral
+interface device designed specifically for applications that require isochronous
+data streaming. Applications include digital speakers, which require the
+streaming of digital audio data between the host PC and the speaker system via
+the USB connection. The TAS1020B device is fully compatible with the USB
+Specification Version 1.1 and the USB Audio Class Specification."
 
-there is the 0.04-wave file played with winamp on WinXP, and the
-appropriate log file produced by usbsnoop.
+But I guess the exact features depend on firmware...
 
-Patrick
+
+Eliot Blennerhassett
+AudioScience Inc.
+--
+Junk footer beyond this point. Read at your own risk.
+
+
+-------------------------------------------------------------
+Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
 
 
 -------------------------------------------------------
