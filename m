@@ -1,13 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd_seq_sync_output_queue does not work
-Date: Thu, 2 Dec 2004 16:41:10 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0412021625200.27068-100000@studcom.urz.uni-halle.de>
-References: <20041202115801.6119.qmail@web42108.mail.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000698]: Random beeps, ticks and clicks
+Date: Thu, 2 Dec 2004 17:32:59 +0100
+Message-ID: <9015d64196a880fb2d7c9f9375627969@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041202115801.6119.qmail@web42108.mail.yahoo.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CDA07217
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 17:32:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,50 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?ISO-8859-1?Q?Bengt_M=E5nsson?= <bengt_mansson@yahoo.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Bengt Månsson wrote:
-> I'm trying to make an app where I need to exchange an
-> 18k sysex. I use Rh9.
-> I think I've worked out the receiving part, but
-> sending will not work.
-> I chop the big sysex into 256 byte blocks and send in
-> a sequence. This seems to work fine when I run it
-> stepwise in the debugger, but crash when I run it at
-> full speed.
 
-The sequencer isn't designed to handle big sysexs.  Due to the
-message-based architecture it's difficult to signal back to the
-sending application that the output buffer is full.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=698> 
+======================================================================
+Reported By:                moonlite
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   698
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             12-02-2004 02:56 CET
+Last Modified:              12-02-2004 17:32 CET
+======================================================================
+Summary:                    Random beeps, ticks and clicks
+Description: 
+Below is what i posted to the gentoo-forums without getting without getting
+help that solved any of my problems.
+ 
+URL:
+http://forums.gentoo.org/viewtopic.php?t=255710&start=0&postdays=0&postorder=asc&highlight=
+---
+I have a problem with alsa and my SBLive-card and kernels newer than
+2.4.19.
+All in all it works without error-messages and the sound is pretty nice
+etc.
+But every now and then the music i listen to is interrupted for a small
+period of time (around 0.5s most of the time) and during this time i can't
+type or move the mouse and an annoying beep comes from my speakers. I am
+pretty sure that it is some sort of interruption because the few times the
+interrupts are long i am sure that the music continues from where it were
+and also, as i said above, i can't type etc during this small period.
+This seems to happen more during heavy load than under normal load but it
+still happens a lot at any given time. 
+---
+This problem happened with these kernels:
+vanilla-sources-2.4.20
+vanilla-sources-2.4.28
+gentoo-sources-2.4.20
+gentoo-sources-2.4.26-r12
+gentoo-dev-sources-2.6.9-r4
 
-I'd guess some message couldn't be delivered and was thrown away.
+(gentoo-sources are gentoo's own patchsets)
 
-Try to limit the rate of messages so that you don't exceed the MIDI
-data rate.
+Anyway. Since i posted this i've realized that the beeps (and sometimes
+also clicks/ticks) also happen more frequent during high network-load and
+not only normal load.
+Especially the clicking and ticking noise appear more frequent when
+downloading large amount of data with high transfer-rates.
+======================================================================
 
-> I think I've traced the problem down to the call to
-> snd_seq_sync_output_queue. I expect that call to hang
-> until the output is drained, and return a 0.
-> What happens is that the call seems to return
-> immediately with a 1.
+----------------------------------------------------------------------
+ pzad - 12-02-04 17:32 
+----------------------------------------------------------------------
+Could you look, if your soundcard shares irq with something ????
 
-The documentation is wrong, any nonnegative return value indicates
-success (the current implementation always returns 1).
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-02-04 02:56 moonlite       New Issue                                    
+12-02-04 02:56 moonlite       Distribution              => Gentoo          
+12-02-04 02:56 moonlite       Kernel Version            => 2.6.9           
+12-02-04 17:32 pzad           Note Added: 0002687                          
+======================================================================
 
-snd_seq_sync_output_queue waits until all events have been sent.  At
-this point, it's too late to detect events than cannot be delivered at
-the destination.
-
-
-The documentation, if it actually existed, would tell you to use the
-rawmidi API for big chunks of sysex data.  See the amidi program for
-an example.
-
-
-HTH
-Clemens
 
 
 
