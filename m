@@ -1,9 +1,8 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: quattro multi plugin.
-Date: Fri, 19 Jul 2002 22:56:15 +0900
+Subject: ALSA docs
+Date: Sat, 20 Jul 2002 01:17:46 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D381A7F.4090708@boosthardware.com>
-References: <3D37BBBA.7030308@boosthardware.com> <3D37D0FD.3090400@boosthardware.com>
+Message-ID: <3D383BAA.9050106@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,105 +15,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net, jackit-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is wierd. Using the exact same commands I cannot get jackd to load 
-now. The card still, ahem, works, cough, with a single pcm device.
+I'm in the process of reading up about different ways of setting up the 
+new alsa docs so that they are in the style of the new website design 
+and have the look and feel of current documentation on other websites.
 
-----
-jackd  -v -d alsa -d q4
-jackd 0.37.1
-Copyright 2001-2002 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
+I'm using the online manual for http://www.php.net as the design basis.
 
-1068 waiting for signals
-creating alsa driver ... q4|1024|2|48000|swmon
-ALSA: no playback configurations available
-ALSA: cannot configure capture channel
-cannot load driver module alsa
-jack main caught signal 15
-----
+Before I spend any more time on coding up a dynamic user 
+maintained/contributed site what is the general consensus on allowing 
+contribution to the documentation from anybody?
 
-This is after a reboot due to jackd hanging the machine after 
-accidentally loading the hw plugin after having semi success with the 
-code below.
+I have an almost fully working setup now which will allow users to 
+contribute ideas and helpful hints. The problem I now face is whether or 
+not to automate the input or filter it by having it sent to me (or other 
+people) so I/we can post it at our discretion.
 
-Patrick Shirkey wrote:
-> Ah that should be....
-> 
-> ----
-> pcm.quattro {
->         type multi;
-> 
->         slaves.a.pcm "hw:2,0";
->         slaves.a.channels 3;
-> 
-> 
->         bindings.0.slave a;
->         bindings.0.channel 0;
->         bindings.1.slave a;
->         bindings.1.channel 1;
->         bindings.2.slave a;
->         bindings.2.channel 2;
->     
-> }
-> 
-> ctl.quattro {
->         type hw;
->         card 0;
-> }
-> 
-> pcm.q4 {
->         type route;
->         slave.pcm "quattro";
->         ttable.1.1 1;
->         ttable.2.2 1;
-> 
-> }
-> 
-> ctl.q4 {
->         type hw;
->         card 2;
-> }
-> ----
-> 
-> When I run jackd I get this output though:
-> 
-> ----
->  jackd -v -d alsa -d q4
-> jackd 0.37.1
-> Copyright 2001-2002 Paul Davis and others.
-> jackd comes with ABSOLUTELY NO WARRANTY
-> This is free software, and you are welcome to redistribute it
-> under certain conditions; see the file COPYING for details
-> 
-> 611 waiting for signals
-> creating alsa driver ... q4|1024|2|48000|swmon
-> new client: alsa_pcm, id = 1 type 1 @ 0x8067930 fd = 14
-> port alsa_pcm:in_1 buf shm key 0x164398c5 at offset 4096 bi = 0x8066d00
-> registered port alsa_pcm:in_1, offset = 4096
-> port alsa_pcm:in_2 buf shm key 0x164398c5 at offset 8192 bi = 0x8066d10
-> registered port alsa_pcm:in_2, offset = 8192
-> port alsa_pcm:in_3 buf shm key 0x164398c5 at offset 12288 bi = 0x8066d20
-> registered port alsa_pcm:in_3, offset = 12288
-> port alsa_pcm:in_4 buf shm key 0x164398c5 at offset 16384 bi = 0x8066d30
-> registered port alsa_pcm:in_4, offset = 16384
-> registered port alsa_pcm:out_1, offset = 0
-> registered port alsa_pcm:out_2, offset = 0
-> registered port alsa_pcm:out_3, offset = 0
-> registered port alsa_pcm:out_4, offset = 0
-> -- jack_rechain_graph():
-> client alsa_pcm: inprocess client, execution_order=0.
-> ALSA: poll time out polled for 45558.694314
-> driver wait function failed, exiting
-> telling signal thread that the engine is done
-> jack main caught signal 1
-> ----
+I note that a lot of sites that seemed to originally have allowed input 
+from users to be automatically added to their webpages have decided to 
+change their policy to filtering due to spam or misleading information 
+being posted.
 
-
+Rgds.
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
