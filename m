@@ -1,14 +1,14 @@
-From: Patrice Tisserand <Patrice.Tisserand@ircam.fr>
-Subject: Re: unresolved symbol in "insmod snd-ens1371"
-Date: 13 Oct 2003 11:40:16 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Build-in mixer
+Date: Mon, 13 Oct 2003 14:13:15 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1066038016.3840.72.camel@localhost.localdomain>
-References: <002401c39096$0ac3bcc0$987ba8c0@Vectra>
+Message-ID: <Pine.HPX.4.33n.0310131404550.18722-100000@studcom.urz.uni-halle.de>
+References: <1065886408.3f8822c843535@webmail.zcu.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <002401c39096$0ac3bcc0$987ba8c0@Vectra>
+In-reply-to: <1065886408.3f8822c843535@webmail.zcu.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,39 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Frank H." <frankcch@comcast.net>
+To: Daniel Tihelka <dtihelka@kky.zcu.cz>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2003-10-12 at 09:54, Frank H. wrote:
-> Hi,
->  
-> I have Linux PC with
-> OS: linux 9.0
-> sound card: Create Lab Sound blaster 16 PCI.
-> PC: Compaq Presario
-> Alsa driver: 0.9.7.a
->  
-> Why there so many unresolved synbol when load the snd-ens1371
-> ("insmod snd-ens1371")?
-> Is there any mistakes during image buit?
->  
-> I follow the procedures in this link
->  
-> http://www.alsa-project.org/alsa-doc/doc-php/template.php3?company=Creative+Labs&card=Soundblaster+16+PCI&chip=ES1373&module=ens1371
->  
-> form  http://www.alsa-project.org/,
->  
->  
-Hi, 
-insmod will only load the module given as parameter.
-So it will not load the module required by snd-ens1371.
-Please try: modprobe snd-send1371 instead.
-I think it will fix your problem.
+Daniel Tihelka wrote:
+> [dmix]
+> Aad what about streams with different sampling frequencies?
 
-Bye.
--- 
-Patrice Tisserand <Patrice.Tisserand@ircam.fr>
+The dmix plugin always uses a fixed sample rate. The default is 48000,
+but you can change it as follows:
+
+pcm.!default {
+	type plug
+	slave.pcm {
+		type dmix
+		ipc_key 54042615
+		ipc_key_add_uid yes
+		slave {
+			pcm "hw:0"
+			rate 44100
+		}
+	}
+}
+
+
+HTH
+Clemens
+
 
 
 
