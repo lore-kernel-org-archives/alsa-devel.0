@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: periods? fragments?
-Date: Mon, 19 May 2003 00:12:42 -0400
+From: p z oooo <pzad@pobox.sk>
+Subject: ALC650 + Mic input not working
+Date: Mon, 19 May 2003 07:54:46 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19Hbv6-0004zW-00@sc8-sf-list1.sourceforge.net>
-References: <3EC85556.20008@sipquest.com>
+Message-ID: <200305190554.HAA17705@www7.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
+Mime-Version: 1.0
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Sun, 18 May 2003 23:53:58 EDT."
-             <3EC85556.20008@sipquest.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,28 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: David Stuart <dave@sipquest.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Greetings! Fledgeling alsa developer here,
->
->After reading a bunch of documentation, it's unclear to me exactly what 
->a period/fragment is used for. Could anyone expand on it a bit to fill 
->me in?
+Hi,
 
-there is a hardware buffer. its N frames long. you rarely want to deal
-with the entire buffer at once. its therefore divided into sections of
-a certain length, often (but not always) specified in numbers of
-frames. these sections are called "periods" and typically (but not
-always) the hardware will interrupt the CPU every time it finishes
-dealing with a "period", and you in turn get to deal with it in 1 (or
-more) periods at a time. the number of periods per h/w buffer (or
-alternately, their size) is a hardware parameter; how many periods
-have to have been processed by the h/w before the driver will wake up
-your code to read/write more data is a software parameter.
+I have MSI KT333 (VIA8233A) + ALC650.
+For me, mic input is not working.
+It looks like my motherboard (and some of others too) uses GPIO0 pin=20
+of ALC650 to swich mic bias on/off. Look at ALC650AppNotes_1.4.pdf=20
+page 3 (this is recomended connection). ALC650 rev.E doesn't need=20
+this (and than mic is working). I tested attached patch and mic (sets=20
+bit 0 in reg. 0x76 to 1 - gpio0 =3D output and bit 8 in reg. 0x76 to 1=20
+=3D set mic bias - gpio0 - on) works, but I think it is not good,=20
+because when mic input is switched to center/LFE output, mic bias=20
+should be set to off.
 
-a "fragment" is an older OSS term for the same concept.
+Peter Zubaj
+
+
+
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AZ=EDskajte superv=FDhodn=E9 ADSL e=B9te v=FDh=
+odnej=B9ie v cenovom odpo=E8=EDtavan=ED Slovanet=0AADSL Teraz! =C8=EDm sk=
+=F4r sa rozhodnete, t=FDm viac u=B9etr=EDte.=0Ahttp://www.slovanet.sk/menu/=
+adsl.html=0A
 
 
 -------------------------------------------------------
