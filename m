@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000653]: poor microphone recording quality on pcicmi
-Date: Thu, 18 Nov 2004 19:36:48 +0100
-Message-ID: <3e8810f5e3a86a676a4990e8bc769eff@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000644]: CMI8738 - Line-in as bass conflicts with line-as rear.
+Date: Thu, 18 Nov 2004 19:40:21 +0100
+Message-ID: <ab579af0cc47aa47ff403be938377825@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6594C268
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:36:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7E5B11DF
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:40:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,92 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=653> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=644> 
 ======================================================================
-Reported By:                pbienst
+Reported By:                jborges
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   653
+Issue ID:                   644
 Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r4
+Distribution:               Kurumin 3.2 (a Brazilian flavor of Knoppix) with kde
+3.2.3
+Kernel Version:             Kernel 2.4.25-klg
 ======================================================================
-Date Submitted:             11-18-2004 10:58 CET
-Last Modified:              11-18-2004 19:36 CET
+Date Submitted:             11-12-2004 00:09 CET
+Last Modified:              11-18-2004 19:40 CET
 ======================================================================
-Summary:                    poor microphone recording quality on pcicmi
+Summary:                    CMI8738 - Line-in as bass conflicts with line-as
+rear.
 Description: 
-I have a C-Media PCI CMI8738-MC6 (rev 16) from a Hercules Muse DVD soundd
-card.
+I'm using Kurumin 3.2 (a Brazilian flavor of Knoppix) in a ASUS P4B533 with
+CMI8738 sound chip, processor is Pentium IV 3.0 GHz, 512 RAM and 120
+Maxtor Ultra Dma Hard Disk.
 
-When recording from a headset microphone, sound quality is really bad: low
+Also I use Kde 3.2.3 on Kernel 2.4.25-klg.
 
-volume and quite some noise / distortion.
+This Linux installation works in a dual-boot with windows xp.
 
-I have my microphone mixers maxed out, 'Mic boost' is on, 'Mic as
-Center/LFE' 
-is off.
+The sound works fine (all 6 channels respond very well)under windows xp or
+98.
 
-I've fiddled with all the other options, but they don't seem to affect the
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-quality.
+Trying to configure my sound to work I noticed some problems with
+alsamixer:
 
-I do my recording with:
+1 - As I can see, there is a conflict for the output. I can't see Line-In
+been used to output as bass and the same Line-In used to output as rear
+(L/R).
 
-arecord -D hw:1,0 -d 4 test.wav
+2 - I think Line-In would be used to output as Rear (L/R) and Mic to
+output as Bass/Center.
 
-Under Windows, sound quality is a lot better with the same setup.
+What is happening is that: when one uses a 6 channel system there is no
+sound in the conflicted Line-In as bass and Mic as center. The little
+sound that goes there is squeezed from Line-In as rear. The sound in bass
+and center is full of noise. Impossible to listen.
+
+I took some snapshots (2) to show you what I'm talking about. Please take
+a look on them in the attached files.
+
+Julio Borges
+Rio de Janeiro - Brazil
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-18-04 19:33 
+ jborges - 11-18-04 19:04 
 ----------------------------------------------------------------------
-They could be read only.  Do all of them behave so?
+Please take a look at attached file. Notice that both Line-as Rear and
+Line-In as Bass are not enabled. I have no means to turn it on or off.
+Also notice in the above result of amixer that most of the controls are
+set to mono.
 
 ----------------------------------------------------------------------
- pbienst - 11-18-04 19:36 
+ tiwai - 11-18-04 19:40 
 ----------------------------------------------------------------------
-Yes, all 3 of them behave like that. But changing the driver source as I
-did should have done the trick too?
+I see that both of them are enabled.  And amixer output shows that both are
+enabled, too.
+
+Forget '[mono]' in the output of amixer.  It means only that the mixer
+volume/switch has no invididual left/right controls.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-18-04 10:58 pbienst        New Issue                                    
-11-18-04 10:58 pbienst        Distribution              => Gentoo          
-11-18-04 10:58 pbienst        Kernel Version            => 2.6.9-gentoo-r4 
-11-18-04 18:07 tiwai          Note Added: 0002453                          
-11-18-04 18:08 tiwai          File Added: cmipci-test.diff                    
-11-18-04 19:11 pbienst        Note Added: 0002459                          
-11-18-04 19:26 pbienst        Note Added: 0002460                          
-11-18-04 19:33 tiwai          Note Added: 0002461                          
-11-18-04 19:36 pbienst        Note Added: 0002462                          
+11-12-04 00:09 jborges        New Issue                                    
+11-12-04 00:09 jborges        File Added: sound-cm8738-alsamixergui.png         
+          
+11-12-04 00:09 jborges        Distribution              => Kurumin 3.2 (a
+Brazilian flavor of Knoppix) with kde 3.2.3
+11-12-04 00:09 jborges        Kernel Version            => Kernel 2.4.25-klg
+11-18-04 18:16 tiwai          Note Added: 0002455                          
+11-18-04 19:04 jborges        Note Added: 0002458                          
+11-18-04 19:40 tiwai          Note Added: 0002463                          
 ======================================================================
 
 
