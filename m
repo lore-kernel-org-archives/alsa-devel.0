@@ -1,52 +1,41 @@
-From: Alexander Nyberg <alexn@telia.com>
-Subject: Re: Badness in remove_proc_entry called from
-	snd_via82xx_remove	(2.6.4-mm)
-Date: Thu, 11 Mar 2004 20:44:12 +0100
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <1079034252.428.1.camel@boxen>
-References: <20040204203426.GA1841@miriel.finwe.eu.org>
-	 <1079026696.810.26.camel@boxen>  <s5hllm7jjc9.wl@alsa2.suse.de>
+From: Mathieu Geli <geli@enseirb.fr>
+Subject: Re: snd-usb-audio hang when rmmoding after unplugging
+ midisport1x1
+Date: Thu, 11 Mar 2004 20:46:10 +0100
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20040311204610.3766f038.geli@enseirb.fr>
+References: <20040311151651.217ccc07.geli@enseirb.fr>
+	<Pine.HPX.4.33n.0403111635570.18812-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
-In-Reply-To: <s5hllm7jjc9.wl@alsa2.suse.de>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0403111635570.18812-100000@studcom.urz.uni-halle.de>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-03-11 at 20:04, Takashi Iwai wrote:
-> At Thu, 11 Mar 2004 18:38:16 +0100,
-> Alexander Nyberg wrote:
-> > 
-> > This happens at shutdown when alsa is to be closed with kernel 2.6.4-mm.
-> > I'm running debian sid, snd_via82xx compiled as module.
-> > Happens also on 2.6.4-rc2-mm1, I can try on more kernels as well if it
-> > is not a clear case.
-> > 
-> > 
-> > I slapped a printk on these just before the badness:
-> > de->subdir->name = "id", de->name = "card0"
-> 
-> does the attached patch work?
-> 
-> 
-> --
-> Takashi Iwai <tiwai@suse.de>		ALSA Developer - www.alsa-project.org
-> --- linux/sound/core/init.c	4 Mar 2004 17:54:06 -0000	1.37
-> +++ linux/sound/core/init.c	11 Mar 2004 19:01:42 -0000
-> @@ -281,7 +281,7 @@
->  	}
->  	if (card->private_free)
->  		card->private_free(card);
-> -	snd_info_free_entry(card->proc_id);
-> +	snd_info_unregister(card->proc_id);
->  	if (snd_info_card_free(card) < 0) {
->  		snd_printk(KERN_WARNING "unable to free card info\n");
->  		/* Not fatal error */
+Thanks for your reply,
+
+ok, what I did, is first to apply your patch to my source tree (1.0.3rc2), clean, compile, install, and even reboot.
+That doesn't output anymore the two lines "urb status -104", and "usb_submit_urb: -32" but still hang after printing:
+"drivers/usb/core/usb.c: deregistering driver snd-usb-audio"
+
+So I have dl the CVS and reinstalled alsa-driver. That just have the same effect :/
+
+Mathieu
 
 
-Yes it worked, no more badness.
-
-Thanks,
-Alex
+-------------------------------------------------------
+This SF.Net email is sponsored by: IBM Linux Tutorials
+Free Linux tutorial presented by Daniel Robbins, President and CEO of
+GenToo technologies. Learn everything from fundamentals to system
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
