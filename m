@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000804]: asoundlib.h doesn't #include time.h, which is needed for struct timespec
-Date: Mon, 10 Jan 2005 22:39:55 +0100
-Message-ID: <42fa2707c1438d835758462721ee7bae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000796]: Behavior of LED on mute button
+Date: Mon, 10 Jan 2005 23:17:17 +0100
+Message-ID: <0b15e4a441a6c267face80f651a09a96@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E562A2BF
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2005 22:39:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C428A2BB
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2005 23:17:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,38 +22,83 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=804> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=796> 
 ======================================================================
-Reported By:                yosh
-Assigned To:                
+Reported By:                kempokaraterulz
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   804
-Category:                   general
+Project:                    ALSA - driver
+Issue ID:                   796
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-10-2005 22:39 CET
-Last Modified:              01-10-2005 22:39 CET
+Date Submitted:             01-09-2005 02:26 CET
+Last Modified:              01-10-2005 23:17 CET
 ======================================================================
-Summary:                    asoundlib.h doesn't #include time.h, which is needed
-for struct timespec
+Summary:                    Behavior of LED on mute button
 Description: 
-http://bugzilla.gnome.org/show_bug.cgi?id=163593
-
-This was a build failure from including asoundlib.h, and struct timespec
-wasn't defined, which is needed for the snd_htimestamp_t typedef. Simple
-fix is to add an #include <time.h> in asoundlib.h.
+On my laptop, there is this little blue LED on the mute button, muting  /
+unmuting the sound doesnt have any effect on this LED currently, if i
+unload the sound module the LED turns on, and if i reload the sound module
+it turns back off. Since the sound driver turns the light on when being
+unloaded, my (possibly incorrect) guess is that this would be a fairly
+easy thing to implement properly, or at least allow control of the light
+through the proc interface or something. 
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-10-05 14:59 
+----------------------------------------------------------------------
+First, try ALSA 1.0.8rc2.
+
+Is the mute LED turned on/off when you change "External Amplifier" mixer
+switch?
+If so, use ac97_quirk=mute_led option.  If this fixes the problem, let me
+know the output of lspci -nv and the name of your mobo/machine to enable
+the quirk as default.
+
+----------------------------------------------------------------------
+ kempokaraterulz - 01-10-05 23:17 
+----------------------------------------------------------------------
+The mute led is in fact turned on / off by the external amplifier mixer
+switch, but the problem im having is that ac97_quirk doesnt appear to be a
+valid option for the atiixp driver:
+
+HPimp sound # modprobe snd-atiixp ac97_quirk=mute_led
+HPimp sound # dmesg|tail -n3
+usb-storage: device scan complete
+snd_atiixp: Unknown parameter `ac97_quirk'
+ACPI: PCI interrupt 0000:00:14.5[B] -> GSI 5 (level, low) -> IRQ 5
+HPimp sound # modinfo snd-atiixp
+author:         Takashi Iwai <tiwai@suse.de>
+description:    ATI IXP AC97 controller
+license:        GPL
+parm:           index:Index value for ATI IXP controller.
+parm:           id:ID string for ATI IXP controller.
+parm:           enable:Enable audio part of ATI IXP controller.
+parm:           ac97_clock:AC'97 codec clock (default 48000Hz).
+parm:           spdif_aclink:S/PDIF over AC-link.
+vermagic:       2.6.10-gentoo-r1 preempt PENTIUM4 4KSTACKS gcc-3.3
+depends:        snd-pcm,snd-page-alloc,snd-ac97-codec,snd,snd
+alias:          pci:v00001002d00004341sv*sd*bc*sc*i*
+alias:          pci:v00001002d00004361sv*sd*bc*sc*i*
+alias:          pci:v00001002d00004370sv*sd*bc*sc*i*
+
+its alsa driver 1.0.8rc2
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-10-05 22:39 yosh           New Issue                                    
+01-09-05 02:26 kempokaraterulzNew Issue                                    
+01-10-05 14:59 tiwai          Note Added: 0003135                          
+01-10-05 23:17 kempokaraterulzNote Added: 0003140                          
 ======================================================================
 
 
