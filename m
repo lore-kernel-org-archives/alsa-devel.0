@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000243]: the duration option does not work in arecord and aplay too
-Date: Sun, 20 Mar 2005 13:27:13 +0100
-Message-ID: <0b35db31dceca183631e93828bff7814@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000575]: alsa mixer settings and sporatic loss of sound
+Date: Sun, 20 Mar 2005 13:28:33 +0100
+Message-ID: <477864c1176004e3688bc0247dfc8a8e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 80C43250
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 13:27:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB656250
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 13:28:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,50 +23,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=243> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=575> 
 ======================================================================
-Reported By:                Nibble
+Reported By:                grapnell
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   243
-Category:                   aplay/arecord
+Issue ID:                   575
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             04-28-2004 01:31 CEST
-Last Modified:              03-20-2005 13:27 CET
+Date Submitted:             10-09-2004 18:09 CEST
+Last Modified:              03-20-2005 13:28 CET
 ======================================================================
-Summary:                    the duration option does not work in arecord and
-aplay too
+Summary:                    alsa mixer settings and sporatic loss of sound
 Description: 
-when using that option: -d 1 or any other number for seconds arecord and
-aplay don't stop. The only way to stop recording is Ctrl+C.
+one thing i have noticed about alsa, is a very small event can trigger a
+major crash of alsa, such as the forced quit of a non-responding
+application that uses sound etc will cause alsa to crash, and I cannot get
+sound support to come back unless I reboot. also, the mixer settings will
+not save, I have to unmute and restore all the mixer settings manually
+everytime I reboot.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-24-04 05:41 
+ tiwai - 10-12-04 14:40 
 ----------------------------------------------------------------------
-Works for me
+The crash really depends on the hardware.  Please describe as precisely
+as possible which board you have, on which kernel and distro with which
+ALSA driver version, and what happens with which procedure how
+frequently.
 
-$ arecord -d5 foo.wav
-Recording WAVE 'foo.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
-$ arecord --version
-arecord: version 1.0.6 by Jaroslav Kysela <perex@suse.cz>
+The mixer setting is FAQ.  It's a feature.
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:27 
+ jdthood - 03-20-05 13:28 
 ----------------------------------------------------------------------
-This can be closed.
+In the absence of the additional information that would be required
+to deal with this bug report, I suggest that it be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-28-04 01:31 Nibble         New Issue                                    
-09-24-04 05:41 jdthood        Note Added: 0001855                          
-03-20-05 13:27 jdthood        Note Added: 0004083                          
+10-09-04 18:09 grapnell       New Issue                                    
+10-12-04 14:40 tiwai          Note Added: 0002095                          
+03-20-05 13:28 jdthood        Note Added: 0004084                          
 ======================================================================
 
 
