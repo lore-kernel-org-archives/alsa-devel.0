@@ -1,14 +1,14 @@
-From: Martin Josefsson <gandalf@wlug.westbo.se>
-Subject: Re: [PATCH] Fix ALSA resume
-Date: Sun, 05 Dec 2004 13:11:40 +0100
-Message-ID: <1102248700.1560.69.camel@tux.rsn.bth.se>
-References: <1102195391.1560.65.camel@tux.rsn.bth.se>
-	 <20041204172855.350100d0.akpm@osdl.org>	<41B282F0.3020704@triplehelix.org>
-	 <20041204235155.3b8ad3fc.akpm@osdl.org>  <41B2DDA5.20208@triplehelix.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0000708]: Fix CVS envy24control crash on midi 00 control
+Date: Sun, 5 Dec 2004 13:58:06 +0100
+Message-ID: <119aaf5dbf28f9484252b4b3eaba0b32@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-HHUuHLKgGAfTZAWPS4FX"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41B2DDA5.20208@triplehelix.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B7C19315
+	for <alsa-devel@alsa-project.org>; Sun,  5 Dec 2004 13:58:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,46 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Joshua Kwan <joshk@triplehelix.org>
-Cc: Andrew Morton <akpm@osdl.org>, torvalds@osdl.org, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-HHUuHLKgGAfTZAWPS4FX
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=708> 
+======================================================================
+Reported By:                shadow
+Assigned To:                
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   708
+Category:                   envy24control
+Reproducibility:            sometimes
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             12-05-2004 12:36 CET
+Last Modified:              12-05-2004 13:58 CET
+======================================================================
+Summary:                    Fix CVS envy24control crash on midi 00 control
+Description: 
+envy24control adds midi support, but if it receives data from a controller
+with ID '0' it will crash.
+======================================================================
 
-On Sun, 2004-12-05 at 11:06, Joshua Kwan wrote:
-> Andrew Morton wrote:
-> > OK, suspend was failing, yes?
->=20
-> Yes.
->=20
-> > Can you please test Martin's patch?
->=20
-> Works for me.
+----------------------------------------------------------------------
+ shadow - 12-05-04 13:58 
+----------------------------------------------------------------------
+this fix doesn't really work all the time. the root of the problem is the
+insane system of memory address computations based on midi controller
+numbers, yuck.
 
-Works here as well.
-This is the only problem I've had with ALSA and swsusp.
-It even handles suspending in the middle of playing music and then
-resuming and continuing where it was.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-05-04 12:36 shadow         New Issue                                    
+12-05-04 12:36 shadow         File Added:
+cvs_alsa_20041205-envy24control.midi00crash.patch                    
+12-05-04 13:58 shadow         Note Added: 0002721                          
+======================================================================
 
---=20
-/Martin
 
---=-HHUuHLKgGAfTZAWPS4FX
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQBBsvr7Wm2vlfa207ERAgliAJ0R31DlwbNSPQkimfo+EBd8q13qggCdG7Lx
-lxL8pnj2HvLMAzBIPCPPD9I=
-=jyRt
------END PGP SIGNATURE-----
-
---=-HHUuHLKgGAfTZAWPS4FX--
 
 
 -------------------------------------------------------
