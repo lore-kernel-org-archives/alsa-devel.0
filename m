@@ -1,8 +1,8 @@
 From: Heikki Pernu <hpernu@cc.hut.fi>
-Subject: Status of Hoontech Soundtrack Audio DSP 24
-Date: Sun, 15 Aug 2004 16:46:44 +0300
+Subject: Porting ALSA 0.4.4 drivers to current release
+Date: Sun, 15 Aug 2004 16:47:04 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <411F6944.60802@cc.hut.fi>
+Message-ID: <411F6958.4090300@cc.hut.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -15,11 +15,13 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, hpernu@cc.hut.fi
 List-Id: alsa-devel@alsa-project.org
 
 
-What is the status of the driver in question? ( Envy24 )
+Anyone know how to port a driver written for ALSA 0.4.4 to current ALSA
+kernel?
+What are the major (and minor) differences?
 
 
 
