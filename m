@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000275]: envy24control for ice1724?
-Date: Sat, 19 Mar 2005 09:39:11 +0100
-Message-ID: <da210d104e0f6d6cd7badca6f019ceef@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000276]: envy24control crash
+Date: Sat, 19 Mar 2005 09:40:52 +0100
+Message-ID: <d1578cefb6633b513ba1cbf7b1c3dae9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0C0081F9
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:39:11 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C45EF1F9
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:40:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,46 +23,45 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=275> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=276> 
 ======================================================================
 Reported By:                BugBuster
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   275
-Category:                   PCI - ice1724
+Issue ID:                   276
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Gentoo
+Kernel Version:             2.6.5-gentoo-r1
 ======================================================================
-Date Submitted:             05-14-2004 19:04 CEST
-Last Modified:              03-19-2005 09:39 CET
+Date Submitted:             05-14-2004 19:09 CEST
+Last Modified:              03-19-2005 09:40 CET
 ======================================================================
-Summary:                    envy24control for ice1724?
+Summary:                    envy24control crash
 Description: 
-It would be nice if we could use envy24control for ice1724 cards. 
+If you do:
+"./envy24control --help" you get a segmentation fault in getopt_long...
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-18-04 20:40 
+ jdthood - 03-19-05 09:40 
 ----------------------------------------------------------------------
-the app would be an overkill.  ice1724 doesn't have so many functions
-like ice1712 (e.g. no VU meter)...
+Submitter: Is the bug still present?
 
-----------------------------------------------------------------------
- jdthood - 03-19-05 09:39 
-----------------------------------------------------------------------
-Looks like this one can be closed.
+This should be reassigned to alsa-tools.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-14-04 19:04 BugBuster      New Issue                                    
-05-18-04 20:40 tiwai          Note Added: 0001143                          
-03-19-05 09:39 jdthood        Note Added: 0004023                          
+05-14-04 19:09 BugBuster      New Issue                                    
+05-14-04 19:09 BugBuster      Distribution              => Gentoo          
+05-14-04 19:09 BugBuster      Kernel Version            => 2.6.5-gentoo-r1 
+03-19-05 09:40 jdthood        Note Added: 0004024                          
 ======================================================================
 
 
