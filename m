@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000897]: test/timer.c malfunctions with snd-rtctimer
-Date: Wed, 16 Feb 2005 12:02:40 +0100
-Message-ID: <4c998447902632d1a112905e2bdad58d@bugtrack.alsa-project.org>
+From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+Subject: emu10k1: rear mono played on all exept rear
+Date: Wed, 16 Feb 2005 12:19:52 +0100
+Message-ID: <42132C58.3050006@glocalnet.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AA83D249
-	for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2005 12:02:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,65 +14,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I discovered a bug in EMU10K1.pcm.rear.0 in EMU10K1.conf. It sends rear 
+mono output to FX 0 and 1 instead of FX 2 and 3!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=897> 
-======================================================================
-Reported By:                phunge
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   897
-Category:                   timer
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             02-09-2005 15:45 CET
-Last Modified:              02-16-2005 12:02 CET
-======================================================================
-Summary:                    test/timer.c malfunctions with snd-rtctimer
-Description: 
-I'm trying to learn how to use the ALSA timer API for getting a hi-res
-interrupt in a program of mine. When I compile test/timer.c, it runs
-correctly using the default system timer. However, when I try to specify
-the RTC timer by modprobing snd-rtctimer and running
+/Mikael Magnusson
 
-./timer class=1 sclass=0 card=0 device=1 subdevice=0
-
-the program fails (output under "additional information").
-
-/dev/rtc is readable and I can run the RTC test from
-http://stommel.tamu.edu/~baum/linux-kernel/rtc.txt
-so I think the problem is in alsa.
-======================================================================
-
-----------------------------------------------------------------------
- phunge - 02-14-05 11:35 
-----------------------------------------------------------------------
-I'm using 2.6.8-1-686 from Debian woody. I will try again with kernel.org
-2.6, and if that doesn't work I'll try 2.4.
-
-----------------------------------------------------------------------
- phunge - 02-16-05 12:02 
-----------------------------------------------------------------------
-I also see the same behavior when using 2.6.8.1 compiled from kernel.org.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-09-05 15:45 phunge         New Issue                                    
-02-14-05 10:47 Clemens LadischNote Added: 0003587                          
-02-14-05 11:35 phunge         Note Added: 0003589                          
-02-16-05 12:02 phunge         Note Added: 0003622                          
-======================================================================
-
-
+--- cvs/alsa/alsa-lib/src/conf/cards/EMU10K1.conf      2004-07-13 
+19:32:18.000000000 +0200
++++ /usr/share/alsa/cards/EMU10K1.conf  2005-02-16 11:56:24.000000000 +0100
+@@ -41,7 +41,7 @@
+                                 name "EMU10K1 PCM Send Volume"
+                                 index { @func private_pcm_subdevice }
+                                 lock true
+-                               value [ 255 255 0 0 0 0 255 0 0 0 0 255 ]
++                               value [ 0 0 255 255 0 0 255 0 0 0 0 255 ]
+                         }
+                 ]
+         }
 
 
 -------------------------------------------------------
