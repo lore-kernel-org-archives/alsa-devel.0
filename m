@@ -1,11 +1,14 @@
-From: Will <walsac2@liam2.demon.co.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: [PATCH] add aplaymidi & arecordmidi utils
-Date: Tue, 24 Feb 2004 17:26:31 GMT
+Date: Tue, 24 Feb 2004 18:36:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402241726.RAA31256@liam2.demon.co.uk>
-References: <Pine.HPX.4.33n.0402231010240.20713-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0402241834400.5168-100000@studcom.urz.uni-halle.de>
+References: <200402241712.RAA29352@liam2.demon.co.uk>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0402231010240.20713-100000@studcom.urz.uni-halle.de>
+In-reply-to: <200402241712.RAA29352@liam2.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,25 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: clemens@ladisch.de
+To: Will <walsac2@liam2.demon.co.uk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch <clemens@ladisch.de> wrote:
+Will wrote:
+
+> Clemens Ladisch <clemens@ladisch.de> wrote:
+> >
+> >add aplaymidi & arecordmidi utilities
 >
->add aplaymidi & arecordmidi utilities
->
+>  I'm getting empty MIDI files containing only the MIDI header.
 
-Having these command-line utilities is very useful.  Previously there
-were only the old OSS command-line programs like (x)playmidi and drvmidi.
+Are you using the latest CVS version of ALSA?
+Some of the bugfixes I sent yesterday are needed by arecordmidi.
 
-How easy would it be to make aplaymidi be able to adjust the playback speed
-like playmidi?  (playmidi -t 0.5 music.mid plays at twice the default speed)
 
-How easy would it be to make aplaymidi be able to move forwards and backwards
-during playback, e.g. by pressing f or b, like Takashi Iwai's drvmidi?
+HTH
+Clemens
 
-William
 
 
 
