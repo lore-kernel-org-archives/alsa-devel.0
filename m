@@ -1,8 +1,9 @@
-From: Frank Murphy <murphyf+alsa@f-m.fm>
-Subject: BUG: Balance inverted on ppc with PowerMac DACA
-Date: Fri, 29 Aug 2003 16:55:05 +0200
+From: Konstantin Stepaniuk <s.k.v@mail.ru>
+Subject: Memory leak in the dmix plugin?
+Date: Fri, 29 Aug 2003 19:15:12 +0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200308291655.05073.murphyf+alsa@f-m.fm>
+Message-ID: <200308291915.12389.s.k.v@mail.ru>
+Reply-To: s.k.v@mail.ru
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
@@ -20,20 +21,56 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-I originally noticed this with ALSA 0.9.4, but it exists with ALSA 0.9.6 as 
-well.
+I've found a problem with the dmix plugin. This simple test demonstrates the bug.
 
-When playing sounds and adjusting the left/right balance, left is right and 
-right is left. This is true in xmms as well as when using alsamixer.
+//--------------------
+#define ALSA_PCM_NEW_HW_PARAMS_API
+#define ALSA_PCM_NEW_SW_PARAMS_API
+#include <alsa/asoundlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-I'm on Debain sid with default kernel-image-2.4.21-powerpc and alsa-base 
-(0.9.6-2), alsa-modules-2 (0.9.6-1), alsa-source (0.9.6-2), and alsa-utils 
-(0.9.6-1).
+#define ALSA_ERROR(e) if( (e) < 0 ) { fprintf( stderr, "%s\n", snd_strerror((e)) ); exit(-1); }
 
-I should be able to do some testing, if needed.
+int main( void )
+{
+  for( ;; )
+  {
+    snd_pcm_t           *pcm;
+    snd_pcm_hw_params_t *hwparams;
+    int                  err;
 
-Frank
+    err = snd_pcm_open( &pcm, "plug:dmix", SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK );
+    ALSA_ERROR(err);
+
+    snd_config_update_free_global();
+
+    err = snd_pcm_hw_params_malloc( &hwparams );
+    ALSA_ERROR(err);
+
+    err = snd_pcm_hw_params_any( pcm, hwparams );
+    ALSA_ERROR(err);
+
+    err = snd_pcm_hw_params( pcm, hwparams );
+    ALSA_ERROR(err);
+
+    snd_pcm_hw_params_free( hwparams );
+    snd_pcm_close( pcm );
+  }
+
+  return 0;
+}
+//--------------------
+
+This program causes error:
+ALSA lib pcm_mmap.c:362:(snd_pcm_mmap) shmget failed: No space left on device
+No space left on device
+
+alsa-lib and drivers from cvs.
+
+Konstantin Stepaniuk
 
 
 
