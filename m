@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000525]: Sound does not work
-Date: Fri, 24 Sep 2004 12:18:29 +0200 (CEST)
+Subject: [ALSA - utils 0000529]: Please make '?' a synonym for 'h'
+Date: Fri, 24 Sep 2004 12:20:11 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924101829.B01E62A001@server.perex-int.cz>
+Message-ID: <20040924102011.AD9F72A003@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A93E298
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 12:18:29 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0BE12298
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 12:20:11 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,60 +20,44 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000525
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000529
 ======================================================================
-Reported By:                ao314
-Assigned To:                
+Reported By:                jdthood
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     525
-Category:                   PCI - intel8x0
-Reproducibility:            random
-Severity:                   minor
+Project:                    ALSA - utils
+Bug ID:                     529
+Category:                   alsamixer
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8
+Status:                     resolved
+Resolution:                 fixed
 ======================================================================
-Date Submitted:             09-23-2004 10:00 CEST
-Last Modified:              09-24-2004 12:18 CEST
+Date Submitted:             09-24-2004 06:12 CEST
+Last Modified:              09-24-2004 12:20 CEST
 ======================================================================
-Summary:                    Sound does not work
+Summary:                    Please make '?' a synonym for 'h'
 Description: 
-Sometimes, after the computer has been off for a while the sound refuses to
-work. Rebooting a couple of times seems to "fix" it.
+Add a '?' help key that pops up a list of keystrokes, similar to other
+programs.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-23-2004 18:16 CEST 
+ tiwai - 09-24-2004 12:20 CEST 
 ----------------------------------------------------------------------
-What is the exact behavior, "refuses to work" ?
-
-----------------------------------------------------------------------
- ao314 - 09-24-2004 12:18 CEST 
-----------------------------------------------------------------------
-Basically there is no sound and the stuff I've tried fiddling around with
-won't get the sound back including:
-1. reinstalling alsa drivers
-2. trying to set sound levels - both with alsamixer - which complains no
-device found and the little volume control in the bottom right - which
-can't be set
-3. Alsaconf, can't find any soundcards at the end even though it seems to
-correctly determine I have an nForce. 
-The only thing that works is reseting the computer.
+Fixed on CVS.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-04 10:00 ao314          New Bug                                      
-09-23-04 10:00 ao314          Distribution              => Fedora Core 2   
-09-23-04 10:00 ao314          Kernel Version            => 2.6.8           
-09-23-04 14:29 ao314          Bug Monitored: ao314                         
-09-23-04 18:16 tiwai          Bugnote Added: 0001827                       
-09-24-04 12:07 ao314          Bug End Monitor: ao314                       
-09-24-04 12:18 ao314          Bugnote Added: 0001873                       
+09-24-04 06:12 jdthood        New Bug                                      
+09-24-04 12:20 tiwai          Bugnote Added: 0001874                       
+09-24-04 12:20 tiwai          Assigned To               => tiwai           
+09-24-04 12:20 tiwai          Resolution               open => fixed       
+09-24-04 12:20 tiwai          Status                   new => resolved     
 ======================================================================
 
 
