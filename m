@@ -1,11 +1,15 @@
-From: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
-Subject: static alsa-lib is not working
-Date: Wed, 17 Apr 2002 13:41:07 +0200 (CEST)
+From: Allan Klinbail <allank@labyrinth.net.au>
+Subject: Re: [Alsa-user] error with current CVS and beta 12
+Date: 17 Apr 2002 22:27:57 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.BSF.4.44.0204171331390.76520-100000@fest.stud.fee.vutbr.cz>
+Message-ID: <a9jprs$bdo$2@main.gmane.org>
+References: <1019030378.2156.8.camel@littlewolf1.littlewolf>
+	<3CBD5AF2.6DA84FD4@zhevny.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3CBD5AF2.6DA84FD4@zhevny.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,34 +18,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Eric Dantan Rzewnicki <eric@zhevny.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Thanks that worked fine
 
-I found some strange behavior of alsa-lib. I tried to compile static
-version for profilling purposes, and it's not working.
 
-The problem is, that sub-libraries for libasound.a are created from
-*.lo objects (produced by libtool). Only alsa-lib/src/*.o ae included
-directly. For .lo files macro SND_DLSYM_BUILD_VERSION() from global.h
-is not called properly. Symbols defined with this macro in .lo files are
-not inserted into "snd_dlsym_start" list. This produces error in
-snd_dlsym.
 
-The problem is in usage of __attribute__ ((constructor)). It seems to me,
-that it does not work properly in .lo objects.
-
-For now, quick solution is to create the archive (libasound.a) by hand.
-You just need to copy all .o files from alsa-lib/src into some directory
-(renaming one of two simple.o files to another name to avoid colision)
-and then running arc cru libasound.a *.o
-
-Bye
-
---
-
-	Tomas Kasparek (sioux, xkaspa06)
- 	 tomas.kasparek@[seznam.cz,volny.cz]
-	 linux@fit.vutbr.cz
-	student FIT VUT Brno
+On Wed, 2002-04-17 at 21:22, Eric Dantan Rzewnicki wrote:
+> If you're working with cvs or beta12 your modules should be called
+> snd-ice1712 and snd-ens1371 not snd-card-ice1712 and snd-card-ens1371.
+> 
+> -Eric Rz.
+> 
+> Allan Klinbail wrote:
+> > Starting sound driver: snd-card-ens1371
+> > modprobe: insmod snd-card-ice1712 failed
+> > 
+> > and from modules.conf (yes I know it's messy)
+> > 
+> >  alias char-major-116 snd
+> > options snd snd_major=116 snd_cards_limit=4
+> > alias snd-card-0 snd-card-ens1371
+> > alias snd-card-1 snd-card-ice1712
