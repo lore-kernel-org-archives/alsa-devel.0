@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: alsa driver, repeat playback of buffer contents
-Date: Tue, 15 Mar 2005 19:49:59 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0503151949320.21135@pnote.perex-int.cz>
-References: <200503141530.20339.random.bits@rogers.com> <200503142014.37841.mark@vuenyx.com>
- <Pine.LNX.4.58.0503150848280.1743@pnote.perex-int.cz>
- <200503151349.02376.random.bits@rogers.com>
+From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
+Subject: [patch] c-media 9880 hda codec id
+Date: Wed, 16 Mar 2005 02:17:50 +0800
+Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D697@cm-msg-02.cmedia.com.tw>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <200503151349.02376.random.bits@rogers.com>
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+Received: from cm-msg-02.cmedia.com.tw (61-30-17-228.static.tfn.net.tw [61.30.17.228])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0BE9C1FF
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 20:06:36 +0100 (MET)
+Content-Class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,23 +19,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "random.bits" <random.bits@rogers.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 15 Mar 2005, random.bits wrote:
+Following change need to be added for newer C-Media 9880 codec ID.
 
-> How can I get the hardware to continue to play using 
-> the data in the ring buffer?
+	Signed-off-by: ChenLi Tien <cltien@cmedia.com.tw>
 
-Use no-xrun mode (set stop_threshold to boundary).
+Index: hda_codec.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/hda_codec.c,v
+retrieving revision 1.6
+diff -a -u -r1.6 hda_codec.c
+--- hda_codec.c 22 Feb 2005 17:17:57 -0000      1.6
++++ hda_codec.c 15 Mar 2005 17:22:04 -0000
+@@ -50,6 +50,7 @@
+ static struct hda_vendor_id hda_vendor_ids[] =3D {
+        { 0x10ec, "Realtek" },
+        { 0x434d, "C-Media" },
++       { 0x13f6, "C-Media" },
+        {} /* terminator */
+ };
+=20
+Index: patch_cmedia.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/patch_cmedia.c,v
+retrieving revision 1.3
+diff -a -u -r1.3 patch_cmedia.c
+--- patch_cmedia.c      22 Feb 2005 17:53:32 -0000      1.3
++++ patch_cmedia.c      15 Mar 2005 17:22:04 -0000
+@@ -616,5 +616,6 @@
+  */
+ struct hda_codec_preset snd_hda_preset_cmedia[] =3D {
+        { .id =3D 0x434d4980, .name =3D "CMI9880", .patch =3D =
+patch_cmi9880 },
++       { .id =3D 0x13f69880, .name =3D "CMI9880", .patch =3D =
+patch_cmi9880 },
+        {} /* terminator */
+ };
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
+
+
 
 
 -------------------------------------------------------
