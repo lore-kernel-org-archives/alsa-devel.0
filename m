@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000005]: alsa-driver-1.0.2: unresolved symbols in snd.o
-Date: Tue, 27 Jan 2004 22:08:29 +0100 (CET)
+Date: Tue, 27 Jan 2004 22:08:15 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040127210829.C477325009@server.perex-int.cz>
+Message-ID: <20040127210815.43C9F25009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA18314
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 22:08:35 +0100
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA18305
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 22:08:23 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,12 +20,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been ASSIGNED.
+A BUGNOTE has been added to this bug.
 ======================================================================
 http://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000005
 ======================================================================
 Reporter:                   ZlatkO
-Handler:                    perex
+Handler:                    
 ======================================================================
 Project:                    ALSA - driver
 Bug ID:                     5
@@ -33,7 +33,7 @@ Category:                   CORE - control
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               Slackware 8.1
 Kernel Version:             2.4.24
 ======================================================================
@@ -70,8 +70,6 @@ Date Modified  Username       Field                    Change
 ======================================================================
 01-27-04 21:31 ZlatkO         New Bug                                      
 01-27-04 22:08 perex          Bugnote Added: 0000005                       
-01-27-04 22:08 perex          Assigned To               => perex           
-01-27-04 22:08 perex          Status                   new => assigned     
 ======================================================================
 
 
