@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000402]: No Wavetable-MIDI with snd-emu10k1 compiled static in kernel
-Date: Wed, 21 Jul 2004 21:17:53 +0200 (CEST)
+Subject: [ALSA - driver 0000401]: alsaconf correctly identifies the driver, but it fails to load properly
+Date: Wed, 21 Jul 2004 21:55:45 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040721191753.1F7822F002@server.perex-int.cz>
+Message-ID: <20040721195545.894A92F002@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6ECEC259
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2004 21:17:53 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F1F851DF
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2004 21:55:45 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,67 +22,55 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000402
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000401
 ======================================================================
-Reported By:                frankpoole
-Assigned To:                pzad
+Reported By:                ronis
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     402
-Category:                   PCI - emu10k1
+Bug ID:                     401
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
+Distribution:               slackware-10.0
 Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             07-21-2004 21:13 CEST
-Last Modified:              07-21-2004 21:17 CEST
+Date Submitted:             07-21-2004 18:30 CEST
+Last Modified:              07-21-2004 21:55 CEST
 ======================================================================
-Summary:                    No Wavetable-MIDI with snd-emu10k1 compiled static in kernel
+Summary:                    alsaconf correctly identifies the driver, but it fails to load properly
 Description: 
-ALSA does not detect the Wavetable capabilities of the card (tested on SB
-Live 5.1 and Audigy2) when loading snd-emu10k1-synth with snd-emu10k1
-built inside the kernel. I'm forced to build everything as modules to get
-it working.
+alsaconf chooses this driver, but when it tries to load:
+
+ kernel: ATI IXP AC97 controller: probe of 0000:00:14.5 failed with error
+-13
+
+No sound, needless to say.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- frankpoole - 07-21-2004 21:17 CEST 
+ ronis - 07-21-2004 21:55 CEST 
 ----------------------------------------------------------------------
-This is how I want to build the sound support:
+Oops, I just realized I'd pasted the wrong lines from lspci -vn:  
 
-CONFIG_SOUND=y
+Here are the correct ones:
 
-CONFIG_SND=y                                                              
-        
-CONFIG_SND_TIMER=y                                                        
-        
-CONFIG_SND_PCM=y                                                          
-        
-CONFIG_SND_HWDEP=y                                                        
-        
-CONFIG_SND_RAWMIDI=y                                                      
-        
-CONFIG_SND_SEQUENCER=m
-CONFIG_SND_OSSEMUL=y                                                      
-        
-CONFIG_SND_MIXER_OSS=m                                                    
-        
-CONFIG_SND_PCM_OSS=m                                                      
-        
-CONFIG_SND_SEQUENCER_OSS=y
-
-CONFIG_SND_AC97_CODEC=y
-CONFIG_SND_EMU10K1=y
+00:14.5 Class 0401: 1002:4341
+        Subsystem: 103c:006b
+        Flags: bus master, 66Mhz, slow devsel, latency 64, IRQ 5
+        Memory at d0003000 (32-bit, non-prefetchable) [size=256]
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-21-04 21:13 frankpoole     New Bug                                      
-07-21-04 21:13 frankpoole     Kernel Version            => 2.6.7           
-07-21-04 21:17 frankpoole     Bugnote Added: 0001464                       
+07-21-04 18:30 ronis          New Bug                                      
+07-21-04 18:30 ronis          Distribution              => slackware-10.0  
+07-21-04 18:30 ronis          Kernel Version            => 2.6.7           
+07-21-04 21:55 ronis          Bugnote Added: 0001465                       
 ======================================================================
 
 
