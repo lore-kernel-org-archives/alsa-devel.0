@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
-Date: Sat, 22 Jan 2005 02:02:54 +0100
-Message-ID: <52859465d6afe7851fe3cde8aada28c7@bugtrack.alsa-project.org>
+From: Rusty Phillips <rustyp@freeshell.org>
+Subject: Re: Crackling sounds with Omnistudio USB
+Date: Fri, 21 Jan 2005 20:03:13 -0500
+Message-ID: <1106355793.17958.39.camel@localhost.localdomain>
+References: <1106345994.17958.31.camel@localhost.localdomain>
+	 <1106347480.3232.67.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5B413208
-	for <alsa-devel@alsa-project.org>; Sat, 22 Jan 2005 02:02:54 +0100 (MET)
+In-Reply-To: <1106347480.3232.67.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,87 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+As to the version of Linux, I'm running 2.6.10 with the Alsa-CVS
+drivers, and 2.4.26 with the Alsa-CVS drivers.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
-======================================================================
-Reported By:                pcmcginty
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   748
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Arch Linux
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             12-26-2004 06:50 CET
-Last Modified:              01-22-2005 02:02 CET
-======================================================================
-Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
-chipset choppy, plays to fast
-Description: 
-I've been spending a lot of time getting sound to work on my Sharp Actius
-MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
-ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
-2.6.10 kernel series cause the sound to become garbled as if the song is
-skipping through the music faster than it should. I have not tried ont he
-2.6.8 series. I can compile and try out if required. It is possible this
-is some other kernel issue, however I'm not sure how to track down where
-the kernel might be breaking the ALSA driver.
-======================================================================
+Unfortunately, I can't give you a link to the exact page for the USB
+filter driver, but you can get to it from the VIA drivers page (just
+select any Windows OS (I use 2000) and pick USB then USB 1.0 drivers)
+http://www.viaarena.com/Default.aspx?PageID=2
 
-----------------------------------------------------------------------
- tiwai - 01-13-05 12:53 
-----------------------------------------------------------------------
-Hmm, the hw parameters look ok, too.  So, the problem is in somewhere
-different...
+Here's the description from the VIA page about the filter driver:
 
-----------------------------------------------------------------------
- bengan - 01-22-05 02:02 
-----------------------------------------------------------------------
-I have the same problem. I've got an ACER Ferrari 3000 with VIA
-VT8233/A/8235. It uses the snd_via82xx module. I'm not sure that I can
-help but I do get the right sound when I play with ecasound and saying:
-ecasound -i:filname.wav -o:alsa
-but with hw:0 away the sound sounds as if it is played faster.
-ecasound -i:filname.wav -o:alsa,hw:0
+This patch fixes very specific issues under specific circumstances,
+described below. Users who are unsure as to whether they should install
+the patch can be assured that if they do install the patch, even if it
+is not necessary, it will cause no harm to their system. The patch will
+detect your systems configuration and install only when necessary. The
+patch will only install on certain older VIA host controller revisions.
+Under these circumstances, the patch will resolve the following issues: 
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-26-04 06:50 pcmcginty      New Issue                                    
-12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
-12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
-12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
-12-27-04 15:12 tiwai          Note Added: 0002961                          
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
-12-27-04 19:28 pcmcginty      Note Added: 0002973                          
-01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
-01-12-05 14:13 JonathanL      Note Added: 0003163                          
-01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
-    
-01-12-05 15:02 tiwai          Note Added: 0003164                          
-01-12-05 15:03 tiwai          Note Added: 0003165                          
-01-12-05 15:04 tiwai          Note Added: 0003166                          
-01-12-05 16:01 JonathanL      File Added: kernel-2.6.7                     
-01-12-05 16:02 JonathanL      File Added: kernel-2.6.10_alsa-cvs                
-   
-01-12-05 16:13 JonathanL      Note Added: 0003174                          
-01-12-05 20:45 tiwai          Note Added: 0003178                          
-01-12-05 23:23 JonathanL      File Added: sub0                             
-01-12-05 23:23 JonathanL      Note Added: 0003180                          
-01-13-05 12:53 tiwai          Note Added: 0003184                          
-01-22-05 02:02 bengan         Note Added: 0003371                          
-======================================================================
+      * Fixes the issue when a connected usb hub that has no usb devices
+        connected will be disabled after another usb hub is attached at
+        another available root port. 
+      * Fixes the issue when transferring large of amounts of data, the
+        system will hang. 
+      * Avoids noise from a USB audio converter or speaker. 
+      * Supports a usb 1.0 add-on card. Note that this patch does not
+        assist with problems concerning USB 2.0 add-on cards. 
+      * Under Win2000/XP: This patch will save all register values in
+        the memory before a system enters Stand By mode and then restore
+        those registers when the systems resumes. This therefore avoids
+        the situation where USB devices are not ready for use after a
+        resume from Stand By mode. 
+
+On Fri, 2005-01-21 at 17:44 -0500, Lee Revell wrote:
+> On Fri, 2005-01-21 at 17:19 -0500, Rusty Phillips wrote:
+> > I've done a lot to narrow this down, and I know I'm getting crackles and
+> > pops on my Omnistudio USB from within the computer (it has zero latency
+> > monitoring, so I can hear what happens on the device).
+> > 
+> > This only happens when recording - not playback, and I know it happens
+> > on both my Intel 440BX motherboard (which doesn't have any problems
+> > reported - not sure of the actual model) and my Abit KG7, which has a
+> > Via 686B southbridge, which is reported to show such problems.
+> > 
+> > The Abit board is dual-boot, and I found a Windows USB patch from VIA
+> > called the "USB filter patch."  This got rid of the pops and crackles
+> > when recording in Windows.  
+> 
+> Please give some more information about what the USB filter patch does.
+> Got a link?
+> 
+> What kernel are you using?
+> 
+> Lee
+> 
 
 
 
