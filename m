@@ -1,8 +1,8 @@
 From: HighEnergyParticle <highenergyparticle@attbi.com>
 Subject: Echoaudio driver hangs on Darla24
-Date: Tue, 13 May 2003 21:21:41 -0500
+Date: Tue, 13 May 2003 21:24:41 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305111208.45293.highenergyparticle@attbi.com>
+Message-ID: <200305132122.23955.david.ge@attbi.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
