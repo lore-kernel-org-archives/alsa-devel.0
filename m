@@ -1,14 +1,14 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Re: dmix and full-duplex
-Date: Wed, 17 Dec 2003 23:42:52 +0100
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: AFMT_AC3 support
+Date: Wed, 17 Dec 2003 23:04:10 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031217224252.GA9890@fliwatut.scifi>
-References: <Pine.LNX.4.58.0312171402370.23689@tomservo.workpc.tds.net>
+Message-ID: <3FE0E0EA.4060302@superbug.demon.co.uk>
+References: <92C0412E07F63549B2A2F2345D3DB515F7D31D@cm-msg-02.cmedia.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0312171402370.23689@tomservo.workpc.tds.net>
+In-Reply-To: <92C0412E07F63549B2A2F2345D3DB515F7D31D@cm-msg-02.cmedia.com.tw>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,32 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: =?windows-1252?Q?=22C=2EL=2E_Tien_-_=3F=3F=3F=22?= <cltien@cmedia.com.tw>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
-David Lloyd hat gesagt: // David Lloyd wrote:
+C.L. Tien - ??? wrote:
+> Hi,
+> 
+> Can ALSA support AFMT_AC3 to enable xine to play AC3 through S/PDIF interface? I check in core/pcm.c and core/oss/pcm_oss.c, neither of them has keywork AC3.
+> 
+> Sincerely,
+> ChenLi Tien
+> 
+It works if you use the ALSA API instead of the OSS emulation in the 
+ALSA driver.
 
-> The thing is, dmix seems to have been around for years 
-
-dmix is not around for years. It came to live more or less this year,
-and was only fully functional for some cards with version 0.9.7 or .8.
-
-Another thing is, that while dmix works very well with correctly
-written ALSA applications, OSS applications still aren't fully
-supported (some maybe never will, all require hacks).
-
-Nevertheless dmix is rather well explored now, but dsnoop would profit
-a lot from a page like that: http://alsa.opensrc.org/?DmixPlugin
-
-So it would be wonderful if you could find more real-world experiences
-about dsnoop and then would document it for others to use, too.
-
-(I can't speak for Teamspeak, I don't know it, I play on my GBA.)
-
-ciao
--- 
- Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
