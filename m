@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000688]: Errors in testing gcc and ld in the sparc and sparc64 sections of the configure file
-Date: Mon, 29 Nov 2004 16:12:19 +0100
-Message-ID: <9867cb089a2ae51f11a18bcf95351afe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000682]: alsamixer, rmedigicontrol and rme96 kernel driver
+Date: Mon, 29 Nov 2004 16:04:23 +0100
+Message-ID: <ad89e869ed9d1db6a74507228db98dd2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C3452C9
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 16:12:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B487721A
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 16:04:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=688> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=682> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                perex
+Reported By:                d637e16c5433737884c13889afdeaf34
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   688
-Category:                   0_compilation problem_!!!
+Issue ID:                   682
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   major
+Severity:                   trivial
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 duplicate
+Duplicate:                  570
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-28-2004 19:36 CET
-Last Modified:              11-29-2004 16:12 CET
+Date Submitted:             11-27-2004 00:59 CET
+Last Modified:              11-29-2004 16:04 CET
 ======================================================================
-Summary:                    Errors in testing gcc and ld in the sparc and
-sparc64 sections of the configure file
+Summary:                    alsamixer, rmedigicontrol and rme96 kernel driver
 Description: 
-Here is a patch to fix the configure script so that it less incorrectly
-tests gcc and ld functionality on sparc and sparc64.  You will want to fix
-configure.in, of course.
+As it's impossible to use the alsamixer with the rme96 driver here's a
+small patch for it to make it work. (it's not from me, it's from undog
+#alsa on irc.freenode.org)
+
+This patch will break rmedigicontrol, so i made a small patch for
+rmedigicontrol that'll fix this, too.
+
+Adding is trivial, it's just editing 8 lines of source.
+
+
+Regards,
+Matthias
+
+PS: Added patch for rme96.c
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000570 Sparse mixer for RME96
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-29-04 15:49 
+ tiwai - 11-29-04 15:28 
 ----------------------------------------------------------------------
-Ah, you're right.  I checked only sparc64.
+The only question is backward compatibility.  I don't mind to change this
+at all.
 
-Now fixed on CVS.
-
 ----------------------------------------------------------------------
- jdthood - 11-29-04 16:12 
+ martin - 11-29-04 15:39 
 ----------------------------------------------------------------------
-I have updated from cvs but the bug is still there.
+For me it's a bug and not a new design.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-28-04 19:36 jdthood        New Issue                                    
-11-28-04 19:36 jdthood        File Added:
-alsa-driver-configure.jdth20041128.patch                    
-11-29-04 15:25 tiwai          Note Added: 0002637                          
-11-29-04 15:38 jdthood        Note Added: 0002641                          
-11-29-04 15:39 jdthood        Note Edited: 0002641                         
-11-29-04 15:40 jdthood        Note Edited: 0002641                         
-11-29-04 15:49 tiwai          Status                   assigned => resolved
-11-29-04 15:49 tiwai          Resolution               open => fixed       
-11-29-04 15:49 tiwai          Note Added: 0002645                          
-11-29-04 16:12 jdthood        Status                   resolved => feedback
-11-29-04 16:12 jdthood        Resolution               fixed => reopened   
-11-29-04 16:12 jdthood        Note Added: 0002649                          
+11-27-04 00:59 d637e16c5433737884c13889afdeaf34New Issue                        
+           
+11-27-04 00:59 d637e16c5433737884c13889afdeaf34File Added: rme96.c.patch        
+           
+11-28-04 18:41 martin         Note Added: 0002628                          
+11-29-04 15:28 tiwai          Note Added: 0002639                          
+11-29-04 15:39 martin         Note Added: 0002642                          
+11-29-04 16:04 tiwai          Relationship added       duplicate of 0000570
+11-29-04 16:04 tiwai          Duplicate ID             0 => 570            
+11-29-04 16:04 tiwai          Status                   new => resolved     
+11-29-04 16:04 tiwai          Resolution               open => duplicate   
+11-29-04 16:04 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
