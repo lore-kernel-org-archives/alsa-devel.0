@@ -1,16 +1,20 @@
-From: Manuel Jander <manuel.jander@usm.cl>
-Subject: Re: RME9632 Precise Pointer option problem (attn
-	Thomas Charbonnel)
-Date: Mon, 27 Sep 2004 10:07:52 -0400
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: emu10k1 multichannel playback design (was Re: [PATCH] emu10k1:
+ add interval timer support)
+Date: Mon, 27 Sep 2004 10:35:40 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1096294072.2173.18.camel@localhost>
-References: <4157DB53.2030801@wildgooses.com>
-Reply-To: mjander@users.sourceforge.net
+Message-ID: <1096295739.7203.81.camel@krustophenia.net>
+References: <Pine.LNX.4.58.0409241546570.2289@pnote.perex-int.cz>
+	 <200409241453.i8OErtVR029650@localhost.localdomain>
+	 <s5hk6uj3dko.wl@alsa2.suse.de> <1096059735.11589.45.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409261335020.1744@pnote.perex-int.cz>
+	 <1096245611.7203.66.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409270848040.1733@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4157DB53.2030801@wildgooses.com>
+In-Reply-To: <Pine.LNX.4.58.0409270848040.1733@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,53 +23,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Mon, 2004-09-27 at 05:20, Ed Wildgoose wrote:
-> Hi folks,
+On Mon, 2004-09-27 at 02:48, Jaroslav Kysela wrote:
+> On Sun, 26 Sep 2004, Lee Revell wrote:
 > 
-> I haven't been able to get in touch with Thomas with this question, but 
-> perhaps someone here can help (or perhaps he will see it?)
+> > Yes, I agree.  Right now I have the first 16 voices reserved for the
+> > multichannel device.  For the default playback device voice allocation
+> > starts at 16. 
 > 
-> With this driver the free space call returns only an approximate value, 
-> however, the "precise pointer" module option returns apparently garbage 
-> (and there are notes in the source to say this).  Looking at the code 
-> it's just returning the value from a register, so it's hard to see that 
-> the driver is doing anything bad.
+> I would prefer dynamic voice allocations.
+> 
 
-This would not be the first soundcard that needs some conditions to be
-met, in order to have a valid value on such kind of register. There
-maybe some flags that indicate that the value is correct, or you need to
-flag eplicitly that you want to read it. Hopefuly you have the specs, if
-not, pass the WDM driver through IDA pro and you probably know what i
-mean :). Or maybe a previous I/O operation, register access or whatever
-keeps the card busy ? There are many things that could be wrong (check
-timing issues).
+So would I.  This setup is just for testing.  It will allocate voices
+dynamically when it's finished.
 
-If it turns out to be a hardware design problem, you could also use the
-trustable "not accurate pointer" value to estimate if the "precise
-pointer" is on crack or not, and return the most apropriate value. a few
-comparison should not represent a considerable amount of overhead, and
-you would get a sort of a combination of both "options".
-
-> Does anyone have any insight on whether it's possible to get a good 
-> value for free space in the buffers?  From a design point of view is it 
-> sensible to add some kind of fixup which counts ticks to estimate free 
-> space in the buffers at the driver level, or should stuff like that 
-> exist only at userspace level, probably in the app?  I realise that we 
-> can't do this perfectly, but it occurs to me that we can probably remain 
-> quite accurate estimating the current point location based on counting 
-> ticks since we started and noting when we add new data, etc.
-
-Hmm. What about mmap mode ? AFAIK, the idea is that you should not need
-to bother about the buffer internals of ALSA. You should just write and
-read data. 
-
-Best Regards
-
+Lee 
 
 
 
