@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
-Date: Sat, 19 Mar 2005 18:06:03 +0100
-Message-ID: <fe3edb84ffdb22afc628e5e57dfbe2ea@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000901]: The onboard audigyls chip on msi k8 diamond motherboard not recognized. Path supplied.
+Date: Sat, 19 Mar 2005 18:17:54 +0100
+Message-ID: <21e48debe453472e81b3ea2f95c76ba3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1BEB415C
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 18:06:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AAAEF1EE
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 18:17:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,232 +21,131 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The issue 0000987 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=846> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=901> 
 ======================================================================
-Reported By:                Envel
-Assigned To:                
+Reported By:                kiksen
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   846
-Category:                   PCI - intel8x0
+Issue ID:                   901
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.8.1
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.10
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-24-2005 13:44 CET
-Last Modified:              03-19-2005 18:06 CET
+Date Submitted:             02-11-2005 23:49 CET
+Last Modified:              02-13-2005 01:27 CET
 ======================================================================
-Summary:                    Can't hear sound from one of the surround speaker,
-while other is working (speakers are functional).
+Summary:                    The onboard audigyls chip on msi k8 diamond
+motherboard not recognized. Path supplied.
 Description: 
-With options "Line-In as surround" and "Duplicate front" the right surround
-speaker is not working, while others are functional. After uninstalling
-ALSA 1.0.8 and installing againg ALSA 1.0.7 with the same mixer
-configuration the error is not occures. SoundCard: nForce2 Audio Codec,
-Driver: snd-intel8x0, 4 speakers.
-p.s. sorry for my English.
+We'll. The driver fails to load (and dmesg comlaints about a missing AC97)
+
+Have made a path.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0000902 Some channels not working
+has duplicate       0000987 new chipset
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-25-05 15:18 
+ jcdutton - 02-12-05 00:56 
 ----------------------------------------------------------------------
-The combination of "Line-In As Surround" and "Duplicate Front" is already
-weird.
-
-Attach /etc/asound.state and /proc/asound/card0/codec97#0/* files for
-debugging.
+Please post the output of:
+lspci -vn | grep -1 0401
 
 ----------------------------------------------------------------------
- ivantheviking - 01-28-05 08:30 
+ kiksen - 02-12-05 14:36 
 ----------------------------------------------------------------------
-I too have the same problem with my Nvidia CK8 based sound card, and have
-uploaded the requested files.
- 
-I am running Gentoo Linux with 2.6.10 kernel, and alsa 1.0.8
-My LFE and Centers are reversed, along with the right rear missing.
-Everything surround (that is not the LF and RF) are also alot softer.
+Found out the serial in the names section should be 0x10091462 for
+detection of correct name.
 
-I have full 5.1 with 1.0.6 that is in the kernel I am running, except it
-is still mixed way too softly.
+Here's the output of lspci -vn | grep -1 0401:
 
-Thanks!
+00000:01:0d.0 Class 0401: 1102:0007
+        Subsystem: 1462:1009
+
+By the way. The chip is named SB0438
 
 ----------------------------------------------------------------------
- ivantheviking - 03-02-05 01:19 
+ sHINOBI - 02-12-05 22:47 
 ----------------------------------------------------------------------
-One more thing I think I have *found* using speaker test.
-Under both 1.0.8 and 1.0.6 the LFE/CENTER and Rear Surround jacks seem to
-be swapped.
-Oddly enough in 1.0.6 Doom3 has correct surround, while in 1.0.8 it
-doesn't work correctly.
-
-Correction : 1.0.6 isn't correct either. I only noticed that I was using
-the OSS analog 5.1 from doom3, not the alsa. Even with 1.0.6 alsa surround
-doesn't work properly.
-
-
+I have the same board, so including it to the future versions of ALSA will
+be highly appreciated :-). I'll try the patch and let you know, if it
+works.
 
 ----------------------------------------------------------------------
- stephenv - 03-01-05 00:06 
+ jcdutton - 02-13-05 00:18 
 ----------------------------------------------------------------------
-nforce2 built in sound on an a7n8x-e deluxe motherboard
-am also experiencing this issue on 2.6.10. Very frustrating, its a
-showstopper on migration from windows to linux. Will attach
-/etc/asound.state and /proc/asound/card0/codec97#0/* files tonight.
+cat /proc/asound/cards
+Does it say: "AudigyLS [Unknown]" after your patch?
 
 ----------------------------------------------------------------------
- slammer - 03-04-05 22:53 
+ sHINOBI - 02-13-05 00:54 
 ----------------------------------------------------------------------
-I think that my issue report # 902 describes the same problem, although I
-have examined that it's the rear socket's channel second not working
-regardless of mixer settings. Could anyone check if it's so?
+After the patch  cat /proc/asound/cards shows:
+
+0 [CA0106         ]: CA0106 - CA0106
+                     AudigyLS [Unknown] at 0xde00 irq 233
+
+The soundcard seems to be working, although the sound is choppy when
+playing sound  recorded at 44100 Hz. 48000 Hz audio like the one at DVD's
+is played correctly.
 
 ----------------------------------------------------------------------
- jor - 03-08-05 19:03 
+ jcdutton - 02-13-05 01:08 
 ----------------------------------------------------------------------
-Exact same problem here, right rear surround speaker doesn't work in a 4.0
-setup with the "Line-in as Surround" option set.
-Works fine with kernel 2.6.10, but 2.6.11 doesn't. Also tried plain alsa
-release 1.0.8 and recent checkout from CVS. These also don't work.
-asound.state the same in both cases (2.6.10 compared against the others),
-also the ac97#0-0+regs only differs in some volume settings. But also
-tested it by setting the exact same register settings.
+In you patch change:
++	 { 0x00071102, "Live! by MSI [SB0000]"}, /* MSI SB Audigy2LS without
+AC97 */
 
-System:
-Asus A7N8X-X
-Debian Unstable
-Kernel 2.6.11-ck1
+to
++	 { 0x10091462, "Live! by MSI [SB0438]"}, /* MSI SB Audigy2LS without
+AC97 */
+
+then see if "cat /proc/asound/cards" displays better info.
 
 ----------------------------------------------------------------------
- tiwai - 03-09-05 18:43 
+ sHINOBI - 02-13-05 01:21 
 ----------------------------------------------------------------------
-Can you try the latest CVS version?
+*nods*, seems to be better:
+
+0 [CA0106         ]: CA0106 - CA0106
+                     Live! by MSI [SB0438] at 0xde00 irq 233
 
 ----------------------------------------------------------------------
- tiwai - 03-09-05 18:43 
+ jcdutton - 02-13-05 01:27 
 ----------------------------------------------------------------------
-Don't forget to update both alsa-driver and alsa-lib!
-
-----------------------------------------------------------------------
- jor - 03-09-05 19:24 
-----------------------------------------------------------------------
-Yes, tried new CVS checkout and recompiled the kernel modules. It's working
-again.
-I guess the "Fix stereo mutes on Surround volume control" CVS diff on
-ac97_codec.c does the trick, Many thanks. :)
-
-----------------------------------------------------------------------
- stephenv - 03-10-05 03:27 
-----------------------------------------------------------------------
-no luck over here:
-asus a7n8x-e deluxe
-fedora core 3
-not sure I built it right.
-I did from my home directory as root
-mkdir alsa
-cd alsa
-cvs -q -f -z3 -d  ":pserver:anonymous:@cvs.sourceforge.net:/cvsroot/alsa" 
-co -P alsa-driver alsa-kernel alsa-lib
-
-./configure didn't work... something is wrong with the documentation....
-so tried
-./cvscompile
-and
-make install
- did this for both alsa-driver and alsa-lib per suggestion, did I need to
-do it in a particular order?
-
-----------------------------------------------------------------------
- slammer - 03-10-05 11:55 
-----------------------------------------------------------------------
-Have you read "Compilation from CVS sources" section in alsa-lib/INSTALL
-and alsa-driver/INSTALL  ?
-
-----------------------------------------------------------------------
- slammer - 03-10-05 13:17 
-----------------------------------------------------------------------
-I confirm it too. CVS version fixes my issue reported in 902 so I guess
-it's the same bug ;)
-Great job guys!
-
-----------------------------------------------------------------------
- stephenv - 03-10-05 18:03 
-----------------------------------------------------------------------
-I was reading the howto's off the main page, hadn't occured to me that the
-INSTALL would contain entirely different instructions. Anyhow, as you can
-see, I "did it right" according to the install instruction in INSTALL and
-still have the problem. I am running kernel-2.6.10-1.770 for fc3, looks
-like this may be the problem as those of you reporting it fixed are
-running 2.6.11 of some sort. FC3 hasn't released that yet. I could roll my
-own, I know it "shouldn't" break anything, might do that when I can find
-the time. I have a wife and family though, and they miss me since I
-started this linux thing.
-
-----------------------------------------------------------------------
- slammer - 03-10-05 23:28 
-----------------------------------------------------------------------
-Yeah. Me too should get life... such things just eat me and digest with
-bones. Anyhow I know it's none of my competence but, since this was fixed,
-people would really use at least rc version soon.
-
-----------------------------------------------------------------------
- tiwai - 03-16-05 14:49 
-----------------------------------------------------------------------
-Yes, now 1.0.9rc1 was out.  So, please give it a try.
-
-----------------------------------------------------------------------
- stephenv - 03-16-05 16:41 
-----------------------------------------------------------------------
-tiwai, Thanks for not closing this out. I will test with rc1 tonight and
-let you know my results.
-
-----------------------------------------------------------------------
- jor - 03-19-05 18:06 
-----------------------------------------------------------------------
-yes, 1.0.9rc1 also works, and I see the patch in 2.6.11.5. So I'm happy
-again :)
+Thank you. A modified patch will be added to alsa cvs.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-24-05 13:44 Envel          New Issue                                    
-01-24-05 13:44 Envel          Kernel Version            => 2.6.8.1         
-01-25-05 15:18 tiwai          Note Added: 0003402                          
-01-28-05 08:17 ivantheviking  Issue Monitored: ivantheviking                    
-01-28-05 08:19 ivantheviking  File Added: asound.state                     
-01-28-05 08:20 ivantheviking  File Added: ac97#0-0                         
-01-28-05 08:21 ivantheviking  File Added: ac97#0-0+regs                    
-01-28-05 08:30 ivantheviking  Note Added: 0003424                          
-01-29-05 17:13 ivantheviking  Note Added: 0003438                          
-03-01-05 00:03 stephenv       Issue Monitored: stephenv                    
-03-01-05 00:06 stephenv       Note Added: 0003752                          
-03-02-05 01:19 ivantheviking  Note Edited: 0003438                         
-03-04-05 22:53 slammer        Note Added: 0003802                          
-03-04-05 22:55 slammer        Issue Monitored: slammer                     
-03-07-05 00:12 stephenv       File Added: svs.tar                          
-03-08-05 18:43 jor            Issue Monitored: jor                         
-03-08-05 19:03 jor            Note Added: 0003816                          
-03-09-05 18:43 tiwai          Note Added: 0003834                          
-03-09-05 18:43 tiwai          Note Added: 0003835                          
-03-09-05 19:24 jor            Note Added: 0003845                          
-03-10-05 03:27 stephenv       Note Added: 0003847                          
-03-10-05 11:55 slammer        Note Added: 0003848                          
-03-10-05 13:17 slammer        Note Added: 0003850                          
-03-10-05 14:36 tiwai          Relationship added       has duplicate 0000902
-03-10-05 18:03 stephenv       Note Added: 0003869                          
-03-10-05 23:28 slammer        Note Added: 0003875                          
-03-16-05 14:49 tiwai          Note Added: 0003959                          
-03-16-05 16:41 stephenv       Note Added: 0003962                          
-03-19-05 18:06 jor            Note Added: 0004059                          
+02-11-05 23:49 kiksen         New Issue                                    
+02-11-05 23:49 kiksen         File Added: msi_audigyls_patch.patch              
+     
+02-11-05 23:49 kiksen         Distribution              => Gentoo          
+02-11-05 23:49 kiksen         Kernel Version            => 2.6.10          
+02-12-05 00:56 jcdutton       Note Added: 0003569                          
+02-12-05 14:36 kiksen         Note Added: 0003571                          
+02-12-05 22:43 sHINOBI        Issue Monitored: sHINOBI                     
+02-12-05 22:47 sHINOBI        Note Added: 0003572                          
+02-13-05 00:18 jcdutton       Note Added: 0003574                          
+02-13-05 00:54 sHINOBI        Note Added: 0003575                          
+02-13-05 01:08 jcdutton       Note Added: 0003576                          
+02-13-05 01:21 sHINOBI        Note Added: 0003577                          
+02-13-05 01:27 jcdutton       Status                   assigned => resolved
+02-13-05 01:27 jcdutton       Resolution               open => fixed       
+02-13-05 01:27 jcdutton       Note Added: 0003578                          
+02-22-05 19:22 sHINOBI        Issue End Monitor: sHINOBI                    
+03-19-05 18:17 jcdutton       Relationship added       has duplicate 0000987
 ======================================================================
 
 
