@@ -1,13 +1,14 @@
-From: Dan Hollis <goemon@anime.net>
-Subject: Re: Lynx AES16 driver
-Date: Mon, 19 Jan 2004 12:55:47 -0800 (PST)
+From: detlef.grittner@t-online.de (Detlef Grittner)
+Subject: Re: via82xx: problem with distorted sound
+Date: Mon, 19 Jan 2004 22:27:06 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0401191254380.24962-100000@sasami.anime.net>
-References: <1074532503.3031.33.camel@gentoo>
+Message-ID: <400C4BAA.4090503@t-online.de>
+References: <400AE538.4050306@t-online.de> <20040119.9110400.4016306759@linux.local>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1074532503.3031.33.camel@gentoo>
+In-Reply-To: <20040119.9110400.4016306759@linux.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,23 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Michal Kostrzewa <m.kostrzewa@pentacomp.com.pl>
+To: Gustavo Guillermo <gustavo@compunauta.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 19 Jan 2004, Michal Kostrzewa wrote:
-> Is this whole situation hopeless?
+Gustavo Guillermo schrieb:
 
-Yes.
+>Try using ARTS and noatun or mplayer (or whatever supports arts) as a 
+>sound output, and tell arts to sample to 4800, it works for me.
+>
+>  
+>
 
-> Have I any arguments to use in the discussion with Lynxstudio?
+Just found out, that your idea is good :-)!
 
-Tell them you will use some other vendor instead, and that if they believe 
-there is anything about their card which needs hiding in software, they 
-are likely mistaken. If they want to protect IP, use patents for that -- 
-not hiding in drivers.
+Inspecting the options of xmms I found out, that it was using the OSS 
+plugin and there is an arts plugin, which works fine!
+OSS is emulated by ALSA in my configuration, and that seems to be a 
+problem.
 
--Dan
+
 
 
 
