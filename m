@@ -1,13 +1,12 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: Where is the real developers list?
-Date: Thu, 10 Jul 2003 17:44:47 +0300 (EEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: ring buffer pointer accuracy.
+Date: Thu, 10 Jul 2003 16:31:28 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307101722110.7662-100000@ecabase.localdomain>
-References: <20030710120333.GA15534@alinoe.com>
+Message-ID: <3F0D86D0.6040905@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030710120333.GA15534@alinoe.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,48 +15,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Carlo Wood <carlo@alinoe.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On Thu, 10 Jul 2003, Carlo Wood wrote:
+When an application reads the "avail" or "delay" pcm values: -
+1) how accurate are they?
+2) does the accuracy depend on the sound card driver being used.
 
-> I only see questions on this list,
-> and nobody who answers them.
-[...]
-> Where are the developers?  Is ALSA still maintained?
+The reason I ask this, is that I am going to be writing an alsa driver 
+for bluetooth headsets.
+With bluetooth headsets, sound is sent to the bluetooth headset inside a 
+packet.
+This packet is 27 bytes long, and contains 24 audio samples (8 bit mono, 
+8000hz) and 3 bytes header.
+This would mean that the "avail" and "delay" pointers will only be 
+updated once every 24 samples, and will always go in 24 sample increments.
+This means that the "avail" and "delay" pointers are only accurate to 
+the nearest 3 ms.
 
-ALSA is definitely maintained, and alsa-devel is the correct list. ALSA
-actually has quite a good history in project activity. Development has
-continued without breaks for over five years now and it certainly hasn't
-slowed down recently. I've been developing ALSA applications since 1999, 
-and well, I'm still here! :)
+Do any other alsa drivers suffer from this, or are they all sample 
+accurate and updated as each sample is sent to the speakers.
 
-But for the last few years the users/developers ratio has simply gone
-through the roof, and nowadays the developers are simply overwhelmed with
-different kinds of requests/reports (both from users and application
-developers). I cannot speak for them, but I'd guess they simply have to
-ignore some of the issues (even good, valid reports), or otherwise they
-wouldn't have time for the actual development work. I guess the state of
-OSS audio in current kernels is one reason for the massive interest in
-ALSA.
+It would be nice for the application to be able to determine how 
+accurate the "avail" and "delay" pointers are.
+If an application is trying to syncronise video to audio, it will need 
+to know how accurate the snd_pcm_delay() pointer is.
+I.E. Is snd_pcm_delay() updated as each sample is output to the 
+speakers, or is it only updated as each block of 24 samples are output.
+As you can see, if the application trys to syncronise to sample 
+accuracy, it will fail badly with bluetooth headsets, but if the 
+application can be told by alsa that it should only try to syncronise if 
+it is more that 24 samples out of sync, the problem will be solved.
 
-Unfortunately there hasn't been a similar flood of developers to ALSA.  
-Hopefully now that ALSA is in linux-2.5.xx this situation will slowly
-change.
-
-As with other busy FOSS projects (Linux kernel, Apache), you have to be
-patient to get developer attention. For example, writing a small test
-program that demonstrates the problem is a good way to make
-debugging/fixing easier for the developers (and increases the likelihood
-that they will look at your issue). But I guess - if you are the same guy
-who has been writing to the linux-c++ list - you already know this. ;)
-
--- 
- http://www.eca.cx
- Audio software for Linux!
+Cheers
+James
 
 
 
