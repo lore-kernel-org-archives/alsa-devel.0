@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000919]: Master volume doesn't control rear speakers...
-Date: Fri, 18 Feb 2005 13:07:00 +0100
-Message-ID: <64f4f8461e42aa420c84de7bcfd49f8c@bugtrack.alsa-project.org>
+Date: Fri, 18 Feb 2005 14:32:42 +0100
+Message-ID: <93c6abe67cc9414d3b65165c32e29216@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 405C423D
-	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 13:07:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 847BA248
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 14:32:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-18-2005 12:41 CET
-Last Modified:              02-18-2005 13:06 CET
+Last Modified:              02-18-2005 14:32 CET
 ======================================================================
 Summary:                    Master volume doesn't control rear speakers...
 Description: 
@@ -49,15 +49,16 @@ affected at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-18-05 13:00 
-----------------------------------------------------------------------
-It's a feature of ac97 codec.  Not a bug.
-
-----------------------------------------------------------------------
  adamk75 - 02-18-05 13:06 
 ----------------------------------------------------------------------
 Having a master volume control that doesn't actually control the master
 volume is a feature?
+
+----------------------------------------------------------------------
+ tiwai - 02-18-05 14:32 
+----------------------------------------------------------------------
+Yes.  The AC97 master volume register doesn't affect the volume of
+surrounds.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -65,6 +66,7 @@ Date Modified  Username       Field                    Change
 02-18-05 12:41 adamk75        New Issue                                    
 02-18-05 13:00 tiwai          Note Added: 0003650                          
 02-18-05 13:06 adamk75        Note Added: 0003651                          
+02-18-05 14:32 tiwai          Note Added: 0003652                          
 ======================================================================
 
 
