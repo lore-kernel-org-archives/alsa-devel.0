@@ -1,12 +1,12 @@
-From: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
-Subject: alsa + xine problem
-Date: Fri, 07 Mar 2003 00:06:07 +0100
+From: floyd@unpunk.com (Matt Mercer)
+Subject: [PATCH] athlon/crusoe compiler options
+Date: Thu, 6 Mar 2003 21:05:13 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E67D45F.7010306@student.kuleuven.ac.be>
+Message-ID: <20030307050513.GA5413@unpunk.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,26 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-anyone knows what this output means? It's from Xine:
+This trivial patch alters compile options for athlon and crusoe cpu-types to be compatible with gcc-3.x.x.
 
+Matt Mercr
 
-audio_alsa_out: Audio Device name = 
-iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2
-audio_alsa_out: Number of channels = 2
-ALSA lib dlmisc.c:107:(snd_dlsym_verify) unable to verify version for 
-symbol _snd_pcm_hook_ctl_elems_install
-ALSA lib pcm_hooks.c:527:(snd_pcm_hook_add_conf) symbol 
-_snd_pcm_hook_ctl_elems_install is not defined inside (null)
-xiTK received SIGSEGV signal, RIP.
-Aborted
-
-
-Pieter
+Index: configure.in
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/configure.in,v
+retrieving revision 1.142
+diff -u -r1.142 configure.in
+--- configure.in        5 Mar 2003 20:04:33 -0000       1.142
++++ configure.in        6 Mar 2003 09:19:10 -0000
+@@ -430,11 +430,11 @@
+     if $CC -march=athlon -S -o /dev/null -xc /dev/null >/dev/null 2>&1; then
+       c_opts="-march=athlon"
+     else
+-      c_opts="-march=i686 -malign-functions=4"
++      c_opts="-march=i686 -falign-functions=4"
+     fi
+     ;;
+   crusoe)
+-    c_opts="-march=i686 -malign-functions=0 -malign-jumps=0 -malign-loops=0"
++    c_opts="-march=i686 -falign-functions=0 -falign-jumps=0 -falign-loops=0"
+     ;;
+   ia64)
+     c_opts="-Wa,-x -ffixed-r13 -mfixed-range=f10-f15,f32-f127 -funwind-tables -falign-functions=32"
 
 
 
