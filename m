@@ -1,54 +1,52 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [Alsa-user] Re: Re: SB Live! PCM control
-Date: Fri, 11 Feb 2005 19:01:38 +0000
-Message-ID: <420D0112.2050509@superbug.co.uk>
-References: <420270C1.3000706@voicenet.com>	 <1107457227.7256.37.camel@krustophenia.net>	 <4202A72C.3000007@superbug.co.uk> <1108141670.20188.4.camel@krustophenia.net>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH] emu10k1 multichannel support
+Date: Fri, 11 Feb 2005 14:41:30 -0500
+Message-ID: <1108150890.20365.7.camel@krustophenia.net>
+References: <1106091073.24484.60.camel@krustophenia.net>
+	 <1106672990.27843.7.camel@radium.gaugetheory.org>
+	 <1106678585.10845.8.camel@krustophenia.net>
+	 <1108148365.4267.22.camel@radium.gaugetheory.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108141670.20188.4.camel@krustophenia.net>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Adam K Kirchhoff <adamk@voicenet.com>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+In-Reply-To: <1108148365.4267.22.camel@radium.gaugetheory.org>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: Brian L Scipioni <brian@gaugetheory.org>
+Cc: alsa_users <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Thu, 2005-02-03 at 22:35 +0000, James Courtier-Dutton wrote:
+On Fri, 2005-02-11 at 13:59 -0500, Brian L Scipioni wrote:
+> Lee,
+> 	Sorry for the re-post - maybe you 
+> missed it?
+> 	Prior to this patch, the IEC958 Optical slider controlled the volume
+> out of the IEC958 Optical connection (given that IEC958 Optical Raw is
+> muted).  Now this slider does nothing.  Full volume always present -
+> mute switch still works though.
 > 
->>I think it is unwise to implement a Master volume control for the SBLive 
->>at this time. We had to remove it some time ago, and it can be 
->>implemented in a better way that in the DSP code.
->>
-> 
-> 
-> James, can you please elaborate on this a bit?  If you have a better way
-> then I don't want to waste time doing it in the DSP.
-> 
-> Lee
-> 
+> 	Is this a bug or a feature?  This is a change in behavior isn't it?
 
-This should instead be supported in the alsa-lib mixer abstraction 
-layer, that unfortunately, has not been completed yet.
-Then, the DSP would have 3 stereo controls for front, rear, center/lfe 
-and the mixer lisp config would add a "virtual" Master control, that 
-would present a single "Master" control to the user application, but 
-alsa-lib would convert that to control messages to all 3 stereo controls.
+This was not intended.  Are you sure the multichannel patch introduced
+this behavior?  Can you verify that the problem is not present with
+current ALSA CVS?
 
-I think your time would be better spent completing the mixer abstraction 
-layer that other alsa developers have already started.
+Do you have an SBLive or Audigy?
 
-Another point, I personally did not remove the Master control, but it 
-disappeared due to lack of SB Live DSP GPR registers.
+Can someone else confirm the bug?
 
-James
+It will be hard for me to reproduce this as I don't have any IEC958
+hardware, but we should be able to track it down via binary search.
+
+Lee
+
 
 
 -------------------------------------------------------
