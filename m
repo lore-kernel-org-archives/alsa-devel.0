@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000782]: Poor digital aidio quality
-Date: Tue, 15 Mar 2005 01:24:06 +0100
-Message-ID: <1f2e68c0277ae7506d4474df7493b999@bugtrack.alsa-project.org>
+From: Mark Cannon <mark@vuenyx.com>
+Subject: Re: Re: alsa driver, repeat playback of buffer contents
+Date: Mon, 14 Mar 2005 20:14:37 -0500
+Message-ID: <200503142014.37841.mark@vuenyx.com>
+References: <200503141530.20339.random.bits@rogers.com> <yw1xu0ndj2du.fsf@ford.inprovide.com> <1110846019.15588.28.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E001F1BA
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 01:24:06 +0100 (MET)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1110846019.15588.28.camel@mindpipe>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,132 +18,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I looked at using the mmap() version, and in fact I=20
+implemented it. It's easy to use, and it is the better=20
+way to do it, yet I do not see how it solves my=20
+problem.=20
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=782> 
-======================================================================
-Reported By:                ddemmer
-Assigned To:                fmoraes
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   782
-Category:                   PCI - emu10k1x
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core
-Kernel Version:             2.6.9-1.681_FC3.i686
-======================================================================
-Date Submitted:             01-03-2005 16:20 CET
-Last Modified:              03-15-2005 01:24 CET
-======================================================================
-Summary:                    Poor digital aidio quality
-Description: 
-Attempting to play MP3 files with RealPlay or xmms using ALSA output
-results in scratchy, erratic, slow (Realplay) or speeded up (xmms) sound.
-I can change the xmms configuration to use libOSS.so instead of libALSA
-which fixes the problem.
+How can I send down a short PCM stream, and have the=20
+hardware repeat it until told to stop?
 
-The gnome "Detect Sound Card" utility works fine and plays it's sound
-fine.
+Mark
 
-The gnome volume control does not affect the output level when using
-libOSS.
+On Monday 14 March 2005 19:20, Lee Revell wrote:
+> On Mon, 2005-03-14 at 23:20 +0100, M=E5ns Rullg=E5rd=20
+wrote:
+> > Lee Revell <rlrevell@joe-job.com> writes:
+> > > On Mon, 2005-03-14 at 15:30 -0500, random.bits=20
+wrote:
+> > >> I have been reading up on the alsa driver. I
+> > >> would like to have the alsa driver play a small
+> > >> pcm sound bite over and over without have to
+> > >> re-write it to the device.
+> > >>
+> > >> By small, I mean 1.9K in length. I have
+> > >> followed the examples enough to get it to play
+> > >> the sound bite once, but I cannot figure out
+> > >> how to get it to play it multiple times without
+> > >> having to make another call to snd_pcm_writei()
+> > >> again.
+> > >
+> > > Why in the heck are you using write() instead of
+> > > mmap()?
+> >
+> > snd_pcm_writei() often uses mmap() behind the
+> > scenes.
+>
+> Right, but AFAICT mmap() should not call write()
+> behind the scenes (unless you use the plug layer?).=20
+> So if you want to be sure to avoid unnecessary
+> copying you should just use mmap() directly.
+>
+> Or am I wrong?  Anyway, the JACK ALSA driver always
+> uses mmap() for example.
+>
+> Lee
+>
+>
+>
+> ----------------------------------------------------
+>--- SF email is sponsored by - The IT Product Guide
+> Read honest & candid reviews on hundreds of IT
+> Products from real users. Discover which products
+> truly live up to the hype. Start reading now.
+> http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dcl
+>ick _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-de
+>vel
 
-I have by now muted everything in the alsamixer except the Master volume.
-
-Playing a CD works fine.
-======================================================================
-
-----------------------------------------------------------------------
- fmoraes - 03-09-05 03:02 
-----------------------------------------------------------------------
-Sorry for the delay. Here's my .asoundrc:
-
-pcm.dmixer {
-    type dmix
-    ipc_key 1024          # must be unique!
-    slave {
-        pcm "hw:0,0"      # you cannot use a "plug" device here, darn.
-        #period_time 0
-        period_size 1024  # must be power of 2
-        buffer_size 8192  # dito. It
-        #format "S32_LE"
-        #periods 17      # dito.
-        #rate 8000        # with rate 8000 you *will* hear, 
-                          # if ossmix is used :)
-    }
-
-# bindings are cool. This says, that only the first
-# two channels are to be used by dmix, which is enough for
-# (most) oss apps and also lets multichannel chios work 
-# much faster:
-
-    bindings {
-        0 0   # from 0 => to 0
-        1 1   # from 1 => to 1
-    }
-}
-
-pcm.dsp0 {
-    type plug
-    slave.pcm "dmixer"     # use our new PCM here
-}
-# mixer0 like above
-ctl.mixer0 {
-    type hw
-    card 0
-}
-
-pcm_slave.buffer_size {
-	pcm "hw:0,0"
-	buffer_size 8192
-	period_size 1024
-}
-
-pcm.!default {
-	type plug
-	slave.pcm "dmixer" 
-}
-
-Your configuration seems to be using the wrong device (hw:1,0 which seems
-incorrect to me). You could use hw:0,1 instead if you play with the mixer
-controls (one of the controls lets you control the second channel and its
-volume).
-
-If you agree, we should close this report.
-
-----------------------------------------------------------------------
- fmoraes - 03-15-05 01:24 
-----------------------------------------------------------------------
-User doesn't seem to have an account anymore for this bug. Any problem if I
-close it?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-03-05 16:20 ddemmer        New Issue                                    
-01-03-05 16:20 ddemmer        Distribution              => Fedora Core     
-01-03-05 16:20 ddemmer        Kernel Version            => 2.6.9-1.681_FC3.i686
-01-03-05 16:49 stransky       Issue Monitored: stransky                    
-01-04-05 13:43 ddemmer        Issue Monitored: ddemmer                     
-01-04-05 13:43 ddemmer        Issue End Monitor: ddemmer                    
-01-16-05 14:57 fmoraes        Note Added: 0003217                          
-01-16-05 20:43 ddemmer        Note Added: 0003221                          
-01-19-05 18:34 ddemmer        Note Added: 0003310                          
-01-19-05 20:45 tiwai          Note Added: 0003317                          
-01-22-05 23:29 fmoraes        Note Added: 0003383                          
-01-23-05 04:52 ddemmer        Note Added: 0003386                          
-03-09-05 03:02 fmoraes        Note Added: 0003822                          
-03-15-05 01:24 fmoraes        Note Added: 0003912                          
-======================================================================
-
-
+=2D-=20
+Mark Cannon
+VP Engineering
+Viewnyx Corporation
 
 
 -------------------------------------------------------
