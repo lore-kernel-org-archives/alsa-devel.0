@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000514]: [PATCH] 15_amixer_doc_bug271556
-Date: Tue, 9 Nov 2004 16:35:43 +0100
-Message-ID: <4732dafbba089f451e79ac2487514ab3@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000474]: Compiling with -Wshadow generates warning messages with gcc-2.95
+Date: Tue, 9 Nov 2004 16:34:04 +0100
+Message-ID: <fcdecbe3a35e91377b2d2690d684b63c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CACF22B1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:35:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 886FC2B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:34:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=514> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=474> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                erikd-alsa
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   514
-Category:                   amixer
+Project:                    ALSA - lib
+Issue ID:                   474
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   text
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-21-2004 19:48 CEST
-Last Modified:              11-09-2004 16:35 CET
+Date Submitted:             08-30-2004 12:52 CEST
+Last Modified:              11-09-2004 16:34 CET
 ======================================================================
-Summary:                    [PATCH] 15_amixer_doc_bug271556
+Summary:                    Compiling with -Wshadow generates warning messages
+with gcc-2.95
 Description: 
-Patch for amixer.1 which makes fixes its use of formatting
-codes.
+In file included from /usr/include/alsa/asoundlib.h:49,
+                 from alsa.c:3:
+/usr/include/alsa/pcm.h:535: warning: declaration of `access' shadows
+global declaration
+/usr/include/alsa/pcm.h:536: warning: declaration of `access' shadows
+global declaration
+/usr/include/alsa/pcm.h:537: warning: declaration of `access' shadows
+global declaration
+/usr/include/alsa/pcm.h:538: warning: declaration of `access' shadows
+global declaration
+/usr/include/alsa/pcm.h:539: warning: declaration of `access' shadows
+global declaration
+/usr/include/alsa/pcm.h:1260: warning: declaration of `access' shadows
+global declaration
+/usr/include/alsa/pcm.h:1270: warning: declaration of `access' shadows
+global declaration
+In file included from /usr/include/alsa/asoundlib.h:52,
+                 from alsa.c:3:
+/usr/include/alsa/hwdep.h:142: warning: declaration of `index' shadows
+global declaration
+In file included from /usr/include/alsa/asoundlib.h:56,
+                 from alsa.c:3:
+/usr/include/alsa/seq.h:363: warning: declaration of `index' shadows
+global declaration
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-23-04 19:52 
+ tiwai - 08-31-04 12:42 
 ----------------------------------------------------------------------
-Summary: fixes its use of formatting codes in amixer.1
-
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+They are quite harmless, although it'd be better to be fixed.
 
 ----------------------------------------------------------------------
- tiwai - 09-24-04 11:50 
+ tiwai - 09-21-04 12:38 
 ----------------------------------------------------------------------
-Applied.  Thanks.
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 19:48 jdthood        New Issue                                    
-09-21-04 19:48 jdthood        File Added: 15_amixer_doc_bug271556.dpatch        
-           
-09-23-04 19:52 jdthood        Note Added: 0001842                          
-09-24-04 11:50 tiwai          Status                   new => resolved     
-09-24-04 11:50 tiwai          Resolution               open => fixed       
-09-24-04 11:50 tiwai          Assigned To               => tiwai           
-09-24-04 11:50 tiwai          Note Added: 0001864                          
-11-09-04 16:35 tiwai          Status                   resolved => closed  
+08-30-04 12:52 erikd-alsa     New Issue                                    
+08-31-04 12:42 tiwai          Note Added: 0001672                          
+09-21-04 12:38 tiwai          Status                   new => resolved     
+09-21-04 12:38 tiwai          Resolution               open => fixed       
+09-21-04 12:38 tiwai          Assigned To               => tiwai           
+09-21-04 12:38 tiwai          Note Added: 0001799                          
+11-09-04 16:34 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
