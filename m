@@ -1,9 +1,11 @@
-From: llandre <r&d2@dave-tech.it>
-Subject: Running ALSA on embedded system (PowerPC 405EP)
-Date: Tue, 02 Nov 2004 19:26:04 +0100
-Message-ID: <6.0.1.1.0.20041102164518.01c8a3e0@192.168.2.1>
+From: =?Windows-1251?B?1uXt8vAg8uDw6PTt7ukg7+7r6PLo6uggIM7AziAi0MbEIg==?= <shalom@YourBizHelp.biz>
+Subject: Re:
+Date: Tue, 02 Nov 2004 18:12:18 +0000
+Message-ID: <facb01c4c107$f373590d$05e48bcf@YourBizHelp.biz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: multipart/related;
+    type="multipart/alternative";
+    boundary="----=_NextPart_000_0000_5DAA9AD1.54D4DDD3"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,41 +19,171 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi ALSA developers,
+This is a multi-part message in MIME format.
 
-I'm a newbie. If this subject is off topic, please excuse me and
-tell me the right mailing list I should write to.
-I'm trying to build ALSA drivers, libs and utilities on an embedded
-platform. The CPU is PowerPC 405EP by IBM. The kernel is 2.4.20.
-After some work I successfully built and installed the following packages:
-drivers: 0.9.0rc6
-library: 0.9.0rc1
-utilities: 0.9.0rc1
-The sources are built on the target, that is no cross-compilation is involved.
-I tried to build newer packages but I was not able to compile them (working
-with embedded systems is often a PITA :-( )
-
-1) When running the ALSA mixer I get the following error:
-
-bash-2.05# ./alsamixer/alsamixer
-
-alsamixer: function snd_mixer_load failed: Inappropriate ioctl for device
-bash-2.05#
-
-Am I missing something?
-Anybody can help me about it?
-
-2) As you can see I don't use the same version for drivers and libraries.
-May this lead to problems?
+------=_NextPart_000_0000_5DAA9AD1.54D4DDD3
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_001_0001_4650CD62.0334CFB4"
 
 
-Thanks in advance for your help,
+------=_NextPart_001_0001_4650CD62.0334CFB4
+Content-Type: text/plain; charset=Windows-1251
+Content-Transfer-Encoding: 8bit
 
-llandre
+      ОАО "РЖД" постоянно совершенствует тарифную политику для обеспечения наиболее эффективного использования подвижного состава, повышения доходов компании и обеспечения максимально широкого комплекса услуг для экспедиторских фирм и грузоотправителей.
+      Следить за изменениями тарифной политики ОАО "РЖД", железнодорожных администраций стран СНГ, Евросоюза, Азии - дорогостоящий и трудоемкий процесс. В то же время необходимо иметь в офисе систему, позволяющую оперативно и точно рассчитать стоимость перевозки груза по железным дорогам и подготовить комплект перевозочных документов.
 
-DAVE Electronics System House - R&D Department
-web:   http://www.dave-tech.it
-email: r&d2@dave-tech.it
+
+Компания АТМ-12 - официальный дилер "ТМКарты"- ПРЕДСТАВЛЯЕТ:
+
+T M         Получателю данного сообщения - скидка 10%. 
+карта 
+ 
+Назначение: 
+интеллектуальный расчет провозных платежей по СНГ и странам Балтии, а в скоре - по всей Европе 
+отображение маршрутов следования грузовых поездов 
+оформление комплекта перевозочных документов 
+хранение и отображение данных архива слежения за вагонами
+
+ 
+Только в нашей программе: 
+удобный графический интерфейс 
+отображение транспортной сети железных дорог стран СНГ и Евросоюза на карте 
+четкость и быстрота расчетов 
+отображение маршрутов следования на карте, отдельно по кратчайшему расстоянию и плану формирования, и вместе для визуального сравнения 
+автоматическое обновление коэффициентов 
+возможность ведения базы данных скидок и коэффициентов 
+наибольший перечень тарифных баз и дополнительных сборов для расчетов 
+интегрированность с системами АСУ грузовыми перевозками 
+оформление комплекта перевозочных документов 
+слежение за движением вагонов и их розыск 
+формирование детальных и наглядных отчетов в форматах Microsoft Excel, Microsoft WORD 
+постоянное и своевременное сопровождение программы 
+доступная и стабильная ценовая политика 
+постоянная информационная поддержка пользователей 
+развитая система помощи и справочников.
+
+ 
+Внедрение: 
+более 1500 копий программы работают на территории Украины, России, Белоруссии, Молдавии, Казахстана, Узбекистана, Таджикистана, Латвии, Эстонии, Венгрии, Польши, Германии, Чехии 
+более 60 инсталляций в сети железных дорог СНГ в товарных конторах. 
+ 
+Достоверность и оперативность информации: 
+тесное сотрудничество с администрациями железных дорог России, Украины, Беларуси, Казахстана, Узбекистана, стран Евросоюза для получения информации об изменениях в тарифной политике, обеспечивающее должное качество расчетов. 
+ 
+
+Контактные телефоны:
++7(095) 309-15-29
++7(095) 725-58-75 - многоканальный
+
+Вся информация на сайте: www.atm12.ru/tmkarta
+E-mail: tmkarta@atm12.ru
+
+
+
+------=_NextPart_001_0001_4650CD62.0334CFB4
+Content-Type: text/html; charset=Windows-1251
+Content-Transfer-Encoding: 8bit
+
+<HTML>
+<BODY>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ОАО &quot;РЖД&quot; постоянно совершенствует
+тарифную политику для обеспечения наиболее эффе<>ктивного использования подвижного
+состава, повышения доходов компании и обеспечения максимально широкого
+комплекса услуг для экспедиторских фирм и грузоотправителей.<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Следить за изменениями тарифной политики
+ОАО &quot;РЖД&quot;, железнодорожных администраций стран СНГ, Евросоюза,
+Азии - дорогостоящий и трудоемкий процесс. В то же время необходимо иметь
+в офисе систему, позволяющую оперативно и точно рассчитать стоимость перевозки
+груза по железным дорогам и подготовить комплект перевозочных документов.<BR>
+</P>
+<P align="center">Компания АТМ-12 - официальный дил<>ер &quot;ТМКарты&quot;- ПРЕДСТАВЛЯЕТ:</P>
+<TABLE>
+      <TR>
+      <TD>
+      <TABLE cellpadding="0" cellspacing="0">
+                  <TR>
+            <TD valign="bottom" align="center"><font face="Arial Black">T</font></TD>
+            <TD valign="bottom" align="center"><font face="Arial Black">M</font></TD>
+            <TD rowspan="2"><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Получателю данного сообщения
+            - скидка 10%.</B></TD>
+          </TR>
+          <TR>
+            <TD colspan="2" align="center" valign="top">карта</TD>
+          </TR>
+        
+      </TABLE>
+      </TD>
+    </TR>
+    <TR>
+      <TD><FONT color="#993333"><B>Назначение:</B></FONT>
+      <UL>
+        <LI><FONT color="#ff0000">интеллектуальный</FONT> расчет провозных платежей по СНГ и странам Балтии, а в скоре - по всей <FONT color="#ff0000">Европе</FONT>
+        <LI>отображение маршрутов следования грузовых поездов
+        <LI>оформление комплекта перевозочных документов
+        <LI>хранение и отображение данных архива слежения за вагонами<BR>
+      </UL>
+      </TD>
+    </TR>
+    <TR>
+      <TD><FONT color="#993333"><B>Только в нашей пр<>ограмме:</B></FONT>
+      <UL>
+        <LI>удобный графи<>ческий интерфейс
+        <LI>отображение транспортной сети железных дорог стран СНГ и Евросоюза на карте
+        <LI>четкость и быстрота расчетов
+        <LI>отображение маршрутов следования на карте, отдельно по кратчайшему расстоянию
+        и плану формирования, и вместе для визуального сравнения
+        <LI>автоматическое обновление коэффициентов
+        <LI>возможность ведения базы данных скидок и коэффициентов
+        <LI>наибольший перечень тарифных б<>аз и дополнительных сборов для расчетов 
+        <LI>интегрированность с системами АСУ грузовыми перевозками
+        <LI>оформление комплекта перевозочных документов
+        <LI>слежение за движением вагонов и их розыск
+        <LI>формирование детальных и наглядных отчетов в форматах Micr<>osoft Excel,
+        Micro<>soft WORD
+        <LI>постоянное и своевременное сопровождение программы
+        <LI>доступная и стабильная ценовая политика
+        <LI>постоянная информационная поддержка пользователей
+        <LI>развитая система помощи и справочников.<BR>
+      </UL>
+      </TD>
+    </TR>
+    <TR>
+      <TD><FONT color="#993333"><B>Внедрение:</B></FONT>
+      <UL>
+        <LI>более 1500 копий прогр<>аммы работают на территории Украины, России, Белоруссии,
+        Молдавии, Казахстана, Узбекистана, Таджикистана, Латвии, Эстонии, Венгрии,
+        Польши, Германии, Чехии 
+        <LI>более 60 инсталляций в сети железных дорог СНГ в товарных конторах. 
+      </UL>
+      </TD>
+    </TR>
+    <TR>
+      <TD><B><FONT color="#993333">Достоверность и оперативность информации:</FONT></B>
+      <UL>
+        <LI>тесное сотрудничество с админис<>трациями железных дорог России, Украины,
+        Беларуси, Казахстана, Узбекистана, стран Евросоюза для получения информации
+        об изменениях в тарифной политике, обеспечивающее должное качество расчетов.
+      </UL>
+      </TD>
+    </TR>
+ </TABLE>
+<P>Конта<>ктные телефоны:<BR>
++7(095) 30<>9-1<>5-29<BR>
++7(095) 72<>5-58-7<>5    - многоканальный<BR>
+<BR>
+Вся информация на сайте: <A href="http://www.atm12.ru/tmkarta">www.atm12.ru/tmkarta</A><BR>
+E-mail: <A href="mailto:tmkarta@atm12.ru">tmkarta@atm12.ru</A><BR>
+</P>
+</BODY>
+</HTML>
+
+
+------=_NextPart_001_0001_4650CD62.0334CFB4--
+
+
+
+------=_NextPart_000_0000_5DAA9AD1.54D4DDD3--
 
 
 
