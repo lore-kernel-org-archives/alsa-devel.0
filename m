@@ -1,14 +1,12 @@
-From: yahoo <yahoo.rm@muth.org>
-Subject: envy24control ht updated
-Date: Sun, 14 Sep 2003 10:55:37 -0400
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: ALSA documentation.
+Date: Sun, 14 Sep 2003 16:40:15 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200309141055.37341.yahoo.rm@muth.org>
+Message-ID: <3F648BDF.2010505@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,18 +15,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Why is the following document, together with other documents in that 
+directory, not easily accessible from the alsa-project web site?
 
+alsa-kernel/Documentation/ALSA-Configuration.txt
 
-I would like to update envy24control to support the newer ht chips.
-Is there any documentation for these chips online?
-Thanks,
-
-Robert
-
--------------------------------------------------------
+Cheers
+James
 
 
 
