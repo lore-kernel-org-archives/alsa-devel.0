@@ -1,12 +1,20 @@
-From: Ken Bass <kbass@kenbass.com>
-Subject: Sound programming confusion
-Date: 25 Feb 2004 14:16:54 -0500
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: 1.0.3rc2 release
+Date: Wed, 25 Feb 2004 21:10:53 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1077736614.19756.44.camel@localhost.localdomain>
+Message-ID: <Pine.LNX.4.58.0402252108180.15215@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA07312
+	for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2004 21:15:42 +0100
+Received: from server.perex-int.cz (server-a.perex-int.cz [192.168.100.3])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 3B501EF
+	for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2004 21:15:41 +0100 (MET)
+Received: from pnote.perex-int.cz (localhost [127.0.0.1])
+	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 1F6AE3E000
+	for <alsa-devel@alsa-project.org>; Wed, 25 Feb 2004 21:15:41 +0100 (CET)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,57 +23,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I'm trying to accomplish a programming task and am pretty confused about
-the capabilities of the sound drivers and how I would accomplish this in
-an application. I've been through the HOWTO and tutorial as well as
-attempted to read the PCM interface parts of the also-lib docs. But I've
-got more questions than answers. The SB-Live-mixer.txt was not helpful.
+Hello all,
 
-I've got an SB Live! 5.1 (EMU10K1) device that is my target using analog
-outputs.
+	I released 1.0.3rc2 packages. The full changelog from 1.0.2 will 
+came with the final release, but it would be nice to do some tests with 
+this code with smaller number of testers to not follow the 1.0.2 situation 
+when we have to quickly release several versions due to compilation 
+problems. Please, test the packages.
 
-High Level:
+					Thanks,
+						Jaroslav
 
-1) I've got 3 separate PCM 'mono' streams of data that I want to send to
-3 different outputs.
-
-  a) How many PCM inputs do these cards/drivers support? Under OSS,
-there were 2, /dev/dsp and /dev/dsp1. Ideally I would like each input
-stream to have a seperate sample rate. In practice, 2 of them will be
-25kHz, and one will be 22050Hz.
-  
-2) I want to reconfigure the 'routing' on the fly. How do I do this?
-I've seen documentation (which wasn't clear) about .asoundrc files and
-such, but I need to change this programmaticaly.
-  Input 1- 25 kHz PCM stream 
-  Input 2- 25 kHz PCM stream
-  Input 3- 22050Hz PCM stream
-  Output 1 - Front L
-  Output 2 - Front R
-  Output 3 - Rear L
-  
-  I want to route (on the fly) any of those inputs to any of those
-outputs (being careful to erase all routes and recreate them each time I
-reconfigure).
-
-3) I'm totally confused about the capabilities of this card. Is this
-described at a high level somewhere or can someone explain this?
-
-4) I'm not clear how to control these routes, what 'hw' device names to
-use, etc. I've seen references to ld10k1, 
-
-5) In the SB-Live-mixer.txt, section 3, PCM stream related controls --
-I'm lost. What is a PCM Send Routing, what are A, B, C, D destinations,
-why is there a distinction between mono and left/right, and how are
-these controlled?
-
-6) I see references to 'surround40' or 'surround51'. I'm not sure if
-that is what I want because they cannot be changed on the fly.
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
