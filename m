@@ -1,15 +1,13 @@
-From: matthieu castet <castet.matthieu@free.fr>
-Subject: Re: mpu401_pnp
-Date: Mon, 07 Feb 2005 13:59:59 +0100
-Message-ID: <4207664F.8030305@free.fr>
-References: <Pine.HPX.4.33n.0502070940520.3379-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000860]: Wrong detection of opl3 device
+Date: Mon, 7 Feb 2005 16:13:04 +0100
+Message-ID: <2c82789e6fffb1f018e697fdfe1779cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020700090906020002020007"
-Received: from postfix4-1.free.fr (postfix4-1.free.fr [213.228.0.62])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8683F21A
-	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2005 13:59:59 +0100 (MET)
-In-Reply-To: <Pine.HPX.4.33n.0502070940520.3379-100000@studcom.urz.uni-halle.de>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E503323B
+	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2005 16:13:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,258 +17,91 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020700090906020002020007
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=860> 
+======================================================================
+Reported By:                theli
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   860
+Category:                   ISA - als100
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.10-ck4
+======================================================================
+Date Submitted:             01-29-2005 18:20 CET
+Last Modified:              02-07-2005 16:13 CET
+======================================================================
+Summary:                    Wrong detection of opl3 device
+Description: 
+driver als100.c has
+        acard->devmpu = pnp_request_card_device(card, id->devs[1].id,
+acard->dev);
+        acard->devopl = pnp_request_card_device(card, id->devs[2].id,
+acard->devmpu);
+in "static int __devinit snd_card_als100_pnp".
 
-attached a version more readable with less ifdef.
-It is untested, but it should work.
+so search for opl device starts from devmpu...
+and in my MF1000 opl device is 00:01.03
+and opl3 is 00:01.01 so it can't be found that way ...
+and devopl is NULL :(
 
-One question : does snd_card_set_dev(card, &device->dev) is important ? 
-It wasn't use with acpi.
+but opl3 works when changed above code to 
 
-regards,
+        acard->devmpu = pnp_request_card_device(card, id->devs[1].id,
+acard->dev);
+        acard->devopl = pnp_request_card_device(card, id->devs[2].id,
+acard->dev);
 
-Matthieu
+(search of opl3 starts from acard->dev )
+and that should work in any case
 
---------------020700090906020002020007
-Content-Type: text/x-patch;
- name="mpu.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="mpu.patch"
+PS: sorry for my english.
+PPS: don't even know does anyone else use such old sound card.
+PPPS: was fighting with alsa for weeks trying to get opl3 working before
+decided to look in sources.
+======================================================================
 
---- mpu401.c?rev=1.22	2005-02-07 13:26:09.000000000 +0100
-+++ mpu401.c	2005-02-07 13:55:30.000000000 +0100
-@@ -57,68 +57,13 @@
- MODULE_PARM_DESC(irq, "IRQ # for MPU-401 device.");
- 
- static snd_card_t *snd_mpu401_legacy_cards[SNDRV_CARDS] = SNDRV_DEFAULT_PTR;
-+static int pnp_registered = 0;
- 
--#ifdef CONFIG_PNP
--
--#define IO_EXTENT 2
--
--static struct pnp_device_id snd_mpu401_pnpids[] = {
--	{ .id = "PNPb006" },
--	{ .id = "" }
--};
--
--MODULE_DEVICE_TABLE(pnp, snd_mpu401_pnpids);
--
--static int __init snd_mpu401_pnp(int dev, struct pnp_dev *device,
--				 const struct pnp_device_id *id)
--{
--	if (!pnp_port_valid(device, 0) ||
--	    pnp_port_flags(device, 0) & IORESOURCE_DISABLED) {
--		snd_printk(KERN_ERR "no PnP port\n");
--		return -ENODEV;
--	}
--	if (pnp_port_len(device, 0) < IO_EXTENT) {
--		snd_printk(KERN_ERR "PnP port length is %ld, expected %d\n",
--			   pnp_port_len(device, 0), IO_EXTENT);
--		return -ENODEV;
--	}
--	port[dev] = pnp_port_start(device, 0);
--
--	if (!pnp_irq_valid(device, 0) ||
--	    pnp_irq_flags(device, 0) & IORESOURCE_DISABLED) {
--		snd_printk(KERN_WARNING "no PnP irq, using polling\n");
--		irq[dev] = -1;
--	} else {
--		irq[dev] = pnp_irq(device, 0);
--	}
--	return 0;
--}
--#endif
--
--static int __devinit snd_card_mpu401_probe(int dev, struct pnp_dev *device,
--					   const struct pnp_device_id *pnp_id)
-+static int snd_card_mpu401_add(int dev)
- {
- 	snd_card_t *card;
- 	int err;
- 
--#ifdef CONFIG_PNP
--	if (!device) {
--#endif
--		if (port[dev] == SNDRV_AUTO_PORT) {
--			snd_printk(KERN_ERR "specify port\n");
--			return -EINVAL;
--		}
--		if (irq[dev] == SNDRV_AUTO_IRQ) {
--			snd_printk(KERN_ERR "specify or disable IRQ\n");
--			return -EINVAL;
--		}
--#ifdef CONFIG_PNP
--	} else {
--		if ((err = snd_mpu401_pnp(dev, device, pnp_id)) < 0)
--			return err;
--	}
--#endif
--
- 	card = snd_card_new(index[dev], id[dev], THIS_MODULE, 0);
- 	if (card == NULL)
- 		return -ENOMEM;
-@@ -130,11 +75,13 @@
- 	} else {
- 		strcat(card->longname, "polled");
- 	}
--#ifdef CONFIG_PNP
-+
-+	/*
- 	if (device) {
- 		snd_card_set_dev(card, &device->dev);
- 	}
--#endif
-+	*/
-+
- 	if (snd_mpu401_uart_new(card, 0,
- 				MPU401_HW_MPU401,
- 				port[dev], 0,
-@@ -147,16 +94,59 @@
- 		snd_card_free(card);
- 		return err;
- 	}
--#ifdef CONFIG_PNP
--	if (device)
--		pnp_set_drvdata(device, card);
--	else
--#endif
- 		snd_mpu401_legacy_cards[dev] = card;
- 	return 0;
- }
- 
-+static int __devinit snd_card_mpu401_probe(int dev)
-+{
-+	if (port[dev] == SNDRV_AUTO_PORT) {
-+		snd_printk(KERN_ERR "specify port\n");
-+		return -EINVAL;
-+	}
-+	if (irq[dev] == SNDRV_AUTO_IRQ) {
-+		snd_printk(KERN_ERR "specify or disable IRQ\n");
-+		return -EINVAL;
-+	}
-+	return snd_card_mpu401_add(dev);
-+}
-+
- #ifdef CONFIG_PNP
-+
-+#define IO_EXTENT 2
-+
-+static struct pnp_device_id snd_mpu401_pnpids[] = {
-+	{ .id = "PNPb006" },
-+	{ .id = "" }
-+};
-+
-+MODULE_DEVICE_TABLE(pnp, snd_mpu401_pnpids);
-+
-+static int __init snd_mpu401_pnp(int dev, struct pnp_dev *device,
-+				 const struct pnp_device_id *id)
-+{
-+	if (!pnp_port_valid(device, 0) ||
-+	    pnp_port_flags(device, 0) & IORESOURCE_DISABLED) {
-+		snd_printk(KERN_ERR "no PnP port\n");
-+		return -ENODEV;
-+	}
-+	if (pnp_port_len(device, 0) < IO_EXTENT) {
-+		snd_printk(KERN_ERR "PnP port length is %ld, expected %d\n",
-+			   pnp_port_len(device, 0), IO_EXTENT);
-+		return -ENODEV;
-+	}
-+	port[dev] = pnp_port_start(device, 0);
-+
-+	if (!pnp_irq_valid(device, 0) ||
-+	    pnp_irq_flags(device, 0) & IORESOURCE_DISABLED) {
-+		snd_printk(KERN_WARNING "no PnP irq, using polling\n");
-+		irq[dev] = -1;
-+	} else {
-+		irq[dev] = pnp_irq(device, 0);
-+	}
-+	return snd_card_mpu401_add(dev);
-+}
-+
- static int __devinit snd_mpu401_pnp_probe(struct pnp_dev *pnp_dev,
- 					  const struct pnp_device_id *id)
- {
-@@ -166,9 +156,11 @@
- 	for ( ; dev < SNDRV_CARDS; ++dev) {
- 		if (!enable[dev] || !pnp[dev])
- 			continue;
--		err = snd_card_mpu401_probe(dev, pnp_dev, id);
-+		err = snd_mpu401_pnp(dev, pnp_dev, id);
- 		if (err < 0)
- 			return err;
-+		pnp_set_drvdata(pnp_dev, snd_mpu401_legacy_cards[dev]);
-+		snd_mpu401_legacy_cards[dev] = NULL;
- 		++dev;
- 		return 0;
- 	}
-@@ -189,11 +181,14 @@
- 	.probe = snd_mpu401_pnp_probe,
- 	.remove = __devexit_p(snd_mpu401_pnp_remove),
- };
-+#else
-+static struct pnp_driver snd_mpu401_pnp_driver;
- #endif
- 
- static int __init alsa_card_mpu401_init(void)
- {
- 	int dev, devices = 0;
-+	int err;
- 
- 	for (dev = 0; dev < SNDRV_CARDS; dev++) {
- 		if (!enable[dev])
-@@ -202,19 +197,20 @@
- 		if (pnp[dev])
- 			continue;
- #endif
--		if (snd_card_mpu401_probe(dev, NULL, NULL) >= 0)
-+		if (snd_card_mpu401_probe(dev) >= 0)
- 			devices++;
- 	}
--#ifdef CONFIG_PNP
--	devices += pnp_register_driver(&snd_mpu401_pnp_driver);
--#endif
-+	if ((err = pnp_register_driver(&snd_mpu401_pnp_driver)) >= 0) {
-+		pnp_registered = 1;
-+		devices += err;
-+	}
-+
- 	if (!devices) {
- #ifdef MODULE
- 		printk(KERN_ERR "MPU-401 device not found or device busy\n");
- #endif
--#ifdef CONFIG_PNP
--		pnp_unregister_driver(&snd_mpu401_pnp_driver);
--#endif
-+		if (pnp_registered)
-+			pnp_unregister_driver(&snd_mpu401_pnp_driver);
- 		return -ENODEV;
- 	}
- 	return 0;
-@@ -224,9 +220,8 @@
- {
- 	int idx;
- 
--#ifdef CONFIG_PNP
--	pnp_unregister_driver(&snd_mpu401_pnp_driver);
--#endif
-+	if (pnp_registered)
-+		pnp_unregister_driver(&snd_mpu401_pnp_driver);
- 	for (idx = 0; idx < SNDRV_CARDS; idx++)
- 		snd_card_free(snd_mpu401_legacy_cards[idx]);
- }
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-07-05 10:50 
+----------------------------------------------------------------------
+Please post a Signed-off-by line for your patch (see
+linux/Documentation/SubmittingPatches).
 
---------------020700090906020002020007--
+----------------------------------------------------------------------
+ theli - 02-07-05 16:13 
+----------------------------------------------------------------------
+well i've added signed-off-by and description in patch...
+but .... well, my english is far from perfect :)
+
+(hm, wonder why i can't delete attachment, uploaded by me?)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-29-05 18:20 theli          New Issue                                    
+01-29-05 18:20 theli          Kernel Version            => 2.6.10-ck4      
+01-29-05 18:42 theli          Issue Monitored: theli                       
+01-29-05 19:43 theli          Note Added: 0003439                          
+02-05-05 19:53 theli          File Added: als100_opl3_fix.patch                 
+  
+02-05-05 19:54 theli          Note Added: 0003523                          
+02-07-05 10:50 Clemens LadischNote Added: 0003529                          
+02-07-05 16:06 theli          File Added: als100_opl3_fixx.patch                
+   
+02-07-05 16:13 theli          Note Added: 0003531                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
