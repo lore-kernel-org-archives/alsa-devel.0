@@ -1,12 +1,16 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: guitar + sblive + ardour + ladspa effects
-Date: Mon, 29 Jul 2002 16:53:05 -0400
+From: Bob Ham <node@users.sourceforge.net>
+Subject: Re: [ardour-dev] Re: guitar + sblive + ardour + ladspa
+	effects
+Date: 29 Jul 2002 22:09:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17ZHUa-0008M7-00@usw-sf-list1.sourceforge.net>
+Message-ID: <1027976945.10076.95.camel@insanity>
 References: <1027973318.10978.62.camel@insanity>
+	<3D45A636.4030000@boosthardware.com>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "29 Jul 2002 21:08:35 BST."
-             <1027973318.10978.62.camel@insanity>
+In-Reply-To: <3D45A636.4030000@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,55 +19,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Bob Ham <node@users.sourceforge.net>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
 Cc: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>, Ardour Devel Mailing List <ardour-dev@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->This is what I want to do: guitar into the line input on the live drive,
->that going into ardour, through a few ladspa effects, and out to the
->speakers.  I can't seem to do this.  The only way I seem to be able to
->get the input into ardour is to have it going through the speakers as
->well so that both the input and the ladspa-processed output can be
->heard.  I only want the ladspa-processed output.  Is this possible? 
+On Mon, 2002-07-29 at 21:31, Patrick Shirkey wrote:
 
-sure. assuming we're talking stereo:
+> Have a read of the arecord quicktoot
+> 
+> http://www.boosthardware.com/LAU/quicktoots
+> 
+> That will give you some info about using alsamixer correctly.
 
-add 2 routes (*without* diskstreams)
-set the inputs to "in 1" and "in 2" respectively (from the mixer window)
-set the outputs to "out 1" and "out 2" respectively (from the mixer window)
-add the desired plugins to each route
-listen ...
+Getting ardour to be able to record/modify the incoming sound isn't the
+issue.  It's getting ardour to do that without it going through the
+speakers beforehand.  I don't want to hear any sound if I put the mixer
+slider down to nothing in ardour.  At the moment, I hear the original,
+clean guitar signal.  I assume the line input is getting routed to both
+jack's alsa_pcm inputs and the soundcard's amp.  I want it only to go to
+jack, and then the ladspaified signal to the amp afterwards.
 
-before you do all this, however, you need to have set up the line
-input as the capture source. that's an sblive specific issue on which
-i have no knowledge whatsoever.
+Bob
 
-you will also probably want to turn down the line-in level, so that
-the direct feed is not audible. that is also an sblive issue. 
+-- 
+Bob Ham: bob@ham.org  http://pkl.net/~node/
 
-ALSA has a correctly designed mixer API to reflect the true
-capabilities of various mixing hardware, but the vast differences
-between audio interfaces and the lack of a standard ("every card must
-provide the following mixer controls if it provides any at all") makes
-this stuff much harder than it should be. or so it seems from reading
-messages to the list.
-
->"Capture" device sitting in alsamixer?  What difference does the little
->red "Capture" make above the sliders in alsamixer? 
-
-it controls which sources are being used for capture *by the
-hardware*. they should be over the relevant sources in alsamixer.
-
->If it's not possible to this with only the sblive, I have the
->motherboard's "soundcard" as well but how do I get jackd to deal with
->more that one bit of hardware?  
-
-jackd -d alsa -d hw:N
-
-where N is the relevant card number for the motherboard audio
-interface.
-
---p
 
 
 -------------------------------------------------------
