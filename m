@@ -1,15 +1,12 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000333]: no stereo sound (nforce2)
-Date: Sat, 12 Jun 2004 23:10:15 +0200
+From: "Michele Spinolo" <michele.spinolo@tin.it>
+Subject: Envy24Control and wordclock
+Date: Sun, 13 Jun 2004 08:47:51 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <016f21326948edaaf502fe7bb054a74d@bugtrack.alsa-project.org>
+Message-ID: <00b701c45112$595488f0$f7143052@cfd86qjdqauxzj>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00B4_01C45123.1C9A3570"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 817462DF
-	for <alsa-devel@alsa-project.org>; Sat, 12 Jun 2004 23:10:15 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,71 +15,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following bug has been SUBMITTED.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0333
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                elkner
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     333
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware
-Kernel Version:             2.4.23, 2.6.6
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-12-2004 23:10 CEST
-Last Modified:              06-12-2004 23:10 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    no stereo sound (nforce2)
-Description:=20
-I have a Gigabyte GA-7N400 PRO2 motherboard, which has an
-Nforce2 chipset. So I trie to use 'snd-card-0 snd-intel8x0'.
-The problem is - it seems to not support stereo (only the right speaker
-sends out sound). So when one mutes the right
-speaker/channel there is a big silence :(
+------=_NextPart_000_00B4_01C45123.1C9A3570
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I tried this with the 2.4.23 as well with the 2.6.6 kernel
-both with alsa-* 0.9.1 and 1.0.4rc2 (which comes with the 2.6 kernel).=20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Hi guys,
 
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-12-04 23:10 elkner         New Bug                                    =
- =20
-06-12-04 23:10 elkner         Distribution              =3D> Slackware   =
-   =20
-06-12-04 23:10 elkner         Kernel Version            =3D> 2.4.23, 2.6.=
-6  =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+I installed 3 Terratec EWS88D in my system, which are properly =
+recognized and now, after some work, work fine.
 
+Using the command envy24control -c x (x=3D0,1,2) I can manage HW =
+settings of different soundcards, bun under "hardware settings", "master =
+clock" I can't find "wordclock" option which permits to sync the =
+different boards.
+The boards are connected by their internal wordclock propetary cable, =
+the problem seems the driver or envy24control do not recognize this =
+option the soundcard has.
+
+Thanks!
+Michele
+------=_NextPart_000_00B4_01C45123.1C9A3570
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>
+<DIV><FONT face=3DArial size=3D2>Hi guys,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I installed 3 Terratec EWS88D in my =
+system, which=20
+are properly recognized and now, after some work, work =
+fine.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Using the command envy24control -c x =
+(x=3D0,1,2) I=20
+can manage HW settings of different soundcards, bun under "hardware =
+settings",=20
+"master clock" I can't find "wordclock" option which permits to sync the =
+
+different boards.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The boards are connected by their =
+internal=20
+wordclock propetary cable, the problem seems the driver or envy24control =
+do not=20
+recognize this option the soundcard has.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks!</FONT></DIV>
+<DIV><FONT face=3DArial =
+size=3D2>Michele</FONT></DIV></DIV></BODY></HTML>
+
+------=_NextPart_000_00B4_01C45123.1C9A3570--
 
 
 
