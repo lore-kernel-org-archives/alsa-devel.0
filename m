@@ -1,11 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Bug in serial-u16550.c
-Date: Thu, 24 Feb 2005 13:48:24 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0502241331070.300-100000@studcom.urz.uni-halle.de>
-References: <opsmo54p0sn0kn27@linux.site>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000794]: can't compile alsa-driver 1.0.7 with a linux kernel 2.4.29-rc1
+Date: Thu, 24 Feb 2005 15:11:55 +0100
+Message-ID: <56c4ec0a905f8100a6488edeebdd0ff4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <opsmo54p0sn0kn27@linux.site>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AFC15208
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 15:11:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,47 +17,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Bill Adair <adair@gotadsl.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Bill Adair wrote:
-> There is a bug in serial-u16550.c that has been causing my PC to lock up
-> solid. The three chunks of code
-> should explain the nature of it. Basically a lock is taken out on
-> interrupt and is still held on calling
-> snd_rawmidi_receive (). snd_rawmidi_receive () eventually calls back into
-> the driver code at snd_uart16550_input_trigger ()
-> where an attempt is made to take out the same lock again. Other pieces of
-> code using the same construction avoid
-> this problem by unlocking before calling snd_rawmidi_receive () and
-> relocking e.g. mtpav.c - though this does
-> not seem a good solution ;-).
 
-This depends on what data the lock is supposed to protect.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=794> 
+======================================================================
+Reported By:                zebul666
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   794
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               slackware
+Kernel Version:             2.4.29-rc1 (from kernel.org and not provide by the
+distribution)
+======================================================================
+Date Submitted:             01-08-2005 18:20 CET
+Last Modified:              02-24-2005 15:11 CET
+======================================================================
+Summary:                    can't compile alsa-driver 1.0.7 with a linux kernel
+2.4.29-rc1
+Description: 
+[...]
+gcc -D__KERNEL__ -DMODULE=1 -I/tmp/buildSXOSxz/alsa-driver-1.0.7/include 
+-I/usr/src/linux/include -O2 -mpreferred-stack-boundary=2 -march=athlon
+-DLINUX -Wall-Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
+include   -DEXPORT_SYMTAB -c timer.c
+In file included from timer.c:23:
+/usr/src/linux/include/linux/delay.h:57: error: parse error before "do"
+/usr/src/linux/include/linux/delay.h:57: error: parse error before '('
+token
+/usr/src/linux/include/linux/delay.h:60: error: parse error before '('
+token
+make[1]: *** [timer.o] Error 1
+make[1]: Leaving directory `/tmp/buildSXOSxz/alsa-driver-1.0.7/acore'
+make: *** [compile] Error 1
 
-> Do you want a patch for this? In the Opcode driver I've been writing
-> based on this I've checked to see if the kernel is in an interrupt using
-> the in_interrupt ()
-> call before locking or unlocking in snd_uart16550_input_trigger ().
 
-Not locking could, in theory, lead to problems on SMP machines.
+======================================================================
 
-However, it filemode is the only variable that is protected, it might
-be possible to change it to use atomic bit operations.
+----------------------------------------------------------------------
+ perex - 02-22-05 09:33 
+----------------------------------------------------------------------
+Can you reproduce with 1.0.8?
 
-> Can anyone describe the function of the up parameter passed to
-> snd_uart16550_input_trigger ()?
+----------------------------------------------------------------------
+ zebul666 - 02-24-05 15:11 
+----------------------------------------------------------------------
+no.
 
-It enables/disables input from the port.
+there is no pb with 1.0.8rc2.
+I haven't tested it with 1.0.8 but i don't think there will be any pb. No
+pb either with a stock kernel 2.4.29 and 1.0.8 
 
-> Should I be using this to determine if the call came from an interrupt?
+not a usefull report ?
 
-It has nothing to do with in-interruptness.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-08-05 18:20 zebul666       New Issue                                    
+01-08-05 18:20 zebul666       Distribution              => slackware       
+01-08-05 18:20 zebul666       Kernel Version            => 2.4.29-rc1 (from
+kernel.org and not provide by the distribution)
+02-22-05 09:33 perex          Note Added: 0003687                          
+02-24-05 15:11 zebul666       Note Added: 0003720                          
+======================================================================
 
-
-HTH
-Clemens
 
 
 
