@@ -1,16 +1,15 @@
-From: Olivier Blin <olivierblin@club-internet.fr>
-Subject: Re: kernel oops with snd-intel8x0 driver and Sis7012
- chipset
-Date: Fri, 12 Sep 2003 12:46:37 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Major problem with the current alsa mixer.
+Date: Fri, 12 Sep 2003 12:50:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030912124637.66bf2f0e.olivierblin@club-internet.fr>
-References: <20030912025815.5ce81395.olivierblin@club-internet.fr>
-	<s5hekymcrsp.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.53.0309121249070.18522@pnote.perex-int.cz>
+References: <3F610FE4.2040009@superbug.demon.co.uk>
+ <Pine.LNX.4.53.0309120917540.17210@pnote.perex-int.cz> <s5hd6e6crkn.wl@alsa2.suse.de>
+ <Pine.LNX.4.53.0309121229080.17210@pnote.perex-int.cz> <s5h7k4ecmxn.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hekymcrsp.wl@alsa2.suse.de>
+In-Reply-To: <s5h7k4ecmxn.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,41 +19,48 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 12 Sep 2003 10:52:22 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+On Fri, 12 Sep 2003, Takashi Iwai wrote:
 
-> are you sure aplay segfaults with the same oops?
+> At Fri, 12 Sep 2003 12:31:32 +0200 (CEST),
+> Jaroslav wrote:
+> >
+> > On Fri, 12 Sep 2003, Takashi Iwai wrote:
+> >
+> > > > I have plans to extend the mixer interface to pass (and handle) the dB
+> > > > resolution. But it will be done completely in the user space. The alsa-lib
+> > > > will analyze information from the driver (hardware components) and then it
+> > > > will use a predefined expressions for these transformations. I think that
+> > > > we should not polute the kernel space with these "additional" things.
+> > >
+> > > agreed.  it's a user-space thing.
+> > >
+> > > but some additional information like min/max dB would be needed, too?
+> >
+> > I think that we can have this database (including expressions which
+> > converts hardware range to the dB range) in alsa-lib, too. It was one of
+> > reasons why I am working on the lisp integration to alsa-lib, because we
+> > can easy describe mathematic expressions with this language.
+>
+> oh, yes, it's good.  it would be easier to add new information, too.
+>
+> well, we'll still need to provide a good method to tell the used codec
+> (or any other info) for user apps.  the same driver can have different
+> codecs, which behave quite differently.  as you know, even ac97 codecs
+> may have different dB range for the same element...
 
-Sorry, I haven't checked, I'll tell you in a few hours.
+Yes, the best way to determine the ac97 codec confiration is reading of
+ac97 registers. The proc interface might help us and we can move this
+functionality to sysfs later.
 
-> the oops in resample_expand() was known in the ealier 2.6.0-test
-> kernels when it's build without frame pointer.  but it appears only on
-> OSS emulation.
-> also, in the recent version, at least 0.9.6, it no longer appears.
+						Jaroslav
 
-It is fixed in 2.6.0-test kernels (at least no problem with kernel >=
-test4), but not in 2.4.22 pre kernels.
-
-> anyway the oops you've seen is not the problem of intel8x0 driver but
-> in the somewhere core part.
-> 
-> please check whether the compiler is correct (the exactly same
-> compiler which is used for the kernel), and check the compile option
-> whether -fomit-frame-pointer is NOT set.
-
-I'll check all this
-
-> also, trying cvs version is recommended in such a case, since i'm
-> working only on the latest version, too.
-
-ok, i'll stick to cvs from now
-
-
--- 
-Olivier Blin
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
