@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000494]: aoss crashes (patch)
-Date: Mon, 13 Sep 2004 15:49:38 +0200 (CEST)
+Subject: [ALSA - driver 0000497]: cdplayer and midi does'n work
+Date: Mon, 13 Sep 2004 15:32:14 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040913134938.BA9BC1200A@server.perex-int.cz>
+Message-ID: <20040913133214.D0EBA1200A@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9D12628B
-	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 15:49:39 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 83A2727E
+	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 15:32:15 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id E263E23C1E
+	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 15:32:14 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,60 +25,47 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000494
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000497
 ======================================================================
-Reported By:                stsp
+Reported By:                maciekb
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Bug ID:                     494
-Category:                   
+Project:                    ALSA - driver
+Bug ID:                     497
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             09-09-2004 20:46 CEST
-Last Modified:              09-13-2004 15:49 CEST
+Date Submitted:             09-11-2004 16:46 CEST
+Last Modified:              09-13-2004 15:32 CEST
 ======================================================================
-Summary:                    aoss crashes (patch)
+Summary:                    cdplayer and midi does'n work
 Description: 
-aoss always causes a SIGSEGV for me. Here is a
-stack trace:
----
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000000  0x00000000 in ?? ()
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001  0x4002a76d in fopen (path=0x40039c3a "/proc/mounts", mode=0x40039c38
-"r")
-    at alsa-oss.c:661
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000002  0x40036d4d in print_access_vector () from /lib/libselinux.so.1
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000003  0x40038971 in setfscreatecon () from /lib/libselinux.so.1
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000004  0x4002fc55 in _init () from /lib/libselinux.so.1
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000005  0x4000bf71 in _dl_init_internal () from /lib/ld-linux.so.2
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000006  0x400007f5 in _dl_start_user () from /lib/ld-linux.so.2
----
+I have A7V600-X motherboard with via8237 chipset
+My cdplayer does'n play and i do not have midi. 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-13-2004 15:49 CEST 
+ tiwai - 09-13-2004 15:32 CEST 
 ----------------------------------------------------------------------
-Could you give the patch summary and signed-off-by line to apply
-your patch (preferably with detailed description).
+Make sure that you unmuted and raised the volume of CD mixer control.
+Please attach /etc/asound.state.
 
-It looks like below.
-
-Summary: [ALSA-OSS] Fix segfault at fopen
-
-This patch fixes the bug....
-More description...
-
-Signed-off-by: Foo Bar <foo@bar.com>
+The hardware doesn't support MIDI (playback).
+Possibly, the external MIDI UART is supported by snd-mpu401.
+If you want a soft MIDI synth, try the softsynth program like TiMidity.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-04 20:46 stsp           New Bug                                      
-09-09-04 20:46 stsp           File Added: alsa-oss.c.diff                    
-09-13-04 15:49 tiwai          Bugnote Added: 0001749                       
+09-11-04 16:46 maciekb        New Bug                                      
+09-11-04 16:46 maciekb        Distribution              => Debian unstable 
+09-11-04 16:46 maciekb        Kernel Version            => 2.6.7           
+09-13-04 15:32 tiwai          Bugnote Added: 0001745                       
 ======================================================================
 
 
