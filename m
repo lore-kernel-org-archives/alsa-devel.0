@@ -1,13 +1,16 @@
-From: =?Windows-1251?B?3ev84ujw4CDI8eDq7uLt4A==?= <graeme@skynet.be>
-Subject: =?Windows-1251?B?yuDqIPPv8ODi6//y/PH/IPEg4fP14+Dr8uXw6OXp?=
-Date: Tue, 26 Oct 2004 13:10:19 +0000
+From: Jose Alberto Reguero <jareguero@telefonica.net>
+Subject: Re: AD1980 problem
+Date: Tue, 26 Oct 2004 16:48:31 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <36aa01c4bb5d$f1499390$0778e399@skynet.be>
+Message-ID: <200410261648.31635.jareguero@telefonica.net>
+References: <200410241725.47371.jareguero@telefonica.net> <200410250903.57435.jareguero@telefonica.net> <200410252003.23126.jareguero@telefonica.net>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_FB768105.33C3DD07"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200410252003.23126.jareguero@telefonica.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,63 +22,69 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Sound card is VIA 8237 with AD1980
+With alsa cvs it works.
+Jose Alberto
 
-------=_NextPart_000_0000_FB768105.33C3DD07
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_96C3E0E9.46557E6C"
-
-
-------=_NextPart_001_0001_96C3E0E9.46557E6C
-Content-Type: text/plain; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
-
-Как должна быть построена Бухгалтерия, чтобы был доволен Генеральный? 
-На каком языке ему говорить об успехах Бухгалтерии? 
-Как самому понять, насколько эффективна бухгалтерия и где "дыры" - они же резервы для сокращения или добавления новых задач, например Управленческого Учета? 
-Бухгалтерия, Которая Работает
-Как оценивать работу бухгалтерии в целом? 
-Как оценивать работу отдельных сотрудников, в чем ее измерять и как? 
-Как писать инструкции - что не объяснять по десять раз, и в формализм не перекинуться? 
-Что должна делать бухгалтерия, а что нет? Кто должен выставлять счета, истребовать документы и т.д.? 
-Как построить бухгалтерию, которая будет эффективно работать?. 
-Вся подробная информация по тел.: (095) 5lЧ-5О47
-
-
-------=_NextPart_001_0001_96C3E0E9.46557E6C
-Content-Type: text/html; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
-
-<HTML>
-<BODY>
-<UL>
-  <LI>Как должна быть построена Бухгалтерия, чтобы был доволен Генеральный?
-  <LI>На каком языке ему говорить об успехах Бу<adhesion>хгалтерии?
-  <LI>Как самому понять, насколько эффективна бухгалтерия и где &quot;дыры&quot;
-  - они же резервы для сокращения или добавления новых задач, например Управленческого
-  Учета?
-</UL>
-<H1 align="center"><FONT color="#ff8000"><B>Бух<alluvial>галтерия, Которая Работает</B></FONT></H1>
-<OL>
-  <LI>Как оценивать работу бухгалтерии в целом?
-  <LI>Как оценивать работу отдельных сотрудников, в чем ее измерять и как?
-  <LI>Как писать инст<amass>рукции - что не объяснять по десять раз, и в формализм не
-  перекинуться?
-  <LI>Что должна делать бухгалтерия, а что нет? Кто должен выставлять счета,
-  истребовать документы и т.д.?
-  <LI>Как построи<apices>ть бухгалтерию, которая будет эффективно работать?. 
-</OL>
-<P align="center"><FONT color="#990000"><B>Вся подробная информация по тел.: (095) 5<appleton>lЧ-5О<although>4<airy>7</B></FONT></P>
-</BODY>
-</HTML>
-
-
-------=_NextPart_001_0001_96C3E0E9.46557E6C--
-
-
-
-------=_NextPart_000_0000_FB768105.33C3DD07--
-
+El Lunes, 25 de Octubre de 2004 20:03, Jose Alberto Reguero escribi=F3:
+> With the option "Spread Front to Surround and Center/LFE" and a stereo
+> source i hear all the speakers. But surround 5.1 don't work properly whith
+> 5.1(dvd) sorces.
+> I don't hear the right surround(rear) speaker.
+> Thanks.
+> Jose Alberto
+>
+> El Lunes, 25 de Octubre de 2004 09:03, Jose Alberto Reguero escribi=F3:
+> > With the driver
+> > default
+> > it works, but with the driver
+> > plug:surround51:0
+> > it has the problem.
+> > Thanks.
+> > Jose Alberto
+> >
+> > El Domingo, 24 de Octubre de 2004 17:25, Jose Alberto Reguero escribi=
+=F3:
+> > > Soundcard VIA8233 AD1980
+> > > module snd-via82xx
+> > > alsa 1.0.6
+> > > When playing xine with Sorround 5.1 the right rear speaker don't play
+> > > nothing. Thanks.
+> > > Jose Alberto
+> > >
+> > >
+> > > -------------------------------------------------------
+> > > This SF.net email is sponsored by: IT Product Guide on
+> > > ITManagersJournal Use IT products in your business? Tell us what you
+> > > think of them. Give us Your Opinions, Get Free ThinkGeek Gift
+> > > Certificates! Click to find out more
+> > > http://productguide.itmanagersjournal.com/guidepromo.tmpl
+> > > _______________________________________________
+> > > Alsa-devel mailing list
+> > > Alsa-devel@lists.sourceforge.net
+> > > https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> >
+> > -------------------------------------------------------
+> > This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
+> > Use IT products in your business? Tell us what you think of them. Give =
+us
+> > Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out
+> > more http://productguide.itmanagersjournal.com/guidepromo.tmpl
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
+> -------------------------------------------------------
+> This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
+> Use IT products in your business? Tell us what you think of them. Give us
+> Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out mo=
+re
+> http://productguide.itmanagersjournal.com/guidepromo.tmpl
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 -------------------------------------------------------
