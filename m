@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000709]: Recording doesnt work
-Date: Tue, 7 Dec 2004 18:23:27 +0100
-Message-ID: <924bc26d447b347657e311b1d3c7d273@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Date: Tue, 7 Dec 2004 18:24:04 +0100
+Message-ID: <d0739d6200dadfebc8111d09d3eae440@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9412F3AE
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 18:23:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 73B833AE
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 18:24:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,102 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=709> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
 ======================================================================
-Reported By:                tigermb
+Reported By:                brentcfisher
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   709
+Issue ID:                   671
 Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Gentoo
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             12-05-2004 16:33 CET
-Last Modified:              12-07-2004 18:23 CET
+Date Submitted:             11-24-2004 06:36 CET
+Last Modified:              12-07-2004 18:24 CET
 ======================================================================
-Summary:                    Recording doesnt work
+Summary:                    ALSA sound cuts out w/ message: ALSA
+sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
 Description: 
-Soundcard: Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+Particularily noticeable when watching a DVD via xine using AC3 Pass
+Through.  Sound will cut out momentarily (usually for no more than a
+second).  The skip is always accompanied by multiples of this message in
+the /var/log/messages file:
 
-The recording doesnt work.
-When trying to record, nuthing happens. No errors. Although gnome-meeting
-got an error and wonders if i have permission to device. But i tried it
-under root and i get the same error. arecord give no error, but just
-doesnt do anything.
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+
+These messages appear in the log file once or twice a minute although the
+sound only noticable cuts out every few minutes .  Very annoying on an
+HTPC.
 ======================================================================
 
 ----------------------------------------------------------------------
- tigermb - 12-07-04 18:01 
+ brentcfisher - 12-06-04 02:24 
 ----------------------------------------------------------------------
-I also did:
+tiwai,
 
-strace arecord > a.wav
+Thanks for looking into this.  The information that you requested is below
+- captured while playing back a DVD.  Hopefully this is helpful...
 
-ioctl(4, 0xc25c4110, 0xbfffe940)        = 0
-ioctl(4, 0xc25c4111, 0xbfffe940)        = 0
-ioctl(4, 0xc0684113, 0xbfffe440)        = 0
-ioctl(4, 0x4140, 0x4003231c)            = 0
-ioctl(4, 0x800c4151
+# cat /proc/asound/card0/pcm0p/sub0/hw_params
+closed
 
-hangs at last line for a couple of seconds
+Here is a snippit from /var/log/message with POINTER_DEBUG enabled:
+
+Dec  5 18:20:23 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
+0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
+Dec  5 18:20:23 samwise ALSA sound/pci/via82xx.c:738: invalid
+via82xx_cur_ptr, using last valid pointer
+Dec  5 18:20:23 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
+0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
+Dec  5 18:20:23 samwise ALSA sound/pci/via82xx.c:738: invalid
+via82xx_cur_ptr, using last valid pointer
+Dec  5 18:20:23 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
+0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
+Dec  5 18:20:23 samwise ALSA sound/pci/via82xx.c:738: invalid
+via82xx_cur_ptr, using last valid pointer
+Dec  5 18:20:23 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
+0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
+Dec  5 18:20:23 samwise ALSA sound/pci/via82xx.c:738: invalid
+via82xx_cur_ptr, using last valid pointer
+Dec  5 18:20:23 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
+0x8000, offsize = 0x0, size = 0x1000, count = 0xfc0
+Dec  5 18:20:23 samwise ALSA sound/pci/via82xx.c:738: invalid
+via82xx_cur_ptr, using last valid pointer
+
+Thanks again,
+-Brent
 
 ----------------------------------------------------------------------
- tigermb - 12-07-04 18:23 
+ tiwai - 12-07-04 18:24 
 ----------------------------------------------------------------------
-Lots of notes, but the error somehow disappeared, played i little with the
-mixer setting i think. Now it hangs again. I have the strace of arecord
+Could you try the attached patch?
+
+(hw_params proc file can be read only when you're playing sounds, BTW)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-05-04 16:33 tigermb        New Issue                                    
-12-05-04 16:34 tigermb        Issue Monitored: tigermb                     
-12-06-04 20:59 tiwai          Note Added: 0002735                          
-12-06-04 23:24 tigermb        File Added: asound.state                     
-12-06-04 23:25 tigermb        Note Added: 0002738                          
-12-07-04 14:32 tiwai          Note Added: 0002747                          
-12-07-04 17:59 tigermb        Note Added: 0002750                          
-12-07-04 18:01 tigermb        Note Added: 0002751                          
-12-07-04 18:22 tigermb        File Added: strace.log                       
-12-07-04 18:23 tigermb        Note Added: 0002752                          
+11-24-04 06:36 brentcfisher   New Issue                                    
+11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
+11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
+11-24-04 06:47 brentcfisher   Note Added: 0002541                          
+11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
+11-24-04 23:50 squarooticus   Note Added: 0002584                          
+11-25-04 01:59 brentcfisher   Note Added: 0002585                          
+11-25-04 06:45 squarooticus   Note Added: 0002586                          
+12-02-04 19:34 tiwai          Note Added: 0002694                          
+12-06-04 02:24 brentcfisher   Note Added: 0002725                          
+12-07-04 18:24 tiwai          Note Added: 0002753                          
 ======================================================================
 
 
