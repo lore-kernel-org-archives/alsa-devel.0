@@ -1,12 +1,15 @@
-From: pdq808@t-online.de (Reiner Klenk)
-Subject: New Powerbook - Mixer Prob
-Date: Tue, 18 May 2004 21:25:21 +0200
+From: Manuel Jander <manuel.jander@mat.utfsm.cl>
+Subject: Re: pause - resume playback
+Date: Tue, 18 May 2004 15:09:33 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40AA6321.3060305@t-online.de>
+Message-ID: <1084907373.2924.14.camel@localhost>
+References: <40AA6304.4090601@gmx.at>
+Reply-To: mjander@users.sourceforge.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <40AA6304.4090601@gmx.at>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,21 +18,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa devel <alsa-devel@lists.sourceforge.net>
+To: Wilfried Weissmann <Wilfried.Weissmann@gmx.at>
+Cc: Openvortex <openvortex-dev@nongnu.org>, Alsa Devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
+Hi Wilfied,
 
-I have a problem with a 15" powerbook (from the new series introduced 
-recently). aplay -l says card0 is AWACS. I can get sound, but only on 
-the headphone jack. No matter which mixer controls I fiddle with, there 
-is no sound from the speakers. Also, the volume on the headphone doesn't 
-seem to be influenced by any mixer controls.
+Thanks for the patch. I'm applying it know, and submitting a new patch:
 
-Ideas ?
+http://galadriel.mat.utfsm.cl/~mjander/aureal/alsa/aureal-2.6.6.diff.gz
 
-Thanks,
-Reiner
+Its the same as 2.6.5 plus your resume fix.
+
+Best Regards
+
+Manuel
+
+On Tue, 2004-05-18 at 21:24 +0200, Wilfried Weissmann wrote:
+> hi,
+> 
+> i still need to resetup the dma registers to get the right samples after 
+> resuming audio playback. i thought that this has something to do with 
+> the samples crossing the 4k alignment boarders, but in my tests all 
+> samples were properly aligned.
+> the attached patch applies aganist kernel 2.6.6 with the latest aureal 
+> fastplay/slowrecord patch applied.
+> 
+> bye,
+> wilfried
+
 
 
 
