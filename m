@@ -1,15 +1,14 @@
-From: Anthony <avan@uwm.edu>
-Subject: Re: ice1712 noise
-Date: Thu, 5 Feb 2004 00:50:09 -0600
+From: Doug <nostar@comcast.net>
+Subject: Re: EZ8 ADAT I/O card (ICE1712 chipset)
+Date: Thu, 05 Feb 2004 03:50:30 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040205065009.GA30274@ice_nine.wi.rr.com>
-References: <Pine.LNX.4.58.0401311125130.1876@pnote.perex-int.cz> <20040131195752.GA4224@ice_nine.wi.rr.com>
-Reply-To: avan@uwm.edu
+Message-ID: <402203D6.3030308@comcast.net>
+References: <401A62AD.2050302@comcast.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20040131195752.GA4224@ice_nine.wi.rr.com>
+In-Reply-To: <401A62AD.2050302@comcast.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,33 +17,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Anthony <avan@uwm.edu>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-* Anthony <avan@uwm.edu> [Jan 31 04 14:43]:
-> * Jaroslav Kysela <perex@suse.cz> [Jan 31 04 13:16]:
-> > It looks like that something is wrong with DACs.                            
-> > Does the noise occur on all outputs?                                         
-> >                                                                              
-> >                                       Jaroslav                               
+Here is what I have done to the ice1712.c file in order to add support 
+for my EZ8 card.  It's a temporary hack (emphesis on 'hack') until I add 
+code to reliably identify the ez8 from the hoontech (both cards share 
+the same subvendorid).
 
-FWIW, the crackling noise was due to my NIC. I hadn't
-noticed it before since my bandwidth was recently 
-increased by my ISP. I guess its a good thing in some 
-way.
+/* EZ8 Hack */
+int ez8=0;
+MODULE_PARM(ez8, "i");
 
-I'm still getting some bizarre behaviour when running
-an ardour session recorded at 44.1Khz. Occasionally
-I get a pop and envy24control shows the output levels
-constantly maxed out. This doesn't make sense to me
-since jack should of already opened the device and is
-writing silence. I vaugely remember this being a problem
-when I first got the card that eventually disappeared.
-That, or I haven't been doing much of anything at 44.1
-to notice.
+I added this at the end of all ofthe MODULE_PARM() definitions.
 
---ant
+On line 2505, I made this change:
+
+for (tbl = card_tables+(ez8 ? 1 : 0); *tbl; tbl++) { /* EZ8 Hack */
+
+Just a quick and dirty way to skip over the hoontech card_table entry so 
+that my EZ8 is recognized as a generic device, while still correctly 
+detecting my Delta 1010LT card when ez8=1 is added as argument to the 
+snd-ice1712 module.  Module functions normally if ez8 is not added to 
+command line (or is set to 0).  This would not work if an ez8 and 
+hoontech were used together.
+
+This, of course, is only a temporary fix for my own use, while I work on 
+code to correctly differentiate between the ez8 and the hoontech card. 
+In addition, there are a few EZ8 specific features that don't seem to be 
+implemented with the generic driver.  Since ADAT is fully functional, 
+though, I now will spend much more time using the card/driver (with 
+ardour/jack) and less finishing support.  I don't think there will be 
+any objection here, since I think I am the only linux using EZ8/EZBus 
+owner on the planet :)
+
+Does anyone have the ICE1712 chip documentation?  How were the drivers 
+for the other ice1712 based cards written?  Were the manufacturers 
+contacted and data released under some sort of non-disclosure agreement? 
+   I dont get why documentation for a chip is kept so secretive, I mean 
+rtl8xxx ethernet tranceiver chip docs, for example, are all over the 
+place, that seems like the same thing to me.  I would really like to 
+have the documetation so that I can study the ice1712 driver line by 
+line and understand what exactly is being done on-board the chip.  I 
+just like that kind of stuff, I know there is enough info in the 
+existing source for the other cards to figure out how to implement my needs.
+
+-- 
+http://nostar.isa-geek.com/
+
 
 
 -------------------------------------------------------
