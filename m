@@ -1,13 +1,12 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: Re: hint needed
-Date: Sat, 06 Dec 2003 18:54:43 +0300
+From: Juhana Sadeharju <kouhia@nic.funet.fi>
+Subject: Re: emufx.c bug/LiveDrive capture is finally working
+Date: Sat, 6 Dec 2003 18:09:01 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <pan.2003.12.06.15.54.39.818251@altlinux.ru>
-References: <20031206163939.228ea11f.pochini@shiny.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=KOI8-R
-Content-Transfer-Encoding: 8bit
+Message-ID: <S18298AbTLFQJB/20031206160901Z+8248@nic.funet.fi>
+References: <E1AQu78-0006RG-00@sc8-sf-list2.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <E1AQu78-0006RG-00@sc8-sf-list2.sourceforge.net>
+	(alsa-devel-request@lists.sourceforge.net)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,32 +18,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 06 Dec 2003 16:39:39 +0100, Giuliano Pochini wrote:
+>From:	Juhana Sadeharju <kouhia@nic.funet.fi>
+>
+>  Line2/Mic2 LiveDrive: 100 <rec>
+>  Line2/Mic2 LiveDrive Capture: 100
+>  Aux2 LiveDrive: 0 <no rec>
+>  Aux2 LiveDrive Capture: 0
 
-> Echoaudio cards are grouped into two families: EchoGals (the old
-> discontinued serie) and the Echo24. The driver is almost identical for both
-> families, but some constants define at compile time. I currently select the
-> family by a hack in the makefile:
-> 
-> ifneq ($(CONFIG_SND_GINA24),)
-> EXTRA_CFLAGS += -DECHO24_FAMILY
-> endif
-> 
-> ifneq ($(CONFIG_SND_GINA20),)
-> EXTRA_CFLAGS += -DECHOGALS_FAMILY
-> endif
-> 
-> This works fine only if you run configure --with-cards that belong to the
-> same family. How can I solve this issue ?  I can replace the constants with
-> something choosen at runtime, but I don't like to put translation tables for
-> dsp commands and such. Very ugly. Alternatively, I can duplicate all common
-> parts of the driver. The files would be identical except a #define at the
-> beginning :-6
+I noticed that Peter Zubaj already provided the patch a few days ago.
+But, could those names appearing in Alsamixer be changed to the names
+suggested above? Like having the same names what appears in the
+front panel of LiveDrive; no guesswork required in setting the mixer.
 
-You can use #include "file.c" to avoid code duplication.
+ Line2/Mic2 == EXTIN_LINE1
+       Aux2 == EXTIN_LINE2
 
-There is even an example in ALSA: see alsa-kernel/pci/ens1371.c.
-
+Regards,
+Juhana
 
 
 -------------------------------------------------------
