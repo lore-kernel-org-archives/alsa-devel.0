@@ -1,13 +1,15 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: future ALSA development
-Date: Thu, 3 Jul 2003 17:36:05 +0300 (EEST)
+From: holborn <holborn@telefonica.net>
+Subject: alsa_seq & threads
+Date: Thu, 3 Jul 2003 16:35:23 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307031734410.27053-100000@ecabase.localdomain>
-References: <Pine.LNX.4.44.0307031655560.27053-100000@ecabase.localdomain>
+Message-ID: <200307031635.24018.holborn@telefonica.net>
+Reply-To: holborn@telefonica.net
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0307031655560.27053-100000@ecabase.localdomain>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,17 +21,47 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 3 Jul 2003, Kai Vehmanen wrote:
 
-> * making alsa-conf the primary tool for setting up ALSA user-space
+Hi!
 
-Ugh, that should "primary tool for setting up ALSA (kernel) drivers".
-Hmm, I guess we could have two tools, one for drivers (current alsa-conf)
-and one for user-space (asoundrc editor).
+Sorry for the english ....
 
--- 
- http://www.eca.cx
- Audio software for Linux!
+I'm still developing an app using seqmidi interface .... i'm not really sure 
+about that but if i open: 
+
+snd_seq_open (&seq_handle1, "default", SND_SEQ_OPEN_INPUT, 0);
+snd_seq_open (&seq_handle2, "default", SND_SEQ_OPEN_OUTPUT,0);
+
+and in the main program i start two threads .... the second one consume 100% 
+of CPU time even if this thread dont do nothing only loops. That happens also 
+in another app i was developped. The program runs ... but .... 
+
+Valgrind tells :
+
+==19806== Thread 2:
+==19806== Syscall param ioctl(generic) contains uninitialised or unaddressable 
+byte(s)
+==19806==    at 0x40623304: ioctl (in /lib/libc-2.3.1.so)
+==19806==    by 0x4054E23F: snd_seq_get_client_pool (in 
+/usr/lib/libasound.so.2.0.0)
+==19806==    by 0x4054EC71: snd_seq_set_client_pool_output (in 
+/usr/lib/libasound.so.2.0.0)
+==19806==    by 0x805116C: GMO::init_queue() (in 
+/home/holborn/gmorgan/src/gmorgan)
+==19806==    Address 0x449A89C4 is on thread 2's stack
+
+but ... i'm musicien ... not programmer ... i dont know what to do ...
+
+Another thing is ... any posibility to include more examples in the 
+documentation, they help ....
+
+Any help?
+
+thanks.
+
+Josep
+
+ 
 
 
 
