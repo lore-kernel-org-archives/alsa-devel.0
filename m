@@ -1,14 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Opening a device 2 times, loopback interface....
-Date: Tue, 27 May 2003 08:54:17 +0200 (CEST)
+From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
+Subject: Re: Audigy 2 support - update
+Date: Tue, 27 May 2003 10:28:47 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305270853180.3445-100000@pnote.perex-int.cz>
-References: <00ea01c32398$fcffa780$490a140a@pc2m73>
+Message-ID: <20030527072847.GI7637@edu.joroinen.fi>
+References: <20030523051240.GA10831@www.angiotech.com> <1053675028.18540.70.camel@rivendell.home.local> <20030524004334.GA15947@www.angiotech.com> <1053747456.6906.1.camel@rivendell.home.local> <3ECF6FDD.3090107@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <00ea01c32398$fcffa780$490a140a@pc2m73>
+Content-Disposition: inline
+In-Reply-To: <3ECF6FDD.3090107@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,29 +18,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-2?Q?St=E9phane_Boulanger?= <stephane.boulanger@fh-bonn-rhein-sieg.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 26 May 2003, [iso-8859-2] St=E9phane Boulanger wrote:
+On Sat, May 24, 2003 at 02:13:01PM +0100, James Courtier-Dutton wrote:
+> Florin Andrei wrote:
+> >On Fri, 2003-05-23 at 17:43, Stephen Hassard wrote:
+> >
+> >>On Fri, May 23, 2003 at 12:30:28AM -0700, Florin Andrei wrote:
+> >>
+> >>>On Thu, 2003-05-22 at 22:12, Stephen Hassard wrote:
+> >>>How about MIDI output?
+> >>
+> >>MIDI output seems to work fine too.
+> >
+> >
+> >Thank you Stephen!
+> >
+> >And thanks to the ALSA developers. Now i'll go ahead and buy an Audigy2.
+> >Yeah, it's going to be a Platinum, yeah, maybe a few gizmos on the front
+> >panel won't work (we'll see), but as long as there is at least one pair
+> >of MIDI in/out that works, i'm happy.
+> >
+> >Keep up the good work!
+> >
+> I have heard reports that the SPDIF passthru does not work, so you will 
+> not be able to use external AC3 and DTS decoders.
+> 
+> Can anyone verify this?
+> 
 
-> I think the most other applications will open "hw" or "plughw" (what abou=
-t
-> the OSS emulation? How does the kernel oss emulation module opens the als=
-a
-> devices?).
+I have audigy, and ac3/dts output is not working.
 
-OSS emulation uses direct devices (hw). The only way to reroute OSS=20
-applications to alsa-lib (thus dsnoop plugin) is alsa-oss library=20
-(libaoss).
+Alsa says it cannot find some hw device.. sorry I don't have the exact error
+message here.
 
-=09=09=09=09=09=09Jaroslav
+I have gotten the same error at least 6 months now..
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
+-- Pasi Kärkkäinen
+       
+                                   ^
+                                .     .
+                                 Linux
+                              /    -    \
+                             Choice.of.the
+                           .Next.Generation.
 
 
 -------------------------------------------------------
