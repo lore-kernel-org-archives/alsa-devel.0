@@ -1,12 +1,13 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: 1869 trouble with snd-es18xx
-Date: Thu, 27 Jun 2002 10:10:29 -0400
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Rate Conversion
+Date: Thu, 27 Jun 2002 16:11:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200206271408.g5RE8VD25834@post2.fast.net>
-References: <3D1B0307.8080002@303.nu>
+Message-ID: <Pine.LNX.4.33.0206271610220.545-100000@pnote.perex-int.cz>
+References: <3D1ACCF0.5F1AC04A@anu.edu.au>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Thu, 27 Jun 2002 14:20:23 +0200."
-             <3D1B0307.8080002@303.nu>
+In-Reply-To: <3D1ACCF0.5F1AC04A@anu.edu.au>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,19 +16,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Kasper Souren <kasper@303.nu>
-Cc: alsa devel <alsa-devel@lists.sourceforge.net>, abramo@alsa-project.org, fishbach@pool.informatik.rwth-aachen.de
+To: Kris Modrak <u9514439@anu.edu.au>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->Isn't there any option to use a 'virtual' ALSA device? Like snd-pcm-oss, but 
->then the other way around. snd-oss-pcm module? Then you could use ALSA with 
->a working OSS driver, and no working ALSA driver...
+On Thu, 27 Jun 2002, Kris Modrak wrote:
 
-ALSA has a significantly different internal architecture than OSS. It
-is not possible to use an OSS driver to support the ALSA "midlevel"
-code.
+> I am writing a PCM application and wish to play a .wav file that has a
+> sampling rate of 8kHz on a hardware setup that only supports sampling
+> frequencies of 44.1 or 48kHz.
+> 
+> Does anyone know how to implement this?
 
---p
+You don't need to do this. Use the 'plughw' device which should do all 
+conversions from you.
+
+> 
+> I have tried setting up a rate plugin in my .asoundrc file
+> 
+> pcm.r8 {
+>         type rate               # Rate PCM
+>         slave slave_rate8000Hz  # Slave name
+> }
+> 
+> pcm_slave.slave_rate8000Hz {
+>         pcm "hw:0,0"
+>         rate 8000
+
+Use 44100 or 48000. It's the rate for the hardware not the source rate.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
+
 
 
 -------------------------------------------------------
