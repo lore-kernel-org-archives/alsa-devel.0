@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000370]: CMedia 8768 Support
-Date: Fri,  8 Oct 2004 05:17:47 +0200 (CEST)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: what is trigger time?
+Date: Fri, 08 Oct 2004 00:08:47 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041008031747.3D72B2400B@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1097208527.9372.50.camel@krustophenia.net>
+References: <Pine.LNX.4.58.0410071801160.18124@concorde.cs.ucla.edu>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 95306248
-	for <alsa-devel@alsa-project.org>; Fri,  8 Oct 2004 05:17:47 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.58.0410071801160.18124@concorde.cs.ucla.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,182 +17,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Hanbiao Wang <hbwang@lecs.cs.ucla.edu>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2004-10-07 at 21:07, Hanbiao Wang wrote:
+> Hi, All
+>     According to the ALSA documentation, the following two functions
+> snd_pcm_status_get_trigger_tstamp()
+> snd_pcm_status_get_trigger_htstamp()
+> are suppose to get the "trigger time". However, I can not find any
+> documents that explains or define the meaning of the "trigger time".
+> Is that the time when a whole period of samples in the buffer is ready to
+> be read in? Could somebody please give me a hint? Thanks a lot.
+> 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000370
-======================================================================
-Reported By:                drbobguy
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     370
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             07-07-2004 04:59 CEST
-Last Modified:              10-08-2004 05:17 CEST
-======================================================================
-Summary:                    CMedia 8768 Support
-Description: 
-I've recently built a new computer with an on-board CMedia 8768 chip.  This
-chip is not listed as one of the supported CMedia chips (8738, etc.),
-although I suspect that is because it is so new.  Just wanted to let you
-guys know it apparently doesn't work with the standard cmipci driver (at
-least I think I'm doing everthing correctly -- I have a decent amount of
-Linux experience but I'm no guru).  Here is what I see though:
+I don't have the source in front of me but I would expect this to be the
+time when the ALSA middle layer executed the trigger callback.  This
+happens when a PCM is stopped, started, or paused.
 
-The card is recognized in /proc/asound as a CMedia 8738M6.  However, if I
-use a mixer like amixer or gnome-alsamixer none of the mixer settings I
-change will take effect (and I am running these as root).
+Lee
 
-Any advice or comments would be appreciated.  I'd be happy to help if you
-think there is a possible fix.
-======================================================================
-
-----------------------------------------------------------------------
- drbobguy - 07-07-2004 05:03 CEST 
-----------------------------------------------------------------------
-By the way I'm on an AMD 64 machine if that makes a difference.
-
-----------------------------------------------------------------------
- robg - 07-27-2004 05:26 CEST 
-----------------------------------------------------------------------
-Is there any progress on a driver for this chip?
-It is used on the Soltek EQ3801 amd64 computer and a lot of people in
-forums on other websites are interested in sound support.
-
-I have the same problems as listed by drbobguy. I tested it under 64bit
-kernel 2.6.7 I believe he did as well. I can setup a 32bit kernel and
-retest if you fell its useful.
-
-----------------------------------------------------------------------
- tiwai - 07-30-2004 16:56 CEST 
-----------------------------------------------------------------------
-Any datasheet available?
-
-I don't know of...
-
-----------------------------------------------------------------------
- drbobguy - 07-31-2004 02:46 CEST 
-----------------------------------------------------------------------
-I found this file off the CMedia website (I've attached it here):
-
-http://www.cmedia.com.tw/doc/CMI8768%20Datasheet%20Rev%200.9.pdf
-
-----------------------------------------------------------------------
- robg - 07-31-2004 06:10 CEST 
-----------------------------------------------------------------------
-The file from cmedia website does not contain any info for programming the
-chip unfortunately.  I have sent an email to cmedia requesting full
-information.  Will advise when I get a response.
-
-Since the chip gives an ID of CMI8738-MC6 it may be very close to the
-existing driver.
-
-In the interim, is there any more information we can provide from /proc
-that is useful?
-
-----------------------------------------------------------------------
- robg - 10-08-2004 05:17 CEST 
-----------------------------------------------------------------------
-Finally get some feedback from Cmedia.  Following is copy of email
-exchanges. I will attach documentation also received.
-
----------------------------------------------------------------
-Date: Thu, 07 Oct 2004 15:41:28 +0800
-From: "Liang, Jason - ???" <jason.liang@cmedia.com.tw>
-Subject: RE: [Fwd: technical information for 8768]
-To: Rob Gordon <snip>
-Cc: "Tien,  C.L. - ???" <cltien@cmedia.com.tw>,
- "Yao, Alan - ???" <alanyao@cmedia.com.tw>,
- "Chang, Kinkon - ???" <kinkon.chang@cmedia.com.tw>
-
-Dear Rob,
- 
-I'm sorry I missed your previous mail. I enclosed 8768 datasheet, register
-spec and programming guide to you. 8768 is basically modified from 8738
-and hence the 8738 programming guide is applicable. Hope them helpful.
-Shall you have any specific question or further need, you can tell us
-then.
- 
-BTW, our Linux driver developer is Chen-Li Tien (in CC list) and he is
-also working on this. You can have a talk if you would like.  
- 
-Regards,
-Jason
------Original Message-----
-From: Rob Gordon [snip]
-Sent: Thursday, October 07, 2004 10:00 AM
-To: Liang, Jason 
-Subject: [Fwd: technical information for 8768]
-
-
-Dear Mr. Liang,
-
-I am still looking for information on programming the 8768 soundchip.
-Can you provide a contact so I can can pursue this information.
-
-Thank you for your time,
-Rob
-
-
--------- Original Message --------
-Subject: technical information for 8768
-Date: Fri, 03 Sep 2004 01:19:11 -0600
-From: Rob Gordon <snip>
-To: jason.liang@cmedia.com.tw
-
-Dear Mr Liang,
-
-I am working with the ALSA linux sound media team to implement a driver
-for the new 8768 soundchip.  This is currently used in the Soltek EQ3801
-computer and there is a lot of interest in the Linux community to obtain
-a working driver.
-
-Since the technical details and an open source driver were available for
-the 8738, I was hoping that the same level of information would be
-published for the 8768 as well.
-
-I am willing to work on the driver development if sufficient technical
-documentation is provided, assuming a driver has not been prepared
-already.
-
-I have tried contacting the support group at Cmedia
-(support@cmedia.com.tw ) several times but have not received any reply.
-
-Can you assist in obtaining the information required or provide the name
-of a contact person who could help?
-
-Thank-you for your time.
-
-Regards,
-Rob Gordon
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-07-04 04:59 drbobguy       New Bug                                      
-07-07-04 04:59 drbobguy       Distribution              => Gentoo          
-07-07-04 04:59 drbobguy       Kernel Version            => 2.6.7           
-07-07-04 05:03 drbobguy       Bugnote Added: 0001390                       
-07-27-04 05:26 robg           Bugnote Added: 0001475                       
-07-30-04 16:56 tiwai          Bugnote Added: 0001493                       
-07-31-04 02:46 drbobguy       File Added: CMI8768.pdf                      
-07-31-04 02:46 drbobguy       Bugnote Added: 0001508                       
-07-31-04 06:10 robg           Bugnote Added: 0001509                       
-08-22-04 22:13 masanetz       Bug Monitored: masanetz                      
-09-06-04 18:02 patrick        Bug Monitored: patrick                       
-10-08-04 05:17 robg           Bugnote Added: 0002043                       
-======================================================================
 
 
 -------------------------------------------------------
