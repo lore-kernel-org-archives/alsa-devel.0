@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000505]: SPDIF sound distorted on non-48000 rates
-Date: Tue, 28 Sep 2004 23:37:05 +0200 (CEST)
+Date: Tue, 28 Sep 2004 23:42:06 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040928213705.E322546008@server.perex-int.cz>
+Message-ID: <20040928214206.9F89746008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41F7A320
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 23:37:06 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 007C3320
+	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 23:42:06 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               RH-based
 Kernel Version:             2.6.8.1
 ======================================================================
 Date Submitted:             09-19-2004 10:03 CEST
-Last Modified:              09-28-2004 23:37 CEST
+Last Modified:              09-28-2004 23:42 CEST
 ======================================================================
 Summary:                    SPDIF sound distorted on non-48000 rates
 Description: 
@@ -173,6 +173,15 @@ And besides, one would expect the sound to work right even when playing to
 the default device. And, most important to me, even when using OSS
 emulation.
 
+----------------------------------------------------------------------
+ ramendik - 09-28-2004 23:42 CEST 
+----------------------------------------------------------------------
+UPD: read the FAQ and fixed the root-needed problem.
+
+The questions of the default device and of OSS emulation still stand.
+After all, sometimes one can want to get output on both SPDIF and the
+line-out at the same time.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -199,6 +208,7 @@ Date Modified  Username       Field                    Change
 09-27-04 18:20 Clemens LadischFile Added: ich4-spdif.dif                    
 09-27-04 18:22 Clemens LadischBugnote Added: 0001941                       
 09-28-04 23:37 ramendik       Bugnote Added: 0001961                       
+09-28-04 23:42 ramendik       Bugnote Added: 0001962                       
 ======================================================================
 
 
