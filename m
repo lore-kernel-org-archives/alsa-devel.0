@@ -1,12 +1,14 @@
 From: Adam Tla/lka <atlka@pg.gda.pl>
-Subject: [perex@suse.cz: Re: PCM questions]
-Date: Sat, 6 Mar 2004 14:53:05 +0100
+Subject: Re: How to lock the sample rate ?
+Date: Sat, 6 Mar 2004 15:05:42 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040306135305.GL25734@sunrise.pg.gda.pl>
+Message-ID: <20040306140542.GM25734@sunrise.pg.gda.pl>
+References: <20040306115426.6b48eaaf.pochini@shiny.it> <Pine.LNX.4.58.0403061157220.1881@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0403061157220.1881@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,47 +20,26 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------ Forwarded message from Jaroslav Kysela <perex@suse.cz> -----
-
-From: Jaroslav Kysela <perex@suse.cz>
-X-X-Sender: perex@pnote.perex-int.cz
-To: Ove Kaaven <ovek@transgaming.com>
-Cc: alsa-devel@lists.sourceforge.net
-Subject: Re: [Alsa-devel] PCM questions
-In-Reply-To: <1078430057.30309.921.camel@renegade>
-X-Spam-Score: 0.0 (/)
-X-Spam-Report: Spam Filtering performed by sourceforge.net.
-	See http://spamassassin.org/tag/ for more details.
-	Report problems to http://sf.net/tracker/?func=add&group_id=1&atid=200001
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-X-BeenThere: alsa-devel@lists.sourceforge.net
-X-Mailman-Version: 2.0.9-sf.net
-Precedence: bulk
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Id: Advanced Linux Sound Architecture - Devel <alsa-devel.lists.sourceforge.net>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-X-Original-Date: Sat, 6 Mar 2004 11:10:23 +0100 (CET)
-Date: Sat, 6 Mar 2004 11:10:23 +0100 (CET)
-
-
-Hello,
-
-just two cents - I know that app shouldn't mess with application or
-hardware position variables. So we have snd_pcm_forward or snd_pcm_rewind
-(the later not working in dmix case). But doing input and output ptr
-calculations in app while it is already done in lib make no sense for me.
-There should exist snd_pcm_get_ functions which return apropriate
-values. Clean and simple. You can not directly change them but you can
-get the values if you need them.
+On Sat, Mar 06, 2004 at 11:59:45AM +0100, Jaroslav Kysela wrote:
+> On Sat, 6 Mar 2004, Giuliano Pochini wrote:
+> 
+> > On the Echoaudio cards the sample rate is a global setting, so I need a way
+> > to prevent an app to change the rate if someone else already set it (the
+> > card han several devices/subdevices). I was thinking to put a simple
+> > "if (IsAudioOpen()) rate_min=rate_max=current_rate;" in pcm_open callback,
+> > but this solution is racy.
+Talking about race conditions you could use a variable which is set to 0
+at the beginning. Now if app wants to set a rate it does atomic compare
+and increase (cmpxchg on  x86) instruction so only one app could set
+rate. The other could only read memorized rate settins and report an
+error if rate is different.
 
 Regards
-
-Adam Tla/lka
+-- 
+Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
+System  & Network Administration Group           ~~~~~~
+Computer Center,  Gdansk University of Technology, Poland
+PGP public key:   finger atlka@sunrise.pg.gda.pl
 
 
 -------------------------------------------------------
