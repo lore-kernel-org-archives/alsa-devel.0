@@ -1,15 +1,12 @@
-From: holborn <holborn@telefonica.net>
-Subject: The LAD History
-Date: Wed, 14 Jan 2004 04:04:49 +0000
+From: Arve Knudsen <aknuds-1@broadpark.no>
+Subject: nForce2 (intel8x0) playback doesn't accept 44khz
+Date: Wed, 14 Jan 2004 12:41:59 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200401140404.49938.holborn@telefonica.net>
-Reply-To: holborn@telefonica.net
+Message-ID: <opr1rj39qxq1sf88@mail.broadpark.no>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,26 +15,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hello
 
-Sorry i'm new :-) from 2003 .... today is my first visit to linuxaudio.org 
-home page, i never know about their existence. Then .... can someone explain 
-here in a few words a little history about when/how LAD and linuxaudio was 
-born and their dependencies?
-
-
-Sorry this kind of discussion is to mutch for my poor English, i need hours to 
-read it, but i try ...  :-)
+Has the intel8x0 driver been made accept only 48khz for playback? I alway=
+s=20
+used 44.1, and wouldn't mind continuing to do so. Also, it really baffled=
+=20
+me at first that it would accept 44.1 for capture, but not playback. Woul=
+d=20
+someone care to explain, if this is how its meant to work?
 
 Thanks
 
-
-Josep
-
-
-
+Arve Knudsen
 
 
 -------------------------------------------------------
