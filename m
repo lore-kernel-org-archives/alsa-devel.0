@@ -1,13 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000496]: nearest-neighbor downsampling causes noise
-Date: Wed, 15 Sep 2004 18:18:01 +0200 (CEST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: [PATCH] Kernel crash
+Date: Wed, 15 Sep 2004 19:50:08 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040915161801.CBCAA47007@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040915195008.33713acb.pochini@shiny.it>
+References: <s5h7jr7whqj.wl@alsa2.suse.de>
+	<XFMail.20040907095502.pochini@shiny.it>
+	<20040911210212.317d930b.pochini@shiny.it>
+	<s5hekl6tdru.wl@alsa2.suse.de>
+	<20040913220729.466531ce.pochini@shiny.it>
+	<s5h4qlzx22k.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 36B5C309
-	for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2004 18:18:02 +0200 (MEST)
+In-Reply-To: <s5h4qlzx22k.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,53 +22,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 15 Sep 2004 12:24:03 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000496
-======================================================================
-Reported By:                grabner
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Bug ID:                     496
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             09-10-2004 22:06 CEST
-Last Modified:              09-15-2004 18:18 CEST
-======================================================================
-Summary:                    nearest-neighbor downsampling causes noise
-Description: 
-The rate-conversion plugin in ALSA-1.0.7rc1 uses the nearest-neighbor
-method for downsampling (function snd_pcm_rate_shrink in
-src/pcm/pcm_rate.c), which causes considerable noise.
-======================================================================
+> I believe the second part is not needed.  DRAINING in capture implies
+> that the DMA is already stopped (like XRUN).
 
-----------------------------------------------------------------------
- tiwai - 09-15-2004 18:18 CEST 
-----------------------------------------------------------------------
-The patch looks fine.
+snd_pcm_capture_drain() says:
 
-Could you provide the summary, description and signed-off-by
-for the patch to apply to ALSA CVS tree?
+        case SNDRV_PCM_STATE_RUNNING:
+                if (snd_pcm_update_hw_ptr(substream) >= 0) {
+                        snd_pcm_stop(substream,
+                                     snd_pcm_capture_avail(runtime) > 0 ?
+                                     SNDRV_PCM_STATE_DRAINING : SNDRV_PCM_STATE_SETUP);
+                        break;
+                }
+                /* Fall through */
+        case SNDRV_PCM_STATE_XRUN:
+               _xrun_recovery:
+                snd_pcm_change_state(substream,
+                                     snd_pcm_capture_avail(runtime) > 0 ?
+                                     SNDRV_PCM_STATE_DRAINING : SNDRV_PCM_STATE_SETUP);
+                break;
 
-thanks.
+It may not be stopped when snd_pcm_update_hw_ptr()<0, if I'm not missing
+something.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-10-04 22:06 grabner        New Bug                                      
-09-10-04 22:06 grabner        File Added: downsample_interpolate.patch                    
-09-10-04 22:08 grabner        Bug Monitored: grabner                       
-09-15-04 18:18 tiwai          Bugnote Added: 0001763                       
-======================================================================
+
+> If the second part really fixes the problem, the bug is in somewhere
+> else.
+
+It fixes it and yes, there is another problem: snd_pcm_change_state()
+overrides the state machine.
+
+snd_pcm_playback_drain() (when state=RUNNING) calls
+snd_pcm_change_state(DRAINING). When substreams are linked, it changes the
+state of all linked substreams *without* passing through
+snd_pcm_capture_drain(DRAINING).
+
+I checked all calls to snd_pcm_change_state() and the only problematic one
+is at line 1288 inside snd_pcm_capture_drain(). The problem exists only if
+capture and playback substreams are linked because a capture substream in
+DRAINING state implies it's stopped, while a playback substream doesn't. My
+patch is not the proper fix, but it workarounds the bug by fixing that
+asymmetry. I make snd_pcm_capture_drop() and snd_pcm_playback_drop() behave
+the same wrt DRAINING substreams.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
