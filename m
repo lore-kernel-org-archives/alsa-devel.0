@@ -1,14 +1,15 @@
-From: Justin Cormack <justin@street-vision.com>
-Subject: Re: hdsp driver and tools update
-Date: 04 Nov 2003 17:25:47 +0000
+From: Steffen Sauder <steffensauder@gmx.de>
+Subject: Re: DMX6fire / ice1712: Long initialization time for
+ playback with Java
+Date: Tue, 04 Nov 2003 18:47:38 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1067966747.29960.75.camel@lotte.street-vision.com>
-References: <1073.217.184.8.109.1067685592.squirrel@www.undata.org>
+Message-ID: <3FA7E63A.3020904@gmx.de>
+References: <3FA58135.8050907@gmx.de> <s5hhe1kt8w4.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------020608080508000109000505"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1073.217.184.8.109.1067685592.squirrel@www.undata.org>
+In-Reply-To: <s5hhe1kt8w4.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,33 +18,886 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: alsa list <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2003-11-01 at 11:19, Thomas Charbonnel wrote:
-> Hi,
-> 
-> I apologize for having been so silent the last few weeks, I was in the
-> process of moving from Lyon, France to Berlin, Germany. This is now done,
-> and I resumed my work on the hdsp driver and tools.
-> Latest patches and tools can be found here :
-> http://www.undata.org/~thomas/
-> Mojor changes include support for hdsp 9632 cards and bugfixes for hdsp
-> 9652 cards.
-> Hdspconf and hdspmixer now support 96xx cards, though this needs testing
-> as I do not have the hardware.
+This is a multi-part message in MIME format.
+--------------020608080508000109000505
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thanks very much, this fixes hdsp9652 matrix mixer and it appears to be
-working perfectly. hdspmixer appears to work on a quick test with 9652.
-Excellent work.
+Takashi Iwai wrote:
 
-(tested with todays cvs alsa).
+>Hi,
+>
+>does it access via OSS API?
+>
+yes I have to use the oss-emulation device, because the alsa devices to 
+show up in java but can't be used at all. Though they appear as  
+"DMX6Fire [plughw:0,0]" they dont seem to be using the plug layer 
+properly. When asked for what format they support, they say "signed pcm, 
+32-bit mono, little-endian" but they can't be used even for streams in 
+that specific format. All formats I try to play with them just throw an 
+java.lang.IllegalArgumentException: Line unsupported.
 
-thanks very much
+I found out that mpg123 has exactly the same problem with the 
+oss-emulation, beginning from alsa-driver-0.9.3b, it takes 30 seconds 
+for playback to start. both mplayer and xmms don't show this problem 
+with oss output, they only need about 1/2 second for skipping in the 
+stream as I told before.
 
-Justin Cormack
+strangely 'alsaplayer -o oss' works fine, as does 'aoss mpg123' (using 
+dmixed output)
 
+>could you try stace to check what gets into sleep?
+>  
+>
+in case you meant strace, I have attached the output of 'strace -r 
+mpg123 some.mp3' for both alsa-driver 0.9.3a and b. Never used strace 
+before, so if the information you need is not in the files, please tell 
+me exactly how to invoke it.
+
+gruss,
+Steffen
+
+--------------020608080508000109000505
+Content-Type: text/plain;
+ name="strace-r.mpg123.alsa093a"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="strace-r.mpg123.alsa093a"
+
+     0.000000 execve("/usr/bin/mpg123", ["mpg123", "Abstrakt.mp3"], [/* 51 vars */]) = 0
+     0.000303 uname({sys="Linux", node="braunschweig", ...}) = 0
+     0.000154 brk(0)                    = 0x8093ba8
+     0.000061 open("/etc/ld.so.preload", O_RDONLY) = -1 ENOENT (No such file or directory)
+     0.000090 open("/etc/ld.so.cache", O_RDONLY) = 3
+     0.000047 fstat64(3, {st_mode=S_IFREG|0644, st_size=63041, ...}) = 0
+     0.000079 mmap2(NULL, 63041, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40014000
+     0.000046 close(3)                  = 0
+     0.000058 open("/lib/libm.so.6", O_RDONLY) = 3
+     0.000047 read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\2405\0"..., 1024) = 1024
+     0.000074 fstat64(3, {st_mode=S_IFREG|0755, st_size=186329, ...}) = 0
+     0.000057 mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40024000
+     0.000047 mmap2(NULL, 136416, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40025000
+     0.000040 mprotect(0x40046000, 1248, PROT_NONE) = 0
+     0.000041 mmap2(0x40046000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3, 0x20) = 0x40046000
+     0.000056 close(3)                  = 0
+     0.000054 open("/lib/libc.so.6", O_RDONLY) = 3
+     0.000045 read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0`X\1\000"..., 1024) = 1024
+     0.000058 fstat64(3, {st_mode=S_IFREG|0755, st_size=1449773, ...}) = 0
+     0.000057 mmap2(NULL, 1215204, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40047000
+     0.000040 mprotect(0x4016a000, 23268, PROT_NONE) = 0
+     0.000038 mmap2(0x4016a000, 16384, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3, 0x122) = 0x4016a000
+     0.000060 mmap2(0x4016e000, 6884, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x4016e000
+     0.000041 close(3)                  = 0
+     0.000354 munmap(0x40014000, 63041) = 0
+     0.000113 write(2, "High Performance MPEG 1.0/2.0/2."..., 69) = 69
+     0.000469 write(2, "Version 0.59r (1999/Jun/15). Wri"..., 69) = 69
+     0.000191 write(2, "Uses code from various people. S"..., 54) = 54
+     0.000162 write(2, "THIS SOFTWARE COMES WITH ABSOLUT"..., 71) = 71
+     0.000185 open("/dev/dsp", O_WRONLY) = 3
+     0.068083 ioctl(3, SNDCTL_DSP_GETBLKSIZE, 0x80732c0) = 0
+     0.005557 ioctl(3, SNDCTL_DSP_RESET, 0) = 0
+     0.000055 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000403 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000076 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000156 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000185 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000150 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000150 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000150 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000165 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000151 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000150 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000032 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.004787 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000151 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000054 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000032 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000150 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.004754 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000153 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000031 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.001509 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000422 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000033 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.004824 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000153 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.004755 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000150 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000031 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000151 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000031 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000065 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000031 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000153 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000167 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000151 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000169 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000032 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000150 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000150 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000150 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000150 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000125 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000031 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000178 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000181 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000150 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.004762 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000182 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.004759 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000150 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.004757 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000148 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000145 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000166 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000150 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.004753 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000149 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000175 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000146 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000044 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000147 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000159 close(3)                  = 0
+     0.002973 rt_sigaction(SIGINT, {0x804be90, [], SA_RESTORER, 0x4006ff18}, {SIG_DFL}, 8) = 0
+     0.000082 open("Abstrakt.mp3", O_RDONLY) = 3
+     0.000074 lseek(3, 0, SEEK_END)     = 4220472
+     0.000034 lseek(3, -128, SEEK_END)  = 4220344
+     0.000034 read(3, "TAGAbstrakt\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 128) = 128
+     0.000064 lseek(3, 0, SEEK_SET)     = 0
+     0.000040 mmap2(NULL, 4220344, PROT_READ, MAP_SHARED, 3, 0) = 0x40170000
+     0.000088 write(2, "Title  : Abstrakt               "..., 60) = 60
+     0.000450 write(2, "Album  : Von Allen Gedanken Sch\344"..., 54) = 54
+     0.000179 write(2, "Comment:                        "..., 53) = 53
+     0.000172 write(2, "\nPlaying MPEG stream from Abstra"..., 43) = 43
+     0.000198 write(2, "\33]0;Abstrakt.mp3\7", 17) = 17
+     0.026389 gettimeofday({1067967015, 147432}, NULL) = 0
+     0.029811 write(2, "Junk at the beginning 49443303\n", 31) = 31
+     0.000470 write(2, "MPEG 1.0 layer III, 128 kbit/s, "..., 54) = 54
+     0.000222 brk(0)                    = 0x8093ba8
+     0.000037 brk(0x8094ba8)            = 0x8094ba8
+     0.000034 brk(0)                    = 0x8094ba8
+     0.000028 brk(0x8095000)            = 0x8095000
+     0.000047 brk(0)                    = 0x8095000
+     0.000029 brk(0x809d000)            = 0x809d000
+     0.000039 open("/dev/dsp", O_WRONLY) = 4
+     0.000103 ioctl(4, SNDCTL_DSP_GETBLKSIZE, 0x80732c0) = 0
+     0.000407 ioctl(4, SNDCTL_DSP_RESET, 0) = 0
+     0.000033 ioctl(4, SNDCTL_DSP_SETFMT, 0xbffff254) = 0
+     0.000155 ioctl(4, SNDCTL_DSP_STEREO, 0xbffff254) = 0
+     0.000150 ioctl(4, SOUND_PCM_READ_RATE, 0xbffff278) = 0
+     0.002474 close(4)                  = 0
+     0.000212 open("/dev/dsp", O_WRONLY) = 4
+     0.000100 ioctl(4, SNDCTL_DSP_GETBLKSIZE, 0x80732c0) = 0
+     0.000383 ioctl(4, SNDCTL_DSP_RESET, 0) = 0
+     0.000033 ioctl(4, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.000152 ioctl(4, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000148 ioctl(4, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.001164 write(4, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 16384) = 16384
+     0.001954 write(4, "5\16\r\4\365\17\206\3\266\21\374\2J\23\37\2\20\24\322\0"..., 16384) = 16384
+     0.092732 write(4, "\324\370,\370\253\376\342\370X\4\214\371\242\t@\372\367"..., 16384) = 16384
+     0.092863 write(4, "h\372<\6\254\365\222\5\236\361\350\4\230\356V\4\226\354"..., 16384) = 16384
+     0.092903 write(4, "\251\351^\371\7\353s\371\202\354\256\371-\356\364\3710"..., 16384) = 16384
+     0.092853 write(4, "\260\vQ\370\251\v\31\367\254\v\344\365\211\v\353\364\220"..., 16384) = 16384
+     0.092913 write(4, "\311\362v\1J\363P\2}\365*\3\3\371\346\3Z\375\272\4\322"..., 16384) = 16384
+     0.092847 write(4, "\244\360O\365C\354*\364y\347e\363\33\343#\363\305\337\307"..., 16384) = 16384
+     0.092861 write(4, "\342\35#\fK\"%\fp&\304\v\')\334\n\377)\v\n\241(\10\t\333"..., 16384) = 16384
+     0.092934 write(4, "\203\24\367\3725\24\376\372\375\22n\373Z\21\30\374\371"..., 16384) = 16384
+     0.092918 write(4, "(\364I\334\20\364\200\333\26\364\375\332\2\364~\333\313"..., 16384) = 16384
+     0.092883 write(4, "\270\360\361\3\235\363\262\4\276\366\237\5\250\371\271"..., 16384) = 16384
+     0.092894 write(4, "\262\3\232\f\335\0\323\v\226\376\37\v\5\375f\n\3\374\372"..., 16384) = 16384
+     0.092855 write(4, "\202\3578\376\222\357\221\375\347\357\24\375:\360\316\374"..., 16384) = ? ERESTARTSYS (To be restarted)
+     0.044485 --- SIGINT (Interrupt) @ 0 (0) ---
+     0.000050 sigreturn()               = ? (mask now [RTMIN])
+     0.000208 write(2, "\n[0:01] Decoding of Abstrakt.mp3"..., 43) = 43
+     0.000385 munmap(0x40170000, 4220344) = 0
+     0.000054 close(3)                  = 0
+     0.000052 gettimeofday({1067967016, 326394}, NULL) = 0
+     0.000037 write(4, "?\24\0\1\\\0234\377b\17W\375\322\10\241\371\377\377\306"..., 1024) = 1024
+     0.000060 close(4)                  = 0
+     0.092969 _exit(0)                  = ?
+
+--------------020608080508000109000505
+Content-Type: text/plain;
+ name="strace-r.mpg123.alsa093b"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="strace-r.mpg123.alsa093b"
+
+     0.000000 execve("/usr/bin/mpg123", ["mpg123", "Abstrakt.mp3"], [/* 51 vars */]) = 0
+     0.000307 uname({sys="Linux", node="braunschweig", ...}) = 0
+     0.000167 brk(0)                    = 0x8093ba8
+     0.000061 open("/etc/ld.so.preload", O_RDONLY) = -1 ENOENT (No such file or directory)
+     0.000090 open("/etc/ld.so.cache", O_RDONLY) = 3
+     0.000047 fstat64(3, {st_mode=S_IFREG|0644, st_size=63041, ...}) = 0
+     0.000080 mmap2(NULL, 63041, PROT_READ, MAP_PRIVATE, 3, 0) = 0x40014000
+     0.000046 close(3)                  = 0
+     0.000080 open("/lib/libm.so.6", O_RDONLY) = 3
+     0.000048 read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\2405\0"..., 1024) = 1024
+     0.000074 fstat64(3, {st_mode=S_IFREG|0755, st_size=186329, ...}) = 0
+     0.000058 mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x40024000
+     0.000047 mmap2(NULL, 136416, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40025000
+     0.000041 mprotect(0x40046000, 1248, PROT_NONE) = 0
+     0.000042 mmap2(0x40046000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3, 0x20) = 0x40046000
+     0.000058 close(3)                  = 0
+     0.000053 open("/lib/libc.so.6", O_RDONLY) = 3
+     0.000046 read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0`X\1\000"..., 1024) = 1024
+     0.000060 fstat64(3, {st_mode=S_IFREG|0755, st_size=1449773, ...}) = 0
+     0.000057 mmap2(NULL, 1215204, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x40047000
+     0.000040 mprotect(0x4016a000, 23268, PROT_NONE) = 0
+     0.000037 mmap2(0x4016a000, 16384, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3, 0x122) = 0x4016a000
+     0.000061 mmap2(0x4016e000, 6884, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x4016e000
+     0.000041 close(3)                  = 0
+     0.000336 munmap(0x40014000, 63041) = 0
+     0.000117 write(2, "High Performance MPEG 1.0/2.0/2."..., 69) = 69
+     0.000468 write(2, "Version 0.59r (1999/Jun/15). Wri"..., 69) = 69
+     0.000187 write(2, "Uses code from various people. S"..., 54) = 54
+     0.000163 write(2, "THIS SOFTWARE COMES WITH ABSOLUT"..., 71) = 71
+     0.000183 open("/dev/dsp", O_WRONLY) = 3
+     0.000108 ioctl(3, SNDCTL_DSP_GETBLKSIZE, 0x80732c0) = 0
+     0.503537 ioctl(3, SNDCTL_DSP_RESET, 0) = 0
+     0.000043 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509991 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509895 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509940 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000042 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509931 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509920 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509946 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509995 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.509946 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.510459 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000260 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000035 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509241 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000042 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509957 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509907 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509929 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509998 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.509964 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.510013 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000042 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509913 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509946 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509914 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509928 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.510005 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.020635 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019838 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019931 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019942 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000027 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019946 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019944 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020009 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.020181 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019795 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019927 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000027 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020203 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019752 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000032 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019864 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020001 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.019968 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019996 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020040 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019849 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019936 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019946 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019997 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.024978 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019993 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000076 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019925 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000027 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019927 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019931 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000027 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019942 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020002 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.024971 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020001 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019941 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019943 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000028 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020245 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000039 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019709 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020816 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.024259 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019916 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020183 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019835 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000038 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019744 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020172 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019782 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000033 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.514380 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.510120 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000300 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000036 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509560 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509938 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509922 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509910 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509995 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.510071 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000041 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509899 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509927 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509923 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000092 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000032 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509883 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509945 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509985 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000042 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.509954 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.510005 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509923 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509937 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509936 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509924 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509993 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.509970 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.510003 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509921 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509926 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000039 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509935 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000039 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509927 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.510010 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.020739 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019728 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019933 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020206 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000039 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019741 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000033 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019875 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019996 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.019970 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019997 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020019 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000032 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019878 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019926 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000027 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019945 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020020 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.019957 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019989 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019943 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019941 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019941 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019944 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020014 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.024963 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019994 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019942 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000029 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019945 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020220 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000039 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019742 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019920 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.025264 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019723 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020187 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019919 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000038 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019751 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020122 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020027 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000039 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.024708 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020216 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000038 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019747 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019880 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019957 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000031 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000028 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.019927 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.020014 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000030 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.514441 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.510006 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000038 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509941 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000041 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509919 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000029 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509919 ioctl(3, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.000040 ioctl(3, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.000030 ioctl(3, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.510072 close(3)                  = 0
+     0.003007 rt_sigaction(SIGINT, {0x804be90, [], SA_RESTORER, 0x4006ff18}, {SIG_DFL}, 8) = 0
+     0.000087 open("Abstrakt.mp3", O_RDONLY) = 3
+     0.000076 lseek(3, 0, SEEK_END)     = 4220472
+     0.000039 lseek(3, -128, SEEK_END)  = 4220344
+     0.000041 read(3, "TAGAbstrakt\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 128) = 128
+     0.000068 lseek(3, 0, SEEK_SET)     = 0
+     0.000044 mmap2(NULL, 4220344, PROT_READ, MAP_SHARED, 3, 0) = 0x40170000
+     0.000092 write(2, "Title  : Abstrakt               "..., 60) = 60
+     0.000447 write(2, "Album  : Von Allen Gedanken Sch\344"..., 54) = 54
+     0.000206 write(2, "Comment:                        "..., 53) = 53
+     0.000179 write(2, "\nPlaying MPEG stream from Abstra"..., 43) = 43
+     0.000204 write(2, "\33]0;Abstrakt.mp3\7", 17) = 17
+     0.001153 gettimeofday({1067966955, 459199}, NULL) = 0
+     0.002906 write(2, "Junk at the beginning 49443303\n", 31) = 31
+     0.001967 write(2, "MPEG 1.0 layer III, 128 kbit/s, "..., 54) = 54
+     0.000379 brk(0)                    = 0x8093ba8
+     0.000127 brk(0x8094ba8)            = 0x8094ba8
+     0.000141 brk(0)                    = 0x8094ba8
+     0.000272 brk(0x8095000)            = 0x8095000
+     0.000136 brk(0)                    = 0x8095000
+     0.000122 brk(0x809d000)            = 0x809d000
+     0.000126 open("/dev/dsp", O_WRONLY) = 4
+     0.000199 ioctl(4, SNDCTL_DSP_GETBLKSIZE, 0x80732c0) = 0
+     0.502862 ioctl(4, SNDCTL_DSP_RESET, 0) = 0
+     0.000042 ioctl(4, SNDCTL_DSP_SETFMT, 0xbffff254) = 0
+     0.509953 ioctl(4, SNDCTL_DSP_STEREO, 0xbffff254) = 0
+     0.510004 ioctl(4, SOUND_PCM_READ_RATE, 0xbffff278) = 0
+     0.022781 close(4)                  = 0
+     0.000087 open("/dev/dsp", O_WRONLY) = 4
+     0.000108 ioctl(4, SNDCTL_DSP_GETBLKSIZE, 0x80732c0) = 0
+     0.512011 ioctl(4, SNDCTL_DSP_RESET, 0) = 0
+     0.000040 ioctl(4, SNDCTL_DSP_SETFMT, 0xbffff364) = 0
+     0.509953 ioctl(4, SNDCTL_DSP_STEREO, 0xbffff364) = 0
+     0.510049 ioctl(4, SOUND_PCM_READ_RATE, 0xbffff388) = 0
+     0.021638 write(4, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 16384) = 16384
+     0.001900 write(4, "5\16\r\4\365\17\206\3\266\21\374\2J\23\37\2\20\24\322\0"..., 16384) = 16384
+     0.092726 write(4, "\324\370,\370\253\376\342\370X\4\214\371\242\t@\372\367"..., 16384) = 16384
+     0.092905 write(4, "h\372<\6\254\365\222\5\236\361\350\4\230\356V\4\226\354"..., 16384) = 16384
+     0.092808 write(4, "\251\351^\371\7\353s\371\202\354\256\371-\356\364\3710"..., 16384) = 16384
+     0.092933 write(4, "\260\vQ\370\251\v\31\367\254\v\344\365\211\v\353\364\220"..., 16384) = 16384
+     0.092848 write(4, "\311\362v\1J\363P\2}\365*\3\3\371\346\3Z\375\272\4\322"..., 16384) = 16384
+     0.092960 write(4, "\244\360O\365C\354*\364y\347e\363\33\343#\363\305\337\307"..., 16384) = 16384
+     0.092894 write(4, "\342\35#\fK\"%\fp&\304\v\')\334\n\377)\v\n\241(\10\t\333"..., 16384) = 16384
+     0.092904 write(4, "\203\24\367\3725\24\376\372\375\22n\373Z\21\30\374\371"..., 16384) = 16384
+     0.093025 write(4, "(\364I\334\20\364\200\333\26\364\375\332\2\364~\333\313"..., 16384) = 16384
+     0.092641 write(4, "\270\360\361\3\235\363\262\4\276\366\237\5\250\371\271"..., 16384) = 16384
+     0.092929 write(4, "\262\3\232\f\335\0\323\v\226\376\37\v\5\375f\n\3\374\372"..., 16384) = 16384
+     0.092921 write(4, "\202\3578\376\222\357\221\375\347\357\24\375:\360\316\374"..., 16384) = 16384
+     0.092815 write(4, "?\24\0\1\\\0234\377b\17W\375\322\10\241\371\377\377\306"..., 16384) = 8192
+     0.091595 --- SIGINT (Interrupt) @ 0 (0) ---
+     0.000045 sigreturn()               = ? (mask now [RTMIN])
+     0.000319 write(2, "\n[0:01] Decoding of Abstrakt.mp3"..., 43) = 43
+     0.000396 munmap(0x40170000, 4220344) = 0
+     0.000053 close(3)                  = 0
+     0.000034 gettimeofday({1067966959, 866620}, NULL) = 0
+     0.000037 write(4, "\220\0059\377e\5\207\374y\5d\372\351\5\332\370L\6\200\367"..., 3072) = 3072
+     0.000063 close(4)                  = 0
+     0.092271 _exit(0)                  = ?
+
+--------------020608080508000109000505--
 
 
 
