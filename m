@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000837]: Mute LED for the HP/Compaq nc8000
-Date: Wed, 19 Jan 2005 20:15:11 +0100
-Message-ID: <490344ed0e2c9a4f6c93263634f48fc3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000782]: Poor digital aidio quality
+Date: Wed, 19 Jan 2005 18:34:35 +0100
+Message-ID: <b53f643aa875211cb05e037775ff5f21@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7B6AF221
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 20:15:11 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C961A24E
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 18:34:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,108 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=837> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=782> 
 ======================================================================
-Reported By:                linus
-Assigned To:                
+Reported By:                ddemmer
+Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   837
-Category:                   PCI - intel8x0
+Issue ID:                   782
+Category:                   PCI - emu10k1x
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10
+Status:                     assigned
+Distribution:               Fedora Core
+Kernel Version:             2.6.9-1.681_FC3.i686
 ======================================================================
-Date Submitted:             01-19-2005 20:15 CET
-Last Modified:              01-19-2005 20:15 CET
+Date Submitted:             01-03-2005 16:20 CET
+Last Modified:              01-19-2005 18:34 CET
 ======================================================================
-Summary:                    Mute LED for the HP/Compaq nc8000
+Summary:                    Poor digital aidio quality
 Description: 
-I noticed that the quirk introduced for HP/Compaq nc6000 among
-others isn't applied for HP/Compaq nc8000 (most probably because
-you don't have the PCI ID. By the way both the model nc6000
-and nc8000 should be with small letters (not that it matters to
-anyone else than the logo designer)
+Attempting to play MP3 files with RealPlay or xmms using ALSA output
+results in scratchy, erratic, slow (Realplay) or speeded up (xmms) sound.
+I can change the xmms configuration to use libOSS.so instead of libALSA
+which fixes the problem.
 
-So I've had a user obtain the PCI ID. The subsystem is: 103c:088c
+The gnome "Detect Sound Card" utility works fine and plays it's sound
+fine.
 
-Long lspci -v and -v -n here:
+The gnome volume control does not affect the output level when using
+libOSS.
 
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM
-(ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 03)
-	Subsystem: Hewlett-Packard Company: Unknown device 088c
+I have by now muted everything in the alsamixer except the Master volume.
 
-0000:00:1f.5 0401: 8086:24c5 (rev 03)
-	Subsystem: 103c:088c
-	Flags: bus master, medium devsel, latency 0, IRQ 11
-	I/O ports at 3000 [size=256]
-	I/O ports at 3880 [size=64]
-	Memory at a0100000 (32-bit, non-prefetchable) [size=512]
-	Memory at a0180000 (32-bit, non-prefetchable) [size=256]
-	Capabilities: <available only to root>
+Playing a CD works fine.
 ======================================================================
+
+----------------------------------------------------------------------
+ ddemmer - 01-16-05 20:43 
+----------------------------------------------------------------------
+Well, things have changed with 1.0.8!
+
+I tried installing rhythmbox and everything worked fine. 
+
+I then tried ALSA 1.0.8.rc2, and there was no change: rhythmbox works,
+xmms and realplay were "scratchy' with mp3, xmms was fine with libOSS.so
+as the output module. Gnome system sounds are enabled and seem fine. I
+tried the same with KDE and they are fine, too.
+
+I have just installed 1.0.8 and now:
+
+1. xmms and realplay both complain at startup that the audio device is
+busy and won't proceed any further
+2. rythmbox complains that the "default" device is busy and that it can't
+pause audio, but then after I click OK it goes on to work normally.
+3. Gnome soundcard detect works fine.
+4. Gstreamer prefs complains that it can't construct test pipeline, for
+any sound configuration.
+5. Both Gnome and KDE system sounds still work fine.
+
+Note: I have installed alsa-driver, alsa-libs, alsa-utils, alsa-oss, and
+alsa-firmware. I didn't really know what to do with alsa-tools and it
+doesn't seem to matter.
+
+BTW, I'm still running the  2.6.9-1.681_FC3.i686 kernel.
+
+----------------------------------------------------------------------
+ ddemmer - 01-19-05 18:34 
+----------------------------------------------------------------------
+Some more info.
+
+Things are getting better. I dug a bit more into the xmms
+Options/Preferences. I noticed a "configure" button for the Alsa playback,
+and noted it was set to "default PCM" When I changed that to emu10k1x
+Front hw:0,0 playback was fine.
+
+So, I think the "default PCM" was reset to something strange when I had
+the SB16 installed. I'm sure that when I get the time to look into the
+alsa config I can fix that and everything else will be fine.
+
+However, perhaps you guys should look into how the configuration files are
+updated when installing/reinstalling cards.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-19-05 20:15 linus          New Issue                                    
-01-19-05 20:15 linus          Distribution              => Fedora Core 3   
-01-19-05 20:15 linus          Kernel Version            => 2.6.10          
+01-03-05 16:20 ddemmer        New Issue                                    
+01-03-05 16:20 ddemmer        Distribution              => Fedora Core     
+01-03-05 16:20 ddemmer        Kernel Version            => 2.6.9-1.681_FC3.i686
+01-03-05 16:49 stransky       Issue Monitored: stransky                    
+01-04-05 13:43 ddemmer        Issue Monitored: ddemmer                     
+01-04-05 13:43 ddemmer        Issue End Monitor: ddemmer                    
+01-16-05 14:57 fmoraes        Note Added: 0003217                          
+01-16-05 20:43 ddemmer        Note Added: 0003221                          
+01-19-05 18:34 ddemmer        Note Added: 0003310                          
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by: IntelliVIEW -- Interactive Reporting
-Tool for open source databases. Create drag-&-drop reports. Save time
-by over 75%! Publish reports on the web. Export to DOC, XLS, RTF, etc.
-Download a FREE copy at http://www.intelliview.com/go/osdn_nl
+The SF.Net email is sponsored by: Beat the post-holiday blues
+Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
+It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
