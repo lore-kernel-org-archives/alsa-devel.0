@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000556]: ATI IXP 150 - Does Not work majority of the time.
-Date: Fri,  1 Oct 2004 16:39:39 +0200 (CEST)
+Subject: [ALSA - driver 0000555]: ATI IXP 150 - Does Not work majority of the time.
+Date: Fri,  1 Oct 2004 17:03:49 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041001143939.BEDAC2D0C1@server.perex-int.cz>
+Message-ID: <20041001150349.14EF32D0BF@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 35E2E226
-	for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2004 16:39:40 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8FB7024B
+	for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2004 17:03:49 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,26 +20,25 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000556
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000555
 ======================================================================
 Reported By:                bremedios
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     556
+Bug ID:                     555
 Category:                   PCI - atiixp
 Reproducibility:            sometimes
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     assigned
 Distribution:               Fedora Core 2
 Kernel Version:             2.6.8.1
-Resolution:                 fixed
 ======================================================================
 Date Submitted:             09-30-2004 20:53 CEST
-Last Modified:              10-01-2004 16:39 CEST
+Last Modified:              10-01-2004 17:03 CEST
 ======================================================================
 Summary:                    ATI IXP 150 - Does Not work majority of the time.
 Description: 
@@ -54,6 +53,11 @@ Shutting down and Starting up seems to eventually fix the problem.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 10-01-2004 17:03 CEST 
+----------------------------------------------------------------------
+What happens if you start with pci=noacpi or acpi=off?
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -61,9 +65,7 @@ Date Modified  Username       Field                    Change
 09-30-04 20:53 bremedios      File Added: messages                         
 09-30-04 20:53 bremedios      Distribution              => Fedora Core 2   
 09-30-04 20:53 bremedios      Kernel Version            => 2.6.8.1         
-10-01-04 16:39 tiwai          duplicate_id             0 => 555            
-10-01-04 16:39 tiwai          Resolution               open => fixed       
-10-01-04 16:39 tiwai          Status                   assigned => resolved
+10-01-04 17:03 tiwai          Bugnote Added: 0002000                       
 ======================================================================
 
 
