@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: "Thomas Charbonnel" <thomas@undata.org>
 Subject: Re: hdsp driver status
-Date: Thu, 8 May 2003 08:36:44 +0200 (CEST)
+Date: Thu, 8 May 2003 11:15:50 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305080835540.1435-100000@pnote.perex-int.cz>
+Message-ID: <32905.217.128.4.25.1052385350.squirrel@www.undata.org>
 References: <200305080204.h48248c05344@linuxaudiosystems.com>
+        <Pine.LNX.4.44.0305080835540.1435-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200305080204.h48248c05344@linuxaudiosystems.com>
+In-Reply-To: <Pine.LNX.4.44.0305080835540.1435-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,47 +18,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "thomas@undata.org" <thomas@undata.org>
+To: perex@suse.cz
+Cc: paul@linuxaudiosystems.com, alsa-devel@lists.sourceforge.net, thomas@undata.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 7 May 2003, Paul Davis wrote:
+> On Wed, 7 May 2003, Paul Davis wrote:
+>
+>> somebody ripped out the definition of HDSP_IO_Type, and
+>>
+> It's defined in alsa-kernel/include/hdsp.h...
+>
+>
 
-> i finally got the information from RME to enable the mixer on the
-> hdsp-9652. i updated CVS, and the hdsp driver is totally
-> incompilable. somebody ripped out the definition of HDSP_IO_Type, and
-> then we have stuff like this:
-> 
-> ../../alsa-kernel/pci/rme9652/hdsp.c:403: `HDSP_MATRIX_MIXER_SIZE' undeclared he
-> re (not in a function)
-> ../../alsa-kernel/pci/rme9652/hdsp.c: In function `hdsp_read_gain':
-> ../../alsa-kernel/pci/rme9652/hdsp.c:655: `HDSP_MATRIX_MIXER_SIZE' undeclared (f
-> irst use in this function)
-> ../../alsa-kernel/pci/rme9652/hdsp.c:655: (Each undeclared identifier is reporte
-> d only once
-> ../../alsa-kernel/pci/rme9652/hdsp.c:655: for each function it appears in.)
-> ../../alsa-kernel/pci/rme9652/hdsp.c: In function `hdsp_write_gain':
-> ../../alsa-kernel/pci/rme9652/hdsp.c:692: `HDSP_MATRIX_MIXER_SIZE' undeclared (f
-> irst use in this function)
-> ../../alsa-kernel/pci/rme9652/hdsp.c: In function `snd_hdsp_set_defaults':
-> ../../alsa-kernel/pci/rme9652/hdsp.c:3029: `HDSP_MATRIX_MIXER_SIZE' undeclared (
-> first use in this function)
-> ../../alsa-kernel/pci/rme9652/hdsp.c: In function `snd_hdsp_hwdep_ioctl':
-> ../../alsa-kernel/pci/rme9652/hdsp.c:3729: `hdsp_firmware_t' undeclared (first u
-> se in this function)
-> ../../alsa-kernel/pci/rme9652/hdsp.c:3729: `firmware' undeclared (first use in t
-> his
-> 
-> can some fill me in on what is going on? why is the driver so totally broken?
+I moved the definition there to make it usable by userspace applications.
+I should have warned you about that, sorry.
 
-It's defined in alsa-kernel/include/hdsp.h...
+Thomas
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 
