@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000408]: Volume control is chaotic
-Date: Wed, 18 Aug 2004 13:47:50 +0200 (CEST)
+Date: Wed, 18 Aug 2004 13:47:30 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040818114750.E0A9124006@server.perex-int.cz>
+Message-ID: <20040818114730.A98471102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 21BEB235
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 13:47:51 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0661D235
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 13:47:30 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,7 +20,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been ASSIGNED.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000408
 ======================================================================
@@ -65,11 +65,6 @@ Fixed with alsa-* 1.0.6, although the Master control is weird: you only get
 full sound when you set Master to 0. Increasing Master decreases overall
 volume very fast. This control is basically unusable.
 
-----------------------------------------------------------------------
- tiwai - 08-18-2004 13:47 CEST 
-----------------------------------------------------------------------
-Could you try the attached patch?
-
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -81,7 +76,6 @@ Date Modified  Username       Field                    Change
 08-17-04 04:33 skamp          Bugnote Added: 0001571                       
 08-18-04 13:47 tiwai          Assigned To               => tiwai           
 08-18-04 13:47 tiwai          Status                   new => assigned     
-08-18-04 13:47 tiwai          Bugnote Added: 0001578                       
 ======================================================================
 
 
