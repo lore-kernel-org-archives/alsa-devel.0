@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
-Date: Wed, 8 Dec 2004 12:13:37 +0100
-Message-ID: <3e472d5f485fd69ae2782610ff36a288@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000714]: On newer xboxes, the xbox=1 workaround does not solve the problem.
+Date: Wed, 8 Dec 2004 12:17:58 +0100
+Message-ID: <a7947737a2696b9bb63bfa94670e53a4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 65D203D1
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 12:13:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6162D3D1
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 12:17:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,91 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=714> 
 ======================================================================
-Reported By:                brentcfisher
+Reported By:                davidmpye
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   671
-Category:                   PCI - via82xx
+Issue ID:                   714
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.8.1
+Distribution:               Debian
+Kernel Version:             2.4.28
 ======================================================================
-Date Submitted:             11-24-2004 06:36 CET
-Last Modified:              12-08-2004 12:13 CET
+Date Submitted:             12-08-2004 01:35 CET
+Last Modified:              12-08-2004 12:17 CET
 ======================================================================
-Summary:                    ALSA sound cuts out w/ message: ALSA
-sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Summary:                    On newer xboxes, the xbox=1 workaround does not
+solve the problem.
 Description: 
-Particularily noticeable when watching a DVD via xine using AC3 Pass
-Through.  Sound will cut out momentarily (usually for no more than a
-second).  The skip is always accompanied by multiples of this message in
-the /var/log/messages file:
+This is a followup to bug 221, and the workaround that was added to ALSA
+1.0.7.
 
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
+Unfortunately, on newer xboxes, the chip reports less info than before,
+making another change necessary - this change is backwards compatible, and
+doesn't break earlier xboxes, of course. 
 
-These messages appear in the log file once or twice a minute although the
-sound only noticable cuts out every few minutes .  Very annoying on an
-HTPC.
+Please see attached patch.
 ======================================================================
 
 ----------------------------------------------------------------------
- brentcfisher - 12-08-04 05:03 
+ davidmpye - 12-08-04 01:52 
 ----------------------------------------------------------------------
-Takashi,
-
-I'm trying to read the hw_params proc file while playing a DVD - it says
-'closed'.  Is there something else I need to do?
-
-I applied the patch to driver v1.0.7 and installed the modules, but the
-problem persists:
-
-Dec  7 21:01:08 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
-0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
-Dec  7 21:01:08 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
-0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
-Dec  7 21:01:08 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
-0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
-Dec  7 21:01:08 samwise fail: idx = 0/16, lastpos = 0x1000, bufsize2 =
-0x8000, offsize = 0x0, size = 0x1000, count = 0xfe0
+If the patch requires 'crediting', the original author is Ed Hucek
+(hostmaster@ed-soft.at).
 
 Thanks,
--Brent
+
+David
 
 ----------------------------------------------------------------------
- tiwai - 12-08-04 12:13 
+ tiwai - 12-08-04 12:17 
 ----------------------------------------------------------------------
-OK, try the another patch.  This won't fix the behavior but the debug
-message must be slightly different.
+Please provide the signed-off-by, as described in the News page.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 06:36 brentcfisher   New Issue                                    
-11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
-11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
-11-24-04 06:47 brentcfisher   Note Added: 0002541                          
-11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
-11-24-04 23:50 squarooticus   Note Added: 0002584                          
-11-25-04 01:59 brentcfisher   Note Added: 0002585                          
-11-25-04 06:45 squarooticus   Note Added: 0002586                          
-12-02-04 19:34 tiwai          Note Added: 0002694                          
-12-06-04 02:24 brentcfisher   Note Added: 0002725                          
-12-07-04 18:24 tiwai          Note Added: 0002753                          
-12-07-04 18:24 tiwai          File Added: via-pointer-fix.diff                  
- 
-12-08-04 05:03 brentcfisher   Note Added: 0002774                          
-12-08-04 12:13 tiwai          Note Added: 0002779                          
+12-08-04 01:35 davidmpye      New Issue                                    
+12-08-04 01:35 davidmpye      Distribution              => Debian          
+12-08-04 01:35 davidmpye      Kernel Version            => 2.4.28          
+12-08-04 01:52 davidmpye      Note Added: 0002772                          
+12-08-04 12:17 tiwai          Note Added: 0002780                          
 ======================================================================
 
 
