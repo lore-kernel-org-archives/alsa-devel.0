@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000399]: Audigy ls + gameport
-Date: Wed, 21 Jul 2004 20:47:04 +0200 (CEST)
+Subject: [ALSA - driver 0000402]: No Wavetable-MIDI with snd-emu10k1 compiled static in kernel
+Date: Wed, 21 Jul 2004 21:13:30 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040721184704.87FE52F001@server.perex-int.cz>
+Message-ID: <20040721191330.8F2122F002@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D5C6259
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2004 20:47:04 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DE83C259
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2004 21:13:30 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,49 +20,39 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000399
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000402
 ======================================================================
-Reported By:                eric
-Assigned To:                
+Reported By:                frankpoole
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     399
-Category:                   OTHERS
+Bug ID:                     402
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora core 1
-Kernel Version:             kernel 2.6.7
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             07-20-2004 23:24 CEST
-Last Modified:              07-21-2004 20:47 CEST
+Date Submitted:             07-21-2004 21:13 CEST
+Last Modified:              07-21-2004 21:13 CEST
 ======================================================================
-Summary:                    Audigy ls + gameport
+Summary:                    No Wavetable-MIDI with snd-emu10k1 compiled static in kernel
 Description: 
-no audigy ls support for gameport analog in standard kernel 
-(2.6.7)
-and no patch in alsa cvs files.
-
-
+ALSA does not detect the Wavetable capabilities of the card (tested on SB
+Live 5.1 and Audigy2) when loading snd-emu10k1-synth with snd-emu10k1
+built inside the kernel. I'm forced to build everything as modules to get
+it working.
 ======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 07-21-2004 20:47 CEST 
-----------------------------------------------------------------------
-I sent this patch to the maintainer for emu10k1-gp.c a few weeks ago.
-So, it should be appearing in the kernel some time soon.
-A similar line is used to the emu10k1x.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-20-04 23:24 eric           New Bug                                      
-07-20-04 23:24 eric           Distribution              => Fedora core 1   
-07-20-04 23:24 eric           Kernel Version            => kernel 2.6.7    
-07-21-04 20:47 jcdutton       Bugnote Added: 0001463                       
+07-21-04 21:13 frankpoole     New Bug                                      
+07-21-04 21:13 frankpoole     Kernel Version            => 2.6.7           
 ======================================================================
 
 
