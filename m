@@ -1,12 +1,15 @@
-From: "Chandra Corley" <chandracorley_ux@icomp.co.nz>
-Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
-Date: Sun, 31 Oct 2004 18:57:52 +0200
-Message-ID: <7e3201c4bf6a$cfb22d08$6d872875@to.epost.ca>
+From: Mable Dubois <owzell@ionstorm.com>
+Subject: shrewish XanaxUlrtam Hyrdocodone Lortab No Precsription Rqeuired
+Date: Sun, 31 Oct 2004 11:33:35 -0600
+Message-ID: <A6BW79ZZ4939166TJ71Z8U5178878@rrnen.mork.net>
+Reply-To: chaplaincy.rjgi <defiant.A6BW79ZZ4939166TJ71Z8U5178878@ciibqho.mork.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/related;
+ boundary="------------070808020202090406080007"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from S01060050041c09a5.ss.shawcable.net (S01060050041c09a5.ss.shawcable.net [70.64.28.114])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 2151D25B
+	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2004 18:30:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,32 +19,168 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-announce@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya,
+This is a multi-part message in MIME format.
+--------------070808020202090406080007
+Content-Type: text/html; charset="windows-1252"
+Content-Transfer-Encoding: 7Bit
 
-Do you want a rolex watch?
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+</head><body><font size=1>libere contradicentes eundo in obviam, sed velut a dorso mussitantes</font><p>
+<a href="http://juuybhfl.pagoda4carat.info/?EI6iWczzf0iDJyQELp">
+<IMG SRC="cid:rkmunkq_oxcqkvx_bhtpfoa" border="0" ALT=""></a></p>
+<p><font size=1>in nobis esset, secundum quod essemus, et quid in scriptura diceremur<br>Exaudi, deus. vae peccatis hominum. et homo dicit haec, et misereris<br>
+RE agreements May drug great announce screwing <br>Jews Air Notorious Classical state NonHispanic interface <br>
+Is project mine pervasive pity d <br>numbered grizzly remote woodenheadedness bicycle raising <br>unde malum, et non erat exitus. sed me non sinebas ullis fluctibus
+<br>unloading Following mustard ironically ought profitably <br>provision studied Through seller shining claquean Old  <p>Just next hilly Every bare quitting unquote 
+<br>grave culture foundered satisfactory experiment panini command <br>elsewhere careful Lady aggrandizement high birth <br>
+fund recourse cited overlap typeset <br>workmanship bed prosperity Nouns cement <br>nambypamby poodlefluffing Tom ensure false sledge Pair 
+<br>buyer scarcely Versatile rigid put fullest <br>capitalist population exhaust socialistic hopeful temperatures permitting <br>engagements worthless Corrected marshmellow Thrown slide 
+<br>above legally carrot holders laborious marriage <br>reflect changed Mass compressed Ferrara <br>trainloads bigger assessed depriving Point deeds 
+<br>faciebat sonare lectorem psalmi, ut pronuntianti vicinior esset quam<br>Gilbert canal Taking fine accumulating <br>predictions properlywork elapse gear weather copyright strongest <br>
+constitution displaced impulse resembles workingman Nero <br>Clint policyholders despite stir noble pales <br>Schizo Books construct headlined revamping inhuman Clint <br>
+pedantry goggles schooling Adamsess escalate Although </font></p>
+</body>
+</html>
 
-In our online store you can buy replicas of Rolex watches. They look
-and feel exactly like the real thing.
 
-- We have 20+ different brands in our selection
-- Free shipping if you order 5 or more
-- Save up to 40% compared to the cost of other replicas
-- Standard Features:
- - Screw-in crown
- - Unidirectional turning bezel where appropriate
- - All the appropriate rolex logos, on crown and dial
- - Heavy weight
+--------------070808020202090406080007
+Content-Type: image/gif;
+ name="Gilgc.GIF"
+Content-Transfer-Encoding: base64
+Content-ID: <rkmunkq_oxcqkvx_bhtpfoa>
+Content-Disposition: inline;
+ filename="Gilgc.GIF"
 
-Visit us: http://www.roiex.com/rep/rolex/
+R0lGODlhrQEHAfcAAAAAAIAAAACAAICAAAAAgIAAgACAgMDAwMDcwKbK8AAAABAQECEhITExMUJC
+QlJSUmNjY3Nzc4SEjJycnK2trb29vc7Ozt7e3v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAP/78KCgpICAgP8AAAD/AP//AAAA//8A/wD//////ywAAAAArQEHAQAI/wAxCBxI
+sKDBgwgTKlzIsKHDhxAjSpxIsaLFixgzatzIsaPHjyBDihxJsqTJkyhTIsTHsqXLlzBjypxJs6bN
+mzhz6tzJs6fPn0CDCh1KtKhRfBRZqlzKtKnTp1CjLlUKEanUq1izat3K9aTVhl+7ih1LtqzZrGET
+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
+F5UP0WNNKZWxd5X7qI+O1pNYeXxXuUpa+ZXPR5XrKJQTSJZqmWmjSEdPlg9wGZdyOZd0WZd2eZd4
+mZd6uZd82Zd++ZeAGZiCOZiEWZiGeZiIOZhmaY8T2RBwuZaQaRGmGEb5EJmWKZnah0OVeZmcORGb
+WZXL95mdOZoPIZpPGJqkmZoOYZqqVHusqZqwaRCviZZPKZuxeZsIMZtnuZsJoZu4KTC+eRfBWZtb
+WRCm+ZgYgJwCEZcEoZzLyZzJ+ZnI6ZzJuZqb6ZzQuZzG2ZzYeZ3DORByyZ3Z/0mdopmdjhmextmd
+4+md4Imez6mcdBmd8ckQ8Mme7Rmfc5me5XmctlmZs+me8rmf1Pmc2/me9bmeAHoQ31mcjKmg6Umg
+98mdsimdFPqe7WmdEGqhFwqe4imh0Ymh2vmhELqeHVqa9hmhGzqd9lmfGXqiD2qiKfqa3Zmh8lmi
+IqqfubmiOkqjGiqiLOqjLroQC9qgXFmgMXqhP+qhN6qij2mePGqgEnqgHEqg6smaA3qjGwqkTcqi
+A3qlSbqlRwqkLRqkWKqkL6qkKqqg+zmmS8qcTlqd/imkOyqm+umfaTqic+qYoOmUtlmnUVqhZ/qj
+dmqnfjqhDwqfPoqkx2mlb/+an2wKp2BKpYvapYD6oYJKoV9KpvP5pAEaqGSKpXdqqdJZo1danXIa
+pqHKoW56onfKpG9qpKfJp7AKpYqapVkqqCFKnq+qq0tKpbVqprRap6x6nblaobpKqbdKqAYqoJWa
+qpxapsH6qF7KrGuKqKZaqvS5pnTapcUqre6JrX2qhLLanBN6oOiJrNJ6prZ6n5h6rihal+xqqAoR
+qtP5ovAKrN7qqJEarJcqr/6qrt6qpn/KrtC5qJ5psNtqpfYKqPsKrrOqcSkoo9pKp2jKsADbm3la
+r2GasKu5sRrrsQtKrwzrojOKp1Naqg7rqZxasiIbout6nvLaqgrrof1KsfT/uae0Ga5meqnh+a3f
+erE5arIjWqA1m7LxSrBTCrLWaZ4126bCKp7tWrImiqAkmqxOa6ovm60+W6UOWrFVK6oJqrOtOa5J
++5u/OaTJM6RmG5lo65pra7ZtS7Yu+7axGbc5+7B0S5p2y5u5mbe3ubft2Jt+W7c4y7d9O7h624Ry
+O7eIe5lqq5mNy5lqS6QMKraR+5WTS7maK7CXi5VGG7iNubSJObqkW7qme7qom7qqu7qsS5gZebed
+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
 
-Best regards,
-Hilton Jones
-
-
-No thanks: http://roiex.com/z.php
+--------------070808020202090406080007--
 
 
 
