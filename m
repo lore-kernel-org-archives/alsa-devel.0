@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
-Date: Wed, 12 Jan 2005 16:13:05 +0100
-Message-ID: <ac68a900e9009a6f6e7b33639451ab8c@bugtrack.alsa-project.org>
+From: Kirill Smelkov <kirr@mns.spb.ru>
+Subject: [patch] writing-an-alsa-driver typo fixes
+Date: Wed, 12 Jan 2005 18:32:22 +0300
+Message-ID: <200501121832.23003.kirr@mns.spb.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_GMU5BG8Z8YzzIxy"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 331F4329
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 16:13:06 +0100 (MET)
+Received: from mail.mns.spb.ru (mns.spb.ru [195.131.16.6])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C1E17303
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 16:34:44 +0100 (MET)
+Received: from [192.168.0.127] (helo=tugrik.volcano)
+	by mail.mns.spb.ru with esmtp id 1CokWC-0004tx-Sf
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 18:34:44 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +25,157 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
-======================================================================
-Reported By:                pcmcginty
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   748
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Arch Linux
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             12-26-2004 06:50 CET
-Last Modified:              01-12-2005 16:13 CET
-======================================================================
-Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
-chipset choppy, plays to fast
-Description: 
-I've been spending a lot of time getting sound to work on my Sharp Actius
-MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
-ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
-2.6.10 kernel series cause the sound to become garbled as if the song is
-skipping through the music faster than it should. I have not tried ont he
-2.6.8 series. I can compile and try out if required. It is possible this
-is some other kernel issue, however I'm not sure how to track down where
-the kernel might be breaking the ALSA driver.
-======================================================================
+--Boundary-00=_GMU5BG8Z8YzzIxy
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-----------------------------------------------------------------------
- tiwai - 01-12-05 15:04 
-----------------------------------------------------------------------
-Please recreate the file attached there.  It contains all zero-size files. 
-You can't create tar from proc files...
+Hello,
 
-----------------------------------------------------------------------
- JonathanL - 01-12-05 16:13 
-----------------------------------------------------------------------
-I've tried version 1.0.5a and 1.0.6a with a kernel 2.6.7, and
-1.0.7,1.0.8_rc1,1.0.8_rc2 and cvs(today) with a kernel 2.6.10 (I cannot
-compile 1.0.5a with 2.6.10)
+While reading the writing-an-alsa-driver document i've discovered a few typos,
+some obsolete text fragments.
 
-working versions are :
-1.0.5a + 2.6.7
-2.6.7 + modules included in the kernel 2.6.7 distribution
+Also i fixed some referenced file names and a few comments
 
-I've re-attached the files
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-26-04 06:50 pcmcginty      New Issue                                    
-12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
-12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
-12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
-12-27-04 15:12 tiwai          Note Added: 0002961                          
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
-12-27-04 19:28 pcmcginty      Note Added: 0002973                          
-01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
-01-12-05 14:13 JonathanL      Note Added: 0003163                          
-01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
-    
-01-12-05 15:02 tiwai          Note Added: 0003164                          
-01-12-05 15:03 tiwai          Note Added: 0003165                          
-01-12-05 15:04 tiwai          Note Added: 0003166                          
-01-12-05 16:01 JonathanL      File Added: kernel-2.6.7                     
-01-12-05 16:02 JonathanL      File Added: kernel-2.6.10_alsa-cvs                
-   
-01-12-05 16:13 JonathanL      Note Added: 0003174                          
-======================================================================
+--Boundary-00=_GMU5BG8Z8YzzIxy
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="waad.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="waad.patch"
+
+Index: alsa-kernel/Documentation/DocBook/writing-an-alsa-driver.tmpl
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/Documentation/DocBook/writing-an-alsa-driver.tmpl,v
+retrieving revision 1.46
+diff -u -r1.46 writing-an-alsa-driver.tmpl
+--- alsa-kernel/Documentation/DocBook/writing-an-alsa-driver.tmpl	3 Jan 2005 11:39:57 -0000	1.46
++++ alsa-kernel/Documentation/DocBook/writing-an-alsa-driver.tmpl	12 Jan 2005 15:04:58 -0000
+@@ -110,9 +110,9 @@
+       </para>
+ 
+       <para>
+-        One is the the trees provided as a tarball or via cvs from the
++        One is the trees provided as a tarball or via cvs from the
+       ALSA's ftp site, and another is the 2.6 (or later) Linux kernel
+-      tree. To synchronize both, the ALSA driver tree is split to
++      tree. To synchronize both, the ALSA driver tree is split into
+       two different trees: alsa-kernel and alsa-driver. The former
+       contains purely the source codes for the Linux 2.6 (or later)
+       tree. This tree is designed only for compilation on 2.6 or
+@@ -766,7 +766,7 @@
+       </para>
+ 
+       <para>
+-      The ALSA interfaces like PCM or control API are define in other
++      The ALSA interfaces like PCM or control API are defined in other
+       header files as <filename>&lt;sound/xxx.h&gt;</filename>.
+       They have to be included after
+       <filename>&lt;sound/core.h&gt;</filename>.
+@@ -1103,7 +1103,7 @@
+           /* release the irq */
+           if (chip->irq >= 0)
+                   free_irq(chip->irq, (void *)chip);
+-          /* release the i/o ports */
++          /* release the i/o ports & memory */
+           pci_release_regions(chip->pci);
+           /* disable the PCI entry */
+           pci_disable_device(chip->pci);
+@@ -1314,6 +1314,7 @@
+       </para>
+ 
+       <para>
++        <!-- obsolete -->
+         It will reserve the i/o port region of 8 bytes of the given
+       PCI device. The returned value, chip-&gt;res_port, is allocated
+       via <function>kmalloc()</function> by
+@@ -1936,6 +1937,7 @@
+           snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
+                           &snd_mychip_capture_ops);
+           /* pre-allocation of buffers */
++          /* NOTE: this may fail */
+           snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+                                                 snd_dma_pci_data(chip->pci),
+                                                 64*1024, 64*1024);
+@@ -1950,7 +1952,7 @@
+     <section id="pcm-interface-constructor">
+       <title>Constructor</title>
+       <para>
+-        A pcm instance is allocated <function>snd_pcm_new()</function>
++        A pcm instance is allocated by <function>snd_pcm_new()</function>
+       function. It would be better to create a constructor for pcm,
+       namely, 
+ 
+@@ -2235,7 +2237,8 @@
+ 	unsigned char *dma_area;	/* DMA area */
+ 	dma_addr_t dma_addr;		/* physical bus address (not accessible from main CPU) */
+ 	size_t dma_bytes;		/* size of DMA area */
+-	void *dma_private;		/* private DMA data for the memory allocator */
++
++	struct snd_dma_buffer *dma_buffer_p;	/* allocated buffer */
+ 
+ #if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
+ 	/* -- OSS things -- */
+@@ -2250,7 +2253,7 @@
+ 	<para>
+ 	  For the operators (callbacks) of each sound driver, most of
+ 	these records are supposed to be read-only.  Only the PCM
+-	middle-layer changes / updates these info.  The excpetions are
++	middle-layer changes / updates these info.  The exceptions are
+ 	the hardware description (hw), interrupt callbacks
+ 	(transfer_ack_xxx), DMA buffer information, and the private
+ 	data.  Besides, if you use the standard buffer allocation
+@@ -3250,7 +3253,7 @@
+ 
+       <para>
+         There are many different constraints.
+-        Look in <filename>sound/asound.h</filename> for a complete list.
++        Look in <filename>sound/pcm.h</filename> for a complete list.
+         You can even define your own constraint rules.
+         For example, let's suppose my_chip can manage a substream of 1 channel
+         if and only if the format is S16_LE, otherwise it supports any format
+@@ -4066,7 +4069,7 @@
+         Both <function>snd_ac97_write()</function> and
+         <function>snd_ac97_update()</function> functions are used to
+         set a value to the given register
+-        (<constant>AC97_XXX</constant>). The different between them is
++        (<constant>AC97_XXX</constant>). The difference between them is
+         that <function>snd_ac97_update()</function> doesn't write a
+         value if the given value has been already set, while
+         <function>snd_ac97_write()</function> always rewrites the
+@@ -4152,8 +4155,8 @@
+       <title>Proc Files</title>
+       <para>
+         The ALSA AC97 interface will create a proc file such as
+-      <filename>/proc/asound/card0/ac97#0</filename> and
+-      <filename>ac97#0regs</filename>. You can refer to these files to
++      <filename>/proc/asound/card0/codec97#0/ac97#0-0</filename> and
++      <filename>ac97#0-0+regs</filename>. You can refer to these files to
+       see the current status and registers of the codec. 
+       </para>
+     </section>
+@@ -4633,7 +4636,7 @@
+         where <parameter>size</parameter> is the byte size to be
+       pre-allocated and the <parameter>max</parameter> is the maximal
+       size to be changed via <filename>prealloc</filename> proc file.
+-      The allocator will try to get as the large area as possible
++      The allocator will try to get as large area as possible
+       within the given size. 
+       </para>
+ 
+@@ -4855,6 +4858,7 @@
+         If your hardware supports the page table like emu10k1 or the
+       buffer descriptors like via82xx, you can use the scatter-gather
+       (SG) DMA. ALSA provides an interface for handling SG-buffers.
++      <!--wrong, there is no pcm_sgbuf.h-->
+       The API is provided in <filename>&lt;sound/pcm_sgbuf.h&gt;</filename>. 
+       </para>
+ 
+
+
+--Boundary-00=_GMU5BG8Z8YzzIxy--
 
 
 
