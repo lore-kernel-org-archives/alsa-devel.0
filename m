@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
-Date: Fri, 28 Jan 2005 08:30:25 +0100
-Message-ID: <4f5143e23c83b97468defeced4e17694@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000853]: Clicks or pops are produced in Griffin USB iMic PCM output
+Date: Fri, 28 Jan 2005 08:28:18 +0100
+Message-ID: <57dfd609ecfc74b81e6ad4c5742e497d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B513C21B
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 08:30:25 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7CC1221B
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 08:28:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=846> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=853> 
 ======================================================================
-Reported By:                Envel
-Assigned To:                
+Reported By:                vtowel
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   846
-Category:                   PCI - intel8x0
+Issue ID:                   853
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.8.1
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.10-gentoo-r2, with low latency patch
 ======================================================================
-Date Submitted:             01-24-2005 13:44 CET
-Last Modified:              01-28-2005 08:30 CET
+Date Submitted:             01-28-2005 08:28 CET
+Last Modified:              01-28-2005 08:28 CET
 ======================================================================
-Summary:                    Can't hear sound from one of the surround speaker,
-while other is working (speakers are functional).
+Summary:                    Clicks or pops are produced in Griffin USB iMic PCM
+output
 Description: 
-With options "Line-In as surround" and "Duplicate front" the right surround
-speaker is not working, while others are functional. After uninstalling
-ALSA 1.0.8 and installing againg ALSA 1.0.7 with the same mixer
-configuration the error is not occures. SoundCard: nForce2 Audio Codec,
-Driver: snd-intel8x0, 4 speakers.
-p.s. sorry for my English.
+I've been spending the longest time trying to figure out why FluidSynth has
+been producing these inconsistent clicks while I play MIDI through it. I
+finally determined that this behaviour is not specific to FluidSynth, but
+to my USB iMic sound card, since the problem does not occur when I
+configure FluidSynth to use my internal sound card. I am also able to hear
+these clicks through the iMic by just playing an MP3 through them,
+although it's not as frequent. It seems that the frequency of the clicks
+is dependent on my CPU load; the more I stress my system, the easier it is
+to hear these clicks/pops. But it's difficult to determine whether there's
+a direct relationship there or not, because this behaviour is so
+inconsistent. But I can always cause the clicks to happen within at most a
+couple minutes, especially if I'm playing MIDI through FluidSynth.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-25-05 15:18 
-----------------------------------------------------------------------
-The combination of "Line-In As Surround" and "Duplicate Front" is already
-weird.
-
-Attach /etc/asound.state and /proc/asound/card0/codec97#0/* files for
-debugging.
-
-----------------------------------------------------------------------
- ivantheviking - 01-28-05 08:30 
-----------------------------------------------------------------------
-I too have the same problem with my Nvidia CK8 based sound card, and have
-uploaded the requested files.
- 
-I am running Gentoo Linux with 2.6.10 kernel, and alsa 1.0.8
-My LFE and Centers are reversed, along with the right rear missing.
-Everything surround (that is not the LF and RF) are also alot softer.
-
-I have full 5.1 with 1.0.6 that is in the kernel I am running, except it
-is still mixed way too softly.
-
-Thanks!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-24-05 13:44 Envel          New Issue                                    
-01-24-05 13:44 Envel          Kernel Version            => 2.6.8.1         
-01-25-05 15:18 tiwai          Note Added: 0003402                          
-01-28-05 08:17 ivantheviking  Issue Monitored: ivantheviking                    
-01-28-05 08:19 ivantheviking  File Added: asound.state                     
-01-28-05 08:20 ivantheviking  File Added: ac97#0-0                         
-01-28-05 08:21 ivantheviking  File Added: ac97#0-0+regs                    
-01-28-05 08:30 ivantheviking  Note Added: 0003424                          
+01-28-05 08:28 vtowel         New Issue                                    
+01-28-05 08:28 vtowel         Distribution              => Gentoo          
+01-28-05 08:28 vtowel         Kernel Version            => 2.6.10-gentoo-r2,
+with low latency patch
 ======================================================================
 
 
