@@ -1,15 +1,14 @@
-From: fmoraes@nc.rr.com
-Subject: Quake 3 demo
-Date: Mon, 26 Jul 2004 19:44:23 -0400
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: emu10k1 device naming
+Date: Tue, 27 Jul 2004 08:55:05 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <13c0efcd8.fcd813c0e@southeast.rr.com>
-Reply-To: fmoraes@nc.rr.com
+Message-ID: <Pine.LNX.4.58.0407270852520.1775@pnote.perex-int.cz>
+References: <1090729766.1952.7.camel@mindpipe>  <Pine.LNX.4.58.0407251013410.2010@pnote.perex-int.cz>
+ <1090779307.14951.24.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-language: en
-Content-Disposition: inline
+In-Reply-To: <1090779307.14951.24.camel@mindpipe>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,27 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Anyone tried to investigate why the Quake 3 demo doesn't work with ALSA?
+On Sun, 25 Jul 2004, Lee Revell wrote:
 
-I've tried running it directly, but it fails with :
+> Good point, this would be much easier to correct in JACK, than fix every
+> driver to conform.  There actually is no 1:1 correspondence between any
+> of the capture and playback devices, so it's arbitrary to require the
+> playback and a capture device to have the same hw index.
 
-------- sound initialization -------
-/dev/dsp: Broken pipe
-Could not toggle.
+I don't agree so much, because the most of users of the emu10k1 driver 
+want to use card only for VoIP, games and some amateur recording. For this 
+case, the first playback and capture devices are quite sufficient. Our 
+goal is to provide the basics functionality for first subdevices.
 
-Then, when running with aoss I get this:
+						Jaroslav
 
-trFMV::play(), playing idlogo.RoQ
-q3demo.x86: pcm.c:5957: snd_pcm_mmap_commit: Assertion `frames <= snd_pcm_mmap_avail(pcm)' failed.
-Received signal 6, exiting...
-
-Any ideas?
-
-Francisco
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
