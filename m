@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000280]: no PC SPEAKER recognized
-Date: Fri, 16 Jul 2004 12:49:25 +0200 (CEST)
+Subject: [ALSA - lib 0000277]: Periodic ticks when playing sounds true dmix  (with fix)
+Date: Fri, 16 Jul 2004 12:48:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716104925.5F1DD26008@server.perex-int.cz>
+Message-ID: <20040716104826.9877B26008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 24328255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:49:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC415255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:48:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,76 +22,148 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000280
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000277
 ======================================================================
-Reported By:                trapperhoney
-Assigned To:                tiwai
+Reported By:                ceno
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     280
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Bug ID:                     277
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.6.6 (self built)
 ======================================================================
-Date Submitted:             05-17-2004 03:50 CEST
-Last Modified:              07-16-2004 12:49 CEST
+Date Submitted:             05-15-2004 11:10 CEST
+Last Modified:              07-16-2004 12:48 CEST
 ======================================================================
-Summary:                    no PC SPEAKER recognized
+Summary:                    Periodic ticks when playing sounds true dmix  (with fix)
 Description: 
-When upgrading from linux kernel 2.4.25 to 2.6.6, my laptop lost the
-ability to generate a terminal bell beep.  With the 2.4.25 kernel, I was
-compiling the intel8x0 v1.0.3 module from source.  I'm now using version
-1.0.4, which is distributed with the 2.6.6 version of the linux kernel,
-compiled directly into the kernel.  It turns out, that PC SPEAKER mixer
-option was not present with either version.  But for some reason, my
-computer could still process pc speaker tones with the old version.  
+Since 1.0.3b the problem exist. (1.0.3a was good)
 
-I have another computer with, supposedly, the same sound card chipset and
-I am not having this problem with that computer for either version
-(following the same upgrade process).  That machine does have a PC SPEAKER
-control available.  The problematic hardware is in an IBM Thinkpad T40
-laptop.  
+The patch below will fix the problem.
 
-Both machines claim to have the following hardware when queried with
-lspci
-Intel Corp. 82801DB (ICH4) AC'97 Audio Controller (rev 01)
 
-cat /proc/asound/cards shows the following being recognized:
-0 [I82801DBICH4   ]: ICH - Intel 82801DB-ICH4
-                     Intel 82801DB-ICH4 at 0xef001000, irq 17
+diff -r alsa-lib-1.0.4/src/pcm/pcm_dmix_i386.h
+../alsa-lib-1.0.4/src/pcm/pcm_dmix_i386.h
+242a243,244
+> 
+> 
+251,252d252
+<       unsigned int old_ebx;
+< 
+264c264
+<               "\tmovl %%ebx, %7\n"    /* ebx is GOT pointer (-fPIC) */
+---
+>               "\tpush %%ebx\n"        /* ebx is GOT pointer (-fPIC) */
+271,273d270
+<               "\tcmpl $0, %0\n"
+<               "\tjnz 2f\n"
+<               "\tjmp 6f\n"
+346c343
+<               "\tmovl %7, %%ebx\n"    /* ebx is GOT pointer (-fPIC) */
+---
+>               "\tpop %%ebx\n"         /* ebx is GOT pointer (-fPIC) */
+349,351c346
+<               : "m" (size), "m" (dst), "m" (src),
+<                 "m" (sum), "m" (dst_step), "m" (src_step),
+<                 "m" (sum_step), "m" (old_ebx)
+---
+>               : "m" (size), "m" (dst), "m" (src), "m" (sum), "m"
+(dst_step), "m" (src_step), "m" (sum_step)
 
-Please let me know if you have any ideas or need further information.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-17-2004 15:04 CEST 
+ ceno - 05-15-2004 11:13 CEST 
 ----------------------------------------------------------------------
-did you enable CONFIG_INPUT_PCSPKR in kernel config?
+Same bug as 0000150
 
 ----------------------------------------------------------------------
- trapperhoney - 05-21-2004 05:56 CEST 
+ username - 05-15-2004 11:27 CEST 
 ----------------------------------------------------------------------
-Adding CONFIG_INPUT_PCSPKR fixed the problem.  Incidentally,
-CONFIG_INPUT_MISC must also be enabled to use the PCSPKR feature.
+Could you please attach the patch to the bug (as a file)? (Please also use
+'diff -u'). I'm having trouble applying it by using cut/paste.
 
-Thanks for the help!
+----------------------------------------------------------------------
+ ceno - 05-15-2004 11:44 CEST 
+----------------------------------------------------------------------
+The patch is uploaded (using the -u option). patch -p1 < fix.patch should
+'fix' the 1.0.4 tree. btw, this is a 'quick' fix. Not a very nice one, but
+it works for me.
+
+edited on: 05-15-04 11:44
+
+----------------------------------------------------------------------
+ username - 05-15-2004 12:54 CEST 
+----------------------------------------------------------------------
+Thanks! Works great for me, FWIW. (Just for the record: I'm using a
+Terratec Aureon Sky)
+
+----------------------------------------------------------------------
+ perex - 05-24-2004 19:48 CEST 
+----------------------------------------------------------------------
+The code should do same thing. Please, tell me your GCC version.
+
+Can you attach output from the command bellow - for both versions -
+non-working and yours - working:
+
+perex@pnote:~/alsa/alsa-lib/src/pcm> objdump --disassemble --source
+.libs/pcm_dmix.o > out.txt
+
+----------------------------------------------------------------------
+ ceno - 05-24-2004 20:23 CEST 
+----------------------------------------------------------------------
+$gcc --version
+gcc (GCC) 3.3.3 (Debian 20040422)
+
+the objdump's included
+
+----------------------------------------------------------------------
+ perex - 05-24-2004 20:41 CEST 
+----------------------------------------------------------------------
+Could you try attached pcm_dmix_i386.h.patch ?
+
+----------------------------------------------------------------------
+ ceno - 05-24-2004 20:59 CEST 
+----------------------------------------------------------------------
+Yes it works, With the pcm_dmix_i386.h.patch the periodic tick is gone.
+thanks,
+
+----------------------------------------------------------------------
+ perex - 05-24-2004 21:06 CEST 
+----------------------------------------------------------------------
+The fixed code is in 1.0.5rc1 alsa-lib tarbal.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-17-04 03:50 trapperhoney   New Bug                                      
-05-17-04 03:50 trapperhoney   Distribution              => Debian          
-05-17-04 03:50 trapperhoney   Kernel Version            => 2.6.6 (self built)
-05-17-04 15:04 tiwai          Bugnote Added: 0001130                       
-05-21-04 05:56 trapperhoney   Bugnote Added: 0001159                       
-05-21-04 11:53 tiwai          Assigned To               => tiwai           
-05-21-04 11:53 tiwai          Resolution               open => not a bug   
-05-21-04 11:53 tiwai          Status                   new => resolved     
-07-16-04 12:49 tiwai          Status                   resolved => closed  
+05-15-04 11:10 ceno           New Bug                                      
+05-15-04 11:11 ceno           Bug Monitored: ceno                          
+05-15-04 11:12 ceno           Bug End Monitor: ceno                        
+05-15-04 11:12 ceno           Bug Monitored: ceno                          
+05-15-04 11:13 ceno           Bugnote Added: 0001121                       
+05-15-04 11:23 username       Bug Monitored: username                      
+05-15-04 11:27 username       Bugnote Added: 0001123                       
+05-15-04 11:38 ceno           Bugnote Added: 0001124                       
+05-15-04 11:40 ceno           File Added: fix-24bit-pcm-mixing-using-1.0.3a-pcm-mixing-code.diff                    
+05-15-04 11:41 ceno           Bugnote Edited: 0001124                      
+05-15-04 11:44 ceno           Bugnote Edited: 0001124                      
+05-15-04 12:54 username       Bugnote Added: 0001125                       
+05-24-04 19:48 perex          Bugnote Added: 0001190                       
+05-24-04 19:48 perex          Assigned To               => perex           
+05-24-04 19:48 perex          Status                   new => assigned     
+05-24-04 20:23 ceno           Bugnote Added: 0001192                       
+05-24-04 20:25 ceno           File Added: alsa-lib-1.0.4.objdump.gz                    
+05-24-04 20:26 ceno           File Added: alsa-lib-1.0.4-with-fix.objdump.gz                    
+05-24-04 20:41 perex          File Added: pcm_dmix_i386.h.patch                    
+05-24-04 20:41 perex          Bugnote Added: 0001194                       
+05-24-04 20:59 ceno           Bugnote Added: 0001195                       
+05-24-04 21:06 perex          Bugnote Added: 0001196                       
+05-24-04 21:06 perex          Resolution               open => fixed       
+05-24-04 21:06 perex          Status                   assigned => resolved
+07-16-04 12:48 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
