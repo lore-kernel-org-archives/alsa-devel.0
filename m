@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
-Date: Fri, 7 Jan 2005 00:44:35 +0100
-Message-ID: <eb69e1238e3f53a61837b9087649a4c4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000790]: no sound with azx driver in Realtek integrated sound chip
+Date: Fri, 7 Jan 2005 01:38:07 +0100
+Message-ID: <0b3950d8e05b8bbed68836bab8b23b77@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ED90A2BD
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 00:44:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 823A82DF
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 01:38:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,112 +22,89 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=790> 
 ======================================================================
-Reported By:                footcow
+Reported By:                theoneandonlysm
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   666
+Issue ID:                   790
 Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.9
+Distribution:               Slackware 10 (-current)
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             11-23-2004 01:31 CET
-Last Modified:              01-07-2005 00:44 CET
+Date Submitted:             01-07-2005 01:38 CET
+Last Modified:              01-07-2005 01:38 CET
 ======================================================================
-Summary:                    Simply no sound ... no line ... no mixer
+Summary:                    no sound with azx driver in Realtek integrated sound
+chip
 Description: 
-I have compiled the last release : 1.0.7 stable.
-But I do not have any sound, no line ... no mixer ... :(
+Using the CVS checkout on 01/05/05 at 8:00 EDT, I compiled the alsa drivers
+with kernel 2.6.10 . Running alsaconf (provided by slackware), it was able
+to detect the azx module as the correct driver and modified by
+/etc/modprobe.conf as needed. Although alsamixer and kmix show all the
+channels and devices for the sound chip, I get no sound output.
 
-I have an AsusTek P5GD2 motherboard with lspci -v :
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Asustek Computer, Inc.: Unknown device 813d
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
+Dmesg states:
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA /home/sandeep/alsa_cvs/alsa-driver/pci/azx/patch_realtek.c:953:
+hda_codec: Unknown model for ALC880
 
+I'm guessing there is just something specifically not included in the
+driver needed by this chip.
 
-The snd_azx module is well loaded :
-lsmod : 
-snd_azx                30920  1
-snd_pcm                95112  1 snd_azx
-snd_timer              25476  1 snd_pcm
-snd                    54500  5 snd_azx,snd_pcm,snd_timer
-snd_page_alloc         10120  1 snd_pcm
+lsmod:
+Module                  Size  Used by
+snd_pcm_oss            59168  0
+snd_mixer_oss          19840  1 snd_pcm_oss
+snd_azx                12640  2
+snd_hda_codec          46208  1 snd_azx
+snd_pcm                96260  4 snd_pcm_oss,snd_azx,snd_hda_codec
+snd_timer              23556  1 snd_pcm
+snd                    58628  9
+snd_pcm_oss,snd_mixer_oss,snd_azx,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8452  2 snd_azx,snd_pcm
 
-If I run alsamixer I get this :
-$ alsamixer
-No mixer elems found
-
-If I run alsamixergui, I get 3 columns:
-Line is emplty and can't change
-Same for Mic
-I can only move values for a third column called Capt.
+lspci:
+00:00.0 Host bridge: Intel Corp.: Unknown device 2580 (rev 04)
+00:02.0 VGA compatible controller: Intel Corp.: Unknown device 2582 (rev
+04)
+00:02.1 Display controller: Intel Corp.: Unknown device 2782 (rev 04)
+00:1b.0 Class 0403: Intel Corp.: Unknown device 2668 (rev 03)
+00:1c.0 PCI bridge: Intel Corp. I/O Controller Hub PCI Express Port 0 (rev
+03)
+00:1d.0 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.1 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.2 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.3 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.7 USB Controller: Intel Corp. I/O Controller Hub USB2 (rev 03)
+00:1e.0 PCI bridge: Intel Corp. 82801BA/CA/DB/EB/ER Hub interface to PCI
+Bridge (rev d3)
+00:1f.0 ISA bridge: Intel Corp. I/O Controller Hub LPC (rev 03)
+00:1f.1 IDE interface: Intel Corp. I/O Controller Hub PATA (rev 03)
+00:1f.2 IDE interface: Intel Corp. I/O Controller Hub SATA cc=ide (rev
+03)
+00:1f.3 SMBus: Intel Corp. I/O Controller Hub SMBus (rev 03)
+02:01.0 FireWire (IEEE 1394): VIA Technologies, Inc. IEEE 1394 Host
+Controller (rev 80)
+02:02.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+RTL-8139/8139C/8139C+ (rev 10)
 
 ======================================================================
-
-----------------------------------------------------------------------
- footcow - 12-16-04 21:06 
-----------------------------------------------------------------------
-OK ... you can close this bug ...
-It's running with the last CVS version ! ;o)
-I'm so happy ... many thanks for your job !
-
-So strange that the hardware do not have any volume control !
-But it's running ... that's the best thing !
-
-----------------------------------------------------------------------
- footcow - 01-07-05 00:44 
-----------------------------------------------------------------------
-Since v1.0.8rc2 I get now again no sound ...
-I get this message in my dmesg after KDE start (start of ARTS !?)
-ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:1872: BUG? (err >=
-0) (called from f8b19f16)
-ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:2011:
-snd_pcm_hw_constraints_complete failed
-
-Each time I try to change ALSA to OSS or OSS to ALSA I get those line
-appearing in the dmesg.
-
-Alsamixer run, but ARTS do not want to start .. so no sound again !
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 01:31 footcow        New Issue                                    
-11-23-04 01:31 footcow        Distribution              => Debian          
-11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
-11-23-04 21:49 footcow        Note Added: 0002530                          
-12-08-04 19:54 tiwai          Note Added: 0002791                          
-12-08-04 23:56 footcow        Note Added: 0002795                          
-12-09-04 11:27 tiwai          Note Added: 0002799                          
-12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
-12-09-04 11:34 tiwai          Note Added: 0002800                          
-12-09-04 12:11 tiwai          Note Added: 0002801                          
-12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
-  
-12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
-12-10-04 22:08 footcow        Note Added: 0002808                          
-12-10-04 22:08 footcow        File Added: alsamix.png                      
-12-11-04 17:40 tiwai          Note Added: 0002811                          
-12-12-04 00:58 footcow        Note Added: 0002813                          
-12-12-04 00:59 footcow        File Added: alsamix2.png                     
-12-16-04 18:32 tiwai          Note Added: 0002836                          
-12-16-04 21:06 footcow        Note Added: 0002841                          
-01-07-05 00:44 footcow        Note Added: 0003099                          
+01-07-05 01:38 theoneandonlysmNew Issue                                    
+01-07-05 01:38 theoneandonlysmDistribution              => Slackware 10
+(-current)
+01-07-05 01:38 theoneandonlysmKernel Version            => 2.6.10          
 ======================================================================
 
 
