@@ -1,13 +1,12 @@
-From: Maarten De Boer <mdeboer@iua.upf.es>
-Subject: Re: [linux-audio-dev] Poll: Distro for audio and MIDI development
-Date: Wed, 23 Jul 2003 22:28:09 +0000 (UTC)
+From: Glen Nakamura <glen@imodulo.com>
+Subject: [PATCH] Fix typos in alsa-drivers-0.9.5
+Date: Wed, 23 Jul 2003 15:01:09 -1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307232212360.29546-100000@iua-mail.upf.es>
-References: <3F1EC6D2.5010600@sambara.org>
+Message-ID: <20030724010109.GB12995@modulo.internal.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F1EC6D2.5010600@sambara.org>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,42 +15,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: linux-audio-dev@music.columbia.edu
-Cc: alsa-devel@lists.sourceforge.net, debian-powerpc@lists.debian.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Aloha,
+This patch fixes a few typos in alsa-drivers-0.9.5...
 
-This is a nice coincidence, because I just installed Debian Sid
-('unstable') on my home workstation.
+-glen
 
-I am also a convinced Debian user, and all the servers and workstations
-I administrate are Debian Woody ('stable'). Now, recently, I have seen
-myself forced to install more and more backported packages, and backporting
-some  myself, because Debian stable is rather conservative, and this can be
-a problem if you have new hardware, esp. video cards, or if you need to run
-recent  versions of applications, are depend on recent versions of
-libraries...
-
-Personally, I think the release cycle of Debian should be a lot shorter,
-and I think a lot of people agree with that. On the other hand, on the
-web/mail/file/cvs servers I run, I really want stable. The good thing is,
-you get the choice, and I think Debian is the only distro with such a
-choice. A lot of distro's present unstable and untested things as
-stable. For me the clearest example, and actually the reason I switched to
-Debian, was RedHat's broken GCC (2.96 I think), which I guess was just
-included to pretend to be "cutting edge". Now, I recently installed a
-RedHat 9, and with PlanetCCRMA on top, it is very nice, but running Debian
-Sid does not feel less safe to me. And I would never run any mission-
-critical servers with RedHat. Here Debian stable is the safest bet.
-
-Anyway, I expect that I might switch to unstable, or at least testing, for
-some of the workstations, when I feel that modifying stable becomes more work
-and also more risky, than simply using unstable.
-
-Maarten
-
-
-
+diff -Nru3p alsa-driver-0.9.5.orig/alsa-kernel/pci/intel8x0.c alsa-driver-0.9.5/alsa-kernel/pci/intel8x0.c
+--- alsa-driver-0.9.5.orig/alsa-kernel/pci/intel8x0.c	2003-06-27 17:52:59.000000000 +0000
++++ alsa-driver-0.9.5/alsa-kernel/pci/intel8x0.c	2003-06-27 17:52:59.000000000 +0000
+@@ -1002,7 +1002,7 @@ static int snd_intel8x0_pcm_open(snd_pcm
+ 	snd_pcm_runtime_t *runtime = substream->runtime;
+ 	static unsigned int i, rates[] = {
+ 		/* ATTENTION: these values depend on the definition in pcm.h! */
+-		5512, 8000, 11025, 16000, 22050, 32000, 44100, 480000
++		5512, 8000, 11025, 16000, 22050, 32000, 44100, 48000
+ 	};
+ 	int err;
+ 
+diff -Nru3p alsa-driver-0.9.5.orig/include/ak4117.h alsa-driver-0.9.5/include/ak4117.h
+--- alsa-driver-0.9.5.orig/include/ak4117.h	2003-05-14 20:21:17.000000000 +0000
++++ alsa-driver-0.9.5/include/ak4117.h	2003-05-14 20:21:17.000000000 +0000
+@@ -163,7 +163,7 @@ struct ak4117 {
+ 	ak4117_read_t * read;
+ 	void * private_data;
+ 	unsigned int init: 1;
+-	spinlock_t * lock;
++	spinlock_t lock;
+ 	unsigned char regmap[5];
+ 	snd_kcontrol_t *kctls[AK4117_CONTROLS];
+ 	snd_pcm_substream_t *substream;
+diff -Nru3p alsa-driver-0.9.5.orig/pcmcia/pdaudiocf/pdaudiocf_core.c alsa-driver-0.9.5/pcmcia/pdaudiocf/pdaudiocf_core.c
+--- alsa-driver-0.9.5.orig/pcmcia/pdaudiocf/pdaudiocf_core.c	2003-06-29 14:56:19.000000000 +0000
++++ alsa-driver-0.9.5/pcmcia/pdaudiocf/pdaudiocf_core.c	2003-06-29 14:56:19.000000000 +0000
+@@ -133,8 +133,7 @@ pdacf_t *snd_pdacf_create(snd_card_t *ca
+ 	if (chip == NULL)
+ 		return NULL;
+ 	chip->card = card;
+-	spin_lock_init(&chip->lock);
+-	spin_lock_init(&chip->irq_lock);
++	spin_lock_init(&chip->reg_lock);
+ 	spin_lock_init(&chip->ak4117_lock);
+ 	tasklet_init(&chip->tq, pdacf_tasklet, (unsigned long)chip);
+ 	card->private_data = chip;
+diff -Nru3p alsa-driver-0.9.5.orig/pcmcia/pdaudiocf/pdaudiocf_pcm.c alsa-driver-0.9.5/pcmcia/pdaudiocf/pdaudiocf_pcm.c
+--- alsa-driver-0.9.5.orig/pcmcia/pdaudiocf/pdaudiocf_pcm.c	2003-06-29 14:56:19.000000000 +0000
++++ alsa-driver-0.9.5/pcmcia/pdaudiocf/pdaudiocf_pcm.c	2003-06-29 14:56:19.000000000 +0000
+@@ -126,7 +126,7 @@ static int pdacf_pcm_trigger(snd_pcm_sub
+ 	tmp |= val;
+ 	pdacf_reg_write(chip, PDAUDIOCF_REG_SCR, tmp);
+       __end:
+-	spin_unlock(&chip_reg_lock);
++	spin_unlock(&chip->reg_lock);
+ 	if (cmd == SNDRV_PCM_TRIGGER_STOP)
+ 		pdacf_reinit(chip, 0);
+ 	snd_ak4117_check_rate_and_errors(chip->ak4117, AK4117_CHECK_NO_RATE);
 
 
 -------------------------------------------------------
