@@ -1,12 +1,12 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: autodetection at install
-Date: Sat, 13 Jul 2002 03:56:43 +0900
+Date: Sat, 13 Jul 2002 04:00:00 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D2F266B.8070807@boosthardware.com>
+Message-ID: <3D2F2730.50004@boosthardware.com>
 References: <m3adoyr6pr.fsf@ccs.covici.com> <3D2EEF7A.3020406@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------010208080100010000080007"
+ boundary="------------010003010003010405010903"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -20,19 +20,21 @@ Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------010208080100010000080007
+--------------010003010003010405010903
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
+
+Try that again. after saving this time :)
 
 I have a small perl script which I am working on. The idea is to autodetect
 a card/s and create a modules.conf based on that either at configure or as
 a seperate process.
 
-Can anyone who is more fluent in perl give me a hint as to how I can 
-compare the output of list_pci to list_modules and return the correct 
+Can anyone who is more fluent in perl give me a hint as to how I can
+compare the output of list_pci to list_modules and return the correct
 card name and module?
 
-The script has two subs. They just parse the /proc/pci and the INSTALL 
+The script has two subs. They just parse the /proc/pci and the INSTALL
 file to get the current output. It has to be run from the alsa-driver dir.
 
 
@@ -43,7 +45,8 @@ Http://www.boosthardware.com
 Http://www.boosthardware.com/LAU/guide/
 ========================================
 
---------------010208080100010000080007
+
+--------------010003010003010405010903
 Content-Type: text/plain;
  name="autocard"
 Content-Transfer-Encoding: 7bit
@@ -75,16 +78,8 @@ sub list_modules {
    
     	for $linemodule (<FILE>) {
 
-	if ($linemodule =~ /\.o$/) {
-#		print  $linemodule;
-		    	while (<>) {
-				foreach $word ( split ) { 
-	    				# do something with $word here
-	   				print "$linemodule\n" ;
-					} 
-    				}  
-#		print  $linemodule;
-
+		if ($linemodule =~ /\.o$/) {
+			print  $linemodule;
 		}
     	}
 
@@ -103,7 +98,7 @@ list_pci();
 print "\n";
 
 
---------------010208080100010000080007--
+--------------010003010003010405010903--
 
 
 
