@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000365]: No audio with Asus p4p800-vm
-Date: Fri, 16 Jul 2004 12:14:10 +0200 (CEST)
+Subject: [ALSA - driver 0000350]: Alsa Installation probleme
+Date: Fri, 16 Jul 2004 12:15:46 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716101410.5D22926009@server.perex-int.cz>
+Message-ID: <20040716101546.E935926008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A6877254
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:14:10 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2844B254
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:15:47 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,119 +20,103 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000365
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000350
 ======================================================================
-Reported By:                Anlar
-Assigned To:                
+Reported By:                miro911
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     365
-Category:                   PCI - intel8x0
+Bug ID:                     350
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo - up to date stable
-Kernel Version:             2.6.7
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 not a bug
 ======================================================================
-Date Submitted:             07-04-2004 20:53 CEST
-Last Modified:              07-16-2004 12:14 CEST
+Date Submitted:             06-29-2004 18:27 CEST
+Last Modified:              07-16-2004 12:15 CEST
 ======================================================================
-Summary:                    No audio with Asus p4p800-vm
+Summary:                    Alsa Installation probleme
 Description: 
-I have new Asus P4P800-VM motherboard (865G) that has i8x0 (x=1?) (ADI1980)
-builtin. Alsa does seem to initialize, the required modules load and
-something gets fed to the device but nothing comes out. I have played
-around with the mixer volumes and done other known usual stuff as well.
+hi everbody.Hi have try to install the news version of alsa on mandarake
+10.0 and i have a probleme during the configure sripts some one cane help
+my ??
 
-A googling session revealed that some people have had success with this
-motherboard but most of the people have failed. I thought that something
-on this motherboard might be non-standard and require attention. 
+error:[mathieu@mathieu alsa]$ ./configure
+checking for gcc... no
+checking for cc... no
+checking for cc... no
+checking for cl... no
+configure: error: no acceptable C compiler found in $PATH
+See `config.log' for more details.
 
-(If it is trivial, something t be added to the wikis. I doubt though since
-couple guys have tried already and none of them were complete newbies.)
+Into Config.log:
+## --------- ##
+## Platform. ##
+## --------- ##
+
+hostname = mathieu
+uname -m = i686
+uname -r = 2.6.3-7mdksmp
+uname -s = Linux
+uname -v = https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001 SMP Wed Mar 17 14:24:28 CET 2004
+
+/usr/bin/uname -p = unknown
+/bin/uname -X     = unknown
+
+/bin/arch              = i686
+/usr/bin/arch -k       = unknown
+/usr/convex/getsysinfo = unknown
+hostinfo               = unknown
+/bin/machine           = unknown
+/usr/bin/oslevel       = unknown
+/bin/universe          = unknown
+
+PATH: /usr/bin
+PATH: /bin
+PATH: /usr/bin
+PATH: /usr/local/bin
+PATH: /usr/X11R6/bin/
+PATH: /usr/games
+PATH: /home/mathieu/bin
+
+
+## ----------- ##
+## Core tests. ##
+## ----------- ##
+
+configure:1309: checking for gcc
+configure:1338: result: no
+configure:1389: checking for cc
+configure:1418: result: no
+configure:1431: checking for cc
+configure:1477: result: no
+configure:1530: checking for cl
+configure:1559: result: no
+configure:1573: error: no acceptable C compiler found in $PATH
+See `config.log' for more details.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Anlar - 07-08-2004 20:33 CEST 
+ tiwai - 07-16-2004 12:15 CEST 
 ----------------------------------------------------------------------
-Tried also with 2004-06-02 cvs version. Still playing mute. This sound chip
-isn't listed as one that requires some "quirks" thingy, whatever that
-means..
-
-ALSA /tmp/alsa/alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c:1922: AC'97 0
-analog subsections not ready
-intel8x0_measure_ac97_clock: measured 49414 usecs
-intel8x0: clocking to 48000
-
-edited on: 07-08-04 20:33
-
-----------------------------------------------------------------------
- Anlar - 07-07-2004 17:32 CEST 
-----------------------------------------------------------------------
-I did the
-ac97_quirk= 0-4
-thingy just in case.. This time while playing with mixer I heard couple
-faint cracks when I unmuted the channels. Very faint.
-
-Tried something older, with a kernel 2.6.2 provided alsa. Still silent.
-
-edited on: 07-07-04 17:32
-
-----------------------------------------------------------------------
- Anlar - 07-07-2004 22:02 CEST 
-----------------------------------------------------------------------
-Played around with Knoppix, couldn't get working with its 2.4.26. Not even
-on OSS, it seems to be btw failing too. 
-
-Updated the motherboard bios to the newest version, no improvement.
-
-----------------------------------------------------------------------
- Anlar - 07-08-2004 20:40 CEST 
-----------------------------------------------------------------------
-Managed to steal me a spdif module. They seem to be mostly universal and
-compatible amongst vendors - very simple. Guess what? I've got Hotel
-California playing in my room! Whee! Still have to use iron saw to make
-the pci back plate "low profile" to fit inside the case.
-
-Didn't have to touch anything special. Just asked for the "default" sound
-source to be used, enabled the digital output from the mixer and voila.
-
-The analogs are still dead as a brick. Been playing around with the mixer
-a lot. Any ideas what to check?
-
-edited on: 07-08-04 20:36
-
-edited on: 07-08-04 20:40
-
-----------------------------------------------------------------------
- tiwai - 07-16-2004 12:14 CEST 
-----------------------------------------------------------------------
-Just to be sure.  Try to turn on 'External Amplifier'.
-Also, set 'Downmix' to off.
+Apparently, you didn't install the gcc?
+Then it's not a BUG of ALSA.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-04-04 20:53 Anlar          New Bug                                      
-07-04-04 20:53 Anlar          Distribution              => Gentoo - up to date stable
-07-04-04 20:53 Anlar          Kernel Version            => 2.6.7           
-07-04-04 20:54 Anlar          Bug Monitored: Anlar                         
-07-06-04 22:04 Anlar          Bugnote Added: 0001387                       
-07-06-04 22:29 Anlar          File Added: asound.state                     
-07-06-04 22:58 Anlar          Bugnote Added: 0001389                       
-07-06-04 22:59 Anlar          Bugnote Edited: 0001389                      
-07-07-04 17:32 Anlar          Bugnote Edited: 0001389                      
-07-07-04 22:02 Anlar          Bugnote Added: 0001394                       
-07-08-04 20:30 Anlar          Bugnote Added: 0001395                       
-07-08-04 20:31 Anlar          File Added: alsa                             
-07-08-04 20:32 Anlar          File Added: alsa.conf                        
-07-08-04 20:33 Anlar          Bugnote Edited: 0001387                      
-07-08-04 20:36 Anlar          Bugnote Edited: 0001395                      
-07-08-04 20:40 Anlar          Bugnote Edited: 0001395                      
-07-16-04 12:14 tiwai          Bugnote Added: 0001447                       
+06-29-04 18:27 miro911        New Bug                                      
+07-16-04 12:15 tiwai          Bugnote Added: 0001448                       
+07-16-04 12:15 tiwai          Resolution               open => not a bug   
+07-16-04 12:15 tiwai          Status                   assigned => resolved
 ======================================================================
 
 
