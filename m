@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000258]: Recording from line-in produces noise
-Date: Wed, 17 Nov 2004 19:21:19 +0100
-Message-ID: <2fa1abe9c74c4c27e60ca366dd09b5b7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000319]: Cannot control main volume independently for left and right channels
+Date: Wed, 17 Nov 2004 19:22:38 +0100
+Message-ID: <f03b0d003a8a89e08570042c914406d6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6E9D51D2
-	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2004 19:21:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A78C71D4
+	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2004 19:22:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=258> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=319> 
 ======================================================================
-Reported By:                Fancia
+Reported By:                walrus121
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   258
+Issue ID:                   319
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.4.22
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.26-1.ll.rhfc1.ccrma (from Planet CCRMA)
 ======================================================================
-Date Submitted:             05-06-2004 22:03 CEST
-Last Modified:              11-17-2004 19:21 CET
+Date Submitted:             05-31-2004 17:46 CEST
+Last Modified:              11-17-2004 19:22 CET
 ======================================================================
-Summary:                    Recording from line-in produces noise
+Summary:                    Cannot control main volume independently for left
+and right channels
 Description: 
-Attempting to record audio from the sound card's line-in port causes
-audible pops and crackle in the resulting recording, regardless of
-recording software used. These artefacts are not present in the input
-itself and are not audible during the recording itself, but are present in
-the resulting recording. I've tried recording from several different
-devices on the same line-in port, and the noise is consistent. I've spoken
-to several other AmigaOne owners with the same sound card, all of whom can
-reproduce the problem.
-Attached is a recording from my Roland MT-32 synthesizer module. Aside
-from normalization, it's unaltered from the original recording.
+I have tried with numerous volume control programs, and I get the same
+result.  If I try to adjust one channel, the values of the two channels
+are averaged in some strange way and are rebalanced to the center.  I know
+that this must be a driver-specific issue because I can control the two
+channels independently for my Sound Blaster AWE 64 Value card, also in my
+computer, and because it doesn't seem to matter which mixer I use.
 ======================================================================
 
 ----------------------------------------------------------------------
- Fancia - 05-06-04 22:14 
+ rlrevell - 11-17-04 19:22 
 ----------------------------------------------------------------------
-Uploading seems to be causing some trouble; here's a link to the recording
-on my university webspace:
-http://is2.dal.ca/~br263779/testtune3.ogg
-
-----------------------------------------------------------------------
- rlrevell - 11-17-04 19:21 
-----------------------------------------------------------------------
-Can you verify this bug still exists with latest ALSA version, 1.0.7?
+Can you verify the bug with the latest ALSA version. 1.0.7?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-04 22:03 Fancia         New Issue                                    
-05-06-04 22:03 Fancia         Distribution              => Debian          
-05-06-04 22:03 Fancia         Kernel Version            => 2.4.22          
-05-06-04 22:05 Fancia         Issue Monitored: Fancia                      
-05-06-04 22:06 Fancia         Issue End Monitor: Fancia                    
-05-06-04 22:14 Fancia         Note Added: 0001064                          
-11-17-04 19:21 rlrevell       Note Added: 0002440                          
+05-31-04 17:46 walrus121      New Issue                                    
+05-31-04 17:46 walrus121      File Added: modules.conf                     
+05-31-04 17:46 walrus121      Distribution              => Fedora Core 1   
+05-31-04 17:46 walrus121      Kernel Version            =>
+2.4.26-1.ll.rhfc1.ccrma (from Planet CCRMA)
+11-17-04 19:22 rlrevell       Note Added: 0002441                          
 ======================================================================
 
 
