@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000759]: reloading opl4 driver isn't allowed - it segfaults
-Date: Thu, 30 Dec 2004 00:05:56 +0100
-Message-ID: <f53c51436de64d46c285d10d056ade0e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000721]: System stops completely when playing audio
+Date: Thu, 30 Dec 2004 00:12:54 +0100
+Message-ID: <d4ce33cb24f83da7b881231d71288d7c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6403C127
-	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 00:05:56 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9DBA528F
+	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 00:12:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=759> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=721> 
 ======================================================================
-Reported By:                martin
-Assigned To:                Clemens Ladisch
+Reported By:                spirou
+Assigned To:                karsten
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   759
-Category:                   GENERIC - opl4
+Issue ID:                   721
+Category:                   USB - usb-usx2y
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Gentoo
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             12-30-2004 00:05 CET
-Last Modified:              12-30-2004 00:05 CET
+Date Submitted:             12-12-2004 13:58 CET
+Last Modified:              12-30-2004 00:12 CET
 ======================================================================
-Summary:                    reloading opl4 driver isn't allowed - it segfaults
+Summary:                    System stops completely when playing audio
 Description: 
-I'm writing a driver for the miroSOUND PCM12. But I have some trouble with
-the OPL4 part and I'm afraid it's not related to my hardware/software. The
-first modprobe works ok and OPL4 behaves correct. Then rmmod'ing the
-driver and modprobe'ing it again shows a segfault.
-
-The reason for the segfault is snd_opl4_create() which calls
-snd_opl3_create() where snd_opl3_new() is the reason for the segfault. 
-
-I don't see, that a correct unload of opl4 will ever run snd_device_free()
-for the opl3 part? Any comments? Any OPL4 user out there for
-cross-checking this with a working OPL4 environment? 
+I have a Tascam US-428. Wehen I connect to the USB, the driver is loaded,
+the USB-LED of the 428 lights up. When I try to play audio (e.g. with
+aplay or XMMS), the computer immedeately stops working. All I can do is to
+push the reset-button. No log-entrys, nothing.
 ======================================================================
+
+----------------------------------------------------------------------
+ martin - 12-29-04 23:17 
+----------------------------------------------------------------------
+you can find us428control in the alsa-tools package. compile and install
+it.
+
+----------------------------------------------------------------------
+ spirou - 12-30-04 00:12 
+----------------------------------------------------------------------
+*Sigh* OK, I think this will take some more work to be done by me...
+us428control says:
+
+us428control: cannot open hwdep hw:0
+us428control: cannot open hwdep hw:1
+ALSA lib seq_hw.c:446:(snd_seq_hw_open) open /dev/snd/seq failed: No such
+file or directory
+us428control: seq.c:1045: snd_seq_poll_descriptors_count: Assertion `seq'
+failed.
+Abgebrochen
+
+Any hints for me?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-30-04 00:05 martin         New Issue                                    
+12-12-04 13:58 spirou         New Issue                                    
+12-12-04 13:58 spirou         Distribution              => Gentoo          
+12-12-04 13:58 spirou         Kernel Version            => 2.6.9           
+12-12-04 14:20 karsten        Note Added: 0002816                          
+12-12-04 14:52 spirou         Note Added: 0002817                          
+12-12-04 18:51 karsten        Note Added: 0002818                          
+12-29-04 11:15 spirou         Note Added: 0002994                          
+12-29-04 20:14 karsten        Note Added: 0003010                          
+12-29-04 23:01 spirou         Note Added: 0003013                          
+12-29-04 23:17 martin         Note Added: 0003014                          
+12-30-04 00:12 spirou         Note Added: 0003016                          
 ======================================================================
 
 
