@@ -1,14 +1,18 @@
-From: Werner Schweer <ws@seh.de>
-Subject: tascam us-122 midi in does not work
-Date: Sun, 13 Jun 2004 13:07:20 +0200
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: possible fix for alsa-oss fopen() [Patch]
+Date: Mon, 14 Jun 2004 14:55:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406131307.21072.ws@seh.de>
+Message-ID: <20040614145532.1e823e15@mango.fruits.de>
+References: <20040611012753.360c48ae@mango.fruits.de>
+	<20040611200601.100405ea@mango.fruits.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 97FD836A
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2004 14:50:24 +0200 (MEST)
+In-Reply-To: <20040611200601.100405ea@mango.fruits.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,24 +21,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Florian Schmidt <mista.tapas@gmx.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Fri, 11 Jun 2004 20:06:01 +0200
+Florian Schmidt <mista.tapas@gmx.net> wrote:
 
-Some strange effect occurs on my tascam us-122 audio/midi usb
-device:
-   After starting JACK the midi input does not work anymore. Not even
-the midi in led on the us-122 flashes. Midi output is always fine. 
-After stopping JACK midi input still does not work. Midi input works 
-again after disconnect/reconnect the usb cable.
-I'm using current ALSA cvs and kernel 2.6.7rc3. 
+> On Fri, 11 Jun 2004 01:27:53 +0200
+> Florian Schmidt <mista.tapas@gmx.net> wrote:
+> 
+> minor fix [now dsp0, dsp1, etc. should be covered, too.. a little hacky though]
+> 
+> http://www.affenbande.org/~tapas/alsa-oss-1.0.5-artsdsp-rip.tar.bz2
+> http://www.affenbande.org/~tapas/alsa-oss-fopen.patch
 
-Can anyone confirm this to work on a normal system?
+anybody out there?
 
-Regards,
-Werner
+flo
 
+-- 
+Palimm Palimm!
 
 
 
