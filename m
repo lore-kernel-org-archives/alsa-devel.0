@@ -1,12 +1,15 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: upmixing line in - emu10k1 sb live 5.1
-Date: Mon, 14 Feb 2005 15:27:19 -0500
-Message-ID: <1108412839.28815.2.camel@krustophenia.net>
-References: <200502140720.j1E7JtHo012669@www4.pobox.sk>
+Subject: Re: [PATCH] Enables SPDIF output on the Audigy2 Value.
+Date: Mon, 14 Feb 2005 15:38:08 -0500
+Message-ID: <1108413488.28902.1.camel@krustophenia.net>
+References: <420F81B6.8060500@superbug.co.uk> <s5hk6pbcfwb.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <200502140720.j1E7JtHo012669@www4.pobox.sk>
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 46C1E23E
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 21:38:11 +0100 (MET)
+In-Reply-To: <s5hk6pbcfwb.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,27 +19,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzad@pobox.sk>
-Cc: dwhthompson@yahoo.co.uk, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2005-02-14 at 08:20 +0100, Peter Zubaj wrote:
-> Hi,
+On Mon, 2005-02-14 at 16:36 +0100, Takashi Iwai wrote:
+> At Sun, 13 Feb 2005 16:35:02 +0000,
+> James Courtier-Dutton wrote:
+> > 
+> > It seems to work for PCM, but not AC3 yet.
 > 
-> AFAIK there is no way to upmix line in to 5.1 in alsa default config
-> for sb live.
+> Applied to CVS.
 > 
-> Audigy is diffrent.
-> 
-> Maybe if you use ld10k1, this will do upmix (init_live script).
-> 
+> My only concern is the influence to other Audigy models although it
+> seems working on my machines.  Please report if you have any problems
+> after this update.
 
-I am working on improving the default DSP config for the SBLive.  There
-are many problems with it, the lack of master volume being the worst.
-
-In order to have enough GPRs to solve this and the master volume problem
-then some features will have to go.  Like the redundant "switch"
-controls (the same thing could be accomplished by setting volume to 0).
+On a related topic did anyone ever test my patch to enable 96KHz output
+on the audigy?
 
 Lee
 
