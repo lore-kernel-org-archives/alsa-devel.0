@@ -1,11 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] amidi active sensing option
-Date: Mon, 19 Jan 2004 11:20:55 +0100 (MET)
+From: <david.thompson@magharl.co.uk>
+Subject: SB Live 5.1 with Analogue 5.1 speakers
+Date: Mon, 19 Jan 2004 10:55:39 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0401191119160.7735-100000@studcom.urz.uni-halle.de>
+Message-ID: <009a01c3de7a$c6ca02d0$cbc809c0@Harlequin.local>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0097_01C3DE7A.C6C08CF0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,115 +18,91 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-This adds an option to amidi not to ignore active sensing bytes.
+------=_NextPart_000_0097_01C3DE7A.C6C08CF0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
+Hello:
 
-Index: alsa-utils/amidi/amidi.1
-===================================================================
-RCS file: /cvsroot/alsa/alsa-utils/amidi/amidi.1,v
-retrieving revision 1.1
-diff -u -r1.1 amidi.1
---- alsa-utils/amidi/amidi.1	28 Oct 2003 10:53:43 -0000	1.1
-+++ alsa-utils/amidi/amidi.1	19 Jan 2004 10:17:39 -0000
-@@ -1,4 +1,4 @@
--.TH AMIDI 1 "27 Oct 2003"
-+.TH AMIDI 1 "18 Jan 2004"
+Over the past few days I have been trying to set up a SB Live 5.1 Card =
+on my SuSE 9.0 - 2.4.21 system to work with a set of Philips Analogue =
+5.1 speakers....
 
- .SH NAME
- amidi \- read from and write to ALSA RawMIDI ports
-@@ -81,7 +81,9 @@
- create a Standard MIDI (.mid) file.
+So far I have not had any luck in getting these to work - as the =
+centre/digital output seems to always be digital even though I have =
+specified analogue and also I cannot seem to get the satellite (back) =
+speakers to work.  Thus the centre speaker constantly produces a =
+horrible crackling sound ..
 
- .B amidi
--will filter out any Active Sensing bytes (FEh).
-+will filter out any Active Sensing bytes (FEh), unless the
-+.I -a
-+option has been given.
+However, when I did play a 5.1 DVD in Xine, I was able to get actual =
+sound out of the centre speaker ... but when playing non 5.1 dvds or TV, =
+the horrible crackling sound returns.
 
- .TP
- .I -S, --send-hex="..."
-@@ -90,7 +92,9 @@
- .TP
- .I -d, --dump
- Prints data received from the MIDI port as hexadecimal bytes.
--Active Sensing bytes (FEh) will not be shown.
-+Active Sensing bytes (FEh) will not be shown, unless the
-+.I -a
-+option has been given.
+I have an older 4.1 soundblaster live card which when I plug in and use =
+with the speakers I am able to get full 4.1 sound without of course the =
+centre speaker - so the back satellite speakers work fine.
 
- This option is useful for debugging.
+Does anyone have any suggestions or advice on how to set up the new 5.1 =
+card to get it to work properl?
+Cheers,
 
-@@ -102,6 +106,11 @@
- If this option has not been given, you must press Ctrl+C (or kill
- .B amidi\fR)
- to stop receiving data.
-+
-+.TP
-+.I -a, --active-sensing
-+Does not ignore Active Sensing bytes (FEh) when saving or printing
-+received MIDI commands.
+David
+------=_NextPart_000_0097_01C3DE7A.C6C08CF0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
- .SH EXAMPLES
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1276" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>
+<DIV><FONT face=3DArial size=3D2>Hello:</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Over the past few days I have been =
+trying to set up=20
+a SB Live 5.1 Card on my SuSE 9.0 - 2.4.21 system to work with a set of =
+Philips=20
+Analogue 5.1 speakers....</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>So far I have not had any luck in =
+getting these to=20
+work - as the centre/digital output seems to always be digital even =
+though I=20
+have specified analogue and also I cannot seem to get the satellite =
+(back)=20
+speakers to work.&nbsp; Thus the centre speaker constantly&nbsp;produces =
+a=20
+horrible crackling sound ..</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>However, when I did play a 5.1 DVD in =
+Xine, I was=20
+able to get actual sound out of the centre speaker ... but when playing =
+non 5.1=20
+dvds or TV, the horrible crackling sound returns.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I have an older 4.1 soundblaster live =
+card which=20
+when I plug in and use with the speakers I am able to get full 4.1 sound =
+without=20
+of course the centre speaker - so the back satellite speakers work=20
+fine.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Does anyone have any suggestions or =
+advice on how=20
+to set up the&nbsp;new 5.1 card to get it to work properl?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Cheers,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>David</FONT></DIV></DIV></BODY></HTML>
 
-Index: alsa-utils/amidi/amidi.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-utils/amidi/amidi.c,v
-retrieving revision 1.3
-diff -u -r1.3 amidi.c
---- alsa-utils/amidi/amidi.c	13 Jan 2004 16:11:56 -0000	1.3
-+++ alsa-utils/amidi/amidi.c	19 Jan 2004 10:17:39 -0000
-@@ -76,7 +76,8 @@
- 		"-S, --send-hex=\"...\"   send hexadecimal bytes\n"
- 		"-d, --dump             print received data as hexadecimal bytes\n"
- 		"-t, --timeout=seconds  exits when no data has been received\n"
--		"                       for the specified duration\n");
-+		"                       for the specified duration\n"
-+		"-a, --active-sensing   don't ignore active sensing bytes\n");
- }
-
- static void version(void)
-@@ -371,7 +372,7 @@
-
- int main(int argc, char *argv[])
- {
--	static char short_options[] = "hVlLp:s:r:S:dt:";
-+	static char short_options[] = "hVlLp:s:r:S:dt:a";
- 	static struct option long_options[] = {
- 		{"help", 0, NULL, 'h'},
- 		{"version", 0, NULL, 'V'},
-@@ -383,9 +384,11 @@
- 		{"send-hex", 1, NULL, 'S'},
- 		{"dump", 0, NULL, 'd'},
- 		{"timeout", 1, NULL, 't'},
-+		{"active-sensing", 0, NULL, 'a'},
- 		{ }
- 	};
- 	int c, err, ok = 0;
-+	int ignore_active_sensing = 1;
-
- 	while ((c = getopt_long(argc, argv, short_options,
- 		     		long_options, NULL)) != -1) {
-@@ -420,6 +423,9 @@
- 		case 't':
- 			timeout = atoi(optarg);
- 			break;
-+		case 'a':
-+			ignore_active_sensing = 0;
-+			break;
- 		default:
- 			error("Try `amidi --help' for more information.");
- 			return 1;
-@@ -528,7 +534,7 @@
- 			}
- 			length = 0;
- 			for (i = 0; i < err; ++i)
--				if (buf[i] != 0xfe) /* drop any active sensing bytes */
-+				if (!ignore_active_sensing || buf[i] != 0xfe)
- 					buf[length++] = buf[i];
- 			if (length == 0)
- 				continue;
-
+------=_NextPart_000_0097_01C3DE7A.C6C08CF0--
 
 
 
