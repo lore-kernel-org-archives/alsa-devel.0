@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000710]: Alsa-oss works with mpg123 too...fast!!!
-Date: Sun, 20 Mar 2005 23:58:01 +0100
-Message-ID: <f09dac248dba95cac6d8d1de69c8424f@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0000196]: full duplex doesn't work any more
+Date: Sun, 20 Mar 2005 23:59:21 +0100
+Message-ID: <ca752930eac0218739211e2d5e2f8a77@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB97A25F
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 23:58:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 16EFF25F
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 23:59:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,49 +23,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=710> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=196> 
 ======================================================================
-Reported By:                booxter
+Reported By:                nathanel
 Assigned To:                
 ======================================================================
 Project:                    ALSA - liboss
-Issue ID:                   710
+Issue ID:                   196
 Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             12-05-2004 20:22 CET
-Last Modified:              03-20-2005 23:58 CET
+Date Submitted:             04-08-2004 20:59 CEST
+Last Modified:              03-20-2005 23:59 CET
 ======================================================================
-Summary:                    Alsa-oss works with mpg123 too...fast!!!
+Summary:                    full duplex doesn't work any more
 Description: 
-When I run
-aoss mpg123 some.mp3,
-I hear all the sound, but too fast (about a 3-5 seconds for a 4minutes
-mp3). Other programs that works primarily through OSS (I tested with
-mp3blaster and mplayer with -o oss) works with aoss fine.
+I'm using the attached .asoundrc to separate front an rear speakers of my
+Soundblaster Live! to dsp and dsp1 respectively. I have my headphones
+connected to the rear speaker output and running gnomemeeting with
+alsa-oss on dsp1. Unfortunately this setup stopped working with alsa-oss
+version 1.0.3 or higher (Different versions of alsa-libs didn't make any
+difference). Playing music solely on dsp1 still works (tried with xmms
+OSS) and recording also works (other people can hear me in gnomemeeting),
+but both at the same time is no longer functioning (read: I can't hear my
+dialog partner). As gnomemeering opens the audio device for recording
+first, i suspect that full duplex support got broken somewhere between
+1.0.2 and 1.0.3.
 ======================================================================
 
 ----------------------------------------------------------------------
- booxter - 12-05-04 20:42 
+ jdthood - 03-20-05 23:59 
 ----------------------------------------------------------------------
-I forgot to say that my soundcard is Via82c686b, and I use dmix.
-Platform:x86
-
-----------------------------------------------------------------------
- jdthood - 03-20-05 23:58 
-----------------------------------------------------------------------
-Submitter: Is this still a problem in ALSA 1.0.8?
+It has been a long time since you filed this bug.  You neven
+got a reply.  Have you managed to make any progress on it on
+your own?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-05-04 20:22 booxter        New Issue                                    
-12-05-04 20:42 booxter        Note Added: 0002723                          
-12-05-04 22:14 eradicator     Issue Monitored: eradicator                    
-03-20-05 23:58 jdthood        Note Added: 0004103                          
+04-08-04 20:59 nathanel       New Issue                                    
+04-08-04 20:59 nathanel       File Added: .asoundrc                        
+03-20-05 23:59 jdthood        Note Added: 0004104                          
 ======================================================================
 
 
