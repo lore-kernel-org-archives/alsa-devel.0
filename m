@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
-Date: Fri, 24 Sep 2004 13:43:53 +0200 (CEST)
+Subject: [ALSA - driver 0000337]: "alsactl restore" always fails
+Date: Fri, 24 Sep 2004 13:40:30 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924114353.C02BA101DB@server.perex-int.cz>
+Message-ID: <20040924114030.E25E9101DE@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 09970288
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:43:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5CD17288
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:40:31 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,106 +22,114 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000328
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000337
 ======================================================================
-Reported By:                aaronkaplan
+Reported By:                kuulasma
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     328
+Bug ID:                     337
 Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.5-1.358
+Distribution:               Debian sarge
+Kernel Version:             Linux 2.6.6-1-686
 ======================================================================
-Date Submitted:             06-08-2004 23:13 CEST
-Last Modified:              09-24-2004 13:43 CEST
+Date Submitted:             06-16-2004 22:04 CEST
+Last Modified:              09-24-2004 13:40 CEST
 ======================================================================
-Summary:                    snd-nm256 freezes Dell Latitude LS
+Summary:                    "alsactl restore" always fails
 Description: 
-My Dell Latitude LS with an NM256AV hangs when I insert the
-snd-nm256 module.
+Dell Latitude CPt with an NM256ZX fails always to restore previously saved
+state. Command "alsactl store" succesfully stores current state but
+"alsactl restore" always fails to restore previous state. The OSS driver
+works fine.
 
-The OSS driver works fine.
-
+Example:
+----------------------------------------------------------
+# alsactl restore
+alsactl: set_control:966: Cannot write control '2:0:0:CD Playback
+Switch:0' : Invalid argument
+----------------------------------------------------------
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-30-2004 16:55 CEST 
+ tiwai - 06-22-2004 18:51 CEST 
 ----------------------------------------------------------------------
-Does the attached patch have any effect?
-If not, please show the output of lspci -nv.
-
-----------------------------------------------------------------------
- aaronkaplan - 07-01-2004 16:03 CEST 
-----------------------------------------------------------------------
-No difference with the patch.  I'm attaching the output from lspci.
+Can you toggle CD mute on alsamixer, or like 'amixer set CD mute'?
 
 ----------------------------------------------------------------------
- fridolin - 08-13-2004 01:33 CEST 
+ kuulasma - 06-22-2004 21:35 CEST 
 ----------------------------------------------------------------------
-Hi!
+I tried to toggle CD mute but new setting are not stored. If I try to mute
+CD or change volyme, new settings are ignored. alsamixer doesn't save CD
+volyme and mute state. Other controls work just like I expect them to
+work. Once I open alsamixer CD settings are as follows: volyme 100 and
+unmuted.
 
+If I edit /var/lib/alsa/asound.state file manually and remove sections
+control.14 and control.15, I can issue command 'alsactl restore'
+succesfully (without error message). But once I store settings ('alsactl
+store'), illegal control.14 and control.15 are stored in asound.state
+file. 
 
-I have got a similar problem. My computer is a Latitude Cpi-R 400GT.
+Just in case you need following information:
 
-The machine hangs not immediately after inserting the nm-nm256 module, but
-it freezes always when accessing the soundcard (by invoking alsamixer).
-
-The similarity is, that I have already tried to activate/deactivate the
-old "latitude_workaround"-thing, but this doesn't help.
-
-The older OSS-driver works for me, too. 
-
-
-I'm using the latest stable driver (alsa-driver-1.0.5.tar.bz2) compiled
-over a linux 2.4.24-kernel.
-
-----------------------------------------------------------------------
- fridolin - 08-13-2004 12:46 CEST 
-----------------------------------------------------------------------
-I've also tried alsa-driver-1.0.5a, but it shows the same crashing.
-
-----------------------------------------------------------------------
- fridolin - 08-13-2004 15:17 CEST 
-----------------------------------------------------------------------
-With 1.0.6rc2, the driver doesn't crash any more.
-
-I'm sorry that I haven't tried out this before, but when compiling on a
-slow machine and after tens of reboots, one day goes by very soon.
+# lsmod | grep snd
+snd_nm256              69188  1 
+snd_ac97_codec         65188  1 snd_nm256
+snd_pcm_oss            54436  0 
+snd_mixer_oss          20096  2 snd_pcm_oss
+snd_pcm                98148  2 snd_nm256,snd_pcm_oss
+snd_page_alloc         11460  1 snd_pcm
+snd_timer              25380  1 snd_pcm
+snd                    54692  6
+snd_nm256,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore              10336  2 snd
 
 ----------------------------------------------------------------------
- aaronkaplan - 08-14-2004 20:04 CEST 
+ tiwai - 06-30-2004 16:29 CEST 
 ----------------------------------------------------------------------
-I upgraded to kernel 2.6.7 and I no longer have a problem with this driver.
+The attached patch will allow the access to the CD mute/volume.
+Please give a try.
 
 ----------------------------------------------------------------------
- tiwai - 08-19-2004 19:18 CEST 
+ kuulasma - 07-02-2004 07:12 CEST 
 ----------------------------------------------------------------------
-Ok now I close this.  Reopen if still something gets wrong.
+YES!
+
+I patched the kernel (2.6.6) and compiled. After boot new kernel with
+nm256-cd.diff worked. Thank you!
+
+When will the patch land in official kernel source repository?
+
+Regards
+
+Teemu
+
+----------------------------------------------------------------------
+ tiwai - 07-16-2004 12:02 CEST 
+----------------------------------------------------------------------
+fixed on cvs now.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-04 23:13 aaronkaplan    New Bug                                      
-06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
-06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
-06-08-04 23:13 aaronkaplan    Bug Monitored: aaronkaplan                    
-06-30-04 16:55 tiwai          Bugnote Added: 0001362                       
-06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                    
-07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
-07-01-04 16:03 aaronkaplan    Bugnote Added: 0001370                       
-08-13-04 01:33 fridolin       Bugnote Added: 0001559                       
-08-13-04 12:46 fridolin       Bugnote Added: 0001562                       
-08-13-04 15:17 fridolin       Bugnote Added: 0001564                       
-08-14-04 20:04 aaronkaplan    Bugnote Added: 0001565                       
-08-19-04 19:18 tiwai          Bugnote Added: 0001593                       
-08-19-04 19:18 tiwai          Resolution               open => fixed       
-08-19-04 19:18 tiwai          Status                   assigned => resolved
-09-24-04 13:43 tiwai          Status                   resolved => closed  
+06-16-04 22:04 kuulasma       New Bug                                      
+06-16-04 22:04 kuulasma       Distribution              => Debian sarge    
+06-16-04 22:04 kuulasma       Kernel Version            => Linux 2.6.6-1-686
+06-17-04 14:12 kuulasma       Bug Monitored: kuulasma                      
+06-22-04 18:51 tiwai          Bugnote Added: 0001333                       
+06-22-04 21:35 kuulasma       Bugnote Added: 0001334                       
+06-30-04 16:29 tiwai          Bugnote Added: 0001355                       
+06-30-04 16:30 tiwai          File Added: nm256-cd.dif                     
+07-02-04 07:12 kuulasma       Bugnote Added: 0001373                       
+07-16-04 12:02 tiwai          Bugnote Added: 0001444                       
+07-16-04 12:02 tiwai          Resolution               open => fixed       
+07-16-04 12:02 tiwai          Status                   assigned => resolved
+09-24-04 13:40 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
