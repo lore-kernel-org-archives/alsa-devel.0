@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000782]: Poor digital aidio quality
-Date: Wed, 16 Mar 2005 02:10:43 +0100
-Message-ID: <938aadd0fe03fed19b22af451d0cf130@bugtrack.alsa-project.org>
+Date: Wed, 16 Mar 2005 02:11:12 +0100
+Message-ID: <dab4e262f2d168cbcc088fbad07ef3d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 37331221
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 02:10:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7D7DB221
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 02:11:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=782> 
 ======================================================================
@@ -34,12 +34,14 @@ Category:                   PCI - emu10k1x
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               Fedora Core
 Kernel Version:             2.6.9-1.681_FC3.i686
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             01-03-2005 16:20 CET
-Last Modified:              03-16-2005 02:10 CET
+Last Modified:              03-16-2005 02:11 CET
 ======================================================================
 Summary:                    Poor digital aidio quality
 Description: 
@@ -60,22 +62,16 @@ Playing a CD works fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- ddemmer - 03-15-05 06:02 
-----------------------------------------------------------------------
-I'm still here, just been busy.
-
-I tried your .asoundrc but ... it doesn't help Realplayer, and rhythmbox
-plays in "double time". I will attempt to tweak it.
-
-On the other hand, this is really a config issue now, and so I don't
-object if you would like to close it as a bug report.
-
-----------------------------------------------------------------------
  fmoraes - 03-16-05 02:10 
 ----------------------------------------------------------------------
 For RealPlayer, you may have to use aoss to run it. You can get some help
 on the dmix configuration but I am closing this as it is no longer a
 driver problem.
+
+----------------------------------------------------------------------
+ fmoraes - 03-16-05 02:11 
+----------------------------------------------------------------------
+No longer a driver problem, just a dmix configuration issue now.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,6 +92,8 @@ Date Modified  Username       Field                    Change
 03-15-05 01:24 fmoraes        Note Added: 0003912                          
 03-15-05 06:02 ddemmer        Note Added: 0003913                          
 03-16-05 02:10 fmoraes        Note Added: 0003928                          
+03-16-05 02:11 fmoraes        Status                   assigned => closed  
+03-16-05 02:11 fmoraes        Note Added: 0003929                          
 ======================================================================
 
 
