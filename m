@@ -1,14 +1,17 @@
-From: Marcel <shizuma@magma.ca>
-Subject: alsa 1.0rc1 + cmipci
-Date: Wed, 3 Dec 2003 11:08:07 -0500
+From: David Ronis <ronis@ronispc.chem.mcgill.ca>
+Subject: Re: Oops still present in lastest CVS/nm256
+Date: Wed, 3 Dec 2003 11:13:38 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031203160807.GA25623@dailyplanet.net>
-References: <E1ARFik-00019j-3a@sc8-sf-list2.sourceforge.net>
+Message-ID: <16334.2994.627204.332429@ronispc.chem.mcgill.ca>
+References: <16323.37811.445520.249624@ronispc.chem.mcgill.ca>
+	<s5hhe0sz5zm.wl@alsa2.suse.de>
+	<16323.64838.222381.292418@ronispc.chem.mcgill.ca>
+Reply-To: david.ronis@mcgill.ca
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <E1ARFik-00019j-3a@sc8-sf-list2.sourceforge.net>
+In-Reply-To: <16323.64838.222381.292418@ronispc.chem.mcgill.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,24 +23,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Marcel wrote:
-> > I have a dual boot system.  1) kernel 2.4.23 + alsa 0.9.8; 2) kernel
-> > 2.6.0test11 w its 0.9.7 drivers and same alsa 0.9.8.
-> >
-> > I am wondering what could happen if I install recent alsa 1pre.  Kernel 2.4
-> > should be happy of the upgrade;
-> 
-> Yes; the modules for each kernel version get their own directory.
-> 
-> > but will apps compiled with the 0.9.0 headers still work with
-> > kernel 2.6 and its 0.9.7 driver and alsa-lib 1pre?
-> 
-> Applications access the library only, and the 0.9 and 1.0 versions of
-> alsa-lib are binary compatible.
-> 
 
-I've just finished installing alsa 1.0pre1.  Compiled fine.  Works pretty
-well on both kernels.  Great work!
+I've been complaining about oops on a Sony Viao Z505S laptop, in the
+end most likely due to problems with shared IRQ's.  With some helpful
+suggestons of Takashi on orders of loading things (USB->ALSA->X) I
+avoided a crash most of the time.
+
+Yesterday, I upgraded to the new 2.4.23 kernel.  It seems they've
+modified the IRQ sharing code.  I've been unable to get alsa to crash
+the system or Oops since (including with a CVS update of an hour ago).
+The order of loading the modules doesn't matter either.
+
+Thanks for all your help.
+
+
+David
+
 
 
 -------------------------------------------------------
