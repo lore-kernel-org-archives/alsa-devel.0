@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Re: [Jackit-devel] alsa_driver_wait -> libasound?
-Date: Tue, 14 Jan 2003 14:20:33 -0500
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Sound Blaster 4.1 problem (ens1371)
+Date: Tue, 14 Jan 2003 20:20:29 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301141920.h0EJKBCg014475@spider.tela.com>
-References: <1042571092.10955.142.camel@birdie>
+Message-ID: <Pine.LNX.4.33.0301142018210.541-100000@pnote.perex-int.cz>
+References: <200301141851.22286.pieter.palmers@student.kuleuven.ac.be>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "14 Jan 2003 11:04:52 PST."
-             <1042571092.10955.142.camel@birdie>
+In-Reply-To: <200301141851.22286.pieter.palmers@student.kuleuven.ac.be>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,29 +16,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Josh Haberman <joshua@haberman.com>
-Cc: jackit-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->> seems like a good idea to me, although there is a small problem. the
->> current snd_pcm_wait function waits till the handles is
->> readable/writable, whereas the JACK code waits till the handles all
->> have a certain minimum amount of data/space.
->
->It does?  Reading the function, I cannot find where it checks to make
->sure that a minimum number of frames are available.  The main loop is
->while( need_capture || need_playback ), and these two conditions are
->satisfied simply by having the poll() not time out on the appropriate
->pfds.  Later it checks to see how many frames are available, but never
->branches based on the number.
+On Tue, 14 Jan 2003, Pieter Palmers wrote:
 
-i'm sorry, you're right about that. it returns the minimum number of frames
-that are available modulo the period size (i.e. the number of whole
-periods that can be processed at this time, expressed in frames). this
-is quite different than the current function of snd_pcm_wait(), which
-merely waits till a handle is ready (or has an error) according to poll.
+> Anyway, the statement I wanted to make is: maybe I can use the same approach 
+> to try spying on the ens1371. I already experienced that you can obtain a lot 
+> of info fast if you know what you're looking for.
+> 
+> Should you have any suggestions on how I should build/enhance the 'bridge', 
+> they are very welcome. I'm new to linux driver design, and kernel level code.
 
---p
+Thanks for explaining. Perhaps, you can log all accesses to i/o ports for 
+ens1371 hardware from the windows drivers? It might be helpful - we can 
+decode the init sequence.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
