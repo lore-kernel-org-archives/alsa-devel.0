@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000544]: Sound freezes (but can be restarted OK) after kernel locked for a long time
-Date: Sat,  9 Oct 2004 20:02:01 +0200 (CEST)
+Date: Sat,  9 Oct 2004 20:13:00 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041009180201.30CD63E00F@server.perex-int.cz>
+Message-ID: <20041009181300.5CC2F3E010@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A6CCA291
-	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 20:02:01 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B168D291
+	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 20:13:00 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -36,7 +36,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             09-26-2004 10:44 CEST
-Last Modified:              10-09-2004 20:02 CEST
+Last Modified:              10-09-2004 20:13 CEST
 ======================================================================
 Summary:                    Sound freezes (but can be restarted OK) after kernel locked for a long time
 Description: 
@@ -78,6 +78,12 @@ Thanks.
 I can confirm this bug exists also with nforce2 chipset + xmms-1.2.10-r6
 (gentoo). No other applications suffer from this.
 
+----------------------------------------------------------------------
+ lee - 10-09-2004 20:13 CEST 
+----------------------------------------------------------------------
+Please close this.  It's an XMMS bug, probably related to how XMMS does
+xrun recovery.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -87,6 +93,7 @@ Date Modified  Username       Field                    Change
 09-26-04 12:03 lee            Bugnote Added: 0001918                       
 09-26-04 12:25 sasa           Bugnote Added: 0001919                       
 10-09-04 20:02 jtimonen       Bugnote Added: 0002062                       
+10-09-04 20:13 lee            Bugnote Added: 0002063                       
 ======================================================================
 
 
