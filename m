@@ -1,13 +1,13 @@
-From: Florian Bomers <Florian.Bomers@sun.com>
-Subject: Re: Playing always at half of the rate of recording.
-Date: Tue, 19 Nov 2002 14:07:13 -0800
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: snd-ens1371 driver failed assert
+Date: Wed, 20 Nov 2002 11:25:24 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DDAB611.E2DEF97B@sun.com>
-References: <F9hQkQiijdhvs3qJSyl00011c5a@hotmail.com>
+Message-ID: <Pine.LNX.4.33.0211201125150.1437-100000@pnote.perex-int.cz>
+References: <200211192212.26739.plcl@telefonica.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200211192212.26739.plcl@telefonica.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,65 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?Q?=E8=B6=20=E6?= <flyingwalter@msn.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-are you sure that sample size, number of channels and sample rate is the =
-same for playback
-and record?
+On Tue, 19 Nov 2002, Pedro Lopez-Cabanillas wrote:
 
-Florian
+> Hi,
+> 
+> The following lines are from my syslog after "modprobe snd-ens1371" with 
+> current CVS alsa drivers:
+> 
+> PCI: Found IRQ 9 for device 00:11.0
+> ALSA ../alsa-kernel/core/control.c:227: BUG? (!(kcontrol->access & (1<<1)) || 
+> kcontrol->put != ((void *)0)) (called from ca8f67a6)
+> 
+> Mixer works, though. (With too much controls, i don't know what they are).
 
+Fixed in CVS. Thanks.
 
-"=E8=B6 =E6" wrote:
-> =
+						Jaroslav
 
-> Hi All,
->   I'm using alsa library to write an application that play and record a=
-udio
-> at the same time. I openned the default pcm device twice, and set param=
-s for
-> them, nonblock, RW_INTERLEAVED, S16_LE format, 8000Hz, and 1 channel, t=
-he
-> only difference is using SND_PCM_STREAM_CAPTURE for recording, and usin=
-g
-> SND_PCM_STREAM_PLAYBACK for playing.
->   But the bytes played are always near half of the recorded, and the so=
-und I
-> heard is slowed comparing with its normal speed.
->   My enviroment are:
->   RedHat 7.3 / alsa 0.9.0 rc5 / linux kernel 2.4.18-3
->   sound card module: via82xx
-> =
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
->   How can I solve this?
->   Thanks!
-> =
-
-> Walter
-> =
-
-> _________________________________________________________________
-> MSN 8 helps eliminate e-mail viruses. Get 2 months FREE*.
-> http://join.msn.com/?page=3Dfeatures/virus
-> =
-
-> -------------------------------------------------------
-> This sf.net email is sponsored by: To learn the basics of securing
-> your web site with SSL, click here to get a FREE TRIAL of a Thawte
-> Server Certificate: http://www.gothawte.com/rd524.html
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
--- =
-
-Florian Bomers
-Java Sound
-Java Software/Sun Microsystems, Inc.
-http://java.sun.com/products/java-media/sound/
 
 
 -------------------------------------------------------
