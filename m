@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000785]: Add support to quickly change volume
-Date: Sat, 8 Jan 2005 18:25:51 +0100
-Message-ID: <1ff0ac9739ec4ca5768cd036d1af03e6@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: querying card properties
+Date: Sat, 08 Jan 2005 16:52:24 -0500
+Message-ID: <1105221144.24592.107.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4B0C0289
-	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 18:25:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +15,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+In a recent LAU thread it came to light that some (all?) distros alsa
+setup scripts don't configure dmix when the card is known not to support
+hardware mixing.  The end result is the user has to edit config files to
+get software mixing to work.  On a modern distro this is a BUG.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=785> 
-======================================================================
-Reported By:                nijel
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   785
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-05-2005 12:27 CET
-Last Modified:              01-08-2005 18:25 CET
-======================================================================
-Summary:                    Add support to quickly change volume
-Description: 
-Attached patch adds support for quickly changing volume using 0-9 keys in
-simmilar way as aumix does.
-======================================================================
+Is there an API function to detect whether hardware mixing is supported?
+Also useful would be a way to detect codecs with no hardware volume
+control, so the softvol plugin can be set up.
 
-----------------------------------------------------------------------
- tiwai - 01-07-05 18:25 
-----------------------------------------------------------------------
-Well, I already assigned some number keys for alternatives to F1-F5.
-I think this feature is very nice, so we need to reassign keys.
-Any suggestions?
+I know there are hacks like comparing the number of streams to the
+number of substreams, but what's the right way?
 
-----------------------------------------------------------------------
- nijel - 01-08-05 18:25 
-----------------------------------------------------------------------
-F1 and F2 have another alternatives, maybe others can have it also and
-don't use numbers for them.
+Lee
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-05-05 12:27 nijel          New Issue                                    
-01-05-05 12:27 nijel          File Added: alsamixer-numbers.patch               
-    
-01-05-05 14:00 nijel          File Added: alsamixer-numbers2.patch              
-     
-01-05-05 14:00 nijel          Note Added: 0003089                          
-01-07-05 18:25 tiwai          Note Added: 0003110                          
-01-08-05 18:25 nijel          Note Added: 0003129                          
-======================================================================
+
 
 
 
