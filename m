@@ -1,8 +1,8 @@
 From: Mathieu Dube <mdube@8d.com>
-Subject: format problem
-Date: Fri, 15 Mar 2002 10:09:56 -0500
+Subject: alsa5 API and alsa9 API
+Date: Fri, 15 Mar 2002 11:15:28 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <02031510095602.00888@mdube.usine.8D.com>
+Message-ID: <02031511152800.00895@mdube.usine.8D.com>
 Reply-To: mdube@8d.com
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -19,18 +19,11 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-         Im using the alsa API and I call snd_pcm_plugin_params with the 
-pp.format.format at SND_PCM_SFMT_U16_LE.
-         But when I call snd_pcm_plugin_setup and snd_pcm_get_format_name on 
-setup.format.format it outputs:
---> Signed 16-bit Little Endian
+The wave.c example and the API's doc doesnt work with alsa 0.9 right?
 
-         Why is that??
+is there any doc anywhere about the alsa 0.9 api?
 
-btw, I check for return values and all seems well.
-
-Thanks 
+Thanks
 
 -Mat
 -- 
