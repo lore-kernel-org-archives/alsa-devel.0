@@ -1,12 +1,12 @@
-From: Arve Knudsen <aknuds-1@broadpark.no>
-Subject: ALSA-lib reports zero channels for devices
-Date: Mon, 05 Jan 2004 15:10:53 +0100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Jack-Alsa plugin - problems
+Date: Mon, 05 Jan 2004 09:02:05 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <opr1a20fgaq1sf88@mail.broadpark.no>
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <200401051402.i05E259r020637@dhin.linuxaudiosystems.com>
+References: <04de01c3d37f$20a3aa10$5d40a8c0@FRiskMan.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Mon, 05 Jan 2004 11:29:04 GMT."
+             <04de01c3d37f$20a3aa10$5d40a8c0@FRiskMan.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,43 +15,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Ed Wildgoose <Ed@Wildgooses.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+>However, trying to use either xmms, mplayer or mythtv with the same alsa
+>device just seems to leave the app "hanging" and not doing anything, and
+>attempts to fastforward in mplayer and mythtv (which presumably causes the
+>alsa layer in each app to try and pause then reopen the sound layer) causes
+>the error:
+>
+>"You cannot set callbacks on an active client
+>cannot connect alsaP:out_000
+> to alsa_pcm:playback_1"
 
-I have a recurring problem with ALSA-lib that _seems_ linked to the 1.0=20
-release candidates. With one certain application (I've written a=20
-dynamically loaded PortAudio plugin for a mediaplayer), ALSA-lib will=20
-report maximum zero capture and playback channels for both my devices=20
-(nVidia nForce2 and RME DIGI9636). When running minimal PortAudio program=
-s=20
-capabilities are reported correctly. I've managed to fix this in the past=
-=20
-by reinstalling 0.9.8, but 1.0rc2 has worked for a while without problems=
-.=20
-Today the same thing happened though, consistently zero available channel=
-s=20
-would be reported, with this one app (using a PortAudio output plugin). S=
-o=20
-I reinstalled 0.9.8, and rebooted. The problem was still there the first=20
-time I ran the app after reboot (with 0.9.8 installed) though, the second=
-=20
-time it was gone. Weird, huh?
+if these clients really do call snd_pcm_close() when ffwd'ing, then
+there must be some mistake in the ALSA JACK plug, because it should
+close the client down. if they do not call snd_pcm_close() then i am
+not sure what the ALSA JACK plug might be doing.
 
-I'm using the ALSA-driver version compiled into the 2.6.1-rc1-mm1 kernel,=
-=20
-which version is this, 1.0rc*? Could there be a version incompatibility=20
-between driver and lib? I don't think there's anything special to the way=
-=20
-I open and query the card, I simply do a snd_pcm_open followed by a=20
-snd_pcm_nonblock (the open mode could be nonblocking), followed by=20
-snd_pcm_hw_params_any and then snd_pcm_hw_params_get_channels_max. Has=20
-anyone experienced similar behaviour?
+in short, its a problem with the interaction between the design of
+these apps and the ALSA JACK plug. JACK clients are supposed to run
+continuously. these apps don't do that, it appears, and they are
+triggering some problem with the JACK plug. 
 
-Thanks in advance
+--p
 
-Arve Knudsen
+
 
 
 -------------------------------------------------------
