@@ -1,9 +1,14 @@
-From: Andrew Burgess <aab@cichlid.com>
-Subject: Re: SiS748/963L + CMI9739, no IRQs from card?
-Date: Fri, 5 Dec 2003 09:09:03 -0800
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: Re: doc-page
+Date: Fri, 5 Dec 2003 18:16:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312051709.hB5H93Ei005539@cichlid.com>
+Message-ID: <20031205171604.GA19309@tuba.home>
+References: <20031204194243.4841b5a7.mista.tapas@gmx.net> <3FCF87DB.10106@boosthardware.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <3FCF87DB.10106@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -12,19 +17,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->have you tried enabling the kernel build options 'IO-APIC support on
->uniprocessors' and 'Local APIC Support on Uniprocessors' yet (provided
->your box does ACPI; probably so since you say it is a recent design)?
 
-Good advice. 
+Thank you very much, Patrick for the work you've done until now.
 
-Also try changing BIOS setting related to interrupts, mine has a
-selection 'assign pci interrupts' or something like that.
+But one point I still miss is some kind of browseable Changelog. And a good
+complete changelog history is also good for detecting bugs.
 
-HTH
+Well, only the users in the mailling lists can know if driver xy has changed
+(or maybe improved) since the last version or not. So normal users have to
+try out each version. And that's far away from perfect IMHO.
+
+
+just my two cents.
+
+martin
 
 
 -------------------------------------------------------
