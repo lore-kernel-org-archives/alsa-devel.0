@@ -1,18 +1,18 @@
 From: Thomas Charbonnel <thomas@undata.org>
 Subject: Re: hdsp multiface pci.
-Date: 19 Jan 2003 18:20:37 +0100
+Date: 19 Jan 2003 18:27:31 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1042996837.21521.17.camel@satellite.undata.org>
+Message-ID: <1042997250.21518.25.camel@satellite.undata.org>
 References: <3E2A952E.6060305@boosthardware.com>
 	 <1042985569.1663.33.camel@satellite.undata.org>
 	 <3E2AC45F.3070601@boosthardware.com>
 	 <1042992464.1649.55.camel@satellite.undata.org>
-	 <3E2AD34D.6070308@boosthardware.com>
+	 <1042964591.10196.4.camel@Godzilla>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E2AD34D.6070308@boosthardware.com>
+In-Reply-To: <1042964591.10196.4.camel@Godzilla>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,80 +21,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Mark Knecht <markknecht@attbi.com>
+Cc: Patrick Shirkey <pshirkey@boosthardware.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2003-01-19 at 17:33, Patrick Shirkey wrote:
-> I have added it as an editors note on the hdsp page.
+On Sun, 2003-01-19 at 09:23, Mark Knecht wrote:
+> Thomas,
+>    I have possibly more than a passing interest in this subject as I use
+> the HDSP 9652 card that Patrick mentioned and find this whole amixer
+> language completely unfathomable.
+> 
+>    In your quote above, could you outline what each parameter stands
+> for?
+> 
+> "numid=5 26,26,16384"
+> 
+> numid=5 - Is this a physical connection? A mixer input or output? An
+> abstract number just used to keep track of things?
+> 
+numid=5 is a way to identify the control we want to work with, i.e. the
+matrix mixer.
+Controls are defined on a per soundcard basis to address specific driver
+needs uncovered by the "simple controls" you can access through
+alsamixer.
 
-Thanks.
+> 26,26 - clearly Patrick and I were thinking that these two numbers
+> related to specific hardware inputs and outputs, but apparently not.
+> 
+Yes they are. To understand them you should refer to the table Patrick
+gave (quoting the HDSP alsa page, link follows). 
 
-> so it's default is a fifo?
+> 16384 - a mixer volume?
 > 
-> i.e 	software output 26 -> analog output 1
-> 	software output 27 -> analog output 2....
-> 
-
-Strangely said, but yes.
-
-> Therefore can I do this?
-> 
-> numid=5 26,0,16384			
-> numid=5 27,1,16384
-> numid=5 28,2,16384
-> numid=5 29,3,16384
-> numid=5 30,4,16384
-> numid=5 31,5,16384
-> numid=5 32,6,16384
-> numid=5 33,7,16384
-> 
-> Or is that the default setting (except with no volume).
-> 
-
-Rather than bothering to use amixer, you'd better use alsamixer to
-control those. These are the standard volume controls. (Internally the
-volume controls use the matrix mixer)
-If you want to hear sound through analog outputs 1-2 using software
-outputs 1-2, you can either use amixer (e.g. amixer cset numid=5
-26,0,16384) or alsamixer. 
-
-> So we have to tell the control called numid=5 to route 
-> the output from software 1 to line out before we can hear it through 
-> line out?
-> 
-Yes. The control called numid=5 is the interface to the matrix mixer.
-
-> Can we route multiple software outputs to the same hardware output?
-> 
-> eg.	numid=5 26,26,16384			
-> 	numid=5 27,27,16384
-> 	numid=5 28,26,16384
-> 	numid=5 29,27,16384
-> 	numid=5 30,26,16384
-> 	numid=5 31,27,16384
-> 	numid=5 32,26,16384
-> 	numid=5 33,27,16384
-> 
-Yes we can :)
-
-> Or is that what the .asoundrc is for?
-> 
-I don't know if you can do it with the .asoundrc file (I would rather
-doubt it). Anyway the clear benefit of doing it with amixer is that it
-is hardware mixing, thus consuming no system resources.
-
->From your latest post:
-> In essence the hdsp can run 18 software streams at the same time as 
-> processing upto 18 hardware input streams?
-> 
-Yes. In fact the hdsp system can run up to 26 of them (digiface).
-
-> Do I need to set the volume for the analog inputs? Or will I be able
-> to 
-> capture from them without setting anything in amixer?
-> 
-You'll be able to capture without setting anything in amixer
+Yes, you should read Marcus Andersson's comments on this here:
+http://www.alsa-project.org/alsa-doc/doc-php/template.php3?company=RME&card=Hammerfall+DSP&chip=FPGA&module=hdsp
+(at the end of the page)
 
 Thomas
 
