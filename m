@@ -1,10 +1,11 @@
-From: Janek Hiis <janekh@cvotech.com>
-Subject: [bug] unabe to choose default card id
-Date: Tue, 5 Nov 2002 11:41:48 +0200 (EET)
+From: =?ISO-8859-1?Q?Pasi_K=E4rkk=E4inen?= <pasik@iki.fi>
+Subject: Re: Audigy and ac3-passthrough not working..
+Date: Tue, 5 Nov 2002 12:18:40 +0200 (EET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0211051141320.25588-100000@cat.cvo>
+Message-ID: <Pine.LNX.4.44.0211051218310.5519-100000@edu.joroinen.fi>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,21 +18,36 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I downloaded the alsa-driver from CVS and when trying to insert the driver
-it gives the following error :
+On Mon, 4 Nov 2002, Takashi Iwai wrote:
 
-PCI: Setting latency timer of device 00:04.5 to 64
-ALSA ../alsa-kernel/core/init.c:178: unable to choose default card id 
-(82C686AB_8)
+> At Sun, 3 Nov 2002 22:49:10 +0200 (EET),
+> Pasi K=E4rkk=E4inen wrote:
+> >
+> >
+> > Hello!
+> >
+> > Anyone working with SB Audigy driver to get hwac3 working?
+>
+> unfortunately, it's not supported yet...
+> emu10k2 on audigy is not 100% compatible with emu10k1.
+>
 
-Motherboard Asus K7M with onboard VIA VT82C686 AC97 Audio Controller
-with linux kernel 2.4.19
+OK.
+
+Anyone planning to fix this? Has Creative released any information about
+the audigy (emu10k2) chip?
 
 
+- Pasi K=E4rkk=E4inen
 
-Janek Hiis
+                                   ^
+                                .     .
+                                 Linux
+                              /    -    \
+                             Choice.of.the
+                           .Next.Generation.
+
 
 
 
