@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000879]: (snd_)opl3sa2 (isa) doesn't work (fails on playback) on 2.6.x kernels
-Date: Thu, 3 Feb 2005 03:42:32 +0100
-Message-ID: <409553c2651223f85e683afc676eeb1e@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000880]: ALSA lib pcm_hw.c:370:(snd_pcm_hw_hw_free) SNDRV_PCM_IOCTL_HW_FREE failed: File descriptor in bad state
+Date: Thu, 3 Feb 2005 09:20:14 +0100
+Message-ID: <75a742d288d78fad8bffe0ed46d45cdd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 82986217
-	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2005 03:42:32 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4E5DB1C0
+	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2005 09:20:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,55 +23,38 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=879> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=880> 
 ======================================================================
-Reported By:                iive
+Reported By:                runtema
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   879
-Category:                   ISA - opl3sa2
+Project:                    ALSA - lib
+Issue ID:                   880
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 10
-Kernel Version:             all 2.6.x kernel version (current 2.6.10)
 ======================================================================
-Date Submitted:             02-03-2005 03:42 CET
-Last Modified:              02-03-2005 03:42 CET
+Date Submitted:             02-03-2005 09:20 CET
+Last Modified:              02-03-2005 09:20 CET
 ======================================================================
-Summary:                    (snd_)opl3sa2 (isa) doesn't work (fails on playback)
-on 2.6.x kernels
+Summary:                    ALSA lib pcm_hw.c:370:(snd_pcm_hw_hw_free)
+SNDRV_PCM_IOCTL_HW_FREE failed: File descriptor in bad state
 Description: 
-It doesn't work on all 2.6.x kernel I have tried (current 2.6.10)
-alsaconf doesn't detect the card as PnP, and fails to find it with
-bruteforce.
+When accesing ALSA lib/module pcm trough application ogle (see
+http://www.dtek.chalmers.se/groups/dvd/) it breaks down to the error given
+in the summary.
 
-When module is loaded by hand it shows no error, but on `aplay samle.wav`
-I got
-"ALSA /work/install/alsa-driver-1.0.5a/alsa-kernel/core/pcm_lib.c:2172:
-playback
-write error (DMA or IRQ trouble?"
+Details for system/version/error:
 
-on boot with 2.4.x kernel, everything magically works (alsaconf, aplay
-etc..)
-
-the bug is reported 4 months ago on
-http://bugzilla.kernel.org/show_bug.cgi?id=3117
-that's why some versions are old (but I had tried alsa-1.0.8 before
-reposting this bug here)
-
+see http://forums.gentoo.org/viewtopic.php?p=2050504
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 03:42 iive           New Issue                                    
-02-03-05 03:42 iive           File Added: isa_opl3sa2.tgz                    
-02-03-05 03:42 iive           Distribution              => Slackware 10    
-02-03-05 03:42 iive           Kernel Version            => all 2.6.x kernel
-version (current 2.6.10)
+02-03-05 09:20 runtema        New Issue                                    
 ======================================================================
 
 
