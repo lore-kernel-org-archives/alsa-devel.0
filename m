@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
-Date: Fri, 11 Mar 2005 12:15:58 +0100
-Message-ID: <561f5e9d53c2692b7e28a3b6d6f5962b@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
+Date: Fri, 11 Mar 2005 13:06:56 +0100
+Message-ID: <a6ee2abd9d36841660853acec9e4dbbd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 815E215A
-	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 12:15:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 13F7B1B4
+	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 13:06:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,103 +23,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
 ======================================================================
-Reported By:                vaxen
-Assigned To:                tiwai
+Reported By:                yure
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   914
-Category:                   PCI - nm256
+Project:                    ALSA - lib
+Issue ID:                   881
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.9 2.6.10
+Status:                     new
 ======================================================================
-Date Submitted:             02-16-2005 20:39 CET
-Last Modified:              03-11-2005 12:15 CET
+Date Submitted:             02-03-2005 12:25 CET
+Last Modified:              03-11-2005 13:06 CET
 ======================================================================
-Summary:                    nm256 causes kernel to hard freeze
+Summary:                    Distorted sound with enabled dmix plugin
 Description: 
-Hi, here is my specs:
-
-Gateway solo 3300
-http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
-Audio chipset NM2200 interface to AC97 CODEC
-
-pegasos vaxen # lspci -tv
--[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
-      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
-      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
-Audio]
-      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
-      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
-      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
-      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
-      +-0a.0  Texas Instruments PCI1211
-      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
-      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
-
-I am using a custom patched kernel at
-http://morph-sources.sourceforge.net/?q=node/27 
-
-It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
-alsa-bk-2005-01-14.patch.
-
-I compiled the drivers into the kernel, the kernel hard freezes after
-displaying these message:
-nm256:found card signature in video RAM: 0x27ec00
-nm256:Mapping port 1 from 0x2709a0-0x27ec00
-I have to switch off the laptop as it does not respond to any inputs.
-
-I also tried compiling the drivers as modules, when I tried to modprobe
-snd-nm256, the kernel hard freezes without any warning message.
-
-I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
-like 2.6.10.
-
-I have not tried alsa 1.0.7 driver.
-
-Please let me know if you need more diagnostic information to fix this
-problem.
+After 10-20 minutes listening music with xmms or beep-media-player I hear
+distorted sound. Appear noise.
+This problem is appear when enabled dmix plugin through configuration file
+~/.asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- vaxen - 03-10-05 19:57 
+ warly - 02-28-05 15:26 
 ----------------------------------------------------------------------
-Tested on 2.6.11 final. kernel hardlocks.
+I have a similar problem using alsa (1.0.8) with xmms (1.2.10) and
+xmms-alsa.
+
+The files are ogg vorbis, and the problem does not appear if I use ogg123
+-d alsa09
 
 ----------------------------------------------------------------------
- tiwai - 03-11-05 12:15 
+ tvignaud - 03-11-05 13:06 
 ----------------------------------------------------------------------
-Don't forget to add reset_workaround=1 option.  Also, load the driver
-before X starts.  If X was already running, reboot once.
+does any alsa developer has a clue about what's wrong in bmp/xmms alsa
+patch (which was written by takashi :-))?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-16-05 20:39 vaxen          New Issue                                    
-02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
-02-16-05 21:36 vaxen          Note Added: 0003626                          
-02-16-05 21:38 vaxen          Note Edited: 0003626                         
-02-16-05 21:56 vaxen          Note Edited: 0003626                         
-02-17-05 18:31 tiwai          Note Added: 0003632                          
-02-17-05 20:44 vaxen          Note Added: 0003638                          
-02-17-05 20:45 vaxen          Note Edited: 0003638                         
-02-17-05 21:28 vaxen          Note Added: 0003641                          
-02-17-05 22:40 vaxen          Note Added: 0003644                          
-02-24-05 03:55 vaxen          Note Added: 0003717                          
-02-24-05 04:01 vaxen          Note Added: 0003718                          
-02-24-05 22:04 tiwai          Note Added: 0003727                          
-02-25-05 16:29 vaxen          Note Added: 0003735                          
-03-10-05 12:50 interfaSys     Note Added: 0003849                          
-03-10-05 14:38 tiwai          Note Added: 0003852                          
-03-10-05 14:38 tiwai          File Added: nm256-test.diff                    
-03-10-05 18:56 vaxen          Note Added: 0003870                          
-03-10-05 19:57 vaxen          Note Added: 0003871                          
-03-11-05 12:15 tiwai          Note Added: 0003886                          
+02-03-05 12:25 yure           New Issue                                    
+02-04-05 10:39 yure           Note Added: 0003497                          
+02-04-05 10:39 yure           Issue Monitored: yure                        
+02-04-05 14:53 tiwai          Note Added: 0003506                          
+02-04-05 15:30 yure           Note Added: 0003508                          
+02-04-05 15:36 yure           Note Added: 0003509                          
+02-23-05 13:35 yure           Note Added: 0003711                          
+02-23-05 19:23 tiwai          Note Added: 0003713                          
+02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
+
+02-23-05 19:24 tiwai          Note Added: 0003714                          
+02-23-05 19:33 tiwai          Note Added: 0003715                          
+02-24-05 22:09 tiwai          Note Added: 0003729                          
+02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
+       
+02-25-05 10:36 yure           Note Added: 0003732                          
+02-28-05 15:00 tvignaud       Note Added: 0003744                          
+02-28-05 15:22 yure           Note Added: 0003745                          
+02-28-05 15:26 warly          Note Added: 0003746                          
+03-11-05 13:06 tvignaud       Note Added: 0003887                          
 ======================================================================
 
 
