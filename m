@@ -1,12 +1,12 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: ALSA Soundcard Matrix
-Date: Mon, 09 Jun 2003 12:31:39 +0900
+From: p z oooo <pzad@pobox.sk>
+Subject: SB Live - hwdep
+Date: Mon, 9 Jun 2003 08:34:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EE3FF9B.7030704@boosthardware.com>
-References: <20030601195501.2080ca60.levinfritz@mediales.net>
+Message-ID: <200306090634.IAA13865@www1.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,43 +16,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Levin Fritz <levinfritz@mediales.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Levin Fritz wrote:
-> Hi,
-> what's the policy for adding new soundcards to the ALSA Soundcard Matrix?
-> I recently bought a "Terratec Aureon 5.1 Fun" soundcard and it works fine
-> with ALSA. So if you guys add soundcards based on user's emails, here's
-> one ;-)
-> 
-> Here's the relevant data:
-> Vendor:  Terratec
-> Product: Aureon 5.1 Fun
-> Chipset: CMI8738
-> Notes:   [Tio]
-> I have only tested the line out, headphone and toslink (optical) out so
-> far, though.
-> 
-> 
+Hi,
 
-Thanks for the report. Now added.
+I am working on SB Live dsp patch loader an found, that driver will=20
+segfault when I try to delete control in function
+snd_emu10k1_del_controls in emufx.c on line
+list_del(&ctl->list);=20
+this is because control is removed from list in function before
+snd_emu10k1_ctl_private_free in emufx.c
+
+Peter Zubaj
 
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
-
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislusenstva=0APAL=
+M Zire v cenach uz od 4.950,- Sk bez DPH=0ANavstivte nas na adrese http://w=
+ww.somi.sk/akcie.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
 
 
 -------------------------------------------------------
