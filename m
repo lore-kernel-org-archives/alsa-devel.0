@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: alsa-driver-0.9.8, jack, cmipci
-Date: Tue, 04 Nov 2003 12:10:23 -0500
+From: Justin Cormack <justin@street-vision.com>
+Subject: Re: hdsp driver and tools update
+Date: 04 Nov 2003 17:25:47 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311041710.hA4HANCG003420@oud.linuxaudiosystems.com>
-References: <s5hfzh4t8p8.wl@alsa2.suse.de>
+Message-ID: <1067966747.29960.75.camel@lotte.street-vision.com>
+References: <1073.217.184.8.109.1067685592.squirrel@www.undata.org>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 04 Nov 2003 17:11:31 +0100."
-             <s5hfzh4t8p8.wl@alsa2.suse.de>
+In-Reply-To: <1073.217.184.8.109.1067685592.squirrel@www.undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,35 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jonathan Kraut <krautj@earthlink.net>, alsa-devel@lists.sourceforge.net
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: alsa list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->At Mon, 03 Nov 2003 14:41:51 -0500,
->Jonathan Kraut wrote:
->> 
->> 
->> Hello again.  Further research:
->> 
->> I tried an earlier version of jack (0.71.0) with alsa-driver-0.9.8, accessin
->g hw:0,2 via my .asoundrc. I get the same result as before, but in addition th
->is particular version of jackd tells me:
->> 
->> ...
->> Sorry. The PCM device "cmipci"doesn't support the same sample format for cap
->ture and playback.We cannot use this PCM device.
->> ...
->> 
->> and jackd quits.
->
->this is likely because the newer version of cmipci driver supports
->24bit SPDIF output, but no input yet...
+On Sat, 2003-11-01 at 11:19, Thomas Charbonnel wrote:
+> Hi,
+> 
+> I apologize for having been so silent the last few weeks, I was in the
+> process of moving from Lyon, France to Berlin, Germany. This is now done,
+> and I resumed my work on the hdsp driver and tools.
+> Latest patches and tools can be found here :
+> http://www.undata.org/~thomas/
+> Mojor changes include support for hdsp 9632 cards and bugfixes for hdsp
+> 9652 cards.
+> Hdspconf and hdspmixer now support 96xx cards, though this needs testing
+> as I do not have the hardware.
 
-a reminder that for some time now, JACK supports the -P option which
-limits it to playback only. useful if that's all you want and/or all
-your hardware can do.
+Thanks very much, this fixes hdsp9652 matrix mixer and it appears to be
+working perfectly. hdspmixer appears to work on a quick test with 9652.
+Excellent work.
 
---p
+(tested with todays cvs alsa).
+
+thanks very much
+
+Justin Cormack
+
+
 
 
 -------------------------------------------------------
