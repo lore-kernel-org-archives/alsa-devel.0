@@ -1,18 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [ALSA - driver 0000502]: Mp3+ crackles when on
-	alsa, not when on oss emulation
-Date: Tue, 14 Sep 2004 20:00:27 -0400
+From: Tom Theroux <faith@seznam.cz>
+Subject: UK email list
+Date: Wed, 15 Sep 2004 00:41:59 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1095206427.2406.22.camel@krustophenia.net>
-References: <20040914224423.247494904E@server.perex-int.cz>
+Message-ID: <e88501c49abc$c0f8f07f$0ac8018c@seznam.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+    type="multipart/alternative";
+    boundary="----=_NextPart_000_0000_42218030.759129CC"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 104862D8
-	for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2004 02:00:24 +0200 (MEST)
-In-Reply-To: <20040914224423.247494904E@server.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,34 +16,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: bugtrack@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2004-09-14 at 18:44, bugtrack@alsa-project.org wrote:
-> this shell-cut-and-paste wil ilustrate my problem:
-> 
-> At first when I plug my mp3+ in, it crackles. It is not scraping or
-> static, it is a distinct pop in the sound about 2-3 times/sec not
-> rythmical. The card shows up in alsamixer -c1, and everything about
-> controling it works. Then, without plugging my card in or out, I do this:
-> 
-> [root@localhost hhg]# rmmod snd_usb_audio
-> [root@localhost hhg]# modprobe audio
-> [root@localhost hhg]# alsamixer -c1
->  
-> alsamixer: function snd_ctl_open failed for hw:1: No such file or
-> directory
-> 
-> I also have a boult-in intel-8x0-card working fine with alsa. But now the
-> mp3+card works great. Using oss-emulated mixer the card can also be
-> controled. I have to use oss-output, though, as the card no longer is
-> registrered by alsa.
+This is a multi-part message in MIME format.
 
-Sounds like you are missing the ALSA device nodes in /dev.  Did you run
-the snddevices script?
+------=_NextPart_000_0000_42218030.759129CC
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_001_0001_AE6ED8F9.1D8002A7"
 
-Lee
+
+------=_NextPart_001_0001_AE6ED8F9.1D8002A7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
+
+Are you targeting UK consumers? Do you want the British to buy your product or visit your website?
+
+Our company has carefully collected an email database, which allows to advertise your product or 
+service to the audience of 2.7 million UK citizens! This is the most comprehensive UK email 
+database available on the Internet.
+
+All addresses on the database belong to English consumers, are verified and as a proof of their 
+geographical origin end with '.co.uk',which stands for the United Kingdom. 
+
+The database will be delivered to you in a ZIP archive of a 67MB TXT file. 
+The addresses were collected in the period of July-August, 2004.
+
+The price we are asking is $270. To place an order please proceed to:
+http://www.pguphost.ws/uk.php
+
+Please notice that we maintain similar consumer lists for almost all EU countries, Canada, Australia,
+and some other countries.
+
+Sincerely,
+Tom Theroux
+
+
+****************************************************
+To be removed, click: http://www.pguphost.ws/out.htm
+****************************************************
+
+
+------=_NextPart_001_0001_AE6ED8F9.1D8002A7
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
+
+<body>
+<html>
+<CENTER>
+<TABLE cellSpacing=0 cellPadding=0 width=600 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD>
+      <P>
+Are you targeting UK consumers? Do you want the British to buy your product or visit your website?<br><br>
+
+Our company has carefully collected an email database, which allows to advertise your product or service to the audience of 2.7 million UK citizens! This is the most comprehensive UK email database available on the Internet.<br><br>
+
+All addresses on the database belong to English consumers, are verified and as a proof of their geographical origin end with '.co.uk',which stands for the United Kingdom. <br><br>
+
+The database will be delivered to you in a ZIP archive of a 67MB TXT file. <br>
+The addresses were collected in the period of July-August, 2004.<br><br>
+
+The price we are asking is $270. To place an order please proceed to:<br>
+<a href="http://www.pguphost.ws/uk.php">http://www.pguphost.ws/uk.php</a><br><br>
+
+Please notice that we maintain similar consumer lists for almost all EU countries, Canada, Australia, and some other countries.<br><br>
+
+Sincerely,<br>
+Tom Theroux
+<br><br><br>
+
+****************************************************<br>
+To be removed, click: <a href="http://www.pguphost.ws/out.htm">http://www.pguphost.ws/out.htm</a><br>
+****************************************************
+
+
+</P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
+
+
+------=_NextPart_001_0001_AE6ED8F9.1D8002A7--
+
+
+
+------=_NextPart_000_0000_42218030.759129CC--
 
 
 
