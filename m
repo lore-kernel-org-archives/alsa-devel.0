@@ -1,16 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Scatter Gather DMA
-Date: Wed, 5 Mar 2003 16:53:42 +0100 (CET)
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: Re: hdsp patch, version II
+Date: 05 Mar 2003 17:13:03 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303051652210.1014-100000@pnote.perex-int.cz>
-References: <200303051209.AA33751384@embedded.cl>
+Message-ID: <1046880783.1421.8.camel@satellite.undata.org>
+References: <E18qa33-0005gb-00@sc8-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA09572
-	for <alsa-devel@alsa-project.org>; Wed, 5 Mar 2003 16:53:42 +0100
-In-Reply-To: <200303051209.AA33751384@embedded.cl>
+In-Reply-To: <E18qa33-0005gb-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,44 +17,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mjander <mjander@embedded.cl>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 5 Mar 2003, mjander wrote:
+On Wed, 2003-03-05 at 15:41, Paul Davis wrote:
 
-> Hi,
-> 
-> Another question... :)
-> 
-> The Aureal Vortex has Scatter Gather DMA's for each audio channel.
-> But these SG DMA
-> support only max 4 pages. Each page can have a programable size of
-> upto 4 KB.
-> I was studying the ALSA SG scheme and it doesnt seme to fit into
-> the aureal vortex
-> SG buffer scheme, because ALSA, as far as i understood, only
-> allows pages of the kernel PAGE_SIZE size, and allocates as many
-> pages (without cound limit ?) until the buffer size is  reached.
-> But the PAGE_SIZE around 0x400 or 0x800, which is rather small.
-> 
-> On the Aureal vortex soundcard side i have 4 registers for page
-> base address, and some sort  of config regs to configure each page
-> size and the next page for each page. I just dont understand how
-> could i plug this two apparently incompatible things together.
-> 
-> Thank you very much.
+> i agree. i can't see why it doesn't, unless the LONG_WAIT delays us
+> for so long that it looks like a freeze ...
 
-I don't see a problem here. The PAGE_SIZE is 4kB for i386. Simply
-follow the code in the via82xx driver and limit the maximum count of 
-periods to 4.
+It doesn't, as after hitting the magic sysrq sigterm sequence I can see
+the hdsp_fifo_wait's snd_printks appear on a regular basis (looks like
+120 bpm). This is not surprising as HDSP_LONG_WAIT is supposed to last
+500ms. In fact the timeout should occur  24413/2/60 = circa 186 minutes
+later. The code is :
 
-						Jaroslav
+for (i = 0; i < 24413; ++i) {
+       hdsp_write(hdsp, HDSP_fifoData, firmware_ptr[i]);
+       if (hdsp_fifo_wait (hdsp, 127, HDSP_LONG_WAIT)) {
+               snd_printk ("timeout during firmware loading\n");
+               return -EIO;
+       }
+}
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+If hdsp_fifo_wait fails and returns -1 we go through the whole loop,
+thus effectively waiting almost 3 hours.
+
+Thomas
+
+
 
 
 
