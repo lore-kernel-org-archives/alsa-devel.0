@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
-Date: Fri, 7 Jan 2005 18:28:08 +0100
-Message-ID: <04734190c6b343c89161b557a7bf12af@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000617]: Front / rear out of sync
+Date: Fri, 7 Jan 2005 17:47:00 +0100
+Message-ID: <4fbaf4ad5be6d0cc921a351b8c0afef2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B976024F
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 18:28:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87B7F32A
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 17:47:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,89 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=359> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617> 
 ======================================================================
-Reported By:                davidsrsb
-Assigned To:                
+Reported By:                henkie_
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   359
-Category:                   PCI - intel8x0
+Issue ID:                   617
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10.0
+Status:                     closed
+Distribution:               SuSE 9.0
 Kernel Version:             2.4.26
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-01-2004 16:26 CEST
-Last Modified:              01-07-2005 18:28 CET
+Date Submitted:             10-30-2004 18:20 CEST
+Last Modified:              01-07-2005 17:46 CET
 ======================================================================
-Summary:                    Alsa always uses card0 and does not use card1, even
-when card0 is a modem
+Summary:                    Front / rear out of sync
 Description: 
-PC is laptop with AC97 DAA (Si3036 modem) detected as card0 and sound is
-Intel 8x0 as card1. Alsamixer has to be run with -c1 option to avoid "no
-mixer elems" error (like bug 338)
-KDE has no sound ( same as bug 353)
+When using the config specified below the sound gets out of sync (front and
+rear sound) in xmms. The higher cpu-usage is the faster the sound goes
+out-of-sync. When using mplayer in combo with this config, cpu usage goes
+up, and the image of the movie halts but sound keeps playing. Without this
+config the cpu-usage is around 20%. Tested on P4 2.8GHz.  
+In alsa <1.0  the front and rear sound was duplicated, is it possible to
+reimplement that behaviour again?
+
+pcm.ch40dup {
+        type route
+        slave.pcm surround40
+        slave.channels 4
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+}
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 18:10 
+ darkbrain - 12-07-04 15:38 
 ----------------------------------------------------------------------
-The ID strings are different, so alsactl should be OK.
-
-I don't think the exclude option is a good idea, too.
-
-The problem is that the current "numbering" concept doesn't match with the
-idea of hotplug.  We need either stop using numbers, or introduce the
-mangling of physical and logical device numbers.
-
-BTW, the problem of intel8x0 and intel8x0m conflict is a differet thing.
-It's a hardware confliction, indeed.  Please don't follow about it in this
-thread.
+ok perfect!
 
 ----------------------------------------------------------------------
- jdthood - 01-07-05 18:28 
+ tiwai - 12-07-04 15:42 
 ----------------------------------------------------------------------
-Please read https://bugzilla.ubuntu.com/show_bug.cgi?id=1293 .
+Ok closing now.  Thanks for confirmation.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-04 16:26 davidsrsb      New Issue                                    
-07-01-04 16:26 davidsrsb      Distribution              => Slackware 10.0  
-07-01-04 16:26 davidsrsb      Kernel Version            => 2.4.26          
-07-02-04 14:34 pzad           Note Added: 0001374                          
-01-05-05 23:34 jdthood        Note Added: 0003090                          
-01-06-05 17:48 phormix        Note Added: 0003092                          
-01-07-05 18:10 tiwai          Note Added: 0003108                          
-01-07-05 18:28 jdthood        Note Added: 0003112                          
+10-30-04 18:20 henkie_        New Issue                                    
+10-30-04 18:20 henkie_        Distribution              => SuSE 9.0        
+10-30-04 18:20 henkie_        Kernel Version            => 2.4.26          
+11-10-04 12:43 tiwai          Note Added: 0002368                          
+11-10-04 22:37 henkie_        Note Added: 0002379                          
+11-29-04 15:13 darkbrain      Note Added: 0002636                          
+12-02-04 00:53 darkbrain      Note Added: 0002672                          
+12-02-04 02:02 henkie_        Note Added: 0002673                          
+12-02-04 12:17 tiwai          Note Added: 0002678                          
+12-02-04 14:32 lemoncurry     Note Added: 0002680                          
+12-02-04 14:55 tiwai          Note Added: 0002681                          
+12-02-04 14:55 tiwai          File Added: cs46xx-front-dup.diff                 
+  
+12-02-04 14:56 tiwai          File Added: cs46xx-front-dup-config.diff          
+         
+12-02-04 15:53 lemoncurry     Note Added: 0002685                          
+12-02-04 19:18 tiwai          Note Added: 0002688                          
+12-04-04 15:08 darkbrain      Note Added: 0002716                          
+12-06-04 20:53 tiwai          Note Added: 0002733                          
+12-06-04 20:54 tiwai          File Added: cs46xx-front-dup-config2.diff         
+          
+12-07-04 15:38 darkbrain      Note Added: 0002748                          
+12-07-04 15:42 tiwai          Status                   new => resolved     
+12-07-04 15:42 tiwai          Resolution               open => fixed       
+12-07-04 15:42 tiwai          Assigned To               => tiwai           
+12-07-04 15:42 tiwai          Note Added: 0002749                          
+01-07-05 17:46 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
