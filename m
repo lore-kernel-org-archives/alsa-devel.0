@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000602]: I do not compiled ALSA-DRIVER-1.0.6a
-Date: Tue, 9 Nov 2004 19:20:51 +0100
-Message-ID: <b37d89b37256ea62be2f4e93f865a400@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000606]: Sound loops around every 1/2 second or so,
+Date: Tue, 9 Nov 2004 19:20:17 +0100
+Message-ID: <9cb7687dcc3e75666531a95f75fd47b8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 50EBF2B6
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 19:20:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C56492B6
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 19:20:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,41 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=602> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=606> 
 ======================================================================
-Reported By:                ma13860
-Assigned To:                perex
+Reported By:                deggy
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   602
-Category:                   0_compilation problem_!!!
+Issue ID:                   606
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Arch Linux
+Kernel Version:             2.4.9
 ======================================================================
-Date Submitted:             10-25-2004 17:48 CEST
+Date Submitted:             10-26-2004 18:38 CEST
 Last Modified:              11-09-2004 19:20 CET
 ======================================================================
-Summary:                    I do not compiled ALSA-DRIVER-1.0.6a
+Summary:                    Sound loops around every 1/2 second or so,
 Description: 
-When i realese the make the conpiler have 1 error,
-when compiled the program VXP440.C, because no found the filed VXPOCKET.C
-in the directory /ALSA-DRIVER-1.6a/PCMCIA/VX.
+When I try to play a sound alsa loops the audio every 1/2 second or so.
+Sounds a bit like a sampler looping the same 1/2 second again and again
+and again.
 ======================================================================
 
 ----------------------------------------------------------------------
  tiwai - 11-09-04 19:20 
 ----------------------------------------------------------------------
-Try 1.0.7rc2.  It should have been fixed.
+It's likely an interrupt routing problem.
+This problem is often solved by turning off ACPI on the boot.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-25-04 17:48 ma13860        New Issue                                    
-11-09-04 19:20 tiwai          Note Added: 0002344                          
+10-26-04 18:38 deggy          New Issue                                    
+10-26-04 18:38 deggy          Distribution              => Arch Linux      
+10-26-04 18:38 deggy          Kernel Version            => 2.4.9           
+10-27-04 00:08 chomwitt       Issue Monitored: chomwitt                    
+11-09-04 19:20 tiwai          Note Added: 0002343                          
 ======================================================================
 
 
