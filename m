@@ -1,10 +1,13 @@
 From: "eyou321" <jack@email.com>
 Subject: ADV: Harvest lots of Email addresses quickly
-Date: Wed, 3 Apr 2002 23:40:25 +0800
+Date: Wed, 3 Apr 2002 23:40:36 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E16smy2-0001is-00@mail2.vasoftware.com>
+Message-ID: <200204031546.RAA28002@alsa.alsa-project.org>
 Content-Type: text/html;
 	charset="us-ascii"
+Received: from ------ ([61.174.203.161])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA28002
+	for <alsa-devel@alsa-project.org>; Wed, 3 Apr 2002 17:46:44 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
