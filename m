@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000580]: usb midi devices invisible to aconnect
-Date: Wed, 13 Oct 2004 07:39:58 +0200 (CEST)
+Subject: [ALSA - WWW server 0000330]: Is Audigy 2 supported by ALSA?
+Date: Wed, 13 Oct 2004 08:12:45 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041013053958.9558D1B00B@server.perex-int.cz>
+Message-ID: <20041013061245.484041B00B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D8426266
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 07:39:58 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8DEFB2B9
+	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 08:12:45 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,39 +20,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000580
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000330
 ======================================================================
-Reported By:                carmen
-Assigned To:                Clemens Ladisch
+Reported By:                digthemdeep
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     580
-Category:                   USB - usb-audio
+Project:                    ALSA - WWW server
+Bug ID:                     330
+Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               debian
-Kernel Version:              2.6.8.1 x86_64
+Status:                     resolved
+Resolution:                 fixed
 ======================================================================
-Date Submitted:             10-13-2004 07:39 CEST
-Last Modified:              10-13-2004 07:39 CEST
+Date Submitted:             06-10-2004 01:40 CEST
+Last Modified:              10-13-2004 08:12 CEST
 ======================================================================
-Summary:                    usb midi devices invisible to aconnect
+Summary:                    Is Audigy 2 supported by ALSA?
 Description: 
-midi devices such as Fastlane/Midisport USB, pass simple connection tests
-w/ amidi, and create output on /dev/midi01, etc. but they are unpatchable
-as they do not appear in aconnect...
+Audigy 2 is not listed in the soundcard matrix, however it is claimed by
+opensource.creative.com that ALSA supports these cards (almost all of
+them). (Also I find it hard to believe that Audigy 2 is not in the
+matrix... perhaps the matrix is just out of date?)
+
+I wonder if there might also be some Terratec (like Phase 88) products not
+listed which are, in fact, supported. Is E-Mu entirely unsupported? It's
+too bad, I've heard good things about E-Mu.
 ======================================================================
+
+----------------------------------------------------------------------
+ perex - 10-13-2004 08:12 CEST 
+----------------------------------------------------------------------
+Yes, but the support is limited (no 96kHz) added to matrix.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-13-04 07:39 carmen         New Bug                                      
-10-13-04 07:39 carmen         Distribution              => debian          
-10-13-04 07:39 carmen         Kernel Version            =>  2.6.8.1 x86_64 
+06-10-04 01:40 digthemdeep    New Bug                                      
+06-10-04 02:21 digthemdeep    Bug Monitored: digthemdeep                    
+10-13-04 08:12 perex          Bugnote Added: 0002111                       
+10-13-04 08:12 perex          Assigned To               => perex           
+10-13-04 08:12 perex          Resolution               open => fixed       
+10-13-04 08:12 perex          Status                   new => resolved     
 ======================================================================
 
 
