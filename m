@@ -1,16 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] emu10k1: add interval timer support
-Date: Wed, 03 Nov 2004 18:08:57 -0500
-Message-ID: <1099523338.1617.41.camel@krustophenia.net>
-References: <1095405566.19045.35.camel@krustophenia.net>
-	 <Pine.LNX.4.58.0409171052300.1774@pnote.perex-int.cz>
-	 <1099511035.1617.32.camel@krustophenia.net>
-	 <1099517082.1617.38.camel@krustophenia.net>
+From: "Alexander E. Patrakov" <patrakov@ums.usu.ru>
+Subject: Question on ALSA versions
+Date: Thu, 04 Nov 2004 11:42:36 +0500
+Message-ID: <cmciu9$hsn$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7Bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1099517082.1617.38.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,34 +15,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, tiwai@suse.de
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2004-11-03 at 16:24 -0500, Lee Revell wrote:
-> On Wed, 2004-11-03 at 14:43 -0500, Lee Revell wrote:
-> > OK I converted this code to use the ALSA timer API.
-> 
+Hello,
 
-I left this out:
+I have the following question. Is it OK to have mismatched versions of ALSA
+drivers (e.g. 1.0.4, from linux-2.6.8.1) and libs (1.0.6)? This _seems_ to
+work, and I see the code to support various versions of the kernel PCM
+protocol in the library, but I want to see official words from developers.
 
-Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
+Also it would be nice to see the exact range of driver and kernel versions
+formally supported by ALSA-lib 1.0.6.
 
-and the patch is missing a chunk:
-
---- alsa-orig/alsa-kernel/pci/emu10k1/Makefile	2003-02-09 13:41:56.000000000 -0500
-+++ alsa/alsa-kernel/pci/emu10k1/Makefile	2004-11-03 18:07:53.000000000 -0500
-@@ -5,7 +5,7 @@
- 
- snd-emu10k1-objs := emu10k1.o emu10k1_main.o \
- 		    irq.o memory.o voice.o emumpu401.o emupcm.o io.o \
--		    emuproc.o emumixer.o emufx.o
-+		    emuproc.o emumixer.o emufx.o timer.o
- snd-emu10k1-synth-objs := emu10k1_synth.o emu10k1_callback.o emu10k1_patch.o
- 
- #
-
-
+-- 
+Alexander E. Patrakov
 
 
 
