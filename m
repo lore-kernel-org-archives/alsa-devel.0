@@ -1,14 +1,13 @@
-From: John Covici <covici@ccs.covici.com>
-Subject: Re: removing sndtimer causes unable to handle kernel
- paging ...
-Date: Fri, 26 Apr 2002 14:30:41 -0400 (EDT)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Example app source code or docs needed to help me do mmap.
+Date: Sat, 27 Apr 2002 01:29:58 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.40.0204261416040.9256-100000@ccs.covici.com>
-References: <s5hwuuujr8w.wl@alsa2.suse.de>
+Message-ID: <3CC9F106.8020806@superbug.demon.co.uk>
+Reply-To: James@superbug.demon.co.uk
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hwuuujr8w.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,43 +16,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I don't have another sound card, but during the configuration step,
-it said rtc callback support in kernel yes which it never does in the
-2.4 kernels.  I also have this option on in the 2.5 configuration,
-could this contribute to the problem?
+Can someone point me to an example alsa app doing mmap ?
 
+I want to convert my application from plain pcm_write  to mmap mode.
+I would also like to understand how you detect if a sound card can do 
+mmap or not.
 
-On Fri, 26 Apr 2002, Takashi Iwai wrote:
+I help develope a multimedia application, and 6 audio channels (5.1 
+sound) starts to require mmap mode on very slow PCs.
 
-> Hi John,
->
-> At Thu, 25 Apr 2002 13:03:30 -0400,
-> John Covici wrote:
-> >
-> > Hi.  I was trying to usekernel 2.5.x (7-9) and alsa either the one in
-> > the kernel tree or beta12, and whenever snd-timer module is to be
-> > removed, I get unable to handle kernel paging exception ... and the
-> > system crashes.
-> >
-> > I am using a via8233 sound card.
-> >
-> > Any assistance would be appreciated.
->
-> via8233 driver itself has no special timer, i.e. the only timer is
-> system timer.  so i'm wondering why..
->
-> could you check another soundcard if you have one?
-> it'd be nice whether you can find out whether the problem lies on
-> via8233 specific or not.
->
->
-> Takashi
->
-
--- 
-         John Covici
-         covici@ccs.covici.com
+Cheers
+James
