@@ -1,15 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] Fix PCI ID define for ICH6 in intel8x0
-Date: Mon, 31 Jan 2005 11:03:05 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0501311102400.2122@pnote.perex-int.cz>
-References: <20050129180534.145ee817.khali@linux-fr.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000867]: There's no Mic Bias in mixer settings
+Date: Mon, 31 Jan 2005 11:59:37 +0100
+Message-ID: <524e6b059b6a95bd75da650c05658b79@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EFD6420E
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 11:04:58 +0100 (MET)
-In-Reply-To: <20050129180534.145ee817.khali@linux-fr.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC51E158
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 11:59:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,23 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jean Delvare <khali@linux-fr.org>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 29 Jan 2005, Jean Delvare wrote:
 
-> An (untested) patch follows, which fixes the problem as far as I can
-> see.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=867> 
+======================================================================
+Reported By:                coder111
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   867
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-31-2005 11:59 CET
+Last Modified:              01-31-2005 11:59 CET
+======================================================================
+Summary:                    There's no Mic Bias in mixer settings
+Description: 
+Hi,
 
-Applied. Thanks.
+I just wanted to report that for some reason on my Creative SB PCI Compact
+there is no mic bias settings, which means I cannot get my capacitor based
+mic to work.
+I tried listing alsactl settings, and mic bias is not there, i don't think
+driver recognises that this card has a mic bias, and it should.
 
-						Jaroslav
+If you need additional testing or info, feel free to mail me.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Teofilis
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-31-05 11:59 coder111       New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
