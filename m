@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000615]: AC'97 broken on SB Live 24 bit
-Date: Mon, 6 Dec 2004 23:27:14 +0100
-Message-ID: <8a7a05794829550eac964db1efa5e244@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000498]: audigyls plays sound 1.5 times fast
+Date: Mon, 6 Dec 2004 23:28:23 +0100
+Message-ID: <afc05e7cb8022b5b5e0c7d8605d29e53@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B113E397
-	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 23:27:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C5B43A0
+	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 23:28:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,45 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=615> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=498> 
 ======================================================================
-Reported By:                MRB
+Reported By:                andii
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   615
+Issue ID:                   498
 Category:                   PCI - audigyls
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.7-gentoo-r1
+Distribution:               Gentoo 2004.2
+Kernel Version:             linux-2.6.7-gentoo-r11
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-29-2004 12:34 CEST
-Last Modified:              12-06-2004 23:27 CET
+Date Submitted:             09-12-2004 06:23 CEST
+Last Modified:              12-06-2004 23:28 CET
 ======================================================================
-Summary:                    AC'97 broken on SB Live 24 bit
+Summary:                    audigyls plays sound 1.5 times fast
 Description: 
-The Creative Sound Blaster 24bit is using an Audigy chip according to its
-PCI ID. The driver audigyls doesn't work because AC'97 does not respond
-and AC'97 0 access is not valid. When you remove the error checking the
-audigyls module can be loaded but there's no sound output. See attached
-file for details. 
+audigyls plays sound 1.5 times faster then it should.
+
+Example:
+andy@gordon andy $ time plaympeg 01-radio_moscow.mp3
+01-radio_moscow.mp3: MPEG audio stream
+        Audio MPEG-1 Layer 3 128kbit/s 44100Hz stereo
+        Size: 404165
+        Total time: 25.260312
+
+real    0m17.163s
+user    0m0.374s
+sys     0m0.015s
+
+1st thought it might just be mp3s but also wav files and games,
+everything!
+
+Note: I downloaded and installed alsa-lib, alsa-drivers and alsa-utils by
+hand, I did not use gentoo's emerge.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 10-31-04 16:24 
+ jcdutton - 09-15-04 16:18 
 ----------------------------------------------------------------------
-This looks like I will actually have to play with the actual card.
-As you offer to donate the value of a card, I will agree to try to get it
-working.
-Please email me direct, and we can arrange things off list.
+This seems rather strange, because I set the AudigyLS to only do 48khz or
+96khz in hardware, so for 44.1khz, alsa-lib should be doing sample rate
+conversions.
+The AudigyLS can do 44.1khz in hardware, but when I tried it, it sounded
+horrible, so I disabled the hardware 44.1khz mode.
+We don't seem to have received any other reports of sample rate conversion
+problems for other cards that can only do 48khz.
 
 ----------------------------------------------------------------------
- jcdutton - 12-06-04 23:27 
+ jcdutton - 12-06-04 23:28 
 ----------------------------------------------------------------------
 I am closing this bug. The reason for this is that the audigyls driver has
 changed a lot recently, and I would prefer it if you tried again with the
@@ -73,17 +89,15 @@ If the bug is still present, please re-raise the bug.
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-29-04 12:34 MRB            New Issue                                    
-10-29-04 12:34 MRB            File Added: details.txt                      
-10-29-04 12:34 MRB            Distribution              => Gentoo Linux    
-10-29-04 12:34 MRB            Kernel Version            => 2.6.7-gentoo-r1 
-10-30-04 18:08 jcdutton       Note Added: 0002289                          
-10-31-04 00:30 MRB            Note Added: 0002290                          
-10-31-04 00:30 MRB            File Added: details2.txt                     
-10-31-04 16:24 jcdutton       Note Added: 0002294                          
-11-13-04 02:25 plasticzombie  Issue Monitored: plasticzombie                    
-12-06-04 23:27 jcdutton       Status                   assigned => closed  
-12-06-04 23:27 jcdutton       Note Added: 0002739                          
+09-12-04 06:23 andii          New Issue                                    
+09-12-04 06:23 andii          Distribution              => Gentoo 2004.2   
+09-12-04 06:23 andii          Kernel Version            =>
+linux-2.6.7-gentoo-r11
+09-13-04 15:40 tiwai          Note Added: 0001746                          
+09-15-04 14:31 andii          Note Added: 0001761                          
+09-15-04 16:18 jcdutton       Note Added: 0001762                          
+12-06-04 23:28 jcdutton       Status                   assigned => closed  
+12-06-04 23:28 jcdutton       Note Added: 0002740                          
 ======================================================================
 
 
