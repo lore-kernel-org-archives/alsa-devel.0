@@ -1,9 +1,12 @@
-From: <jacqueslen@sympatico.ca>
-Subject: setting ppq problems
-Date: Sun, 29 Feb 2004 18:06:05 -0500
+From: Frank Barknecht <fbar@footils.org>
+Subject: Soundcard matrix: removing some M-Audio USB devices
+Date: Mon, 1 Mar 2004 00:26:21 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040229230605.KRLK21160.tomts22-srv.bellnexxia.net@sympatico.ca>
+Message-ID: <20040229232621.GB10518@fliwatut.scifi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,18 +18,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I'm trying to set my ppq on my queue, so I do this:
+Hallo,
 
-    snd_seq_queue_tempo_t *qt;
-    snd_seq_queue_tempo_alloca(&qt);
-    snd_seq_queue_tempo_set_ppq(qt, ppq);
-    return snd_seq_set_queue_tempo(seq, id, qt);
+I'd like to propose changing the status of three M-Audio USB
+devices in the soundcard matrix to "unsupported on 2.6". The Quattro,
+Audiophile USB and reportedly the Duo all don't comply to the USB
+specification, as has been discussed here and on linux-usb-dev in the
+recent past.
 
-where id is my queue id and ppq the new ppq. This is quite similar to the way I set my tempo(which works). However, when I do it, the ppq remains unchanged and that returns -22, what does that mean? 
-Also, where can I found out what the members of snd_seq_queue_tempo_t are, I can't seem to find it anywhere! 
-Thanks!
---Jacques
+Thus they are not useable on 2.6 kernels anymore and should be removed
+from the list of supported cards - or at least should have a red
+WARNING sticker applied. It would be - and already is - really anoying
+to someone who buys such a device and later finds out, that it is not
+supported, although the website say differently.
+
+ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
