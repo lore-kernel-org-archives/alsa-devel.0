@@ -1,16 +1,13 @@
-From: Weijia Yang <gte733z@prism.gatech.edu>
-Subject: Re: [PATCH] cs46xx DAC volume's mechanism rewrite, minor bugfixes
-Date: Sun, 10 Nov 2002 14:56:35 -0500
+From: tomasz motylewski <T.Motylewski@bfad.de>
+Subject: Re: Oops in cs4281_suspend
+Date: Mon, 11 Nov 2002 17:19:14 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200211101455.51202.gte733z@prism.gatech.edu>
-References: <3DCEB5A4.4090600@cucumelo.org>
+Message-ID: <Pine.LNX.4.21.0211111716180.1287-100000@mailserver.intern.bfad.de>
+References: <20021111143136.GB6862@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DCEB5A4.4090600@cucumelo.org>
-Content-Disposition: inline
+In-Reply-To: <20021111143136.GB6862@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,38 +16,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benny Sjostrand <gorm@cucumelo.org>, alsa-devel@lists.sourceforge.net
+To: =?iso-8859-15?Q?Jos=E9?= Fonseca <j_r_fonseca@yahoo.co.uk>
+Cc: alsa-devel@lists.sourceforge.net, arip@bfad.de
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 10 November 2002 02:38 pm, Benny Sjostrand wrote:
-> Hi!
->
-> This patch changes the way the DAC volume are set on DSP SCB tasks. I
-> would like to know
-> if maybe this fixes the "bass"  problem that some users have experienced
-> with the cs46xx driver.
->
-> Still some more attempts to have AC3 through IEC958, but no success yet ...
->
-> Summary:
-> - DAC volume mechanism  rewrite (added cs46xx_dsp_set_dac_volume (...)
-> in dsp_spos.c)
-> - IEC958 input volume mechanism rewrite (added
-> cs46xx_dsp_set_iec958_volume (...) in dsp_spos.c)
-> - Enable IEC958 hw if not done in cs46xx_iec958_pre_open (...)
-> - Added "AC3 Mode Switch" in mixer, when enabled appropiate status
-> bit's (non-audio, profesional) are set in IEC958 stream and PCM channel
-> is locked to 48Khz
-> - Typo fix in constant name DSP_SDPIF... -> DSP_SPDIF...
-> - Some code cleanups
->
-> /Benny
+> options (also attached), it shows that the problem is in the line:
+> 
+> 	chip->suspend_regs[i] = snd_cs4281_peekBA0(chip, saved_regs[i]);
 
-Thanks for working on this issue Benny.  I tried out the code but the bass 
-issues still persists.  As before, unbalancing the left and right channels 
-brings the bass back.  Thanks
+Very good report :-)
 
-Weijia
+I think the following patch should solve this problem. But since that
+suspend/resume seems to not have been tested at all for that driver, may be
+some other things will show up.
+
+Index: alsa-kernel/pci/cs4281.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/cs4281.c,v
+retrieving revision 1.29
+diff -u -r1.29 cs4281.c
+--- alsa-kernel/pci/cs4281.c	21 Oct 2002 18:28:23 -0000	1.29
++++ alsa-kernel/pci/cs4281.c	11 Nov 2002 16:14:53 -0000
+@@ -2109,7 +2109,7 @@
+ 	snd_cs4281_pokeBA0(chip, BA0_HICR, BA0_HICR_CHGM);
+ 
+ 	/* remember the status registers */
+-	for (i = 0; number_of(saved_regs); i++)
++	for (i = 0; i < number_of(saved_regs); i++)
+ 		if (saved_regs[i])
+ 			chip->suspend_regs[i] = snd_cs4281_peekBA0(chip, saved_regs[i]);
+ 
+@@ -2153,7 +2153,7 @@
+ 	snd_cs4281_chip_init(chip, 0);
+ 
+ 	/* restore the status registers */
+-	for (i = 0; number_of(saved_regs); i++)
++	for (i = 0; i < number_of(saved_regs); i++)
+ 		if (saved_regs[i])
+ 			snd_cs4281_pokeBA0(chip, saved_regs[i], chip->suspend_regs[i]);
+ 
+
+
+Best regards,
+--
+Tomasz Motylewski
+BFAD GmbH & Co. KG
+
 
 
 -------------------------------------------------------
