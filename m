@@ -1,13 +1,10 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: lk-maintainers3.txt
-Date: Tue, 12 Feb 2002 08:46:54 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202120846230.510-100000@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA18185
-	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2002 08:49:02 +0100
-In-Reply-To: <200202120739.g1C7dZt06127@Port.imtp.ilyichevsk.odessa.ua>
+From: Juhana Sadeharju <kouhia@nic.funet.fi>
+Subject: Re: Updating www.alsa-project.org?
+Date: Tue, 12 Feb 2002 11:34:57 +0200
+Message-ID: <20020212093458Z37974-696+8597@nic.funet.fi>
+References: <E16aXbe-0001xY-00@usw-sf-list1.sourceforge.net>
+In-reply-to: <E16aXbe-0001xY-00@usw-sf-list1.sourceforge.net>
+	(alsa-devel-request@lists.sourceforge.net)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,32 +13,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Denis Vlasenko <vda@port.imtp.ilyichevsk.odessa.ua>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 12 Feb 2002, Denis Vlasenko wrote:
+Both www.gtk.org and www.gimp.org looks good to me. Please check
+them.
 
-> Hi,
->
-> I am planning to post a file appended below to lkml roughly once a week.
-> I have added these two entries:
->
-> ALSA development <alsa-devel@alsa-project.org> [12 feb 2002]
-> Jaroslav Kysela <perex@perex.cz> [12 feb 2002]
-> 	Advanced Linux Sound Architecture
-> 	ALSA patches are available at
-> 	ftp://ftp.alsa-project.org/pub/kernel-patches/*
+Sure everyone wants to read the news and the latest development
+but it doesn't have to be in the front page. A short "latest releases:
+stable 0.9, devel 0.99a" would do fine but not an extensive list.
 
-It's ok for me.
+Think about it. Could Lexicon put on their webpage a link to Alsa site
+for Linux support? I'm quite sure they expect that Alsa would look
+good in every aspect. Certainly this initial attitude toward an
+attempt in improving the Alsa webpage would not look good.
 
-						Jaroslav
+You have the ball. Create the draft new webpage at alsa-project.org,
+and then I will contribute to there. There is absolutely no point to
+place the new webpages anywhere else than to www.alsa-project.org.
 
------
-Jaroslav Kysela <perex@suse.cz>
-SuSE Linux    http://www.suse.com
-ALSA Project  http://www.alsa-project.org
+Best regards,
 
+Juhana
 
 _______________________________________________
 Alsa-devel mailing list
