@@ -1,12 +1,13 @@
-From: "Erica " <vrscwrpceji@aol.com>
-Subject: Reliable Microsoft Office 2003 Professional Edition
-Date: Sun, 28 Nov 2004 18:03:07 +0100
-Message-ID: <FFOHWNAOQCFQPDQOEBCLUG@aol.com>
-Reply-To: "Erica " <vrscwrpceji@aol.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: the RME situation
+Date: Sun, 28 Nov 2004 14:39:04 -0500
+Message-ID: <1101670745.18348.23.camel@krustophenia.net>
+References: <200411281935.TAA24481@orthoset.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--59634406458932148"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200411281935.TAA24481@orthoset.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,37 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
+To: William <walsac3@orthoset.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-----59634406458932148
-Content-Type: text/html;
-Content-Transfer-Encoding: quoted-printable
+On Sun, 2004-11-28 at 19:35 +0000, William wrote:
+> Lee Revell wrote:
+> >
+> > My suggestion was that someone on this list might want to be the voice
+> > of reason and offer to write a closed source ALSA driver
+> 
+> Alternatively, someone on this list might take their bus analyzer for a drive.
 
-<html>
+Whatever floats your boat... ;-)
 
-<head>
-<meta name=3D"GENERATOR" content=3D"Microsoft FrontPage 5.0">
-<meta name=3D"ProgId" content=3D"FrontPage.Editor.Document">
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dwindows-=
-1252">
-</head>
-
-<body>
-<p>
-<p>Lowered sftware<br>
-Adobe Photoshop CS 8.0, Corel Draw Graphics Suite 11, Norton System Works =
-2004 professional<br>
-Come see more titles<br>
-Free shipping on any software you order<br>
-Tired of getting the runaround?<br>
-<a href=3D"http://mawr.foryouoem.info/?celsius">Start Using Tomorrow</a></=
-p>
-</body>
-
-</html>
-
-----59634406458932148--
+Lee
 
 
 
