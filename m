@@ -1,63 +1,62 @@
-From: Martin Langer <martin-langer=Mmb7MZpHnFY@public.gmane.org>
-Subject: [ANN] MidiSport and Tascam firmware loader 0.1
-Date: Wed, 27 Aug 2003 20:53:48 +0200
-Sender: linux-audio-dev-admin=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-Message-ID: <20030827185348.GA701@tuba.home>
-Reply-To: linux-audio-dev=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+From: Nathaniel Gray <n8gray@caltech.edu>
+Subject: Re: [BUG] intel8x0: arecord doesn't work
+Date: Wed, 27 Aug 2003 12:26:19 -0700
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <200308271226.19663.n8gray@caltech.edu>
+References: <bihp12$g4o$1@sea.gmane.org> <s5h1xv7xo11.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-audio-dev-admin@music.columbia.edu>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h1xv7xo11.wl@alsa2.suse.de>
 Content-Disposition: inline
-Errors-To: linux-audio-dev-admin@music.columbia.edu
-List-Help: <mailto:linux-audio-dev-request@music.columbia.edu?subject=help>
-List-Post: <mailto:linux-audio-dev@music.columbia.edu>
-List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request@music.columbia.edu?subject=subscribe>
-List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request@music.columbia.edu?subject=unsubscribe>
-List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev/>
-To: linux-audio-dev=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org, alsa-devel=5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
-Cc: usb-midi-fw-devel=5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, usb-midi-fw-user=5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, us428=g1zhK3NZ1fYYtQj7fl1lsA@public.gmane.org
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wednesday 27 August 2003 05:50 am, Takashi Iwai wrote:
+> At Wed, 27 Aug 2003 01:10:06 -0700,
+>
+> Nathan Gray wrote:
+> > I'm trying to record from the built-in mic in my laptop (Dell
+> > Inspiron 4150) but it doesn't seem to work right.  If I select
+> > "Mic" as the capture source and max out the volume then when I tap
+> > the microphone I can hear it loud and clear in my headphones.  Then
+> > I try:
+> >
+> > [n8gray@golux patches]$ arecord -d 5 foo.wav
+> > Recording WAVE 'foo.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
+> >
+> > I tap the mic a few times as this is running.  I hear the taps
+> > great while recording, but playing back foo.wav I just hear static,
+> > with the taps barely audible.  Adjusting the recording levels
+> > doesn't change anything.
+>
+> what about hw:0,1 ?
 
-Firmware loaders for Midiman and Tascam USB MIDI devices
+[n8gray@golux patches]$ arecord -D hw:0,1 -d 5 foo.wav
+Recording WAVE 'foo.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
+arecord: set_params:809: Sample format non available
 
-These packages allow you to use Midiman's MidiSport USB MIDI interfaces and
-Tascam's USB Audio interfaces with Linux. These devices require a firmware
-download before an operating system driver (e.g. ALSA's snd-usb-audio) can
-access them.
+I get the same result for -D intel8x0 and -D hw:0.
 
-These loaders use the same firmware used by the Windows drivers, so you need
-a file of the respective Windows driver to install them. (See README files
-for details.) 
-
--*-
-
-The MidiSport firmware loader is required to use USB MIDI devices from
-M-Audio/Midiman under Linux. Release 0.1 contains some slight enhancements
-to the installation process, and is the first release hosted on
-SourceForge.net.
-
-Supported devices:
-MidiSport 1x1, 2x2, 4x4, 8x8, KeyStation, Oxygen, Radium, Uno, and maybe
-MidiSport 2x4.
-
--*-
-
-The Tascam firmware loader is required to use USB MIDI/Audio devices    
-from Tascam under Linux. There is also a loader for the FPGA
-configuration data included. The firmware and the FPGA configuration
-data will be extracted from your Windows driver files during
-installation. This is an initial release.
-
-Supported devices:
-US-122, US-224 and US-428
-
--*-
-
-To download the loaders, go to the project home page:
-http://usb-midi-fw.sf.net/
+-- 
+>>>-- Nathaniel Gray -- Caltech Computer Science ------>
+>>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
 
 
-martin
+
+
+-------------------------------------------------------
+This sf.net email is sponsored by:ThinkGeek
+Welcome to geek heaven.
+http://thinkgeek.com/sf
