@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000508]: JACK connecting to SPDIF failes!
-Date: Thu, 17 Mar 2005 08:15:18 +0100
-Message-ID: <302acc554583d776fc62bd068f49a496@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000824]: sparc, powerpc, hppa, alpha, ia64: "Please, recode mix_areas1() routine to your architecture..."
+Date: Thu, 17 Mar 2005 08:16:28 +0100
+Message-ID: <e96e6e5736afee58f298ad179022fdef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DAB8E226
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 08:15:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5EB3C226
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 08:16:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,94 +21,139 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been set as RELATED TO issue 0000926.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=508> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=824> 
 ======================================================================
-Reported By:                hothead
-Assigned To:                perex
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   508
+Issue ID:                   824
 Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             09-20-2004 13:25 CEST
-Last Modified:              03-17-2005 08:15 CET
+Date Submitted:             01-17-2005 08:58 CET
+Last Modified:              03-17-2005 08:16 CET
 ======================================================================
-Summary:                    JACK connecting to SPDIF failes!
+Summary:                    sparc, powerpc, hppa, alpha, ia64: "Please, recode
+mix_areas1() routine to your architecture..."
 Description: 
-Trying to connect trough alsa to the spdif output on an
-nforce2 soundchip via JACK failes with the following error message:
+Making all in pcm
+[...]
+if /bin/sh ../../libtool --mode=compile powerpc-linux-gcc -DHAVE_CONFIG_H
+-I. -I. -I../../include -I../../include  -D__ppc__  -g -Wall -O2 -MT
+pcm_dmix.lo -MD -MP -MF ".deps/pcm_dmix.Tpo" \
+  -c -o pcm_dmix.lo `test -f 'pcm_dmix.c' || echo './'`pcm_dmix.c; \
+then mv -f ".deps/pcm_dmix.Tpo" ".deps/pcm_dmix.Plo"; \
+else rm -f ".deps/pcm_dmix.Tpo"; exit 1; \
+fi
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-D__ppc__ -g -Wall -O2 -MT pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c
+pcm_dmix.c  -fPIC -DPIC -o .libs/pcm_dmix.o
+pcm_dmix.c:221:2: warning: #warning Please, recode mix_areas1() routine to
+your architecture...
+pcm_dmix.c: In function `mix_areas1':
+pcm_dmix.c:247: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:248: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:249: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:253:2: warning: #warning Please, recode mix_areas2() routine to
+your architecture...
+pcm_dmix.c: In function `mix_areas2':
+pcm_dmix.c:279: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:280: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:281: warning: use of cast expressions as lvalues is deprecated
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-D__ppc__ -g -Wall -O2 -MT pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c
+pcm_dmix.c -o pcm_dmix.o >/dev/null 2>&1
 
-13:16:14.915 /usr/bin/jackd -R -dalsa -dhw:0,2 -r48000 -p1024 -n2 -S -i2
--o2
-13:16:14.936 JACK was started with PID=12828 (0x321c).
-jackd 0.98.1
-Copyright 2001-2003 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
-loading driver ..
-apparent rate = 48000
-creating alsa driver ...
-hw:0,2|hw:0,2|1024|2|48000|2|2|nomon|swmeter|-|16bit
-ALSA lib pcm_hw.c:1155:(snd_pcm_hw_open) open /dev/snd/pcmC0D2c failed: No
-such file or directory
-jackd: pcm.c:690: snd_pcm_nonblock: Assertion `pcm' failed.
-13:16:14.994 JACK was stopped successfully.
-13:16:16.966 Could not connect to JACK server as client.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000926 There is no source code for the functio...
 ======================================================================
 
 ----------------------------------------------------------------------
- hothead - 09-20-04 14:55 
+ jdthood - 01-17-05 09:06 
 ----------------------------------------------------------------------
-Thanks mistatapas!
-
-It was my fault.
-hw:0,2 is just for playback.
-You have to specify hw:0,0 for capture and hw:0,2 for playback when
-starting JACK.
-
-'jackd -d alsa -d hw:0,2 -P -S -C hw:0,0'
-
- 
-You might see the following output:
-
-bash-2.05b$ jackd -d alsa -d hw:0,2 -P -S -C hw:0,0
-jackd 0.98.1
-Copyright 2001-2003 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
-
-loading driver ..
-creating alsa driver ...
-hw:0,2|hw:0,0|1024|2|48000|0|0|nomon|swmeter|-|16bit
-control device hw:0
-configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=sparc&stamp=1105912213&file=log&as=raw
+for the full build log.
 
 ----------------------------------------------------------------------
- jdthood - 03-16-05 22:25 
+ jdthood - 01-17-05 11:21 
 ----------------------------------------------------------------------
-It would appear that this report can be closed.
+Also on s390.  See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=s390&stamp=1105954179&file=log&as=raw
+for the full build log on s390.
+
+----------------------------------------------------------------------
+ jdthood - 01-18-05 16:48 
+----------------------------------------------------------------------
+Also on mips.  See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=mips&stamp=1106048896&file=log&as=raw
+for the full build log.
+
+----------------------------------------------------------------------
+ tiwai - 01-18-05 17:45 
+----------------------------------------------------------------------
+Well, should we disable dmix & co for these architectures?
+Then you'll get no more warnings.
+
+----------------------------------------------------------------------
+ jdthood - 01-18-05 17:59 
+----------------------------------------------------------------------
+> Well, should we disable dmix & co for these architectures?
+
+I don't know -- I haven't investigated the cause of this warning message.
+I just assume that it may be helpful if the ALSA team is informed of
+compiler warning messages thrown on non-i386 architectures.
+
+----------------------------------------------------------------------
+ tiwai - 01-18-05 18:01 
+----------------------------------------------------------------------
+The warning messages are intentional.  On these platforms, dmix & co won't
+work properly because no atomic operations are implemented.
+
+----------------------------------------------------------------------
+ jdthood - 01-20-05 12:37 
+----------------------------------------------------------------------
+(For completeness...) also seen on arm and m68k
+
+Arm build log:
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=arm&stamp=1106178900&file=log&as=raw
+m68k build log:
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=m68k&stamp=1106208530&file=log&as=raw
+
+----------------------------------------------------------------------
+ jdthood - 01-23-05 17:59 
+----------------------------------------------------------------------
+> no atomic operations are implemented
+
+What would it take to implement them?
+
+----------------------------------------------------------------------
+ jdthood - 03-16-05 22:34 
+----------------------------------------------------------------------
+See also bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=926.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-20-04 13:25 hothead        New Issue                                    
-09-20-04 14:05 mistatapas     Note Added: 0001785                          
-09-20-04 14:55 hothead        Note Added: 0001786                          
-09-20-04 14:56 hothead        Issue Monitored: hothead                     
-03-16-05 22:25 jdthood        Note Added: 0003967                          
-03-17-05 08:15 perex          Status                   new => resolved     
-03-17-05 08:15 perex          Resolution               open => not an issue
-03-17-05 08:15 perex          Assigned To               => perex           
+01-17-05 08:58 jdthood        New Issue                                    
+01-17-05 09:06 jdthood        Note Added: 0003222                          
+01-17-05 11:21 jdthood        Note Added: 0003230                          
+01-18-05 16:48 jdthood        Note Added: 0003250                          
+01-18-05 17:45 tiwai          Note Added: 0003253                          
+01-18-05 17:59 jdthood        Note Added: 0003255                          
+01-18-05 18:01 tiwai          Note Added: 0003256                          
+01-20-05 12:37 jdthood        Note Added: 0003326                          
+01-23-05 17:59 jdthood        Note Added: 0003388                          
+03-16-05 22:34 jdthood        Note Added: 0003971                          
+03-17-05 08:16 perex          Relationship added       related to 0000926  
 ======================================================================
 
 
