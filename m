@@ -1,12 +1,15 @@
-From: =?Windows-1251?B?0eDh6O3gIMzo9eXl4u3g?= <audrey@aon.at>
-Subject: Re:
-Date: Fri, 22 Oct 2004 12:45:06 +0000
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000240]: Clean up the iPaq specific things (move them into another source code).
+Date: Fri, 22 Oct 2004 15:55:48 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1CKz6T-0008SR-E1@sc8-sf-mx1.sourceforge.net>
+Message-ID: <9f5826764a218de5029368b941fae9bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/html; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 89DF3270
+	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 15:55:48 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,76 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<body>
-<p align="center"><font face="Tahoma"><b><font color="#669900" size="1">e</font><font color="#FF6600" size="1">-M<vgow>ail</font></b>
-<b><font color="#336699" size="1">р<gpze>ас<otlo>с<ddix>ыл<vgeh>к<hqxp>и.<br>
-</font></b><font color="#006600" size="1">Б<irjc>ыс<oaog>тро, не<kwyf>до<opmx>ро<obdz>го, к<jagv>ач<turm>ес<oggh>т<pvsm>ве<zpni>н<fect>но.</font></font></p>
-<div align="center">
-  <center>
-  <table border="1" cellpadding="2" style="font-family: Verdana; font-size: 10pt" bordercolor="#111111" width="700">
-    <tr>
-      <td width="25%" bgcolor="#FFCC00">
-      <p align="center">Назв<sxnt>ан<cezj>ие б<awah>аз<ledm>ы:</td>
-      <td width="25%" bgcolor="#FFCC00">
-      <p align="center">Кол-во адр<ezmm>есов:</td>
-      <td width="25%" bgcolor="#FFCC00">
-      <p align="center">Сто<nrcn>имо<fwod>сть ра<jlvz>сс<ecth>ыл<rcsw>ки:</td>
-    </tr>
-    <tr>
-      <td width="25%" align="center" bgcolor="#99CC00"><b>Фир<tmnf>мы М<zpcl>ос<hlxs>к<duky>вы</b></td>
-      <td width="25%" align="center" bgcolor="#99CC00"><b>40<fstg>0.000</b></td>
-      <td width="25%" align="center" bgcolor="#99CC00"><b>
-      <font face="Trebuchet MS">30<fich>00 ру<vzgs>бле<ruse>й</font></b></td>
-    </tr>
-    <tr>
-      <td width="25%" align="center" bgcolor="#99CC00"><b>Фи<vxbw>рмы Ро<frqc>сси<whel>и</b></td>
-      <td width="25%" align="center" bgcolor="#99CC00"><b>2.0<mylz>00.000</b></td>
-      <td width="25%" align="center" bgcolor="#99CC00"><b>
-      <font face="Trebuchet MS">69<bfqs>00 руб<zvda>лей</font></b></td>
-    </tr>
-    <tr>
-      <td width="25%" align="center" bgcolor="#99CC00"><b>Ф<abup>ир<kerb>мы Пи<onjw>т<jajv>е<bmhj>ра</b></td>
-      <td width="25%" align="center" bgcolor="#99CC00"><b>50.0<buqr>00</b></td>
-      <td width="25%" align="center" bgcolor="#99CC00"><b>
-      <font face="Trebuchet MS">10<zzmd>00 р<jytg>ублей</font></b></td>
-    </tr>
-    <tr>
-      <td width="25%" align="center" bgcolor="#99CC00"><b>Фир<aoej>мы Ур<mqnc>ал<mxyj>а</b></td>
-      <td width="25%" align="center" bgcolor="#99CC00"><b>40.0<vxql>00</b></td>
-      <td width="25%" align="center" bgcolor="#99CC00"><b>
-      <font face="Trebuchet MS">10<uzrm>00 руб<gfry>ле<lbiw>й</font></b></td>
-    </tr>
-  </table>
-  </center>
-</div>
-<blockquote>
-  <blockquote>
-    <blockquote>
-      <blockquote>
-        <blockquote>
-          <p><font color="#808080" size="1" face="Arial">Ск<oxgz>ид<qhsz>ки по<wsnl>ст<guos>оя<dxli>нн<lvcr>ым 
-          кли<qapi>ентам.<br>
-          Фо<nmxq>рм<ehxa>а оп<aulh>ла<mvkg>ты - лю<jrfh>бая <br>
-          За<xpcw>клю<iktg>ча<hnvo>ем д<kody>ог<xmew>ов<dpbn>ора.<br>
-          &nbsp;</font></p>
-          <p align="center"><b><font face="Arial" size="1">Тел.:</font><font face="Arial" size="1" color="#FF0066"> 
-          (9<rzdb>0<qdfq>5)</font><font face="Arial" size="1">2<dqwn>0<ltve>3-9<ekmb>0<pftb>7<umip>2&nbsp; 
-          Питер</font></b></p>
-          <p align="center"><b><font face="Arial" size="1">
-          <font color="#FF0066">(0<endd>9<vgdj>5)</font>10<qwmz>9-5<ygzd>70<wbyo>6 
-          Москва</font></b></p>
-        </blockquote>
-      </blockquote>
-    </blockquote>
-  </blockquote>
-</blockquote>
-</body>
-</html>
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=240> 
+======================================================================
+Reported By:                perex
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   240
+Category:                   ARM - sa11xx-uda1341
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             04-27-2004 11:50 CEST
+Last Modified:              10-22-2004 15:55 CEST
+======================================================================
+Summary:                    Clean up the iPaq specific things (move them into
+another source code).
+Description: 
+See summary.
+======================================================================
+
+----------------------------------------------------------------------
+ perex - 10-22-04 15:52 
+----------------------------------------------------------------------
+Note 15.
+
+----------------------------------------------------------------------
+ perex - 10-22-04 15:55 
+----------------------------------------------------------------------
+Note 16
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-27-04 11:50 perex          New Issue                                    
+10-20-04 11:30 perex          Note Added: 0002214                          
+10-20-04 11:31 perex          Note Deleted: 0002214                        
+10-20-04 11:53 perex          Note Added: 0002215                          
+10-20-04 11:53 perex          Note Deleted: 0002215                        
+10-20-04 12:21 perex          Note Added: 0002216                          
+10-20-04 12:21 perex          Note Deleted: 0002216                        
+10-22-04 15:18 perex          Note Added: 0002227                          
+10-22-04 15:20 perex          Note Added: 0002228                          
+10-22-04 15:24 perex          Note View State: public: 2227                    
+10-22-04 15:24 perex          Note View State: public: 2228                    
+10-22-04 15:26 perex          Note Added: 0002229                          
+10-22-04 15:26 perex          Note Added: 0002230                          
+10-22-04 15:27 perex          Note Added: 0002231                          
+10-22-04 15:28 perex          Note Added: 0002232                          
+10-22-04 15:29 perex          Note Added: 0002233                          
+10-22-04 15:32 perex          Note Added: 0002234                          
+10-22-04 15:35 perex          Note Added: 0002235                          
+10-22-04 15:35 perex          Note Added: 0002236                          
+10-22-04 15:39 perex          Note Added: 0002237                          
+10-22-04 15:46 perex          Note Added: 0002238                          
+10-22-04 15:48 perex          Note Added: 0002239                          
+10-22-04 15:48 perex          Note Added: 0002240                          
+10-22-04 15:52 perex          Note Added: 0002241                          
+10-22-04 15:55 perex          Note Added: 0002242                          
+======================================================================
 
 
 
