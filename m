@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000824]: sparc, powerpc, hppa, alpha, ia64: "Please, recode mix_areas1() routine to your architecture..."
-Date: Tue, 18 Jan 2005 17:59:53 +0100
-Message-ID: <0aed62cd9635bf82a16cf73808a1db6a@bugtrack.alsa-project.org>
+Date: Tue, 18 Jan 2005 18:01:52 +0100
+Message-ID: <e83c3ab0fe13c0c56db04feeda55b719@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 261C4227
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 17:59:53 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7E139227
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 18:01:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             01-17-2005 08:58 CET
-Last Modified:              01-18-2005 17:59 CET
+Last Modified:              01-18-2005 18:01 CET
 ======================================================================
 Summary:                    sparc, powerpc, hppa, alpha, ia64: "Please, recode
 mix_areas1() routine to your architecture..."
@@ -74,12 +74,6 @@ pcm_dmix.c -o pcm_dmix.o >/dev/null 2>&1
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-18-05 17:45 
-----------------------------------------------------------------------
-Well, should we disable dmix & co for these architectures?
-Then you'll get no more warnings.
-
-----------------------------------------------------------------------
  jdthood - 01-18-05 17:59 
 ----------------------------------------------------------------------
 > Well, should we disable dmix & co for these architectures?
@@ -87,6 +81,12 @@ Then you'll get no more warnings.
 I don't know -- I haven't investigated the cause of this warning message.
 I just assume that it may be helpful if the ALSA team is informed of
 compiler warning messages thrown on non-i386 architectures.
+
+----------------------------------------------------------------------
+ tiwai - 01-18-05 18:01 
+----------------------------------------------------------------------
+The warning messages are intentional.  On these platforms, dmix & co won't
+work properly because no atomic operations are implemented.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -97,6 +97,7 @@ Date Modified  Username       Field                    Change
 01-18-05 16:48 jdthood        Note Added: 0003250                          
 01-18-05 17:45 tiwai          Note Added: 0003253                          
 01-18-05 17:59 jdthood        Note Added: 0003255                          
+01-18-05 18:01 tiwai          Note Added: 0003256                          
 ======================================================================
 
 
