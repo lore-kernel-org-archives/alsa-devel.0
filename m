@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: RME Hammerfall HDSP 9652
-Date: Thu, 28 Aug 2003 09:05:21 -0400
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: The best-supported Pro Audio device?
+Date: Thu, 28 Aug 2003 17:03:13 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200308281305.h7SD5LaW013628@oud>
-References: <32941.193.253.35.6.1062074441.squirrel@www.undata.org>
+Message-ID: <Pine.LNX.4.44.0308281701000.1958-100000@pnote.perex-int.cz>
+References: <XFMail.20030828154410.pochini@shiny.it>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 28 Aug 2003 14:40:41 +0200."
-             <32941.193.253.35.6.1062074441.squirrel@www.undata.org>
+In-Reply-To: <XFMail.20030828154410.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,25 +16,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: nick.arnold@nautronix.com.au, alsa-devel@lists.sourceforge.net
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: Paul Davis <paul@linuxaudiosystems.com>Paul Davis <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "ametts2@mindspring.com" <ametts2@mindspring.com>
 List-Id: alsa-devel@alsa-project.org
 
-> 3) is it possible to use the "Internal 48.0 kHz" setting and keep things
->>    "like they used to be"?  Whereby we retain responsiblity for the
->> interleaving and de-interleaving of channels; we operate on the full
->> 26 channels; and we can make little (if any) code changes?
->
->No, you can't. The internal rate is then really 96kHz, and the clock
->signal on the spdif output is indeed 96kHz. One thing you could do, maybe,
-> would be to simulate in userspace what the card is doing in hardware,
->keeping the 48 kHz sample rate, if you really need that.
+On Thu, 28 Aug 2003, Giuliano Pochini wrote:
 
-but if they don't use the s/pdif channels, then you can do this. i
-tried it a long time ago on the hammerfall digi9652. it works, but it
-strikes me as a silly idea :)
+> 
+> On 28-Aug-2003 Jaroslav Kysela wrote:
+> >> >>--*-- What is the best-supported *Pro Audio* device in terms of solid ALSA dri
+> >> >>ver support?  Not interested in Sound Blasters and chips on the motherboard --
+> >> >> something along the lines of the Echo, M-Audio, or RME products.  But the ALS
+> >> >>A drivers need to be stable -- and need to fully support the capabilities of h
+> >> >>e respective device (i.e., on-board DSP, MIDI, or whatever).
+> >> >
+> >> > the echo drivers are extremely new, and largely untested at this
+> >> > point. they may even be incomplete.
+> >>
+> >> The Echo driver is complete and tested on most supported cards. All
+> >> features are supported but MIDI and CARDBUS are untested. The driver
+> >> is based on the Windos driver code and that part is stable. The ALSA
+> >
+> > Only small note: until someone rewrite the code using the Linux coding
+> > style and GPL licence, it will not be included to the ALSA main tree,
+> > thus it will not be maintaned by us.
+> 
+> It's very unlikely it will follow the coding style because the generic
+> driver is written by Echoaudio and it's C++ (yuck). It's free software
+> but not GPL (quite certainly next revision will be released under GPL).
+> The part written by me is GPL'd from the beginning and the style is not
+> difficult to fix.
 
---p
+I meant that the generic code should be recoded to follow the Linux 
+coding style. With this change, we can also change the code license.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
