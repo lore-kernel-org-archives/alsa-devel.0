@@ -1,15 +1,11 @@
-From: Erik Mouw <J.A.K.Mouw@its.tudelft.nl>
-Subject: Re: sb 16 pro + alsa 0.5.12a + k 2.4.17
-Date: Sun, 10 Feb 2002 23:35:04 +0100
-Message-ID: <20020210223504.GD22208@arthur.ubicom.tudelft.nl>
-References: <3C66C614.3000709@free.fr> <20020210204243.GA22208@arthur.ubicom.tudelft.nl> <3C66E9D1.1020302@free.fr>
+From: "bentir2" <bentir82@yahoo.co.uk>
+Subject: Buat yg pengen enjoy life!
+Date: Mon, 11 Feb 2002 09:19:04 +0800
+Message-ID: <1995341-2200221111194898@yahoo.co.uk>
+Reply-To: bentir82@yahoo.co.uk
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Received: from duteinh.et.tudelft.nl (root@duteinh.et.tudelft.nl [130.161.42.1])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA19951
-	for <alsa-devel@alsa-project.org>; Sun, 10 Feb 2002 23:35:16 +0100
-Content-Disposition: inline
-In-Reply-To: <3C66E9D1.1020302@free.fr>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,56 +14,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Ludovic Drolez <ldrolez@free.fr>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa.jcu.cz" <alsa-devel@alsa.jcu.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Feb 10, 2002 at 10:44:49PM +0100, Ludovic Drolez wrote:
-> Erik Mouw wrote:
-> >Very clear error message: please supply proper parameters for the
-> >snd-card-sb16 module. "modinfo snd-card-sb16" will tell you what
-> >parameters the module accepts.
-> 
-> I have supplied all parameters you can imagine. And my launch script is the 
-> same for k 2.2.19, and for 2.4.17...
+Anda lagi mencari pekerjaan?
+Atau masih kerja, tapi penghasilan tidak cukup?
+Atau penghasilan anda lumayan, tapi gak ada waktu buat keluarga?
 
-And did you run "update-modules && depmod -a"?
+Sekarang ada solusinya!
+Anda bisa kerjakan secara sambilan,
+Jika anda punya waktu 2 jam saja sehari
+itu sudah lebih dari cukup!
+Saya bisa Andapun pasti bisa!
 
-> >I don't think so. I think you either forgot to specify the correct
-> >module parameters, or you somehow loaded the kernel Soundblaster
-> >driver.
-> >
-> 
-> lsmod |grep sb
-> > nothing
+Pengen tahu lebih jelasnya!
+Kirimkan data anda ke
+http://www=2Evisitme=2Eto/pondal1
 
-It could also be that it is compiled into the kernel itself. See
-/proc/ioports to see which driver claims the ports.
+Ini bukan bisnis sembarang bisnis!
+tapi bisnis yang sangat mengagumkan!
+Trainingnya sangat lengkap!
+Dan satu HAL yg UTAMA!
+BISNIS ini FAIR!
+Tidak ada unsur penipuannya!
+Oke, silahkan segera mendaftar
 
-> >Did you read the file Documentation/Changes in the kernel source tree?
-> >The linux-2.4 kernels need quite some new userland programs to work
-> >properly.
-> 
-> Yes, I have upgraded dozen of packages (a Debian 2.2 with bunk's packages).
+http://www=2Evisitme=2Eto/pondal1
 
-OK, Adrian Bunk's packages work fine.
+You have a Great Classified Add=2E=2E=2E=2E=2E
+To be removed from future mailings reply to this email=20
+by clicking on this=20
+link mailto:bentir81@yahoo=2Eco=2Euk?subject=3DRemove
 
-> What I find strange is: the kernel is scanning for pnp card although I told 
-> alsa to ignore pnp card....
-
-You told the kernel that you want ISA PnP support, so the kernel will
-scan for cards. Recompile your kernel and disable PnP support.
+Under Bill s=2E1618 TITLE III passed by the 105th U=2ES=2E Congress
+this letter can not be considered spam as long as a Remove Link=20
+is included=2E Click above to be removed=2E
 
 
-Erik
-[who prefers to be CC'ed on mailing lists messages]
+_________________________________________________________
+Do You Yahoo!?
+Get your free @yahoo.com address at http://mail.yahoo.com
 
--- 
-J.A.K. (Erik) Mouw, Information and Communication Theory Group, Faculty
-of Information Technology and Systems, Delft University of Technology,
-PO BOX 5031, 2600 GA Delft, The Netherlands  Phone: +31-15-2783635
-Fax: +31-15-2781843  Email: J.A.K.Mouw@its.tudelft.nl
-WWW: http://www-ict.its.tudelft.nl/~erik/
 
 _______________________________________________
 Alsa-devel mailing list
