@@ -1,15 +1,14 @@
-From: AthlonRob <athlonrob@data.4t3.com>
-Subject: Re: Multiple Audio Streams
-Date: 07 Oct 2002 17:44:44 -0700
+From: Abramo Bagnara <abramo.bagnara@libero.it>
+Subject: Re: Why do I get broken pipe on write to a pcm in
+ statePREPARED?
+Date: Tue, 08 Oct 2002 08:06:58 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1034037884.7319.9.camel@duron>
-References: <3D9F3D84.4040102@boom.org.il> <1033859918.1118.24.camel@duron>
-	 <3DA15968.1000205@superbug.demon.co.uk>
+Message-ID: <3DA27602.969C3174@libero.it>
+References: <3D98769A00183382@ims5a.libero.it> (added by postmaster@libero.it)
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DA15968.1000205@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,42 +17,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Sagi Bashari <sagi@boom.org.il>
+To: Paul Davis <pbd@op.net>
+Cc: Anders Torger <torger@ludd.luth.se>, alsa-devel@lists.sourceforge.net, Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2002-10-07 at 02:52, James Courtier-Dutton wrote:
+Paul Davis wrote:
+> 
+> >I'm not speaking about programming bugs. Suppose the PCM is stopped by
+> >another thread: you're screwed.
+> 
+> why are you screwed? you're waiting (presumably) for data/space to be
+> ready in the PCM device. there isn't any (or more precisely, you're
+> waiting for changes in the state of data/space, and there are none). i
+> don't see the problem.
 
-> mypc: /proc/asound/card0/pcm0p# cat info
+The thread has no way to detect what's the cause of data/space lack
+without busy loop or delaying.
 
-> subdevices_count: 1
-> subdevices_avail: 1   <- This tells you how many streams the sound card 
-> can handle in hardware at the same time.
-> E.g. Only one application at a time can use the card.
+> >> > As pointed by Clemens the current is the proper POSIX behaviour.
+> >>
+> >
+> >Perhaps you should reread Single Unix Specification, I quote
+> >http://www.opengroup.org/onlinepubs/007904975/functions/poll.html
+> >
+> >POLLIN
+> >            Data other than high-priority data may be read without
+> >blocking.
+> >
+> >
+> >POLLOUT
+> >            Normal data may be written without blocking.
+> >
+> >
+> >No data may be read/written in current stream state in the case we are
+> >discussing.
+> 
+> but nobody has suggested that poll(2) should return any flags with
+> these bits set. the issue, i thought, was what should write(2) do ...
 
-Thanks, that does help some.  But, I fear the subdevice_count and avail
-are only reporting the numbers that the driver supports... not the
-number that the hardware itself supports.
+No, the issue was about poll and write.
+The point is that stream is in bad state wrt read/write, this is the
+reason why poll should return POLLERR.
 
-At least, I hope so, because mine is reporting as 1 & 0 (I have esd
-running).  :-)
+-- 
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
 
-> I also have a SB Live in another machine, the subdevices_avail is then 
-> 32 because the SB Live can handle 32 streams at once in hardware.
-
-I can probably scrounge up a SB Live if need be... maybe I'll do that so
-I'm able to play multiple streams (if we can't get a better driver
-written, that is).
-
-> There are other applications/tools you can use, one of which is "JACK" 
-> that allows for multiple audio streams mixed in software and lots of 
-> other cool stuff.
-
-Cool, I'll see if I can find some information about that.  I hadn't
-heard of it before... is it GPL'd?
-
-Rob
-
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
