@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001006]: soundcard not supported
-Date: Tue, 22 Mar 2005 21:49:27 +0100
-Message-ID: <ad8c852283aa37186a2594f9c683e657@bugtrack.alsa-project.org>
+Date: Tue, 22 Mar 2005 21:28:24 +0100
+Message-ID: <8776af63bbe234e5b00acf35077fe93b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD27328D
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 21:49:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D9EFB28D
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 21:28:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               c't-debian
 Kernel Version:             2.4.27
 ======================================================================
 Date Submitted:             03-22-2005 21:18 CET
-Last Modified:              03-22-2005 21:49 CET
+Last Modified:              03-22-2005 21:28 CET
 ======================================================================
 Summary:                    soundcard not supported
 Description: 
@@ -165,13 +165,6 @@ checking for parallel port module support... "no"
 checking for which soundcards to compile driver for... configure: error:
 Unsupported soundcard cs4236
 
-----------------------------------------------------------------------
- devas - 03-22-05 21:49 
-----------------------------------------------------------------------
-./configure --with-cards=emu10k1 tells me same message: seems to be a
-problem with the kernel and/or the sources (kernel-headers), i suppose (as
-i have a custom kernel).
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -179,7 +172,6 @@ Date Modified  Username       Field                    Change
 03-22-05 21:18 devas          Distribution              => c't-debian      
 03-22-05 21:18 devas          Kernel Version            => 2.4.27          
 03-22-05 21:28 devas          Note Added: 0004132                          
-03-22-05 21:49 devas          Note Added: 0004133                          
 ======================================================================
 
 
