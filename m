@@ -1,12 +1,16 @@
-From: David =?iso-8859-15?Q?G=F3mez?= <david@pleyades.net>
-Subject: Error with snd_pc_sw_params in pcm.c
-Date: Fri, 5 Nov 2004 22:55:34 +0100
-Message-ID: <20041105215534.GA28584@fargo>
+From: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@inprovide.com>
+Subject: Re: VIA 8237 AD1980 Surround 5.1
+Date: Fri, 05 Nov 2004 23:13:39 +0100
+Message-ID: <yw1x4qk4q6zw.fsf@ford.inprovide.com>
+References: <200411050906.50688.jareguero@telefonica.net>
+	<yw1x8y9gboen.fsf@ford.inprovide.com>
+	<200411052154.05985.jareguero@telefonica.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <200411052154.05985.jareguero@telefonica.net> (Jose Alberto
+ Reguero's message of "Fri, 5 Nov 2004 21:54:05 +0100")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,30 +20,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jose Alberto Reguero <jareguero@telefonica.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all ;),
+Jose Alberto Reguero <jareguero@telefonica.net> writes:
 
-I'm suffering this error when trying to play a mp3 file with madplay. First
-of all, some versions:
+> El Viernes, 5 de Noviembre de 2004 11:06, M=E5ns Rullg=E5rd escribi=F3:
+>> Jose Alberto Reguero <jareguero@telefonica.net> writes:
+>> > MB: K8V SE Deluxe
+>> > CPU: AMD64
+>> > Asla driver from cvs.
+>> > Alsa lib from cvs.
+>> > The channel center and LFE ar swapped in surround 5.1.
+>>
+>> What's the magic to get 5.1 in the at all?  I can't seem to get
+>> anything but "ALSA lib pcm_hw.c:408:(snd_pcm_hw_channel_info)
+>> SNDRV_PCM_IOCTL_CHANNEL_INFO failed: Inappropriate ioctl for device"
+>> when running speaker-test.
+>
+> I yust try whith -Dplug:surround51 or -Dsurround51 and in the mixer
+> "Surround JACK as Input" off and "Center/LFE Jack as Input" off and
+> Exchange Front/Surround" off and "Spread Front to Surround and
+> Center/LFE" off.  It works for me with speaker-test and with xine
+> (DVDS).
 
-kernel 2.6.9
-alsa-lib-1.0.7rc2
-madplay-0.15.2b
+That's exactly my settings.  The strange thing it that 6-channel
+playback works with -Dsurround40, but the rear and center/lfe are
+swapped. 4-channel playback is correct.
 
-And i got this error:
-
-MPEG Audio Decoder 0.15.2 (beta) - Copyright (C) 2000-2004 Robert Leslie et al.
-ALSA lib pcm.c:826:(snd_pcm_sw_params) snd_pcm_sw_params: params->avail_min
-problem for start_threshold Unable to set sw params for playback: Invalid
-argument
-output: Invalid argument
-
-Thanks,
-
--- 
-David Gómez                                      Jabber ID: davidge@jabber.org
+--=20
+M=E5ns Rullg=E5rd
+mru@inprovide.com
 
 
 -------------------------------------------------------
