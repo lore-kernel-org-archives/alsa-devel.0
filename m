@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000353]: No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
-Date: Sat, 19 Mar 2005 12:38:20 +0100
-Message-ID: <4608cc5eafd00b0b30833a6c23498a0e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000800]: Sound is Corrupted or terribe quality.
+Date: Sat, 19 Mar 2005 12:42:18 +0100
+Message-ID: <3f9a97e6986f10104ffc52baff31edfd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A6AB1D8
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 12:38:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CCD351D8
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 12:42:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,72 +23,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=353> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=800> 
 ======================================================================
-Reported By:                JSchmitt
+Reported By:                abonilla
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   353
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   800
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             06-30-2004 19:36 CEST
-Last Modified:              03-19-2005 12:38 CET
+Date Submitted:             01-10-2005 03:20 CET
+Last Modified:              03-19-2005 12:42 CET
 ======================================================================
-Summary:                    No sound as startup of KDE 3.2.3, errormessage in
-snd_pcm_hw.c
+Summary:                    Sound is Corrupted or terribe quality.
 Description: 
-When I try to start X with KDE 3.2.3, I will get the following error
-mesages:
-
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-
-I will not get any sound.
+Sound goes out just like if the jack was not propperly plugged. bad Sound
+Quality.
 ======================================================================
 
 ----------------------------------------------------------------------
- rob_hughes - 03-19-05 12:08 
+ tiwai - 03-18-05 18:23 
 ----------------------------------------------------------------------
-It still affects 1.08 on my Audigy 2.0. I haven't gotten 1.09rc1 to compile
-yet (using CVS).
+How about 1.0.9rc1?  Many bugs have been fixed for hda driver.
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 12:38 
+ jdthood - 03-19-05 12:42 
 ----------------------------------------------------------------------
->  It still affects 1.08 on my Audigy 2.0. I haven't gotten 1.09rc1 to
-compile yet (using CVS).
+>  How about 1.0.9rc1? Many bugs have been fixed for hda driver. 
 
-Thanks for testing.
-
-You should be able to build from the 1.0.9rc1 tarballs that have been
-released.
-If not then please file a bug report.
+I have asked the submitter to try 1.0.9rc1 but it may be that
+we will get no feedback from him until 1.0.9 is released.
+(I don't plan to make a new Debian release of alsa-driver until
+1.0.9 is finalized.)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-30-04 19:36 JSchmitt       New Issue                                    
-07-06-04 18:33 JSchmitt       Issue Monitored: JSchmitt                    
-07-15-04 14:20 perex          Note Added: 0001433                          
-07-15-04 17:57 JSchmitt       Note Added: 0001436                          
-08-17-04 06:11 samy           Note Added: 0001572                          
-08-17-04 06:11 samy           Issue Monitored: samy                        
-10-23-04 22:41 rob_hughes     Note Added: 0002256                          
-10-23-04 22:50 rob_hughes     Issue Monitored: rob_hughes                    
-10-23-04 23:27 rob_hughes     Note Added: 0002258                          
-10-25-04 01:08 rob_hughes     Note Edited: 0002256                         
-03-19-05 09:06 jdthood        Note Added: 0004011                          
-03-19-05 12:08 rob_hughes     Note Added: 0004034                          
-03-19-05 12:38 jdthood        Note Added: 0004035                          
+01-10-05 03:20 abonilla       New Issue                                    
+01-10-05 03:20 abonilla       Distribution              => Debian          
+01-10-05 03:20 abonilla       Kernel Version            => 2.6.9           
+01-10-05 14:56 tiwai          Note Added: 0003134                          
+03-16-05 13:27 jdthood        Note Added: 0003956                          
+03-18-05 18:23 tiwai          Note Added: 0004003                          
+03-18-05 23:35 allefant       Issue Monitored: allefant                    
+03-18-05 23:36 allefant       Issue End Monitor: allefant                    
+03-19-05 12:42 jdthood        Note Added: 0004036                          
 ======================================================================
 
 
