@@ -1,13 +1,18 @@
-From: Florian Bomers <Florian.Bomers@sun.com>
-Subject: Re: sblive midi out
-Date: Mon, 04 Nov 2002 15:19:23 -0800
+From: Thierry Vignaud <tvignaud@mandrakesoft.com>
+Subject: Re: [BUG] buggy ali5451 driver
+Date: Tue, 05 Nov 2002 09:36:26 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DC7007B.C0490C59@sun.com>
-References: <Pine.LNX.4.44.0211042051560.9000-100000@rhubarb.custard.org>
+Message-ID: <m28z08mn05.fsf@vador.mandrakesoft.com>
+References: <m24raxpndj.fsf@vador.mandrakesoft.com>
+	<s5hu1ixa0eu.wl@alsa2.suse.de> <3DC68350.2040208@wanadoo.fr>
+	<3DC68814.6070700@wanadoo.fr> <20021104112035.GA14883@dogsolitude.org>
+	<3DC6903B.1070309@wanadoo.fr> <3DC69817.80300@wanadoo.fr>
+	<20021104122851.GA15552@dogsolitude.org> <3DC6A0ED.6080202@wanadoo.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3DC6A0ED.6080202@wanadoo.fr> (Olivier Ricordeau's message of
+ "Mon, 04 Nov 2002 17:31:41 +0100")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,45 +21,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ian <deviant@custard.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: Olivier Ricordeau <olivier.ricordeau@wanadoo.fr>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I have several SB Live's and even a Dell OEM one, and all of them have
-functional external MIDI i/o. I haven't tried with latest ALSA drivers though.
-You might want to search alsa-devel and alsa-user mailing lists, there were some
-recent sb live issues.
+Olivier Ricordeau <olivier.ricordeau@wanadoo.fr> writes:
 
-Florian
-
-ian wrote:
+> Hope it will help...
+> Note that this is wat I got after a "normal" boot (no kernel option,
+> dma still active).
 > 
-> Thanks for the answer on my dlmisc.c problem - updating sorted that out.
-> I have an sblive oem that came with my dell, that has no digital output
-> board. Alsa-lib reports that it is possible to writeto the midi port, but
-> trying to do so reports that there is no such device. I believe the
-> joystick connector on the back of the card can only be used for midi
-> input, but i might be wrong there. At any rate it would seem that the
-> sblive driver is doing something wrong?
-> Ian
-> 
-> -------------------------------------------------------
-> This SF.net email is sponsored by: ApacheCon, November 18-21 in
-> Las Vegas (supported by COMDEX), the only Apache event to be
-> fully supported by the ASF. http://www.apachecon.com
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> It would be just great not to be obliged to install a window$ on this
+> laptop... I've not used Microsoft's products for several months and I
+> feel just fine with it! ;-)
 
--- 
-Florian Bomers
-Java Sound
-Java Software/Sun Microsystems, Inc.
-http://java.sun.com/products/java-media/sound/
+since some bad interaction happens with eide disks, one thing that
+could help would be to try 2.4.20-rc1 + alsa-0.9.0rc5 since alan cox
+fixed ali eide controller driver.
+
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: ApacheCon, November 18-21 in
-Las Vegas (supported by COMDEX), the only Apache event to be
-fully supported by the ASF. http://www.apachecon.com
+This sf.net email is sponsored by: See the NEW Palm 
+Tungsten T handheld. Power & Color in a compact size!
+http://ads.sourceforge.net/cgi-bin/redirect.pl?palm0001en
