@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000732]: If PCM is set to norma to mt Sound Blaster Live, It emit a very high frequency sound damaging ears
-Date: Mon, 20 Dec 2004 09:36:55 +0100
-Message-ID: <947169f0d968357ce05c11afa45de526@bugtrack.alsa-project.org>
+From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
+Subject: RE: Sound Card Driver
+Date: Mon, 20 Dec 2004 17:47:23 +0800
+Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D5C9@cm-msg-02.cmedia.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DCCFA2B0
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 09:36:55 +0100 (MET)
+Content-Class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,96 +17,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: kshriyan@redhat.com
+Cc: rlrevell@joe-job.com, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=732> 
-======================================================================
-Reported By:                Eric Valette
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   732
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.10-rc3
-======================================================================
-Date Submitted:             12-19-2004 15:10 CET
-Last Modified:              12-20-2004 09:36 CET
-======================================================================
-Summary:                    If PCM is set to norma to mt Sound Blaster Live, It
-emit a very high frequency sound damaging ears
-Description: 
-Since 2.6.10-rc1 or rc2, I can no more use alsa on my PC or I may damage my
-ears! This is why I put a high priority as I think it may really damage
-people ears...
+9880 is a Azalia codec, but it can also be used as an AC97 codec, please =
+check if your system has AC97 controller (PCI ID 266E) or azalia =
+controller (2668).
 
-NB : WIndows XP is working as usual, I did not change anything in my
-settings except updating the kernel from 2.6.9...
-
-Reading the bitkeeper changelog for emuk10k1, it may well be related to
-other change in other part of the code (PCI layer...)
-
-Do you have a bitkeeper tree diff so that I can test with latest kernel
-version of the code?
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-20-04 08:34 
-----------------------------------------------------------------------
-Peter, I have an SBLive, and am somewhat familiar with emu10k1 DSP code. 
-Is there anything I can do to help diagnose this?
-
-----------------------------------------------------------------------
- Eric Valette - 12-20-04 09:36 
-----------------------------------------------------------------------
-I confirm that one of the item I did change using alsamixer that solved the
-problem was indeed the Bass and Treeble value that were slightly in the
-red area. Tone cursor is apparently not changeable.
-
-And just for rlrevell : no the default volume setting were really low as
-I'm a 40 years old folk that takes care of its ears... So, indeed it is a
-setting problem  and not really a problem in the code but what is sure is
-that something chnaged as I do not modify my settings by default. Problem
-is that I do not know where...
-
-Besides, as volumes were generaly low, I think it can really cause
-damage...
-
-I'm readdy to beta test any changes you suggest.
-
--- eric
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-19-04 15:10 Eric Valette   New Issue                                    
-12-19-04 15:10 Eric Valette   Distribution              => Debian          
-12-19-04 15:10 Eric Valette   Kernel Version            => 2.6.10-rc3      
-12-19-04 22:41 Eric Valette   Note Added: 0002851                          
-12-19-04 22:46 Eric Valette   Note Added: 0002852                          
-12-19-04 22:46 rlrevell       Note Added: 0002853                          
-12-19-04 22:51 Eric Valette   Note Added: 0002854                          
-12-19-04 23:00 rlrevell       Note Added: 0002855                          
-12-19-04 23:05 Eric Valette   Note Added: 0002856                          
-12-19-04 23:09 rlrevell       Note Added: 0002857                          
-12-19-04 23:10 rlrevell       Note Added: 0002858                          
-12-19-04 23:11 Eric Valette   Note Added: 0002859                          
-12-19-04 23:16 Eric Valette   Note Added: 0002860                          
-12-20-04 00:04 Eric Valette   Note Added: 0002861                          
-12-20-04 00:10 rlrevell       Note Added: 0002862                          
-12-20-04 00:15 Eric Valette   Note Added: 0002863                          
-12-20-04 08:17 pzad           Note Added: 0002867                          
-12-20-04 08:34 rlrevell       Note Added: 0002869                          
-12-20-04 09:36 Eric Valette   Note Added: 0002870                          
-======================================================================
+ChenLi Tien
+-----Original Message-----
+From:	Kaushal Shriyan [mailto:kshriyan@redhat.com]
+Sent:	2004/12/20 [=ACP=B4=C1=A4@] =A4W=A4=C8 01:55
+To:	Tien,  C.L. - =A5=D0=A9=D3=C2=A7
+Cc:	rlrevell@joe-job.com; alsa-devel@lists.sourceforge.net
+Subject:	RE: [Alsa-devel] Sound Card Driver
 
 
 
