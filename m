@@ -1,14 +1,13 @@
-From: Sebastian Benoit <benoit-lists@fb12.de>
-Subject: Juli@-Card and hanging process snd-ak4114/0
-Date: Thu, 10 Mar 2005 18:03:32 +0100
-Message-ID: <20050310170354.GH78387@mail.webmonster.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
+Date: Thu, 10 Mar 2005 18:03:54 +0100
+Message-ID: <98fff87465d1d3895c9b3f698f6445dd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="GV0iVqYguTV4Q9ER"
-Received: from mail.webmonster.de (datasink.webmonster.de [194.162.162.209])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 7318E1B2
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 18:03:33 +0100 (MET)
-Content-Disposition: inline
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DDE551B4
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 18:03:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +21,92 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---GV0iVqYguTV4Q9ER
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=846> 
+======================================================================
+Reported By:                Envel
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   846
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             01-24-2005 13:44 CET
+Last Modified:              03-10-2005 18:03 CET
+======================================================================
+Summary:                    Can't hear sound from one of the surround speaker,
+while other is working (speakers are functional).
+Description: 
+With options "Line-In as surround" and "Duplicate front" the right surround
+speaker is not working, while others are functional. After uninstalling
+ALSA 1.0.8 and installing againg ALSA 1.0.7 with the same mixer
+configuration the error is not occures. SoundCard: nForce2 Audio Codec,
+Driver: snd-intel8x0, 4 speakers.
+p.s. sorry for my English.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000902 Some channels not working
+======================================================================
+
+----------------------------------------------------------------------
+ slammer - 03-10-05 13:17 
+----------------------------------------------------------------------
+I confirm it too. CVS version fixes my issue reported in 902 so I guess
+it's the same bug ;)
+Great job guys!
+
+----------------------------------------------------------------------
+ stephenv - 03-10-05 18:03 
+----------------------------------------------------------------------
+I was reading the howto's off the main page, hadn't occured to me that the
+INSTALL would contain entirely different instructions. Anyhow, as you can
+see, I "did it right" according to the install instruction in INSTALL and
+still have the problem. I am running kernel-2.6.10-1.770 for fc3, looks
+like this may be the problem as those of you reporting it fixed are
+running 2.6.11 of some sort. FC3 hasn't released that yet. I could roll my
+own, I know it "shouldn't" break anything, might do that when I can find
+the time. I have a wife and family though, and they miss me since I
+started this linux thing.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-24-05 13:44 Envel          New Issue                                    
+01-24-05 13:44 Envel          Kernel Version            => 2.6.8.1         
+01-25-05 15:18 tiwai          Note Added: 0003402                          
+01-28-05 08:17 ivantheviking  Issue Monitored: ivantheviking                    
+01-28-05 08:19 ivantheviking  File Added: asound.state                     
+01-28-05 08:20 ivantheviking  File Added: ac97#0-0                         
+01-28-05 08:21 ivantheviking  File Added: ac97#0-0+regs                    
+01-28-05 08:30 ivantheviking  Note Added: 0003424                          
+01-29-05 17:13 ivantheviking  Note Added: 0003438                          
+03-01-05 00:03 stephenv       Issue Monitored: stephenv                    
+03-01-05 00:06 stephenv       Note Added: 0003752                          
+03-02-05 01:19 ivantheviking  Note Edited: 0003438                         
+03-04-05 22:53 slammer        Note Added: 0003802                          
+03-04-05 22:55 slammer        Issue Monitored: slammer                     
+03-07-05 00:12 stephenv       File Added: svs.tar                          
+03-08-05 18:43 jor            Issue Monitored: jor                         
+03-08-05 19:03 jor            Note Added: 0003816                          
+03-09-05 18:43 tiwai          Note Added: 0003834                          
+03-09-05 18:43 tiwai          Note Added: 0003835                          
+03-09-05 19:24 jor            Note Added: 0003845                          
+03-10-05 03:27 stephenv       Note Added: 0003847                          
+03-10-05 11:55 slammer        Note Added: 0003848                          
+03-10-05 13:17 slammer        Note Added: 0003850                          
+03-10-05 14:36 tiwai          Relationship added       has duplicate 0000902
+03-10-05 18:03 stephenv       Note Added: 0003869                          
+======================================================================
 
 
-Hi,
-
-I already reported this in a note to issue 930 of the ALSA bugtracking
-system:
-
-I've a Juli@-Soundcard working with the current CVS-driver.
-
-The main problem is, that a process "snd-ak4114/0" is using 60% of my CPU
-time. I would like to solve this problem, and have started reading trough
-the code. But it seems I need some pointers where to look ;-)
-
-/Benno
---=20
-Sebastian Benoit <benoit-lists@fb12.de>
-My mail is GnuPG signed -- Unsigned ones are bogus -- http://www.gnupg.org/
-GnuPG 0xD777DBA7 2003-09-10 D02B D0E0 3790 1AA1 DA3A  B508 BF48 87BF D777 D=
-BA7
-
-Democratization of the internet must be opposed at all costs. The
-infestation ecommerce was bad enough, but to allow regular people to post
-their diaries online -- well, that's simply intolerable.
-
---GV0iVqYguTV4Q9ER
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (FreeBSD)
-
-iD8DBQFCMH36v0iHv9d326cRAmDGAJwLccpRzrqQYfKJbfzjbms0hGFUBwCgqJvn
-J3Oc5hk/qAyR9HJzZOnPo+M=
-=B3Es
------END PGP SIGNATURE-----
-
---GV0iVqYguTV4Q9ER--
 
 
 -------------------------------------------------------
