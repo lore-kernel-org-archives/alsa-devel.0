@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000621]: Audigy input
-Date: Sun, 20 Mar 2005 13:29:57 +0100
-Message-ID: <45a0b7f8885e490a2d039e6dba2b30bf@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000601]: Getting error while trying to insert the modules into the kernel>>cannot proceede further
+Date: Sun, 20 Mar 2005 13:30:42 +0100
+Message-ID: <ee36e1b647692debd767fd7ac6ca3f3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1DD7E250
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 13:29:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7987A250
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 13:30:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,68 +23,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=621> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=601> 
 ======================================================================
-Reported By:                KoxtaRF
+Reported By:                djcobra
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   621
+Issue ID:                   601
 Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             10-31-2004 15:14 CET
-Last Modified:              03-20-2005 13:29 CET
+Date Submitted:             10-24-2004 21:16 CEST
+Last Modified:              03-20-2005 13:30 CET
 ======================================================================
-Summary:                    Audigy input
+Summary:                    Getting error while trying to insert the modules
+into the kernel>>cannot proceede further
 Description: 
-I get exactly the same issue as the guy who posted this message:
+sir,
+i have followed the installation instructions of the above mentioned
+driver to the letter according to what is given in the link :
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI128+%28earlier+model+CT4700%29.&chip=ES1370&module=ens1370
+but unfortunatly>>i am not able to proceed further after the step where i
+am supposed to insert the modules into the keranl>>as when i try to run
+the given comand :
 
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg13087.html
+modprobe snd-ens1370;modprobe snd-pcm-oss;modprobe snd-mixer-oss;modprobe
+snd-seq-oss
 
-I cannot select any input source to be captured in alsamixer . Moreover,
-many of the output sliders cannot be muted by pressing M (like Master or
-PCM).
+i get an error : 
+
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o:
+init_module: No such device
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO or IRQ parameters.
+      You may find more information in syslog or the output from dmesg
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o: insmod
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o failed
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o: insmod
+snd-ens1370 failed
+
+
+Kindly help me solve this problem so that i too can listen to wonderful
+music in the eccelent quality provided by this awesome driver that u have
+created
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 11-03-04 08:18 
+ tiwai - 11-09-04 19:24 
 ----------------------------------------------------------------------
-> I didn't know that it's technically impossible to mute the Master or PCM
-channel. 
-
-This is posible, but need changes in driver or usage of ld10k1 (dl10k1).
-
->However, I remember that I was able to choose the input source to capture
-simply clicking space on it. Is there a way to bring it back?
-
-Previous versions uses AC97 ADC and you choose capture source on this
-AC97. Now, philips ADC is used (it is 24 bit and has better SNR). AC97 ADC
-is used only for Mic. I think, this will be step back. Under windows you
-can not capture from only line in too. You can capture only "Analog Mix".
-
-In previous alsa version you can set capture source only on sources mixed
-in AC97 all other source didn't have capture switch (Audigy CD,
-AudigyDrive inputs, ...).
+Are you sure that snd-ens1370 is the driver for your card?
+The driver for SB Live is usually snd-emu10k1.
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:29 
+ jdthood - 03-20-05 13:30 
 ----------------------------------------------------------------------
-It looks as if this report can be closed.
+This can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-04 15:14 KoxtaRF        New Issue                                    
-10-31-04 15:15 KoxtaRF        Issue Monitored: KoxtaRF                     
-10-31-04 15:16 KoxtaRF        Note Added: 0002293                          
-11-02-04 09:31 pzad           Note Added: 0002295                          
-11-02-04 18:50 KoxtaRF        Note Added: 0002298                          
-11-03-04 08:18 pzad           Note Added: 0002303                          
-03-20-05 13:29 jdthood        Note Added: 0004085                          
+10-24-04 21:16 djcobra        New Issue                                    
+10-26-04 22:19 djcobra        Issue Monitored: djcobra                     
+11-09-04 19:24 tiwai          Note Added: 0002347                          
+03-20-05 13:30 jdthood        Note Added: 0004086                          
 ======================================================================
 
 
