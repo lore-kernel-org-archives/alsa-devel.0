@@ -1,33 +1,46 @@
-From: CaT <cat@zip.com.au>
-Subject: Re: Realtek ALC650E support in 2.[45]?
-Date: Wed, 2 Jul 2003 01:25:34 +1000
-Sender: linux-sound-owner@vger.kernel.org
-Message-ID: <20030701152534.GF6404@zip.com.au>
-References: <20030630084943.GB385@zip.com.au> <s5hznjzlw55.wl@alsa2.suse.de> <20030630115219.GC385@zip.com.au> <s5hd6guli4l.wl@alsa2.suse.de>
+From: Anders Torger <torger@ludd.luth.se>
+Subject: RME DIGI96 ADAT input selection bug fix
+Date: Tue, 1 Jul 2003 20:14:59 +0200
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <200307012014.59778.torger@ludd.luth.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sound-owner@vger.kernel.org>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <s5hd6guli4l.wl@alsa2.suse.de>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org, alsa-devel@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: stefan mueller <s.mueller@computer.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 01, 2003 at 11:18:50AM +0200, Takashi Iwai wrote:
-> At Mon, 30 Jun 2003 21:52:19 +1000,
-> > > ALC650E is a revision E of ALC650, which has some minor extensions
-> > > (like S/PDIF support) but mostly identical with ALC650. 
-> > > So both should work.
-> > 
-> > Aha. Ok. What about with an Nvidia2 backend (MCP-T) to all this?
-> 
-> it's (almost) compatible with Intel ICH and works with the recent
-> intel driver above.
 
-ALSA, right? What's in 2.5 or still outside of it? And if outside, soon
-to be added?
+Stefan Mueller found a bug in my Digi96 driver. Sometimes I write != 
+when I mean == or the other way around:
 
--- 
-"How can I not love the Americans? They helped me with a flat tire the
-other day," he said.
-	- http://www.toledoblade.com/apps/pbcs.dll/artikkel?SearchID=73139162287496&Avis=TO&Dato=20030624&Kategori=NEWS28&Lopenr=106240111&Ref=AR
+--- rme96.old.c 2003-07-01 20:13:40.000000000 +0200
++++ rme96.new.c 2003-07-01 20:13:26.000000000 +0200
+@@ -1318,7 +1318,7 @@
+        snd_pcm_set_sync(substream);
+
+        runtime->hw = snd_rme96_capture_adat_info;
+-        if (snd_rme96_getinputtype(rme96) != RME96_INPUT_ANALOG) {
++        if (snd_rme96_getinputtype(rme96) == RME96_INPUT_ANALOG) {
+                 /* makes no sense to use analog input. Note that analog
+                    expension cards AEB4/8-I are RME96_INPUT_INTERNAL */
+                 return -EIO;
+
+
+
+-------------------------------------------------------
+This SF.Net email sponsored by: Free pre-built ASP.NET sites including
+Data Reports, E-commerce, Portals, and Forums are available now.
+Download today and enter to win an XBOX or Visual Studio .NET.
+http://aspnet.click-url.com/go/psa00100006ave/direct;at.asp_061203_01/01
