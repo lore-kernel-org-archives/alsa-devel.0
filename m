@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000617]: Front / rear out of sync
-Date: Thu, 2 Dec 2004 00:53:13 +0100
-Message-ID: <24af255378b0cab5f5d5da0d450fe88e@bugtrack.alsa-project.org>
+Date: Thu, 2 Dec 2004 02:02:45 +0100
+Message-ID: <557e35e3566c0db0e391a9e79eb35864@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B6950227
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 00:53:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4FDD32AD
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 02:02:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSE 9.0
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             10-30-2004 18:20 CEST
-Last Modified:              12-02-2004 00:53 CET
+Last Modified:              12-02-2004 02:02 CET
 ======================================================================
 Summary:                    Front / rear out of sync
 Description: 
@@ -64,13 +64,6 @@ pcm.ch40dup {
 ======================================================================
 
 ----------------------------------------------------------------------
- darkbrain - 11-29-04 15:13 
-----------------------------------------------------------------------
-It's true i tried alsa driver version 0.9.0b10 (in debian stable) and the
-signal is duplicated. From witch version this feature was disabled? I
-don't want to test every version to find it!
-
-----------------------------------------------------------------------
  darkbrain - 12-02-04 00:53 
 ----------------------------------------------------------------------
 Found it!
@@ -80,6 +73,11 @@ snd_cs46xx_codec_write(chip, AC97_CSR_ACMODE,
 0x200,CS46XX_PRIMARY_CODEC_INDEX);
 
 into cs46xx_lib.c
+
+----------------------------------------------------------------------
+ henkie_ - 12-02-04 02:02 
+----------------------------------------------------------------------
+Works! Tested w/ alsa in kernel-2.6.9.  Tnx alot
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -91,6 +89,7 @@ Date Modified  Username       Field                    Change
 11-10-04 22:37 henkie_        Note Added: 0002379                          
 11-29-04 15:13 darkbrain      Note Added: 0002636                          
 12-02-04 00:53 darkbrain      Note Added: 0002672                          
+12-02-04 02:02 henkie_        Note Added: 0002673                          
 ======================================================================
 
 
