@@ -2,7 +2,7 @@ From: Thorsten Haas <thorsten.haas@gmx.de>
 Subject: snd-trident - snd_ctl_open fails
 Date: Fri, 23 Aug 2002 15:40:43 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200208231540.43973.thorsten.haas@gmx.de>
+Message-ID: <26868.3701790453$1030131717@news.gmane.org>
 Reply-To: mail@thorstenhaas.de
 Mime-Version: 1.0
 Content-Type: Multipart/Mixed;
@@ -180,6 +180,7 @@ ctl.quattro3 {
 
 
 --------------Boundary-00=_VZTA76VQHN188MFB502J--
+
 
 
 
