@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000825]: On alpha: "alisp.c:2933: warning: int format, different type arg (arg 6)"
-Date: Wed, 19 Jan 2005 14:57:04 +0100
-Message-ID: <01350bb4e71baa1fbd3da370e2d3948e@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000826]: sparc: "Assembler messages: Warning: unterminated string; newline inserted"
+Date: Wed, 19 Jan 2005 15:25:28 +0100
+Message-ID: <c45a59781436b0d3e8cf12118f5fe7ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6D4B826D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:57:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1346C26D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 15:25:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=825> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=826> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   825
-Category:                   alisp
+Issue ID:                   826
+Category:                   general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             01-17-2005 09:05 CET
-Last Modified:              01-19-2005 14:57 CET
+Date Submitted:             01-17-2005 09:10 CET
+Last Modified:              01-19-2005 15:25 CET
 ======================================================================
-Summary:                    On alpha: "alisp.c:2933: warning: int format,
-different type arg (arg 6)"
+Summary:                    sparc: "Assembler messages: Warning: unterminated
+string; newline inserted"
 Description: 
-Making all in alisp
-make[3]: Entering directory `/build/buildd/alsa-lib-1.0.8/src/alisp'
-if /bin/sh ../../libtool --mode=compile alpha-linux-gcc -DHAVE_CONFIG_H
--I. -I. -I../../include -I../../include    -g -Wall -O2 -MT alisp.lo -MD
--MP -MF ".deps/alisp.Tpo" \
-  -c -o alisp.lo `test -f 'alisp.c' || echo './'`alisp.c; \
-then mv -f ".deps/alisp.Tpo" ".deps/alisp.Plo"; \
-else rm -f ".deps/alisp.Tpo"; exit 1; \
+The build log on sparc has several (on the order of 10) warnings like this
+one:
+
+Making all in control
+[...]
+if /bin/sh ../../libtool --mode=compile sparc-linux-gcc -DHAVE_CONFIG_H
+-I. -I. -I../../include -I../../include    -g -Wall -O2 -MT control.lo -MD
+-MP -MF ".deps/control.Tpo" \
+  -c -o control.lo `test -f 'control.c' || echo './'`control.c; \
+then mv -f ".deps/control.Tpo" ".deps/control.Plo"; \
+else rm -f ".deps/control.Tpo"; exit 1; \
 fi
-mkdir .libs
- alpha-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
--g -Wall -O2 -MT alisp.lo -MD -MP -MF .deps/alisp.Tpo -c alisp.c  -fPIC
--DPIC -o .libs/alisp.o
-alisp.c: In function `F_stat_memory':
-alisp.c:2933: warning: int format, different type arg (arg 6)
- alpha-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
--g -Wall -O2 -MT alisp.lo -MD -MP -MF .deps/alisp.Tpo -c alisp.c -o
-alisp.o >/dev/null 2>&1
+ sparc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-g -Wall -O2 -MT control.lo -MD -MP -MF .deps/control.Tpo -c control.c 
+-fPIC -DPIC -o .libs/control.o
+/tmp/ccVDtR4e.s: Assembler messages:
+/tmp/ccVDtR4e.s:6428: Warning: unterminated string; newline inserted
+ sparc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-g -Wall -O2 -MT control.lo -MD -MP -MF .deps/control.Tpo -c control.c -o
+control.o >/dev/null 2>&1
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-17-05 11:22 
+ tiwai - 01-19-05 14:46 
 ----------------------------------------------------------------------
-This warning also appears on s390.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=s390&stamp=1105954179&file=log&as=raw
-for the full build log on s390.
+I don't figure out yet what's wrong.
+Can you get the corresponding file (control.s)?
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 14:57 
+ jdthood - 01-19-05 15:25 
 ----------------------------------------------------------------------
-Fixed on CVS.
+I don't have access to the sparc machine myself.  The build log is
+generated by an automatic build program running on a machine which
+is under someone else's control.  Temporary files like control.s
+are deleted at the end of the build.
+
+It looks to me as if this could be a tool problem -- the compiler
+isn't sending properly terminated lines to the assembler.
+
+Perhaps this bug should be tagged "ignore and hope it goes away".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-05 09:05 jdthood        New Issue                                    
-01-17-05 09:25 jdthood        Note Added: 0003223                          
-01-17-05 11:22 jdthood        Note Added: 0003231                          
-01-19-05 14:57 tiwai          Status                   new => resolved     
-01-19-05 14:57 tiwai          Resolution               open => fixed       
-01-19-05 14:57 tiwai          Assigned To               => tiwai           
-01-19-05 14:57 tiwai          Note Added: 0003279                          
+01-17-05 09:10 jdthood        New Issue                                    
+01-19-05 14:46 tiwai          Note Added: 0003278                          
+01-19-05 15:25 jdthood        Note Added: 0003286                          
 ======================================================================
 
 
