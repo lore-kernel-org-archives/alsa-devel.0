@@ -1,12 +1,16 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000311]: error messages: boot process, application start
-Date: Mon, 21 Jun 2004 10:15:14 +0200
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: [PATCH]snd-usb-usx2y 0.6.4
+Date: Mon, 21 Jun 2004 10:30:30 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <169c291a8af51d409c7f8ba45e8db37d@bugtrack.alsa-project.org>
+Message-ID: <200406211030.30993.annabellesgarden@yahoo.de>
+References: <Pine.HPX.4.33n.0406210939370.7655-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0406210939370.7655-100000@studcom.urz.uni-halle.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,107 +19,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Am Montag 21 Juni 2004 10:02 schrieb Clemens Ladisch:
+> Karsten Wiese wrote:
+> > snd-usb-usx2x calls usb-set-interface() to set the sample format.
+>
+> ... and the USx2y devices use the same interface for MIDI, it seems.
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0311
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                phil
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     311
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian sid
-Kernel Version:             vanilla 2.6.5
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             05-27-2004 15:00 CEST
-Last Modified:              06-21-2004 10:15 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    error messages: boot process, application sta=
-rt
-Description:=20
-Everytime I boot my machine I get the following error code:
+Yes.
+It is impossible to use different interfaces on one usb_device at the same 
+time. Or not?
 
-PCI: Enabling device 0000:00:1f.5 (0005 -> 0007)
-PCI: Setting latency timer of device 0000:00:1f.5 to 64
-ALSA sound/pci/intel8x0.c:596: codec_semaphore: semaphore is not ready
-[0x1][0x700300]
-ALSA sound/pci/ac97/ac97_codec.c:1868: MC'97 1 converters and GPIO not
-ready (0xff00)
-ALSA sound/pci/intel8x0.c:596: codec_semaphore: semaphore is not ready
-[0x1][0x700300]
-intel8x0_measure_ac97_clock: measured 49475 usecs
-intel8x0: clocking to 48000
+>
+> > This lets midi in work after usb-set-interface() on kernel 2.6.7 and
+> > doesn't disturb otherwise.
+> >
+> > +  if (urb && urb == ep->urb_retry
+>
+> It's not obvious why urb_retry is needed.  Isn't it always the same
+> as ep->urb?
 
+ep->urb_retry is normally NULL and only set to ep->urb, if ep->urb comes back 
+with -ESHUTDOWN.
+Thus ep->urb_retry serves as a flag to show that resubmission is needed.
 
+>
+> > +      && usb_pipe_needs_resubmit(urb->pipe))
+>
+> Won't this prevent it from working with interrupt pipes on 2.4?
+>
+> > +  snd_usbmidi_submit_urb(urb, GFP_ATOMIC);
+>
+> I think we can use GFP_KERNEL here.
+>
+>
+> I don't like this solution too much, it's just a device-specific
+> kludge.  A more general solution would be to have two functions
+> snd_usbmidi_stop/start_input() and calling them before/after changing
+> the sample format.  (The start function could be used at the end of
+> snd_usb_create_midi_interface(), too.)
 
-And the following one after starting frozen-bubble:
+Agreed.
+>
+> And what should happen to data that is being output when the sample
+> format is changed?
 
-ALSA sound/core/seq/oss/seq_oss_init.c:213: no device found
-ALSA sound/pci/intel8x0.c:596: codec_semaphore: semaphore is not ready
-[0x1][0x700300]
-ALSA sound/pci/intel8x0.c:611: codec_write 0: semaphore is not ready for
-register 0x2c
+There was no out midi urb missed so far. It looks as if there is no special 
+handling needed.
 
-
-That's the only thing. Sound works fine - it's only the message I'm
-concernd about...
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-----------------------------------------------------------------------
- tiwai - 05-28-2004 17:03 CEST=20
-----------------------------------------------------------------------
-could you try 1.0.5?  at least this kind of messages should appear
-only once in this version.
-
-----------------------------------------------------------------------
- phil - 06-21-2004 10:15 CEST=20
-----------------------------------------------------------------------
-I tried 1.0.5a-1 (debian package) and got still the same message with the
-same quantity.
-
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-05-27-04 15:00 phil           New Bug                                    =
- =20
-05-27-04 15:00 phil           Distribution              =3D> Debian sid  =
-   =20
-05-27-04 15:00 phil           Kernel Version            =3D> vanilla 2.6.=
-5  =20
-05-28-04 17:03 tiwai          Bugnote Added: 0001266                     =
- =20
-06-21-04 10:15 phil           Bugnote Added: 0001326                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
+Regards,
+Karsten
 
 
 -------------------------------------------------------
