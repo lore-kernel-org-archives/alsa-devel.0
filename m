@@ -1,13 +1,22 @@
-From: Anthony <avan@uwm.edu>
-Subject: ice1712 noise
-Date: Sat, 31 Jan 2004 00:09:28 -0600
+From: Thierry Vignaud <tvignaud@mandrakesoft.com>
+Subject: Re: [COMPLAIN] a patched 1.0.2 has been silently reuploaded (was:
+ 1.0.2 release)
+Date: Thu, 29 Jan 2004 19:43:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040131060928.GA27876@ice_nine.wi.rr.com>
-Reply-To: avan@uwm.edu
+Message-ID: <m265eufvev.fsf@vador.mandrakesoft.com>
+References: <Pine.LNX.4.58.0401271049310.3133@pnote.perex-int.cz>
+	<m2fze0nq9l.fsf@vador.mandrakesoft.com> <20040128195302.GF6787@zewt.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from vador.mandrakesoft.com (ezoffice.mandrakesoft.com [212.11.15.34])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA29213
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2004 19:43:11 +0100
+Received: from vador.mandrakesoft.com (localhost [127.0.0.1])
+	by vador.mandrakesoft.com (Postfix) with ESMTP id 6E2E41BEED
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2004 19:43:04 +0100 (CET)
+In-Reply-To: <20040128195302.GF6787@zewt.org> (Glenn Maynard's message of
+ "Wed, 28 Jan 2004 14:53:02 -0500")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,37 +25,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi, I've been hearing for some weeks now a very high
-frequency, quiet crackling distortion when using my
-delta44 on playback. This is with driver versions
-0.9.8 and 1.0.2.
+Glenn Maynard <g_sf@zewt.org> writes:
 
-Symptoms:
-* It only occurs on playback.
-* It is not always present, but once it manifests
-  it is consistent.
-* I've ruled out external gear by swapping everything
-* It cannot be recorded...i.e. if i use jack capture
-  while it is happening, and playback on my other
-  card I do not hear it
-* I have been able to reproduce it with alsaplayer
-  using the hardware layer (so not a jack problem).
-* shutting down alsa apps and restarting the drivers
-  fixes the problem until it reoccurs. It can take
-  a long to to resurface.
-* Of course, there is no way for me to rule out the
-  card itself as being the problem.
-* Other than driver changes, my system has been
-  a rather stable 2.4.21 kernel.
+> > we only found it because some user complained that cooker
+> > alsa-lib-1.0.2 package was broken whereas downloaded tarball from
+> > ftp.alsa-project.org wasn't.  people should at least be warned
+> > about the reupload.
+> 
+> This should go without saying.  I don't want to have to spend time
+> explaining to users that their 1.0.2 isn't *really* the latest
+> release, much less the confusion of not being able to tell from the
+> version what version it really is (confusion of that nature in other
+> code has, in the past, stolen many hours of my time at a stretch).
 
-I wonder if there was significant changes to the driver
-that someone might suggest an earlier driver version to
-try. TIA.
+thanks for supporting this. now if jaroslav and takashi could promise
+they won't do again, i would be a very happy packager :-)
 
---ant
+> Message-ID: <Pine.LNX.4.58.0401271411120.3133@pnote.perex-int.cz>
+> "I'm recreating the alsa-lib package right now."
+
+that's what i would call an announce or a warning.
+
 
 
 -------------------------------------------------------
