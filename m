@@ -1,10 +1,12 @@
 From: Jeff Muizelaar <jeff@infidigm.net>
-Subject: [PATCH] au88x0 - do codec init more like windows does
-Date: Tue, 22 Feb 2005 22:35:06 -0500
-Message-ID: <20050223033505.GB6974@debian>
+Subject: Re: [Openvortex-dev] au88x0 - Replace spdif frequency control by IEC958 control
+Date: Tue, 22 Feb 2005 22:39:22 -0500
+Message-ID: <20050223033922.GC6974@debian>
+References: <42199071.6090406@netvigator.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <42199071.6090406@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,41 +16,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sf.net
+To: Raymond <rayau@netvigator.com>
+Cc: openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The following patch makes the codec init code act more like the windows
-code.
+On Mon, Feb 21, 2005 at 03:40:33PM +0800, Raymond wrote:
+> 5) Can any au8810/au8830 owner verify that EN_CODEC1 should/should not 
+> be used for those au8810/au8830 not using a quad codec ? (e.g Montego II 
+> using STAC9721 stereo codec, SQ1500, Vortex Advantage, ASUS L8400B 
+> notebook au8810 with modem)
 
-Signed-off-by: Jeff Muizelaar <jeff@infidigm.net>
+I can probably look at this when I get the chance.
+I'll also take a closer look at your patch...
 
-
-Index: pci/au88x0/au88x0_core.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_core.c,v
-retrieving revision 1.10
-diff -u -r1.10 au88x0_core.c
---- pci/au88x0/au88x0_core.c	3 Jan 2005 12:08:24 -0000	1.10
-+++ pci/au88x0/au88x0_core.c	23 Feb 2005 03:30:43 -0000
-@@ -2480,7 +2480,8 @@
- 	int i;
- 
- 	for (i = 0; i < 32; i++) {
--		hwwrite(vortex->mmio, (VORTEX_CODEC_CHN + (i << 2)), 0);
-+		/* the windows driver writes -i, so we write -i */
-+		hwwrite(vortex->mmio, (VORTEX_CODEC_CHN + (i << 2)), -i);
- 		msleep(2);
- 	}
- 	if (0) {
-@@ -2502,7 +2503,7 @@
- 		hwwrite(vortex->mmio, VORTEX_CODEC_CTRL, 0x00e8);
- 	}
- 	for (i = 0; i < 32; i++) {
--		hwwrite(vortex->mmio, (VORTEX_CODEC_CHN + (i << 2)), 0);
-+		hwwrite(vortex->mmio, (VORTEX_CODEC_CHN + (i << 2)), -i);
- 		msleep(5);
- 	}
- 	hwwrite(vortex->mmio, VORTEX_CODEC_CTRL, 0xe8);
+-Jeff
 
 
 -------------------------------------------------------
