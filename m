@@ -1,19 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: DMA feature question.
-Date: Sat, 26 Jun 2004 15:44:32 +0100
+From: Joachim Falk <joachim.falk@gmx.de>
+Subject: Control renaming for EMU10k1
+Date: Sat, 26 Jun 2004 16:25:57 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40DD8BD0.40705@superbug.demon.co.uk>
+Message-ID: <40DD8775.2@jfalk.easynet.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-37.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7859B2CD
-	for <alsa-devel@alsa-project.org>; Sat, 26 Jun 2004 15:42:02 +0200 (MEST)
-Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
-	by anchor-post-37.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 1BeDRR-000HLc-0b
-	for alsa-devel@alsa-project.org; Sat, 26 Jun 2004 14:42:01 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,36 +15,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have a sound card that requires access to 2 DMA areas per substream.
-1) Is for the audio samples buffer. I can already do that with:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-err = snd_pcm_lib_preallocate_pages(substream, SNDRV_DMA_TYPE_DEV, 
-snd_dma_pci_data(emu->pci), 32*1024, 32*1024);
+Hey alsa-devel list,
+I have a SB Live sound card
+// 'Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 07)
+// Subsystem: Creative Labs SB Live! 5.1 Model SB0100'
+//
+// numeric:
+// 'Class 0401: 1102:0002 (rev 07)
+// Subsystem: 1102:8064'
+With AC97 Sigmatel 9708/11. The names for the AC97 controls from
+ac97_codec.c do not match how they are used on the Live.
+So I have done some Control renaming in the emumixer.c
+But the "AC97 Surround Playback control" is a stereo control
+but is used for the Live as control for Center and LFE.
 
+So my question is how can i best rename this control to have two
+different names matching the functionality for the right and left
+channel of the stereo channel ?
 
-2) Is for a table of periods..
-This table will contain:-
-{ u32 Pointer_into_samples_buffer,
-u32 number_of_bytes }
-So, each record in the table is 8 bytes long, and identify each period 
-in the buffer.
+Or is driver hacking here foolish and there exists a better mechanisme
+for this kind of stuff in userspace ?
 
-So, the table will contain a list of the different periods.
-So, if there are 8 periods, the table will have 8 entries, each 8 bytes 
-long, so I will need a DMA map for 64 bytes.
+My longterm goal is to improve the mixer for SB Lives.
 
-Is there any way to use the snd_pcm_lib_preallocate_pages() for this 
-"table or periods".
+MfG
+Joachim Falk
+- --
+Joachim Falk <Joachim.Falk@gmx.de>
 
-If not, I will just have to make (1) a bit bigger, and place the "table 
-of periods" in there.
+You can always tell a really good idea by the enemies it makes.
+~  --programmers' axiom
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
 
-Cheers
-
-James
+iD8DBQFA3Yd1KwZcgs55jUMRAoLYAKDIOLMlPv46p59x7IBr+yx78Dhk0ACeKlmy
+8K29AwabmQ9iRZr26gArP2w=
+=wOBs
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
