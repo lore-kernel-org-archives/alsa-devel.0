@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000358]: error in pcm_native.c while compiling alsa-driver from cvs
-Date: Thu, 15 Jul 2004 11:22:56 +0200
+Subject: [ALSA - driver 0000375]: SB Live (Value and 5.1), OSS playback fine, ALSA playback distorted
+Date: Thu, 15 Jul 2004 11:24:16 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <10ceb160c7ec7bfd3b4e39e193039d8a@bugtrack.alsa-project.org>
+Message-ID: <7475a8e338c2c4633ec31dcb6376e14d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -24,78 +24,86 @@ The following bug has been RESOLVED.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0358
+0375
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                msrinath80
-Assigned To:                perex
+Reported By:                azrael7157
+Assigned To:                pzad
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     358
-Category:                   0_compilation problem_!!!
+Bug ID:                     375
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               RedHat Linux 9
-Kernel Version:             2.4.20-8
-Resolution:                 fixed
+Distribution:               Gentoo
+Kernel Version:             2.4.20-gentoo-r8
+Resolution:                 not a bug
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-30-2004 23:46 CEST
-Last Modified:              07-15-2004 11:22 CEST
+Date Submitted:             07-10-2004 17:36 CEST
+Last Modified:              07-15-2004 11:24 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    error in pcm_native.c while compiling alsa-dr=
-iver
-from cvs
+Summary:                    SB Live (Value and 5.1), OSS playback fine, A=
+LSA
+playback distorted
 Description:=20
-When I try to do a ./cvscompile --with-cards=3Demu10k1x for a fresh Check=
- Out
-(30th June) from alsa CVS, I get the following error:
----------------
-pcm_native.c: In function `snd_pcm_mmap_data':
-pcm_native.c:3176: warning: passing arg 1 of `remap_page_range' makes
-pointer from integer without a cast
-pcm_native.c:3176: incompatible type for argument 4 of `remap_page_range'
-pcm_native.c:3176: too few arguments to function `remap_page_range'
-make[1]: *** [pcm_native.o] Error 1
-make[1]: Leaving directory `/home/srinath/alsacvs/alsa-driver/acore'
-make: *** [compile] Error 1
----------------
+    I'm using a SB Live!. Normally I use the SB Live! Value (CT4780) but =
+it
+came with a Dell computer, so I bought a SB Live! 5.1 Digital (SB0220) to
+make sure it wasn't one of those crippled soundcards. The issue occurs
+with both versions of the SB Live!
+    I'm using ALSA 1.0.5 - Gentoo doesn't have alsa-driver 1.0.5a
+available yet.
+    I have a rather unusual problem - when I try to use ALSA e.g. aplay,
+to play back a wav file e.g. one of the KDE wavs, it produces an odd
+output. The output is distorted, plays back really slowly, and samples
+keep on getting repeated. Once, it took over 5 minutes to play back
+/usr/kde/3.1/share/sound/KDE_Startup.wav.
+     On a whim, I tried using XMMS through the OSS output - to my suprise
+it worked perfectly. In fact, I'm listening to MP3's as I fill out this
+bug report.
+     I don't know whether this is a driver issue or a mixer one - the
+mixer settings are horrendous. However, I managed to get onboard sound to
+work (via82xx, now disabled) through ALSA and OSS emulation perfectly fin=
+e
+on the same PC, so it seems like a SB Live! specific issue.
+    I've attached my asound.state in case it is a mixer issue.
+
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- msrinath80 - 07-05-2004 07:20 CEST=20
+ azrael7157 - 07-10-2004 18:39 CEST=20
 ----------------------------------------------------------------------
-Reminder sent to perex
-
-hi,
-
-sorry to disturb you. can you look into the cvs problem in (pcm_native.c)
-
-thanks!
-
--pUl|
+Midi playback via pmidi (using hardware or Timidity) doesn't work either.
+Haven't tried an OSS midi player yet.
 
 ----------------------------------------------------------------------
- msrinath80 - 07-14-2004 10:27 CEST=20
+ azrael7157 - 07-13-2004 18:33 CEST=20
 ----------------------------------------------------------------------
-Seems to work now in the CVS. You might want to close this bug report?
+I've been looking into this further myself, this bug can be closed now. N=
+ot
+actually an ALSA issue, turns out it's a motherboard issue. I tried it in
+a different computer, and it worked first time. I tried disabling ACPI,
+sound started working again through aplay.
+It might be worth noting in the SB Live installation pages that users of
+Via chipsets on Athlon motherboards (especially the Abit AT7-MAX2) need t=
+o
+disable ACPI e.g. with lilo, add append=3D"acpi=3Doff".
 
-Thanks!
-
 ----------------------------------------------------------------------
- tiwai - 07-15-2004 11:22 CEST=20
+ tiwai - 07-15-2004 11:24 CEST=20
 ----------------------------------------------------------------------
-Fixed now on cvs.
+Ok, closed now.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -103,25 +111,25 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-30-04 23:46 msrinath80     New Bug                                    =
+07-10-04 17:36 azrael7157     New Bug                                    =
  =20
-06-30-04 23:46 msrinath80     File Added: log                            =
+07-10-04 17:36 azrael7157     File Added: asound.state                   =
  =20
-06-30-04 23:46 msrinath80     Distribution              =3D> RedHat Linux=
- 9 =20
-06-30-04 23:46 msrinath80     Kernel Version            =3D> 2.4.20-8    =
+07-10-04 17:36 azrael7157     Distribution              =3D> Gentoo      =
    =20
-06-30-04 23:48 msrinath80     Bug Monitored: msrinath80                  =
+07-10-04 17:36 azrael7157     Kernel Version            =3D> 2.4.20-gento=
+o-r8
+07-10-04 17:37 azrael7157     Bug Monitored: azrael7157                  =
  =20
-07-05-04 07:20 msrinath80     Bugnote Added: 0001382                     =
+07-10-04 18:39 azrael7157     Bugnote Added: 0001403                     =
  =20
-07-14-04 10:27 msrinath80     Bugnote Added: 0001417                     =
+07-13-04 18:33 azrael7157     Bugnote Added: 0001414                     =
  =20
-07-15-04 11:22 tiwai          Bugnote Added: 0001426                     =
+07-15-04 11:24 tiwai          Bugnote Added: 0001427                     =
  =20
-07-15-04 11:22 tiwai          Resolution               open =3D> fixed   =
-   =20
-07-15-04 11:22 tiwai          Status                   assigned =3D> reso=
+07-15-04 11:24 tiwai          Resolution               open =3D> not a bu=
+g  =20
+07-15-04 11:24 tiwai          Status                   assigned =3D> reso=
 lved
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
