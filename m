@@ -1,24 +1,17 @@
 From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: snd_pcm_wait()  More details required.
-Date: Sun, 21 Mar 2004 14:49:00 +0000
+Subject: Re: OSS API redirector
+Date: Sun, 21 Mar 2004 22:53:10 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <405DAB5C.5010106@superbug.demon.co.uk>
+Message-ID: <405E1CD6.4030404@superbug.demon.co.uk>
+References: <Pine.LNX.4.58.0403181015270.1835@pnote.perex-int.cz> <4059AE5E.7030703@superbug.demon.co.uk> <Pine.LNX.4.58.3503191408270.16085@tomservo.workpc.tds.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-fallback-94.mail.demon.net (anchor-fallback-94.mail.demon.net [194.217.242.94])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA19817
-	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2004 00:19:44 +0100
-Received: from anchor-post-30.mail.demon.net ([194.217.242.88]:1064 "EHLO
-	anchor-post-30.mail.demon.net") by anchor-fallback-94.mail.demon.net
-	with ESMTP id S747710AbUCUTKV (ORCPT
-	<rfc822;alsa-devel@alsa-project.org>);
-	Sun, 21 Mar 2004 19:10:21 +0000
-Received: from superbug.demon.co.uk ([80.176.146.252])
-	by anchor-post-30.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 1B54CU-000HRm-0U
-	for alsa-devel@alsa-project.org; Sun, 21 Mar 2004 14:45:18 +0000
+Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net [194.217.242.89])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA20043
+	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2004 00:31:15 +0100
+In-Reply-To: <Pine.LNX.4.58.3503191408270.16085@tomservo.workpc.tds.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -27,41 +20,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: David Lloyd <dmlloyd@tds.net>
+Cc: Jaroslav Kysela <perex@suse.cz>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I need more details on exactly what snd_pcm_wait() is supposed to do.
-The documentation on the www.alsa-project.org gives: -
-Wait for a PCM to become ready.
-
-Parameters:
-     pcm  	PCM handle
-     timeout  	maximum time in milliseconds to wait
-
-Returns:
-     a positive value on success otherwise a negative error code (-EPIPE 
-for the xrun and -ESTRPIPE for the suspended status, others for general 
-errors)
-
-Return values:
-     0  	timeout occurred
-     1  	PCM stream is ready for I/O
-
-
-
-So, when is a PCM ready?
-If a PCM is already in SND_PCM_STATE_RUNNING, when is snd_pcm_wait() 
-supposed to return ?
-
-I have discovered a problem with xine when using it. I have done a work 
-around in xine so that dmix now works in xine. I think that my 
-assumptions regarding snd_pcm_wait() might have been wrong, so I want to 
-  get accurate details from yourselves.
-It also might be a good idea to update the documentation for 
-snd_pcm_wait() with more details.
+David Lloyd wrote:
+> On Thu, 18 Mar 2004, James Courtier-Dutton wrote:
+> 
+> 
+>>What is the conclusion regarding fopen/fclose/fwrite/fread. Can it be
+>>done?
+> 
+> 
+> I thought that one rather pie-in-the-sky idea might be to use a kernel
+> module that made /dev/dsp, /dev/mixer, etc., and reflects back to a
+> userspace ALSA sound server via another device.  This way, it doesn't
+> matter how the device is opened.
+> 
+> Might be difficult to do though, especially when you get mmap and 
+> dma involved.
+> 
+> Just a thought, anyway.
+> 
+> - D
+> 
+> 
+I thought of that, but with that you just get different problems.
+E.g. dmix only works is all application wishing to play sound are run by 
+the same user. You would probably need some daemon to run the /dev/dsp, 
+and that user deamon would have to run under the same user as any native 
+alsa app.
 
 Cheers
 James
+
 
 
 -------------------------------------------------------
