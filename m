@@ -1,13 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Interested in having a go at coding an ALSA driver
-Date: Wed, 12 Feb 2003 09:31:54 +0100 (MET)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: dmix plugin
+Date: Wed, 12 Feb 2003 10:45:41 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0302120907490.19742-100000@studcom.urz.uni-halle.de>
-References: <5.1.1.6.0.20030212142640.00aafb40@mail.labyrinth.net.au>
+Message-ID: <Pine.LNX.4.44.0302121015420.14550-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <5.1.1.6.0.20030212142640.00aafb40@mail.labyrinth.net.au>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA02289
+	for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2003 10:45:57 +0100
+Received: from pnote.perex-int.cz ([192.168.105.2])
+	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA18567
+	for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2003 10:45:50 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,36 +20,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chris Share <cpsmusic@labyrinth.net.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Chris Share wrote:
-> I've never done any kernal programming and feel a bit daunted by the task
-> in front of me. Any suggestions on where to start would be much
-> appreciated. I have downloaded quite a few articles on ALSA, etc. so that
-> should keep me going for a while.
+Hi all,
 
-There's a document about writing ALSA drivers in
-alsa-kernel/Documentation/DocBook/writing-an-alsa-driver.tmpl.
+	a next step to get the lowlatency sharing of exclusive PCM devices 
+is in ALSA CVS - the dmix (direct mixing) plugin..
+	How it works? Basically, the playback in driver runs forewer
+without any xrun detection. The ring buffer (only just played areas) is
+also silenced in each interrupt. Then we have multiple clients and a
+process (server) which passes the file descriptor of playback devices to
+them. The server also takes care about freeing of used shm memory and
+semaphore.
+	The big step forward is that we share one mmaped ring buffer
+accross many processes and each process can add samples into it without
+any process<->kernel swaps. Also, each processes are independant, thus
+failing of one doesn't break others. It's not multithreaded, we don't need
+this mechanism.
 
-> Yamaha SW1000
-> Hoontech DSP24 Value
->
-> I'd be interested in having a go a coding a driver for one of these.
+Here is an .asoundrc example configuration (plugin defaults are 48kHz, 
+stereo, signed 16-bit little endian):
 
-Yamaha doesn't publish useful informatin about the SW1000XG, so you'd have
-to reverse engineer the Windows driver first.
+pcm.dmix {
+	type dmix
+	ipc_key 1234	# must be unique for all dmix plugins!!!!
+	slave {
+		pcm "hw:0,0"
+	}
+}
 
-alsa-kernel/pci/ice1712/hoontech.h says that the SoundTrack DSP 24 Value
-is supported, but the DSP 24 is marked "untested" in the sound card list.
-Anyway, if it doesn't work with your card, it should be easy to make it
-work.
+	Then try: 'aplay -Dplug:dmix <filename>' on multiple consoles.
 
+	Note that it's still alpha code and there are some not correctly
+implemented functions (like drain, rewind and more). Note that you'll need
+also the latest ALSA driver from CVS, because the silence settings was
+enhanced a bit and bug in the timer code will crash your machine.
 
-HTH
-Clemens
+					Enjoy it!
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
