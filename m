@@ -1,15 +1,19 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: dmix is equivalent to /dev/null on my system [cs46xx]
-Date: Fri, 11 Jun 2004 17:46:11 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Site Down: www.alsa-project.org
+Date: Fri, 11 Jun 2004 16:43:25 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040611174611.1b33b034@mango.fruits.de>
+Message-ID: <40C9D31D.1040903@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 62110285
-	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2004 17:41:17 +0200 (MEST)
+Received: from anchor-post-30.mail.demon.net (anchor-post-30.mail.demon.net [194.217.242.88])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB235285
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2004 17:43:26 +0200 (MEST)
+Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
+	by anchor-post-30.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 1BYoBi-000BEs-0U
+	for alsa-devel@alsa-project.org; Fri, 11 Jun 2004 16:43:26 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,39 +22,10 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-Hi,
-
-a while back i reporte this problem before. On my system [debian unstable, kernel 2.6.6] the dmix plugin behaves like a black hole. Means: no sound coming out of my speakers at all..
-
-aplay -D plug:dmix file.wav  
-
--> silence
-
-aplay -D plughw:0,0 file.wav
-
--> sound
-
-dsnoop on the other hand doesn't work as expected either: When i start a recording with
-
-arecord -D plughw:0,0 -f cd file.wav
-
--> records nicely
-
-arecord -D plug:dsnoop -f cd file.wav
-
--> noise - seems to be the first captured buffer repeated endlessly..
-
-Other pcm stuff like the ladspa pcm plugin work flawlessly..
-
-Florian Schmidt
-
--- 
-Palimm Palimm!
-
+looks like www.alsa-project.org is down again.
 
 
 -------------------------------------------------------
