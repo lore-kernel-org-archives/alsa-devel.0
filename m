@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001036]: Replacement SB Live card not detected
-Date: Tue, 5 Apr 2005 08:55:02 +0200
-Message-ID: <498fde199e81ef9d0e29aacaa4878d84@bugtrack.alsa-project.org>
+Date: Tue, 5 Apr 2005 10:20:16 +0200
+Message-ID: <f40cf719851a3a1b130f2bad526fbbe5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2F4B71E7
-	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 08:55:03 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DA0411D8
+	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 10:20:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.3
 ======================================================================
 Date Submitted:             04-05-2005 02:10 CEST
-Last Modified:              04-05-2005 08:55 CEST
+Last Modified:              04-05-2005 10:20 CEST
 ======================================================================
 Summary:                    Replacement SB Live card not detected
 Description: 
@@ -55,12 +55,6 @@ detected.
 Regards,
 grolschie
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 04-05-05 08:30 
-----------------------------------------------------------------------
-What is output from 
-lspci -n
 
 ----------------------------------------------------------------------
  grolschie - 04-05-05 08:55 
@@ -189,6 +183,15 @@ Controller on VT8235
 
 hmmm.... "Creative Labs: Unknown device 8067"
 
+----------------------------------------------------------------------
+ pzad - 04-05-05 10:20 
+----------------------------------------------------------------------
+This can by sb live (c) 2003 with STAC9758. Some older alsa versions had
+bug for this card - card was sillent. And proper support was added in alsa
+1.0.5.
+
+kernel 2.6.3 contains old alsa. Try to upgrade to never alsa.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -198,6 +201,7 @@ Date Modified  Username       Field                    Change
 04-05-05 02:12 grolschie      Note Added: 0004333                          
 04-05-05 08:30 pzad           Note Added: 0004334                          
 04-05-05 08:55 grolschie      Note Added: 0004335                          
+04-05-05 10:20 pzad           Note Added: 0004336                          
 ======================================================================
 
 
