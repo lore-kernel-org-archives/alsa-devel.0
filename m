@@ -1,14 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: "Unexpected hw_pointer value - wrong interrupt
-Date: Thu, 15 Jul 2004 17:26:46 -0400
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000391]: Built-in sound card not seen.
+Date: Fri, 16 Jul 2004 00:21:16 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1089926806.24832.6.camel@mindpipe>
-References: <XFMail.20040715124123.pochini@shiny.it>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040715222116.A9E701C009@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <XFMail.20040715124123.pochini@shiny.it>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DCC1E23F
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 00:21:17 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id BD2B21240D
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 00:21:16 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,59 +19,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-07-15 at 06:41, Giuliano Pochini wrote:
-> On 13-Jul-2004 Lee Revell wrote:
-> 
-> >> > Jul 12 17:31:43 mindpipe kernel: ALSA /usr/src/alsa-cvs-1.0.5/alsa-driver/alsa-kernel/core/pcm_lib.c:199:
-> >> > Unexpected hw_pointer value [1] (stream = 0, delta: -16, max jitter = 32): wrong interrupt acknowledge?
-> >>
-> >> The message appears when an unexpected DMA pointer is read in the
-> >> interrupt handler.  Either the handling of irq was delayed more than
-> >> the buffer size, an irq is issued at the wrong timing, or the DMA
-> >> pointer reigster is somehow screwed up.
-> >>
-> >> Since you're using quite small buffer, I guess the former case.
-> >>
-> >
-> > I thought this was what an XRUN was, when the handling of the irq is
-> > delayed more than the buffer size.  Sometimes these messages are
-> > associated with XRUNs, sometimes not.
-> >
-> > Is this a kernel issue, ALSA midlevel issue, or driver issue?
-> 
-> It is associated with an xrun when it is the cause of the xrun,
-> most likely, and it happens more frequently if you're using a
-> short buffer formed by two periods only.
-> 
-> A lot of things can cause it. The most common are: Some code path
-> in the kernel keeps interrupts disabled too long or the hardware
-> does not send the IRQ quickly enough or the dma counter is not up
-> to date when the driver reads it.
-> 
-> For example my driver had that problem until I figured out that
-> the IRQ is delivered only at addresses aligned to the lenght of
-> 32 frames. I fixed it placing a _constaint_step() on the period
-> size and on the buffer size.
 
-The problem seems to be with the Via CastleRock video driver.  By slowly
-dragging certain windows around in X (the gmplayer splash screen is the
-easiest to replicate with), I can cause interrupts to be completely
-disabled for tens of milliseconds.  The symptoms seem identical to the
-issue several years ago where video card vendors figured out they could
-get slightly better benchmark scores by not checking whether there is
-space in the video card FIFO before writing to it. The effect of this
-was to completely lock up the PCI bus until the FIFO drained.
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000391
+======================================================================
+Reported By:                PhilTR
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     391
+Category:                   OTHERS
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.4.20-31.9
+======================================================================
+Date Submitted:             07-16-2004 00:21 CEST
+Last Modified:              07-16-2004 00:21 CEST
+======================================================================
+Summary:                    Built-in sound card not seen.
+Description: 
+I can't say that this is really a bug although its got me bugged. I
+installed a new mother board (GA-8IPE 1000 Pro) which has a built-in
+RealTek sound card:
+02:01.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+RTL-8139/8139C/8139
+C+ (rev 10)
+        Subsystem: Realtek Semiconductor Co., Ltd. RT8139
+        Flags: bus master, medium devsel, latency 32, IRQ 5
+        I/O ports at 9000 [size=256]
+        Memory at fb004000 (32-bit, non-prefetchable)       [size=256]
+        Capabilities: [50] Power Management version 2
 
-More details are on LKML (the 'Losing interrupts' thread).
+Linux dutifully loaded w/o incident and after loggin in I received the
+following error message: 'Couldn't open mixer device /dev/sound/mixer" 
 
-Lee
+I've been receiving help at <a
+href="http://www.linuxquestions.org/questions/showthread.php?s=&threadid=203196&perpage=15&pagenumber=1">LinuxQuestions.org<a/>
+but, to get to the point, I'm wondering if anyone here has a fix? I've
+downloaded "alsa-xxxx-1.0.5" (firmware is: 1.0.4) Set-up proceeded w/o
+incident. Running "alsaconf" got me: "No supported PnP or PCI card dound"
+and "No legacy drivers found." 
 
- 
+Your kind patience is appreciated. philtr (rabne@pipeline.com)
 
+======================================================================
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-04 00:21 PhilTR         New Bug                                      
+07-16-04 00:21 PhilTR         Kernel Version            => 2.4.20-31.9     
+======================================================================
 
 
 -------------------------------------------------------
