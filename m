@@ -1,13 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Does USB driver support IEC958?
-Date: Tue, 11 Jan 2005 09:06:02 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0501110903240.12452-100000@studcom.urz.uni-halle.de>
-References: <92C0412E07F63549B2A2F2345D3DB515F7D5EC@cm-msg-02.cmedia.com.tw>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - WWW server 0000805]: Fatal error: Call to undefined function: head() in /shm/var/data/www/htdocs/alsa-doc/doc-php/file-edit.php on line 3
+Date: Tue, 11 Jan 2005 09:55:50 +0100
+Message-ID: <79018fcee3553776021e9521e3d41d0e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <92C0412E07F63549B2A2F2345D3DB515F7D5EC@cm-msg-02.cmedia.com.tw>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DBDE12DE
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 09:55:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,19 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Tien,  C.L. - =A5=D0=A9=D3=C2=A7 wrote:
-> Did ALSA USB audio driver support IEC958 for input/output?
 
-Yes.  Analog and digital inputs/outputs work the same, so the driver
-doesn't even know what kind it is.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=805> 
+======================================================================
+Reported By:                rabe_de
+Assigned To:                
+======================================================================
+Project:                    ALSA - WWW server
+Issue ID:                   805
+Category:                   bad link
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             01-11-2005 09:55 CET
+Last Modified:              01-11-2005 09:55 CET
+======================================================================
+Summary:                    Fatal error: Call to undefined function: head() in
+/shm/var/data/www/htdocs/alsa-doc/doc-php/file-edit.php on line 3
+Description: 
+Hello,
 
+The link http://www.alsa-project.org/alsa-doc/doc-php/file-edit.php leads
+to a fatal error in your php-script
 
-HTH
-Clemens
+Fatal error: Call to undefined function: head() in
+/shm/var/data/www/htdocs/alsa-doc/doc-php/file-edit.php on line 3
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-11-05 09:55 rabe_de        New Issue                                    
+======================================================================
+
 
 
 
