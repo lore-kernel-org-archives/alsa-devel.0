@@ -1,10 +1,11 @@
-From: "Lars Karlstrom" <lasse8888@hotmail.com>
-Subject: Problems with Input/Output Sensitivity Switch on M-Audio Delta 44
-Date: Fri, 02 Jul 2004 16:22:27 +0200
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000361]: Latest alsa-driver from CVS will not compile on Linux 2.4 (perhaps RH EL specific)
+Date: Fri, 2 Jul 2004 16:54:54 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <BAY13-F43ecaEt5u4rt0007035a@hotmail.com>
+Message-ID: <aa455dc97d1a6915bdf08df1c1727b1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,49 +15,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-First of all, please consider that I am a newbie to alsa, so please correct 
-me if I am wrong.
 
-I am trying to figure out how to write an application that can control the 
-input and output sensitivity switches on a M-Audio Delta 44 card (ice1712). 
-If I have understood everything I should be able to control this in 
-envy24control, my problem is that these options doesn't even appear in 
-envy24control. Other things in envy24control does work though, for example 
-the VU-meter. Does anyone have a clue why this is? In the application for 
-Windows these settings works fine so there is probablly nothing wrong with 
-the card.
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0361
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                elklein
+Assigned To:                perex
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     361
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Red Hat Enterprise Linux
+Kernel Version:             2.4.21-15.0.2
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             07-02-2004 16:53 CEST
+Last Modified:              07-02-2004 16:54 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    Latest alsa-driver from CVS will not compile =
+on
+Linux 2.4 (perhaps RH EL specific)
+Description:=20
+I believe this bug was introduced on June 22nd in
+alsa-devel/acore/pcm_native.patch
 
-Because this doesn't work I have started digging into the alsa-kernel code 
-and the code for envy24control to try to find something useful, this is what 
-I have found.
-Conclusions from digging in envy24control:
-- The block of code that is trying to find how many different sensitivities 
-that is available returns zero (called adc_senses and dac_senses in the 
-code?).
-- If I try to run the code that sets these sensitivities (even though I get 
-zero adc/dac_senses) I get an error message "Unable to write dac sense: No 
-such file or directory". But I guess this is what should happen since these 
-options doesn't exist.. Just had to try..
-Conclusions from looking at the alsa-kernel code:
-- When i searched for "Input Sensitivity Switch" (which seems to be the 
-string that envy24control uses for finding how many sensitivities that are 
-available) in the code, I found that this string only exists in 
-alsa-kernel/pci/ice1712/ews.c, this seems to be a driver for Terratec-cards. 
-Also in this file I found that there seems to be only 2 sensitivities, 
-"+4dBu" and "-10dBV", when I tested the Windows application I got 3, 
-"+4dBu", "Consumer" and "-10dBV". After I found these 2 things I am 
-wondering if this whole sensitivity switch thing is implemented or not for 
-the Delta series.
+With the latest code, I get a compile error at line 3175 of pcm_native.c.
+The problem is that io_remap_page_range has too few arguments for my OS
+version (it works with the 2.6 version in the code), however I am using
+Red Hat's latest 2.4.21-15.0.2 kernel.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Cheers
-/Lars
+----------------------------------------------------------------------
+ elklein - 07-02-2004 16:54 CEST=20
+----------------------------------------------------------------------
+I feel like an idiot. I just noticed that this bug had already been
+reported a bit ago. The first bug is:
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0358
 
-_________________________________________________________________
-Tired of spam? Get advanced junk mail protection with MSN 8. 
-http://join.msn.com/?page=features/junkmail
+My appologies.
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+07-02-04 16:53 elklein        New Bug                                    =
+ =20
+07-02-04 16:53 elklein        Distribution              =3D> Red Hat Ente=
+rprise
+Linux
+07-02-04 16:53 elklein        Kernel Version            =3D> 2.4.21-15.0.=
+2  =20
+07-02-04 16:54 elklein        Bugnote Added: 0001375                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
 
 
 
