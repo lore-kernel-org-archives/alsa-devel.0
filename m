@@ -1,13 +1,18 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
+From: Thomas Charbonnel <thomas@undata.org>
 Subject: Re: hdsp multiface pci.
-Date: Mon, 20 Jan 2003 02:01:08 +0900
+Date: 19 Jan 2003 18:20:37 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E2AD9D4.90900@boosthardware.com>
-References: <3E2A952E.6060305@boosthardware.com>	 <1042985569.1663.33.camel@satellite.undata.org>	 <3E2AC45F.3070601@boosthardware.com> <1042992464.1649.55.camel@satellite.undata.org> <3E2AD34D.6070308@boosthardware.com>
+Message-ID: <1042996837.21521.17.camel@satellite.undata.org>
+References: <3E2A952E.6060305@boosthardware.com>
+	 <1042985569.1663.33.camel@satellite.undata.org>
+	 <3E2AC45F.3070601@boosthardware.com>
+	 <1042992464.1649.55.camel@satellite.undata.org>
+	 <3E2AD34D.6070308@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3E2AD34D.6070308@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,47 +21,83 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: Thomas Charbonnel <thomas@undata.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey wrote:
-> Thomas Charbonnel wrote:
+On Sun, 2003-01-19 at 17:33, Patrick Shirkey wrote:
+> I have added it as an editors note on the hdsp page.
+
+Thanks.
+
+> so it's default is a fifo?
 > 
->>
->>
->> You have to understand that software outputs are not directly related to
->> physical outputs. On simpler hardware, software and physical outputs can
->> be considered the same. On the hdsp system, thanks to the internal
->> matrix mixer, software outputs are totally abstracted from physical
->> ones. On the multiface you have 18 software outputs, each of wich can be
->> independently routed to any of the 18 physical outputs. For convenience,
->> the hdsp linux driver's default behaviour is to have a 1:1 routing
->> policy: each software output is by default routed to to corresponding
->> hardware output.
+> i.e 	software output 26 -> analog output 1
+> 	software output 27 -> analog output 2....
+> 
 
-In essence the hdsp can run 18 software streams at the same time as 
-processing upto 18 hardware input streams?
+Strangely said, but yes.
 
-Do I need to set the volume for the analog inputs? Or will I be able to 
-capture from them without setting anything in amixer?
+> Therefore can I do this?
+> 
+> numid=5 26,0,16384			
+> numid=5 27,1,16384
+> numid=5 28,2,16384
+> numid=5 29,3,16384
+> numid=5 30,4,16384
+> numid=5 31,5,16384
+> numid=5 32,6,16384
+> numid=5 33,7,16384
+> 
+> Or is that the default setting (except with no volume).
+> 
 
+Rather than bothering to use amixer, you'd better use alsamixer to
+control those. These are the standard volume controls. (Internally the
+volume controls use the matrix mixer)
+If you want to hear sound through analog outputs 1-2 using software
+outputs 1-2, you can either use amixer (e.g. amixer cset numid=5
+26,0,16384) or alsamixer. 
 
+> So we have to tell the control called numid=5 to route 
+> the output from software 1 to line out before we can hear it through 
+> line out?
+> 
+Yes. The control called numid=5 is the interface to the matrix mixer.
 
+> Can we route multiple software outputs to the same hardware output?
+> 
+> eg.	numid=5 26,26,16384			
+> 	numid=5 27,27,16384
+> 	numid=5 28,26,16384
+> 	numid=5 29,27,16384
+> 	numid=5 30,26,16384
+> 	numid=5 31,27,16384
+> 	numid=5 32,26,16384
+> 	numid=5 33,27,16384
+> 
+Yes we can :)
 
+> Or is that what the .asoundrc is for?
+> 
+I don't know if you can do it with the .asoundrc file (I would rather
+doubt it). Anyway the clear benefit of doing it with amixer is that it
+is hardware mixing, thus consuming no system resources.
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
+>From your latest post:
+> In essence the hdsp can run 18 software streams at the same time as 
+> processing upto 18 hardware input streams?
+> 
+Yes. In fact the hdsp system can run up to 26 of them (digiface).
 
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
+> Do I need to set the volume for the analog inputs? Or will I be able
+> to 
+> capture from them without setting anything in amixer?
+> 
+You'll be able to capture without setting anything in amixer
 
-Goldie, 8 Nov, 2002
-The Scotsman
+Thomas
+
 
 
 
