@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000679]: No sound on rear speakers
-Date: Fri, 26 Nov 2004 12:03:20 +0100
-Message-ID: <5eb042c957551a755a404cf777d9c3a3@bugtrack.alsa-project.org>
+Date: Fri, 26 Nov 2004 12:15:00 +0100
+Message-ID: <dc112c5de84127f22f5a346ec7dcc6cf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1680C244
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 12:03:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8458C244
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 12:15:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             11-26-2004 10:24 CET
-Last Modified:              11-26-2004 12:03 CET
+Last Modified:              11-26-2004 12:15 CET
 ======================================================================
 Summary:                    No sound on rear speakers
 Description: 
@@ -49,16 +49,38 @@ previous version tested 1.0.5 :-(
 ======================================================================
 
 ----------------------------------------------------------------------
- NosyMan - 11-26-04 11:27 
-----------------------------------------------------------------------
-Please notice that I check every single option without any result. I also
-check the emu10k1 ALSA page and followed the instructions - no sound.
-
-----------------------------------------------------------------------
  pzad - 11-26-04 12:03 
 ----------------------------------------------------------------------
 What is in /proc/asound/version ?
 And what is in /proc/asound/card0/codec97#0/ac97#0-0 ?
+
+----------------------------------------------------------------------
+ NosyMan - 11-26-04 12:15 
+----------------------------------------------------------------------
+cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.7.
+Compiled on Nov 25 2004 for kernel 2.6.9.
+
+
+cat /proc/asound/card0/codec97#0/ac97#0-0
+0-0/0: SigmaTel STAC9708/11
+
+Capabilities     : -headphone out-
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : SigmaTel 3D Enhancement
+
+Current setup
+Mic gain         : +20dB [+20dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=0 SDAC DSA=0
+Extended status  : SDAC
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -73,6 +95,7 @@ Date Modified  Username       Field                    Change
 11-26-04 11:27 NosyMan        Note Added: 0002598                          
 11-26-04 11:27 NosyMan        Issue Monitored: NosyMan                     
 11-26-04 12:03 pzad           Note Added: 0002599                          
+11-26-04 12:15 NosyMan        Note Added: 0002600                          
 ======================================================================
 
 
