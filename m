@@ -1,10 +1,11 @@
-From: Shane Walton <dsrelist@yahoo.com>
-Subject: SNDRV_PCM_IOCTL_PVERSION Error (Unknown Ioctl)
-Date: Mon, 23 Sep 2002 12:45:15 -0700 (PDT)
+From: Weijia Yang <gte733z@prism.gatech.edu>
+Subject: cs46xx experimental DSP drivers
+Date: Mon, 23 Sep 2002 16:53:45 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020923194515.58964.qmail@web20803.mail.yahoo.com>
+Message-ID: <3D8F7F59.6030105@prism.gatech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -14,31 +15,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: ALSA Development <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-When tyring to use beta6, ..., beta9, I get an error
-in the device open() call that states an unknown/bad
-ioctl command.  The beta6 worked well with the 2.2.19
-kernel.  I am wondering if this is a problem when used
-with a 2.4.19 kernel.  Can anyone validate?  It seems
-that the only way the PVERSION ioctl would be valid is
-if the _plugin_ calls are resolved in the open()
-function.  As far as I can debug, it seems that the
-_plugin_ reference fails and the _hw_ reference is
-used instead.  Can someone please point me in the
-right direction?  Thanks.
+I am testing out the cs46xx experimental DSP drivers on the 9/22 cvs 
+build on a TB Santa Cruz. The drivers work fine except for the fact that 
+all sound is "flat"--almost no base at all. This is in comparison to the 
+original cs46xx drivers that come with rc3. The sound quality difference 
+is very noticeable. I have tried tweaking with all the mixer settings 
+with no result. I have also tried the experimental DSP drivers on the 
+rc3 build with the same results. Anyone know a fix? Thanks
+-- 
+Weijia Yang
+School of Electrical and Computer Engineering
+Georgia Institute of Technology
+Atlanta, GA
 
-=====
-Shane M. Walton, Software Engineer
-Digital System Resources, Inc.
-dsrelist@yahoo.com : swalton@dsrnet.com
-703.234.1674
-
-__________________________________________________
-Do you Yahoo!?
-New DSL Internet Access from SBC & Yahoo!
-http://sbc.yahoo.com
 
 
 -------------------------------------------------------
