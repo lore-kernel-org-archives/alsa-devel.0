@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: dmix bugs. sounds very broken up.
-Date: Mon, 1 Sep 2003 08:08:04 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Static versus shared builds of alsa-utils
+Date: Mon, 01 Sep 2003 10:11:27 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0309010807230.14319-100000@pnote.perex-int.cz>
-References: <3F5299E6.7040408@superbug.demon.co.uk>
+Message-ID: <Pine.HPX.4.33n.0309011007170.1268-100000@studcom.urz.uni-halle.de>
+References: <200308312034.57045.adrian@mcmen.demon.co.uk>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F5299E6.7040408@superbug.demon.co.uk>
+In-reply-to: <200308312034.57045.adrian@mcmen.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +17,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 1 Sep 2003, James Courtier-Dutton wrote:
+Adrian McMenamin wrote:
+> [...]
+> This certainly generates large (static?) binaries:
+> -rwxr-xr-x    1 0        0         2294664 Aug 31 19:26 aplay
+>
+> But when I attempt to run any of them I get this problem:
+>
+> /usr/bin # ./aplay test.txt
+> ./aplay: No such file or directory
 
-> I have found two problems with using the dmix alsa device name.
-> 1) snd_pcm_hw_params_can_pause (params)  causes alsa-lib to assert!
-> 
-> 2) Sound is broken up.
-> a) It can only function with 2 periods, why is that? Having 8 periods
-> might be better, although "front" works fine with 2 periods, but "dmix"
-> with 2 periods fails.
-> b) Of the 2 periods, it sounds like sound is only being played from one
-> of the periods, with silence for the other period.
-> 
-> Summary: -
-> If I use device name "front", there are no problems with sound output.
-> If I use device name "dmix", there are the above problems.
+This error message usually indicates that the executable uses a
+dynamic linker which isn't available.
 
-Show me your code, please (compilable example).
+Do the compiler flags include --static? Maybe you can add this flag by
+setting CFLAGS explicitly when ./configure-ing.
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+HTH
+Clemens
+
 
 
 
