@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000726]: headphone output on the docking station (Dell Lattitude D400) does not work
-Date: Fri, 7 Jan 2005 19:56:11 +0100
-Message-ID: <b454f16bc79a8a3be2d5fcd117cf4ff9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
+Date: Fri, 7 Jan 2005 21:51:17 +0100
+Message-ID: <7925630d0c538078a69d4dcf74f106e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B587D275
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 19:56:11 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8FD032D0
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 21:51:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,46 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=726> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=359> 
 ======================================================================
-Reported By:                vassili
+Reported By:                davidsrsb
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   726
+Issue ID:                   359
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.8, custom build
+Distribution:               Slackware 10.0
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             12-15-2004 17:26 CET
-Last Modified:              01-07-2005 19:56 CET
+Date Submitted:             07-01-2004 16:26 CEST
+Last Modified:              01-07-2005 21:51 CET
 ======================================================================
-Summary:                    headphone output on the docking station (Dell
-Lattitude D400) does not work
+Summary:                    Alsa always uses card0 and does not use card1, even
+when card0 is a modem
 Description: 
-Support of a headphone jack on the docking station is missing.
-
-Hardware: Dell Latitude D400 with docking station, 
-Intel 82810DB AC97 Audio
+PC is laptop with AC97 DAA (Si3036 modem) detected as card0 and sound is
+Intel 8x0 as card1. Alsamixer has to be run with -c1 option to avoid "no
+mixer elems" error (like bug 338)
+KDE has no sound ( same as bug 353)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 19:56 
+ tiwai - 01-07-05 19:18 
 ----------------------------------------------------------------------
-Which codec?  Attach the contents of /proc/asound/card0/codec97#0/* files
-(and /etc/asound.state).
+Your hack looks OK to me as a short-term solution. But I'll postpone it
+after 1.0.8-final release.
+
+(BTW, about this kind of discussion for general implementations, I'd like
+to do on ML rather than on web.  I basically hate the web interface...)
+
+----------------------------------------------------------------------
+ jdthood - 01-07-05 21:51 
+----------------------------------------------------------------------
+> (BTW, about this kind of discussion for general implementations,
+> I'd like to do on ML rather than on web. I basically hate the
+> web interface...)
+
+OK, let's continue discussion at alsa-devel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-15-04 17:26 vassili        New Issue                                    
-12-15-04 17:26 vassili        Distribution              => debian          
-12-15-04 17:26 vassili        Kernel Version            => 2.6.8, custom build
-01-07-05 19:56 tiwai          Note Added: 0003120                          
+07-01-04 16:26 davidsrsb      New Issue                                    
+07-01-04 16:26 davidsrsb      Distribution              => Slackware 10.0  
+07-01-04 16:26 davidsrsb      Kernel Version            => 2.4.26          
+07-02-04 14:34 pzad           Note Added: 0001374                          
+01-05-05 23:34 jdthood        Note Added: 0003090                          
+01-06-05 17:48 phormix        Note Added: 0003092                          
+01-07-05 18:10 tiwai          Note Added: 0003108                          
+01-07-05 18:28 jdthood        Note Added: 0003112                          
+01-07-05 18:59 jdthood        Note Added: 0003114                          
+01-07-05 18:59 jdthood        Note Added: 0003115                          
+01-07-05 18:59 jdthood        Note Deleted: 0003115                        
+01-07-05 19:00 jdthood        File Added: core_init_index_jdth20050107-1.patch  
+                 
+01-07-05 19:03 jdthood        Note Edited: 0003114                         
+01-07-05 19:18 tiwai          Note Added: 0003116                          
+01-07-05 21:51 jdthood        Note Added: 0003122                          
 ======================================================================
 
 
