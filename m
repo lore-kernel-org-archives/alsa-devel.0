@@ -1,14 +1,14 @@
-From: Josh Green <jgreen@users.sourceforge.net>
-Subject: Re: Audigy1 MIDI input, wavetable support?
-Date: 07 Mar 2003 11:39:08 -0800
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: [Alsa-user] alsa-lib-0.9.0rc8 doesn't compile
+Date: Fri, 7 Mar 2003 21:38:02 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1047065951.3136.55.camel@sprekhole>
-References: <20030307154402.GA338@znex>
+Message-ID: <20030307203802.GG14305@tuba.home>
+References: <Pine.LNX.4.44.0303070935400.1226-100000@pnote.perex-int.cz> <Pine.HPX.4.33n.0303071640110.20989-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030307154402.GA338@znex>
+Content-Disposition: inline
+In-Reply-To: <Pine.HPX.4.33n.0303071640110.20989-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,64 +17,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark J Roberts <mjr@znex.org>
-Cc: alsa-devel@lists.sourceforge.net, LAD <linux-audio-dev@music.columbia.edu>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, "ben hubbard (listmail)" <lists@camorra.bus.indiana.edu>, "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2003-03-07 at 07:44, Mark J Roberts wrote:
-> I am trying to load a soundfont into my Audigy1's wavetable and play
-> it with a MIDI keyboard. I am using kernel 2.5.64.
+On Fri, Mar 07, 2003 at 04:44:55PM +0100, Clemens Ladisch wrote:
+> Jaroslav Kysela wrote:
+> > [...]
+> > The whole idea is that the jack module should not be built by default.
+> > Unfortunately, it seems difficult to redirect the build targets from
+> > automake for different versions.
 > 
-> MIDI output verifiably works. However, MIDI input does not. The
-> cable and keyboard are not the problem--I've tried them with an
-> es1371, and I easily got MIDI input working.
-> 
-> My procedure with the Audigy1:
-> 
-> 	cat /dev/snd/midiC0D0
-> 	watch /proc/interrupts
-> 	watch /proc/asound/Audigy/midi0
-> 
-> No interrupts occur and no bytes are read. I have also tried using
-> aconnect to connect the inputs. Does anyone else see this behavior?
-> 
-> I've got one more question. What program should I use to configure
-> the wavetable and load the soundfonts? I found a couple versions of
-> "awesfx", neither of which was compatible with my ALSA.
-> 
+> The automake manual
+> <http://www.gnu.org/manual/automake/html_chapter/automake_6.html#SEC29>
+> says ext should not be put into SUBDIRS but into DIST_SUBDIRS.
+> (I can't test it on this machine.)
 > 
 
-I know that ALSA contains support for the wavetable of the EMU8k and
-EMU10k series of cards (AWE 32/64 and Live! respectively). I'm not
-absolutely sure whether the wavetable on the Audigy is also supported,
-but chances are it is. The SoundFont loading API is OSS based, but ALSA
-uses it so awesfx (sfxload utility, etc) should work (provided the API
-is actually there for the Audigy).
-I'm convinced that software synthesis is the way to go. It allows for
-easier routing of the synthesized data (via Jack for example) and
-supports any sound card. This is the approach I have gone with with
-Swami (http://swami.sourceforge.net) the successor to the Smurf
-SoundFont Editor which was based on the OSS awesfx API. Swami uses
-FluidSynth (http://www.fluid-synth.org - was previously called
-iiwusynth) to do software synthesis of SoundFont files. Using software
-synthesis gives us these additional features over current Linux
-supported hardware solutions:
+Yep, test ok. Alsa-lib compiles again. Just apply this patch therefore.
+This fixes the so often reported problem:
+pcm_jack.c:36: jack/jack.h: No such file or directory
 
-- Modulator support, allowing for real time modulation of effects with
-MIDI controllers (or with GUI controls from Swami)
-- Customizable Reverb/Chorus (EMU10k doesn't have support for these
-effects in Linux)
-- Routing of audio via Jack, opening up a whole world of audio
-processing, effects, etc.
 
-The downside is of course the CPU usage, so in the future I will likely
-be re-adding support to Swami for the hardware wavetable OSS API.
+martin
 
-If you want to check these projects out, you can either wait a few days
-for FluidSynth 1.0 to be released which a release of Swami will follow
-shortly after, or you can get Swami CVS and FluidSynth CVS. Cheers.
-	Josh Green
 
+
+--- alsa-lib/src/pcm/Makefile.am.ORIGINAL	Fri Mar  7 20:58:08 2003
++++ alsa-lib/src/pcm/Makefile.am	Fri Mar  7 20:58:39 2003
+@@ -1,4 +1,4 @@
+-SUBDIRS = ext
++DIST_SUBDIRS = ext
+ 
+ EXTRA_LTLIBRARIES = libpcm.la
+ 
 
 
 -------------------------------------------------------
