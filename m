@@ -1,12 +1,15 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: utils/mod-deps
-Date: Wed, 26 Nov 2003 17:28:33 +0100
+Subject: Re: config problem
+Date: Wed, 26 Nov 2003 16:33:00 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031126172833.431a5d37.pochini@shiny.it>
+Message-ID: <20031126163300.4946c69a.pochini@shiny.it>
+References: <20031125191438.45a1f01b.pochini@shiny.it>
+	<s5h65h8z2m2.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h65h8z2m2.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,13 +18,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 25 Nov 2003 20:09:57 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
+> for building multiple drivers with a common core/library module, you
+> can find an example in isa/sb directory.  there snd-sb-common is
+> shared among several different top-level modules.  (usually, the
+> common module is named snd-xxx-lib, though.)
 
-The executable utils/mod-deps shouldn't be shipped with the alsa-driver
-tarball. It's an x86 binary and it makes cvscompile to fail on other platforms.
+Done, tnx.
 
 
 --
