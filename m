@@ -1,14 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: barat@medien.uni-weimar.de
 Subject: Re: mixer device
-Date: Tue, 18 May 2004 12:31:39 +0200 (METDST)
+Date: Tue, 18 May 2004 15:46:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0405181213330.27420-100000@studcom.urz.uni-halle.de>
-References: <1084522933.28725.9.camel@shrek.bitfreak.net>
+Message-ID: <Pine.LNX.4.58.0405181545510.13943@spring>
+References: <1084218706.31496.72.camel@shrek.bitfreak.net>
+ <Pine.HPX.4.33n.0405121735410.26780-100000@studcom.urz.uni-halle.de>
+ <20040513153457.GE6913@sunrise.pg.gda.pl>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1084522933.28725.9.camel@shrek.bitfreak.net>
+In-Reply-To: <20040513153457.GE6913@sunrise.pg.gda.pl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,102 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Ronald S. Bultje" <R.S.Bultje@students.uu.nl>
+To: Adam Tla/lka <atlka@pg.gda.pl>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Ronald S. Bultje wrote:
-> is it possible for me to get the cardnumber (and thereby the hw:N
-> entry) for a given non-hw device (e.g. dspN, hw:N,M, dmix, ...)?
+On Thu, 13 May 2004, Adam Tla/lka wrote:
 
-Try something like this:
+> On Wed, May 12, 2004 at 05:40:55PM +0200, Clemens Ladisch wrote:
+> > Ronald S. Bultje wrote:
+> > > for a given alsa device ("default", "dmix", "plughw:N", "hw:N,M",
+> > > "dspN", etc.), how do I automatically obtain the right device to use as
+> > > a audio mixer with that device?
+> > 
+> > Depends on your definition of "right device".  In the general case
+> > this isn't possible because many cards don't have any mixer controls,
+> > or don't have the controls you want to use.  Or the pcm device uses
+> > several cards, or none.
+> > 
+> > What do you want to do with the mixer?
+> Hmm - typically people just want to control PCM volume.
+> When using OSS you can just do mixer ioctl's on the opened PCM fd.
+> Simple and clear. With many virtual PCM streams it is working
+> too (non-free version).
+> If we haven't hardware volume control this function is emulated.
+> It is not working with ALSA OSS emulation nor aoss.
+> So how a program could in a simple way obtain information which control to
+> use to set the volume level of particular stream?
+> 
+> ALSA is complicated and we have no good manual describing proper use
+> of its api. You can easily prove this: many programs have ALSA output
+> modules but they are working worse then when using OSS.
+> For example mplayer with OSS synchronizes video and sound much faster
+> in case of network streaming. XMMS is broken too.
+?? mplayer isn't broken in any way with alsa. it supports alsa since the 
+early days and also current versions very well. please don't talk 
+bullshit.
+it probably does av-sync faster at some particular streams (what ever you 
+mean with that) with oss, but i never ever saw some significant 
+performance differences compared to oss.
+at least it supports real mmaped-io for up to 2 channels.
 
-/* Get the slave pcm of a pcm node.  Caller must free the result. */
-static snd_config_t *get_pcm_slave_pcm(snd_config_t *pcm)
-{
-	snd_config_t *slave;
-	snd_config_t *result = NULL;
-	int free_slave = 0;
-	const char *str;
+best regards / mit freundlichen gruessen
 
-	if (snd_config_search(pcm, "slave", &slave) < 0)
-		goto _exit;
-	if (snd_config_get_string(slave, &str) >= 0) {
-		if (snd_config_search_definition(snd_config, "pcm_slave", str, &slave) < 0)
-			goto _exit;
-		free_slave = 1;
-	}
-	if (snd_config_get_type(slave) != SND_CONFIG_TYPE_COMPOUND)
-		goto _exit;
-
-	if (snd_config_search(slave, "pcm", &pcm) < 0)
-		goto _exit;
-	if (snd_config_get_string(pcm, &str) >= 0) {
-		if (snd_config_search_definition(snd_config, "pcm", str, &pcm) >= 0)
-			result = pcm;
-	} else {
-		/* always make a dynamic copy, because the caller frees it */
-		if (snd_config_copy(&pcm, pcm) >= 0)
-			result = pcm;
-	}
-_exit:
-	if (free_slave)
-		snd_config_delete(slave);
-	return result;
-}
-
-/* Get the card number from a pcm node.  Searches recursively. */
-static int get_pcm_card(snd_config_t *pcm)
-{
-	snd_config_t *slave_pcm;
-	snd_config_t *card_node;
-	long card;
-
-	if (snd_config_get_type(pcm) != SND_CONFIG_TYPE_COMPOUND)
-		return -1;
-	slave_pcm = get_pcm_slave_pcm(pcm);
-	if (slave_pcm) {
-		card = get_pcm_card(slave_pcm);
-		snd_config_delete(slave_pcm);
-		return card;
-	} else if (snd_config_search(pcm, "card", &card_node) >= 0) {
-		const char *str;
-		if (snd_config_get_integer(card_node, &card) >= 0)
-			return card;
-		if (snd_config_get_string(card_node, &str) >= 0)
-			return snd_card_get_index(str);
-	}
-	return -1;
-}
-
-/* Get the card number from a pcm device name. */
-static int get_named_pcm_card(const char *pcm_name)
-{
-	snd_config_t *pcm;
-	int card;
-
-	if (snd_config_update() < 0)
-		return -1;
-
-	if (snd_config_search_definition(snd_config, "pcm", pcm_name, &pcm) < 0)
-		return -1;
-	card = get_pcm_card(pcm);
-	snd_config_delete(pcm);
-	return card;
-}
-
-
-/* ... */
-card = get_named_pcm_card(pcm_name);
-if (card >= 0)
-	sprintf(ctl_name, "hw:CARD=%d", card);
-else
-	/* unknown card */
-
-
-HTH
-Clemens
-
+Zsolt Barat
 
 
 
