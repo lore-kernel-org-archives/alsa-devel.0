@@ -1,14 +1,14 @@
-From: gte654n@mail.gatech.edu
-Subject: snd_intel8x0 fails after ACPI sleep
-Date: Thu, 11 Mar 2004 02:13:14 -0500
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: USB audio devices
+Date: Thu, 11 Mar 2004 09:09:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1078989194.4050118a9a0df@webmail.mail.gatech.edu>
-References: <XFMail.20040310104621.pochini@shiny.it>  <1078928193.18054.247.camel@renegade> <404F62B1.30206@superbug.demon.co.uk> <1078982128.1838.72.camel@localhost>
+Message-ID: <Pine.HPX.4.33n.0403110859010.18812-100000@studcom.urz.uni-halle.de>
+References: <200403102104.49431.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1078982128.1838.72.camel@localhost>
+In-reply-to: <200403102104.49431.annabellesgarden@yahoo.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,53 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have a Fujitsu E7110 laptop with a builtin audio card.  This is what ls=
-pci=20
-reports...=20
-=20
-00:1f.5 Multimedia audio controller: Intel Corp. 82801CA/CAM AC'97 Audio =
-(rev=20
-02)=20
-        Subsystem: Citicorp TTI: Unknown device 1177=20
-        Flags: bus master, medium devsel, latency 0, IRQ 11=20
-        I/O ports at 1000 [size=3D256]=20
-        I/O ports at 1880 [size=3D64]=20
-=20
-I am running 2.6.4-rc2 kernel, and I have been trying to get ACPI S3 (sus=
-pend=20
-to ram) to wake up correctly.  One of the problems that I am encountering=
- is=20
-that with the sound modules loaded (I have always had success with=20
-snd_intel8x0 on the same hardware) coming back from sleep freezes my lapt=
-op=20
-hard.  If I rmmod *all* the sound-related modules before going to sleep, =
-the=20
-laptop resumes without a hitch.  However, if I attempt to modprobe=20
-snd_intel8x0 after resume, I get a hard freeze again.  I cannot recover a=
-ny=20
-debug output, because the end of /var/log/messages is garbled on reboot.=20
-=20
-I have looked on ALSA and ACPI mailing lists and have not been able to fi=
-nd a=20
-satisfactory answer to this.  It appears some people can reinsert the int=
-el=20
-driver after resume, and they get their audio back.  I have no such luck.=
-  =20
-=20
-Could you please provide some tips on how I can help address this problem=
-? =20
-For instance, what other information about my setup should I post.  Is th=
-ere=20
-some documentation on audio power management under ACPI that I am overloo=
-king? =20
-=20
-Thank you very much, =20
-=20
-Ilya=20
-=20
+Karsten Wiese wrote:
+> We can also vary the exact USB frame time.
+> With UHCI 1.1 USB Hosts there is the SOF Register.
+> ...
+> It really works here already with the us428: The trick is:
+> We first make the USB-Frame longer until we capture 1 Sample Frame more  45
+> (for 44100). then the USB-Frame is shortened until we capture only 43 Sample
+> Frames for one USB Frame. and so on.
+
+Cool idea!
+
+However, standard-compliant devices are supposed to base their timing
+for feedback/feedforward information on the arrival of SOF packets.
+Introducing jitter into the SOF timer may not be a good idea in every
+case.
+
+And this won't work if there is more than one audio device connected
+to the same bus, or if the HC is OHCI or EHCI.
+
+
+Regards,
+Clemens
+
 
 
 
