@@ -1,17 +1,20 @@
-From: Richard Chan <rspchan@starhub.net.sg>
-Subject: Re: Recent regression of ALC655 on VIA
-Date: Sat, 17 Apr 2004 21:03:19 +0800
+From: Bernhard Rosenkraenzer <bero@arklinux.org>
+Subject: ALI M5451 (CMI 9739): PCM always muted?
+Date: Sat, 17 Apr 2004 19:45:35 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40812B17.3090308@starhub.net.sg>
-References: <407F8A76.1000907@starhub.net.sg> <s5hn05cro2k.wl@alsa2.suse.de>
+Message-ID: <200404171945.35824.bero@arklinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from eastgate.starhub.net.sg (eastgate.starhub.net.sg [203.116.1.189])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA12437
-	for <alsa-devel@alsa-project.org>; Sat, 17 Apr 2004 15:03:30 +0200
-In-reply-to: <s5hn05cro2k.wl@alsa2.suse.de>
+Received: from test.arklinux.org (build.arklinux.oregonstate.edu [128.193.0.51])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA18643
+	for <alsa-devel@alsa-project.org>; Sat, 17 Apr 2004 19:48:11 +0200
+Received: from [10.0.0.8] (A46ce.a.pppool.de [213.6.70.206])
+	by test.arklinux.org (Postfix) with ESMTP id A7384DD77A
+	for <alsa-devel@alsa-project.org>; Sat, 17 Apr 2004 10:57:58 -0700 (PDT)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,36 +23,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Your patch has fixed the problem - 5.1 is working again and I can set
-the 'Mic As Center/LFE' control. Thank you.
+Hi,
+On an ALI M5451 (Using a CMI 9739 - PCI ID 10b9:5451 Sub-ID 1019:0f22), 
+snd_ali5451 loads and can adjust mixer settings (except for PCM volume, but I 
+think that's a limitation of the hardware), but doesn't make any noise - 
+apparently PCM is always muted (volume fixed at 0?).
 
-Takashi Iwai wrote:
+Is this a known bug? Didn't have the time to check the code yet...
 
->At Fri, 16 Apr 2004 15:25:42 +0800,
->R CHAN wrote:
->  
->
->>Hi, recent Alsa changes (ac97_patch.c) seem to have broken my
->>ALC655 ac97 codec on via82xx. The breakage happened around 2.6.5.
->>
->>Specifically, I can no longer set
->>
->>Mic As Center/LFE control
->>
->>Unlike Line-In As Surround it is now reported
->>as a volume control with Mono values from 0-0.
->>Can't set that bit at all.
->>    
->>
->
->try the attached patch.
->  
->
-
+LLaP
+bero
 
 
 -------------------------------------------------------
