@@ -1,16 +1,14 @@
-From: Jaakko =?iso-8859-15?q?Pr=E4tt=E4l=E4?=
-	<Jaakko.Prattala@Helsinki.FI>
-Subject: Re: hdsp I/O-error
-Date: Sun, 13 Apr 2003 02:37:23 +0300
+From: Andrew de Quincey <adq_dvb@lidskialf.net>
+Subject: VIA8235 SPDIF problems
+Date: Sun, 13 Apr 2003 01:01:24 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200304130237.24281.Jaakko.Prattala@Helsinki.FI>
-References: <200304112048.38744.Jaakko.Prattala@Helsinki.FI> <200304121240.17736.Jaakko.Prattala@Helsinki.FI> <1050176702.1427.681.camel@satellite.undata.org>
+Message-ID: <200304130101.24708.adq_dvb@lidskialf.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1050176702.1427.681.camel@satellite.undata.org>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,71 +17,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 12 April 2003 22:45, Thomas Charbonnel wrote:
-> > Hi. More info. This is the /var/log/messages output when I run
-> > hdsploader.
-> >
-> > Apr 12 12:30:56 kiertotahti kernel: ALSA
-> > ../../alsa-kernel/pci/rme9652/hdsp.c:4104: card initialization pendin=
-g :
-> > waiting for firmware
-> > Apr 12 12:31:03 kiertotahti kernel: ALSA
-> > ../../alsa-kernel/pci/rme9652/hdsp.c:644: wait for FIFO status <=3D 0
-> > failed after 30 iterations
-> > Apr 12 12:31:03 kiertotahti kernel: ALSA
-> > ../../alsa-kernel/pci/rme9652/hdsp.c:3800: initializing firmware uplo=
-ad
-> > Apr 12 12:31:03 kiertotahti kernel: ALSA
-> > ../../alsa-kernel/pci/rme9652/hdsp.c:522: loading firmware
-> > Apr 12 12:31:03 kiertotahti kernel: ALSA
-> > ../../alsa-kernel/pci/rme9652/hdsp.c:548: finished firmware loading
-> > Apr 12 12:31:07 kiertotahti kernel: ALSA
-> > ../../alsa-kernel/pci/rme9652/hdsp.c:644: wait for FIFO status <=3D 1=
-27
-> > failed after 5000 iterations
-> > Apr 12 12:31:07 kiertotahti kernel: ALSA
-> > ../../alsa-kernel/pci/rme9652/hdsp.c:3824: error creating alsa device=
-s
-> >
-> > (I/O-box shows host error).
->
-> Did the hardware show the typical led blinking sequence while the
-> firmware uploaded, and then the host error, or was the host error
-> showing from the beginning ?
+Hi, I have a Shuttle SK41G machine. This has a VIA8235, with an Avance Logic 
+ALC 650 Rev 0 on it.
 
-No blinking. The red led is on without a pause.
+Problem: I want to use the digital out on this board talking to my digital 
+receiver for normal audio. I also want to have AC3/DTS passthrough when 
+playing DVDs.
 
-This is so strange. The card is there enough for
-snd-hdsp to load but after that it's blocked.
-What could be blocking the fw load process
-and apps from using the card for I/O if
-the fw is loaded in windows?
+Something is playing up. Usually, I can get AC3 passthrough working for DVDs.. 
+after a bit of random flailing at the mixer devices, but I can't always. I 
+haven't been able to identify a consistent pattern of changes to make to make 
+it 100% reliable. It just seems to "start working" eventually.
 
-I really would love to know how to debug this.
-How could I try to seek the exact place
-where the communication breaks down?
+I can't get non-AC3/DTS digital audio output to work at all. My decoder DOES 
+light up its wee "Digital" light when I starting playing something, but there 
+is no sound. Oddly enough, I'm pretty sure I DID have this working at one 
+point, but I cannot get anything now.
 
-So far, I've compiled kernels (2.4.20, 2.4.19) trying out
-a few configurations (pcmcia in kernel and outside, acpi and no acpi
-irq's from bios or directly, just hoping to get lucky :-)
-but nothing. Everything looks the same as with rhl's 2.4.18.
-(Except that external pcmcia couldn't make a connection
-to the card for snd-hdsp to load.)
+I'm changing: IEC958, IEC958 Input Monitor, IEC958 Output, IEC958 Playback 
+AC97-SPSA, and Analog to IEC958 Output.. oh, and PCM, Master are set quite 
+high.
 
-[What about interrupts? They don't matter here, do they?
-In linux the pcmcia controller shares
-irq 11 with eth0. In winXP it gets irq 10 and shares it with something
-else I don't remember. I hope they aren't significant because
-I don't think I know how to change them
-(no bios options available).]
+I've also tried sending the output to the "iec958/spdif" devices, but with no 
+luck (although this does seem to change which combinations of mixer settings 
+mean my decoder light the DIGITAL light)
 
---=20
-Jaakko Pr=E4tt=E4l=E4
-Jaakko.Prattala@Helsinki.FI
+I'm using the latest CVS of ALSA, with Xine 1.0beta10.
+
+Why am I posting this here? I'm going to try messing with the code to try and 
+fix this, but I'm hoping someone can suggest some things for me to try as I 
+am hampered by a lack of VIA8235 docs.
+
+Finally, what are these "VIA DXS" mixer devices? I now have four of them and 
+none of them seems to affect anything!
 
 
 
