@@ -1,16 +1,14 @@
-From: "John H." <mrmailer@myway.com>
-Subject: Re: cannot submit datapipe for urb 0 on /dev/dsp access -extigy
-Date: Fri,  2 Apr 2004 17:00:16 -0500 (EST)
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Tascam US-224 progress report (was: USB224_usbsnoop1.log captured
+ on WinXP)
+Date: Sat, 3 Apr 2004 02:24:16 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040402220016.4513E3967@mprdmxin.myway.com>
-Reply-To: mrmailer@myway.com
+Message-ID: <32789.192.168.1.5.1080955456.squirrel@www.rncbc.org>
+References: <200404021434.26528.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;boundary="----=_20040403022416_13406"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mprdmxin.myway.com (nn8.excitenetwork.com [207.159.120.62])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA28318
-	for <alsa-devel@alsa-project.org>; Sat, 3 Apr 2004 00:00:57 +0200
+In-Reply-To: <200404021434.26528.annabellesgarden@yahoo.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,53 +17,105 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: clemens@ladisch.de
-Cc: alsa-devel@alsa-project.org
+To: Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_20040403022416_13406
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-sorry, and it's uhci.
+I have news, and they're good this time.
 
+After some juggling and persistance around compiling and patching the
+snd-usb-usx2y module, I've finally got that dreaded INPUT MONITOR LED come
+to light and, as Karsten rightly predicted, playback has shown its ugly
+head on my Tascam US-224. Hip, hip, hurray!
 
+Like a miracle, the MUTE and SELECT LED lights of the mixer strips 1-4 are
+lightning up too. Again, Karsten tips are quite cirurgical :)
 
+However, I don't get the SOLO, REC, NULL, nor all other transport LEDs to
+lit. But that's yet another step, I think the next.
 
+We're getting near and I'm quite happier now.
 
+Karsten Wiese wrote:
+>
+> So please try the following patch:
+>>>>
+> --- alsa-driver/usb/usx2y/usbusx2yaudio.c	30 Mar 2004 08:27:16 -0000	1.9
+> +++ alsa-driver/usb/usx2y/usbusx2yaudio.c	2 Apr 2004 11:55:21 -0000
+> @@ -1245,7 +1245,7 @@
+>  	    					     snd_dma_continuous_data(GFP_KERNEL),
+>  						     usX2Y_capt_substream->endpoints * 64*1024,
+>  						     usX2Y_capt_substream->endpoints * 128*1024)) ||
+> -	    (usX2Y(card)->chip.dev->descriptor.idProduct == USB_ID_US428 &&
+> +	    (usX2Y(card)->chip.dev->descriptor.idProduct != USB_ID_US122 &&
+>  	     0 > (err = usX2Y_rate_set(usX2Y_stream, 44100)))) {	// Lets us428
+> recognize output-volume settings, disturbs us122.
+>  		snd_usX2Y_audio_stream_free(usX2Y_stream);
+>  		return err;
+> <<<
+>
+> if the us428 doesn't get the "usX2Y_rate_set(usX2Y_stream, 44100)" at
+> startup, it later behaves ignorant to light & volume setting. like
+> us224 behaves now.
+>
 
+That was it. Although I only got it working after one last
+alsa-driver-1.0.3 rebuild and when set --with-debug=full on ./configure.
+Kind of strange. My literal patch applied to stock alsa-driver-1.0.3 is on
+attachment. It is just the same of Karsten's supplied above, just for
+reference.
 
+> If we get the INPUT MONITOR Led enlightened, the Volume settings should
+> also work with respect to direct monitoring at least. US224 Master Fader
+> seams to b where US428's Fader5 is. That needs adjustment in
+> s428control.
+>
+> The data sent to set us224 internal mixers is filtered out with
+> 	grep -n "00: 0[0123456789] .. .. .. ..$" USB224_usbsnoop1.log
+> it gives i. e.:
+> 	11721:    00000000: 00 00 25 00 25
+> 	11732:    00000000: 01 00 25 00 25
+> 	11743:    00000000: 02 00 25 00 25
+> 	11754:    00000000: 03 00 25 00 25
+> 	11831:    00000000: 04 00 42 00 42
+>
+> look at struct usX2Y_volume and its methods. it should fit the us224.
+> But lets get that Leds enlighted first :-)
+>
 
+The master fader works, at least while on playback. I don't seem to get
+fader strips 1-4 to have any audible effect. But now's too early to judge
+my experiments.
 
- --- On Fri 04/02, John H. < mrmailer@myway.com > wrote:
+Other issues are now just emerging... rest assured ;)
 
-From: John H. [mailto: mrmailer@myway.com]
+Thanks a lot Karsten, your help and advice is priceless.
 
-To: clemens@ladisch.de
+CU
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
+------=_20040403022416_13406
+Content-Type: application/x-gzip; name="alsa-driver-1.0.3p2.patch.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="alsa-driver-1.0.3p2.patch.gz"
 
-     Cc: alsa-devel@alsa-project.org
+H4sICKMFbkAAA2Fsc2EtZHJpdmVyLTEuMC4zcDIucGF0Y2gAlVJtb9MwEP7c/IpjH6Z2qVPHyUYX
+1KqjKwixVVWzIhAgK43dYpEmke2Ut/HfuSQFDcE+9BRHl9zd89w9PqE2GyCiWsw1JJlJiNBqLzXx
+PeoFJR1UZo3nK/tWe42TVEIVXvqfbPZ4tkMIOQ6/wygNCfWJfwn+MAqDiA09+tvArd+O67rH9XFA
+xScA6kfsIjq/9ILAp/RpyEJERc+ZTID4LKR9PwC3dc5hMnGgA2gUxtCVWsMITC54me54pta81DLJ
+siJNrORlspWmixEyNhb/78z7eH69fMMX01se3y1nV7d8erW4Wy1nHz1TrdukPhK0Vpm37B1Pk9Ly
+P1EylrkoC5VbA2dwEZ75lIXHlPhs2NbAyxcL/nq2nM9uej24v3dIM1e3geimiRY9Mk4/qdITck/G
+QppUq9IW2lNioQtRpRZGI1jFz/mra76KQzaE01PHPR7lyQMUn7EapdX4ocjtZLrW1Ujb4vODYhCG
+eGE9NPjRGQzgRuKolak70jIttrn6LqGobFlZsi+yaicBMazKt6YPQhlb6XVdgOReLWV9oS1Bsy8H
+Gr7RUv5F3HtWZ2uJ9Tlgm/XnTzz/Dl+vBwpgXBdzUKNmZTReyefuySNsufwSQRtb82Z5QeXKRhCv
+ptNZHHsf8hNswEW+QwcUsZHe+QXQn+hhzQMAAA==
+------=_20040403022416_13406--
 
-Date: Fri,  2 Apr 2004 16:45:41 -0500 (EST)
-
-Subject: Re: [Alsa-devel] cannot submit datapipe for urb 0 on /dev/dsp access -extigy
-
-
-
-<br>and dmesg says<br><br><br><br>ALSA /tmp/alsa-driver-1.0.4rc2/usb/usbaudio.c:811: cannot submit datapipe for urb 0, err = -38<br><br>ALSA /tmp/alsa-driver-1.0.4rc2/usb/usbaudio.c:811: cannot submit datapipe for urb 0, err = -38<br><br>Debug: sleeping function called from invalid context at include/asm/semaphore.h:119<br><br>in_atomic():1, irqs_disabled():0<br><br>Call Trace:<br><br> [<c011ce0b>] __might_sleep+0xab/0xd0<br><br> [<d19c908a>] __ke_down_struct_sem+0x2a/0x50 [fglrx]<br><br> [<d19d9054>] drm_getmagic+0x124/0x1c0 [fglrx]<br><br> [<c0155922>] dentry_open+0x142/0x210<br><br> [<d19d8f30>] drm_getmagic+0x0/0x1c0 [fglrx]<br><br> [<d19cbd8d>] firegl_ioctl+0x15d/0x1e0 [fglrx]<br><br> [<c0169313>] sys_ioctl+0xf3/0x2a0<br><br> [<c010941b>] syscall_call+0x7/0xb<br><br> <br><br>ALSA /tmp/alsa-driver-1.0.4rc2/usb/usbaudio.c:811: cannot submit datapipe for urb 0, err = -38<br><br>ALSA /t
- mp/alsa-driver-1.0.4rc2/usb/usbaudio.c:811: cannot submit datapipe for urb 0, err = -38<b!
- r><br>ALSA /tmp/alsa-driver-1.0.4rc2/usb/usbaudio.c:811: cannot submit datapipe for urb 0, err = -38<br><br><br><br><br><br><br><br><br><br> --- On Fri 04/02, John H. < mrmailer@myway.com > wrote:<br><br>From: John H. [mailto: mrmailer@myway.com]<br><br>To: mrmailer@myway.com, clemens@ladisch.de, mrmailer@myway.com<br><br>     Cc: alsa-devel@alsa-project.org<br><br>Date: Fri,  2 Apr 2004 16:28:53 -0500<br><br>Subject: Re: [Alsa-devel] cannot submit datapipe for urb 0 on /dev/dsp access -extigy<br><br><br><br>oh, play had gotten stuck on playing a gaim sound.  it sticks until you kill it.<br><br>once killed, xmms says this<br><br><br>** WARNING **: alsa_free(): snd_pcm_start() failed: Broken pipe<br>ALSA lib pcm_hw.c:494:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed: Broken pipe<br><br><br><br> --- On Fri 04/02, John H. < mrmailer@myway.com > wrote:<br>From: John H. [mailto: mrmailer@m
- yway.com]<br>To: clemens@ladisch.de, mrmailer@myway.com<br>     Cc: alsa-devel@alsa-proje!
- ct.org<br>Date: Fri,  2 Apr 2004 16:26:57 -0500 (EST)<br>Subject: Re: 
-[Alsa-devel] cannot submit datapipe for urb 0 on /dev/dsp access -extigy<br><br><br>see, this is what is weird, it worked last week, now it doesn't work with exaudio or alsa! same errors!<br><br>line in works, but not pcm/oss.\<br><br>aplay file.wav does not work<br><br>after i ran aplay foo.wav i tried xmms, and it said<br>ALSA lib pcm_hw.c:1057:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Device or resource busy<br> <br>** WARNING **: !<br> alsa_setup(): Failed to open pcm device (default): Device or resource busy<br><br><br> ls -la /proc/asound/<br>total 1.0K<br>dr-xr-xr-x    5 root root 0 Apr  2 15:25 .<br>dr-xr-xr-x  118 root root 0 Apr  2 09:09 ..<br>dr-xr-xr-x    6 root root 0 Apr  2 15:25 card0<br>-r--r--r--    1 root root 0 Apr  2 15:25 cards<br>-r--r--r--    1 root root 0 Apr  2 15:25 devices<br>lrwxrwxrwx    1 root root 5 Apr  2 15:25 Extigy -> card0<br>-r--r--r--    1 roo
- t root 0 Apr  2 15:25 modules<br>dr-xr-xr-x    2 root root 0 Apr  2 15:25 oss<br>-r--r--r!
- --    1 root root 0 Apr  2 15:25 pcm<br>dr-xr-xr-x    2 root root 0 Apr  2 15:25 seq<br>-r--r--r--    1 root root 0 Apr  2 15:25 timers<br>-r--r--r--    1 root root 0 Apr  2 15:25 version<br><br><br><br><br> --- On Thu 04/01, Clemens Ladisch < clemens@ladisch.de > wrote:<br>From: Clemens Ladisch [mailto: clemens@ladisch.de]<br>To: mrmailer@myway.com<br>     Cc: alsa-devel@alsa-project.org<br>Date: Thu, 01 Apr 2004 15:38:40 +0200 (METDST)<br>Subje!<br> ct: Re: [Alsa-devel] cannot submit datapipe for urb 0 on /dev/dsp acce<br>ss -extigy<br><br>John H. wrote:<br>> I get this error repeatedly<br>><br>> ALSA /tmp/alsa-driver-1.0.4rc2/usb/usbaudio.c:811:<br>> cannot submit datapipe for urb 0, err = -38<br>><br>> whenever i try to use /dev/dsp now, and i can only get sound from line in.<br>><br>> i have kernel 2.6.4 and drivers 1.0.4rc2<br><br>What is in /proc/asound/cards?<br><br>Is your host
-  controller UHCI or OHCI?<br><br>Does it work with "aplay something.wav"?<br><br>Does it !
- work with a 2.4.x kernel?<br><br><br>Regards,<br>Clemens<br><br><br><b
-r>
- <br>-------------------------------------------------------<br>This SF.Net email is sponsored by: IBM Linux Tutorials<br>Free Linux tutorial presented by Daniel Robbins, President and CEO of<br>GenToo technologies. Learn everything from fundamentals to system<br>administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click<br>_______________________________________________<br>Alsa-devel mailing list<br>Alsa-devel@lists.sourceforge.net<br>https://l!<br> ists.sourceforge.ne<br> t/lists/listinfo/alsa-devel<br><br><br>_______________________________________________<br>No banners. No pop-ups. No kidding.<br>Introducing My Way - http://www.myway.com<br><br><br>_______________________________________________<br>No banners. No pop-ups. No kidding.<br>Introducing My Way - http://www.myway.com<br><br><br>_______________________________________________<br>No banners. No pop-ups. No kidding
- .<br>Introducing My Way - http://www.myway.com<br><br><br>-------------------------------!
- ------------------------<br>This SF.Net email is sponsored by: IBM Linux Tutorials<br>Free Linux tutorial presented by Daniel Robbins, President and CEO of<br>GenToo technologies. Learn everything from fundamentals to system<br>administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click<br>_______________________________________________<br>Alsa-devel mailing list<br>Alsa-devel@lists.sourceforge.net<br>https://lists.sourceforge.net/lists/listinfo/alsa-devel<br>
-
-_______________________________________________
-No banners. No pop-ups. No kidding.
-Introducing My Way - http://www.myway.com
 
 
 -------------------------------------------------------
