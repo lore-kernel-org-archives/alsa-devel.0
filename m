@@ -1,16 +1,14 @@
-From: Gilles =?iso-8859-1?q?D=E9gottex?= <gilles.degottex@net2000.ch>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: direct midi event dispatching
-Date: Mon, 24 May 2004 17:15:59 +0200
+Date: Mon, 24 May 2004 18:02:47 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405241715.59134.gilles.degottex@net2000.ch>
-References: <Pine.HPX.4.33n.0405241516030.10397-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0405241756370.10397-100000@studcom.urz.uni-halle.de>
+References: <200405241715.59134.gilles.degottex@net2000.ch>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0405241516030.10397-100000@studcom.urz.uni-halle.de>
-Content-Disposition: inline
+In-reply-to: <200405241715.59134.gilles.degottex@net2000.ch>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,38 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Gilles =?iso-8859-1?q?D=E9gottex?= <gilles.degottex@net2000.ch>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 24 May 2004 15:24, Clemens Ladisch wrote:
-> Gilles D=E9gottex wrote:
-> > > > but when I flush the output, I got an error: "Invalid argument"
-> >
-> >     snd_seq_ev_set_direct(&ev);
-> >     ev.type =3D SND_SEQ_EVENT_NOTE;
-> >     ev.data.note.duration =3D 1000;
->
-> NOTE events must be sent through a queue because they need a timer so
-> that the NOTE_OFF event can be scheduled at the appropriate time.
->
-> When not using a queue, you have to send the NOTE_ON and NOTE_OFF
-> events seperately.
+Gilles D=E9gottex wrote:
+> Why SND_SEQ_EVENT_NOTE event doesnt accept direct dispatching ?
+> technicaly, there is surely a reason, but conceptualy, I dont see. =
+Why do a
+> difference ?
 
-Thanks ! that's works ! I dont know where you find this in the documentatio=
-n,=20
-if it's exist :P
+SND_SEQ_EVENT_NOTE isn't a 'real' event but gets split into two
+events, SND_SEQ_EVENT_NOTE_ON and _OFF, and the latter must be sent a=
+t
+a later time.  Scheduling events to be sent later requires a timer
+which isn't avilable without a queue.
 
-
-Remark:
-
-	Why SND_SEQ_EVENT_NOTE event doesnt accept direct dispatching ?
-	technicaly, there is surely a reason, but conceptualy, I dont see. Why do =
-a=20
-difference ?
+The SND_SEQ_EVENT_NOTE event is the only event that uses the
+event.data.note.duration field, but you cannot know what the value in
+this field means without having a timer which specifies how long one
+timer tick lasts.
 
 
-Best Regards,
-Gilles
+HTH
+Clemens
+
+
+
 
 
 -------------------------------------------------------
