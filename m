@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 26 Dec 2004 21:43:04 +0100
-Message-ID: <7589edaed50fb7b389abf0523d0155a8@bugtrack.alsa-project.org>
+Date: Sun, 26 Dec 2004 21:47:21 +0100
+Message-ID: <51850f222240d82fc005e192034b1758@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4C6CE2B8
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 21:43:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 112C12B8
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 21:47:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-26-2004 21:43 CET
+Last Modified:              12-26-2004 21:47 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -54,13 +54,6 @@ driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
 successful in all other regards install of Fedora FC3.
 
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 12-26-04 21:22 
-----------------------------------------------------------------------
-One thing - remove /etc/asound.conf - or comment out two lines inside.
-
-And you don't need .asoundrc too
 
 ----------------------------------------------------------------------
  misnagid - 12-26-04 21:43 
@@ -283,6 +276,15 @@ alsactl: set_control:797: warning: numid mismatch (163/166) for control
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=163
 [root@ashkenazi jerry]#
 
+----------------------------------------------------------------------
+ pzad - 12-26-04 21:47 
+----------------------------------------------------------------------
+This is ok.
+
+Still buzz ???
+
+Try aplay again.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -310,6 +312,7 @@ Date Modified  Username       Field                    Change
 12-26-04 21:19 pzad           Note Added: 0002952                          
 12-26-04 21:22 pzad           Note Added: 0002953                          
 12-26-04 21:43 misnagid       Note Added: 0002954                          
+12-26-04 21:47 pzad           Note Added: 0002955                          
 ======================================================================
 
 
