@@ -1,14 +1,12 @@
-From: Patrice Tisserand <Patrice.Tisserand@ircam.fr>
-Subject: Re: snd-rme9652 fails
-Date: 18 Dec 2003 10:09:34 +0100
+From: Doug <nostar@comcast.net>
+Subject: New hardware - New developer / tester
+Date: Thu, 18 Dec 2003 06:47:23 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1071738574.2020.24.camel@localhost.localdomain>
-References: <3FE02BA2.8020900@emt.iis.fhg.de>  <3FE1676C.40806@ifrance.com>
+Message-ID: <3FE193CB.8070308@comcast.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FE1676C.40806@ifrance.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,39 +15,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benouille <benouille@ifrance.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
-
-On Thu, 2003-12-18 at 09:38, Benouille wrote:
-> Hi
-> 
-> I confirm this fact:
-> with kernel 2.4.23 and alsa 1.0rc2, the module snd-rme9652 can't be loaded
-> althought the "old"  rme digi 9652 is perfectly working with alsa 0.9.6
-> 
 
 Hi,
 
-I have found after a lot of printk that if I comment lines 1645 to 1648
-of rme9652.c, the driver could be load and I can play music with jMax ;)
+My goal is to become ridiculously involved in linux audio, mainly (at 
+least for now) device driver development.  I have an EZBus audio 
+device/control surface/mixer, and an EZ8 ADAT I/O card (www.event1.com). 
+  My goal was to write an ALSA driver for the EZ8 card and EZbus for use 
+with Ardour/JACK to do 8 track live recording and be a 100% open source 
+band (we are currently using XP / Cubase).  The snd-usb-audio works with 
+the EZBus already, and how suprised I was to get sound out of the EZ8 
+card using the ice1712 driver.  There is some noise there, and neither 
+with alsamixer nor envy24control could I get any type of level control. 
+  Theres lots that need to be adapted to the EZ8 I think (channel 
+assignments/levels, clock source, sample rate, etc), so thats what I 
+would like to do as I learn device driver programming and linux audio. 
+Right now I'm deep into the Oreilly Linux Device Drivers book, and 
+browsing the ALSA developers docs.
 
-Here are the part to comment:
-if (rme9652->ss_channels == RME9652_NCHANNELS)
-  if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_rme9652_adat3_check, rme9652))) < 0)
-     return err;
+So, here are my questions:
 
-Please note that I have only test the first ADAT with playback.
+Is there a process for registering devices in the matrix and determining 
+how 'functional' is enough to be considered 'supported'?  Do I just 
+shout loudly, 'EZBus works!' ? :)
 
-# lspci output
-$ /sbin/lspci -s 00:0e.0
-00:0e.0 Multimedia audio controller: Xilinx Corporation RME Digi9652 (Hammerfall) (rev 03)
-$ /sbin/lspci -n -s 00:0e.0
-00:0e.0 Class 0401: 10ee:3fc4 (rev 03)
+Do any of the existing ice1712 developers have chip documentation I 
+could have?  Is it allowed / polite / acceptable for me to tear into the 
+existing ice1712 code and learn from it, then either use code from it to 
+create this driver or add complete EZ8 functionality to the existing driver?
 
-Bye,
-Patrice.
+I assume this is the list to ask driver specific questions, which I'm 
+sure I will have alot of as I dive into kernel land?
 
+I read the home site asking for testers, I have alot of PC hardware at 
+my disposal, do developers just post requests for people to test code as 
+the need arises?
+
+Sorry about my generally 'clueless' disposition, but I guess I have to 
+start somewhere :)
+
+-- 
+http://nostar.isa-geek.com/
 
 
 
