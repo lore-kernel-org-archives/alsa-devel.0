@@ -1,14 +1,12 @@
-From: Arve Knudsen <aknuds-1@broadpark.no>
-Subject: Re: Broken pipe when starting pcm
-Date: Sat, 01 Nov 2003 01:45:42 +0100
+From: "Thomas Charbonnel" <thomas@undata.org>
+Subject: hdsp driver and tools update
+Date: Sat, 1 Nov 2003 12:19:52 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <oprxxoegqeq1sf88@mail.broadpark.no>
-References: <oprxw33qopq1sf88@mail.broadpark.no> <oprxxmrp12q1sf88@mail.broadpark.no>
+Message-ID: <1073.217.184.8.109.1067685592.squirrel@www.undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <oprxxmrp12q1sf88@mail.broadpark.no>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,53 +18,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 01 Nov 2003 01:10:27 +0100, Arve Knudsen <aknuds-1@broadpark.no>=20
-wrote:
+Hi,
 
-> On Fri, 31 Oct 2003 18:27:16 +0100, Arve Knudsen <aknuds-1@broadpark.no=
->=20
-> wrote:
->
->> Hi
->>
->> Whenever I turn on xrun detection, setting stop_threshold to buffer=20
->> size instead of -1, snd_pcm_start refuses to work. The exit message to=
-=20
->> do with broken pipe. I figured it might be caused by an empty buffer,=20
->> so I fill it with silence before start. snd_pcm_avail_update confirms=20
->> this (zero frames available), but it makes no difference. This happens=
-=20
->> with both my cards, nForce2 onboard and RME DIGI9636. If someone could=
-=20
->> point out the cause of this, I'd truly appreciate it. If it matters I=20
->> am running a development kernel, 2.6.0 test9-mm1.
->>
->> Thanks
->>
->> Arve Knudsen
->
-> Ok, was able to track it down to snd_pcm_prepare. I already tested the=20
-> stream state, so I knew the stream was in the prepared state before I=20
-> called snd_pcm_prepare myself. However I would never have thought that=20
-> calling snd_pcm_prepare before snd_pcm_start could cause problems, isnt=
-=20
-> this the standard procedure (preparing before start)? At least=20
-> commenting out the prepare call before starting, makes the problem go=20
-> away. I see I also have to fill the buffer before snd_pcm_start (or dea=
-l=20
-> with broken pipe), I thought a silence size equal to boundary and=20
-> silence threshold of 0 would cause the buffer to be automatically=20
-> silenced (judging from the docs)?
+I apologize for having been so silent the last few weeks, I was in the
+process of moving from Lyon, France to Berlin, Germany. This is now done,
+and I resumed my work on the hdsp driver and tools.
+Latest patches and tools can be found here :
+http://www.undata.org/~thomas/
+Mojor changes include support for hdsp 9632 cards and bugfixes for hdsp
+9652 cards.
+Hdspconf and hdspmixer now support 96xx cards, though this needs testing
+as I do not have the hardware.
 
-Awww, looks like I cheered to early. Once I compile with optimizations or=
-=20
-try to restart because of xruns, I'm hit by the same error. Completely at=
-=20
-a loss here, maybe I should just accept the defeat :\
+People testing this should remove their asound.state file from the way
+because the number or numid of ctls may have change.
 
-Regards
+Takashi, I noticed that though it's been in cvs for some time now,
+hdspconf is still not included in alsa-tools releases, is there a reason
+for this ?
 
-Arve Knudsen
+Thomas
+
+
+
 
 
 -------------------------------------------------------
