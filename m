@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000518]: [PATCH] 90_debian_alsaconf_cfgfile
-Date: Tue, 21 Sep 2004 19:55:33 +0200 (CEST)
+Subject: [ALSA - utils 0000519]: [PATCH] 90_debian_alsaconf_notouch
+Date: Tue, 21 Sep 2004 20:01:07 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040921175533.2A78A39007@server.perex-int.cz>
+Message-ID: <20040921180107.CA41839007@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C36B35B
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 19:55:33 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A4382D4
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 20:01:08 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 2E7BC26656
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 19:55:33 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id D953226658
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 20:01:07 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,33 +25,42 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000518
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000519
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Bug ID:                     518
+Bug ID:                     519
 Category:                   alsaconf
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-21-2004 19:55 CEST
-Last Modified:              09-21-2004 19:55 CEST
+Date Submitted:             09-21-2004 20:01 CEST
+Last Modified:              09-21-2004 20:01 CEST
 ======================================================================
-Summary:                    [PATCH] 90_debian_alsaconf_cfgfile
+Summary:                    [PATCH] 90_debian_alsaconf_notouch
 Description: 
-Patch for alsaconf.in to make it use the correct configuration
-filename for Debian
+Patch for alsaconf which makes it refrain from creating
+/etc/modprobe.conf if the latter does not already exist.
+
+Creating an empty /etc/modprobe.conf is bad because if it
+exists then modprobe uses _only_ this file -- it does not
+use /etc/modprobe.d/.
+
+Additionally, this patch makes alsaconf set the cleanup
+trap before it creates temporary files rather than after.
+
+
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 19:55 jdthood        New Bug                                      
-09-21-04 19:55 jdthood        File Added: 90_debian_alsaconf_cfgfile.dpatch                    
+09-21-04 20:01 jdthood        New Bug                                      
+09-21-04 20:01 jdthood        File Added: 90_debian_alsaconf_notouch.dpatch                    
 ======================================================================
 
 
