@@ -1,15 +1,14 @@
-From: Tim Blechmann <TimBlechmann@gmx.net>
-Subject: Re: [linux-audio-dev] Major problem with RME HDSP/Multiface and a
- 64-bit AMD laptop
-Date: Sun, 21 Mar 2004 13:00:34 +0100
+From: John Knottenbelt <jak97@doc.ic.ac.uk>
+Subject: Exchange DAC Setting Disappeared - CMIPCI
+Date: Sun, 21 Mar 2004 21:13:35 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040321130034.6fd0ff52@laptop>
-References: <20040320053504.PWNE22400.smtp2.fuse.net@64BitBadass>
+Message-ID: <200403212113.35943.jak97@doc.ic.ac.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040320053504.PWNE22400.smtp2.fuse.net@64BitBadass>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,66 +17,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>
-Cc: ico@fuse.net, george@synthax.com, support@synthax.de, linux-audio-user@music.columbia.edu, alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 20 Mar 2004 00:35:02 -0500
-"Ivica Ico Bukvic" <ico@fuse.net> wrote:
+Hi
 
-> First off I would like to extend my sincere apologies for my atrocious
-> cross-posting. I am currently in a rather desperate situation and
-> would highly appreciate any help I can get in this matter.
-> 
-> <Begin long blurb>e
+I see that the exchange DAC setting has disappeared from my mixer settings. I 
+understand after reading thread 
 
-wait ... this seems to be similar to the problem i have with my hdsp ...
-i can't run it on my linux system at all, althouth it works fine with
-windows xp:
+  http://www.mail-archive.com/alsa-devel%40lists.sourceforge.net/msg09930.html
 
-can you try jack as super user with -R flag?
+That this is because it wasn't working well in a multi-channel context.
 
-if you use an input signal, some of the input gets copied to the output
-if a sound application is running, which results some distortion ...
-could you start jack / pd, and try to use any of the input channels try
-several settings of hdspmixer... 
+The use that I was putting this to, however, was to switch between headphones 
+and loudspeakers (by connecting loudspeakers to blue and headphones to 
+green). I only ever do stereo output.
 
-the problem with my hdsp is definitely a cardbus driver issue ... from
-what i heard from people who tried to help me is, that there are some
-problems in mapping the memory from the kernel to the buffer inside the
-cardbus bridge ...
-the problem with the kernel driver for the yenta socket is, that it's
-not properly supported ... thomas charbonnel, who maintains the hdsp
-driver and i wrote a message to both the kernel and the pcmcia-cs
-mailing-list, but didn't get any answer...
+Is it possible to achieve the same functionality without this switch? If not, 
+would it be possible to bring it back? Specifically I would like to be able 
+to switch between loudspeakers and headphones without having to restart any 
+applications and for the switch to have immediate effect.
 
-of course, it could be a problem of the cardbus controller hardware,
-that the windows driver may handle differently than the yenta-socket
-module for linux my machine has an o2micro cardbus controller, that,
-conserning rme's support may produce problems ... 
-i'm able to sell my notebook to my mother ;-) and get a new one, soon...
-the only reason, why i won't get an amd64 is that the notebooks that are
-equipped with this chip, have either ene or ricoh cardbus controllers,
-controllers rme warns against ... that's why i'll order a p4 inspiron,
-soon...
+My card is a 6 channel on board cmipci:
 
-anyway, when i talked to thomas a short time ago, he considered going to
-the lad conference, i'll go there, and concerning the schedule, you'll
-be there, too ... maybe we could try to track this problem down and try
-to contact the kernel mailinglist again...
+00:0c.0 Multimedia audio controller: C-Media Electronics Inc CM8738 (rev 10)
+        Subsystem: Micro-Star International Co., Ltd.: Unknown device 5900
 
-i hope that you will be more luck than i was ...
+Many thanks
 
- Tim                          mailto:TimBlechmann@gmx.de
-                              ICQ: 96771783
---
-The only people for me are the mad ones, the ones who are mad to live,
-mad to talk, mad to be saved, desirous of everything at the same time,
-the ones who never yawn or say a commonplace thing, but burn, burn,
-burn, like fabulous yellow roman candles exploding like spiders across
-the stars and in the middle you see the blue centerlight pop and
-everybody goes "Awww!"
-                                                          Jack Kerouac
+John
 
 
 -------------------------------------------------------
