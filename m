@@ -1,13 +1,13 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: Fwd: arecord bug?
-Date: Tue, 18 Mar 2003 16:43:50 +0200 (EET)
+From: ian <deviant@custard.org>
+Subject: Re: Java Bindings?
+Date: Tue, 18 Mar 2003 15:01:11 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303181633140.9177-100000@vaino.wakkanet.fi>
-References: <Pine.LNX.4.44.0303181622330.9177-100000@vaino.wakkanet.fi>
+Message-ID: <Pine.LNX.4.44.0303181452060.31785-100000@rhubarb.custard.org>
+References: <61627AE0C39BD11182D600805FE6527B0A02D77D@lonim26408.uk.ml.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0303181622330.9177-100000@vaino.wakkanet.fi>
+In-Reply-To: <61627AE0C39BD11182D600805FE6527B0A02D77D@lonim26408.uk.ml.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,38 +16,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jon Ellis <ashura666@mac.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 18 Mar 2003, Kai Vehmanen wrote:
+i don't think there are any java bindings for alsa. but there is tritonus,
+which is an implementation of the java sound api, and uses alsa in parts.
+alternatively, you could use jni (java native interface) to write the glue
+code between your java app and alsa. i've done that, and it works fine.
+ian
 
-> ecasound -f:16,2,44100 -i alsa -o stdout |oggenc -r -q 0 -o recording.ogg -
 
-Btw; ecasound can also launch oggenc by itself. To modify oggenc params,
-you have to edit ~/.ecasound/ecasoundrc (see man ecasoundrc(5) for info).
-So the above command would be:
+On Tue, 18 Mar 2003, Merrony, Stephen (London) wrote:
 
-ecasound -f:16,2,44100 -i alsa -o recording.ogg
-
-As another example, to get vu-meter while recording, you can issue:
-
-ecasignalview -f:16,2,44100 alsa recording.ogg
-
-Ecasignalview, too, comes with the standard ecasound package and thus
-should be in Gentoo. If you prefer a GUI, try recording with:
-
-ecamegapedal alsa recording.ogg
-
-Independently of how you do the recording, you always get the benefits of
-ecasound's realibility features. The key feature is separation of audio
-and disk processing to separate execution contexts. If this is not done
-(like is the case with arecord), any burst of disk activity can cause
-xruns to the recording process.
-
---
- http://www.eca.cx
- Audio software for Linux!
+> Has anyone worked on Java bindings for ALSA?
+>
+> Or is there another route I should consider if I want a Java app to
+> communicate with ALSA?
+>
+> Regards
+> 	         Steve
+>
+>
+>
+>
+>
+> -------------------------------------------------------
+> This SF.net email is sponsored by: Does your code think in ink?
+> You could win a Tablet PC. Get a free Tablet PC hat just for playing.
+> What are you waiting for?
+> http://ads.sourceforge.net/cgi-bin/redirect.pl?micr5043en
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
 
 
 
