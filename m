@@ -1,7 +1,7 @@
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Subject: Re: 2.6.11-mm1: sound <-> GAMEPORT problems
-Date: Mon, 7 Mar 2005 17:05:17 -0500
-Message-ID: <d120d50005030714056511c214@mail.gmail.com>
+Date: Mon, 7 Mar 2005 17:12:57 -0500
+Message-ID: <d120d50005030714126e345fe2@mail.gmail.com>
 References: <20050304033215.1ffa8fec.akpm@osdl.org>
 	 <200503070941.59365.petkov@uni-muenster.de>
 	 <20050307215206.GH3170@stusta.de>
@@ -10,10 +10,10 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Received: from rproxy.gmail.com (rproxy.gmail.com [64.233.170.204])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A67FB156
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2005 23:05:18 +0100 (MET)
-Received: by rproxy.gmail.com with SMTP id r35so1219364rna
-        for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2005 14:05:17 -0800 (PST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7C0E81C5
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2005 23:12:58 +0100 (MET)
+Received: by rproxy.gmail.com with SMTP id r35so1221505rna
+        for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2005 14:12:57 -0800 (PST)
 In-Reply-To: <20050307215206.GH3170@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -61,20 +61,11 @@ On Mon, 7 Mar 2005 22:52:06 +0100, Adrian Bunk <bunk@stusta.de> wrote:
 > 
 > After a quick look, it seems there are a dozen other sound drivers (most
 > OSS but also ALSA) with similar problems.
-> 
-> There are two possibilities:
-> 1. continue to #ifdef all GAMEPORT support in sound drivers
-> 2. remove all #ifdef's for GAMEPORT and let drivers that can use the
->   gameport (including the sound drivers) simply select GAMEPORT
->   As far as I can see, in this case GAMEPORT does no longer have to be
->   user-visible?
-> 
-> I can send patches for both, but I'd prefer the second solution.
-> 
 
-Not everyone wants gameport. I think say very small percentage of
-people using sound cards that can support gameports actually uses
-them.
+Note that in input tree (and in -mm) I tried to clean up these #ifdefs
+by providing dummy functions when CONFIG_GAMEPORT is not selected. The
+original report caused by the typo in dummy function name
+(snc_ymfpci_create_gameport).
 
 -- 
 Dmitry
