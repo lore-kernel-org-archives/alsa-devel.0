@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000963]: Sounc card is mute
-Date: Sat, 19 Mar 2005 09:44:59 +0100
-Message-ID: <809d247fa6f98b8291d0be7231b31732@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000190]: Compilation Error 2.6.4 /usr/src/linux/include/linux/pci.h
+Date: Sat, 19 Mar 2005 09:48:05 +0100
+Message-ID: <7a2f5f43fcefadee494f44d027f297b4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 886411F9
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:44:59 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D655D18A
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:48:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,699 +23,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=190> 
 ======================================================================
-Reported By:                jnilles
-Assigned To:                
+Reported By:                Sean
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   963
-Category:                   PCI - cs46xx
+Issue ID:                   190
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE
-Kernel Version:             
+Status:                     feedback
+Distribution:               
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             03-04-2005 19:07 CET
-Last Modified:              03-19-2005 09:44 CET
+Date Submitted:             04-06-2004 01:52 CEST
+Last Modified:              03-19-2005 09:48 CET
 ======================================================================
-Summary:                    Sounc card is mute
+Summary:                    Compilation Error 2.6.4
+/usr/src/linux/include/linux/pci.h
 Description: 
-I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
-and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
-the sound card is inoperative, mute, lifeless, sound-free. The only advice
-I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
-without going thgrough 9.1 on the way. That sounds like pretty stupid
-advice.
-I have spent weeks twiddling with settings  recommended by member sof the
-alsa users group, to no avail.
+Building Alsa driver 1.0.4 failed on Linux 2.6.5 building memory.o with the
+following error:
+In file included from
+/root/alsa/alsa-driver-1.0.4/alsa-kernel/core/memory.c:29,                
+from /root/alsa/alsa-driver-1.0.4/acore/memory.c:2:
+include/linux/pci.h:654: error: parse error before numeric constant
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jnilles - 03-18-05 22:42 
+ perex - 04-25-04 10:15 
 ----------------------------------------------------------------------
-Here's the working version. The only problem detected so far is that the
-microphone input isn't doing too well; that is, skype isn't picking up the
-microphone. If I set the mic playback volume up I get a serious feedback
-squeal, as one would expect; ergo the mic hardware is working, just not
-the skype conection.
-
-state.CS46xx {
-	control.1 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Master Playback Switch'
-		value true
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'Master Playback Volume'
-		value.0 63
-		value.1 63
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Headphone Playback Switch'
-		value true
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Headphone Playback Volume'
-		value.0 23
-		value.1 23
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Master Mono Playback Switch'
-		value true
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Master Mono Playback Volume'
-		value 25
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'PC Speaker Playback Switch'
-		value false
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name 'PC Speaker Playback Volume'
-		value 0
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Phone Playback Switch'
-		value false
-	}
-	control.10 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Phone Playback Volume'
-		value 0
-	}
-	control.11 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mic Playback Switch'
-		value false
-	}
-	control.12 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Mic Playback Volume'
-		value 0
-	}
-	control.13 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mic Boost (+20dB)'
-		value false
-	}
-	control.14 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Line Playback Switch'
-		value true
-	}
-	control.15 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Line Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.16 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'CD Playback Switch'
-		value true
-	}
-	control.17 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'CD Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.18 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Video Playback Switch'
-		value true
-	}
-	control.19 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Video Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.20 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Aux Playback Switch'
-		value true
-	}
-	control.21 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Aux Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.22 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'PCM Playback Switch'
-		value true
-	}
-	control.23 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.24 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.item.0 Mic
-		comment.item.1 CD
-		comment.item.2 Video
-		comment.item.3 Aux
-		comment.item.4 Line
-		comment.item.5 Mix
-		comment.item.6 'Mix Mono'
-		comment.item.7 Phone
-		iface MIXER
-		name 'Capture Source'
-		value.0 Mic
-		value.1 Mic
-	}
-	control.25 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Capture Switch'
-		value true
-	}
-	control.26 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name 'Capture Volume'
-		value.0 0
-		value.1 0
-	}
-	control.27 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name '3D Control - Switch'
-		value true
-	}
-	control.28 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.item.0 Mix
-		comment.item.1 Mic
-		iface MIXER
-		name 'Mono Output Select'
-		value Mix
-	}
-	control.29 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.item.0 Mic1
-		comment.item.1 Mic2
-		iface MIXER
-		name 'Mic Select'
-		value Mic1
-	}
-	control.30 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name '3D Control - Center'
-		value 7
-	}
-	control.31 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name '3D Control - Depth'
-		value 14
-	}
-	control.32 {
-		comment.access read
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Con Mask'
-		value
-'0fff000f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.33 {
-		comment.access read
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Pro Mask'
-		value
-cf00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-	}
-	control.34 {
-		comment.access 'read write'
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Default'
-		value
-'0082000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.35 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'IEC958 Playback Switch'
-		value false
-	}
-	control.36 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'External Amplifier'
-		value true
-	}
-	control.37 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Master Playback Switch'
-		index 1
-		value true
-	}
-	control.38 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'Master Playback Volume'
-		index 1
-		value.0 63
-		value.1 63
-	}
-	control.39 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Center Playback Switch'
-		index 1
-		value true
-	}
-	control.40 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'Center Playback Volume'
-		index 1
-		value 63
-	}
-	control.41 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'LFE Playback Switch'
-		index 1
-		value true
-	}
-	control.42 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'LFE Playback Volume'
-		index 1
-		value 0
-	}
-	control.43 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Surround Playback Switch'
-		index 1
-		value.0 true
-		value.1 true
-	}
-	control.44 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'Surround Playback Volume'
-		index 1
-		value.0 63
-		value.1 63
-	}
-	control.45 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mic Playback Switch'
-		index 1
-		value false
-	}
-	control.46 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Mic Playback Volume'
-		index 1
-		value 0
-	}
-	control.47 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mic Boost (+20dB)'
-		index 1
-		value false
-	}
-	control.48 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Line Playback Switch'
-		index 1
-		value false
-	}
-	control.49 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Line Playback Volume'
-		index 1
-		value.0 0
-		value.1 0
-	}
-	control.50 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'CD Playback Switch'
-		index 1
-		value false
-	}
-	control.51 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'CD Playback Volume'
-		index 1
-		value.0 31
-		value.1 31
-	}
-	control.52 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Aux Playback Switch'
-		index 1
-		value false
-	}
-	control.53 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Aux Playback Volume'
-		index 1
-		value.0 0
-		value.1 0
-	}
-	control.54 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'PCM Playback Switch'
-		index 1
-		value true
-	}
-	control.55 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'PCM Playback Volume'
-		index 1
-		value.0 31
-		value.1 31
-	}
-	control.56 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.item.0 Mic
-		comment.item.1 CD
-		comment.item.2 Video
-		comment.item.3 Aux
-		comment.item.4 Line
-		comment.item.5 Mix
-		comment.item.6 'Mix Mono'
-		comment.item.7 Phone
-		iface MIXER
-		name 'Capture Source'
-		index 1
-		value.0 Mic
-		value.1 Mic
-	}
-	control.57 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Capture Switch'
-		index 1
-		value true
-	}
-	control.58 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name 'Capture Volume'
-		index 1
-		value.0 0
-		value.1 0
-	}
-	control.59 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.item.0 'pre 3D'
-		comment.item.1 'post 3D'
-		iface MIXER
-		name 'PCM Out Path & Mute'
-		index 1
-		value 'pre 3D'
-	}
-	control.60 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name '3D Control - Switch'
-		index 1
-		value false
-	}
-	control.61 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name '3D Control - Center'
-		index 1
-		value 0
-	}
-	control.62 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name '3D Control - Depth'
-		index 1
-		value 0
-	}
-	control.63 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 32767'
-		iface MIXER
-		name 'DAC Volume'
-		value.0 32439
-		value.1 32439
-	}
-	control.64 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 32767'
-		iface MIXER
-		name 'ADC Volume'
-		value.0 32767
-		value.1 32767
-	}
-	control.65 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'ADC Capture Switch'
-		value false
-	}
-	control.66 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'DAC Capture Switch'
-		value false
-	}
-	control.67 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'IEC958 Output Switch'
-		value false
-	}
-	control.68 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'IEC958 Input Switch'
-		value false
-	}
-	control.69 {
-		comment.access 'read write'
-		comment.type IEC958
-		iface PCM
-		name 'IEC958 Playback Default'
-		value
-'0000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.70 {
-		comment.access read
-		comment.type IEC958
-		iface PCM
-		name 'IEC958 Playback Mask'
-		value
-ffff00ff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-	}
-	control.71 {
-		comment.access 'read write'
-		comment.type IEC958
-		iface PCM
-		name 'IEC958 Playback PCM Stream'
-		value
-'0082000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-}
+Note that you have to way one day until anonymous CVS is synced on
+SourceForge.
+Please try again.
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 09:44 
+ jdthood - 03-19-05 09:48 
 ----------------------------------------------------------------------
-You switched on both the "External Amplifier" and the "Master Playback"
-controls.  Which of these two was necessary for the solution of the
-problem, or were both necessary?
-
-    control.36 {
-        comment.access 'read write'
-        comment.type BOOLEAN
-        iface MIXER
-        name 'External Amplifier'
-        value true
-    }
-    control.37 {
-        comment.access 'read write'
-        comment.type BOOLEAN
-        iface MIXER
-        name 'Master Playback Switch'
-        index 1
-        value true
-    }
-    control.38 {
-        comment.access 'read write'
-        comment.type INTEGER
-        comment.range '0 - 63'
-        iface MIXER
-        name 'Master Playback Volume'
-        index 1
-        value.0 63
-        value.1 63
-    }
+This one can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-05 19:07 jnilles        New Issue                                    
-03-04-05 19:07 jnilles        Distribution              => SuSE            
-03-09-05 18:53 tiwai          Note Added: 0003840                          
-03-10-05 00:21 jnilles        Note Added: 0003846                          
-03-10-05 15:01 jdthood        Note Added: 0003856                          
-03-10-05 20:29 jnilles        Note Added: 0003872                          
-03-10-05 22:04 jdthood        Note Added: 0003874                          
-03-16-05 01:33 jnilles        Note Added: 0003926                          
-03-16-05 12:31 tiwai          Note Added: 0003941                          
-03-16-05 22:52 jnilles        Note Added: 0003972                          
-03-17-05 10:11 jdthood        Note Added: 0003980                          
-03-17-05 23:07 jnilles        Note Added: 0003986                          
-03-18-05 14:38 jdthood        Note Added: 0003993                          
-03-18-05 17:59 tiwai          Note Added: 0003997                          
-03-18-05 22:42 jnilles        Note Added: 0004006                          
-03-19-05 09:44 jdthood        Note Added: 0004025                          
+04-06-04 01:52 Sean           New Issue                                    
+04-06-04 01:52 Sean           Kernel Version            => 2.6.5           
+04-13-04 19:39 tiwai          Note Added: 0000794                          
+04-13-04 23:21 Sean           File Added: .config                          
+04-13-04 23:22 Sean           Note Added: 0000800                          
+04-16-04 12:02 tiwai          Note Added: 0000834                          
+04-16-04 22:32 Sean           Note Added: 0000845                          
+04-20-04 12:50 tiwai          Note Added: 0000875                          
+04-20-04 19:12 Sean           Note Added: 0000888                          
+04-23-04 17:19 tiwai          Note Added: 0000901                          
+04-23-04 21:47 Sean           Note Added: 0000919                          
+04-23-04 21:48 Sean           File Added: config.log                       
+04-24-04 21:58 tiwai          Status                   assigned => resolved
+04-24-04 21:58 tiwai          Resolution               open => fixed       
+04-24-04 21:58 tiwai          Assigned To              perex => tiwai      
+04-24-04 21:58 tiwai          Note Added: 0000929                          
+04-25-04 01:28 Sean           Status                   resolved => feedback
+04-25-04 01:28 Sean           Resolution               fixed => reopened   
+04-25-04 01:28 Sean           Note Added: 0000930                          
+04-25-04 01:29 Sean           File Added: config.log                       
+04-25-04 10:15 perex          Note Added: 0000936                          
+03-19-05 09:48 jdthood        Note Added: 0004027                          
 ======================================================================
 
 
