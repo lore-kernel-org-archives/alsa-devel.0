@@ -1,14 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ALSA and select, poll, ... (interrupted system calls)
-Date: Wed, 16 Jun 2004 18:53:21 +0200 (METDST)
+From: Werner Schweer <ws@seh.de>
+Subject: Re: tascam us-122 midi in does not work
+Date: Wed, 16 Jun 2004 19:20:53 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0406161851230.15126-100000@studcom.urz.uni-halle.de>
-References: <E1BYNbE-00044B-00@mailer.emlix.com>
+Message-ID: <200406161920.53116.ws@seh.de>
+References: <200406131307.21072.ws@seh.de> <200406150110.31355.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <E1BYNbE-00044B-00@mailer.emlix.com>
+In-Reply-To: <200406150110.31355.annabellesgarden@yahoo.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,29 +19,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso8859-15?Q?Nicolas_H=FCppelsh=E4user?= <nh@emlix.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Nicolas H=FCppelsh=E4user wrote:
-> I tried to implement a sleep function the following ways:
+On Tuesday 15 June 2004 01:10, Karsten Wiese wrote:
+> Am Sonntag 13 Juni 2004 13:07 schrieb Werner Schweer:
+> > Hello,
+> >
+> > Some strange effect occurs on my tascam us-122 audio/midi usb
+> > device:
+> >    After starting JACK the midi input does not work anymore. Not even
+> > the midi in led on the us-122 flashes. Midi output is always fine.
+> > After stopping JACK midi input still does not work. Midi input works
+> > again after disconnect/reconnect the usb cable.
+> > I'm using current ALSA cvs and kernel 2.6.7rc3.
 >
-> x select(0, NULL, NULL, &timeout);
-> x poll(...)
-> x nanosleep
+> Didn't try that kernel yet.
 >
-> but none of this worked. Select and poll return with an error code
-> "interrupted system call" and nanosleep is interrupted. I believe a=
-lsa to
-> be the reason for this but don't understand why.
+> To see more, you can change snd_usbmidi_urb_error() in alsa-kernel:141 to
+> look like that:
+>
+> static int snd_usbmidi_urb_error(int status)
+> {
+> 	snd_printk(KERN_ERR "urb status %d\n", status);
+> 	if (status =3D=3D -ENOENT)
+> 		return status; /* killed */
+> 	if (status =3D=3D -EILSEQ ||
+> 	    status =3D=3D -ECONNRESET ||
+> 	    status =3D=3D -ETIMEDOUT)
+> 		return -ENODEV; /* device removed/shutdown */
+> 	return 0; /* continue */
+> }
+> <<<<<<
+>
+> If this shows a status that causes a negativ return value when you start
+> jack, change snd_usbmidi_urb_error() further more so it returns 0 in that
+> case. that can crash the machine or help......
+>
+> regards,
+> Karsten
 
-What does the ALSA code in your program do?  There won't be any
-signals unless you have enabled asynchronous notifications using
-SIGIO.
+In current CVS the function looks like:
 
+/*
+ * Error handling for URB completion functions.
+ */
+static int snd_usbmidi_urb_error(int status)
+{
+      if (status =3D=3D -ENOENT)
+            return status; /* killed */
+      if (status =3D=3D -EILSEQ ||
+          status =3D=3D -ECONNRESET ||
+          status =3D=3D -ETIMEDOUT)
+            return -ENODEV; /* device removed/shutdown */
+      snd_printk(KERN_ERR "urb status %d\n", status);
+      return 0; /* continue */
+}
 
-HTH
-Clemens
+and after loading jack the logfile has an "urb status" message of -108
+(ESHUTDOWN?) followed by a "usb_submit_urb: -32" (EPIPE) message.
+=46rom the above code i assume snd_usbmidi_urb_error() returns 0 for
+status -108.
+
+Regards,
+Werner
+
 
 
 
