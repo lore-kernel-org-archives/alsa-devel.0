@@ -1,8 +1,8 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Apologies
-Date: Thu, 19 Aug 2004 00:19:05 -0400
+Date: Thu, 19 Aug 2004 00:22:26 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1092889144.8432.62.camel@krustophenia.net>
+Message-ID: <1092889346.8432.65.camel@krustophenia.net>
 References: <350501c485a0$cbe4d650$2701010a@mail2world.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -22,10 +22,10 @@ Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 On Wed, 2004-08-18 at 23:58, Eliot Blennerhassett wrote:
-> time to find another way to send mail to alsa-devel (Sending from my
-> usual ISP is blocked, never have been able to find out why..)
+> time to find another way to send mail to alsa-devel
 
-Probably because they are a spamhaus.  What's the ISP?
+Contact me via private mail and I will give you a joe-job.com account if
+you want.  It's not five-nines reliable, but it works.
 
 Lee
 
