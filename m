@@ -1,14 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Re: [alsa-cvslog] CVS: alsa-kernel/pci/emu10k1 emu10k1_main.c,1.12,1.13
-Date: Tue, 16 Apr 2002 23:26:43 +0100
+From: Patrick Shirkey <kotau@firstlinux.net>
+Subject: Re: Fwd: Re: USB Quattro Linux support
+Date: Wed, 17 Apr 2002 00:12:06 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CBCA523.8030802@superbug.demon.co.uk>
-References: <873cxxmmjt.fsf@www.gitteundmarkus.de>	<Pine.LNX.4.33.0204160911040.509-100000@pnote.perex-int.cz>	<s5h7kn729d9.wl@alsa2.suse.de> <87sn5vn72w.fsf@www.gitteundmarkus.de>	<s5hads3vhph.wl@alsa2.suse.de> <87elhfn1rd.fsf@www.gitteundmarkus.de>	<s5h3cxvvd8h.wl@alsa2.suse.de> <87lmbnli6r.fsf@www.gitteundmarkus.de>
-Reply-To: James@superbug.demon.co.uk
+Message-ID: <20020417071207.05D6636FA@sitemail.everyone.net>
+Reply-To: pshirkey@boosthardware.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,44 +17,109 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Markus Plail <plail@web.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: linux-audio-dev@music.columbia.edu, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Markus Plail wrote:
 
->Hi Takashi!
->
->* Takashi Iwai writes:
->  
->
->>yes.  now please check the state of this switch by alsamixer.  try to
->>play raw data once, and check whether the switch is changed.
->>alsamixer will show the current status (and change the status if any
->>notified).
->>    
->>
->
->This is the same as if I changed the switch in alsamixer by hand, right?
->This does not work. I have done this before thousands of times. The
->switch is working fine, but has nothing to do with my problem
->(IMHO). Only if I change emumixer the way you did by accident I get AC3
->passthrough.
->If AC3 passthrough is enabled, i.e. I watch a DVD with xine, the
->digital/analog switch doesn't do anything, i.e. I can't turn off the
->audio. If I play for example a mp3 with xmms, the digital/analog switch
->is working as expected.
->
->Regards
->Markus
->  
->
-I think what Takashi is saying is that when xine attempts to do 
-passthru, it should change the switch automatically. It will in fact 
-override whatever you entered in alsamixer. So maybe before it was 
-overriding it to "analogue" instead of overriding it to "digital".
 
-I think that is what Takashi was trying to say.
+--- Paul Davis <pbd@op.net> wrote:
+>
+>
+>Not at all. arecord(1) can capture audio, but it can't capture 26
+>channels of audio at 64 frames/interrupt. Handling latency is partly
+>an application issue, partly a kernel issue, and partly a requirement
+>that libraries in the way don't get in the way. It has very little to
+>do with whether you can do certain generic tasks or not.
+>
 
-Cheers
-James
+Sure. But usb audio devices are limited to a pretty low channel count.
+
+eg. this usb quattro can only capture 1 channel at 96000,24 bit even though it has up to 4 channels. It would seem to be a limitaion of usb as a transfer protocol. 
+
+My point is that the latency requirements for USB devices are not quite as intense as PCI devices. So it shouldn't cause as many headaches to write the code compared to the RME dsp for example.
+
+FWIW:
+
+After Steve's tip (LAU) to turn on usb audio in the kernel (didn't know it existed) and modprobe audio,  I can get this info from 
+
+cat /proc/bus/usb/devices
+
+I haven't been able to send anything to the card yet because it doesn't create any devices in /dev/dspX.
+
+At least we know that Maudio have followed the rules of the usb audio reference this far.
+
+Does anyone have ideas on what I could do next?
+
+--------
+T:  Bus=01 Lev=00 Prnt=00 Port=00 Cnt=00 Dev#=  1 Spd=12  MxCh= 2
+B:  Alloc=  0/900 us ( 0%), #Int=  0, #Iso=  0
+D:  Ver= 1.00 Cls=09(hub  ) Sub=00 Prot=00 MxPS= 8 #Cfgs=  1
+P:  Vendor=0000 ProdID=0000 Rev= 0.00
+S:  Product=USB UHCI-alt Root Hub
+S:  SerialNumber=1020
+C:* #Ifs= 1 Cfg#= 1 Atr=40 MxPwr=  0mA
+I:  If#= 0 Alt= 0 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=00 Driver=hub
+E:  Ad=81(I) Atr=03(Int.) MxPS=   8 Ivl=255ms
+T:  Bus=01 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  3 Spd=12  MxCh= 0
+D:  Ver= 1.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 8 #Cfgs=  1
+P:  Vendor=0763 ProdID=2001 Rev= 1.01
+S:  Manufacturer=M Audio
+S:  Product=USB AudioSport Quattro (tm)
+C:* #Ifs=10 Cfg#= 1 Atr=40 MxPwr=  0mA
+I:  If#= 0 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00 Driver=(none)
+I:  If#= 1 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+I:  If#= 1 Alt= 4 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=03(O) Atr=09(Isoc) MxPS= 192 Ivl=  1ms
+I:  If#= 2 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+I:  If#= 2 Alt= 4 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=85(I) Atr=0d(Isoc) MxPS= 192 Ivl=  1ms
+I:  If#= 3 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00 Driver=(none)
+I:  If#= 4 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+I:  If#= 4 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=03(O) Atr=09(Isoc) MxPS= 576 Ivl=  1ms
+I:  If#= 4 Alt= 3 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=03(O) Atr=09(Isoc) MxPS= 288 Ivl=  1ms
+I:  If#= 4 Alt= 4 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=03(O) Atr=09(Isoc) MxPS= 192 Ivl=  1ms
+I:  If#= 5 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+I:  If#= 5 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=85(I) Atr=0d(Isoc) MxPS= 576 Ivl=  1ms
+I:  If#= 5 Alt= 3 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=85(I) Atr=0d(Isoc) MxPS= 288 Ivl=  1ms
+I:  If#= 5 Alt= 4 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=85(I) Atr=0d(Isoc) MxPS= 192 Ivl=  1ms
+I:  If#= 6 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00 Driver=(none)
+I:  If#= 7 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+I:  If#= 7 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=04(O) Atr=09(Isoc) MxPS= 576 Ivl=  1ms
+I:  If#= 7 Alt= 3 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=04(O) Atr=09(Isoc) MxPS= 288 Ivl=  1ms
+I:  If#= 7 Alt= 4 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=04(O) Atr=09(Isoc) MxPS= 192 Ivl=  1ms
+I:  If#= 8 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+I:  If#= 8 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=86(I) Atr=0d(Isoc) MxPS= 576 Ivl=  1ms
+I:  If#= 8 Alt= 3 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=86(I) Atr=0d(Isoc) MxPS= 288 Ivl=  1ms
+I:  If#= 8 Alt= 4 #EPs= 1 Cls=01(audio) Sub=02 Prot=00 Driver=audio
+E:  Ad=86(I) Atr=0d(Isoc) MxPS= 192 Ivl=  1ms
+I:  If#= 9 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+E:  Ad=81(I) Atr=03(Int.) MxPS=  32 Ivl=  1ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS=  32 Ivl=  0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS=  32 Ivl=  0ms
+
+--------
+
+
+--
+Patrick Shirkey - Boost Hardware Ltd
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
+
+
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
+
+_____________________________________________________________
+Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
