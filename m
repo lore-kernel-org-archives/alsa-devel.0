@@ -1,14 +1,13 @@
-From: =?UTF-8?B?QWRhbSBUbGHFgmth?= <atlka@pg.gda.pl>
-Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Tue, 28 Sep 2004 08:10:07 +0200
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: Re: Broken AC3 on EMU10K1 since July 2-nd
+Date: Tue, 28 Sep 2004 08:29:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4159003F.2080401@pg.gda.pl>
-References: <200409272014.i8RKEu2i019062@localhost.localdomain>
+Message-ID: <200409280629.i8S6TwJN001648@www7.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200409272014.i8RKEu2i019062@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,21 +16,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: chutz@gg3.net
 List-Id: alsa-devel@alsa-project.org
 
-> you're simply wrong about this. if an interrupt is blocked for longer
-> than the buffer size, GETOPTR can't help you.
-So how is ALSA doing this if its hw handler is not callet at proper 
-time? How snd_pcm_delay is working if no hw_ptr nor appl_ptr is moved?
+This change was made on 1 jul 2004. I don't think it depends on alsa-lib:
 
-Regards
--- 
-Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
-System  & Network Administration Group           ~~~~~~
-Computer Center,  Gdansk University of Technology, Poland
-PGP public key:   finger atlka@sunrise.pg.gda.pl
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/emu10k1/emupcm.c=
+?r1=3D1.28&r2=3D1.29
+
+Peter Zubaj
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D REKLAMA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A*BUENA VISTA SOCIAL CLUB*          Info: +=
+421 904 666 363=0A*Ibrahim Ferrer*                   http://www.xl.sk=0A*3.=
+oktobra 2004 o 20,00 hod*       email: mailto:buena@xl.sk=0A*Bratislava, IN=
+CHEBA - hala C*=0A
 
 
 -------------------------------------------------------
