@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000622]: snd-ens1371 hisses and garbled sound
-Date: Tue, 9 Nov 2004 18:54:18 +0100
-Message-ID: <6f0894846195540d80397576b5a14f1e@bugtrack.alsa-project.org>
+Date: Tue, 9 Nov 2004 18:55:31 +0100
+Message-ID: <a627effa1be2e3fc952cadd760e959e8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C71AA2B6
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 18:54:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5850C62
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 18:55:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             11-01-2004 11:29 CET
-Last Modified:              11-09-2004 18:54 CET
+Last Modified:              11-09-2004 18:55 CET
 ======================================================================
 Summary:                    snd-ens1371 hisses and garbled sound
 Description: 
@@ -72,48 +72,6 @@ Any idea what might be wrong?
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 11-02-04 21:27 
-----------------------------------------------------------------------
-One of the submitters added the following information.
-------------------------------------------------------
-[Using alsa-lib 1.0.6]
-
-Actually, I found a workaround to my problem under:
-http://www.mail-archive.com/gentoo-user@gentoo.org/msg39015.html
-
-It reads:
-> I upgraded to KDE 3.2 (also had an upgrade to alsa-driver .9.8) and
-afterward 
-> had bad sound.  (I have a Creative PCI 128 card, or something like that,
-that 
-> linux identifies as an Ensoniq 5880, for which alsa uses the ens1371
-card 
-> drivers, whatever)
-> 
-> If I turned up the volume (on the speaker) I got  a lot of hiss and
-static on 
-> the left channel.  Even when I turned the volume in kmix all the way
-down       
-> (should be just silence) I would get hiss, static and whatever was
-playing 
-> (like a song on xmms) 
-> 
-> After trying a lot of complex things, the solution was pretty simple,
-click 
-> the little Advanced box in kmix, and uncheck the button for IEC958.
-> 
-
-That's what I did and it solved also my problem, though I would be 
-pretty happy to have some explanations on the why. I tried also with 
-alsamixer and (M)ute on IEC958 works as well, and the setup did survive 
-an "alsactl store/restore" cycle. So it looks good for me.
-
-So, for me, the severity can be reduced. I do still think that the 
-problem needs to be fixed (for new users), or at least documented.
-
-Cheers, Eric
-
-----------------------------------------------------------------------
  tiwai - 11-09-04 18:54 
 ----------------------------------------------------------------------
 This might be a KDE problem, which automatically turned on
@@ -121,12 +79,19 @@ this volume switch, although the driver default is OFF...
 
 Maybe it's better to remove this one to avoid these reports.
 
+----------------------------------------------------------------------
+ tiwai - 11-09-04 18:55 
+----------------------------------------------------------------------
+To be sure, please show the contents of /proc/asound/card0/codec97#0/*
+files.  The problematic codec as far as I know is ALC65x.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 11-01-04 11:29 jdthood        New Issue                                    
 11-02-04 21:27 jdthood        Note Added: 0002299                          
 11-09-04 18:54 tiwai          Note Added: 0002335                          
+11-09-04 18:55 tiwai          Note Added: 0002336                          
 ======================================================================
 
 
