@@ -1,14 +1,11 @@
-From: mru@kth.se (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
-Subject: Re: The obsolence of OSS, Was: big smile
-Date: Wed, 25 Feb 2004 13:27:20 +0100
+From: Will <walsac2@liam2.demon.co.uk>
+Subject: Re: [PATCH] add aplaymidi & arecordmidi utils
+Date: Wed, 25 Feb 2004 13:02:15 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xznb7e447.fsf@kth.se>
-References: <Pine.LNX.4.58.0402241536450.1883@pnote.perex-int.cz> <403BC832.4080404@gardena.net>
- <20040225112021.GE8820@sunrise.pg.gda.pl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Message-ID: <200402251302.NAA11368@liam2.demon.co.uk>
+References: <Pine.HPX.4.33n.0402241836390.5168-100000@studcom.urz.uni-halle.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0402241836390.5168-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,22 +14,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: clemens@ladisch.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Adam Tla/lka <atlka@pg.gda.pl> writes:
+Clemens Ladisch <clemens@ladisch.de> wrote:
+>Will wrote:
+>> How easy would it be to make aplaymidi be able to adjust the playback speed
+>> like playmidi?  (playmidi -t 0.5 music.mid plays at twice the default speed)
+>
+>Very easy.
 
-> Test xmms with ALSA and dma plugin and try to open big tar.gz
-> file. We got buffer underrun and app freezes. Sometimes I can only
-> do kill -9 ;-). It depends on buffer and period sizes. Sometimes app
-> freezes completly and sometimes you can rebufer by pressing
-> pause/play buttons. Is it nice and accepted??
+1 hour of code changes?
 
-XMMS is horribly broken.
+>> How easy would it be to make aplaymidi be able to move forwards and backwards
+>> during playback, e.g. by pressing f or b, like Takashi Iwai's drvmidi?
+>
+>Not so easy; even more so if you want to have correct controller
+>values.  Adjusting settings changed by sysexs would be almost
+>impossible.
+>
 
--- 
-Måns Rullgård
-mru@kth.se
+I wonder whether drvmidi actually does correctly restore controller and sysex
+when you move during MIDI playback.  I haven't studied the drvmidi code in
+detail.  I know the sound quality always seems to be correct
+even when you move forwards and backwards very often in a piece with
+lots of sysex and controller settings.
+
+>However, these tools are meant as basic command-line utilities (and
+>examples).  I think your suggestions would fit better into some GUI
+>player.
+
+Yes, you're right a GUI player can be much more powerful but I also like
+command-line players like drvmidi because you can always run them without X
+and moving forwards and backwards using the ncurses interface is easy.
+It's a useful minimum functionality (being able to move forwards and backwards
+in a MIDI file while it's playing) but it sounds like it'd be difficult
+to extend arecordmidi to do this.
+
+William
 
 
 
