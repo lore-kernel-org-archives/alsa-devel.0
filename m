@@ -1,8 +1,8 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] fix for the id-table termination fix
-Date: Mon, 14 Apr 2003 08:29:25 +0200 (METDST)
+Subject: [PATCH] memory_wrapper.c compilation fix
+Date: Mon, 14 Apr 2003 08:30:52 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0304140827330.3123-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0304140829270.3123-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
@@ -19,25 +19,41 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-There's still another loop in pnp_register_card_driver() ...
+Including the Makefile in alsa-kernel overwrites the contents of the
+snd-page-alloc-objs variable.
+
+An alternative to the patch below would be to use += in the alsa-kernel
+Makefile.
 
 
-Index: alsa-driver/support/pnp/pnp.c
+Index: alsa-driver/acore/Makefile
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/support/pnp/pnp.c,v
-retrieving revision 1.4
-diff -u -r1.4 pnp.c
---- alsa-driver/support/pnp/pnp.c	11 Apr 2003 07:33:16 -0000	1.4
-+++ alsa-driver/support/pnp/pnp.c	14 Apr 2003 06:25:47 -0000
-@@ -155,7 +155,7 @@
- 	struct pnp_dev *dev;
- 	struct pnp_card_driver_instance *ninst = NULL;
+RCS file: /cvsroot/alsa/alsa-driver/acore/Makefile,v
+retrieving revision 1.15
+diff -u -r1.15 Makefile
+--- alsa-driver/acore/Makefile	8 Apr 2003 15:38:19 -0000	1.15
++++ alsa-driver/acore/Makefile	14 Apr 2003 06:25:27 -0000
+@@ -3,10 +3,6 @@
+ include $(TOPDIR)/toplevel.config
+ include $(TOPDIR)/Makefile.conf
 
--	for (cid = drv->id_table; cid->id; cid++) {
-+	for (cid = drv->id_table; cid->id[0] != '\0'; cid++) {
- 	      __next_card:
- 		card = NULL;
- 		do {
+-ifeq ($(CONFIG_PCI),y)
+-snd-page-alloc-objs += memory_wrapper.o
+-endif
+-
+ obj-$(CONFIG_SND_SERIALMIDI) += snd-rawmidi.o snd.o
+ obj-$(CONFIG_SND_SSCAPE) += snd-pcm.o snd-timer.o snd-page-alloc.o snd.o snd-rawmidi.o snd-hwdep.o
+ obj-$(CONFIG_SND_MSND_PINNACLE) += snd-pcm.o snd-timer.o snd-page-alloc.o snd.o snd-rawmidi.o
+@@ -20,5 +16,9 @@
+
+ TOPDIR = $(MAINSRCDIR)
+ include $(TOPDIR)/alsa-kernel/core/Makefile
++
++ifeq ($(CONFIG_PCI),y)
++snd-page-alloc-objs += memory_wrapper.o
++endif
+
+ include $(TOPDIR)/Rules.make
 
 
 
