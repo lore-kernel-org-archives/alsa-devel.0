@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000995]: "Scratchy" Sound
-Date: Tue, 15 Mar 2005 10:33:56 +0100
-Message-ID: <415210e5cefdcaf027bb3d4def063d76@bugtrack.alsa-project.org>
+Date: Tue, 15 Mar 2005 10:53:55 +0100
+Message-ID: <fcd71cdf4e776f47c93e57d237112526@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E740C1F9
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 10:33:56 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E97451F9
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 10:53:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=995> 
 ======================================================================
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             2.6.10 (i have tested more)
 ======================================================================
 Date Submitted:             03-15-2005 10:33 CET
-Last Modified:              03-15-2005 10:33 CET
+Last Modified:              03-15-2005 10:53 CET
 ======================================================================
 Summary:                    "Scratchy" Sound
 Description: 
@@ -57,12 +57,20 @@ In my dos works fine.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ antonios_eg - 03-15-05 10:53 
+----------------------------------------------------------------------
+looking back in the reported bugs i noticed another person having the same
+problem 
+:  "clicking/distortion with audigy 2 nx.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-15-05 10:33 antonios_eg    New Issue                                    
 03-15-05 10:33 antonios_eg    Kernel Version            => 2.6.10 (i have tested
 more)
+03-15-05 10:53 antonios_eg    Note Added: 0003914                          
 ======================================================================
 
 
