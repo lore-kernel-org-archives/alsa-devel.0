@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: hdsp9652 note
-Date: Mon, 03 Mar 2003 22:22:33 -0500
+From: Maarten de Boer <mdeboer@iua.upf.es>
+Subject: Re: sf.net throttling CVS access?
+Date: Tue, 4 Mar 2003 09:59:29 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18q2xV-0006Jv-00@sc8-sf-list1.sourceforge.net>
-References: <20030303204249.3b3d0b0f.m.ash@gmx.at>
+Message-ID: <20030304095929.226884b6.mdeboer@iua.upf.es>
+References: <200303031918.h23JI7301464@linuxaudiosystems.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Mon, 03 Mar 2003 20:42:49 +0100."
-             <20030303204249.3b3d0b0f.m.ash@gmx.at>
+In-Reply-To: <200303031918.h23JI7301464@linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,21 +17,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: m <m.ash@gmx.at>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->I tried a hdsp9652 install this weekend and found out I had to add another cas
->e line to get it recognised at all (instead of downgrading firmware).
->
->this seems to work for now ( although the driver claims that 
->ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:2935: I/O Box is a Digiface )
+> has anybody else noticed signs of sf.net throttling anon CVS access
+> recently? if i try 2 CVS commands with only a very short interval
+> between them, the second one fails. wait 1-2 mins, try again, it
+> works. 
 
-i've already added this to my upcoming patch.
+this, and just being down for minutes. i find that sf.net's CVS access 
+has been getting worse. i guess this is because open source is such
+a huge success :-)
 
-its a new h/w rev-level for the hdsp9652.
-
---p
+maarten
 
 
 -------------------------------------------------------
