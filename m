@@ -1,14 +1,12 @@
-From: Ed Wildgoose <lists@wildgooses.com>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: Problem with RME 9632 and Plug
-Date: Wed, 04 Aug 2004 12:21:45 +0100
+Date: Wed, 04 Aug 2004 08:24:41 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4110C6C9.4000009@wildgooses.com>
-References: <200408040018.i740ITg5017942@localhost.localdomain> <Pine.LNX.4.58.0408040935080.1857@pnote.perex-int.cz> <s5h8ycvqltj.wl@alsa2.suse.de> <Pine.LNX.4.58.0408041218030.1857@pnote.perex-int.cz> <4110BAE0.6070309@wildgooses.com> <Pine.LNX.4.58.0408041252140.1857@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <200408041224.i74COghx020422@localhost.localdomain>
+References: <4110C586.3030100@wildgooses.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0408041252140.1857@pnote.perex-int.cz>
+In-reply-to: Your message of "Wed, 04 Aug 2004 12:16:22 BST."
+             <4110C586.3030100@wildgooses.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,79 +15,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
+To: Ed Wildgoose <lists@wildgooses.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I humbly suggest that you stop what you're trying to do and shift your
+focus a little. I know that you just want to get MPlayer to work on
+your audio interface, and I understand your frustration. But MPlayer's
+audio layer was clearly written by people who see the audio
+programming world through the same rather simplistic model that OSS
+presented. Note that even by OSS standards, the code is wrong: OSS
+makes it clear that the app *must* be prepared for some of the
+parameters to fail and must adopt a fallback position. MPlayer should
+have more num_periods options than it does - to not do so is simple
+incorrect even for the OSS API.
 
->>Ahh, yes, I see now.  The max period size SHOULD be 8192.  For some 
->>reason when I request anything larger than 2048, I only get 2048...  I 
->>have tried asking for exactly 8192, and "_near" 8192 with the same results.
->>
->>I will try giving the machine a reboot in case something has grabbed the 
->>card and it's ended up in a funny state which might be causing this.  
->>However, I can currently happily choose 512, 1024, and 2048 period 
->>sizes, but nothing larger.
->>    
->>
->
->It's better to send us a dump from /proc/asound/card0/pcm0p/sub0/* files
->to verify the correct values. But I guess that resampling might be 
->involved, so the final frame count is smaller from the application view.
->  
->
+There are other people in the community who want to see MPlayer
+support JACK. This will require (as I understand it) a bit of a
+redesign of MPlayer to accomodate the callback design that JACK uses.
+MPlayer is still clearly (from the output you added) based on the
+"write-whatever-i-want-whenever-i-want-to" model of audio i/o. This
+just isn't going to work for low(ish) latency work, and it doesn't
+integrate with a callback model particularly easily. When MPlayer
+supports JACK, it won't matter what the audio interface is.
 
-Reboot achieved nothing.
+So either fix the audio layer in MPlayer to handle configuration
+failures properly (i.e. trying other values) or help get MPlayer
+working with JACK.
 
-(Did the following while the app was active)
+In the meantime, which version of ALSA are you using? The 8192 issue
+was present in an older version, but was fixed, oh, at least 6 months
+ago.
 
-mm MPlayer-1.0pre5 # ls /proc/asound/card1/pcm0p/sub0/*
-/proc/asound/card1/pcm0p/sub0/hw_params  
-/proc/asound/card1/pcm0p/sub0/info  
-/proc/asound/card1/pcm0p/sub0/status  
-/proc/asound/card1/pcm0p/sub0/sw_params
-mm MPlayer-1.0pre5 # cat /proc/asound/card1/pcm0p/sub0/*
-access: MMAP_NONINTERLEAVED
-format: S32_LE
-subformat: STD
-channels: 12
-rate: 48000 (48000/1)
-period_size: 2048
-buffer_size: 4096
-tick_time: 1000
-card: 1
-device: 0
-subdevice: 0
-stream: PLAYBACK
-id: RME Hammerfall HDSP 9632
-name: RME Hammerfall HDSP 9632
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 0
-state: RUNNING
-trigger_time: 1091618462.875884000
-tstamp      : 1091618462.918708000
-delay       : 3872
-avail       : 224
-avail_max   : 224
------
-hw_ptr      : 2048
-appl_ptr    : 5920
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 2048
-xfer_align: 2048
-start_threshold: 1
-stop_threshold: 4096
-silence_threshold: 0
-silence_size: 0
-boundary: 1073741824
-
-
-
+--p
 
 
 -------------------------------------------------------
