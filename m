@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0000710]: Alsa-oss works with mpg123 too...fast!!!
-Date: Sun, 5 Dec 2004 20:22:10 +0100
-Message-ID: <c1b30a91e5c057a3a71e02b22eff44e8@bugtrack.alsa-project.org>
+Date: Sun, 5 Dec 2004 20:42:28 +0100
+Message-ID: <63fa3a916422db00ba705918c5843ae9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0F4A7317
-	for <alsa-devel@alsa-project.org>; Sun,  5 Dec 2004 20:22:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 72BA1389
+	for <alsa-devel@alsa-project.org>; Sun,  5 Dec 2004 20:42:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=710> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             12-05-2004 20:22 CET
-Last Modified:              12-05-2004 20:22 CET
+Last Modified:              12-05-2004 20:42 CET
 ======================================================================
 Summary:                    Alsa-oss works with mpg123 too...fast!!!
 Description: 
@@ -49,10 +49,17 @@ mp3). Other programs that works primarily through OSS (I tested with
 mp3blaster and mplayer with -o oss) works with aoss fine.
 ======================================================================
 
+----------------------------------------------------------------------
+ booxter - 12-05-04 20:42 
+----------------------------------------------------------------------
+I forgot to say that my soundcard is Via82c686b, and I use dmix.
+Platform:x86
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-05-04 20:22 booxter        New Issue                                    
+12-05-04 20:42 booxter        Note Added: 0002723                          
 ======================================================================
 
 
