@@ -1,15 +1,11 @@
-From: Josh Buhl <uzs33d@uni-bonn.de>
-Subject: Re: intel8x0 driver motorboots (gets caught in loop)
- in Quake 3
-Date: Thu, 13 Feb 2003 11:08:03 +0100
+From: Erik Welander <erikwel@spray.se>
+Subject: A simple question, Alsa on debian
+Date: Thu, 13 Feb 2003 11:19:37 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E4B6E83.2070000@uni-bonn.de>
-References: <3E4A8A39.9000608@uni-bonn.de> <s5h4r78mrrr.wl@alsa2.suse.de>
+Message-ID: <1045131577003508@lycos-europe.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=_NextPart_Lycos_0035081045131577_ID"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4r78mrrr.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,66 +15,32 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-> could you check whether the interrupts properly generated during the
-> repeated sounds?
+--=_NextPart_Lycos_0035081045131577_ID
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I'll be happy to do whatever I can, but I don't exactly know what you 
-mean. How do I check whether the interrupts are properly generated?
+A simple question, does the current Alsa release tarball work out of the box ?as is?, i.e. ./configure ;make install on Debian current release, compiled kernel 2.4.20. 
 
+I am doing some work on the es18xx.c and don?t want to hit my head in the wall if there are any problems with respect to the package system that would hinder progress. (It seems to work but alas I want to make sure with you professionals.)
 
-I'm fairly certain that I don't have any irq conflicts:
+By the way I think I am getting the hang of this now :-), It does take some knowledge in bit manipulation and knowing about the issues such as one read inb() equals 1 microsecond and not getting 0x-ed in your brain.
 
-josh@spleen:/var/tmp/blah$ cat /proc/interrupts
-            CPU0
-   0:     860465          XT-PIC  timer
-   1:      11671          XT-PIC  keyboard
-   2:          0          XT-PIC  cascade
-   4:      52364          XT-PIC  serial
-   5:      26156          XT-PIC  eth1
-   8:          3          XT-PIC  rtc
-  10:      44468          XT-PIC  SiS SI7012
-  11:     657820          XT-PIC  nvidia
-  12:          0          XT-PIC  eth0
-  14:      36395          XT-PIC  ide0
-  15:      84988          XT-PIC  ide1
-NMI:          0
-ERR:          0
-josh@spleen:/var/tmp/blah$
+Best regards from Erik
+
+_____________________________________________________________
+H=E4r b=F6rjar internet!
+Skaffa gratis e-mail och gratis internet p=E5 http://www.spray.se
+
+Tr=E4ffa folk fr=E5n hela Sverige p=E5 ett och samma st=E4lle - http://chat.spray.se/
 
 
 
-
--josh
-
-
--- 
-"When you wake up in the morning, Pooh," said Piglet at last,
-"what's the first thing you say to yourself?"
-
-"What's for breakfast?" said Pooh.  "What do you say, Piglet?"
-
-"I say, 'I wonder what's going to happen exciting today?'" said Piglet.
-
-Pooh nodded thoughtfully.  "It's the same thing," he said.
-
-	-- A.A. Milne
-
------------------------------------------------------
-http://www.nyfairuse.org/
-
-WTO + WIPO = DMCA http://www.anti-dmca.org
-
-Innovation vs Patent Inflation http://swpat.ffii.org/
-
-120000 voices and 400 Firms against logic patents
-http://www.noepatents.org/
------------------------------------------------------
-
+--=_NextPart_Lycos_0035081045131577_ID--
 
 
 
