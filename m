@@ -1,16 +1,13 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: (no subject)
-Date: Sun, 21 Jul 2002 01:04:02 +0200
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: ALSA docs
+Date: Sun, 21 Jul 2002 15:40:52 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D39EC62.4E6ADC04@libero.it>
-References: <Pine.LNX.4.44.0207201136590.8230-100000@cmn37.stanford.edu>
+Message-ID: <3D3A5774.9030107@boosthardware.com>
+References: <3D383BAA.9050106@boosthardware.com> <s5heldzr516.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp2.libero.it (smtp2.libero.it [193.70.192.52])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA19876
-	for <alsa-devel@alsa-project.org>; Sun, 21 Jul 2002 01:05:02 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,66 +16,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>, Gary Scavone <gary@ccrma.Stanford.EDU>, Paul Davis <pbd@op.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Fernando Pablo Lopez-Lezcano wrote:
+Takashi Iwai wrote:
+> At Sat, 20 Jul 2002 01:17:46 +0900,
+> Patrick Shirkey wrote:
 > 
-> > > > on a related note, although the above suggestion will fix this
-> > > > particular problem, it seems that it might be wise to consider adding
-> > > > a parameter order information field to the driver API, so that drivers
-> > > > can say "you have to set param P first, then param N, then param
-> > > > O". the default would obviously be "don't care", but for devices that
-> > > > lose certain capabilities when certain parameters are set, it would
-> > > > make things very much easier.
-> > >
-> > > agreed that it's good to have such one.
-> > > but how to implement this?
-> > > from the design of hw_constraint, i don't think it's so easy...
-> >
-> > I think that this implementation will create a big mess for the
-> > application developers. Also, I'm not sure, if it's really needed, because
-> > our refining code should already reduce the available configurations.
-> > Applications should use *_near() functions in order of their priority. You
-> > can't predict, if rate or count of channels or any other parameter is more
-> > important for a specific application.
+>>I'm in the process of reading up about different ways of setting up the 
+>>new alsa docs so that they are in the style of the new website design 
+>>and have the look and feel of current documentation on other websites.
+>>
+>>I'm using the online manual for http://www.php.net as the design basis.
+>>
+>>Before I spend any more time on coding up a dynamic user 
+>>maintained/contributed site what is the general consensus on allowing 
+>>contribution to the documentation from anybody?
+>>
+>>I have an almost fully working setup now which will allow users to 
+>>contribute ideas and helpful hints. The problem I now face is whether or 
+>>not to automate the input or filter it by having it sent to me (or other 
+>>people) so I/we can post it at our discretion.
+>>
+>>I note that a lot of sites that seemed to originally have allowed input 
+>>from users to be automatically added to their webpages have decided to 
+>>change their policy to filtering due to spam or misleading information 
+>>being posted.
 > 
-> [not exactly an answer but more details on what is actually happening]
 > 
-> I think this is what is happening with the current driver (Gary, please
-> correct me if I'm wrong):  The application looks at the configuration
-> space and selects from it one particular sampling rate. Then it looks at
-> the channel count and sees a range of channel counts (10:18 - or some
-> numbers like that, I don't remember). The application chooses the minimum
-> channel count and the set function fails.
+> imo, the documents on the "official" web site should be reviewed and
+> moderated.  one reason is to keep the contents technically correct,
+> and another is to keep the consistency of the page design (and
+> to avoid possible spam problems as you mentioned above, of course).
 > 
-> IMHO at that point the configuration space should have changed the number
-> of channels available to match the sampling rate selected so that the
-> channel count as advertised is legal (ie: if the selected sampling rate is
-> one of the "single speed" rates then the range of channels should be
-> 18:18, if the sampling rate is one of the "double speed" rates then the
-> range should be 10:10).
+> for auto-generated documents, we already have wiki.
+> isn't it enough?
+> i've been very impressed by the convenience of wiki.
 > 
-> The reverse is also true, if the application first selects number of
-> channels the sampling rates should be constrained to the set of rates that
-> can be supported by that number of channels.
-> 
-> If it is not possible to do this with the current api, then the next best
-> solution I can imagine is to have a switch that changes the mode of the
-> card between single and double speed (that would make the dependency
-> between sample rate and number of channels dissapear).
 
-I've designed current refine API to do exactly what you've described.
+Yes me too.
 
-If this don't work for the specific card it's a card driver bug.
+> 
+> well, if you think it's too much for you to moderate the input from
+> users, then i don't mind to change this policy.
+
+I don't mind being a moderator if people trust my judgement enough. If 
+it becomes a too much work then we can change how it's done. Keep things 
+fluid.
+
 
 -- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
