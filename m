@@ -1,13 +1,14 @@
-From: Kristof Pelckmans <kristof.pelckmans@antwerpen.be>
-Subject: [BUG] Delta 410 support broken from 0.9.8 -> 1.0.0rc2
-Date: Fri,  2 Jan 2004 14:29:18 +0100
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: Alsa-1.0.0rc2 Hammerfall Light - small bug report
+Date: Fri, 2 Jan 2004 15:10:47 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040102142918.ng0s8ooo4488cwcc@albert.homedns.org>
+Message-ID: <20040102141046.GA590@tuba.home>
+References: <1070760538.5385.12.camel@Wizard.knechthome.com> <1070763319.31277.0.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="k1lZvvs/B4yU6o8G"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
+In-Reply-To: <1070763319.31277.0.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,165 +17,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Mark Knecht <markknecht@comcast.net>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-I tried out version 1.0.0rc2 on my M-Audio Delta 410 and all I hear is a series
-of pops when I play a sound.
+--k1lZvvs/B4yU6o8G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-In 0.9.8 everything is perfect.
+On Sat, Dec 06, 2003 at 06:15:19PM -0800, Mark Knecht wrote:
+> 
+> Note ADAT3 which do not exist on
+> this card.
+> 
+> 
+> [mark@localhost mark]$ cat /proc/asound/card0/rme9652 
+[...]
+> ADAT Sample rate: 44100Hz
+> ADAT1: No Lock
+> ADAT2: No Lock
+> ADAT3: No Lock
+> 
 
-Do I have to pass some new parameter to the ice1712 module ?
+This patch will remove the ADAT3 entry for light users. Please try it out,
+because I don't have any hammerfall hardware.
 
-Kind regards,
 
-Kristof
+martin
 
--- ouput aplay --
-aplay -Ddelta410p -v /usr/lib/xcdroast-0.98/sound/test.wav
-Playing WAVE '/usr/lib/xcdroast-0.98/sound/test.wav' : Signed 16 bit Little
-Endian, Rate 44100 Hz, Stereo
-Plug PCM: Route conversion PCM (sformat=S32_LE)
-Transformation table:
-0 <- 0
-1 <- 1
-2 <- none
-3 <- none
-4 <- none
-5 <- none
-6 <- none
-7 <- none
-8 <- none
-9 <- none
-Its setup is:
-stream       : PLAYBACK
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 6553
-period_size  : 3276
-period_time  : 74285
-tick_time    : 1000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 3276
-xfer_align   : 3276
-start_threshold  : 6552
-stop_threshold   : 6553
-silence_threshold: 0
-silence_size : 0
-boundary     : 1717829632
-Slave: Hardware PCM card 0 'M Audio Delta 410' device 0 subdevice 0
+--k1lZvvs/B4yU6o8G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="rme9652.patch"
 
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S32_LE
-subformat    : STD
-channels     : 10
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 24
-buffer_size  : 6553
-period_size  : 3276
-period_time  : 74285
-tick_time    : 1000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 3276
-xfer_align   : 3276
-start_threshold  : 6552
-stop_threshold   : 6553
-silence_threshold: 0
-silence_size : 0
-boundary     : 1717829632
+Index: alsa-kernel/pci/rme9652/rme9652.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/rme9652/rme9652.c,v
+retrieving revision 1.39
+diff -u -r1.39 rme9652.c
+--- alsa-kernel/pci/rme9652/rme9652.c	19 Dec 2003 09:27:04 -0000	1.39
++++ alsa-kernel/pci/rme9652/rme9652.c	2 Jan 2004 13:21:26 -0000
+@@ -1798,11 +1798,13 @@
+ 		snd_iprintf(buffer, "ADAT2: No Lock\n");
+ 	}
+ 
+-	x = status & RME9652_sync_2;
+-	if (status & RME9652_lock_2) {
+-		snd_iprintf(buffer, "ADAT3: %s\n", x ? "Sync" : "Lock");
+-	} else {
+-		snd_iprintf(buffer, "ADAT3: No Lock\n");
++	if (rme9652->ss_channels == RME9652_NCHANNELS) {
++		x = status & RME9652_sync_2;
++		if (status & RME9652_lock_2) {
++			snd_iprintf(buffer, "ADAT3: %s\n", x ? "Sync" : "Lock");
++		} else {
++			snd_iprintf(buffer, "ADAT3: No Lock\n");
++		}
+ 	}
+ 
+ 	snd_iprintf(buffer, "\n");
 
--- asound.conf --
-pcm_slave.delta_s {
-        pcm delta410
-}
-
-pcm.delta410 {
-        type hw
-        card 0
-}
-
-ctl.delta410 {
-        type hw
-        card 0
-}
-
-pcm.delta410p {
-        type plug
-        slave delta_s
-}
-
-ctl.delta410p {
-        type hw
-        card 0
-}
-
--- /etc/modules.d/alsa --
-# Alsa 0.9.X kernel modules' configuration file.
-# $Header:
-/home/cvsroot/gentoo-x86/media-sound/alsa-driver/files/alsa-modules.conf-rc,v
-1.1 2002/12/21 06:31:52 agenkin Exp $
-
-# ALSA portion
-alias char-major-116 snd
-# Set this to the correct number of cards.
-options snd cards_limit=2
-
-# OSS/Free portion
-alias char-major-14 soundcore
-
-#
-# IMPORTANT:
-# You need to customise this section for your specific sound card(s)
-# and then run `update-modules' command.
-# Read alsa-driver's INSTALL file in /usr/share/doc for more info.
-#
-#  ALSA portion
-alias snd-card-0 snd-ice1712
-alias snd-card-1 snd-intel8x0
-#alias snd-card-1 snd-ens1371
-#alias snd-card-2 snd-ens1371
-#  OSS/Free portion
-alias sound-slot-0 snd-card-0
-alias sound-slot-1 snd-card-1
-#alias sound-slot-2 snd-card-2
-
-# OSS/Free portion - card #1
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
-# OSS/Free portion - card #2
-alias sound-service-1-0 snd-mixer-oss
-alias sound-service-1-1 snd-seq-oss
-alias sound-service-1-3 snd-pcm-oss
-alias sound-service-1-8 snd-seq-oss
-alias sound-service-1-12 snd-pcm-oss
-# OSS/Free portion - card #2
-#alias sound-service-2-0 snd-mixer-oss
-#alias sound-service-2-1 snd-seq-oss
-#alias sound-service-2-3 snd-pcm-oss
-#alias sound-service-2-8 snd-seq-oss
-#alias sound-service-2-12 snd-pcm-oss
-
-alias /dev/mixer snd-mixer-oss
-alias /dev/dsp snd-pcm-oss
-#alias /dev/midi snd-seq-oss
-
+--k1lZvvs/B4yU6o8G--
 
 
 -------------------------------------------------------
