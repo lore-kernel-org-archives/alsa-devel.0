@@ -1,17 +1,17 @@
-From: Benno Senoner <sbenno@gardena.net>
-Subject: Re: The obsolence of OSS, Was: big smile
-Date: Tue, 24 Feb 2004 22:54:58 +0100
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Black list?
+Date: Tue, 24 Feb 2004 22:53:34 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <403BC832.4080404@gardena.net>
-References: <Pine.LNX.4.58.0402241536450.1883@pnote.perex-int.cz>
+Message-ID: <403BD5EE.4060506@superbug.demon.co.uk>
+References: <403B71E4.4000706@superbug.demon.co.uk> <Pine.LNX.4.58.0402241639010.1883@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from dns.gardena.net (dns.gardena.net [213.21.177.18])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id WAA09484
-	for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2004 22:50:31 +0100
-In-Reply-To: <Pine.LNX.4.58.0402241536450.1883@pnote.perex-int.cz>
+Received: from anchor-post-37.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA10694
+	for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2004 23:46:37 +0100
+In-Reply-To: <Pine.LNX.4.58.0402241639010.1883@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,95 +20,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-for those that are too lazy to browse the forums:
-
-http://www.4front-tech.com/forum/viewtopic.php?t=25
------
-.... We hope you can now show your ALSA friends how much better your OSS 
-drivers sound and actually tell them that OSS isn't all that "old and 
-obsolete". The fact that we can do a ALSA emulation implies that OSS is 
-far more advanced than ALSA people give it credit.  ...
-----
-
-far more advanced ???
-Ok I'd like see Ardour runnnig with multiple 24bit cards, all the 
-switches for hardware monitoring etc under OSS.
-
-How about MIDI ? Where is OSS' midi router, is there an ossconnect 
-utility ? (of course this a sarcastic comment :) )
-
-
-http://www.4front-tech.com/forum/viewtopic.php?t=4
-----
-.... One of our main observations is that the "driver" part of ALSA is 
-actually just a 1:1 clone of OSS's low level driver interface but 
-everything is rewritten from scratch. We have been able to get ALSA work 
-with the low level drivers of (commercial) OSS without any changes to 
-OSS itself. Everything can be done in a small module that is loaded 
-after executing soundon and loading ALSA's snd-pcm module. This module 
-will be released under GPL during this spring.
-
-After this it will be possible to use ALSA applications together with 
-OSS. So if you are an OSS customer you don't need to leave OSS to use 
-ALSA. You can use proven OSS drivers and still be able to run the few 
-ALSA only applications.
-....
-----
-The FEW ALSA only applications ??
-
-Only a fool would write a new linux audio app that does not use ALSA, 
-especially apps that need MIDI.
-Ok jackd will probably become the "audio interface" of choice, but jackd 
-using ALSA is more powerful than in the OSS case,
-(talking of pure PCM based apps, with PCM/MIDI apps the advantage is 
-even more apparent).
-
-Not to mention that most distros once they will ship kernel 2.6 they 
-will probably use ALSA as default because users
-are demanding multimedia features like MIDI, support of highend cards, 
-jackd support etc.
-So this will slowly but surely render OSS totally obsolete. I'm sorry 
-but that's the truth that you cannot escape from.
-Just like Micosoft's share on the desktop will drop considerably over 
-time due to linux being more efficient and cheaper :-)
-
-cheers,
-Benno
-http://www.linuxsampler.org
-
-
-
 Jaroslav Kysela wrote:
+> On Tue, 24 Feb 2004, James Courtier-Dutton wrote:
+> 
+> 
+>>http://www.alsa-project.org/black.html
+>>
+>>
+>>How can this list be NONE!
+>>
+>>We need to add Creative for their SB Live Dell edition (emu10k1x) and 
+>>the SB Audigy LS.
+> 
+> 
+> Well, have we a response from Creative that they're not willing to give us 
+> programming information?
+> 
+> 						Jaroslav
+> 
+Quoted response from Creative today: -
+"Unfortunately, I can't give you this information. I'm lobbying to get 
+it released."
 
->http://www.opensound.com/cuckoo.html
->
->:-) No comment, except that some comments are really wrong.
->
->						Jaroslav
->
->-----
->Jaroslav Kysela <perex@suse.cz>
->Linux Kernel Sound Maintainer
->ALSA Project, SuSE Labs
->
->
->-------------------------------------------------------
->SF.Net is sponsored by: Speed Start Your Linux Apps Now.
->Build and deploy apps & Web services for Linux with
->a free DVD software kit from IBM. Click Now!
->http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
->  
->
+Some time ago, Creative were very supportive of linux and the open 
+source community, but in the last year or 2 that has changed considerably.
+So I vote to black list Creative.
+I think it would also be good to add status to all sound card 
+manufacturers with several levels: -
+1) Very co-operative, supply datasheets and points of contact. (We 
+should add url links to copies of the datasheets, and store copies of 
+all datasheets on the alsa web site.)
+2) Supply datasheets with enough infomation to write drivers.
+3) Minimal help has been provided and limited functionallity has been 
+implemented in the driver.
+4) Do not help, but people have managed to reverse engineer enough and 
+have built drivers.
+5) Do not help, and no reverse engineering work has been done.
 
+Maybe on a per sound card level. I think we should also list PCI IDs 
+together with the sound card names, for the sake of accuracy.
 
+Adding direct url links to datasheets stored on the alsa site would help 
+potential developers a lot. For example, when I did some work on the 
+AC97 chips, it took a long time for me to track the datasheets down.
+
+We can then sing the praises of all the helpful companies and aid in 
+their marketing effort. So helpful companies get more sales.
+We can also then do the opposite with unhelpful companies.
+
+We could then have three lists: -
+1) Black list for unhelpful companies.
+2) Grey list for partially helpful companies
+3) White list for very helpful companies.
+
+So, for example I see a sound card on a web site. e.g.Gainward 
+Hollywood@Home 7.1 soundcard/PCI 24bit VIA Envy24 chipset
+Is that a black, grey or white sound card?
+
+Cheers
+James
 
 
 -------------------------------------------------------
