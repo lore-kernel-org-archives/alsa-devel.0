@@ -1,15 +1,14 @@
-From: "Adrian Archer" <adrian.archergu@datavisie.nl>
-Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
-Date: Wed, 24 Nov 2004 04:56:01 -0600
-Message-ID: <ac0c01c4d214$bf277c68$08a51878@dynasty.es>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000673]: alternate CS4235 ident string
+Date: Wed, 24 Nov 2004 07:45:24 +0100
+Message-ID: <e2cd10f45dfe3ffa539b5334719c52a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from dynasty.es (81-202-237-112.user.ono.com [81.202.237.112])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 14E9027F
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 19:57:58 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6BB17253
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 07:45:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,29 +21,41 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya,
 
-Do you want a rolex watch?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=673> 
+======================================================================
+Reported By:                basic
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   673
+Category:                   ISA - cs4236
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             11-24-2004 07:45 CET
+Last Modified:              11-24-2004 07:45 CET
+======================================================================
+Summary:                    alternate CS4235 ident string
+Description: 
+Found a CS4235 on a SiS530 based mainboard (no longer have the box, so no
+idea who built it), alsaconf could detect it but the driver would not
+load. Here's the patch, got the strings with isapnptools (pnpdump).
+======================================================================
 
-In our online store you can buy replicas of Rolex watches. They look
-and feel exactly like the real thing.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-24-04 07:45 basic          New Issue                                    
+11-24-04 07:45 basic          File Added: cs4236.c.patch                    
+======================================================================
 
-- We have 20+ different brands in our selection
-- Free shipping if you order 5 or more
-- Save up to 40% compared to the cost of other replicas
-- Standard Features:
- - Screw-in crown
- - Unidirectional turning bezel where appropriate
- - All the appropriate rolex logos, on crown and dial
- - Heavy weight
-
-Visit us: http://www.icors.com/rep/rolex/
-
-Best regards,
-Hilton Jones
-
-
-No thanks: http://www.icors.com/z.php
 
 
 
