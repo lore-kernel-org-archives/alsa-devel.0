@@ -1,12 +1,10 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: [BUG ?] Crash in the cs46xx driver when using alsaplayer
-Date: Mon, 12 Aug 2002 21:42:16 +0200
+From: Pavel Roskin <proski@gnu.org>
+Subject: Fix for mmap_test, better tests needed
+Date: Mon, 12 Aug 2002 15:53:51 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D580F98.60902@cucumelo.org>
-References: <Pine.LNX.4.33.0208122106500.1463-100000@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.44.0208121541210.14146-100000@marabou.research.att.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,43 +14,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
->
->>Where is BUG ?, or  in cs46xx driver or in the ALSA PCM core somewhere ?,
->>well, it's easy fixed in snd_cs46xx_playback_copy(...) doing a check.
->>Then why it only happen with the alsaplayer, just no idea ....
->>
->>suggestions ... ?? comments .... ??
->>
->
->playback_copy shouldn't be called after hw_free. I don't see any error in 
->PCM core. The additional check would be dead code. It would be better to 
->determine the real problem. Do you know the order of syscalls?
->
-That's exactly my thought.
-Adding a check in snd_cs46xx_playback_copy(...) works fine however
-it may not be the right solution to the problem.
+Hello!
 
-It only happens to me with the "alsaplayer", so probably the alsaplayer 
-is doing something special.
-The alsaplayer seems to have various threads:
-10826 pts/1    S      0:00 alsaplayer -f 2048
-10827 pts/1    S      0:00 alsaplayer -f 2048
-10828 pts/1    S      0:00 alsaplayer -f 2048
-10830 pts/1    S      0:00 alsaplayer -f 2048
-10831 pts/1    S      0:02 alsaplayer -f 2048
-10832 pts/1    S      0:00 alsaplayer -f 2048
-10834 pts/1    RN     0:00 alsaplayer -f 2048
-10835 pts/1    RN     0:00 alsaplayer -f 2048
-Maybe the problem is some race condition, just a theory ....
+I was looking for some tests for the sound driver, and the only thing I
+found in ALSA CVS is some stuff in alsa-driver/test.  Before I continue my
+search for real tests (any pointers will be appreciated!) let me post a
+patch that makes mmap_test.c compile and work.
 
-Is there way to debug the PCM core finding out what happens ??
+First of all, mmap_test.c should be converted from DOS to UNIX-style line
+ends before my patch is applied.
 
-/Benny
+There is no "smpl" file in the alsa-driver/test directory, but we can 
+easily generate a sample.  sin() requires libm, hence the makefile change.
+
+The necessary includes have been added to avoid warnings.  Unused 
+variables have been removed for the same reason.  If the "smpl" file 
+cannot be loaded, a sound of variable frequency is generated.
+
+SNDCTL_DSP_SETPERIOD is undefined (google search gives 0 hits, I wonder 
+if this code ever compiled), but SNDCTL_DSP_SETFRAGMENT seems to do 
+exactly what we need.  info.periods has been replaced with info.fragsize 
+for the same reason.
+
+Now mmap_test compiles without warnings and produces funky sounds.  
+Enjoy!
+
+-- 
+Regards,
+Pavel Roskin
 
 
 
