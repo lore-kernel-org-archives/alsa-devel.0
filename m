@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000508]: JACK connecting to SPDIF failes!
-Date: Mon, 20 Sep 2004 14:05:40 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: All Capture devices missing from CVS alsamixer?
+Date: Mon, 20 Sep 2004 13:21:31 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040920120540.883E54904C@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <414ECB4B.6080708@superbug.co.uk>
+References: <20040920083518.68979.qmail@web52908.mail.yahoo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E72B4318
-	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 14:05:40 +0200 (MEST)
+In-Reply-To: <20040920083518.68979.qmail@web52908.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,74 +17,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Chris Rankin <rankincj@yahoo.com>
+Cc: Peter Zubaj <pzad@pobox.sk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Chris Rankin wrote:
+>  --- Peter Zubaj <pzad@pobox.sk> wrote: 
+> 
+>>Try to use F3, F4 key to toggle between playback and
+>>capture controls.
+> 
+> 
+> Ah, thanks.
+> 
+> 
+>>To James Courtier-Dutton:
+>>I think, it would be better to have old behavior of
+>>alsamixer as default, because this will be problem
+>>for users.
+> 
+> 
+> Actually, some kind of visual clue that you *can*
+> toggle between playback and capture controls like this
+> would be enough.
+> 
+> Cheers,
+> Chris
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000508
-======================================================================
-Reported By:                hothead
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Bug ID:                     508
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             09-20-2004 13:25 CEST
-Last Modified:              09-20-2004 14:05 CEST
-======================================================================
-Summary:                    JACK connecting to SPDIF failes!
-Description: 
-Trying to connect trough alsa to the spdif output on an
-nforce2 soundchip via JACK failes with the following error message:
+Well in my view, pressing F1 for HELP should have been enough.
 
-13:16:14.915 /usr/bin/jackd -R -dalsa -dhw:0,2 -r48000 -p1024 -n2 -S -i2
--o2
-13:16:14.936 JACK was started with PID=12828 (0x321c).
-jackd 0.98.1
-Copyright 2001-2003 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
-loading driver ..
-apparent rate = 48000
-creating alsa driver ...
-hw:0,2|hw:0,2|1024|2|48000|2|2|nomon|swmeter|-|16bit
-ALSA lib pcm_hw.c:1155:(snd_pcm_hw_open) open /dev/snd/pcmC0D2c failed: No
-such file or directory
-jackd: pcm.c:690: snd_pcm_nonblock: Assertion `pcm' failed.
-13:16:14.994 JACK was stopped successfully.
-13:16:16.966 Could not connect to JACK server as client.
-======================================================================
+Now it works much like the Windows mixer (Separate Playback/Capture), so 
+I would have thought that it would now result in fewer problems.
+I think it will really help people that are having problems capturing 
+sound from the mic or line in.
 
-----------------------------------------------------------------------
- mistatapas - 09-20-2004 14:05 CEST 
-----------------------------------------------------------------------
-hw:0,2 is probably a playback only device so start jackd with the -P
-option. 
-
-ALSA lib pcm_hw.c:1155:(snd_pcm_hw_open) open /dev/snd/pcmC0D2c failed: No
-such file or directory
-
-One might think about making jackd's error message a little more verbose
-though. This one is confusing new users. But this should rather be
-discussed on the jackit-devel mailing list..
-
-Alternatively to starting with the -P option you might also try specifying
-a valid pcm device for capturing [Use -C hw:0,0 for example]
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-20-04 13:25 hothead        New Bug                                      
-09-20-04 14:05 mistatapas     Bugnote Added: 0001785                       
-======================================================================
+If you press F1, then ENTER, you get back to the old method of 
+displaying everything together.
 
 
 -------------------------------------------------------
