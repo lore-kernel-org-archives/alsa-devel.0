@@ -1,8 +1,8 @@
 From: Allan Klinbail <allank@labyrinth.net.au>
-Subject: intel8x0 no midi
-Date: 03 Feb 2003 13:34:04 +1100
+Subject: [Fwd: intel8x0 no midi]
+Date: 03 Feb 2003 13:37:37 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1044239650.30428.14.camel@littlewolf2.littlewolf>
+Message-ID: <1044239864.30428.16.camel@littlewolf2.littlewolf>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
@@ -18,6 +18,14 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-user@lists.sourceforge.net
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
+
+-----Forwarded Message-----
+
+From: Allan Klinbail <allank@labyrinth.net.au>
+To: alsa-user@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
+Subject: intel8x0 no midi
+Date: 03 Feb 2003 13:34:04 +1100
 
 
 
@@ -44,6 +52,8 @@ know.
 cheers
 
 Allan Klinbail  
+
+
 
 
 
