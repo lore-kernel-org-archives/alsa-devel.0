@@ -1,12 +1,16 @@
-From: Friedrich.Ewaldt@gmx.de
-Subject: S/P-DIF output seems to work with Terratec XFire (=> CS4624 => cs46xx)
-Date: Fri, 26 Jul 2002 21:14:55 +0200 (MEST)
+From: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Subject: Re: playback audio overwritten before it is sent to the card
+Date: Fri, 26 Jul 2002 13:51:01 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <18347.1027710895@www15.gmx.net>
+Message-ID: <20020726205101.32789.qmail@web11502.mail.yahoo.com>
+References: <20020726152823.73135.qmail@web11507.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from web11502.mail.yahoo.com (web11502.mail.yahoo.com [216.136.172.47])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id WAA31643
+	for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2002 22:51:07 +0200
+In-Reply-To: <20020726152823.73135.qmail@web11507.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,45 +19,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: gorm@cucumelo.org
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Benny,
 
-I've just tested your CS46xx driver (alsa-driver-0.9.0rc2-bs20020723.tar.gz)
-with my Terratec XFire soundcard (CS4624). 
-Everything that worked before (alsa09beta9) seems to be working with the new
-driver, too :^)
+I am getting to know all the internals (although I didn't really want to)...
+the ops->pointer() is called only from snd_pcm_update_hw_ptr(), which updates
+the runtime->status->hw_ptr. But it doesn't:
 
-SPDIF output feature:
-Unmuting/muting the IEC 958 item in alsamixer switches the optical output of
-my soundcard on/off.
-To be more precisely: I can see the LED going on/off but do not know any
-digital audio data is send through it. (The only digital input device I have is
-my soundcard and the digital input is only working under windows up to
-now...).
-I can switch on/off the SPDIF output correctly approx. 10-20 times. After
-that, muting/unmuting the IEC 958 item with alsamixer causes the PCM output
-(line out) to switch on/off (unmuting SPDIF mutes the PCM. Sometimes I get a
-high frequency tone instead of the PCM output until I mute the SPDIF output).
-I've tried restarting alsa ("alsa restart" as root), but that didn't help.
-After rebooting, everything seems to be working allright as before (I can
-switch on/off the SPDIF several times before the error occurs again).
+  playback_copy() on sound dev0,  hwoff:0  pos:0 ->160
 
-Another question: Do you have any idea what's the reason for something that
-seems to be an DC offset of the PCM (changing the volume of pcm or master
-makes some noise)?
-Restarting alsa solves this problem until next reboot. (The same problem
-existed with the beta9 driver version)
+  playback_pointer() on sound dev0,  last:160  pos:160
+     ptr:160  {hw:0, appl:160}
+     hw_ptr_base:0  min_align:1  avail_min:160  avail_max:0
 
-cheers,
-fritz_e
+So far, so good. In snd_pcm_update_hw_ptr(), new_hw_ptr = runtime->hw_ptr_base
++ pos = 160, so the next time around it should read "hw:160"...
 
--- 
-GMX - Die Kommunikationsplattform im Internet.
-http://www.gmx.net
+  playback_prepare() on sound dev0,  bsize:320  boundary:1342177280
 
+Is it normal that boundary is so high?
+
+  playback_copy() on sound dev0,  hwoff:0  pos:160 ->320
+
+  playback_pointer() on sound dev0,  last:160  pos:320  ptr:160
+     {hw:0, appl:160}
+     hw_ptr_base:0  min_align:1  avail_min:160  avail_max:320
+
+Ouch! "hw:0"... Why didn't change? And runtime->control->appl_ptr hasn't
+changed either?
+
+  playback_copy() on sound dev0,  hwoff:160  pos:0 ->160
+
+Keep copying to the buffer in runtime->dma_area...
+
+  playback_prepare() on sound dev0,  bsize:320  boundary:1342177280
+  playback_copy() on sound dev0,  hwoff:0  pos:160 ->320
+
+Ouch! This one hasn't been sent to the card yet.
+
+Looks like I am having serious trouble here. Any hint very welcome.
+
+Guilhem.
+
+
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Health - Feel better, live better
+http://health.yahoo.com
 
 
 -------------------------------------------------------
