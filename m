@@ -1,14 +1,12 @@
-From: "Gorm Lai" <lai@daimi.au.dk>
-Subject: Re: problems with rme digi96/8
-Date: Mon, 16 Jun 2003 18:07:12 +0200
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: sequencer: handling non-registered parameter numbers....
+Date: Mon, 16 Jun 2003 12:28:35 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <002001c33421$5e5c7ab0$0200a8c0@fjodor>
-References: <Pine.LNX.4.44.0306121516450.1795-100000@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <E19RwlY-0001y4-00@sc8-sf-list1.sourceforge.net>
+References: <Pine.LNX.4.44.0306161742010.11284-100000@pnote.perex-int.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Mon, 16 Jun 2003 18:03:06 +0200."
+             <Pine.LNX.4.44.0306161742010.11284-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,73 +15,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>, Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: David Olofson <david@olofson.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi All!
+>Yes, Paul mentioned it and I see that the standard is not so good. Does it 
+>affect also XRPN encoding (some LSB or MSB bytes might be missing)?
+>In that case the current implementation is broken.
 
-Thanks for all the help you offered. I got everything, but unfortunately I
-cannot explain why. The machine staff had first installed it in my
-workstation on which I do not have root access. However in the end, I got
-them to take it out, and then I put it in the demo machine in which it
-supposed to work in the end anyhow. I have root access on this machine and
-is responsible for configuring everything myself. Here everything worked
-nearly out of the box; installation of drivers, libs, and utils went fine.
+now that i think about it, i recall what i realized was the MIDI
+spec's intent: you are supposed to be stateful when parsing 14 bit
+controls. you always know the most recent MSnibble, and so when the
+new LSnibble comes in, you just merge them. libmidi++ does this
+already. the problem remains that you can't provide "atomic" access to
+the controller state: if it changes so that both the high and low
+nibbles need to be transmitted, an application can end up seeing it in
+the intermediate, undefined state where the LSnibble has been updated,
+but not the MSnibble.
 
-Thanks again. - I learned a lot in the process.
+hence the timeouts needed to be able to delay updating the LSnibble so
+that you can be sure no pending change to the MSnibble is coming.
 
-Gorm
+--p
 
-
-
------ Original Message -----
-From: "Jaroslav Kysela" <perex@suse.cz>
-To: "Giuliano Pochini" <pochini@shiny.it>
-Cc: <alsa-devel@lists.sourceforge.net>
-Sent: Thursday, June 12, 2003 3:18 PM
-Subject: Re: [Alsa-devel] problems with rme digi96/8
-
-
-> On Thu, 12 Jun 2003, Giuliano Pochini wrote:
->
-> >
-> > On 12-Jun-2003 Jaroslav Kysela wrote:
-> > > On 12 Jun 2003, Gorm David Lai wrote:
-> > >
-> > >> I tried your example. Aplay is rather stupid, so it is seems it needs
-a
-> > >
-> > > Not too stupid, but you should use right device (plughw vs. hw) and
-> > > probably right alsa-lib configuration (~/.asoundrc).
-> >
-> > The format written in the sound file has priority over command
-> > line options. It's a bit annoying and should be changed IMHO.
->
-> No, you can explicitly change the format (if something is wrong) using
-> command line parameters. But my point was that aplay does not do any
-> conversion. If someone use 'hw' device then hardware must match the stream
-> parameters, otherwise 'plughw' should be used to instruct alsa-lib to do
-> necessary conversions.
->
-> Jaroslav
->
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SuSE Labs
->
->
->
-> -------------------------------------------------------
-> This SF.NET email is sponsored by: eBay
-> Great deals on office technology -- on eBay now! Click here:
-> http://adfarm.mediaplex.com/ad/ck/711-11697-6916-5
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
 
 
 
