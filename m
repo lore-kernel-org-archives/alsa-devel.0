@@ -1,12 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Problem with buffer/period sizes.
-Date: Sat, 11 Oct 2003 17:03:13 +0100
+From: Juan Linietsky <coding@reduz.com.ar>
+Subject: ENS1371 joystick problem, bug in driver?
+Date: Sat, 11 Oct 2003 13:16:19 -0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F8829C1.10302@superbug.demon.co.uk>
+Message-ID: <200310111315.21656.coding@reduz.com.ar>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,54 +17,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have code that looks like the following: -
+I cant seem to get the joystick port to run under this card (Ensoniq 1371)
+under alsa 0.9.rc6.
 
-err = snd_pcm_hw_params_get_buffer_size_min(params, &buffer_size_min);
-err = snd_pcm_hw_params_get_buffer_size_max(params, &buffer_size_max);
-dir=0;
-err = snd_pcm_hw_params_get_period_size_min(params, &period_size_min,&dir);
-dir=0;
-err = snd_pcm_hw_params_get_period_size_max(params, &period_size_max,&dir);
+jstest on /dev/js0 (and others) returns no such device.
 
-<snip> some calculations happen here
+However it seems to work fine on the OSS/Free driver 'es1371.o' with parameter 
+'joystick=1'
 
-err = snd_pcm_hw_params_set_buffer_size_near(audio_fd, params, 
-&buffer_size);
-dir=0;
-err = snd_pcm_hw_params_set_period_size_near(audio_fd, params, 
-&period_size, &dir);
+Relevant sections to /etc/asound.state:
 
-For a snd_intel8x0 driver with INTEL ICH5 chip with
-PCI IDs of 0x8086, 0x24d5
-Displays: -
-buffer_size_min/max = 64 / 16384
-period_size_min/max = 16 / 16384
+state.AudioPCI {
+        control.1 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                iface CARD
+                name 'Joystick Enable'
+                value true
+        }
+        control.2 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.item.0 'port 0x200'
+                comment.item.1 'port 0x208'
+                comment.item.2 'port 0x210'
+                iface CARD
+                name 'Joystick Address'
+                value 'port 0x200'
+        }
 
-We then try to set: -
-buffer_size = 16384
-period_size =  2048
-And it accepts those settings, and works.
+I tried using all the values above, but nothing works, and higher values are 
+ignored (error is reported).
 
-For a snd_intel8x0 driver with NVIDIA NFORCE chip with
-PCI IDs of 0x10de, 0x01b1
-Displays: -
-buffer_size_min/max = 67 / 15052
-period_size_min/max =  7 / 15053
+However, when using the OSS/Free driver, by doing cat /proc/ioports shows the 
+follownig
 
-We then try to set: -
-buffer_size = 15048
-period_size =  1881
-But, this sets a period size = buffer_size = 15048 which then fails to 
-work due to not having 2 periods or more.
+0218-021f : es1371
 
-What is causing the NFORCE chip to suggest such strange values, and then 
-to not accept those values.
+I can however, as mentioned above, not set such value on /etc/asound.state.
 
-Cheers
-James
+Regards
+
+Juan Linietsky.
+
+
+
 
 
 
