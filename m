@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000732]: If PCM is set to norma to mt Sound Blaster Live, It emit a very high frequency sound damaging ears
-Date: Sun, 19 Dec 2004 22:41:55 +0100
-Message-ID: <34cf8c47f3b94fbf048ec49e59653f10@bugtrack.alsa-project.org>
+Date: Sun, 19 Dec 2004 22:46:13 +0100
+Message-ID: <f837cfa25bbe2164aa72ebb84bc19073@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4810289
-	for <alsa-devel@alsa-project.org>; Sun, 19 Dec 2004 22:41:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 73488289
+	for <alsa-devel@alsa-project.org>; Sun, 19 Dec 2004 22:46:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.10-rc3
 ======================================================================
 Date Submitted:             12-19-2004 15:10 CET
-Last Modified:              12-19-2004 22:41 CET
+Last Modified:              12-19-2004 22:46 CET
 ======================================================================
 Summary:                    If PCM is set to norma to mt Sound Blaster Live, It
 emit a very high frequency sound damaging ears
@@ -70,6 +70,11 @@ change?
 dpkg -s alsa-utils | grep Version
 Version: 1.0.7-2
 
+----------------------------------------------------------------------
+ Eric Valette - 12-19-04 22:46 
+----------------------------------------------------------------------
+See also 0000730 that describes similar problems...
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -77,6 +82,7 @@ Date Modified  Username       Field                    Change
 12-19-04 15:10 Eric Valette   Distribution              => Debian          
 12-19-04 15:10 Eric Valette   Kernel Version            => 2.6.10-rc3      
 12-19-04 22:41 Eric Valette   Note Added: 0002851                          
+12-19-04 22:46 Eric Valette   Note Added: 0002852                          
 ======================================================================
 
 
