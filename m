@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
-Date: Tue, 22 Feb 2005 19:05:35 +0100
-Message-ID: <13db8056fc887f81bd0a3503e13ae773@bugtrack.alsa-project.org>
+From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
+Subject: RE: CMI8768 patch
+Date: Wed, 23 Feb 2005 03:07:02 +0800
+Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D655@cm-msg-02.cmedia.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 14D1E1AA
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 19:05:35 +0100 (MET)
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,118 +16,100 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I made changes to the CMI8738-MC8.conf so the PCM volume appear after
+play with -D front or -D rear:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
-======================================================================
-Reported By:                1g0R
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   848
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.8-ac8
-======================================================================
-Date Submitted:             01-25-2005 15:28 CET
-Last Modified:              02-22-2005 19:05 CET
-======================================================================
-Summary:                    Intel HDA (C-Media 9880) SPDIF Out
-Description: 
-When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
-output signal on SPDIF (Coax).
-I try:
-aplay -D hw:0,1 (<--digital out) else.wav
-the command run normally, but no output on spdif out.the same with xmms
-(with ALSA, on hw:0,1).
+--- alsa/CMI8738-MC8.conf	Fri Feb 18 17:29:38 2005
++++ CMI8738-MC8.conf	Tue Feb 22 13:28:58 2005
+@@ -7,7 +7,7 @@
+ CMI8738-MC8.pcm.front.0 {
+ 	@args [ CARD ]
+ 	@args.CARD {
+-		type string
++		type integer
+ 	}
+ 	type softvol
+ 	slave.pcm {
+@@ -57,7 +57,7 @@
+ CMI8738-MC8.pcm.rear.0 {
+ 	@args [ CARD ]
+ 	@args.CARD {
+-		type string
++		type integer
+ 	}
+ 	type softvol
+ 	slave.pcm {
+@@ -76,7 +76,7 @@
+ CMI8738-MC8.pcm.surround40.0 {
+ 	@args [ CARD ]
+ 	@args.CARD {
+-		type string
++		type integer
+ 	}
+ 	type softvol
+ 	slave.pcm {
 
-======================================================================
+But the aplay -D default still shows:
 
-----------------------------------------------------------------------
- tiwai - 02-22-05 14:29 
-----------------------------------------------------------------------
-You're reading the CVS repository.  Check out files to use at first.  I
-recommend you to learn CVS briefly.
+ALSA lib pcm.c:2068:(snd_pcm_open_noupdate) Unknown PCM 0
+ALSA lib pcm_dmix.c:868:(snd_pcm_dmix_open) unable to open slave
+aplay: main:508: audio open error: No such file or directory
 
-----------------------------------------------------------------------
- 1g0R - 02-22-05 19:05 
-----------------------------------------------------------------------
-Hi,
+BTW, the query_chip() should be run with 8738 only, there is no
+chip version for 8338 and the register checked in query_chip()
+is reserved in 8338, so I made following change:
 
-I tried out, but no success.
-I need to use Coaxial out, because i havent got optical cables.
-Is the latest cvs working with coaxial spdif out?
-I look the #codec, and i found this:
-Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x01452070: SPDIF Out at Ext Rear
-    Conn = Optical, Color = Grey
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x07
-Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
-  Pincap 0x0830: IN OUT
-  Pin Default 0x01c50000: SPDIF In at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
+--- alsa-driver-1.0.8/alsa-kernel/pci/cmipci.c	Mon Jan  3 06:45:31 2005
++++ alsa-driver-1.0.8-update/alsa-kernel/pci/cmipci.c	Tue Feb 22 =
+13:31:06 2005@@ -2623,7 +2664,8 @@
+ 	cm->max_channels =3D 2;
+ 	cm->do_soft_ac3 =3D soft_ac3[dev];
+=20
+-	query_chip(cm);
++	if (strcmp(card->driver, "CMI8338"))
++		query_chip(cm);
+=20
+ 	cm->dig_status =3D SNDRV_PCM_DEFAULT_CON_SPDIF;
+ 	cm->dig_pcm_status =3D SNDRV_PCM_DEFAULT_CON_SPDIF;
+
+I also recmmend that the "Four Channel" switch should be turned off for
+surround41 and surround50, as well as surround51 and surround71. The
+
+Sincerely,
+ChenLi Tien
+-----Original Message-----
+From:	Takashi Iwai [mailto:tiwai@suse.de]
+Sent:	2005/2/22 [=ACP=B4=C1=A4G] =A4W=A4=C8 06:30
+To:	Tien,  C.L. - =A5=D0=A9=D3=C2=A7
+Cc:	alsa-devel@lists.sourceforge.net
+Subject:	Re: [Alsa-devel] CMI8768 patch
+At Mon, 21 Feb 2005 07:20:55 +0800,
+Tien, C.L. wrote:
+>=20
+> Should it be instide the patch or just like:
+>=20
+> Signed-off-by: ChenLi Tien <cltien@cmedia.com.tw>
+
+Both are OK.  Thanks.
+
+> I still cannot use the softvol with 8768, but softvol works with the =
+8739 so I don't
+> know if anything need to do except not setting PCM Playback Volume =
+item for mixer.
+
+The softvol won't create a control if it already exists in h/w, and
+skips the software attenuation.  But, in your patch, PCM Playback
+Volume control is removed, so it should work...
+
+Did you try my config file I sent you in the last mail?
 
 
-is this ok?
-then i try aplay:
-Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x01452070: SPDIF Out at Ext Rear
-    Conn = Optical, Color = Grey
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x07
-Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
-  Pincap 0x0830: IN OUT
-  Pin Default 0x01c50000: SPDIF In at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Takashi
 
-but i cant hear any sound from receiver.
-
-Thanks the help.
-Best regards
-1g0R (G)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-25-05 15:28 1g0R           New Issue                                    
-01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
-01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
-01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
-01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
-01-28-05 02:56 nc             Issue Monitored: nc                          
-01-28-05 03:07 nc             Note Added: 0003423                          
-01-28-05 19:01 1g0R           Note Added: 0003434                          
-02-04-05 15:02 tiwai          Note Added: 0003507                          
-02-04-05 19:36 1g0R           Note Added: 0003514                          
-02-04-05 19:41 tiwai          Note Added: 0003515                          
-02-05-05 06:06 mab            Issue Monitored: mab                         
-02-05-05 08:46 1g0R           Note Added: 0003518                          
-02-14-05 22:27 1g0R           Note Added: 0003612                          
-02-14-05 22:28 1g0R           Note Added: 0003613                          
-02-18-05 18:55 tiwai          Note Added: 0003658                          
-02-19-05 19:51 1g0R           Note Added: 0003670                          
-02-21-05 19:57 1g0R           Note Added: 0003683                          
-02-22-05 14:29 tiwai          Note Added: 0003699                          
-02-22-05 19:05 1g0R           Note Added: 0003709                          
-======================================================================
 
 
 
