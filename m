@@ -1,12 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: arecordmidi and aplaymidi
-Date: Wed, 17 Nov 2004 09:05:03 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0411170845150.16382-200000@studcom.urz.uni-halle.de>
-References: <200411160838.31853.wackysalut@bourget.cc>
+From: "Julian Cable" <julian.cable@bbc.co.uk>
+Subject: ice1712 docs
+Date: Wed, 17 Nov 2004 09:14:05 -0000
+Message-ID: <071EC75C295B4C4282D6564FC4DE872402051577@bbcxue203.national.core.bbc.co.uk>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="2015913978-758783491-1100678703=:16382"
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C4CC85.C9A041B8"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200411160838.31853.wackysalut@bourget.cc>
+content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,118 +16,232 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alexandre B <wackysalut@bourget.cc>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+This is a multi-part message in MIME format.
 
---2015913978-758783491-1100678703=:16382
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
+------_=_NextPart_001_01C4CC85.C9A041B8
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Alexandre B wrote:
-> Le Mardi 16 Novembre 2004 03:10, vous avez écrit :
-> > Alexandre B wrote:
-> > > I'd like to use arecordmidi and aplaymidi to pipe MIDI events to a Perl
-> > > script, which in turn would control light spots for a play.
-> >
-> > Well, this is not quite what these programs were designed for.
->
-> aplaymidi already reads the .mid file.. it would just need to dump the events
-> with the correct delays but not to the midi device, to the stdout.
+Hi,
 
-Playing MIDI files (sending events at specified times) and converting
-events to text are two completely different tasks, so there should be
-two independent programs for each one.
+  I got a php error submitting this to the driver page so here is the
+text in case it got lost:
 
-Attached is tool that simply prints all MIDI events it receives.
-(compile with "gcc -o dumpevents dumpevents.c -lasound")
+This is what I've found in discussions with Takashi Iwai at SuSE:
 
-> but how would I playback a saved .midi file ?
+Due to peculiarities of the ICE1712 chip there is a problem using
+the kernel OSS support. OSS applications can only use one stereo
+channel, which for most cards would not be the IEC958 channel.
 
-Run dumpevents (piping to your Perl script as desired), then tell
-aplaymidi to play to its port.
+If you want to use OSS and have access to all the channels then the
+aoss user level OSS emulation is more flexible as it lets the
+libasound stuff do its thing. This needs normal dynamically linked
+applications and will not work on closed source statically linked
+applications.
 
-If you want to play to two ports at the same time (e.g. dumpevents and
-a synthesizer), load snd-seq-dummy and connect from a "through" port
-to both destination ports.
+The aoss "trick" works by defining pcm.dsp<n> alsa devices and then
+calling the program with the following:
+
+% aoss your-own-app
+=20
+For example, for a VX442 (2 stereo analog and 1 stereo IEC958),
+define the following in ~/.asoundrc or /etc/asound.conf:
+=20
+pcm.dsp0 {
+  type plug
+   slave.pcm "front"
+}=20
+=20
+pcm.dsp1 {
+    type route
+    ttable.0.2 1
+    ttable.1.3 1
+   slave.pcm {
+      type hw
+      card 0
+  }
+}=20
+=20
+pcm.dsp2 {
+  type plug
+  slave.pcm "iec958"
+}
 
 
-HTH
-Clemens
+Julian Cable
+Project Manager, Transmission & Distribution, BBC World Service
+T: +44 (0)20 755 73651  F: + 44 (0)20 713 797559
+Mob: +44(0) 77 399 20066
+* Room 217 NW, Bush House, Strand, PO Box 76, London, WC2B 4PH
+http://www.bbc.co.uk/worldservice
 
---2015913978-758783491-1100678703=:16382
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name="dumpevents.c"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.HPX.4.33n.0411170905030.16382@studcom.urz.uni-halle.de>
-Content-Description: 
-Content-Disposition: attachment; filename="dumpevents.c"
 
-LyoNCiAqIGR1bXBldmVudHMuYyAtIHByaW50IEFMU0Egc2VxdWVuY2VyIGV2
-ZW50cyBhcyB0ZXh0DQogKg0KICogLi4uIGJsYWggYmxhaCAuLi4gZnJlZXdh
-cmUgLi4uIGJsYWggYmxhaCAuLi4gbm8gd2FycmFudHkgLi4uIGJsYWggYmxh
-aCAuLi4NCiAqLw0KDQojaW5jbHVkZSA8c3RkaW8uaD4NCiNpbmNsdWRlIDxz
-dGRsaWIuaD4NCiNpbmNsdWRlIDxhbHNhL2Fzb3VuZGxpYi5oPg0KDQp2b2lk
-IGNoZWNrKGludCBlcnIsIGNvbnN0IGNoYXIqIG9wZXJhdGlvbikNCnsNCglp
-ZiAoZXJyIDwgMCkgew0KCQlmcHJpbnRmKHN0ZGVyciwgImNhbm5vdCAlczog
-JXNcbiIsDQoJCQlvcGVyYXRpb24sIHNuZF9zdHJlcnJvcihlcnIpKTsNCgkJ
-ZXhpdCgxKTsNCgl9DQp9DQoNCmludCBtYWluKCkNCnsNCglzbmRfc2VxX3Qg
-KnNlcTsNCglpbnQgZXJyOw0KDQoJZXJyID0gc25kX3NlcV9vcGVuKCZzZXEs
-ICJkZWZhdWx0IiwgU05EX1NFUV9PUEVOX0lOUFVULCAwKTsNCgljaGVjayhl
-cnIsICJvcGVuIHNlcXVlbmNlciIpOw0KCWVyciA9IHNuZF9zZXFfc2V0X2Ns
-aWVudF9uYW1lKHNlcSwgImR1bXBldmVudHMiKTsNCgljaGVjayhlcnIsICJz
-ZXQgY2xpZW50IG5hbWUiKTsNCgllcnIgPSBzbmRfc2VxX2NyZWF0ZV9zaW1w
-bGVfcG9ydChzZXEsICJkdW1wIHBvcnQiLCANCgkJCQkJIFNORF9TRVFfUE9S
-VF9DQVBfV1JJVEUgfA0KCQkJCQkgU05EX1NFUV9QT1JUX0NBUF9TVUJTX1dS
-SVRFLA0KCQkJCQkgU05EX1NFUV9QT1JUX1RZUEVfTUlESV9HRU5FUklDIHwN
-CgkJCQkJIFNORF9TRVFfUE9SVF9UWVBFX0FQUExJQ0FUSU9OKTsNCgljaGVj
-ayhlcnIsICJjcmVhdGUgcG9ydCIpOw0KDQoJZm9yICg7Oykgew0KCQlzdGF0
-aWMgY29uc3Qgc3RydWN0IHsNCgkJCWludCB0eXBlOw0KCQkJY29uc3QgY2hh
-ciAqbmFtZTsNCgkJfSBuYW1lc1tdID0gew0KCQkJe1NORF9TRVFfRVZFTlRf
-Tk9URU9OLCAibm90ZV9vbiJ9LA0KCQkJe1NORF9TRVFfRVZFTlRfTk9URU9G
-RiwgIm5vdGVfb2ZmIn0sDQoJCQl7U05EX1NFUV9FVkVOVF9LRVlQUkVTUywg
-InBvbHlfYWZ0ZXJ0b3VjaCJ9LA0KCQkJe1NORF9TRVFfRVZFTlRfQ09OVFJP
-TExFUiwgImNvbnRyb2xfY2hhbmdlIn0sDQoJCQl7U05EX1NFUV9FVkVOVF9Q
-R01DSEFOR0UsICJwcm9ncmFtX2NoYW5nZSJ9LA0KCQkJe1NORF9TRVFfRVZF
-TlRfQ0hBTlBSRVNTLCAiY2hhbm5lbF9hZnRlcnRvdWNoIn0sDQoJCQl7U05E
-X1NFUV9FVkVOVF9QSVRDSEJFTkQsICJwaXRjaF9iZW5kIn0sDQoJCQl7U05E
-X1NFUV9FVkVOVF9DT05UUk9MMTQsICJjb250cm9sX2NoYW5nZV8xNCJ9LA0K
-CQkJe1NORF9TRVFfRVZFTlRfTk9OUkVHUEFSQU0sICJucnBuIn0sDQoJCQl7
-U05EX1NFUV9FVkVOVF9SRUdQQVJBTSwgInJwbiJ9LA0KCQkJe1NORF9TRVFf
-RVZFTlRfU1lTRVgsICJzeXNleCJ9LA0KCQl9Ow0KCQlzbmRfc2VxX2V2ZW50
-X3QgKmV2Ow0KCQljb25zdCBjaGFyICpuYW1lID0gTlVMTDsNCgkJaW50IGk7
-DQoNCgkJaWYgKHNuZF9zZXFfZXZlbnRfaW5wdXQoc2VxLCAmZXYpIDwgMCkN
-CgkJCWNvbnRpbnVlOw0KCQlmb3IgKGkgPSAwOyBpIDwgc2l6ZW9mKG5hbWVz
-KSAvIHNpemVvZihuYW1lc1swXSk7IGkrKykNCgkJCWlmIChuYW1lc1tpXS50
-eXBlID09IGV2LT50eXBlKSB7DQoJCQkJbmFtZSA9IG5hbWVzW2ldLm5hbWU7
-DQoJCQkJYnJlYWs7DQoJCQl9DQoJCWlmICghbmFtZSkNCgkJCWNvbnRpbnVl
-Ow0KCQlzd2l0Y2ggKGV2LT50eXBlKSB7DQoJCWNhc2UgU05EX1NFUV9FVkVO
-VF9OT1RFT046DQoJCWNhc2UgU05EX1NFUV9FVkVOVF9OT1RFT0ZGOg0KCQlj
-YXNlIFNORF9TRVFfRVZFTlRfS0VZUFJFU1M6DQoJCQlwcmludGYoIiVzICVk
-ICVkICVkXG4iLCBuYW1lLA0KCQkJICAgICAgIGV2LT5kYXRhLm5vdGUuY2hh
-bm5lbCwgZXYtPmRhdGEubm90ZS5ub3RlLCBldi0+ZGF0YS5ub3RlLnZlbG9j
-aXR5KTsNCgkJCWJyZWFrOw0KCQljYXNlIFNORF9TRVFfRVZFTlRfQ09OVFJP
-TExFUjoNCgkJY2FzZSBTTkRfU0VRX0VWRU5UX0NPTlRST0wxNDoJLyogbW9z
-dCBjbGllbnRzIHNpbXBseSAuLi4gKi8NCgkJY2FzZSBTTkRfU0VRX0VWRU5U
-X05PTlJFR1BBUkFNOgkvKiAuLi4gc2VuZCBtdWx0aXBsZSBjb250cm9sbGVy
-Li4uICovDQoJCWNhc2UgU05EX1NFUV9FVkVOVF9SRUdQQVJBTToJLyogLi4u
-IGV2ZW50cyBpbnN0ZWFkIG9mIHRoZXNlIHRocmVlICovDQoJCQlwcmludGYo
-IiVzICVkICVkICVkXG4iLCBuYW1lLA0KCQkJICAgICAgIGV2LT5kYXRhLmNv
-bnRyb2wuY2hhbm5lbCwgZXYtPmRhdGEuY29udHJvbC5wYXJhbSwgZXYtPmRh
-dGEuY29udHJvbC52YWx1ZSk7DQoJCQlicmVhazsNCgkJY2FzZSBTTkRfU0VR
-X0VWRU5UX1BHTUNIQU5HRToNCgkJY2FzZSBTTkRfU0VRX0VWRU5UX0NIQU5Q
-UkVTUzoNCgkJY2FzZSBTTkRfU0VRX0VWRU5UX1BJVENIQkVORDoNCgkJCXBy
-aW50ZigiJXMgJWQgJWRcbiIsIG5hbWUsDQoJCQkgICAgICAgZXYtPmRhdGEu
-Y29udHJvbC5jaGFubmVsLCBldi0+ZGF0YS5jb250cm9sLnZhbHVlKTsNCgkJ
-CWJyZWFrOw0KCQljYXNlIFNORF9TRVFfRVZFTlRfU1lTRVg6DQoJCQlwcmlu
-dGYoIiVzIiwgbmFtZSk7DQoJCQlmb3IgKGkgPSAwOyBpIDwgZXYtPmRhdGEu
-ZXh0LmxlbjsgaSsrKQ0KCQkJCXByaW50ZigiICUwMngiLCBpWyh1bnNpZ25l
-ZCBjaGFyKilldi0+ZGF0YS5leHQucHRyXSk7DQoJCQlwcmludGYoIlxuIik7
-DQoJCQlicmVhazsNCgkJfQ0KCX0NCn0NCg==
---2015913978-758783491-1100678703=:16382--
+http://www.bbc.co.uk/
+
+This e-mail (and any attachments) is confidential and may contain
+personal views which are not the views of the BBC unless specifically
+stated.
+If you have received it in error, please delete it from your system.=20
+Do not use, copy or disclose the information in any way nor act in
+reliance on it and notify the sender immediately. Please note that the
+BBC monitors e-mails sent or received.=20
+Further communication will signify your consent to this.
+
+------_=_NextPart_001_01C4CC85.C9A041B8
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Dus-asci=
+i">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version 6.0.6556.0=
+">
+<TITLE>ice1712 docs</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/rtf format -->
+
+<P><FONT SIZE=3D2 FACE=3D"Courier New">Hi,</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp; I got a php error submittin=
+g this to the driver page so here is the text in case it got lost:</FONT>=
+
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Courier New">This is what I&#8217;ve found in d=
+iscussions with Takashi Iwai at SuSE:</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Courier New">Due to peculiarities of the ICE171=
+2 chip there is a problem using</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">the kernel OSS support. OSS appli=
+cations can only use one stereo</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">channel, which for most cards wou=
+ld not be the IEC958 channel.</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Courier New">If you want to use OSS and have ac=
+cess to all the channels then the</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">aoss user level OSS emulation is =
+more flexible as it lets the</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">libasound stuff do its thing. Thi=
+s needs normal dynamically linked</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">applications and will not work on=
+ closed source statically linked</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">applications.</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Courier New">The aoss &quot;trick&quot; works b=
+y defining pcm.dsp&lt;n&gt; alsa devices and then</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">calling the program with the foll=
+owing:</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Courier New">% aoss your-own-app</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp;</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">For example, for a VX442 (2 stere=
+o analog and 1 stereo IEC958),</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">define the following in ~/.asound=
+rc or /etc/asound.conf:</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp;</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">pcm.dsp0 {</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp; type plug</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp;&nbsp; slave.pcm &quot;fron=
+t&quot;</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">} </FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp;</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">pcm.dsp1 {</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp;&nbsp;&nbsp; type route</FO=
+NT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp;&nbsp;&nbsp; ttable.0.2 1</=
+FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp;&nbsp;&nbsp; ttable.1.3 1</=
+FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp;&nbsp; slave.pcm {</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ty=
+pe hw</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ca=
+rd 0</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp; }</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">} </FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp;</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">pcm.dsp2 {</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp; type plug</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">&nbsp; slave.pcm &quot;iec958&quo=
+t;</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Courier New">}</FONT>
+</P>
+<BR>
+
+<P><B><I><FONT COLOR=3D"#0000FF" SIZE=3D1 FACE=3D"Arial">Julian Cable</FO=
+NT></I></B><I></I>
+
+<BR><I><FONT COLOR=3D"#0000FF" SIZE=3D1 FACE=3D"Arial">Project Manager, T=
+ransmission &amp; Distribution, BBC World Service</FONT></I>
+
+<BR><I><FONT COLOR=3D"#0000FF" SIZE=3D1 FACE=3D"Arial">T: +44 (0)20 755 7=
+3651&nbsp; F: + 44 (0)20 713 797559</FONT></I>
+
+<BR><I><FONT COLOR=3D"#0000FF" SIZE=3D1 FACE=3D"Arial">Mob: +44(0) 77 399=
+ 20066</FONT></I>
+
+<BR><FONT COLOR=3D"#0000FF" SIZE=3D2 FACE=3D"Wingdings">*</FONT><I></I><I=
+></I><I><FONT COLOR=3D"#0000FF" SIZE=3D1 FACE=3D"Arial"> Room 217 NW, Bus=
+h House, Strand, PO Box 76, London, WC2B 4PH</FONT></I>
+
+<BR><I></I><A HREF=3D"http://www.bbc.co.uk/worldservice"><I><U></U><U><FO=
+NT COLOR=3D"#0000FF" SIZE=3D1 FACE=3D"Arial">http://www.bbc.co.uk/worldse=
+rvice</FONT></U></I></A><I></I>
+</P>
+
+<br>http://www.bbc.co.uk/<br><br>This e-mail (and any attachments) is con=
+fidential and may contain<br>personal views which are not the views of th=
+e BBC unless specifically<br>stated.<br>If you have received it in error,=
+ please delete it from your system. <br>Do not use, copy or disclose the =
+information in any way nor act in<br>reliance on it and notify the sender=
+ immediately. Please note that the<br>BBC monitors e-mails sent or receiv=
+ed. <br>Further communication will signify your consent to this.</BODY>
+</HTML>=
+
+------_=_NextPart_001_01C4CC85.C9A041B8--
 
 
 -------------------------------------------------------
