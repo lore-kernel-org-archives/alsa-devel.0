@@ -1,41 +1,43 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: Ingo Molnar <mingo@elte.hu>
 Subject: Re: [patch] voluntary-preempt-2.6.9-rc1-bk4-Q8
-Date: Thu, 02 Sep 2004 03:04:14 -0400
+Date: Thu, 2 Sep 2004 09:15:25 +0200
 Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <1094108653.11364.26.camel@krustophenia.net>
-References: <OF04883085.9C3535D2-ON86256F00.0065652B@raytheon.com>
-	 <20040902063335.GA17657@elte.hu>  <20040902065549.GA18860@elte.hu>
+Message-ID: <20040902071525.GA19925@elte.hu>
+References: <OF04883085.9C3535D2-ON86256F00.0065652B@raytheon.com> <20040902063335.GA17657@elte.hu> <20040902065549.GA18860@elte.hu> <1094108653.11364.26.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S267512AbUIBHER@vger.kernel.org>
-In-Reply-To: <20040902065549.GA18860@elte.hu>
-To: Ingo Molnar <mingo@elte.hu>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S267602AbUIBHOE@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1094108653.11364.26.camel@krustophenia.net>
+To: Lee Revell <rlrevell@joe-job.com>
 Cc: Mark_H_Johnson@raytheon.com, "K.R. Foley" <kr@cybsft.com>, linux-kernel <linux-kernel@vger.kernel.org>, Felipe Alfaro Solana <lkml@felipe-alfaro.com>, Daniel Schmitt <pnambic@unu.nu>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-09-02 at 02:55, Ingo Molnar wrote:
-> i've released the -Q8 patch:
+
+* Lee Revell <rlrevell@joe-job.com> wrote:
+
+> Here are traces of a 145, 190, and 217 usec latencies in
+> netif_receive_skb:
 > 
->   http://redhat.com/~mingo/voluntary-preempt/voluntary-preempt-2.6.9-rc1-bk4-Q8
-> 
-> ontop of:
-> 
->   http://redhat.com/~mingo/voluntary-preempt/diff-bk-040828-2.6.8.1.bz2
-> 
+> http://krustophenia.net/testresults.php?dataset=2.6.9-rc1-Q6#/var/www/2.6.9-rc1-Q6/trace2.txt
+> http://krustophenia.net/testresults.php?dataset=2.6.9-rc1-Q6#/var/www/2.6.9-rc1-Q6/trace3.txt
+> http://krustophenia.net/testresults.php?dataset=2.6.9-rc1-Q6#/var/www/2.6.9-rc1-Q6/trace4.txt
 
-Here are traces of a 145, 190, and 217 usec latencies in
-netif_receive_skb:
+these all seem to be single-packet processing latencies - it would be
+quite hard to make those codepaths preemptible.
 
-http://krustophenia.net/testresults.php?dataset=2.6.9-rc1-Q6#/var/www/2.6.9-rc1-Q6/trace2.txt
-http://krustophenia.net/testresults.php?dataset=2.6.9-rc1-Q6#/var/www/2.6.9-rc1-Q6/trace3.txt
-http://krustophenia.net/testresults.php?dataset=2.6.9-rc1-Q6#/var/www/2.6.9-rc1-Q6/trace4.txt
+i'd suggest to turn off things like netfilter and ip_conntrack (and
+other optional networking features that show up in the trace), they can
+only increase latency:
 
-Some of these are with ip_conntrack enabled, at the request of another
-poster, this does not make much of a difference, it increases the worst
-case latency by 20 usec or so.
+ 00000001 0.016ms (+0.000ms): ip_rcv (netif_receive_skb)
+ 00000001 0.019ms (+0.002ms): nf_hook_slow (ip_rcv)
+ 00000002 0.019ms (+0.000ms): nf_iterate (nf_hook_slow)
+ 00000002 0.021ms (+0.001ms): ip_conntrack_defrag (nf_iterate)
+ 00000002 0.022ms (+0.000ms): ip_conntrack_in (nf_iterate)
+ 00000002 0.022ms (+0.000ms): ip_ct_find_proto (ip_conntrack_in)
+ 00000103 0.023ms (+0.000ms): __ip_ct_find_proto (ip_ct_find_proto)
+ 00000102 0.024ms (+0.000ms): local_bh_enable (ip_ct_find_proto)
+ 00000002 0.025ms (+0.001ms): tcp_error (ip_conntrack_in)
 
-Also there is the rt_garbage_collect issue, previously reported.  I have
-not seen this lately but I do not remember seeing that it was fixed.
-
-Lee
+	Ingo
