@@ -1,16 +1,16 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: bugs in usb midi alsa code?
-Date: Thu, 7 Nov 2002 10:54:10 -0800 (PST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: usb audio sound quality
+Date: Fri, 08 Nov 2002 07:23:04 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0211071037490.16062-100000@cmn37.stanford.edu>
-References: <Pine.HPX.4.33n.0211070857080.1450-100000@studcom.urz.uni-halle.de>
+Message-ID: <3DCAE7C8.5030808@boosthardware.com>
+References: <Pine.LNX.4.44.0211060959140.1126-100000@cmn37.stanford.edu> <3DC97C55.6000507@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA23995
-	for <alsa-devel@alsa-project.org>; Thu, 7 Nov 2002 19:54:49 +0100
-In-Reply-To: <Pine.HPX.4.33n.0211070857080.1450-100000@studcom.urz.uni-halle.de>
+Received: from www7.networkshosting.com (www7.networkshosting.com [66.96.128.106])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id XAA27074
+	for <alsa-devel@alsa-project.org>; Thu, 7 Nov 2002 23:34:30 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,58 +19,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Martin Langer <martin-langer@gmx.de>, Werner Schweer <ws@seh.de>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> > OSS emulation (raw midi interface):
-> >   Midi input and output works fine on the first port,
-> > ALSA:
-> >   input does not seem to work at all.
-> 
-> Werner Schweer wrote:
-> > same on my Roland/Edirol UA100 (audio + 2 midi ports).
-> 
-> Martin Langer wrote:
-> > last but not least: same on my Evolution MK-249C keyboard
-> 
-> I don't think the bug is in the snd-usb-audio driver because OSS input
-> seems to be working.
+I'm getting a lot of wierd sound quality bugs while using JACK. It seems 
+like the driver is storing the crappyness somewhere and each time I 
+access it the quality gets worse. Is it possible that the driver could 
+allow the data to linger and make things unstable?
 
-Yes, it is weird...
+I have been doing some testing today with various softsynths and my mem 
+is getting pretty full. Turning off jack just freed up 10MB but still 
+it's at
 
-> Please try the following with the rawmidi program in alsa-lib/test:
-> OSS:         rawmidi -v -I /dev/midix
+Mem:    386484K total,   336212K used,    50272K free,    41304K buffers
 
-  ./rawmidi -v -I /dev/midi1 --> works fine
+The machine has been up for 7 hours. Is that reasonable?
 
-> ALSA direct: rawmidi -v -I /dev/snd/midiCxD0
 
-  ./rawmidi -v -I /dev/snd/midiC1D0 --> works fine
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
-> ALSA Lib:    rawmidi -v -i hw:x,0
-
-./rawmidi -v -i hw:1,0
-Using: 
-Input: device hw:1,0
-Output: NONE
-ALSA lib rawmidi.c:247:(snd_rawmidi_open_conf) symbol _snd_rawmidi_hw_open 
-is not defined inside (null)
-snd_rawmidi_open hw:1,0 failed: -6
-Closing
-
-> ALSA Lib:    rawmidi -v -i hw:x,0,0
-
-Same as the previous test.
-
-> Did you update alsa-lib together with alsa-kernel? Are you sure you have
-> the correct version of libasound installed, and your programs are using
-> it?
-
-alsa-driver, alsa-kernel, alsa-lib and alsa-utils are compiled and 
-installed from the same source tree (or so I think). 
-
--- Fernando
+"Um...symbol_get and symbol_put... They're
+kindof like does anyone remember like get_symbol
+and put_symbol I think we used to have..."
+- Rusty Russell in his talk on the module subsystem
 
 
 
