@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000709]: Recording doesnt work
-Date: Tue, 7 Dec 2004 18:01:20 +0100
-Message-ID: <0552872a024211d410d38c75a7fbf046@bugtrack.alsa-project.org>
+Date: Tue, 7 Dec 2004 18:23:27 +0100
+Message-ID: <924bc26d447b347657e311b1d3c7d273@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AC8133A2
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 18:01:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9412F3AE
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 18:23:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-05-2004 16:33 CET
-Last Modified:              12-07-2004 18:01 CET
+Last Modified:              12-07-2004 18:23 CET
 ======================================================================
 Summary:                    Recording doesnt work
 Description: 
@@ -53,16 +53,6 @@ got an error and wonders if i have permission to device. But i tried it
 under root and i get the same error. arecord give no error, but just
 doesnt do anything.
 ======================================================================
-
-----------------------------------------------------------------------
- tigermb - 12-07-04 17:59 
-----------------------------------------------------------------------
-Somehow i get an error now:
-
-arecord > a.wav
-
-Recording WAVE 'stdout' : Unsigned 8 bit, Rate 8000 Hz, Mono
-arecord: pcm_read:1196: read error: Input/output error
 
 ----------------------------------------------------------------------
  tigermb - 12-07-04 18:01 
@@ -79,6 +69,12 @@ ioctl(4, 0x800c4151
 
 hangs at last line for a couple of seconds
 
+----------------------------------------------------------------------
+ tigermb - 12-07-04 18:23 
+----------------------------------------------------------------------
+Lots of notes, but the error somehow disappeared, played i little with the
+mixer setting i think. Now it hangs again. I have the strace of arecord
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -90,6 +86,8 @@ Date Modified  Username       Field                    Change
 12-07-04 14:32 tiwai          Note Added: 0002747                          
 12-07-04 17:59 tigermb        Note Added: 0002750                          
 12-07-04 18:01 tigermb        Note Added: 0002751                          
+12-07-04 18:22 tigermb        File Added: strace.log                       
+12-07-04 18:23 tigermb        Note Added: 0002752                          
 ======================================================================
 
 
