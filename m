@@ -1,16 +1,11 @@
-From: Sundaranathan S <snathan@siptech.co.in>
-Subject: Re: Regarding global.h
-Date: Mon, 23 Jun 2003 14:04:36 -0500
+From: Daniel MacDonald <danboid@yahoo.co.uk>
+Subject: NV Soundstorm support? / Recording broke!
+Date: Mon, 23 Jun 2003 02:34:05 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EF74F44.6000E751@siptech.co.in>
-References: <Pine.LNX.4.44.0306230949440.1838-100000@pnote.perex-int.cz>
+Message-ID: <20030623093405.22415.qmail@web9204.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from hummingbird.siptech.co.in ([202.54.64.122])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA06263
-	for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2003 10:23:50 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,70 +14,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-thanks .... I will try that and let you know ....
+Hello ALSA devs!
 
-thanks,
--Sundaranathan
-SIP Technologies & Exports Ltd
+My biggest question is- what is going on with Linux
+support for NVIDIA's NFORCE 2/ Soundstorm chipset?
+Have NVIDIA been contributing code or patches to ALSA
+or has the ALSA driver been created independently?
+More importantly, how long before we see PROPER
+support for the soundstorm under ALSA, instead of just
+a hacked intel8x0 driver? I want multiple dsp channels
+and 24-bit audio I/O under Linux please NVIDIA!
 
-Jaroslav Kysela wrote:
+I've been thinking of starting a petition as I'm sick
+of waiting for this. They release new Linux drivers
+for their GFX cards every other week so why can't (at
+least temporarily) devote some of their Linux
+workforce into getting Soundstorm support under ALSA
+sorted?
 
-> On Mon, 23 Jun 2003, Sundaranathan S wrote:
->
-> > Hi All,
-> >
-> >         While compiling ALSA libraries i am getting an error which is
-> > stated below
-> >
-> >                     control.c: In function `snd_ctl_open_conf':
-> >                     control.c:581: `_dlsym_control_001' undeclared
-> > (first use in this function)
-> >                     control.c:581: (Each undeclared identifier is
-> > reported only once
->
-> Could you try this patch?
->
-> Index: global.h
-> ===================================================================
-> RCS file: /cvsroot/alsa/alsa-lib/include/global.h,v
-> retrieving revision 1.19
-> diff -u -r1.19 global.h
-> --- global.h    23 Apr 2003 12:41:55 -0000      1.19
-> +++ global.h    23 Jun 2003 07:50:24 -0000
-> @@ -84,6 +84,11 @@
->
->  #endif
->
-> +#ifndef __STRING
-> +/** \brief Return 'x' argument as string */
-> +#define __STRING(x)     #x
-> +#endif
-> +
->  /** \brief Returns the version of a dynamic symbol as a string. */
->  #define SND_DLSYM_VERSION(version) __STRING(version)
->
->
->                                                 Jaroslav
->
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SuSE Labs
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: INetU
-> Attention Web Developers & Consultants: Become An INetU Hosting Partner.
-> Refer Dedicated Servers. We Manage Them. You Get 10% Monthly Commission!
-> INetU Dedicated Managed Hosting http://www.inetu.net/partner/index.php
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+The main reason for my building impatience is as Mr.
+PBD said that he's have that long, long, LONG awaited
+Ardour rc out by now- what happened Paul? We expect
+release candidates to have bugs- as long as it
+compiles under the major distros that'll be enough.
+Bring forth that glorious tarball pleeze!
 
+Anyway, I have installed ALSA 0.9.4 on Redhat 9 XFS
+and although sound output works fine, recording (both
+line in and mic) doesn't want to work at all (under
+Audacity CVS, but I tried it with the GNOME sound
+recorder too). I did get recording to work on this
+same machine but when I was running Mandrake 9.1 and
+ALSA 0.9.3. Has anybody else reported/ solved this
+problem?
+
+I tried downloading the latest alsa-driver CVS but for
+some reason it refused to download past the patches
+bit and it was complaining about some ALSAKERNEL stuff
+so I just gave up with that.
+
+Hopefully somebody will be able to answer at least
+part of this multi-faceted whine-fest of a mail.
+
+Thanks v. much!
+
+dan
+
+__________________________________
+Do you Yahoo!?
+SBC Yahoo! DSL - Now only $29.95 per month!
+http://sbc.yahoo.com
 
 
 -------------------------------------------------------
