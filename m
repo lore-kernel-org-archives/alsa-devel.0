@@ -1,23 +1,12 @@
-From: "Thomas Charbonnel" <thomas@undata.org>
-Subject: Re: hdsp driver status
-Date: Sat, 5 Jul 2003 10:29:54 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Other types of usb audio devices.
+Date: Sat, 05 Jul 2003 12:23:30 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32832.217.128.97.180.1057393794.squirrel@www.undata.org>
-References: <32847.81.50.18.84.1057230774.squirrel@www.undata.org>
-        <3F044FF5.2010602@boosthardware.com>
-        <3F0456A5.9000600@boosthardware.com>
-        <1057252106.7192.61.camel@lotte>
-        <32866.81.50.18.84.1057263312.squirrel@www.undata.org>
-        <1057322609.7193.65.camel@lotte>
-        <35616.217.128.161.242.1057324690.squirrel@www.undata.org>
-        <1057325373.10858.77.camel@lotte>
-        <35748.217.128.161.242.1057327134.squirrel@www.undata.org>
-        <1057331014.10858.87.camel@lotte>
-        <36141.24.225.156.130.1057376158.squirrel@webmail.ouroboros-complex.org>
+Message-ID: <3F06B532.5040207@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_20030705102954_55724"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <36141.24.225.156.130.1057376158.squirrel@webmail.ouroboros-complex.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -26,46 +15,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: jfm3@ouroboros-complex.org
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-------=_20030705102954_55724
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Hi,
 
->
->>> Did you drop the alsa-dev CC on purpose ?
->>
->> No, accident...
->>
->
-> I would like to give this patch a go. Can you post it to the list? (Or
-> did I miss it somehow?)
->
->
+The current snd-usb-audio driver assumes that the audio device is 
+attached to this computer, so it only talks to this endpoint.
+If I have an audio usb device with USB_CLASS = 0xe0, it will be a 
+wireless device. I.E. A bluetooth headset.
+It uses isoc's just like the current snd-usb-audio driver but adds some 
+extra requirements, in order to open a connection, one needs to also 
+know the bd address of the destination device  (Like a MAC address for 
+ethernet) and keep tabs of connection number.
+The current bluetooth stack I am using is bluez, from the current 2.4.20 
+  kernel, and it uses network sockets for the audio. I would prefer to 
+use alsa for sending and receiving audio to/from the headset, with all 
+other control of the device going via the bluetooth stack.
+So the question is: -
+How do I get the bdaddr to alsa so that an application can use 
+snd_pcm_open with the bluetooth headset, just as if it was a local audio 
+card.
+I will probably be writing a new usb-audio.c file and probably call it 
+usb-wireless.c in order to handle all the bluetooth specific stuff.
 
-Sorry, it did't get copied. Here it is.
-
-Thomas
-
-
-
-------=_20030705102954_55724
-Content-Type: application/octet-stream; name="hdsploader.patch"
-Content-Disposition: attachment; filename="hdsploader.patch"
-Content-Transfer-Encoding: base64
-
-LS0tIGhkc3Bsb2FkZXIuYy5vbGQJMjAwMy0wNy0wNCAxNTozMzozNC4wMDAwMDAwMDAgKzAyMDAK
-KysrIGhkc3Bsb2FkZXIuYwkyMDAzLTA3LTA0IDE1OjM0OjM1LjAwMDAwMDAwMCArMDIwMApAQCAt
-NTksMTEgKzU5LDcgQEAKICAgICAKICAgICBzd2l0Y2ggKHZlcnNpb24uaW9fdHlwZSkgewogICAg
-IGNhc2UgTXVsdGlmYWNlOgotCWlmICh2ZXJzaW9uLmZpcm13YXJlX3JldiA9PSAweGEpIHsKLQkg
-ICAgZncgPSBtdWx0aWZhY2VfZmlybXdhcmU7Ci0JfSBlbHNlIHsKLQkgICAgZncgPSBtdWx0aWZh
-Y2VfZmlybXdhcmVfcmV2MTE7Ci0JfQorCWZ3ID0gbXVsdGlmYWNlX2Zpcm13YXJlOwogCWJyZWFr
-OwogICAgIGNhc2UgRGlnaWZhY2U6CiAJaWYgKHZlcnNpb24uZmlybXdhcmVfcmV2ID09IDB4YSkg
-ewo=
-
-------=_20030705102954_55724--
+Cheers
+James
 
 
 
