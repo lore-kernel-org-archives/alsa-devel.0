@@ -1,9 +1,8 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: aserver, smix
-Date: Sat, 01 Mar 2003 16:53:10 +0900
+Subject: ALSA - software mixing docs.
+Date: Sat, 01 Mar 2003 18:31:01 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E6066E6.8070703@boosthardware.com>
-References: <Pine.LNX.4.44.0303010856420.1351-100000@pnote.perex-int.cz>
+Message-ID: <3E607DD5.7010802@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,19 +15,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, alsa-user <alsa-user@lists.sourceforge.net>, linux-audio-user@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
+I have added some info to the asoundrc docs on using the new dmix plugin
 
-> 
-> Are you using latest CVS drivers? Previous drivers are not compatible.
-> 
-> 						Jaroslav
-> 
+http://www.alsa-project.org/alsa-doc/doc-php/asoundrc.php3?company=Generic&card=Generic&chip=Generic&module=Generic#softmix
 
-Yes, I did a cvs update today.
+It allows software mixing of multiple streams at one time in a similar 
+way to ESD,ARTS,JACK.
+
+Currently it is only available with latest cvs so needs testing with 
+various apps to make sure it works as desired.
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
