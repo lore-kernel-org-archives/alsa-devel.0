@@ -1,8 +1,8 @@
 From: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
-Subject: Meaning of "pointer" operations
-Date: Fri, 22 Mar 2002 11:09:20 +0100 (CET)
+Subject: Where to find constants for snd_magic_cast()
+Date: Fri, 22 Mar 2002 15:51:31 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.BSF.4.44.0203221038490.53229-100000@fest.stud.fee.vutbr.cz>
+Message-ID: <Pine.BSF.4.44.0203221529500.80535-100000@fest.stud.fee.vutbr.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,99 +18,14 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi all,
 
-I would like to ask you , ALSA gurus for some help.
+Please, I tried to enable debugging for alsa-driver. For this I need to
+add my own constants for snd_magic_cast(). How are these constants
+construct and how this magic function works?
 
-What is exact meaning if "pointer" operations.
-
-I know, that it should return offset in DMA buffer. What I'm not sure
-about is unit - should the offset be in frames or in bytes. And should
-it be offset against begin of DMA buffer (runtime->dma_addr) or
-against actual period begin?
-
-I'm writing ALSA driver for UDA1341 on Compaq iPAQ (H3600). It produce
-some sound yet, but it's far from beeing usable. Actually I'm forking on
-DMA part, and I got these messages from ALSA core (included in my debug
-listing). If you could give me some hint, what this should be about, I
-will be pleased :) (listing is a bit longer :(
-
-command:
-
-aplay -traw -c2 -r8000 -fS16_LE /usr/local/tmp/test3.raw
-
-dmesg:
-
-...
-playback trigger
-pcm_trigger id: 0 cmd: 1
-  rate: 8000
-  channels: 2
-  period_size 1000
-  periods: 4
-  buffer_size: 4000
-  dma_addr c1164000
-  dma_bytes: 16000
-  dma_area: 51 00 13 01 25 00 e2 00 a9 ff 65 00
-process_dma
-  sending period 4 (buffer_size: 4000)
-    dma_bytes: 16000
-    offset: 0
-    dma_size: 4000
-    data: 51 00 13 01 25 00 e2 00 a9 ff 65 00
-OK
-  sending period 3 (buffer_size: 4000)
-    dma_bytes: 16000
-    offset: 4000
-    dma_size: 4000
-    data: 44 ff 01 00 21 ff de ff 08 ff cb ff
-OK
-  sending period 2 (buffer_size: 4000)
-    dma_bytes: 16000
-    offset: 8000
-    dma_size: 4000
-    data: 69 31 83 32 88 33 a9 34 81 29 8d 2a
-pcm trigger done
-playback pointer
-get_dma_pos 1320 -> 1320 -> 1320 -> 330
-  min_align: 1
-  hw_ptr_base: 00000000
-  hw_ptr_interrupt: 00000000
-  period_size: 1000
-  updated pos: 330
-dma_call_back
-  -> period done (still pending 1) <-
-playback pointer
-get_dma_pos 4256 -> 256 -> 256 -> 64
-  min_align: 1
-  hw_ptr_base: 00000000
-  hw_ptr_interrupt: 00000000
-  period_size: 1000
-  updated pos: 64
-ALSA ../alsa-kernel/core/pcm_lib.c:120: U1nexpected hw_pointer value
-(stream = 0, delta: -936, max jitter = 2000): wrong interrupt acknowledge?
-process_dma
-  sending period 2 (buffer_size: 4000)
-    dma_bytes: 16000
-    offset: 8000
-    dma_size: 4000
-    data: 69 31 83 32 88 33 a9 34 81 29 8d 2a
-OK
-  sending period 1 (buffer_size: 4000)
-    dma_bytes: 16000
-    offset: 12000
-    dma_size: 4000
-    data: 06 00 c3 00 4a fb fa fb 01 fa b5 fa
-dma_callback done
-dma_call_back
-  -> period done (still pending 1) <-
-playback pointer
-get_dma_pos 8296 -> 296 -> 296 -> 74
-  min_align: 1
-  hw_ptr_base: 00000000
-  hw_ptr_interrupt: 00000000
-  period_size: 1000
-  updated pos: 74
-ALSA ../alsa-kernel/core/pcm_lib.c:120: U1nexpected hw_pointer value
-(stream = 0, delta: -926, max jitter = 2000): wrong interrupt acknowledge?
+What is actual status of kernel API documentation. Sources are commented
+poorly and there's no notice about kernel API documentation on web.
+There are rummors about some information unofficialy released - could you
+give me the direction, where to find these?
 
 Thanks
 
