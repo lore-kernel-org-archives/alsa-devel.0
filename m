@@ -1,261 +1,69 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000506]: Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
-Date: Thu, 14 Oct 2004 16:41:05 +0200 (CEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041014144105.6F76C2D0C1@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 62455288
-	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 16:41:06 +0200 (MEST)
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+From: Gerd Knorr <kraxel@bytesex.org>
+Subject: Problem with Avermedia 771
+Date: Fri, 15 Oct 2004 12:11:19 +0200
+Sender: linux-dvb-bounce@linuxtv.org
+Message-ID: <20041015101119.GH3866@bytesex>
+References: <416ED29A.7060200@qanu.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-dvb-bounce@linuxtv.org>
+Content-Disposition: inline
+In-Reply-To: <416ED29A.7060200@qanu.de>
+Errors-to: linux-dvb-bounce@linuxtv.org
+List-help: <mailto:ecartis@linuxtv.org?subject=help>
+List-unsubscribe: <mailto:ecartis@linuxtv.org?subject=unsubscribe%20linux-dvb>
+List-software: Ecartis version 1.0.0
+List-subscribe: <mailto:ecartis@linuxtv.org?subject=subscribe%20linux-dvb>
+List-owner: <mailto:listmaster@convergence.de>
+List-post: <mailto:linux-dvb@linuxtv.org>
+To: Holger Waechtler <holger@qanu.de>, dvb list <linux-dvb@linuxtv.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+  Hi guys,
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000506
-======================================================================
-Reported By:                bekker
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     506
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             kernel 2.6.8-gentoo-r3.
-======================================================================
-Date Submitted:             09-19-2004 13:40 CEST
-Last Modified:              10-14-2004 16:41 CEST
-======================================================================
-Summary:                    Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
-Description: 
-the Fortissimo II card has seperate outputs for front, rear speakers and
-headphone. I cannot get sound on the headphone. 
+We are talking about the bt878 second PCI function here.  On some analog
+cards it is used to capture audio, some dvb cards use it to transfer
+MPEG streams.  Problem is that both alsa and dvb want grab the device ...
 
-Front (HW:0,0) and rear speakers (HW:0,1) work.IEC958 (HW:0,2) is also
-available but I have not tested it.
+Cc'ing both involved devel mailing lists ...
 
-The slider marked as headphone in the mixer actually controls the rear
-speaker volume. 
+> >>Audio DMA channel, and the snd_bt87x module has already taken that over -
 
+> Sure.  Want me to add a:
+>               printk("dvb_bt8xx: if you have the ALSA bt87x audio driver "
+>                      "installed, try removing it.\n");
 
-======================================================================
+Yep, that should improve things.
 
-----------------------------------------------------------------------
- bekker - 09-19-2004 13:41 CEST 
-----------------------------------------------------------------------
-I had the same issue on Mandrake 9.2, Mandrake 10.
+I think it would be even better if the alsa driver checks the PCI
+Subsystem ID of the card in question to figure whenever it should try to
+attach to the device or not.  With the dvb driver that already happens
+indirectly through bttv (bttv knows which ones are DVB cards and which
+ones are not).
 
-----------------------------------------------------------------------
- tiwai - 09-20-2004 17:39 CEST 
-----------------------------------------------------------------------
-So far, only 4.0 output is supported on cs46xx driver.
+The list of DVB card ID's isn't that long at the moment (from bttv):
 
-----------------------------------------------------------------------
- bekker - 09-21-2004 20:01 CEST 
-----------------------------------------------------------------------
-Fair enough. Is 5.1 support planned?
+	// DVB cards (using pci function .1 for mpeg data xfer)
+	{ 0x01010071, BTTV_NEBULA_DIGITV, "Nebula Electronics DigiTV" },
+	{ 0x07611461, BTTV_AVDVBT_761,    "AverMedia AverTV DVB-T" },
+	{ 0x002611bd, BTTV_TWINHAN_DST,   "Pinnacle PCTV SAT CI" },
+	{ 0x00011822, BTTV_TWINHAN_DST,   "Twinhan VisionPlus DVB-T" },
+	{ 0xfc00270f, BTTV_TWINHAN_DST,   "ChainTech digitop DST-1000 DVB-S" },
+	{ 0x07711461, BTTV_AVDVBT_771,    "AVermedia DVB-T 771" },
+	{ 0xdb1018ac, BTTV_DVICO_DVBT_LITE,    "DVICO FusionHDTV DVB-T Lite" },
+            ^^^^      subsystem device
+                ^^^^  subsystem vendor
 
-----------------------------------------------------------------------
- tiwai - 09-23-2004 18:34 CEST 
-----------------------------------------------------------------------
-Sorry, no plan AFAIK.
-Benny might help for further development of 5.1 support (see
-cs46xx source codes for his address).
+The alsa driver could either blacklist those or use a whitelist.  The
+whitelist approach probably is more work, but would have the advantage
+that the driver could also filter out analog tv cards where you don't
+get any useful audio data out of the card.  And there is at least one
+DVB card which can't be identified by PCI Subsystem ID because it hasn't
+one, the whitelist approach would catch that one as well.
 
-----------------------------------------------------------------------
- tiwai - 10-06-2004 11:33 CEST 
-----------------------------------------------------------------------
-Well, I misinformed -- 5.1 output is supported on CS46xx when
-dual codecs are detected.  But, in your case, the board seems to
-have only one codec.
+Comments?
 
-Could you show the files in /proc/asound/card0/codec*/* files?
+  Gerd
 
-----------------------------------------------------------------------
- bekker - 10-07-2004 22:25 CEST 
-----------------------------------------------------------------------
-I only have /proc/asound/card0/codec97#0/
-
-ls -l /proc/asound/card0/codec97#0/:
-
--r--r--r--  1 root root 0 Oct  7 22:25 ac97#0-0
--r--r--r--  1 root root 0 Oct  7 22:25 ac97#0-0+regs
-
-Hope this helps
-
-----------------------------------------------------------------------
- tiwai - 10-08-2004 12:15 CEST 
-----------------------------------------------------------------------
-Oh I meant the contents of the files :)  Please attach them.
-
-----------------------------------------------------------------------
- bekker - 10-08-2004 14:38 CEST 
-----------------------------------------------------------------------
-ac97#0-0:
-
-0-0/0: Cirrus Logic CS4294 rev 5
-
-Capabilities     : -headphone out-
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : Crystal Semi 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended modem ID: codec=0 HSET LIN1
-Modem status     : GPIO MREF ADC1 DAC1 HADC HDAC
-Line1 rate       : 48000Hz
-Headset rate     : 48000Hz
-
-ac97#0-0+regs
-
-0:00 = 1990
-0:02 = 0d0d
-0:04 = 1e1e
-0:06 = 0000
-0:08 = 0000
-0:0a = 0000
-0:0c = 0000
-0:0e = 001f
-0:10 = 0a0a
-0:12 = 0e0e
-0:14 = 0000
-0:16 = 0d0d
-0:18 = 0b0b
-0:1a = 0000
-0:1c = 0909
-0:1e = 8000
-0:20 = 0000
-0:22 = 0007
-0:24 = 0000
-0:26 = 000f
-0:28 = 0000
-0:2a = 0000
-0:2c = bb80
-0:2e = bb80
-0:30 = bb80
-0:32 = bb80
-0:34 = bb80
-0:36 = 8080
-0:38 = 8080
-0:3a = 0000
-0:3c = 0005
-0:3e = 00cf
-0:40 = bb80
-0:42 = bb80
-0:44 = bb80
-0:46 = 8080
-0:48 = 8080
-0:4a = 8080
-0:4c = 03fe
-0:4e = fffe
-0:50 = 03ff
-0:52 = 0000
-0:54 = 0018
-0:56 = 0000
-0:58 = 0000
-0:5a = 0502
-0:5c = 0000
-0:5e = 0200
-0:60 = 0023
-0:62 = 8000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 0000
-0:74 = 0000
-0:76 = 0000
-0:78 = 007a
-0:7a = 0000
-0:7c = 4352
-0:7e = 592d
-
-----------------------------------------------------------------------
- tiwai - 10-08-2004 15:22 CEST 
-----------------------------------------------------------------------
-What happens if you apply the patch below?
-
-----------------------------------------------------------------------
- bekker - 10-08-2004 20:25 CEST 
-----------------------------------------------------------------------
-how do I apply this patch?
-
-----------------------------------------------------------------------
- tiwai - 10-12-2004 14:36 CEST 
-----------------------------------------------------------------------
-Get the latest alsa-driver tarball (or better the CVS version) and
-apply on it.
-
-However, apparently, this patch won't solve the problem, I guess.
-(Still you can try to be sure.)
-
-AFAIK, cs4294 doesn't support 5.1 output by a single chip.  So,
-there must be a secondary codec.
-
-Could you see the board whether it has two CS4294 codec chips on it?
-
-----------------------------------------------------------------------
- bekker - 10-14-2004 16:41 CEST 
-----------------------------------------------------------------------
-Actually I don't think the card is really 5.1. With windows2000 I get the
-following output choices:
-
-1) headphone
-2) two front speakers
-3) two front and two back speakers
-
-There is no provision for a subwoofer which I thought was part of the 5.1
-standard.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-19-04 13:40 bekker         New Bug                                      
-09-19-04 13:40 bekker         Distribution              => Gentoo Linux    
-09-19-04 13:40 bekker         Kernel Version            => kernel 2.6.8-gentoo-r3.
-09-19-04 13:41 bekker         Bugnote Added: 0001784                       
-09-20-04 17:39 tiwai          Bugnote Added: 0001789                       
-09-21-04 20:01 bekker         Bugnote Added: 0001808                       
-09-23-04 18:34 tiwai          Bugnote Added: 0001830                       
-10-06-04 11:33 tiwai          Bugnote Added: 0002019                       
-10-07-04 22:25 bekker         Bugnote Added: 0002040                       
-10-08-04 12:15 tiwai          Bugnote Added: 0002046                       
-10-08-04 14:38 bekker         Bugnote Added: 0002051                       
-10-08-04 15:22 tiwai          Bugnote Added: 0002052                       
-10-08-04 15:23 tiwai          File Added: cs46xx-force-cl.dif                    
-10-08-04 20:25 bekker         Bugnote Added: 0002056                       
-10-12-04 14:36 tiwai          Bugnote Added: 0002093                       
-10-14-04 16:41 bekker         Bugnote Added: 0002156                       
-======================================================================
-
-
--------------------------------------------------------
-This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
-Use IT products in your business? Tell us what you think of them. Give us
-Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out more
-http://productguide.itmanagersjournal.com/guidepromo.tmpl
+-- 
+return -ENOSIG;
