@@ -1,13 +1,12 @@
-From: "David E. Storey" <dave@tamos.net>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: Getting actual sample rate
-Date: 11 Jun 2003 21:06:55 -0400
+Date: Wed, 11 Jun 2003 21:44:47 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1055380015.434.8.camel@localhost>
-References: <Pine.LNX.4.44.0306111446550.1142-100000@home.aussec.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-BePHP8OClKFgXUjJo4aH"
+Message-ID: <E19QH3J-000799-00@sc8-sf-list1.sourceforge.net>
+References: <1055380015.434.8.camel@localhost>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0306111446550.1142-100000@home.aussec.com>
+In-reply-to: Your message of "11 Jun 2003 21:06:55 EDT."
+             <1055380015.434.8.camel@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,45 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa <alsa-devel@lists.sourceforge.net>
+To: "David E. Storey" <dave@tamos.net>
+Cc: alsa <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+>Anyone care to shed the light on the math for what totalmix does
+>regarding fader-to-mixer, fader-to-db and mixer-to-fader values? What I
+>have works, but it's UGLY. (well just the constants... I like things to
+>be simple.)
 
---=-BePHP8OClKFgXUjJo4aH
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+you could use the settings in ardour, which has relatively
+sophisticated non-linear, volumetric slider function. these map
+between a 0..1 fractional position and a gain coefficient.
 
-Anyone care to shed the light on the math for what totalmix does
-regarding fader-to-mixer, fader-to-db and mixer-to-fader values? What I
-have works, but it's UGLY. (well just the constants... I like things to
-be simple.)
+static inline double 
+gain_to_slider_position (ARDOUR::gain_t g)
+{
+	if (g == 0) return 0;
+	return pow((6.0*log(g)/log(2.0)+192.0)/198.0, 8.0);
 
-d!
+}
 
-On Wed, 2003-06-11 at 00:48, tom burkart wrote:
-> Today, Paul Davis wrote:
->=20
-> > thomas' code contains the results of the communications i had with RME
-> > about this. it was unclear if the conversions should go into the
-> > driver or not.
-> I had a similar issue with a driver that is about to be published and I
-> decided that userspace can do that one...
-
-
---=-BePHP8OClKFgXUjJo4aH
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA+59Iv+5sC2muyxOMRAgmxAJ4+KtnFVZsJSR3ULzrmrPklPFWx/QCeI1ST
-4goEcSsaGU5E0GYVEkk64dA=
-=zYyV
------END PGP SIGNATURE-----
-
---=-BePHP8OClKFgXUjJo4aH--
-
+static inline ARDOUR::gain_t 
+slider_position_to_gain (double pos)
+{
+	/* XXX Marcus writes: this doesn't seem right to me. but i don't have a better answer ... */
+	return pow (2.0,(sqrt(sqrt(sqrt(pos)))*198.0-192.0)/6.0);
+}
 
 
 -------------------------------------------------------
