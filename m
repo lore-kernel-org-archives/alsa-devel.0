@@ -1,14 +1,14 @@
-From: Cournapeau David <cournape@atr.jp>
+From: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
 Subject: Re: Question regarding period/buffer and error handling
-Date: Fri, 28 May 2004 17:00:32 +0900
+Date: Fri, 28 May 2004 10:22:54 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40B6F1A0.4080704@atr.jp>
+Message-ID: <yw1xiseh0xlt.fsf@kth.se>
 References: <40B6970F.90507@atr.jp> <yw1x1xl5rq3g.fsf@kth.se>
+ <40B6F1A0.4080704@atr.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <yw1x1xl5rq3g.fsf@kth.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,35 +20,34 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-M=E5ns Rullg=E5rd wrote:
+Cournapeau David <cournape@atr.jp> writes:
 
+> Måns Rullgård wrote:
 >
->If you are playing fairly short pieces of sound you might be able to
->use this function I wrote some time ago:
->
->function playsnd(y,fs,bits)
->
->wf =3D tempname;
->ws =3D warning;
->warning off
->wavwrite(y, fs, bits, wf);
->warning ws
->wf =3D [wf '.wav'];
->[s,o] =3D unix(sprintf('aplay %s', wf));
->delete(wf);
->
->
-> =20
->
-Well, I precisely want to avoid writing to a temporary file :)
+>>
+>>If you are playing fairly short pieces of sound you might be able to
+>>use this function I wrote some time ago:
+>>
+>>function playsnd(y,fs,bits)
+>>
+>>wf = tempname;
+>>ws = warning;
+>>warning off
+>>wavwrite(y, fs, bits, wf);
+>>warning ws
+>>wf = [wf '.wav'];
+>>[s,o] = unix(sprintf('aplay %s', wf));
+>>delete(wf);
+>>
+> Well, I precisely want to avoid writing to a temporary file :)
 
-But right now, my function seems to work, I just used UNIX signals to=20
-close cleanly the audio device, it was much simpler than what I thought=20
-at first.
+If the files are small they will probably never hit the physical
+disk.  Of course, your sounds might be longer than that.
 
-Cheers,
+-- 
+Måns Rullgård
+mru@kth.se
 
-David
 
 
 -------------------------------------------------------
