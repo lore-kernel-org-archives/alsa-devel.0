@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000374]: Support for SB Audigy LS Soundcards
-Date: Sat, 10 Jul 2004 14:53:29 +0200
+Subject: [ALSA - driver 0000186]: rear, iec958, and center lfe missing
+Date: Sat, 10 Jul 2004 16:10:17 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <ea27b2cbee3ad618ee47dcef995b1133@bugtrack.alsa-project.org>
+Message-ID: <33d0c4e601567873dbd83e41f2528cdb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -24,86 +24,113 @@ A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0374
+0186
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                whity
+Reported By:                epyon
 Assigned To:               =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     374
-Category:                   OTHERS
+Bug ID:                     186
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               ALL (especially SuSE 9.1 an above)
-Kernel Version:             2.6.5
+Distribution:               Gentoo
+Kernel Version:             2.6.4-gentoo-r1
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-10-2004 11:16 CEST
-Last Modified:              07-10-2004 14:53 CEST
+Date Submitted:             04-05-2004 05:28 CEST
+Last Modified:              07-10-2004 16:10 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Support for SB Audigy LS Soundcards
+Summary:                    rear, iec958, and center lfe missing
 Description:=20
-ALSA and EMU10k1 does not support the Audigy LS Card.
-Only OSS/Linux support it but it costs. Is it possible to use the OSS
-Drivers with ALSA? Or can anybody develop a working driver?
+With 1.0.4, I can not play multiple sounds at once like with 1.0.3 and I'=
+m
+missing rear, iec958, and center lfe.=20
+Also, in 1.0.3, in alsamixer, the chip listed was Cirrus Logic CS4297A re=
+v
+4,Cirrus Logic CS4294 rev 5 and in 1.0.4 it's only Cirrus Logic CS4297A
+rev 4.=20
+
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- jcdutton - 07-10-2004 13:07 CEST=20
+ tiwai - 04-14-2004 15:18 CEST=20
 ----------------------------------------------------------------------
-I am in the process of reverse engineering the Audigy LS, and there is
-currently a audigyls driver in the alsa-driver CVS that can produce
-sound.
-As we don't have datasheets, progress is slow.
+CS46xx.conf has rear, surround40 and iec958 definitions.
+no center/lfe, though.
+
+i suspect the driver doesn't support the surround and/or spdif
+on your board indeed.
 
 ----------------------------------------------------------------------
- whity - 07-10-2004 13:57 CEST=20
+ epyon - 04-14-2004 20:14 CEST=20
 ----------------------------------------------------------------------
-Can you send me a detailed installation tutorial for SuSE 9.1 Professiona=
-l?
-or your email/ICQ?
-Iam not a professional so i need some help.
+Ok but thats not my main problem. With this version of ALSA I can only ge=
+t
+one sound playing at a time when with the older versions I could have
+multiple sounds at once.
 
 ----------------------------------------------------------------------
- jcdutton - 07-10-2004 14:03 CEST=20
+ tiwai - 04-16-2004 11:51 CEST=20
 ----------------------------------------------------------------------
-As you are "not a professional", I suggest that the best action to take i=
-s
-to wait for the next alsa-driver release. Date for release is not set.
+did you enabled CONFIG_CS46XX_NEW_DSP kenrel config?
+it needs also CONFIG_EXPERIMENTAL.
 
 ----------------------------------------------------------------------
- Luke - 07-10-2004 14:53 CEST=20
+ epyon - 04-16-2004 16:01 CEST=20
 ----------------------------------------------------------------------
-I just checked out the audigyls driver and it compiled. As I am writing
-that, I am listening to a web radio via xmms and sound quality is pretty
-good.
-But I am having problems setting up capturing. I don't understand your
-comments in 'audigyls.c':
+Um thats a good question. I'm not sure what the alsa gentoo ebuild
+selected. I have to check into that.
 
-"*    Notes on how to capture sound:
- *      The AC97 is used in the PLAYBACK direction.
- *      The output from the AC97 chip, instead of reaching the speakers,
-is fed into the Philips 1361T ADC.
- *      So, to record from the MIC, set the MIC Playback volume to max,
- *      unmute the MIC and turn up the MASTER Playback volume.
- *      So, to prevent feedback when capturing, minimise the "Capture
-feedback into Playback" volume."
+----------------------------------------------------------------------
+ JStevens - 05-01-2004 02:35 CEST=20
+----------------------------------------------------------------------
+I am using Fedora Core 1 with the stock kernel (2.4.22-1.2115.nptl) and a=
+m
+having the same problems that are listed. The 1.0.3 drivers have the
+IEC958 and surround mixing in alsamixer, but are missing from 1.0.4.
 
-I don't have any "MASTER Playback volume" to configure. After playing
-around with it a bit, my system hung. I'm using gentoo, kernel 2.6.7. I
-tried several configs with 'arecord -f cd test.wav' and 'aplay test.wav'
-but couldn't get more than some noises.
+My card's spdif out is supported in the 1.0.1 and 1.0.3 versions, and I
+don't have enough info to say what's different from 1.0.3 and 1.0.4 that
+they don't show up other than what the previous bugtracker listed.
+
+----------------------------------------------------------------------
+ Picomp314 - 07-05-2004 22:39 CEST=20
+----------------------------------------------------------------------
+i also can not locate the iec958 defs. running alsa 1.0.4
+can not play multiple sounds (i tried software mixing, so far to no
+avail)
+i really would like to be able to use the Rca and Toslink outputs on the
+card, right now i have to use headphones
+
+i looked in the /etc/asound.state file and tried to change some settings
+for the IEC958 output, but it also did not work.
+
+Running FC2 on custom 2.6.7 kernel; not using New DSP; will try to compil=
+e
+with New DSP enabled
+
+----------------------------------------------------------------------
+ Picomp314 - 07-10-2004 16:10 CEST=20
+----------------------------------------------------------------------
+ok i fixed this problem, i patched kernel-2.6.7 with the latest alsa-kern=
+el
+patch
+i recompiled and rebooted
+all the missing entries are now back in alsamixer
+haven't actually tested the sound through the digital outputs yet, i
+report back later
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -111,20 +138,27 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-10-04 11:16 whity          New Bug                                    =
+04-05-04 05:28 epyon          New Bug                                    =
  =20
-07-10-04 11:16 whity          Distribution              =3D> ALL (especia=
-lly SuSE
-9.1 an above)
-07-10-04 11:16 whity          Kernel Version            =3D> 2.6.5       =
+04-05-04 05:28 epyon          Distribution              =3D> Gentoo      =
    =20
-07-10-04 13:07 jcdutton       Bugnote Added: 0001398                     =
+04-05-04 05:28 epyon          Kernel Version            =3D> 2.6.4-gentoo=
+-r1=20
+04-14-04 15:18 tiwai          Bugnote Added: 0000805                     =
  =20
-07-10-04 13:57 whity          Bugnote Added: 0001399                     =
+04-14-04 20:14 epyon          Bugnote Added: 0000809                     =
  =20
-07-10-04 14:03 jcdutton       Bugnote Added: 0001400                     =
+04-16-04 11:51 tiwai          Bugnote Added: 0000831                     =
  =20
-07-10-04 14:53 Luke           Bugnote Added: 0001401                     =
+04-16-04 16:01 epyon          Bugnote Added: 0000839                     =
+ =20
+05-01-04 02:35 JStevens       Bugnote Added: 0000986                     =
+ =20
+05-01-04 02:35 JStevens       Bug Monitored: JStevens                    =
+ =20
+07-05-04 22:39 Picomp314      Bugnote Added: 0001383                     =
+ =20
+07-10-04 16:10 Picomp314      Bugnote Added: 0001402                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
