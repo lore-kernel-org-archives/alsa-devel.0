@@ -1,12 +1,15 @@
-From: =?utf-8?q?Enoch Xkdoo?= <transitivenessuskdbru@escher-grad.com>
-Subject: =?utf-8?q?Rolex, Cartier, Bret?=
- =?utf-8?q?ling and more...?=
-Date: Fri, 12 Nov 2004 03:46:01 +0000
-Message-ID: <E1CSSFm-0007YP-Ns@externalmx-1.sourceforge.net>
+From: "Milagros R. Ferguson" <milagrosferguson_js@king.nl>
+Subject: Order Rolex or other Swiss watches online
+Date: Fri, 12 Nov 2004 00:02:03 -0500
+Message-ID: <794701c4c874$8d091165$556f2a8b@iqm.unicamp.br>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	 boundary="suQ1wJCpCWPYN7j5"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from iqm.unicamp.br (c-24-8-20-108.client.comcast.net [24.8.20.108])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id EDA10285
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 06:02:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,51 +19,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?utf-8?q?Billy Bof?= <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Heya,
 
---suQ1wJCpCWPYN7j5
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Do you want a rolex watch?
 
-Authentic Reproductions Wristwatches
+In our online store you can buy replicas of Rolex watches. They look
+and feel exactly like the real thing.
 
-Our company have this trade names available too:
+- We have 20+ different brands in our selection
+- Free shipping if you order 5 or more
+- Save up to 40% compared to the cost of other replicas
+- Standard Features:
+ - Screw-in crown
+ - Unidirectional turning bezel where appropriate
+ - All the appropriate rolex logos, on crown and dial
+ - Heavy weight
 
-Rolex
-Chopard
-Jaeger-lecoultre
-Alain Silberstein
-Eberhard
+Visit us: http://www.yomoi.com/rep/rolex/
 
-http://aivbfiflb.oatsy.com/rolex/vron/dgit.htm
---suQ1wJCpCWPYN7j5
-Content-Type: text/html;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Best regards,
+Hilton Jones
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
-<STYLE></STYLE>
-</HEAD>
-<HTML>
-<BODY>
-<A href=3D"http://sliifoiv.rep1icas.com/replica/vron/xe.asp">
-Authentic Reproductions Wrist-Watches
-</A><BR>
-We offer next trademarks available besides:<BR>
-Frank Muller<BR>
-Breguet<BR>
-IWC<BR>
-Alain Silberstein<BR>
-Omega<BR>
-</BODY>
-</HTML></HTML>
---suQ1wJCpCWPYN7j5--
+
+No thanks: http://www.yomoi.com/z.php
 
 
 
