@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
-Date: Wed, 19 Jan 2005 17:28:55 +0100
-Message-ID: <60f29fef7b4d3e2a5d2b0d6adcb66182@bugtrack.alsa-project.org>
+Date: Wed, 19 Jan 2005 17:32:16 +0100
+Message-ID: <646bee7ebc4c85b077164483c71fd2d4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D5E9526D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 17:28:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7D5C426D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 17:32:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10.0
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             07-01-2004 16:26 CEST
-Last Modified:              01-19-2005 17:28 CET
+Last Modified:              01-19-2005 17:32 CET
 ======================================================================
 Summary:                    Alsa always uses card0 and does not use card1, even
 when card0 is a modem
@@ -50,11 +50,6 @@ Intel 8x0 as card1. Alsamixer has to be run with -c1 option to avoid "no
 mixer elems" error (like bug 338)
 KDE has no sound ( same as bug 353)
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-19-05 17:22 
-----------------------------------------------------------------------
-Also, a correction for ALSA-Configuration.txt would be appreciated, too.
 
 ----------------------------------------------------------------------
  jdthood - 01-19-05 17:28 
@@ -82,6 +77,12 @@ too.
 
 Will do.
 
+----------------------------------------------------------------------
+ tiwai - 01-19-05 17:32 
+----------------------------------------------------------------------
+It'll take time until distributors adapt the post-1.0.8 ALSA. It'd be fine
+to set default -2, IMO.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -105,6 +106,7 @@ Date Modified  Username       Field                    Change
 01-19-05 17:22 tiwai          Note Added: 0003303                          
 01-19-05 17:22 tiwai          Note Added: 0003304                          
 01-19-05 17:28 jdthood        Note Added: 0003305                          
+01-19-05 17:32 tiwai          Note Added: 0003306                          
 ======================================================================
 
 
