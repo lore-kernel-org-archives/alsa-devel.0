@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000510]: Utilization of AC'97 on Aureon 7.1 Space
-Date: Mon, 27 Sep 2004 16:46:54 +0200 (CEST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
+Date: Mon, 27 Sep 2004 14:43:59 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040927144654.9580D2400B@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.LNX.4.58.0409271433490.1733@pnote.perex-int.cz>
+References: <200409270300.i8R30Ro1016070@localhost.localdomain>
+ <4157B56F.9000905@pg.gda.pl>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=iso8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D286321D
-	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 16:46:54 +0200 (MEST)
+In-Reply-To: <4157B56F.9000905@pg.gda.pl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,162 +18,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?UTF-8?B?QWRhbSBUbGHFgmth?= <atlka@pg.gda.pl>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 27 Sep 2004, Adam Tla=B3ka wrote:
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000510
-======================================================================
-Reported By:                ungod
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     510
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Debian GNU/Linux
-Kernel Version:             3.1
-======================================================================
-Date Submitted:             09-21-2004 09:41 CEST
-Last Modified:              09-27-2004 16:46 CEST
-======================================================================
-Summary:                    Utilization of AC'97 on Aureon 7.1 Space
-Description: 
-As of now, the Aureon driver lacks the capability to playback both analog
-input channels and the PCM channel, and the input channels have no
-seperate volume control, although the AC'97 chip on the board, STAC9744,
-apparently has the capability.
+> > ALSA and the entire kernel development team have spent the last 5
+> > years moving things *out* of kernel space. forget ALSA - you will have
+> > a very, very hard time explaining to the kernel crew why this is
+> > actually a good idea.
+> Hmm, actually from my observation this approach (in lib mixing and=20
+> effects) makes more problems and disadventages then doing this in a=20
+> device manner and as a kernel RT thread. I tried to modify AOSS to use=20
+> callbacks (works almost good but scheduling/swapping effects still=20
+> there)
 
-I tried some commercial OSS drivers, and they worked properly, so I know
-that it is possible.
-======================================================================
+Are you using fully loaded ring buffer on the ALSA side with a decent=20
+size?
 
-----------------------------------------------------------------------
- tiwai - 09-21-2004 11:54 CEST 
-----------------------------------------------------------------------
-Unfortunately, no information from terratec at all about this.
+> but I found an app which disables SIGIO for example.
 
-----------------------------------------------------------------------
- ungod - 09-23-2004 20:47 CEST 
-----------------------------------------------------------------------
-Which is sad.
+It might be solved with the loopback device and a RT mixing daemon.
 
-Anyway, by looking at the GPIO pins after changing the volume of one of
-the analog inputs with the commercial drivers, the value which is to be
-stored in the AC'97 chip is stored on GPIO[7:0]. Not much help, but it
-gives an idear of how the XILINX chip is to be used. You probably define
-the register address on the same pins, toggle one of the other pins, and
-the puts the data on the pins and toggle another pin again.
+> So now I in a dead end. I think that ALSA lib approach has serious=20
+> compability limitations which could not be solved.
 
-I don't know. Purely speculations...
+I don't think that it's something which cannot be solved.
 
-edited on: 09-23-04 20:47
+=09=09=09=09=09=09Jaroslav
 
-----------------------------------------------------------------------
- ungod - 09-27-2004 00:45 CEST 
-----------------------------------------------------------------------
-Wow. A whole weekend of testing and working and I have finally managed to
-get the AC'97 to work.
-Appararently I was not entirely wrong about the utilization of the XILINX
-chip.
-
-Related GPIO pins:
-
-GPIO[7:0]  Data bits
-GPIO8      Data high toggle bit
-GPIO9      Data low toggle bit
-GPIO10     Address toggle bit
-GPIO11     Commit toggle bit
-GPIO16     STAC9744 RESET pin
-
-Initialization is done by setting GPIO[7:0] to zero and toggling the RESET
-pin low and then high.
-
-Writing to the chip is done as follows:
-Address is latched on GPIO[7:0]
-Address toggle bit (GPIO10) is toggled high and low
-Low-order data is latched on GPIO[7:0]
-Data low toggle bit (GPIO9) is toggled high and low
-High-order data is latch on GPIO[7:0]
-Data high toggle bit (GPIO8) is toggled high and low
-Commit bit (GPIO11) is toggled high and low.
-
-Unfortunately this interface leaves no option for reading from the AC'97
-chip (as far as I see, although the GPIO13 is also connected to the XILINX
-chip and may have some saying) so we must maintain a local (assumed) copy
-of the EEPROM - just as with the WM8770 chip.
-
-Anyway, since the PCM features is not used on the Aureon card, the only
-logical mixers to include would be Line/CD/Aux/Mic/Master and the Mic
-Boost. Maybe also the 3D settings.
-
-As to hearing both DAC and analogue input channels, this is actually
-performed by the WM8770. I noticed that it is capable of mixing the
-multiplexed analogue input channel and an AUX channel with the DAC
-channel, but the ALSA mixer did not have any option for this, so I added
-it, and noticed that the AC'97 chip was actually connected to the AUX1
-channel. But since the quality of the bypassed analogue channels was
-really bad compared to the AUX, I later removed that and simply hardcoded
-the front channel to mix the DAC signal and the AUX1 line.
-
-I've had problems where it seems like the WM8770 stalls or something and
-all sound disappear, however this is a thing I've noticed with both the
-(unmodified) ALSA drivers and 4Front's commercial OSS drivers, and also
-before I ever began playing with the sound card registers, so this may be
-a hardware problem only related to my card.
-
-edited on: 09-27-04 00:45
-
-----------------------------------------------------------------------
- ungod - 09-27-2004 00:37 CEST 
-----------------------------------------------------------------------
-Here is my patch, adding AC'97 support for Aureon cards. It is obvious
-quite untested as of now, so it probably still have bugs somewhere.
-
-Summary: Adds AC'97 support to Aureon cards.
-
-This patch adds support of the STAC9744 chip located on Aureon cards,
-enabling volume control for analogue input channels.
-It also adds the posibility of listening to both the analogue inputs and
-the digital audio.
-
-Signed-off-by: Peter Christensen <peter@developers.dk>
-
-----------------------------------------------------------------------
- tiwai - 09-27-2004 16:46 CEST 
-----------------------------------------------------------------------
-Great, I applied the patch to CVS.
-
-Note that I changed (cleaned up) ice1712 struct, so stac9744 field
-is moved into ice->spec field, the board-specific data.
-When you work on this driver further, please sync with CVS version.
-
-Thanks.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-21-04 09:41 ungod          New Bug                                      
-09-21-04 09:41 ungod          Distribution              => Debian GNU/Linux
-09-21-04 09:41 ungod          Kernel Version            => 3.1             
-09-21-04 11:54 tiwai          Bugnote Added: 0001796                       
-09-23-04 20:45 ungod          Bugnote Added: 0001848                       
-09-23-04 20:47 ungod          Bugnote Edited: 0001848                      
-09-23-04 20:47 ungod          Bugnote Edited: 0001848                      
-09-27-04 00:33 ungod          Bugnote Added: 0001929                       
-09-27-04 00:37 ungod          Bugnote Added: 0001930                       
-09-27-04 00:37 ungod          File Added: aureon-ac97.diff                    
-09-27-04 00:42 ungod          Bugnote Edited: 0001929                      
-09-27-04 00:42 ungod          Bugnote Edited: 0001929                      
-09-27-04 00:44 ungod          Bugnote Edited: 0001929                      
-09-27-04 00:45 ungod          Bugnote Edited: 0001929                      
-09-27-04 16:46 tiwai          Bugnote Added: 0001940                       
-======================================================================
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
