@@ -1,13 +1,18 @@
-From: "Stephen Warren" <SWarren@nvidia.com>
-Subject: Azx in 1.0.8?
-Date: Thu, 6 Jan 2005 08:38:47 -0800
-Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B003CE10C7@hqemmail02.nvidia.com>
+From: "Cesare" <Gelrudad@aol.com>
+Subject: Robin save on software!
+Date: Thu, 06 Jan 2005 12:07:05 -0500
+Message-ID: <20050106170653.D7200406B9@mail.perex.cz>
+Reply-To: "Arva" <Gelrudad@aol.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="--04-55750-3497-442-03487"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EB221324
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2005 18:06:54 +0100 (MET)
+Received: from 122.67-18-119.reverse.theplanet.com (unknown [67.18.119.122])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id D7200406B9
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2005 18:06:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,31 +22,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
+----04-55750-3497-442-03487
+Content-Type: text/plain;
+Content-Transfer-Encoding: 7Bit
 
-What's the likelihood of the azx driver being included in the 1.0.8
-final release?
+Never pay high prices for your software again! We have the best solution for your needs!
 
-I noticed a recent post to the kernel list, with instructions regarding
-1.0.8rc2. This didn't include the azx driver. Does this mean 1.0.8 won't
-include azx at all, or just that the part of 1.0.8 that get into the
-kernel won't include it? (Is this the difference between the alsa-driver
-and alsa-kernel directory - will azx eventually be moved from one to the
-other?)
+Go to http://www.continuetmee.com/?a=333
 
-I was hoping to grab 1.0.8 to integrate into our kernel, rather than
-using some "random" CVS release - but if there's no azx in there, I
-guess I can't.
+You can browse our huge selection.
 
-Thanks for any insight.
+Get Norton for $15, Windows XP for $50, Photoshop for $80... 
 
---=20
-Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
-swarren@nvidia.com        http://www.nvidia.com/
-swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
+
+http://www.continuetmee.com/?a=333
+
+----04-55750-3497-442-03487--
 
 
 -------------------------------------------------------
