@@ -1,13 +1,13 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: AW: usb quattro
-Date: Fri, 06 Sep 2002 04:25:34 +0900
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: alsamixer on cvs
+Date: Thu, 5 Sep 2002 12:45:09 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D77AFAE.6030803@boosthardware.com>
-References: <DAELIEGDPLDDCIJPAICBGEHNCDAA.annabellesgarden@yahoo.de>
+Message-ID: <Pine.LNX.4.44.0209051237450.2123-100000@cmn37.stanford.edu>
+References: <Pine.LNX.4.33.0209050829550.524-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.33.0209050829550.524-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,43 +16,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Karsten Wiese wrote:
-
->> >>EIP; c01e52e4 <uhci_remove_pending_qhs+44/90>   <=====
->>
+> > > > > # alsamixer
+> > > > > alsamixer: simple.c:869: simple_add1: Assertion
+> > > > > `!simple->ctls[type].elem' failed.
+> > > > > Aborted
+> > > >
+> > > > could you try to remove the assert() at alsa-lib/src/mixer/simple.c
+> > > > line 869?  this looks like a wrong conditional...
+> > >
+> > > It's ok. Could you send us output from alsactl utility? We have probably
+> > > two controls with same name.
+> > 
+> > Sure, it is included at the end of the email. I found the
+> > same problem yesterday in an ens1371 based soundcard.
 > 
-> 
-> the Tascam US-428 driver (copied / changed from snd-usb-audio ) showed a
-> similar problem.
-> I worked around it by not using ASYNC_UNLINKing of the urbs.
-> 
-> uhci_remove_pending_qhs is called to unlink urbs in ASYNC mode.
-> seems as if uhci has a bug ? or may we asyncly unlink only 1 urb at a time?
-> any experiences with kernels > 2.4.18 ?
-> 
+> I've fixed the problem in CVS for intel8x0
 
-This is with kernel 2.4.19pre10
+Something else has changed, I now get a:
 
-It may be that the code is fixed for the 2.5.x series. there seems to be 
-a few different versions of the uhci code floating around.
+Sep  5 12:36:12 pc1 kernel: PCI: Setting latency timer of device 00:1f.5 
+to 64
+Sep  5 12:36:14 pc1 kernel: Intel ICH soundcard not found or device busy
+Sep  5 12:36:14 pc1 insmod: 
+/lib/modules/2.4.19-2.ll.acpi/kernel/drivers/sound/pci/snd-intel8x0.o: 
+init_module: No such device
+Sep  5 12:36:14 pc1 insmod: Hint: insmod errors can be caused by incorrect 
+module parameters, including invalid IO or IRQ parameters
+Sep  5 12:36:14 pc1 insmod: 
+/lib/modules/2.4.19-2.ll.acpi/kernel/drivers/sound/pci/snd-intel8x0.o: 
+insmod snd-card-0 failed
 
+And the module does not load.
 
+After reloading a previous version of the driver it loads successfully and
+alsamixer duly reports the problem (I kept the newer lib and utils):
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
+ALSA lib simple.c:877:(simple_add1) helem (MIXER,'Master Mono Playback 
+Switch',0,0,0) appears twice or more
 
-"Um...symbol_get and symbol_put... They're
-kindof like does anyone remember like get_symbol
-and put_symbol I think we used to have..."
-- Rusty Russell in his talk on the module subsystem
+And this is what I get from the ens1371 card:
+
+ALSA lib simple.c:877:(simple_add1) helem (MIXER,'IEC958 Playback 
+Switch',0,0,0) appears twice or more
+
+Let me know when I can test again...
+-- Fernando
+
 
 
 
