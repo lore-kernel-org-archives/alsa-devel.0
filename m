@@ -1,17 +1,12 @@
-From: Christoph Lukas <christoph.lukas@gmx.net>
-Subject: Re: snd_intel8x0 fails after ACPI sleep
-Date: Sat, 13 Mar 2004 19:13:04 +0100
+From: Lars Heineken <Lars.Heineken@gmx.de>
+Subject: Opening dev/dsp takes very long
+Date: Sat, 13 Mar 2004 21:01:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1079201584.2991.13.camel@beja>
-References: <XFMail.20040310104621.pochini@shiny.it>
-	 <1078928193.18054.247.camel@renegade> <404F62B1.30206@superbug.demon.co.uk>
-	 <1078982128.1838.72.camel@localhost>
-	 <1078989194.4050118a9a0df@webmail.mail.gatech.edu>
+Message-ID: <40536881.4030903@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1078989194.4050118a9a0df@webmail.mail.gatech.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,71 +15,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: gte654n@mail.gatech.edu
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> I have a Fujitsu E7110 laptop with a builtin audio card.  This is what lspci 
-> reports... 
->  
-> 00:1f.5 Multimedia audio controller: Intel Corp. 82801CA/CAM AC'97 Audio (rev 
-> 02) 
->         Subsystem: Citicorp TTI: Unknown device 1177 
->         Flags: bus master, medium devsel, latency 0, IRQ 11 
->         I/O ports at 1000 [size=256] 
->         I/O ports at 1880 [size=64] 
->  
-> I am running 2.6.4-rc2 kernel, and I have been trying to get ACPI S3 (suspend 
-> to ram) to wake up correctly.  One of the problems that I am encountering is 
-> that with the sound modules loaded (I have always had success with 
-> snd_intel8x0 on the same hardware) coming back from sleep freezes my laptop 
-> hard.  If I rmmod *all* the sound-related modules before going to sleep, the 
-> laptop resumes without a hitch.  However, if I attempt to modprobe 
-> snd_intel8x0 after resume, I get a hard freeze again.  I cannot recover any 
-> debug output, because the end of /var/log/messages is garbled on reboot. 
+Hi !
 
-I have nearly the same behaviour here with a Dell D800 with the following sound card:
+I switched from 2.4 to 2.6 a few days ago and noticed this strange
+problem. Whatever program uses OSS-emulation takes 1-3 seconds to open
+/dev/dsp and start playing sound. It seems that this has something to do
+with the preemptive kernel option, because I experienced the same when I
+tried a 2.4 kernel with the preemptive patch.
+I thought that having a prememtive kernel would reduce delays in general
+~ and not increase them dramatically.
+How can I be of help to find and locate this problem ?
 
-00:1f.5 Multimedia audio controller: Intel Corp.: Unknown device 24c5 (rev 01)
-        Subsystem: Dell Computer Corporation: Unknown device 014e
-        Flags: bus master, medium devsel, latency 0, IRQ 11
-        I/O ports at b800 [size=256]
-        I/O ports at bc40 [size=64]
-        Memory at f4fff800 (32-bit, non-prefetchable) [size=512]
-        Memory at f4fff400 (32-bit, non-prefetchable) [size=256]
-        Capabilities: [50] Power Management version 2
+Greetings,
 
-If I unload usb, network and sound modules before entering S3 I can
-resume successfully. 
+Lars.
 
-Reloading the sound modules after resume the behaviour differs depending
-on the order I load the modules in.
+PS: Hardware is EWX24/96, if that helps.
 
-If I modprobe the snd modules _after_ usb or network modules the system
-freezes. 
-If I modprobe the snd modules _before_ the others I get the following
-messages in the syslog:
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-Mar 13 18:54:25 beja kernel: PCI: Setting latency timer of device
-0000:00:1f.5 to 64
-Mar 13 18:54:25 beja kernel: ALSA
-/usr/src/modules/alsa-driver/kbuild/../pci/intel8x0.c:1969: AC'97 warm
-reset still in progress? [0xffffffff]
-Mar 13 18:54:25 beja kernel: Intel ICH: probe of 0000:00:1f.5 failed
-with error -5
-
-Is this problem hardware specific or does the alsa system not support
-ACPI powermanagement?
-
-I would really like helping to get this to work as this is the only
-problem preventing me from using S3. 
-
-I could supply more information if necessary.
-
-Thanks for any hints,
-Christoph
+iD8DBQFAU2iBrp9JEomxNXERAuAtAJ0SqH7CtAidytYox5ZmWw1gOfMIpACdHRf6
+xJQw7Ug3+gvimU11ECwGY4c=
+=ko6Q
+-----END PGP SIGNATURE-----
 
 
 
