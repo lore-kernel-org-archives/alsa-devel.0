@@ -1,15 +1,14 @@
-From: "Alejandra May" <alejandramay_4@kamainstream.com.au>
-Subject: Premium Replica Watches
-Date: Tue, 21 Dec 2004 07:08:46 +0100
-Message-ID: <0c5101c4e723$fb3cc64e$43c531fb@fermentas.lt>
+From: Rodrigo Anderson <halfmreef@cs.com>
+Subject: Impress her with a Rolex   84352819
+Date: Tue, 21 Dec 2004 00:17:48 -0800
+Message-ID: <1693552617676787345203024@cs.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/html; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from fermentas.lt (adsl-68-91-103-137.dsl.hstntx.swbell.net [68.91.103.137])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 07D4C26C
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 15:10:06 +0100 (MET)
+Received: from host80-48-112-108.cable.wsm.wielun.pl (host80-48-112-108.cable.wsm.wielun.pl [80.48.112.108])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 0F92726C
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 15:11:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,27 +21,90 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Get the Finest Rolex Watch Replica!
+<html>
+<body>
+<P align=3Dcenter><FONT color=3D#ff0000>Thank you for expressing interest=
+ in Replicas watches Bazaar. </FONT>
 
-We only sell premium watches. There's no battery in these replicas just
-like the real ones since they charge themselves as you move. The second h=
-and
-moves JUST like the real ones, too. These original watches sell in stores
-for thousands of dollars. We sell them for much less.=20
-
-- Replicated to the Smallest Detail
-- 98% Perfectly Accurate Markings=20
-- Signature Green Sticker w/ Serial Number on Watch Back
-- Magnified Quickset Date
-- Includes all Proper Markings
-
-Visit us: http://www.mecei.com/rep/rolx/
-
-Christmas discount this week only! Make your order before the prices go u=
-p.
+</P>
+<P align=3Dcenter>We would like to take this opportunity to offer you our=
+ fine
+selection of Italian crafted Rolex Timepieces. </P>
+<P align=3Dcenter><FONT color=3D#ff0000>You can view our large
+selection of Rolexes (including Breitling, Tag Heuer, Cartier etc) at:
+</FONT>
+</P>
+<P align=3Dcenter>
+<a href=3D"http://wkgjhmf.gficndan.info/?ykAAAD3Tz6Fgimyfywturr"> Replica=
+ watches Bazaar</a> </P>
+<P align=3Dcenter>
 
 
-No thanks: http://www.mecei.com/z.php
+As we are the direct manufacturers, you are guaranteed of
+lowest prices and highest quality each and every time you purchase from u=
+s.
+
+
+You may also be interested to know
+that we have the following brands available in our wide selection as well=
+:</P>
+<P align=3Dcenter></P>
+
+<table cellSpacing=3D"0" cellPadding=3D"3" border=3D"0" align=3Dcenter st=
+yle=3D"WIDTH: 184px;">
+<tr>
+<td width=3D"100%">
+<li>
+Vip Rolex
+<li>
+Eberhard
+<li>
+A. Lange
+<li>
+Panerai
+<li>
+Iwc
+<li>
+A.lange Sohne
+<li>
+Roger Dubuis
+<li>
+Longines
+<li>
+Blancpain
+<li>
+etc...
+</li>
+</td>
+</tr>
+
+</table>
+<P align=3Dcenter><FONT color=3D#ff0000>
+If you see anything that might interest you, or if you have
+any questions, please don't hesitate to visit our website at:<br style=3D=
+"mso-special-character: line-break">
+<br style=3D"mso-special-character: line-break"></FONT></P>
+<P align=3Dcenter>
+
+<a href=3D"http://mqtvw.kmlcmhlj.info/?ascIIfbvHeNoquGzndzcxxs">Replica w=
+atches Bazaar</a> </P>
+<P></P>
+<br>
+<br>
+<br>
+<span style=3D"FONT-SIZE: 3.5pt; FONT-FAMILY: Arial">
+connote cage refugee ussr monadic honest arden orchis zen amanita distant=
+ agriculture coercion <br>
+certiorari tablecloth downfall actinium kate eagle festive broadway givea=
+way <br>
+cromwell chalcedony degrease nanking brocade numerate herdsman cocktail p=
+ubescent edwardine emphysematous substrate snotty wicket lawsuit foley ho=
+urglass <br>
+mealy regimentation northeastern invasive gosh broil <br>
+</body>
+
+</html>
+
 
 
 
