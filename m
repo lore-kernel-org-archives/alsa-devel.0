@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: mmaped play in multichannel mode (fwd)
-Date: Wed, 30 Jul 2003 16:36:18 -0400
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: Trivial hdsp.c patch to support rev 50 cards
+Date: Wed, 30 Jul 2003 14:18:56 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307302036.h6UKaJ6p001930@localhost.localdomain>
-References: <Pine.LNX.4.53.0307302236410.14824@spring>
+Message-ID: <NDBBLGIKBJENLAMOLFHGKENFCNAB.mknecht@controlnet.com>
+References: <20030730191002.M68372@vertice.ca>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 30 Jul 2003 22:37:14 +0200."
-             <Pine.LNX.4.53.0307302236410.14824@spring>
+In-Reply-To: <20030730191002.M68372@vertice.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,36 +18,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: barat@medien.uni-weimar.de
-Cc: alsa-devel@lists.sourceforge.net
+To: Dan Nyborg <nyborg@www.vertice.ca>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->i have written some code for mmaped-play. it works so far for up to 2 
->channels, but in multichannel-mode i get some mismatch about available 
->buffersize or exactly a snd_pcm_mmap_commit error.
->the essential part is the following:
 >
->  snd_pcm_mmap_begin(alsa_handler, &area, &offset, &frames_transmit);
->
->  /* this is specific to interleaved streams (or non-interleaved
->   * streams with only one channel) */
->  outbuffer = ((char *) area->addr + (area->first + area->step * offset) / 
->8);
->
->  //write data
->  memcpy(outbuffer, data, (frames_transmit * bytes_per_sample));
-> 
->  commitres = snd_pcm_mmap_commit(alsa_handler, offset, frames_transmit);
->
->i guess that outbuffer has a wrong size. does somebody have any idea about 
->this outbuffer calculation?
+> however, when i try to play something with alsaplayer or aplay, my system
+> freezes after 2 sec to 2 min of playback... sometimes i can get through a
+> whole file, sometimes only partial, but an eventual lock-up is
+> inevitable. i
+> have not tried sending anything other than stereo, 44100kHz, 16bit files.
 
-i don't know exactly why you're spending time doing this. whether you
-decide to use it or not, JACK (http://jackit.sf.net/) has full,
-working code that shows how to do this. but i'd personally recommend
-that you consider using it instead of reinventing the wheel, etc.
+Dan,
+   I'm using a 'similar' driver from Thomas, but not the identical driver,
+and with the HDSP 9652, not the MultiFace. Using aplay and MONO wave files
+I'm fine. Using anything in stereo results in all sorts of problems,
+including hard locks or at the minimum no further sound. Only a reboot fixes
+this for me.
 
---p
+   Could you try a mono file and see what results you get?
+
+   alsaplayer sometimes works for me. For about 30 seconds I'll get sound,
+and then the sound stops and doesn't work until a reboot.
+
+- Mark
+
+
+
+
 
 
 -------------------------------------------------------
