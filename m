@@ -1,14 +1,13 @@
-From: Francesco Rossi <franc@agbms.ch>
-Subject: Re: ES1938 - ESS Solo1 - 3 Cards mounted
-Date: 19 Sep 2002 15:08:40 +0200
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: Testers of M-Audio Delta/Audiophile cards wanted
+Date: Thu, 19 Sep 2002 16:35:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1032440920.6398.70.camel@franc.agbms.ch>
-References: <Pine.LNX.4.33.0209191039490.7337-100000@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.21.0209191627530.595-100000@summer.quitte>
+References: <s5h7khiqh4g.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.33.0209191039490.7337-100000@pnote.perex-int.cz>
+In-Reply-To: <s5h7khiqh4g.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,57 +16,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Do you think that the SoundBlaster Live would do the trick ?
-Or can you suggest me any hardware able to do it ?
-Thank you in advance,
-             Franc
+Takashi Iwai wrote:
 
+>since the old ice1712.c is still compiled as default, you'll have to
+>run "make" on alsa-driver/pci/ice1712.  the new files are not compiled
+>otherwise.
 
-On Thu, 2002-09-19 at 10:41, Jaroslav Kysela wrote:
-> On 19 Sep 2002, Francesco Rossi wrote:
-> 
-> > I believe it may sound weird, but I have successfully ran 3 cards
-> > recording at 32.000 Hz each stereo, 16 bits. I left it running for
-> > 24hours to check if it was just luck and it never crashed!
-> > 
-> > The configuration I have used with three cards sums up to 384K per
-> > second running on the PCI bus. 
-> > 
-> > Now my test continues and I have added another two cards, reaching the
-> > limit of my slots, 5 cards.
-> > 
-> > When I start the arecord on all of them, it doesn't crash, but it's
-> > recording at 8000 Hz 8bits mono by default.
-> > 
-> > I then tried running arecord at 16000 Hz, stereo, 16 bits, and it
-> > crashed when I started the 5th card.
-> > 
-> > What's weird is that with this configuration on the bus we should have
-> > only 320k per second.
-> > 
-> > It appears to me that it is crashing when I am increasing the summed
-> > sample rate. But then it doesn't make sense because 320k is less than
-> > 384k.
-> > 
-> > Do you have any idea?
-> 
-> Note that ESS Solo1 hardware is not very good. We have several workarounds 
-> in our driver to fix the wrong hardware behaviour. Perhaps, it could have 
-> more design problems so it eats more bus bandwidth than necessary. Try 
-> another hardware.
-> 
-> 						Jaroslav
-> 
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project  http://www.alsa-project.org
-> SuSE Linux    http://www.suse.com
+[~/audio/alsa-cvs/alsa-driver] make -C pci/ice1712
+make: Entering directory
+`/home/tim/audio/alsa-cvs/alsa-driver/pci/ice1712'
+gcc -DALSA_BUILD -D__KERNEL__ -DMODULE=1
+-I/home/tim/audio/alsa-cvs/alsa-driver/include
+-I/lib/modules/2.4.19-ll/build/include -O2
+-mpreferred-stack-boundary=2 -march=k6 -DLINUX -Wall
+-Wstrict-prototypes -fomit-frame-pointer -pipe  -DKBUILD_BASENAME=ews
+-c -o ews.o ews.c
+In file included from ews.c:1:
+../../alsa-kernel/pci/ice1712/ews.c: In function
+`snd_ice1712_ews_init':
+../../alsa-kernel/pci/ice1712/ews.c:403: parse error before `*'
+../../alsa-kernel/pci/ice1712/ews.c:406: `ak' undeclared (first use in
+this function)
+../../alsa-kernel/pci/ice1712/ews.c:406: (Each undeclared identifier
+is reported only once
+../../alsa-kernel/pci/ice1712/ews.c:406: for each function it appears
+in.)
+make: *** [ews.o] Error 1
+make: Leaving directory
+`/home/tim/audio/alsa-cvs/alsa-driver/pci/ice1712'
 
+i don't have a clue what gives. was my make invocation wrong? 
+
+tim
 
 
 
