@@ -1,12 +1,19 @@
-From: jean@schurger.org
-Subject: Bugged ES1978 Maestro 2E (rev 10) ? make it works
-Date: Tue, 10 Aug 2004 12:38:09 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Problem with www.alsa-project.org web site.
+Date: Tue, 10 Aug 2004 11:45:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040810103809.GB6622@schurger.org>
+Message-ID: <4118A730.1050304@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D88E41F4
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 12:45:05 +0200 (MEST)
+Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
+	by anchor-post-35.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 1BuU7t-000DGp-0Z
+	for alsa-devel@alsa-project.org; Tue, 10 Aug 2004 10:45:05 +0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,37 +22,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-	I have an (old) laptop with an ESS Technology ES1978 Maestro 2E
-	(rev 10), that seems to have an "STAC9721/23" inside (id =
-	0x83847609).
+The real ALSA project web site is http://www.alsa-project.org/
 
-	0000:00:08.0 Multimedia audio controller: ESS Technology ES1978 Maestro
-	2E (rev 10)
-	Subsystem: Dell: Unknown device 00aa
-	Flags: bus master, medium devsel, latency 32, IRQ 5
-	I/O ports at d800 [size=256]
-	Capabilities: [c0] Power Management
-	version 2
+There appears to now be a FAKE alsa project web site
+http://www.alsaproject.org/
 
-	in the snd_ac97_mixer() function,  the ac97 driver test the
-	AC97_REC_GAIN register by writing 0x8a06 on it, and if it read
-	well the same value, it enable the AC97_SCAP_AUDIO.
+The only difference being the "-" sign.
 
-	But, on my board, the last quartet of AC97_REC_GAIN, is always
-	readen as 0, then when the AC97_REC_GAIN is tested, it return
-	0x0a06 instead of 0x8a06, and the ac97 driver tell "(not audio
-	or modem codec)", then no sound card.
+I think that in the intrests of users, we should fight to get ownership 
+of alsaproject.org.
 
-	I simply added a test of 0x83847609 to |= 0x8000 to the test
-	value, and all works fine.
+Any comments?
 
-
---
-	Jean Schurger <jean@schurger.org>
+James
 
 
 -------------------------------------------------------
