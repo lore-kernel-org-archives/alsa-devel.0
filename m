@@ -1,11 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000773]: Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
-Date: Sat, 1 Jan 2005 02:27:17 +0100
-Message-ID: <20050101012717.E344D33B@alsa.alsa-project.org>
+Subject: [ALSA - driver 0000772]: Analog/Digital output not working.
+Date: Sat, 1 Jan 2005 02:28:08 +0100
+Message-ID: <137bc1cf22b1d1d42e868a3e0d8efe92@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E344D33B
-	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 02:27:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8CDBD33B
+	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 02:28:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +21,70 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Audigy2 Value - SB0400 card
-Audigy2 Value- AUX-In and LINE-IN no sound
-Message-ID: <661501e21949de12c17b9d9ed9efc120@bugtrack.alsa-project.org>
-X-Priority: 3
-X-Mailer: PHPMailer [version 1.72]
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="iso-8859-1"
-
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=773> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=772> 
 ======================================================================
-Reported By:                hodgesw
+Reported By:                ianw1234
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   773
+Issue ID:                   772
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               1.08rc1
-Kernel Version:             2.6.10
+Distribution:               
+Kernel Version:             2.6.9-1.681_FC3
 ======================================================================
-Date Submitted:             01-01-2005 01:21 CET
-Last Modified:              01-01-2005 02:27 CET
+Date Submitted:             12-31-2004 23:02 CET
+Last Modified:              01-01-2005 02:28 CET
 ======================================================================
-Summary:                    Kernel 2.6.10 with ALSA 1.08rc1 from CVS
-(12/30/2004)
-Audigy2 Value - SB0400 card
-Audigy2 Value- AUX-In and LINE-IN no sound
+Summary:                    Analog/Digital output not working.
 Description: 
-Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
-Audigy2 Value - SB0400 card
-After trying many modprobe.preload/modprobe.conf alternatives I
-manually loaded driver  using  "modprobe -v snd-emu10k1"
-with /etc/modprobe.conf: "options snd-emu10k1  extin="0x3fff"
-After setting alsamixer volumes
-"speakertest" works; "aplay" produces good sound; mic produces good
-sound;
-"line in" does not work; "auxin" does nor work.
-kde configure plays sound.
-xmms cannot find sound card.
+I've been unable to get my SB Live! to send analog pcm out through the
+Analog/Digital port. It's connected through this port to my receiver, and
+while AC3 over the digital port works fine, I can't get anything else to
+go over the line. I have a 48kHz wave file I've been testing, and I've
+tried playing it with aplay over hw0,0 (no good), hw0,1 (doesn't exist),
+and hw0,2 (no effect). 
 
+I have the master, IEC Coaxial, AC97, External amplifier, and SB Live
+Analog/Digital Output Jack all either unmuted or set to max volume. I've
+tried loading the snd_pcm_oss module with various snd_dsp_map settings
+without success.
+
+I've tried this on 1.0.7 and 1.0.8rc1. I dimly remember this working in
+the past, so I don't know if this was broken in the upgrade to 1.0.7
+(which I had to do because AC3 passthrough didn't work in the version that
+came with the 2.6.9 kernel) or whether I have some strange
+misconfiguration. Help is appreciated! Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-01-05 02:27 
+ ianw1234 - 01-01-05 00:33 
 ----------------------------------------------------------------------
-Did you set the capture levels to maximum for those sources?
+Well, ok.. playing a sound with "aplay -Dplug:spdif wavfile.wav" works, as
+does mplayer -ao alsa:device=spdif.
+
+I'll see if I can map the OSS devices to this, but it seems strange that I
+would need to do a lot of .asoundrc trickery to get this to work.
+
+----------------------------------------------------------------------
+ rlrevell - 01-01-05 02:28 
+----------------------------------------------------------------------
+You don't have to do "a bunch of asound trickery", you just have to output
+to the correct device, as you can see.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-01-05 01:21 hodgesw        New Issue                                    
-01-01-05 01:21 hodgesw        Distribution              => 1.08rc1         
-01-01-05 01:21 hodgesw        Kernel Version            => 2.6.10          
-01-01-05 02:27 rlrevell       Note Added: 0003029                          
+12-31-04 23:02 ianw1234       New Issue                                    
+12-31-04 23:02 ianw1234       Kernel Version            => 2.6.9-1.681_FC3 
+01-01-05 00:33 ianw1234       Note Added: 0003028                          
+01-01-05 02:28 rlrevell       Note Added: 0003030                          
 ======================================================================
 
 
