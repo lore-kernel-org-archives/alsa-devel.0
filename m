@@ -1,308 +1,44 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000951]: Fix bugs with early IRQs mishandling, missing silence fill, and wrong timing calculations
-Date: Fri, 4 Mar 2005 04:46:47 +0100
-Message-ID: <c3c22ca809acef6f4094cd05cb2d37b7@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [Alsa-devel] Re: intel 8x0 went silent in 2.6.11
+Date: Thu, 03 Mar 2005 14:09:38 -0500
+Message-ID: <1109876978.2908.31.camel@mindpipe>
+References: <4227085C.7060104@drzeus.cx>
+	 <29495f1d05030309455a990c5b@mail.gmail.com>
+	 <Pine.LNX.4.62.0503031342270.19015@krusty.vfxcomputing.com>
+	 <1109875926.2908.26.camel@mindpipe>
+	 <Pine.LNX.4.62.0503031356150.19015@krusty.vfxcomputing.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1FF5E1F3
-	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2005 04:46:48 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+In-Reply-To: <Pine.LNX.4.62.0503031356150.19015@krusty.vfxcomputing.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Canter <marcus@vfxcomputing.com>
+Cc: Nish Aravamudan <nish.aravamudan@gmail.com>, Pierre Ossman <drzeus-list@drzeus.cx>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2005-03-03 at 14:06 -0500, Mark Canter wrote:
+> Correct, but if you want to use your headphones you would have to enable 
+> headphones on your mixer, which would negate your speaker output through 
+> your docking station's output.  If you want to use the docking station 
+> speakers, you would have to disable the headphones in order to get the 
+> docking station speakers to work; no?  If that is the case, then you would 
+> still have to enable/disable each time you wanted to change the direction 
+> of headphones/external speakers.  Again, this is not the case under <= 
+> 2.6.10 where it works regardless of enabling/disabling headphones.
+> 
+> I'd hate to rant and rave here under something that has worked under 2.4.x 
+> and <= 2.6.10.  But this seems like a very un-userfriendly solution to 
+> something that has had no issues for quite some time.  In that case, what 
+> deemed the change necessary?  As far as I see the 8x0 driver added support 
+> for ICH7.  I'm sure there's more to it than just that, I just haven't 
+> looked into it the rest of the way.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=951> 
-======================================================================
-Reported By:                charles_levert
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   951
-Category:                   CORE - pcm
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.4.22
-======================================================================
-Date Submitted:             02-28-2005 21:26 CET
-Last Modified:              03-04-2005 04:46 CET
-======================================================================
-Summary:                    Fix bugs with early IRQs mishandling, missing
-silence fill, and wrong timing calculations
-Description: 
-A patch is forthcoming.
+Because the change was needed to make someone else's hardware work.
+It's a bug, bugs happen.
 
-Here is the text from the patch preamble.
+If you want to complain, complain to the hardware manufacturers, who
+make devices where bit $foo means $bar in one hardware revision, and
+$baz in the next, and don't give us sufficient documentation to sort out
+the mess.
 
-    This patch is against alsa-driver-1.0.8.
-    It covers:
-        alsa-kernel/core/pcm_lib.c
-        alsa-kernel/include/pcm.h
-        alsa-kernel/core/pcm_native.c
-        alsa-kernel/core/oss/pcm_oss.c
-    The main changes are in the first listed file.
-
-    An original bug description was filed
-    under "[ALSA - driver] PCI - cmipci":
-        <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=946>
-    since the problems were first observed on this hardware.
-
-    The patch fixes the following problems:
-
-     -- Properly handle early IRQs in
-        snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c.
-
-        This does occur, at least with CMI8738MC6 hardware.
-
-        This bug had a major impact that caused the DMAs
-        to run for too long and irritating noise to be
-        heard at the end of playback.
-
-     -- Properly compute estimated time of next interrupt
-        in snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c;
-        this is no longer done with a
-        "... % runtime->period_size" kludge (which didn't
-        even attempt to round to nearest instead of merely
-        truncating).
-
-     -- Test whether hw_avail is big enough to handle
-        the next runtime->period_size in
-        snd_pcm_update_hw_ptr_post() in pcm_lib.c,
-        otherwise call snd_pcm_tick_prepare() to
-        tentatively set up a timer if needed (to be able
-        to take earlier action in that case).
-
-     -- Centralize all folding of values with regard to
-        runtime->boundary in the new snd_pcm_next_buf()
-        function in pcm_lib.c.
-
-        All relevant values are now systematically in
-        coherent synchronization without resorting to the
-        ugly and error-prone "value %= runtime->boundary"
-        kludge all over the place; unobvious wrapping
-        conditions testing is no longer needed in these
-        places.
-
-        A safe zone worth one runtime->buffer_size is now
-        kept on the left side of the operating interval,
-        just like it was the case for the right side;
-        this is necessary for proper simplified operation.
-
-     -- Direct manipulations of values with respect to
-        runtime->boundary needed to be brought in line
-        with new proper practices (and thus simplified)
-        in pcm.h, pcm_lib.c, pcm_native.c, and pcm_oss.c.
-
-     -- Isolate the second part of
-        snd_pcm_playback_silence() in the new
-        snd_pcm_playback_silence_fill() function in
-        pcm_lib.c.
-
-        This makes the code more readable since the
-        task this performs should not be confused with
-        what is done in the remaining first part of
-        snd_pcm_playback_silence().
-
-        The isolated code is unchanged.
-
-     -- Rewrite the remaining first part of
-        snd_pcm_playback_silence() to properly handle all
-        situations, including computing minimum silence
-        insertion even when "runtime->silence_size == 0".
-
-        This is needed for proper operation of the aplay
-        program, for one, and is much more forgiving on the
-        user; insertion of silence samples in user space
-        was always useless and a wrong solution anyway (but
-        user space specification of kernel space silence
-        insertion is useful and still very much supported).
-
-        The code is now much more straightforward to read.
-
-        Updates of runtime->control->appl_ptr (due
-        to the user writing samples) and updates to
-        runtime->status->hw_ptr (due to the audio hardware
-        consuming samples) are now _both_ properly
-        accounted for in all cases; the new code makes
-        this much more obvious.
-
-     -- All calls to snd_pcm_playback_silence() in
-        pcm_lib.c and pcm_native.c must no longer be under
-        the "runtime->silence_size > 0" condition.
-
-     -- Properly perform rounded-up integer division in
-        snd_pcm_system_tick_set() in pcm_lib.c.
-
-        This only had a minor impact.
-
-     -- Properly compute distance to next interrupt in
-        snd_pcm_tick_prepare() in pcm_lib.c; again, avoid
-        using any "... % runtime->period_size" kludge.
-
-     -- The usage of runtime->rate in
-        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
-        regarless of other changes.
-
-        The impact was that the timer was systematically
-        set to 1 single tick when it needed to be set to
-        typically hundreds of ticks.
-
-     -- The usage of runtime->sleep_min in
-        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
-        regarless of other changes.
-
-        The impact was that the number of ticks for
-        the timer was not properly adjusted up to what
-        sleep_min is documented to mean, when needed.
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000946 Early playback DMA IRQ with CMI8738MC6 ...
-======================================================================
-
-----------------------------------------------------------------------
- charles_levert - 03-04-05 03:34 
-----------------------------------------------------------------------
-> The snd_pcm_tick_set() function accepts
-> ticks not microseconds.
-
-Ah, good!  We might be zeroing-in on the problem.  I.e.,
-does what the implemention match the design intentions?
-Please look at what snd_pcm_system_tick_set() actually
-does, regardless of the name of its "ticks" argument.
-Ignoring the rounding part of the division, it does
-(mathematically, in real numbers not integers):
-
-  mod_timer_ticks  :=  "ticks" / (1000000 / HZ)
-                       = ("ticks" / 1000000) * HZ
-
-It really seems to me that
-
-  -- The alsa_ticks unit are no longer involved at this
-     point.
-
-  -- The input "ticks" argument really is treated by this
-     function as microseconds.
-
-  -- There is a first (mathematical) conversion from
-     microseconds to seconds (the /1000000 part).
-
-  -- There is a second (mathematical) conversion from
-     seconds to kernel_timer units (its own ticks, the
-     *HZ part).
-
-Note that the only two other calls to snd_pcm_tick_set(),
-which are in file pcm_native.c, set the "ticks" argument
-to zero so no difference is felt from their point of view.
-
-In the event that a combined solution to what's
-covered in both "hz-int-div.0b03.patch" and
-"rate-sleep-ticks.0b03x.patch" modifies things so that
-snd_pcm_tick_set() really takes its "ticks" argument in
-alsa_ticks units (adding a first [mathematical] conversion
-from alsa_ticks units to microseconds), please verify
-the following.  (The "rate-sleep-ticks.0b03x.patch"
-would no longer be necessary as it stands then.)
-There is effectively a division by runtime->tick_time
-at the end of snd_pcm_tick_prepare(); for that matter,
-there is still a division by runtime->rate.  Since those
-values were initially obtained from the user, were they
-ever validated to be non-zero at any point?  What would
-be the consequences of a division by zero there?  I know
-that setting these values to zero is non-sensical from an
-usefulness point-of-view, but is an attack on the system
-from a local user possible there?  I prefer asking and
-being told I'm wrong than not asking but having been right.
-
-----------------------------------------------------------------------
- charles_levert - 03-04-05 04:46 
-----------------------------------------------------------------------
-I've though about it some more, and here's my
-recommendation, FWIW.
-
-In the event that the units of kernel_ticks and alsa_ticks
-are close to one another, but not quite equal, having a
-snd_pcm_tick_set() that accepts alsa_ticks and converts
-them to kernel_ticks might result in an important
-cumulative loss of precision (given that the only current
-non-zero usage, the one at hand in snd_pcm_tick_prepare(),
-started from a number of samples [aka frames]).
-
-So I would advocate leaving the current implementation
-of snd_pcm_tick_set() and snd_pcm_system_tick_set()
-as it is, but renaming them to snd_pcm_timer_set() and
-snd_pcm_system_timer_set() and renaming their "ticks"
-argument to "microseconds".  Thus revising the documented
-design, as opposed to the implementation.
-
-Assuming some future non-zero usages are to come, it
-think it's actually better to require some callers to
-themselves convert from alsa_ticks to microseconds using a
-multiplication, than to require other callers (akin to the
-only current non-zero one) to convert from microseconds to
-alsa_ticks using a division.  For me, the winners are both
-imposing the simpler operation (multiplication) and having
-an argument with more precision (while still leaving room
-for a value thousands of seconds long to be specified)
-that is less inducive to cumulative loss of precision.
-
-Yes, I know the division is combined and would be there
-anyway in the only current non-zero use, but in general
-it might be otherwise (for other future non-zero uses).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-28-05 21:26 charles_levert New Issue                                    
-02-28-05 21:26 charles_levert Kernel Version            => 2.4.22          
-02-28-05 21:29 charles_levert File Added: early-irqs.patch                    
-03-01-05 09:36 perex          Relationship added       related to 0000946  
-03-01-05 09:40 perex          Note Added: 0003755                          
-03-01-05 11:15 charles_levert Note Added: 0003757                          
-03-02-05 09:22 Clemens LadischNote Added: 0003761                          
-03-02-05 13:01 charles_levert Note Added: 0003768                          
-03-02-05 13:39 perex          Note Added: 0003771                          
-03-02-05 14:53 charles_levert Note Added: 0003776                          
-03-03-05 14:21 charles_levert File Added: hz-int-div.0b03.patch                 
-  
-03-03-05 14:22 charles_levert File Added: rate-sleep-ticks.0b03.patch           
-        
-03-03-05 14:23 charles_levert File Added: appl_ptr-boundary.0b03.patch          
-         
-03-03-05 14:23 charles_levert File Added: early-irqs.0b03.patch                 
-  
-03-03-05 14:37 charles_levert Note Added: 0003786                          
-03-03-05 15:03 perex          Note Added: 0003787                          
-03-03-05 15:33 charles_levert File Added: rate-sleep-ticks.0b03x.patch          
-         
-03-03-05 15:34 charles_levert Note Added: 0003788                          
-03-03-05 15:52 perex          Note Added: 0003789                          
-03-03-05 16:05 perex          Note Added: 0003790                          
-03-03-05 20:30 rlrevell       Note Added: 0003792                          
-03-04-05 03:34 charles_levert Note Added: 0003795                          
-03-04-05 04:46 charles_levert Note Added: 0003797                          
-======================================================================
-
-
-
-
--------------------------------------------------------
-SF email is sponsored by - The IT Product Guide
-Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+Lee
