@@ -1,13 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
-Date: Sun, 13 Mar 2005 16:23:11 +0100
-Message-ID: <84385734e2286b18069f822231f89d78@bugtrack.alsa-project.org>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Re: Unresolved symbol in snd-cs4231-lib, CVS and Linux 2.4.29
+Date: Sun, 13 Mar 2005 20:27:16 +0000 (GMT)
+Message-ID: <20050313202716.32961.qmail@web52907.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A1BAD1E9
-	for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2005 16:23:11 +0100 (MET)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: 6667
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,112 +15,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+'make cvsclean' had no effect, I'm afraid. I've currently resorted to edi=
+ting the config.h file
+manually to set CONFIG_SND_GENERIC_PM to 1.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
-======================================================================
-Reported By:                1g0R
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   848
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.8-ac8
-======================================================================
-Date Submitted:             01-25-2005 15:28 CET
-Last Modified:              03-13-2005 16:23 CET
-======================================================================
-Summary:                    Intel HDA (C-Media 9880) SPDIF Out
-Description: 
-When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
-output signal on SPDIF (Coax).
-I try:
-aplay -D hw:0,1 (<--digital out) else.wav
-the command run normally, but no output on spdif out.the same with xmms
-(with ALSA, on hw:0,1).
+Cheers,
+Chris
 
-======================================================================
+--- Jaroslav Kysela <perex@suse.cz> wrote:
+> > depmod: *** Unresolved symbols in /lib/modules/2.4.29/kernel/drivers/=
+sound/snd-cs4231-lib.o
+> > depmod:         snd_card_set_generic_pm_callback
+> >=20
+> > I was compiling the snd-sscape driver: does this driver need to set t=
+he CONFIG_SND_GENERIC_PM
+> > #define in the configure script?
+>=20
+> Do 'make cvsclean' in the alsa-driver directory and try again...
 
-----------------------------------------------------------------------
- 1g0R - 03-13-05 14:49 
-----------------------------------------------------------------------
-Hi Tiwai,
-
-The same problem with alsa 1.0.9rc1.
-
-Best regards :
-1g0R
-
-----------------------------------------------------------------------
- 1g0R - 03-13-05 16:23 
-----------------------------------------------------------------------
-Hi tiwai,
-
-Lets see from the begining:
-1. Compiling
-alsa-driver
-a, configure --with-cards=hda-intel --with-oss=yes --with-sequencer=yes
-b, make, make install
-alsa-lib
-alsa-utils
-alsa-oss
-the same (configure,make,make install)
-2. alsaconf
-3. modprobe.conf editing. Add the following line: options snd-hda-intel
-model=full_dig
-4. cp /usr/lib/libasound* /lib
-5. check the iec958 is on (but 0 volume level), and not muted.ok.
-6. check the cabling between computer and receiver.
-7. iecset (i dont know the perfect options, but i tried some)
-8. aplay something.wav
-9. i cant hear anything from speakers.But the receiver see something,
-because when i mute iec958 output, the receiver change the type of input
-signal.
-10. help please
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-25-05 15:28 1g0R           New Issue                                    
-01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
-01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
-01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
-01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
-01-28-05 02:56 nc             Issue Monitored: nc                          
-01-28-05 03:07 nc             Note Added: 0003423                          
-01-28-05 19:01 1g0R           Note Added: 0003434                          
-02-04-05 15:02 tiwai          Note Added: 0003507                          
-02-04-05 19:36 1g0R           Note Added: 0003514                          
-02-04-05 19:41 tiwai          Note Added: 0003515                          
-02-05-05 06:06 mab            Issue Monitored: mab                         
-02-05-05 08:46 1g0R           Note Added: 0003518                          
-02-14-05 22:27 1g0R           Note Added: 0003612                          
-02-14-05 22:28 1g0R           Note Added: 0003613                          
-02-18-05 18:55 tiwai          Note Added: 0003658                          
-02-19-05 19:51 1g0R           Note Added: 0003670                          
-02-21-05 19:57 1g0R           Note Added: 0003683                          
-02-22-05 14:29 tiwai          Note Added: 0003699                          
-02-22-05 19:05 1g0R           Note Added: 0003709                          
-03-12-05 23:11 1g0R           Note Added: 0003900                          
-03-13-05 14:49 1g0R           Note Added: 0003902                          
-03-13-05 16:23 1g0R           Note Added: 0003903                          
-======================================================================
-
-
+Send instant messages to your online friends http://uk.messenger.yahoo.co=
+m=20
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
