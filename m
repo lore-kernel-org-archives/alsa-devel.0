@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000436]: How to have sound to Digital and Analog at the same time ?
-Date: Tue, 9 Nov 2004 16:16:51 +0100
-Message-ID: <92a4e908597db47ff21e6306b1525a1d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000484]: Hercules MUSE Pocket, channels swapping randomly during playback
+Date: Tue, 9 Nov 2004 16:20:11 +0100
+Message-ID: <310a3f59e02c053af765beaac486fce2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1ACA7244
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:16:52 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 00941244
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:20:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=436> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=484> 
 ======================================================================
-Reported By:                tho_x_tran
-Assigned To:                perex
+Reported By:                jone
+Assigned To:                Clemens Ladisch
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   436
-Category:                   ac3dec
+Project:                    ALSA - driver
+Issue ID:                   484
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Resolution:                 fixed
+Distribution:               Debian unstable
+Kernel Version:             2.4.23-cobalt3
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-12-2004 20:36 CEST
-Last Modified:              11-09-2004 16:16 CET
+Date Submitted:             09-06-2004 21:32 CEST
+Last Modified:              11-09-2004 16:20 CET
 ======================================================================
-Summary:                    How to have sound to Digital and Analog at the same
-time ?
+Summary:                    Hercules MUSE Pocket, channels swapping randomly
+during playback
 Description: 
-I play Xine and Watch TV at the same time, and Xine audio can only go to
-Digital Opt out while TV sound goes to Analog front speakers only.  How
-can I make it go to both devices AT THE SAME TIME for all applications.
+When my Hercules MUSE Pocket device is connected via a hub the  sound
+channels swap back and forth randomly during playback.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-01-04 22:53 
+ jone - 09-07-04 17:54 
 ----------------------------------------------------------------------
-Basically it's a job of application.
-ALSA doesn't decode AC3 by itself.
-So, apps should send both AC3-analog and AC3-passthru signals to
-different PCM (if possible).  And, this is not always possible
-on many motherboards...
+It's just a simple el-cheapo passive 1.1 hub.
+
+Bus 002 Device 002: ID 05e3:0604 Genesys Logic, Inc. 
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.01
+  bDeviceClass            9 Hub
+  bDeviceSubClass         0 Unused
+  bDeviceProtocol         0 
+  bMaxPacketSize0         8
+  idVendor           0x05e3 Genesys Logic, Inc.
+  idProduct          0x0604 
+  bcdDevice            0.12
+  iManufacturer           0 
+  iProduct                1 
+  iSerial                 0 
+  bNumConfigurations      1
 
 ----------------------------------------------------------------------
- perex - 09-07-04 16:38 
+ Clemens Ladisch - 09-08-04 11:18 
 ----------------------------------------------------------------------
-Application problem.
+Channel swapping occurs if the device receives an odd number of audio
+samples.  The snd-usb-audio driver always sends an even number of samples
+(the OSS driver, too), so it seems your hardware loses some data on the
+way.
+
+Apparently, there is an incompatibility between the Cobalt's USB
+controller and the Genesys hub.  (There are many Genesys chips that have,
+er, issues.)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-12-04 20:36 tho_x_tran     New Issue                                    
-08-12-04 20:36 tho_x_tran     File Added: asound.conf                      
-09-01-04 22:53 tiwai          Note Added: 0001678                          
-09-07-04 16:38 perex          Status                   assigned => resolved
-09-07-04 16:38 perex          Resolution               open => fixed       
-09-07-04 16:38 perex          Note Added: 0001712                          
-11-09-04 16:16 tiwai          Status                   resolved => closed  
+09-06-04 21:32 jone           New Issue                                    
+09-06-04 21:32 jone           Distribution              => Debian unstable 
+09-06-04 21:32 jone           Kernel Version            => 2.4.23-cobalt3  
+09-07-04 17:44 Clemens LadischNote Added: 0001721                          
+09-07-04 17:54 jone           Note Added: 0001722                          
+09-08-04 11:18 Clemens LadischStatus                   assigned => resolved
+09-08-04 11:18 Clemens LadischResolution               open => not an issue
+09-08-04 11:18 Clemens LadischNote Added: 0001727                          
+11-09-04 16:20 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
