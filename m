@@ -1,18 +1,12 @@
-From: Glenn Maynard <g_sf@zewt.org>
-Subject: Re: ALSA release 1.0.1
-Date: Thu, 8 Jan 2004 18:13:00 -0500
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Version 1.0.1 compile problems??
+Date: Thu, 8 Jan 2004 18:05:14 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040108231300.GA526@zewt.org>
-References: <Pine.LNX.4.58.0401081520520.13704@pnote.perex-int.cz>
+Message-ID: <20040109020514.26725.qmail@web60807.mail.yahoo.com>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from h0040333b7dc3.ne.mediaone.net (postfix@h00045a576c6a.ne.client2.attbi.com [65.96.98.23])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA27463
-	for <alsa-devel@alsa-project.org>; Fri, 9 Jan 2004 00:13:03 +0100
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0401081520520.13704@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,41 +15,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 08, 2004 at 07:15:10PM +0100, Jaroslav Kysela wrote:
-> * alsa-driver
+Well, there was a new version, and while attempting to compile it,
+there were problems with alsa-oss:  (sorry about possible line wraps)
 
-  CC [M]  /home/glenn/alsa-driver-1.0.1/usb/usbaudio.o
-/home/glenn/alsa-driver-1.0.1/usb/usbaudio.c: In function `snd_usb_find_csi=
-nt_desc':
-/home/glenn/alsa-driver-1.0.1/usb/usbaudio.c:1755: error: `USB_DT_CS_INTERF=
-ACE' undeclared (first use in this function)
-/home/glenn/alsa-driver-1.0.1/usb/usbaudio.c:1755: error: (Each undeclared =
-identifier is reported only once
-/home/glenn/alsa-driver-1.0.1/usb/usbaudio.c:1755: error: for each function=
- it appears in.)
-/home/glenn/alsa-driver-1.0.1/usb/usbaudio.c: In function `parse_audio_endp=
-oints':
-/home/glenn/alsa-driver-1.0.1/usb/usbaudio.c:2341: error: `USB_DT_CS_ENDPOI=
-NT' undeclared (first use in this function)
-make[2]: *** [/home/glenn/alsa-driver-1.0.1/usb/usbaudio.o] Error 1
-make[1]: *** [/home/glenn/alsa-driver-1.0.1/usb] Error 2
+[alsa-oss-1.0.1]$ make
+if /bin/sh ./libtool --mode=compile gcc -DPACKAGE_NAME=\"\"
+-DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\"
+-DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"alsa-oss\" -DVERSION=\"1.0.1\"
+-DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1
+-DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1
+-DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1
+-DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_LIBASOUND=1  -I. -I.     -g
+-O2 -MT alsa-oss.lo -MD -MP -MF ".deps/alsa-oss.Tpo" \
+  -c -o alsa-oss.lo `test -f 'alsa-oss.c' || echo './'`alsa-oss.c; \
+then mv -f ".deps/alsa-oss.Tpo" ".deps/alsa-oss.Plo"; \
+else rm -f ".deps/alsa-oss.Tpo"; exit 1; \
+fi
+mkdir .libs
+gcc -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\"
+-DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"alsa-oss\"
+-DVERSION=\"1.0.1\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1
+-DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1
+-DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1
+-DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_LIBASOUND=1
+-I. -I. -g -O2 -MT alsa-oss.lo -MD -MP -MF .deps/alsa-oss.Tpo -c
+alsa-oss.c  -fPIC -DPIC -o .libs/alsa-oss.lo
+alsa-oss.c: In function `oss_dsp_hw_params':
+alsa-oss.c:221: warning: passing arg 3 of
+`snd_pcm_hw_params_set_rate_near' makes integer from pointer without a
+cast
+alsa-oss.c:261: warning: passing arg 3 of
+`snd_pcm_hw_params_set_period_size_near' makes integer from pointer
+without a cast
+alsa-oss.c:266: warning: passing arg 3 of
+`snd_pcm_hw_params_set_period_size_near' makes integer from pointer
+without a cast
+alsa-oss.c:277: too many arguments to function
+`snd_pcm_hw_params_get_rate'
+alsa-oss.c:281: warning: passing arg 2 of
+`snd_pcm_hw_params_get_period_size' from incompatible pointer type
+alsa-oss.c:281: too many arguments to function
+`snd_pcm_hw_params_get_period_size'
+alsa-oss.c:284: too many arguments to function
+`snd_pcm_hw_params_get_periods'
+make: *** [alsa-oss.lo] Error 1
 
-linux-2.6.0/sound/usb/usbaudio.h defines these, but
-alsa-driver-1.0.1/alsa-kernel/usb/usbaudio.h does not.  Copying in the
-kernel header fixed it.
 
-> * alsa-lib
+=====
+-- 
+Tom Watson
+tsw@johana.com
 
-I'm still getting "snd_pcm_plug_hw_params: Assertion `err >=3D 0' failed."
-=66rom a couple weeks ago.  I can work around it, but I'm also working
-around other things (such as that CS46xx chip that doesn't work with
-4k or 8k buffers), and the result starts to be brittle ...
-
---=20
-Glenn Maynard
+__________________________________
+Do you Yahoo!?
+Yahoo! Hotjobs: Enter the "Signing Bonus" Sweepstakes
+http://hotjobs.sweepstakes.yahoo.com/signingbonus
 
 
 -------------------------------------------------------
