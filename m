@@ -1,12 +1,12 @@
 From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Need help with RME Hammerfall Lite (DIGI 9636) and Alsa 0.9.2
-Date: Sat, 05 Apr 2003 11:38:42 -0500
+Subject: Re: How to detect whether OSS mixer is emulated by ALSA
+Date: Sat, 05 Apr 2003 11:40:43 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E191qdE-0000ni-00@sc8-sf-list1.sourceforge.net>
-References: <1049559729.3e8f02b1b1634@webmail.nith.no>
+Message-ID: <E191qfA-0001Fp-00@sc8-sf-list1.sourceforge.net>
+References: <200304051821.19599.c.esken@cityweb.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Sat, 05 Apr 2003 18:22:09 +0200."
-             <1049559729.3e8f02b1b1634@webmail.nith.no>
+In-reply-to: Your message of "Sat, 05 Apr 2003 18:21:19 +0200."
+             <200304051821.19599.c.esken@cityweb.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,22 +15,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: knuarv@nith.no
+To: Christian Esken <c.esken@cityweb.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->I'm interested in developing audio applications in Linux, using Alsa for 
->output. However, I still haven't figured out how to access the various 
->channels of my RME DIGI 9636, or even playing back stereo tracks. I gather 
->from earlier posts on this list I'm not the only one with this problem, but 
->I've yet to see a real solution? I thought Alsa was a good match for this 
->card, but so far its involved more hassle than I expected :\ The conf system 
->remains a mystery to me, can I make use of the 
->/usr/share/alsa/cards/RME9636.conf file in any way? I have set up an 
->.asoundrc file according to examples.
+>Hi,
+>
+>my mixer (kmix) supports OSS and ALSA at the same time. This is good for a 
+>mixed-mode environment (e.g. if there is a TV card w/o ALSA support).
+>
+>Unfortunately this means that kmix finds some mixers twice.
+>- One time the real thing (ALSA)
+>- One time the OSS-emulation
+>
+>This will confuse users.
+>
+>Is there any way to find out those OSS mixers which are just emulated?
 
-you haven't really describe what you want to do in enough detail for
-me to be able to help. please be more specific.
+check for the existence of /proc/asound and the absence of
+/proc/sndstat. if the first is there and the second is not, then any
+OSS mixers are emulated.
+
+--p
+
 
 
 -------------------------------------------------------
