@@ -1,13 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000952]: System freeze at end of MIDI playback
-Date: Tue, 1 Mar 2005 06:28:16 +0100
-Message-ID: <d44ebfe8faf963772393fb15c9a3e2ea@bugtrack.alsa-project.org>
+From: The Orqwith Vagrant <theorqwithvagrant@bredband.net>
+Subject: Re: Re: [Alsa-user] Audigy SPDIF Output Sample Rate
+Date: Tue, 01 Mar 2005 08:45:18 +0100
+Message-ID: <1109663118.24651.30.camel@cthulhu.rlyeth.net>
+References: <1108880895.6773.50.camel@radium.gaugetheory.org>
+	 <1109351825.9681.43.camel@krustophenia.net>
+	 <1109367868.6245.9.camel@cthulhu.rlyeth.net>
+	 <1109368727.13193.10.camel@krustophenia.net>
+	 <1109371150.14056.2.camel@krustophenia.net>
+	 <1109499431.1590.819.camel@radium.gaugetheory.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5DF7B201
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2005 06:28:16 +0100 (MET)
+In-Reply-To: <1109499431.1590.819.camel@radium.gaugetheory.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,57 +21,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Brian L Scipioni <brian@gaugetheory.org>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2005-02-27 at 05:17 -0500, Brian L Scipioni wrote:
+> Lee,
+> 
+> > Please try the attached patch (revert the last patch first).
+> 
+> I tried this patch (emu10k1-96-fix2.patch) against the Saturday, 2/26,
+> CVS and I still get 41000 alsamixer = 96000 IEC958 out.
+> 
+> I never tried the previous patch, so did not revert it.  Do I have the
+> right versions of CVS+patch?
+> 
+> thanks,
+> brian
+> 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
-======================================================================
-Reported By:                skunk
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   952
-Category:                   PCI - emu10k1
-Reproducibility:            random
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.8-2-k7
-======================================================================
-Date Submitted:             03-01-2005 06:28 CET
-Last Modified:              03-01-2005 06:28 CET
-======================================================================
-Summary:                    System freeze at end of MIDI playback
-Description: 
-Hardware: Sound Blaster Live! Value
-Software: sfxload (for patch loading) and drvmidi (playback)
-
-I often play a list of MIDI files. On a number of occasions---either at
-the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
-The recurrence is rare enough to make this more an annoyance than a
-showstopper, but then, I haven't been too keen on ferreting out this bug.
-
-I am reporting this against ALSA from the 2.6.8 kernel, as that is what
-I'm using now (Debian official package) but the same problem arose with
-alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
-
-I could probably rig up something to start/stop MIDI playback repeatedly,
-with a debug-compiled driver, but is there any way to get useful debugging
-output when the bug takes the whole system down?
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-01-05 06:28 skunk          New Issue                                    
-03-01-05 06:28 skunk          Distribution              => Debian testing  
-03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
-======================================================================
-
+Yes, that's the cvs version i applied the patch against, and it
+definitely works right for me. Are you positive you got the old driver
+completely unloaded before you tried loading the new one? Or maybe you
+forgot to do a "make install" after the ./cvscompile? I've ended up
+scratching my head after forgotting that step a couple of times myself.
+Happens to the best of us. :)
 
 
 
