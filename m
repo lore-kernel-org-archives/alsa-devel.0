@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000337]: "alsactl restore" always fails
-Date: Fri, 24 Sep 2004 13:40:30 +0200 (CEST)
+Subject: [ALSA - driver 0000382]: line in doesn't give stereo sound
+Date: Fri, 24 Sep 2004 13:45:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924114030.E25E9101DE@server.perex-int.cz>
+Message-ID: <20040924114554.8030B101DF@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5CD17288
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:40:31 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CAD6A288
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:45:54 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,114 +22,72 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000337
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000382
 ======================================================================
-Reported By:                kuulasma
-Assigned To:                tiwai
+Reported By:                labra
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     337
-Category:                   PCI - nm256
+Bug ID:                     382
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian sarge
-Kernel Version:             Linux 2.6.6-1-686
+Distribution:               Gentoo
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             06-16-2004 22:04 CEST
-Last Modified:              09-24-2004 13:40 CEST
+Date Submitted:             07-13-2004 13:51 CEST
+Last Modified:              09-24-2004 13:45 CEST
 ======================================================================
-Summary:                    "alsactl restore" always fails
+Summary:                    line in doesn't give stereo sound
 Description: 
-Dell Latitude CPt with an NM256ZX fails always to restore previously saved
-state. Command "alsactl store" succesfully stores current state but
-"alsactl restore" always fails to restore previous state. The OSS driver
-works fine.
-
-Example:
-----------------------------------------------------------
-# alsactl restore
-alsactl: set_control:966: Cannot write control '2:0:0:CD Playback
-Switch:0' : Invalid argument
-----------------------------------------------------------
+The line in-plug doesn't give stereo sound anymore. Before with alsamixer I
+was able to get stereo sound from line in by using "H/W In 0" and "H/W IN
+1". Now only "H/W In 0" gives sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-22-2004 18:51 CEST 
+ labra - 07-13-2004 13:59 CEST 
 ----------------------------------------------------------------------
-Can you toggle CD mute on alsamixer, or like 'amixer set CD mute'?
-
-----------------------------------------------------------------------
- kuulasma - 06-22-2004 21:35 CEST 
-----------------------------------------------------------------------
-I tried to toggle CD mute but new setting are not stored. If I try to mute
-CD or change volyme, new settings are ignored. alsamixer doesn't save CD
-volyme and mute state. Other controls work just like I expect them to
-work. Once I open alsamixer CD settings are as follows: volyme 100 and
-unmuted.
-
-If I edit /var/lib/alsa/asound.state file manually and remove sections
-control.14 and control.15, I can issue command 'alsactl restore'
-succesfully (without error message). But once I store settings ('alsactl
-store'), illegal control.14 and control.15 are stored in asound.state
-file. 
-
-Just in case you need following information:
-
-# lsmod | grep snd
-snd_nm256              69188  1 
-snd_ac97_codec         65188  1 snd_nm256
-snd_pcm_oss            54436  0 
-snd_mixer_oss          20096  2 snd_pcm_oss
-snd_pcm                98148  2 snd_nm256,snd_pcm_oss
-snd_page_alloc         11460  1 snd_pcm
-snd_timer              25380  1 snd_pcm
-snd                    54692  6
-snd_nm256,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              10336  2 snd
+The alsa-driver version with this feature/bug is 1.0.5a.
 
 ----------------------------------------------------------------------
- tiwai - 06-30-2004 16:29 CEST 
+ tiwai - 08-19-2004 19:10 CEST 
 ----------------------------------------------------------------------
-The attached patch will allow the access to the CD mute/volume.
-Please give a try.
+Try 1.0.6a.  The capture source is chosen via 'Capture Source' control.
+There are two controls for left and right, index 0 and 1, respectively.
 
-----------------------------------------------------------------------
- kuulasma - 07-02-2004 07:12 CEST 
-----------------------------------------------------------------------
-YES!
-
-I patched the kernel (2.6.6) and compiled. After boot new kernel with
-nm256-cd.diff worked. Thank you!
-
-When will the patch land in official kernel source repository?
-
-Regards
-
-Teemu
+Note that aureon on 1.0.6a has a bug that the master volume is
+inverted.  Set master 0 to get the max volume.
+(Already fixed on CVS version)
 
 ----------------------------------------------------------------------
- tiwai - 07-16-2004 12:02 CEST 
+ labra - 08-30-2004 10:20 CEST 
 ----------------------------------------------------------------------
-fixed on cvs now.
+Thank you! Updating to 1.0.6a helped to the problem! This bug can be closed
+now...
+
+----------------------------------------------------------------------
+ perex - 08-30-2004 11:47 CEST 
+----------------------------------------------------------------------
+Fixed in recent ALSA driver.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-16-04 22:04 kuulasma       New Bug                                      
-06-16-04 22:04 kuulasma       Distribution              => Debian sarge    
-06-16-04 22:04 kuulasma       Kernel Version            => Linux 2.6.6-1-686
-06-17-04 14:12 kuulasma       Bug Monitored: kuulasma                      
-06-22-04 18:51 tiwai          Bugnote Added: 0001333                       
-06-22-04 21:35 kuulasma       Bugnote Added: 0001334                       
-06-30-04 16:29 tiwai          Bugnote Added: 0001355                       
-06-30-04 16:30 tiwai          File Added: nm256-cd.dif                     
-07-02-04 07:12 kuulasma       Bugnote Added: 0001373                       
-07-16-04 12:02 tiwai          Bugnote Added: 0001444                       
-07-16-04 12:02 tiwai          Resolution               open => fixed       
-07-16-04 12:02 tiwai          Status                   assigned => resolved
-09-24-04 13:40 tiwai          Status                   resolved => closed  
+07-13-04 13:51 labra          New Bug                                      
+07-13-04 13:51 labra          Distribution              => Gentoo          
+07-13-04 13:51 labra          Kernel Version            => 2.4.26          
+07-13-04 13:59 labra          Bugnote Added: 0001413                       
+07-13-04 13:59 labra          Bug Monitored: labra                         
+08-19-04 19:10 tiwai          Bugnote Added: 0001591                       
+08-30-04 10:20 labra          Bugnote Added: 0001665                       
+08-30-04 11:47 perex          Bugnote Added: 0001666                       
+08-30-04 11:47 perex          Assigned To               => perex           
+08-30-04 11:47 perex          Resolution               open => fixed       
+08-30-04 11:47 perex          Status                   new => resolved     
+09-24-04 13:45 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
