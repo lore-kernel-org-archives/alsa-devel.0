@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000414]: sb cant grab irq 65535
-Date: Tue, 12 Oct 2004 15:01:35 +0200 (CEST)
+Subject: [ALSA - driver 0000537]: VIA VT8237: rear L/R switched with Center/LFE
+Date: Tue, 12 Oct 2004 15:06:02 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041012130135.8756118009@server.perex-int.cz>
+Message-ID: <20041012130602.0DDED18008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E59C12D9
-	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2004 15:01:35 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6E6A22D9
+	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2004 15:06:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,109 +20,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000414
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000537
 ======================================================================
-Reported By:                montjoie
-Assigned To:                tiwai
+Reported By:                gertverv
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     414
-Category:                   ISA - sb8
+Bug ID:                     537
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian Testing
-Kernel Version:             2.6.7
-Resolution:                 not a bug
+Status:                     new
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             07-30-2004 11:20 CEST
-Last Modified:              10-12-2004 15:01 CEST
+Date Submitted:             09-24-2004 19:41 CEST
+Last Modified:              10-12-2004 15:06 CEST
 ======================================================================
-Summary:                    sb cant grab irq 65535
+Summary:                    VIA VT8237: rear L/R switched with Center/LFE
 Description: 
-Laptop toshiba satelitte CD2520CDS
-Soundcard WSS & sb built in
+While playing back 5.1 audio, it looks like the rear L/R channels are
+swapped with the Center/LFE channels. The rear L/R and Center/LFE are
+connected via Gigabyte Surround-Kit.
 
-Alsa say when loading sb driver:
-"sb cant grab irq 65535" three times
-I try both to make sb module and to built in sb in the kernel(no modules)
-but it make the same.
-I compile alsaconf ant try but no change.(on a kernel discution i saw a
-man that say to do that).
-I change all hardware config (irq dma etc..) but no change.
-I try to force irq= when loading module but no change
 
 ======================================================================
 
 ----------------------------------------------------------------------
- montjoie - 08-02-2004 18:13 CEST 
+ gertverv - 09-24-2004 19:50 CEST 
 ----------------------------------------------------------------------
-bug also in 2.6.8-rc2 and 2.6.5
+Forgot to mention, 5.1 audio works correctly when using Windows XP on this
+machine
 
 ----------------------------------------------------------------------
- tiwai - 08-02-2004 18:18 CEST 
+ tiwai - 10-12-2004 15:06 CEST 
 ----------------------------------------------------------------------
-You have to give irq module parameter for sb8 module.
+Does 4.0 output work properly?
 
-Which parameter did you use exactly?
-
-----------------------------------------------------------------------
- montjoie - 08-18-2004 16:23 CEST 
-----------------------------------------------------------------------
-on kernel 2.4.26 no error
-
-----------------------------------------------------------------------
- montjoie - 08-18-2004 16:25 CEST 
-----------------------------------------------------------------------
-oops i dont see that you have ask me a question. sorry.
-i try some irq= (5 7 etc...) and dma= but the error remains the same.
-
-----------------------------------------------------------------------
- Clemens Ladisch - 08-18-2004 16:41 CEST 
-----------------------------------------------------------------------
-Google says your laptop has a Yamaha OPL3-SA2/3 chip (which isn't 100% SB
-compatible).
-
-Try snd-opl3sa2 isapnp=0 dma1=1 dma2=0 fm_port=0x388 irq=5 midi_port=0x330
-port=0x538 sb_port=0x220 wss_port=0x530
-
-----------------------------------------------------------------------
- montjoie - 10-01-2004 12:21 CEST 
-----------------------------------------------------------------------
-Oups excuse me i forgot to speak about the new fact.
-With yamaha, the sound module load with no problem but i haven't any
-sound.
-The problem is that my friend has (temporarely) put win98, so i cant make
-any more test for the moment.
-
-----------------------------------------------------------------------
- tiwai - 10-12-2004 15:01 CEST 
-----------------------------------------------------------------------
-I guess the volume was simply muted.
-
-Anyway, I close this bug now.  If you get the linux system working 
-again and still see the same bug, please reopen this.
+Also, please attach /proc/asound/card0/codec97#0/ac97#0-0+regs
+during speaker-test is running with 5.1 mode.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-30-04 11:20 montjoie       New Bug                                      
-07-30-04 11:20 montjoie       Distribution              => Debian Testing  
-07-30-04 11:20 montjoie       Kernel Version            => 2.6.7           
-08-02-04 18:12 montjoie       Bug Monitored: montjoie                      
-08-02-04 18:13 montjoie       Bugnote Added: 0001520                       
-08-02-04 18:18 tiwai          Bugnote Added: 0001522                       
-08-18-04 16:23 montjoie       Bugnote Added: 0001585                       
-08-18-04 16:25 montjoie       Bugnote Added: 0001586                       
-08-18-04 16:41 Clemens LadischBugnote Added: 0001588                       
-10-01-04 12:21 montjoie       Bugnote Added: 0001997                       
-10-12-04 15:01 tiwai          Bugnote Added: 0002103                       
-10-12-04 15:01 tiwai          Assigned To               => tiwai           
-10-12-04 15:01 tiwai          Resolution               open => not a bug   
-10-12-04 15:01 tiwai          Status                   new => resolved     
+09-24-04 19:41 gertverv       New Bug                                      
+09-24-04 19:41 gertverv       Distribution              => Fedora Core 2   
+09-24-04 19:41 gertverv       Kernel Version            => 2.6.8.1         
+09-24-04 19:50 gertverv       Bugnote Added: 0001903                       
+10-12-04 15:06 tiwai          Bugnote Added: 0002104                       
 ======================================================================
 
 
