@@ -1,12 +1,20 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Problem with RME 9632 and Plug
-Date: Wed, 04 Aug 2004 11:24:21 -0400
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: 1.0.6rc1 packages
+Date: Wed, 4 Aug 2004 20:51:08 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408041524.i74FOMiV024434@localhost.localdomain>
-References: <4110FAC3.3000009@medien.uni-weimar.de>
+Message-ID: <Pine.LNX.4.58.0408042050320.15189@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 04 Aug 2004 17:03:31 +0200."
-             <4110FAC3.3000009@medien.uni-weimar.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A981A25E
+	for <alsa-devel@alsa-project.org>; Wed,  4 Aug 2004 20:51:44 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 6F97E16069
+	for <alsa-devel@alsa-project.org>; Wed,  4 Aug 2004 20:51:44 +0200 (MEST)
+Received: from pnote.perex-int.cz (localhost [127.0.0.1])
+	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 5938AB0B1
+	for <alsa-devel@alsa-project.org>; Wed,  4 Aug 2004 20:51:44 +0200 (CEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,22 +23,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Zsolt Barat <barat@medien.uni-weimar.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->on the other side, adding low latency features to mplayer aren't really 
->possible, cause mplayer is designed intentionally as a movie player, so 
+Hi all,
 
-our kids use it for audio, and have done so without me even telling
-them it can do that. i suspect they are not alone. some of the skins
-make it look very much like an audio app.
+	the 1.0.6rc1 ALSA packages are available for testing.
 
->while you watching movies you will never get low latency audio. adding 
+						Jaroslav
 
-not true, but i understand your point.
-
---p
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
