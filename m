@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
-Date: Fri, 4 Feb 2005 10:39:06 +0100
-Message-ID: <ccdde4d11c535040c2cd3730cbffe91a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000883]: Odd Mixer Controls with i810 on Fujitsu S6210
+Date: Fri, 4 Feb 2005 12:35:18 +0100
+Message-ID: <1ba97714ca3287156dd03a15c6a76fef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 403C71F4
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 10:39:06 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB76E215
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 12:35:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,72 +21,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=883> 
 ======================================================================
-Reported By:                yure
+Reported By:                tonym
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   881
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   883
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-03-2005 12:25 CET
-Last Modified:              02-04-2005 10:39 CET
+Date Submitted:             02-04-2005 12:35 CET
+Last Modified:              02-04-2005 12:35 CET
 ======================================================================
-Summary:                    Distorted sound with enabled dmix plugin
+Summary:                    Odd Mixer Controls with i810 on Fujitsu S6210
 Description: 
-After 10-20 minutes listening music with xmms or beep-media-player I hear
-distorted sound. Appear noise.
-This problem is appear when enabled dmix plugin through configuration file
-~/.asoundrc.
+I have some very odd mixer controls with my integrated i810 audio
+lspci -v -n -s 00:1f.5
+0000:00:1f.5 Class 0401: 8086:24c5 (rev 03)
+        Subsystem: 10cf:1253
+        Flags: bus master, medium devsel, latency 0, IRQ 11
+        I/O ports at 1c00
+        I/O ports at 18c0 [size=64]
+        Memory at d0100c00 (32-bit, non-prefetchable) [size=512]
+        Memory at d0100800 (32-bit, non-prefetchable) [size=256]
+        Capabilities: [50] Power Management version 2
+
+
+List of controls and what they do:
+control.2 Master Playback Volume - no effect (so l/r doesn't work either)
+control.4 Headphone Playback Volume - controls all vol, headphones and
+speakers
+control.6 Master Mono Playback Volume - no effect
+control.8 PC Speaker Playback Volume - no effect
+control.23 PCM Playback Volume - Works as should
+control.33 External Amplifier - disables the builtin speakers, headphones
+still work
+
+Other controls I deemed irrelevent...
+
+I suspect this is just a quirk of this laptop, but I don't know what info
+you need, so please ask me.
 ======================================================================
-
-----------------------------------------------------------------------
- yure - 02-04-05 10:39 
-----------------------------------------------------------------------
-Additional information from alsamixer:
-
-Card: Intel ICH5
-Chip: Analog Devices AD1980
-View: Playback
-Item: Master
-
-lspci
-00:00.0 Host bridge: Intel Corp. 82865G/PE/P DRAM Controller/Host-Hub
-Interface (rev 02)
-00:01.0 PCI bridge: Intel Corp. 82865G/PE/P PCI to AGP Controller (rev
-02)
-00:1d.0 USB Controller: Intel Corp. 82801EB/ER (ICH5/ICH5R) USB UHCI
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
-(rev 02)
-00:1d.7 USB Controller: Intel Corp. 82801EB/ER (ICH5/ICH5R) USB2 EHCI
-Controller (rev 02)
-00:1e.0 PCI bridge: Intel Corp. 82801 PCI Bridge (rev c2)
-00:1f.0 ISA bridge: Intel Corp. 82801EB/ER (ICH5/ICH5R) LPC Bridge (rev
-02)
-00:1f.1 IDE interface: Intel Corp. 82801EB/ER (ICH5/ICH5R) Ultra ATA 100
-Storage Controller (rev 02)
-00:1f.3 SMBus: Intel Corp. 82801EB/ER (ICH5/ICH5R) SMBus Controller (rev
-02)
-00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER (ICH5/ICH5R)
-AC'97 Audio Controller (rev 02)
-01:00.0 VGA compatible controller: nVidia Corporation NV5M64 [RIVA TNT2
-Model 64/Model 64 Pro] (rev 15)
-02:08.0 Ethernet controller: Intel Corp. 82562EZ 10/100 Ethernet
-Controller (rev 02)
-02:09.0 Multimedia controller: Philips Semiconductors SAA7134 (rev 01)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 12:25 yure           New Issue                                    
-02-04-05 10:39 yure           Note Added: 0003497                          
+02-04-05 12:35 tonym          New Issue                                    
+02-04-05 12:35 tonym          Distribution              => Gentoo          
+02-04-05 12:35 tonym          Kernel Version            => 2.6.10          
 ======================================================================
 
 
