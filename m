@@ -1,11 +1,11 @@
 From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: Driver development: Mixer control naming
-Date: Tue, 13 May 2003 01:10:17 -0700 (PDT)
+Subject: Driver development: peak metering
+Date: Tue, 13 May 2003 01:17:54 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030513011018.11517.h003.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <20030513011754.28032.h004.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -21,29 +21,22 @@ List-Id: alsa-devel@alsa-project.org
 
 Hello,
 
-Say I have a card with 4 playback streams each with its
-own volume control.
+Our cards do peak metering of all streams, inputs and
+outputs.=20=20
 
-Each stream can be mixed to any of 4 lineouts.
-(I.e. a matrix mixer with total 16 controls)
+Is there such a thing as a peak meter control (read
+only) in the ALSA driver model?  I can't find anything.
 
-Each lineout has a level setting (i.e. a volume control)
+According to "Writing an ALSA Driver" by Takashi Iwai
+"The third, FUNCTION, is one of the following strings
+according to the function of the control: =93Switch=94,
+=93Volume=94 and =93Route=94."
 
-How should I name these controls for snd_ctl_add()
-What if anything should I base the .index on?
-Particularly for the matrix mixer.
-
-I have tried creating say four "Master Volume" controls
-with index=0,1,2,3. But I get an error from amixer
-about duplicate controls.  I have resorted to combining
-the indices with the name string in the mean time, and
-using a unique .index for every control.
-
-regards
+thanks
 
 Eliot Blennerhassett
 AudioScience Inc.
-
+=0D
 
 
 -------------------------------------------------------------
