@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000926]: dmix segfaults
-Date: Thu, 31 Mar 2005 20:44:52 +0200
-Message-ID: <a5fa92b45fde687ae93c38a4ebb8e8b1@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000372]: Problem using Jack with multiple RME 96/8 PAD sound cards
+Date: Thu, 31 Mar 2005 20:47:01 +0200
+Message-ID: <79b5bc0b63ba393199cd66d4979d59a4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 076F824B
-	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 20:44:52 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DC5EC24B
+	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 20:47:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=926> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=372> 
 ======================================================================
-Reported By:                jiyuan
+Reported By:                sidorovich
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   926
-Category:                   hw specific configuration
+Issue ID:                   372
+Category:                   general
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-20-2005 03:18 CET
-Last Modified:              03-31-2005 20:44 CEST
+Date Submitted:             07-09-2004 19:22 CEST
+Last Modified:              03-31-2005 20:47 CEST
 ======================================================================
-Summary:                    dmix segfaults
+Summary:                    Problem using Jack with multiple RME 96/8 PAD sound
+cards
 Description: 
-#warning Please, recode mix_areas1() routine to your architecture...
-#warning Please, recode mix_areas2() routine to your architecture...
-Therefore, when you using dmix under other architecture CPU, the dmix will
-crash down, and make error segmentation fault.
+I am trying to use two RME 96/8 PAD sound cards in a system running Red Hat
+version 9 and can't get capture to work.  I am trying to get this working
+using Jack and have used the
+.asoundrc magic found on http://www.opensrc.org to treat these two cards
+as one four channel device but it only seems to work in playback mode. 
+If I try capture, or duplex, mode I immediately get the following errors:
+  ALSA lib pcm.c:1148:(snd_pcm_link) SNDRV_PCM_IOCTL_LINK failed:
+Operation already in progress
+ jackstart:  pcm.c:6036: snd_pcm_mmap_commit:  Assertion " frames <=
+snd_pcm_mmap_avail(pcm)" failed.
+ 
+ I can get either card working one at a time but not together for a four
+channel system.  I have attached the .asoundrc file that I am using to
+combine these two cards into one.  
+ 
+Is this a bug with ALSA?
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000824 sparc, powerpc, hppa, alpha, ia64: &quo...
-======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-16-05 22:33 
+ jdthood - 03-19-05 09:08 
 ----------------------------------------------------------------------
-Report https://bugtrack.alsa-project.org/alsa-bug/view.php?id=824 reports the
-same bug.
-
-----------------------------------------------------------------------
- tiwai - 03-29-05 19:08 
-----------------------------------------------------------------------
-Try the CVS version (better wait until tomorrow).
-
-If you still get segfault, it's not in the part with warnings above. 
-Possibly, either SYSV shm or semaphore...
+Submitter: Did you ever figure out this problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-20-05 03:18 jiyuan         New Issue                                    
-03-16-05 22:33 jdthood        Note Added: 0003970                          
-03-17-05 08:16 perex          Relationship added       related to 0000824  
-03-29-05 19:08 tiwai          Note Added: 0004256                          
-03-31-05 20:44 jdthood        Summary                  There is no source code
-for the functions mix_areas1() and mix_areas2() in the file pcm_dmix.c! => dmix
-segfaults
+07-09-04 19:22 sidorovich     New Issue                                    
+07-09-04 19:22 sidorovich     File Added: .asoundrc.txt                    
+03-19-05 09:08 jdthood        Note Added: 0004012                          
+03-31-05 20:47 jdthood        Status                   new => resolved     
+03-31-05 20:47 jdthood        Resolution               open => unable to
+duplicate
 ======================================================================
 
 
