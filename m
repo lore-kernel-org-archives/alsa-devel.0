@@ -1,13 +1,13 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: Re: USB recording - repetitive peaks
-Date: Tue, 2 Jul 2002 22:18:30 -0700 (PDT)
+From: Gabriel Gatzsche <gabrielg@emt.iis.fhg.de>
+Subject: Sound in QT-Threads
+Date: Wed, 03 Jul 2002 08:04:17 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0207022217130.6897-100000@cmn37.stanford.edu>
-References: <3D21D6CA.7000308@boosthardware.com>
+Message-ID: <3D2293E1.1060903@emt.iis.fhg.de>
+References: <3D2287D0.1020600@emt.iis.fhg.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D21D6CA.7000308@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,26 +16,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> I get this in alsa-utils
-> 
-> ----
-> /usr/local/src/music/alsa/alsa-utils# ./cvscompile 
-> --with-cards=intel8x0,cmipci,usb-audio,usb-midi 
-> --with-sequencer=yes;make;make install
-> aclocal: configure.in: 11: macro `AM_PATH_ALSA' not found in library
-> /usr//share/automake/am/depend2.am: AMDEP does not appear in AM_CONDITIONAL
-> /usr//share/automake/am/depend2.am: AMDEP does not appear in AM_CONDITIONAL
-> /usr//share/automake/am/depend2.am: AMDEP does not appear in AM_CONDITIONAL
-[MUNCH]
+> Hello!
+> I have made a program with two qt-threads. One for reading from 
+> soundcard, one for writing.
+> There are no problems if the threads work allone. But if both threads 
+> work in the same time, the program
+> chrashes some times with following message:
+>      wavplay: pcm.c:5191: snd_pcm_mmap_commit: Assertion `offset == 
+> *pcm->appl_ptr % pcm->buffer_size' failed.
+> Can somebody tell, what to do?
+>
+> Thanks for your help
+>       Gabriel
+>
 
-Same here from just downloaded CVS. 
-I noticed that alsa-lib's make install did not install the alsa.m4 file...
-Maybe it has something to do with this problem?
--- Fernando
+
 
 
 
