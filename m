@@ -1,12 +1,16 @@
-From: Ismael Valladolid Torres <ismael@sambara.org>
-Subject: A message for spanish users and developers
-Date: Tue, 15 Jul 2003 00:40:15 +0200
+From: Christian Esken <c.esken@cityweb.de>
+Subject: More Questions about control names.
+Date: Tue, 15 Jul 2003 00:43:26 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F13314F.6040006@sambara.org>
+Message-ID: <200307150043.26390.c.esken@cityweb.de>
+References: <1057195497.6307.55.camel@deimos> <s5hy8zferf8.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hy8zferf8.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,35 +19,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net, linux-audio-dev@music.columbia.edu, linux-audio-user@music.columbia.edu
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thursday 03 July 2003 14:16, Takashi Iwai wrote:
+> At 02 Jul 2003 21:24:57 -0400,
+>
+> Manuel Jander wrote:
+> > Hello,
+> >
+> > I wrote support for the Hardware Equalizer (10 band stereo = 20
+> > controls) for the Aureal Vortex cards. For testing purposes i used the
+> > controls as "MIXER" type controls, so they are visible from any mixer.
+> > The question: How should they be named ? Is the type "MIXER" acceptable
+> > ? In my opinion it is at least pretty convenient.
+>
+> MXIER should be fine.
+>
+> the name is still an open question, but it's not strict at all.
 
-This is a message for those who speak spanish and are Linux audio and=20
-MIDI users or developers, from wherever around the globe. Thanks and=20
-sorry for cross-posting.
+I think this is true for all control names, isn't it. At least I have not 
+found a naming scheme (just tell me if I have missed the corresponding docs). 
+I actually would prefer if it would be more strict. Or to have a method to 
+know what the function of the control is.
+I find it very hard to write a generic mixer application without knowing the 
+function of the control. If I knew the functions, I could do better grouping 
+in kmix. Currenty the controls/sliders are just sorted by ID, which sometimes 
+is not-so-userfriendly.
 
-Free Tools es la primera comunidad en espa=F1ol dedicada a prestar soport=
-e=20
-al usuario y desarrollador de aplicaciones de audio y MIDI para el=20
-sistema operativo Linux.
-
-Todos los interesados en el tema est=E1n invitados. Para la suscripci=F3n=
-,=20
-de disponerse de cuenta abierta en Yahoo!, basta con visitar este enlace:
-
-http://es.groups.yahoo.com/group/free-tools/
-
-En caso contrario, es suficiente con enviar un mensaje de correo=20
-electr=F3nico en blanco a:
-
-free-tools-subscribe@yahoogroups.com
-
-All=ED os esperamos.
-
-Regards, Ismael
-
+Chris
 
 
 -------------------------------------------------------
