@@ -1,14 +1,13 @@
-From: "System Anti-Virus Administrator" <postmaster@mail.lavoz.es>
-Subject: virus found in sent message "Re: Your bill"
-Date: 20 Oct 2004 16:08:12 -0000
+From: "Tiffany Bloom" <t_bloom_va@twb.catholic.edu.au>
+Subject: (no subject)
+Date: Thu, 21 Oct 2004 03:11:56 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <relayhost109828849246116424@relayhost>
+Message-ID: <705201c4b71b$15795f97$a12e9b62@stagshead.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.lavoz.es (dns1.lavoz.es [195.55.53.84])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id BDC81308
-	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 16:11:58 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,49 +16,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+<html>
+<b>Always wanted an expensive watch such as a Rolex?<br>
+Stop dreaming and check out these bargains at throw away prices.<p></b>
 
-Attention: alsa-devel@alsa-project.org
+<b>This week only special:</b> REAL GOLD 18K Replicas from $75-$250<p>
+<a href=3D"http://crfescbxjllkbd.beud.com/replica/gagabob/arhsvqcaih">CLl=
+CK HERE to view brochure</a>
+<p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br>
+<a href=3D"http://tayvdidtwqmb.beud.com/z.php">no thanks</a>
+</html>
 
-
-A virus was found in an Email message you sent. 
-This Email scanner intercepted it and stopped the entire message
-reaching its destination. 
-
-The virus was reported to be: 
-
- the W32/Netsky.d@MM virus !!!
-
-
-Please update your virus scanner or contact your IT support 
-personnel as soon as possible as you may have a virus on your system.
-
-
-Your message was sent with the following envelope:
-
-MAIL FROM: alsa-devel@alsa-project.org
-RCPT TO:   web@diariodeleon.com 
-
-... and with the following headers:
-
----
-MAILFROM: alsa-devel@alsa-project.org
-Received: from cable215a099.usuarios.retecal.es (HELO diariodeleon.com) (212.183.215.99)
-  by mail.lavoz.es with SMTP; 20 Oct 2004 16:08:07 -0000
-From: alsa-devel@alsa-project.org
-To: web@diariodeleon.com
-Subject: Re: Your bill
-Date: Wed, 20 Oct 2004 16:06:16 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0010_000055FA.00003D12"
-X-Priority: 3
-X-MSMail-Priority: Normal
-
-
----
 
 
 -------------------------------------------------------
