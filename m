@@ -1,18 +1,17 @@
-From: Juan Linietsky <coding@reduz.com.ar>
-Subject: ALSAseq and timing.
-Date: Sun, 11 Aug 2002 20:14:26 -0300
+From: Russell Neches <russell@ccs.neu.edu>
+Subject: snd-nm256 crash
+Date: 11 Aug 2002 22:08:53 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020811201426.5f7306cb.coding@reduz.com.ar>
+Message-ID: <87bs88bzgq.fsf@zento.c-dart.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from john.anime.com.ar ([64.113.39.216])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA24449
-	for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2002 01:14:48 +0200
-Received: from server (OL110-150.fibertel.com.ar [24.232.150.110])
-	by john.anime.com.ar (8.9.3/8.9.3) with SMTP id TAA14023
-	for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2002 19:14:24 -0400
+Received: from amber.ccs.neu.edu (postfix@[129.10.116.51])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id EAA26328
+	for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2002 04:09:12 +0200
+Received: from zento.c-dart.com (denali.ccs.neu.edu [129.10.116.200])
+	by amber.ccs.neu.edu (Postfix) with ESMTP id 0671B1AA1B
+	for <alsa-devel@alsa-project.org>; Sun, 11 Aug 2002 22:08:55 -0400 (EDT)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -24,27 +23,29 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi, i'm trying to implement a proper timing control in a sequencer
-client implementation,
-but i have a question not covered in the documentation. Basically,
-does alsalib or alsa
-do any kind of timing conversion or something at the time of the event
-arrival?
-what i mean is, basically my seq client app (a softsynth) has to to
-take care of _all_ kind of timings?
-(direct/timestamp absolute and relative/tick), or does alsa proovide
-some method (for timing conversion or something) so i can easily parse
-those? This is basically so i can process audio in large blocks and
-sync properly with the audio being played, even if there is a certain
-latency. I checked out
-some existing apps (timidity and iiwusynth) and none seem to bother
-about checking the time of
-the event, so they'll screwup when using bigger audio buffersizes. 
-Has this been ever implemented? 
+
+Hey there --
+
+I'm trying to get my laptop working with ALSA, but, sadly, my laptop
+contains the lamentable NeoMagic 256AV chip. With ALSA 0.9.0beta12,
+loading snd-nm256 causes the machine to lock up so tight that the soft
+power switch stops working. 
+
+I presume that if the module is included with ALSA that it has at
+least "been known to work." I've tried 2.4.18 and 2.4.19 (both regular
+old generic unpatched source tarballs from kernel.org), with identical
+results. 
+
+I'm converting all my various Linux boxen to ALSA, but this has been
+the only one that's up and crashed. I'm new to the ALSA codebase, so
+I'm not sure where to start. At the very least, I'd like to submit a
+coherent bug report. Would anyone mind helping me understand what is
+(and isn't) broken?
 
 Thanks!
 
-Juan Linietsky
+Russell
+
 
 
 
