@@ -1,11 +1,10 @@
-From: Allan Klinbail <allank@labyrinth.net.au>
-Subject: [Fwd: intel8x0 no midi]
-Date: 03 Feb 2003 13:37:37 +1100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] Roland XV-2020 support
+Date: Mon, 3 Feb 2003 09:39:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1044239864.30428.16.camel@littlewolf2.littlewolf>
+Message-ID: <Pine.HPX.4.33n.0302030938280.9495-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,48 +14,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------Forwarded Message-----
 
-From: Allan Klinbail <allank@labyrinth.net.au>
-To: alsa-user@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net
-Subject: intel8x0 no midi
-Date: 03 Feb 2003 13:34:04 +1100
-
-
-
-Hi 
-
-I've recently purchased a new machine with a built in  soundcard as part
-of the SiS 645DX chipset (motherboard is Gigabyte GA-8ST667). 
-
-I've had success getting audio to work using the intel8x0 modules. 
-
-However I can't seem to get the midi port to work. It is enabled in BIOS
-and here are my modules options from modules.conf
-
-# ALSA portion -SiS onboard sound card
-alias char-major-116 snd
-alias snd-card-0 snd-intel8x0
-options snd-intel8x0 mpu_port="1" ac97_clock="0"
-
-I'm sure the problem does lie in this setup.. 
-
-If anyone has midi working on an intel8x0 card of any kind please let me
-know. 
-
-cheers
-
-Allan Klinbail  
-
-
-
-
-
+Index: alsa-kernel/usb/usbquirks.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usbquirks.h,v
+retrieving revision 1.13
+diff -u -r1.13 usbquirks.h
+--- alsa-kernel/usb/usbquirks.h	24 Jan 2003 11:10:17 -0000	1.13
++++ alsa-kernel/usb/usbquirks.h	3 Feb 2003 08:37:35 -0000
+@@ -559,6 +559,19 @@
+ 	}
+ },
+ {
++	USB_DEVICE(0x0582, 0x002d),
++	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
++		.vendor_name = "Roland",
++		.product_name = "XV-2020",
++		.ifnum = 0,
++		.type = QUIRK_MIDI_FIXED_ENDPOINT,
++		.data = & (const snd_usb_midi_endpoint_info_t) {
++			.out_cables = 0x0001,
++			.in_cables  = 0x0001
++		}
++	}
++},
++{
+ 	USB_DEVICE(0x0582, 0x0033),
+ 	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
+ 		.vendor_name = "EDIROL",
 
 
 
