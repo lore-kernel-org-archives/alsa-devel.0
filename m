@@ -1,14 +1,15 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: problems on alpha
-Date: Mon, 17 Nov 2003 22:26:54 +0100
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: smart and automatic use of dmix and dsnoop - feature
+ suggestion.
+Date: Mon, 17 Nov 2003 21:58:54 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031117212653.GB545@tuba.home>
-References: <20031116175117.GA1174@tuba.home> <s5hvfpjjlqg.wl@alsa2.suse.de>
+Message-ID: <3FB9449E.3030904@superbug.demon.co.uk>
+References: <200311171936.hAHJaW1B013634@oud.linuxaudiosystems.com> <Pine.LNX.4.53.0311172102250.16992@pnote.perex-int.cz> <200311172128.34259.pwk.linuxfan@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hvfpjjlqg.wl@alsa2.suse.de>
+In-Reply-To: <200311172128.34259.pwk.linuxfan@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,124 +18,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 17, 2003 at 12:08:39PM +0100, Takashi Iwai wrote:
-> At Sun, 16 Nov 2003 18:51:17 +0100,
-> Martin Langer wrote:
-> > 
-> > 
-> > Hi,
-> > 
-> > please don't try to build au88x0 on an alpha.
-> 
-> most of problems below are due to 2.2 kernel.
-> the cvs version is not tested well on 2.2 kernels (also i tried only
-> i386)
-> 
-> >  You have to read a lot. 
-> > But here is an extract with some quite interesting points about CVS ;-)
-> > 
-> > martin
-> > 
-> > 
-> > gcc -D__KERNEL__ -DMODULE=1 -I/usr/local/src/alsa-cvs/alsa-driver/include
-> > -I/lib/modules/2.2.19/build/include -O2 -mno-fp-regs -ffixed-8 -Wa,-mev6
-> > -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
-> > -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
-> > -DKBUILD_BASENAME=memory_wrapper   -c -o memory_wrapper.o memory_wrapper.c
-> > memory_wrapper.c: In function snd_compat_vmalloc_to_page':
-> > memory_wrapper.c:35: warning: implicit declaration of function VMALLOC_VMADDR'
-> > memory_wrapper.c:39: warning: implicit declaration of function pgd_offset'
-> > memory_wrapper.c:39: warning: assignment makes pointer from integer without
-> > a cast
-> > memory_wrapper.c:40: warning: implicit declaration of function pmd_offset'
-> > memory_wrapper.c:40: warning: assignment makes pointer from integer without
-> > a cast
-> > memory_wrapper.c:41: warning: implicit declaration of function pte_offset'
-> > memory_wrapper.c:41: warning: assignment makes pointer from integer without
-> > a cast
-> > memory_wrapper.c:43: warning: implicit declaration of function pte_page'
-> 
-> it seems that configure script didn't detect these checks correctly.
-> could you check config.log ?
-> 
-> > 
-> > [...]
-> > 
-> > gcc -D__KERNEL__ -DMODULE=1 -I/usr/local/src/alsa-cvs/alsa-driver/include
-> > -I/lib/modules/2.2.19/build/include -O2 -mno-fp-regs -ffixed-8 -Wa,-mev6
-> > -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
-> > -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
-> > -DKBUILD_BASENAME=au8810   -c -o au8810.o au8810.c
-> > In file included from au88x0.c:23,
-> >                  from au8810.c:8:
-> > /usr/local/src/alsa-cvs/alsa-driver/include/sound/initval.h: In function
-> > get_option_long':
-> > /usr/local/src/alsa-cvs/alsa-driver/include/sound/initval.h:172: warning:
-> > implicit declaration of function get_option'
-> 
-> it must be harmless since the function will be never used unless the
-> driver is built into kernel.  (should be fixed, though)
-> 
-> > In file included from au8810.c:8:
-> > au88x0.c: In function snd_vortex_dev_free':
-> > au88x0.c:76: warning: implicit declaration of function pci_release_regions'
-> > au88x0.c:77: warning: implicit declaration of function pci_disable_device'
-> > au88x0.c: In function snd_vortex_create':
-> > au88x0.c:121: warning: implicit declaration of function pci_request_regions'
-> 
-> grrr, they don't exist on 2.2 kernels...
-> we need a wrapper for them.
-> 
+Hi,
 
-It's time to say good-bye to 2.2 users...
+Just a general comment on dmix/dsnoop.
+1) It is not bug free yet. I have an application that fails when one 
+tries to use it. (xine.sf.net). I have not had time to establish why 
+yet. E.g. xine using "front" device, output's stereo sounding perfectly. 
+I note down the buffer and period sizes and rate and sample format being 
+used for "front" and set "dmix" to use the same via the alsa.conf file.
+But playing with "dmix" causes the sound to stutter, as though only 
+every second period is being played, with zero samples in between.
+When I get a moment I will investigate further the exact cause. 
+Initially I thought it was a buffer/period size problem, but I have 
+checked that, and that is not the problem. The next TODO test I will do 
+will be testing the snd_pcm_delay() returned from the dmix device, and 
+compare it's accuracy with "front".
 
-> > [...]
-> > 
-> > au88x0_core.c: In function vortex_mixer_en_sr':
-> > au88x0_core.c:72: warning: passing arg 2 of cia_writel' makes integer from
-> > pointer without a cast
-> > au88x0_core.c: In function vortex_mixer_dis_sr':
-> > au88x0_core.c:76: warning: passing arg 2 of cia_writel' makes integer from
-> > pointer without a cast
-> > au88x0_core.c: In function vortex_mix_muteinputgain':
-> > au88x0_core.c:80: warning: passing arg 2 of cia_writel' makes integer from
-> > pointer without a cast
-> > au88x0_core.c:81: warning: passing arg 2 of cia_writel' makes integer from
-> > pointer without a cast
-> 
-> they are ok.   (should be fixed, too)
-> 
-> > 
-> > [...]
-> > 
-> > ld  -r -o snd-au8810.o au8810.o au8810_core.o au8810_pcm.o au8810_mixer.o
-> > au8810_mpu401.o au8810_game.o au8810_eq.o
-> > au8810_core.o(.modinfo+0x0): multiple definition of __module_kernel_version'
-> > au8810.o(.modinfo+0x0): first defined here
-> > au8810_pcm.o(.modinfo+0x0): multiple definition of __module_kernel_version'
-> > au8810.o(.modinfo+0x0): first defined here
-> > au8810_mixer.o(.modinfo+0x0): multiple definition of __module_kernel_version'
-> > au8810.o(.modinfo+0x0): first defined here
-> > au8810_mpu401.o(.modinfo+0x0): multiple definition of __module_kernel_version'
-> > au8810.o(.modinfo+0x0): first defined here
-> > au8810_game.o(.modinfo+0x0): multiple definition of __module_kernel_version'
-> > au8810.o(.modinfo+0x0): first defined here
-> > au8810_eq.o(.modinfo+0x0): multiple definition of __module_kernel_version'
-> > au8810.o(.modinfo+0x0): first defined here
-> > make[2]: *** [snd-au8810.o] Error 1
-> 
-> defning __NO_VERSION__ seems missing.
-> put #define __NO_VERSION__ at the beginning of each au88?0.c.
-> 
+2) For smart dmix/dsnoop to be really user friendly, we will need a 
+version of it that works in full duplex. I.E. Multiple applications able 
+to record the same stream as well as play to it at the same time.
 
-I guess switching to 2.4 could be the best solution for me... 
+3) If one application wishes to play to "surround51" and a different 
+application wishes to play to "front", dmix will have to be clever 
+enought to mix the two.
 
+4) If one application wishes to play to "front" and a different 
+application wishes to play to "rear", the mixer should be able to mix to 
+get 4 output channels.
 
-martin
+5) I think that this sound mixing problem might be better served by 
+sound servers like jack.
+
+6) software mixing is ok, but software resampling is not a good idea to 
+do in alsa-lib, because a) It cannot do good quality resamplings because 
+t is trying to keep latency low. b) A audio/video application could do 
+resampling better because it could do it at the decoding stages, before 
+latency and audio/video sync is a problem.
+
+7) For mixing, each open of the alsa multi-open device should have it's 
+own volume control per open, and not just the hardware backend volume 
+controls. The application could easily control their own volume, without 
+effecting other application's volume.
+
+Summary: -
+An application should be able to use device names like "rear", "front", 
+"surround51" and then have a separate control to tell alsa whether it is 
+allowed to do resampling or not. Then at least the more advanced 
+application could decide for itself whether to use alsa-lib's low 
+quality resampler, or implement it's own multi-tap interpolation filter.
+For a video/audio application like xine.sf.net, being able to open the 
+alsa device in such a way to ensure we know where the sound will be 
+routed(which speakers sound will come from) is useful.
+
+Cheers
+James
+
 
 
 -------------------------------------------------------
