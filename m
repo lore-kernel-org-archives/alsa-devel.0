@@ -1,10 +1,10 @@
 From: Carlos Pita <carlosjosepita@yahoo.com.ar>
 Subject: Audigy 24 bits?
-Date: Mon, 8 Nov 2004 07:19:40 -0300
-Message-ID: <200411080719.41034.carlosjosepita@yahoo.com.ar>
+Date: Mon, 8 Nov 2004 07:30:30 -0300
+Message-ID: <200411080730.30688.carlosjosepita@yahoo.com.ar>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
@@ -21,7 +21,12 @@ To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 Hi! I'm using an audigy card. I can't open it for capture nor with a buffer size
-of less than 384 bits neither with a 24 bits format. I'm not sure about the
+of less than 384
+
+>>bits<< 
+sorry.... frames, I guess it's time to go to bed
+
+neither with a 24 bits format. I'm not sure about the
 first restriction but audigy are 24 bits cards, aren't they? This is the
 ouput from snd_pcm_hw_params_dump for a capture stream:
 
