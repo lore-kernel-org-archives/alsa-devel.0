@@ -1,16 +1,11 @@
-From: "P. Christeas" <p_christ@hol.gr>
-Subject: Re: Reproducible deadlock w. alsa/maestro3 when sleeping (ACPI,) 2.6.0-test1
-Date: Wed, 16 Jul 2003 17:18:50 +0300
+From: Prince John <princejohnm@yahoo.com>
+Subject: ALSA Driver Testing
+Date: Wed, 16 Jul 2003 07:40:08 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307161718.50464.p_christ@hol.gr>
-References: <200307141917.22813.p_christ@hol.gr> <s5h7k6i1yoa.wl@alsa2.suse.de>
+Message-ID: <20030716144008.56034.qmail@web11702.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7k6i1yoa.wl@alsa2.suse.de>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,63 +14,112 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: lkml <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Mon, 14 Jul 2003 19:17:22 +0300,
->
-> P. Christeas <p_christ@hol.gr> wrote:
-> > I have been experiencing some fully reproducible deadlock when waking
-> > from sleep, using artsd over ALSA.
-> > The scenario is:
-> > I use ALSA, with the maestro3 device and everything else compiled as
-> > modules. From userspace, I launch artsd, which uses its native ALSA
-> > support to connect to /dev/pcmXXXXX .
-> > I only have a custom script, which sleeps the machine by a 'echo 1>
-> > /proc/acpi/sleep' . It does NOT stop alsa .
->
-> could you check whether m3_suspend() and m3_resume() in
-> sound/pci/maestro3.c are really called?
->
->
-> Takashi
+Hi,
+I'm facing some problems while testing a driver
+developed for a Hitachi SH4 based board. The board has
+an AC97 codec and codec controller.
+I'm working as 'root'. The devices are created with
+'snddevices' and all modules are loaded properly.
 
-OK, I did that.  I put two messages in both functions of the maestro3 driver. 
-I suspended/resumed the machine. Both functions had been called.
+When tried to test the driver by running 'amixer' and
+'aplay' but it fails during 'snd_ctl_open_noupdate'
+call
+in library. 
 
-This time, I did NOT have 'artsd' (i.e. the client) loaded. What happened was 
-that the module was properly restored and I could load (and use) artsd even 
-after the resume.
-That brings me to the first assumption/question I have made: is there 
-something wrong if we suspend two parts (one module and a userspace process), 
-while they inter-communicate through the /dev/* interface?
+# ./aplay -D hw:0,0
+ALSA lib pcm.c:1906:(snd_pcm_open_noupdate) Unknown
+PCM hw:0,0
+aplay: main:480: audio open error: No such file or
+directory
+
+# ./aplay -D Aspen
+ALSA lib pcm.c:1906:(snd_pcm_open_noupdate) Unknown
+PCM Aspen
+aplay: main:480: audio open error: No such file or
+directory
+
+# ./amixer
+ALSA lib control.c:612:(snd_ctl_open_noupdate) Invalid
+CTL default
+amixer: Mixer attach default error: No such file or
+directory
+
+---------------------
+Looks like, both utilities are looking for some config
+files. The error happens during the search of some
+sound
+config files in conf.c file of ALSA lib. 
+
+The .asoundrc file is kept at / and /root. The
+alsa.conf file is placed in /alsa and /usr/share/alsa
+
+# cat /root/.asoundrc
+pcm.Aspen {
+  type hw
+  card 0
+}
+
+ctl.Aspen {
+  type hw
+  card 0
+}
+#
+
+# ls -l /alsa/
+-rwxrwxrwx    1 root     audio        7329 Jul 14 
+2003 alsa.conf
+drwxrwxrwx    2 root     audio        1024 Jul 15 
+2003 cards
+drwxrwxrwx    2 root     audio        1024 Jul 15 
+2003 pcm
+
+
+# ls -l /dev/snd
+lrwxrwxrwx    1 root     root           16 Jun  7
+14:48 /dev/snd -> /proc/asound
+/dev
+
+
+# cat /proc/asound/card0/id
+Aspen
+
+# cat /proc/asound/devices
+  1:       : sequencer
+  0: [0- 0]: ctl
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+ 33:       : timer
+#
+# ls -l  /proc/asound/dev/
+crw-rw-rw-    1 root     root     116,   0 Jun  7
+15:43 controlC0
+crw-rw-rw-    1 root     root     116,  24 Jun  7
+15:43 pcmC0D0c
+crw-rw-rw-    1 root     root     116,  16 Jun  7
+14:30 pcmC0D0p
+crw-rw-rw-    1 root     root     116,   1 Jun  7
+15:43 seq
+crw-rw-rw-    1 root     root     116,  33 Jun  7
+15:43 timer
+
+-----------------------
+
+Am I missing any config files or path settings ? Can
+somebody please give the info on how & where to setup
+the config files for a new driver?
+
+Thanks and regards,
+Prince
 
 
 
-static void m3_suspend(m3_t *chip)
-{
-	snd_card_t *card = chip->card;
-	int i, index;
-
-	snd_printk("m3 suspend");
-	if (chip->suspend_mem == NULL)
-		return;
-	if (card->power_state == SNDRV_CTL_POWER_D3hot)
-		return;
-	...
-
-static void m3_resume(m3_t *chip)
-{
-	snd_card_t *card = chip->card;
-	int i, index;
-
-	snd_printk("m3 resume");
-
-	if (chip->suspend_mem == NULL)
-		return;
-	...
+__________________________________
+Do you Yahoo!?
+SBC Yahoo! DSL - Now only $29.95 per month!
+http://sbc.yahoo.com
 
 
 -------------------------------------------------------
