@@ -1,17 +1,18 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: User land drivers.
-Date: Fri, 03 Sep 2004 16:58:09 +0100
+Date: Fri, 3 Sep 2004 17:57:58 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <41389491.1030804@superbug.demon.co.uk>
-References: <413456AE.7000007@superbug.demon.co.uk> <Pine.LNX.4.58.0409031603060.21405@linux.local> <s5hy8jrwhoy.wl@alsa2.suse.de> <Pine.LNX.4.58.0409031628530.21405@linux.local>
+Message-ID: <Pine.LNX.4.58.0409031756110.21405@linux.local>
+References: <413456AE.7000007@superbug.demon.co.uk>
+ <Pine.LNX.4.58.0409031603060.21405@linux.local> <s5hy8jrwhoy.wl@alsa2.suse.de>
+ <Pine.LNX.4.58.0409031628530.21405@linux.local> <41389491.1030804@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-30.mail.demon.net (anchor-post-30.mail.demon.net [194.217.242.88])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 78D90298
-	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 17:58:10 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.58.0409031628530.21405@linux.local>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 69C172C8
+	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 18:10:17 +0200 (MEST)
+In-Reply-To: <41389491.1030804@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,39 +21,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Fri, 3 Sep 2004, Takashi Iwai wrote:
-> 
-> 
->>Also, we may provide a more easy-to-use interface for additional ALSA
->>pcm plugins.  The current design of plugin is bound too tightly to the
->>ALSA lowlevel structure, and it's a pain to implement all on that at
->>each time.
-> 
-> 
-> I think that we should follow the kernel space here - create only helper 
-> functions which might be used in the user space driver design.
-> 
-> 						Jaroslav
-> 
+On Fri, 3 Sep 2004, James Courtier-Dutton wrote:
 
-Currently, to support a new sound card in ALSA, we just write a small 
-bit of code to talk to the hardware, and other alsa kernel modules 
-provide all the helper functions(period_elapsed etc.), so for a user 
-land driver(bluetooth), these helper functions should be in alsa-lib.
+> Currently, to support a new sound card in ALSA, we just write a small 
+> bit of code to talk to the hardware, and other alsa kernel modules 
+> provide all the helper functions(period_elapsed etc.), so for a user 
+> land driver(bluetooth), these helper functions should be in alsa-lib.
 
-You mention the PCM plugin. I did not know there was already a PCM 
-plugin api that could be used to talk to some other user land program. I 
-just thought the PCM plugins were for sample rate conversion and simple 
-stuff like that.
+Exactly.
 
-I might have to look at the docs again.
+> You mention the PCM plugin. I did not know there was already a PCM 
+> plugin api that could be used to talk to some other user land program. I 
+> just thought the PCM plugins were for sample rate conversion and simple 
+> stuff like that.
 
-James
+No, unfortunately, the PCM plugin interface is completely hidden inside
+alsa-lib. But we can add some plugins like ladspa/meter/jack plugin which
+can connect to other external code.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
