@@ -1,14 +1,16 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Problem with arecord on Audigy 2 NX
-Date: Tue, 30 Mar 2004 09:08:27 +0200 (CEST)
+Subject: Re: Need to know SBLive Chip difference
+Date: Tue, 30 Mar 2004 09:26:46 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403300907530.1835@pnote.perex-int.cz>
-References: <4064B687.C88E8575@cs.berkeley.edu> <Pine.LNX.4.58.0403271339440.1836@pnote.perex-int.cz>
- <4068ABD0.18FCFB1F@cs.berkeley.edu>
+Message-ID: <Pine.LNX.4.58.0403300924450.1835@pnote.perex-int.cz>
+References: <Sea2-F27skmMvyDRP9E0003cc73@hotmail.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4068ABD0.18FCFB1F@cs.berkeley.edu>
+Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA05343
+	for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2004 09:26:02 +0200
+In-Reply-To: <Sea2-F27skmMvyDRP9E0003cc73@hotmail.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,19 +19,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Yitao Duan <duan@cs.berkeley.edu>
-Cc: alsa-devel@lists.sourceforge.net
+To: guan yim <guanyim@hotmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 29 Mar 2004, Yitao Duan wrote:
+On Tue, 30 Mar 2004, guan yim wrote:
 
-> Thanks for the info, Jaroslav. I upgraded all of the lib, driver, tools, and
-> utils to 1.0.4rc1. But I got the same results: linux rec command worked fine
-> but arecord caused Segmentation fault after readi_func was called 3 times
-> (aplay also worked alright). Any idea what can be happening? Or is there
-> anybody using the same card (Audigy 2 NX) without problem?
+> Hi,
+> 
+> I need to know the difference between SBLive copyrighted in 2003 and 2002. 
+> Does Creative need to sign NDA before they can disclose such information? 
 
-Could you send me 'arecord -v' output?
+Yes and they're not willing to communicate with us. The communication has
+always high delays and very low priority on their side.
+
+> This is vital now as you can see the newest  SBLive totally has no sound 
+> output with ALSA 1.0.4rc1
+
+I think that connections to input/output slots changed, so it needs 
+only some tests/changes in the emufx.c code.
 
 						Jaroslav
 
