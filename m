@@ -1,12 +1,17 @@
-From: Ludovic Drolez <ludovic.drolez@freealter.com>
-Subject: oops with 2.4.22 alsa 0.9.8 and a non-pnp sb16 (more info)
-Date: Sat, 08 Nov 2003 17:03:36 +0100
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: switch to new PCM API for 1.0 release
+Date: Sat, 8 Nov 2003 17:39:22 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FAD13D8.7040007@freealter.com>
+Message-ID: <20031108163922.GA6647@tuba.home>
+References: <Pine.LNX.4.53.0311051141250.1187@F137.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id RAA00793
+	for <alsa-devel@alsa-project.org>; Sat, 8 Nov 2003 17:38:49 +0100
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.53.0311051141250.1187@F137.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,46 +20,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi !
+On Wed, Nov 05, 2003 at 11:47:58AM +0100, Jaroslav Kysela wrote:
+> 
+> 	I decided to switch to new PCM API (values are returned using an
+> indirect pointer rather as return value, so error codes are not mixed with
+> values). The binary compatibility is kept. So, you can use old
+> applications with new libraries and you can even use applications compiled
+> against 1.0 alsa-lib with 0.9 library binaries.
 
-In the logs from my last post, there were messages from the standard sb.o module:
+FYI,
 
-isapnp: Scanning for PnP cards...
-isapnp: No Plug & Play device found
->> Soundblaster audio driver Copyright (C) by Hannu Savolainen 1993-1996
->> sb: No ISAPnP cards found, trying standard ones...
->> SB 4.13 detected OK (220)
+aplay/arecord doesn't work at the moment:
 
-So I removed standard sound modules, and now when I modprobe snd-sb16 I only get:
-
-isapnp: Scanning for PnP cards...
-isapnp: No Plug & Play device found
-
-So the other problem is that it's impossible to disable isa-pnp support with
-alsa 0.9. The configure's option '--without-isapnp' does not work anymore !
-(It worked with alsa 0.5).
-
-So, I added an '#undef CONFIG_PNP' in sb16.c and now I get another oops when I
-modprobe it.
-It seems that SB's non-pnp detection code is completly broken ...
-
-
-
-Cheers,
-
-    Ludovic Drolez.
-
-
-
-
-
+Playing WAVE '/tmp/test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+aplay: set_params:874: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: NONE
+^^^^^^^^^^
+PERIOD_TIME: (170666 170667)
+PERIOD_SIZE: (22963264 22963265)
+PERIOD_BYTES: (91853056 91853060)
+PERIODS: (2 3)
+BUFFER_TIME: (341333 341334)
+BUFFER_SIZE: 45926708
+BUFFER_BYTES: 183706832
+TICK_TIME: 10000
 
 
-
-
+martin
 
 
 -------------------------------------------------------
