@@ -1,14 +1,14 @@
-From: Matthew Clarke <Matthew_Clarke@mindlink.bc.ca>
-Subject: Re: problems compiling current CVS
-Date: Mon, 2 Jun 2003 21:38:13 -0700
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ALSA 0.9.3+ is not working
+Date: Tue, 03 Jun 2003 08:51:38 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030603043813.GA30485@ds0.van.maves.ca>
-References: <20030603031534.GA27280@ds0.van.maves.ca> <E19N2mg-0008HZ-00@dewey.paralynx.net>
+Message-ID: <Pine.HPX.4.33n.0306030848370.24147-100000@studcom.urz.uni-halle.de>
+References: <3EDB3DE0.7060402@cox.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <E19N2mg-0008HZ-00@dewey.paralynx.net>
+In-reply-to: <3EDB3DE0.7060402@cox.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,51 +17,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
+To: David van Hoose <davidvh@cox.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-lundi, le 2 juin, 2003, Paul Davis nous a dit ceci:
-
-> >This bit:  
+David van Hoose wrote:
+> Clemens Ladisch wrote:
+> > David van Hoose wrote:
 > >
-> >        ${xtmp:0:5}
+> >>Sound card is onboard SiS7012 AC'97 (CMI9739A)
+> >>0.9.2 works perfectly.
+> >>0.9.3a Sound through CD-ROM (Plays CDs) No sound through OSS apps.
 > >
-> >is a Bash-ism.  Normal Bourne shells don't understand this.  I'm guessing
-> >that your system's /bin/sh isn't Bash.  You might be able to put a 
-> >
-> >        SHELL=/bin/bash
-> 
-> paul[2846]>which sh
-> /bin/sh
-> paul[2847]>ls -l /bin/sh
-> lrwxrwxrwx   1 root     root            4 Aug 16  2000 /bin/sh -> bash
-> paul[2852]>bash -version
-> GNU bash, version 1.14.7(1)
+> > Does playing sounds with aplay work?
+>
+> As far as I can tell no.
+> It acts like it plays the wave file I chose, but I get no sound. I went
+> into alsamixer and turned up every channel too.
 
-Looks like I guessed wrong.  The only system I still have access to with
-Bash 1.x on it isn't accessible right now, and the newer ones I do have
-access to don't say when the ${foo:0:5} syntax was added.
+Did you unmute every channel, too?
+Did you try the other output jacks? (many motherboards exchange the line
+out and headphone jacks because the headphone output is the only one with
+an amplifier)
 
-Dunno why it's not working.  You might try bash2, viz.:
 
-------------------------------------------------------------------------------
-21:34 [clamat@ds0:~] 168 > /bin/bash -version
-GNU bash, version 2.04.0(1)-release (i586-pc-linux-gnu)
-Copyright 1999 Free Software Foundation, Inc.
-21:35 [clamat@ds0:~] 169 > /bin/bash
-bash-2.04$ x=testvalue
-bash-2.04$ echo ${x:0:5}
-testv
-bash-2.04$ exit
-21:35 [clamat@ds0:~] 170 > 
-------------------------------------------------------------------------------
+Clemens
 
-Matt.
--- 
-For a successful technology, reality must take precedence over public
-relations, for nature cannot be fooled.
-				-- Richard P. Feynman
+
 
 
 -------------------------------------------------------
