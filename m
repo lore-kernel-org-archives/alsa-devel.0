@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: make dep
-Date: Mon, 9 Jun 2003 10:46:55 +0200 (CEST)
+Subject: Re: SB Live - hwdep
+Date: Mon, 9 Jun 2003 10:56:51 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306091046250.1323-100000@pnote.perex-int.cz>
-References: <1055102088.13084.16.camel@Jay>
+Message-ID: <Pine.LNX.4.44.0306091056340.1323-100000@pnote.perex-int.cz>
+References: <200306090634.IAA13865@www1.pobox.sk>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1055102088.13084.16.camel@Jay>
+In-Reply-To: <200306090634.IAA13865@www1.pobox.sk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,17 +16,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: p z oooo <pzad@pobox.sk>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 8 Jun 2003, Giuliano Pochini wrote:
+On Mon, 9 Jun 2003, p z oooo wrote:
 
-> How can I tell "make dep" to ignore some of the files listed in
-> "snd-mychip-objs" ?
+> Hi,
+> 
+> I am working on SB Live dsp patch loader an found, that driver will 
+> segfault when I try to delete control in function
+> snd_emu10k1_del_controls in emufx.c on line
+> list_del(&ctl->list); 
+> this is because control is removed from list in function before
+> snd_emu10k1_ctl_private_free in emufx.c
 
-It is not possible. Could you send me your code? I will try to look what 
-is wrong.
+Fixed. Thanks.
 
 						Jaroslav
 
