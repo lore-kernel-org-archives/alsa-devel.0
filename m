@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000477]: Problem with esound-alsa
-Date: Sat, 19 Mar 2005 10:10:46 +0100
-Message-ID: <e501ba1685041bdbb38ff64612cd3e19@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000929]: Left/Right reversed when using the raw iec958 on Audigy2
+Date: Sat, 19 Mar 2005 11:36:05 +0100
+Message-ID: <faa86709b20a9ed2c57efb97751811c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 35CA31E9
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 10:10:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 311EB1DF
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 11:36:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,87 +23,86 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=477> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=929> 
 ======================================================================
-Reported By:                zawadaa
+Reported By:                TheOrwithVagrant
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   477
-Category:                   PCI - ens1371
+Project:                    ALSA - lib
+Issue ID:                   929
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               PLD LINUX DISTRIBUTION
-Kernel Version:             &lt;=2.6.9-rc1
 ======================================================================
-Date Submitted:             09-02-2004 17:32 CEST
-Last Modified:              03-19-2005 10:10 CET
+Date Submitted:             02-21-2005 14:56 CET
+Last Modified:              03-19-2005 11:36 CET
 ======================================================================
-Summary:                    Problem with esound-alsa
+Summary:                    Left/Right reversed when using the raw iec958 on
+Audigy2
 Description: 
-On kernel-2.4 was no problem. After I upgraded to kernel-2.6 (even newest
-one) my sound record system does not work :-(
-IMPORTANT: may be that's not ALSA problem just esound but...
+When using an spdif-attatched amplifier, the iec958/spdif raw device to
+play a sound (or video file), the left and right channels end up
+reversed.
 
-I have 7 sound card (1 snd_via82xx and 6 snd_ens1371):
-On boot I set up all cards by alsactl -f $i restore $j (i=conf,
-j=cardid).
-After that I run 7 times on diffrent ports:
-esd -tcp -public -promiscuous -d hw:0 -port 16001 &
-that's all.
-On second computer, when I wont record some sound:
+Example:
 
-/usr/bin/esdrec -s 192.168.2.206:16001|/usr/bin/lame -x -b 64 --lowpass 8
-- 1.mp3
+This produces "correct" left and right mappings
 
-And it works bur only with first card (snd_via82xx)
-on snd_ens1371 I have nothing and on the sound server is just:
-------------------------------------------------
-[root@magazyn root]# esd -tcp -public -promiscuous -d hw:6 -port 16007
-- using device hw:6
-- accepting connections on port 16007
-ALSA lib pcm_hw.c:846:(snd_pcm_hw_close) close failed
-: Bad file descriptor
-ALSA lib pcm_hw.c:846:(snd_pcm_hw_close) close failed
-: Bad file descriptor
-ALSA lib pcm_hw.c:846:(snd_pcm_hw_close) close failed
-: Bad file descriptor
-ALSA lib pcm_hw.c:804:(snd_pcm_hw_munmap_status) status munmap failed:
-Invalid argument
-ALSA lib pcm_hw.c:823:(snd_pcm_hw_munmap_control) control munmap failed:
-Invalid argument
-free(): invalid pointer 0x8060220!
-Segmentation fault
---------------------------------------------------
-after 4th connection.
+extract_ac3 AC3TEST.VOB |ac3dec
 
-I attached strace of that.
+The following, however, reverses left & right:
 
-When I switch from esound-alsa to esound-oss - 
-esd -tcp -public -promiscuous -d /dev/dsp6 -port 16007
-everything is OK (on 2.6 of course)
+extract_ac3 AC3TEST.VOB |ac3dec -R
+
+Likewise, when playing a dvd with mplayer, things are correct if i merely
+use -ao alsa, but end up with left/right reversed if i use -ao
+alsa:device=iec958.
+
+It appears to be an error in Audigy2.conf - changing the line
+
+value [ 255 255 0 0 0 0 0 0  0 255 0 0 0 0 0 0 255 0 0 0 0 0 0 0 ]
+
+to
+
+value [ 255 255 0 0 0 0 0 0  255 0 0 0 0 0 0 0 0 255 0 0 0 0 0 0 ]
+
+as in Audigy.conf, makes the channels appear from the right speaker even
+when using the raw spdif device.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 10:10 
+ jdthood - 03-19-05 09:58 
 ----------------------------------------------------------------------
-Submitter: Did you submit a bug report to the EsoundD developers too?
-Do you have reason to think that this is an ALSA bug?  If not then I
-think that this report should be closed.  If so then I guess this
-report should be reassigned to alsa-lib.
+Hmm, wait a second.  The original report was _against_ 1.0.8.
+That means I must have misinterpreted the earlier post.
+
+Submitter: What change needs to be made to Audigy2.conf in order
+to fix this problem?
+
+----------------------------------------------------------------------
+ TheOrwithVagrant - 03-19-05 11:36 
+----------------------------------------------------------------------
+As stated earlier in the comments, this channel reversal was a "fix" to
+make AC3 passthrough work on Audigy2. However, apart from having the side
+effect that made me file this bug, that fix also didn't work for
+everyone.
+However, James Courtier-Dutton is working on a proper fix in the DSP code
+of the actual driver which makes this Audigy2.conf "error" unneccessary.
+As soon as James's fix is committed in CVS, I think this bug can be
+closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-02-04 17:32 zawadaa        New Issue                                    
-09-02-04 17:32 zawadaa        File Added: esd_strace.gz                    
-09-02-04 17:32 zawadaa        Distribution              => PLD LINUX
-DISTRIBUTION
-09-02-04 17:32 zawadaa        Kernel Version            => <=2.6.9-rc1     
-09-02-04 17:35 zawadaa        Issue Monitored: zawadaa                     
-03-19-05 10:10 jdthood        Note Added: 0004031                          
+02-21-05 14:56 TheOrwithVagrantNew Issue                                    
+02-21-05 15:04 pzad           Note Added: 0003679                          
+02-21-05 15:14 TheOrwithVagrantNote Added: 0003680                          
+02-22-05 03:59 rlrevell       Note Added: 0003684                          
+03-19-05 09:21 jdthood        Note Added: 0004013                          
+03-19-05 09:58 jdthood        Note Added: 0004028                          
+03-19-05 11:36 TheOrwithVagrantNote Added: 0004032                          
 ======================================================================
 
 
