@@ -1,14 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: smix plugin available?
-Date: Wed, 27 Nov 2002 12:06:10 +1100
+From: drclaw@dogsolitude.org
+Subject: HDSP and the hw: interface
+Date: Tue, 26 Nov 2002 16:42:32 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DE41A82.6030608@superbug.demon.co.uk>
-References: <E18Goo5-0008Ma-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <20021126214232.GA18717@dogsolitude.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E18Goo5-0008Ma-00@sc8-sf-list1.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,66 +15,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Florian Bomers <Florian.Bomers@sun.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
+Ok, thanks for the line out help, and I think I understand how the
+matrix mixer works, and I can hear stuff through my monitors, but now I
+can't figure out how to get alsa input or output functioning.  I can
+plug in my mic/pre and hear that through the monitors, and I can use the
+oss compatability layer to play oss compatible programs through the
+monitors as well, but whenever I try to use an alsa program with hw:0,0
+(hw:0,some_other_number gets a "this device doesn't exist" error with
+everything) I constantly get something like -
 
->  
->
->>>the APIs that are used to write almost all audio software code in 
->>>production these days all use a callback model. 
->>>      
->>>
->>Sorry for questioning this statement. Of course we all don't have any statisti
->>cal data but
->>you miss what I see as the majority of applications that use audio devices:
->>
->>1) games
->>2) media players
->>3) GUI sounds (i.e. accessibility)
->>    
->>
->
->this is a fair point. i apologize. i have my head so far inside the
->"audio software for musicians" box that i tend to fail to see such
->applications :)
->
->however, the very fact that the applications developers of such
->programs really don't know much (if anything) about audio programming,
->and probably don't want to know much about it either, suggests that an
->API like ALSA which exposes the full HAL is probably a mistake. again,
->i consider PortAudio a vastly preferable solution.
->
->  
->
-I would like to point out that a "callback" api would work just as well 
-as an open/write/close api for
+aplay: set_params:781: Access type not available
 
-1) games
-2) media players
-3) GUI sounds (i.e. accessibility)
+Other programs give various other errors, when I try aplay with
+plughw:0,0 instead, it outputs the format info and hangs (must ctrl-c).  
 
-I have to agree with Paul on the fact that a "callback" approach is really the ONLY real option.
-Here is my reasoning: -
-1) My perspective is from "(2) Media players" and not "Pro-Audio"
-2) Sound Hardware tends to have very small buffers.
-3) For nice sounding audio, these buffers should never run dry. I.E. No XRUNs.
-4) A open/write/close api will never ever be able to guarantee no XRUNs, as it has no control on when it will get scheduling time to do the next write.
-5) With a "callback" approach, the kernel would be notified by the sound hardware that it was ready for new samples, the kernel could then adjust the scheduler, so that the "callback" function was called ASAP.
-The "callback" function then only has to decide which samples to give. If the "callback" function could receive a "delay" value from the sound hardware at each callback, a media player would then have all the information it needed to do full audio/video sync.
-6) I don't need "sample sync", but I do NEED "callback" based api to provide me with "no XRUNs".
+Note, again, everything works fine with my ali5451.  Do I have to use
+some other for of addressing to specify the ports I want this all to go
+to?  From previous mail it seems that the matrix mixer deal with audio
+"streams" and physical ports.  I get how you set things in there, but I
+don't get how you tell a program to send its data one on one of these
+"streams" if that's the way it's supposed to work.  Of course then
+there's recording (and do any sample rates above 48kHz work right now?).  
 
-Summary: - 
-The only way to cure XRUN problems is with a "callback" based api.
-All application that currently use open/write/close apis, can just as easily use a "callback" api.
+This testing has primarily been done with CVS from a week ago and CVS
+from an hour ago (both work the same), I also have rc3 which works the
+same minus being able to hear anything via the monitors.  
 
-Cheers
-James
+Sorry I sent this to the dev list but there were a couple similar
+questions on the user list that were never answered, that and the hdsp
+is sort of a "dev" card right now.  I also have a show in less than a
+week I ws going to use this for...  Once I figure all of this out I'd be
+happy to write a FAQ as pennance ;P  
 
+Thanks,
 
-
+784 - Michael C. Piantedosi - drclaw@dogsolitude.org
 
 
 -------------------------------------------------------
