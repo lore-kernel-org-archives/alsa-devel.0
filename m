@@ -1,132 +1,193 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
-Date: Sat, 19 Feb 2005 02:40:13 +0100
-Message-ID: <a366ab4566a72a5f01489f9b7f953d45@bugtrack.alsa-project.org>
+From: Sergio Monteiro Basto <sergio@sergiomb.no-ip.org>
+Subject: Re: softvol plugin [Fwd: Re: [Alsa-devel] [PATCH V0.1] C-Media
+ CMI9761 -A- type]
+Date: Sat, 19 Feb 2005 03:04:38 +0000
+Message-ID: <1108782279.23185.38.camel@bastov>
+Reply-To: sergio@sergiomb.no-ip.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 24274248
-	for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2005 02:40:14 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="=-JmAxB7LzZGapt4FPzd6G"
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: t.schorpp@gmx.de, alsa-user@lists.sourceforge.net
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>, Jakob Schurdak <jakobs@myrealbox.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
-======================================================================
-Reported By:                christophe
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   917
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Ununtu
-Kernel Version:             2.6.11-rc3
-======================================================================
-Date Submitted:             02-17-2005 20:16 CET
-Last Modified:              02-19-2005 02:40 CET
-======================================================================
-Summary:                    intel8x0 ACPI suspend/resume trouble
-Description: 
-I have a problem with the driver for my soundcard after
-ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
-problem with prior kernels, I first tried with 2.6.8).
+--=-JmAxB7LzZGapt4FPzd6G
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-This is a IBM x40 laptop (23865FU) with an intel chipset.
+Sorry for cross posting, I am replying to 2 different threads 1 is alsa-
+user and other in alsa-devel!
 
-The relevant lspci line is:
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
-Audio Controller (rev
-+01)
+Please cc to me!
 
-The driver I use is snd_intel8x0.
+Like Jakob Schurdak, I reinstall alsa from CVS (alsa-driver, alsa-lib,
+alsa-utils),  that already have Takashi patch,  but the mixer still have
+exactly the same behavior.=20
 
-The problem is that after a suspend/resume cycle the sound
-output is either off or only on one side or with statics.
+I have one ASRock P4VT8+ with CMedia CMI9761 (not the same of Jakob) but
+same rev. of sound card.
+00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233/A/8235=
+/8237 AC97 Audio Controller (rev 60)
 
-I tried to do:
+Applying this patch from Thomas Schorpp, I have a better mixer and don't
+have mute nothing as before, I just unmute PCM and have sound, Master
+volume appears but don't have any effect when mute or unmute or change
+volume.
 
-~$ alsactl power off
-~$ alsactl power on
+For me, try to set up a PCM config manually on my own ~/.asoundrc ,
+doesn't change noting ( unless when I forget close  "}") :)
 
-without any change.
+thanks and regards,
 
-If I suspend/resume multiple time I can get the sound output
-a little better (like on one side instead of off). But so far
-to get the correct sound back I need to reboot.
+-------- Forwarded Message --------
+> From: thomas schorpp <t.schorpp@gmx.de>
+> Reply-To: t.schorpp@gmx.de
+> To: alsa-devel <alsa-devel@lists.sourceforge.net>
+> Subject: Re: [Alsa-devel] [PATCH V0.1] C-Media CMI9761 -A- type
+> Date: Thu, 17 Feb 2005 05:10:08 +0100
+> created a patch with branch -A- type support by Mainboard for the start=
+.
+>=20
+> like youve done it before for a mainboard in the code.
+>=20
+>=20
+> and now i want a pcm slider. lets see...
+>=20
+>=20
+>=20
+> hello,
+>=20
+> Sergio Monteiro Basto wrote:
+> | Hi,
+> |
+> | After search on https://bugtrack.alsa-project.org/ for CMI9761, 1
+> | issues, resolved !
+> | with some similarity is one ASRock k7vt4a+ with CMedia CMI9761, I hav=
+e
+> | one ASRock P4VT8+ with CMedia CMI9761.
+>=20
+> ive got the follower CMI9761A.
+>=20
+> got ascreenshot from cmedia windosdriver app, for "unbeliefers" ;)
+>=20
+> |
+> | After play around with alsamixer,
+> | I got sound when unmute PCM and Off (mute) IEC958 Capture Monitor.
+> |
+> | All others controls does change anything include mute or unmute the
+> | Master.
+> | Except VIA DXS (this one can do sound balance, left and right).
+> | VIA DXS 1, VIA DXS 2 and VIA DXS 3 also doesn't do nothing.
+> |
+> | Play around with
+> | options snd-via82xx dxs_support
+> | on file /etc/modprobe.conf
+> | only with "options snd-via82xx dxs_support=3D2" I see any difference =
+but
+> | for worst, make disappear VIA DXS, VIA DXS 1, VIA DXS 2 and VIA DXS 3
+> | controls.
+> |
+> | So, can help you testing alsa CVS ?
+> | Now I have to sleep and tomorrow, I am a little busy but, have you so=
+me
+> | patch in specific to test this C-MEDIA sound card ?
+> |
+> | Sorry for my weak English, if you don't understand something just ask
+> | me, that I will try explain again.
+> |
+> | thanks,
+> |
+>=20
+> all verified yet yesterday, negative
+>=20
+> thx
+> tom
 
-Is it a known problem?
-Is there a way to force the driver to reinitialized the chipset?
+--=20
+S=E9rgio M.B.
 
-Thanks for alsa,
-Christophe
+--=-JmAxB7LzZGapt4FPzd6G
+Content-Disposition: attachment; filename=alsa-driver-CM9761A-0.1.diff
+Content-Type: text/x-patch; name=alsa-driver-CM9761A-0.1.diff; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 
-======================================================================
+Index: ac97_patch.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_patch.c,v
+retrieving revision 1.74
+diff -U3 -r1.74 ac97_patch.c
+--- ac97_patch.c	16 Feb 2005 18:27:17 -0000	1.74
++++ ac97_patch.c	17 Feb 2005 03:24:52 -0000
+@@ -2035,7 +2035,11 @@
+ int patch_cm9761(ac97_t *ac97)
+ {
+ 	unsigned short val;
+-
++	
++	/* CM9761A only on this Mainboard Series for now, due to diverting infos(?) */
++	if( !ac97->pci && ac97->subsystem_vendor != 0x1849 && ac97->subsystem_device != 0x9761)
++	{
++	
+ 	/* CM9761 has no Master and PCM volume although the register reacts */
+ 	ac97->flags |= AC97_HAS_NO_MASTER_VOL | AC97_HAS_NO_PCM_VOL;
+ 	snd_ac97_write_cache(ac97, AC97_MASTER, 0x8000);
+@@ -2085,6 +2089,31 @@
+ 	else
+ 		val = 0x321c;
+ #endif
++
++	/* FIXME: set up GPIO */
++	snd_ac97_write_cache(ac97, 0x70, 0x0100);
++	snd_ac97_write_cache(ac97, 0x72, 0x0020);
++
++	}
++	else
++	{
++	
++	/* CM9761A */
++
++	unsigned short val;
++
++	ac97->build_ops = &patch_cm9761_ops;
++	
++#if 0
++	/* enable spdif */
++	/* force the SPDIF bit in ext_id - codec doesn't set this bit! */
++        ac97->ext_id |= AC97_EI_SPDIF;
++	/* to be sure: we overwrite the ext status bits */
++	snd_ac97_write_cache(ac97, AC97_EXTENDED_STATUS, 0x05c0);
++	snd_ac97_write_cache(ac97, AC97_CM9761_SPDIF_CTRL, 0x0209);
++	ac97->rates[AC97_RATES_SPDIF] = SNDRV_PCM_RATE_48000; /* 48k only */
++#endif
++	/* set-up multi channel */
+ 	val = snd_ac97_read(ac97, AC97_CM9761_MULTI_CHAN);
+ 	val |= (1 << 4);
+ 	snd_ac97_write_cache(ac97, AC97_CM9761_MULTI_CHAN, val);
+@@ -2092,10 +2121,12 @@
+ 	/* FIXME: set up GPIO */
+ 	snd_ac97_write_cache(ac97, 0x70, 0x0100);
+ 	snd_ac97_write_cache(ac97, 0x72, 0x0020);
+-
++	}
++	
+ 	return 0;
+ }
+        
++       
+ 
+ /*
+  * VIA VT1616 codec
 
-----------------------------------------------------------------------
- rlrevell - 02-18-05 21:39 
-----------------------------------------------------------------------
-Can someone try the OSS driver (i8x0-audio IIRC) and see if it has the same
-problem?  This would be extremely helpful in tracking down the bug.  If
-the OSS driver works the fix is easy.
-
-----------------------------------------------------------------------
- christophe - 02-19-05 02:40 
-----------------------------------------------------------------------
-I just tried the oss module i8x0-audio and the sound stays ok after a
-suspend/resume cycle.
-
-Also after a few tests, it is clear that it has something to do with the
-gain. 
-
-It's like the gain value are not restored and if the value is too high,
-the sounds becomes crappy due to some hardware protection. Sometimes I can
-can get some sound back by lowering the pcm volume but not always. All the
-time after a resume, I can get things worse by increasing the pcm volume.
-Sometimes both channels have a problem, sometimes only one (left or
-right).
-
-Any idea ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-17-05 20:16 christophe     New Issue                                    
-02-17-05 20:16 christophe     Distribution              => Ununtu          
-02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
-02-17-05 20:30 tiwai          Note Added: 0003636                          
-02-17-05 21:01 christophe     Note Added: 0003639                          
-02-17-05 21:06 christophe     Note Added: 0003640                          
-02-17-05 22:38 christophe     Note Added: 0003643                          
-02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
-02-18-05 09:41 alexs81        Note Added: 0003649                          
-02-18-05 18:00 christophe     Note Added: 0003657                          
-02-18-05 20:34 alexs81        File Added: output_proc_asound_card0_codec97_0    
-               
-02-18-05 20:35 alexs81        Note Added: 0003659                          
-02-18-05 20:50 christophe     Note Added: 0003660                          
-02-18-05 21:13 alexs81        Note Added: 0003661                          
-02-18-05 21:16 christophe     Note Added: 0003662                          
-02-18-05 21:32 alexs81        Note Added: 0003663                          
-02-18-05 21:39 rlrevell       Note Added: 0003664                          
-02-19-05 02:40 christophe     Note Added: 0003668                          
-======================================================================
-
+--=-JmAxB7LzZGapt4FPzd6G--
 
 
 
