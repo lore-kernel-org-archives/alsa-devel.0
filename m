@@ -1,15 +1,21 @@
-From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Subject: Re: Please explain Alsa Interface MIDI numbering PLEASE!
-Date: Sun, 16 Feb 2003 21:33:36 +0100
+From: Ryan Pavlik <rpav@nwlink.com>
+Subject: Re: Re: MTP-AV problems (Re: intel8x0 sequencer &
+ MTP-AV) - success
+Date: Sun, 16 Feb 2003 13:06:54 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200302162133.37007.plcl@telefonica.net>
-References: <E18kTvV-0001Ti-00@sc8-sf-list2.sourceforge.net> <200302162043.11592.plcl@telefonica.net> <1045424805.1370.62.camel@Godzilla>
+Message-ID: <20030216130654.16d44488.rpav@nwlink.com>
+References: <1044258789.30428.61.camel@littlewolf2.littlewolf>
+	<s5h3cn5ino4.wl@alsa2.suse.de>
+	<1044273602.2013.6.camel@littlewolf2.littlewolf>
+	<s5hheb8l05o.wl@alsa2.suse.de>
+	<1045193186.10268.392.camel@littlewolf2.littlewolf>
+	<s5h4r77jdmm.wl@alsa2.suse.de>
+	<1045389509.6765.21.camel@littlewolf2.littlewolf>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1045424805.1370.62.camel@Godzilla>
+In-Reply-To: <1045389509.6765.21.camel@littlewolf2.littlewolf>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,53 +24,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@attbi.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>, Rosegarden-Devel <rosegarden-devel@lists.sourceforge.net>, Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 16 February 2003 20:46, Mark Knecht wrote:
-> Pedro,
->    I run on the PlanetCCRMA flow. My current Alsa appears to be from
-> 1/21/03, or about a month ago. Was rc7 after that?
->
+On 16 Feb 2003 20:58:23 +1100
+Allan Klinbail <allank@labyrinth.net.au> wrote:
 
-Yes, 0.9.0rc7 is dated 2003-01-28
-PlanetCCRMA's ALSA drivers came from a CVS snapshot taken at 2003-01-21
-The bug was introduced at 2003-01-10
+> Okay Finally I am very very happy.. 
+> 
+> SO far I have only been able to test output (need to setup MIDI
+> hardware again after a gig) 
+> 
+> From output using MusE CVS version. 
 
-So, you should use current CVS driver, or wait for a PlanetCCRMA update, or  
-use Midiman's firmware. For other USB MIDI fully compliant devices, like 
-Evolution's keyboards, a fixed driver is needed.
+I need to try this, is it much different than the 0.6.x prerelease? I've
+had a few issues with that ...
 
-Regards,
-Pedro
+> I have been able to send MIDI output to:
+> 
+> individual ports 
+> multiple ports relaying different information... 
+> timecode... MIDI CLOCK, worked , MMC still to be tested
 
-> On Sun, 2003-02-16 at 11:43, Pedro Lopez-Cabanillas wrote:
-> > On Sunday 16 February 2003 19:53, Mark Knecht wrote:
-> > > 2) In the screen shot "with_2x2.png" I've plugged in the MidiSport 2x2.
-> > > New devices show up in kaconnect. However, instead of showing 2 read
-> > > ports and 2 write ports, I am getting 4 read ports and no write ports.
-> > > Please explain why the MidiSport is given the names
-> > >
-> > > 72:0 External MIDI 1
-> > > 72:1 External MIDI 1
-> > > 72:2 External MIDI 1
-> > > 72:3 External MIDI 1
-> > >
-> > > Shouldn't this be just :0 and :1 for both the read and write ports?
-> >
-> > Yes. This was a bug in snd-usb-audio for 0.9.0rc7, fixed now in ALSA CVS,
-> > see:
-> > http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg06225.htm
-> >l
-> >
-> > Regards,
-> > Pedro
+Yeah after poking around same here... when it works.  Seems to rely on
+JACK (which I don't care for) or else it won't play back, but I was
+happy to see a steady MIDI clock delivered (I was having trouble with
+one of my synths that way).
+
+> I did not get a good SMPTE lock and the time display on the MTP-AV
+> only aligned itself properly on stop.. (typical when a sync lock isn't
+> established properly) both the PC and the MTP-AV were set to a SMTPE
+> rate of 25 frames per second. 
+
+I'm not sure how SMPTE is delivered, it's been awhile since I looked at
+that end of MIDI, but perhaps not all the right messages are being
+delivered.  What I really wish is that the MTPAV itself would generate
+MIDI clocks and timecode; I'm pretty sure it's supposed to do the
+latter.
+
+<snip> 
+> One glitch I noticed was that the driver seemed to send the note
+> information to all ports when the sequence I had only sent to one of
+> the MTPAV ports... When I assigned a second to a different port it
+> began behaving correctly.
+
+This is the main reason I replied... I've seen this behavior too.  I
+haven't had time to investigate, but it seems to happen in various
+sequencers from time to time (seq24, MusE, pmidi, etc.), and I'm not
+completely sure of the cause.  Usually it starts out fine for me, but
+I'll do something "odd" and suddenly all output is broadcast.  I'm
+having suspicions, but do you remember any detailed circumstances
+regarding this when you've seen it?
+
+> This is all however fantastic progress. 
+
+Yeah, I've had all this stuff for years and I'm completely hyped to
+finally be able to put it to use.  Kudos to the ALSA developers (and the
+sequencer authors ;) for all the time they've spent.
 
 -- 
-ALSA Library Bindings for Pascal
-http://alsapas.alturl.com
+Ryan Pavlik <rpav@users.sf.net>
 
+"Why are we even *mentioning* semi-regular polyhedrons
+ and real space?" - 8BT
 
 
 -------------------------------------------------------
