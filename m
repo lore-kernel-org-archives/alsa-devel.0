@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000698]: Random beeps, ticks and clicks
-Date: Thu, 2 Dec 2004 23:54:09 +0100
-Message-ID: <3b9d70f1c61e9fe37799ba3fa5bc2104@bugtrack.alsa-project.org>
+Date: Fri, 3 Dec 2004 00:23:20 +0100
+Message-ID: <3d24631de8aa03fe527b3aef78553fc0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 807CB25C
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 23:54:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C4B1225E
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 00:23:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-02-2004 02:56 CET
-Last Modified:              12-02-2004 23:54 CET
+Last Modified:              12-03-2004 00:23 CET
 ======================================================================
 Summary:                    Random beeps, ticks and clicks
 Description: 
@@ -80,42 +80,6 @@ downloading large amount of data with high transfer-rates.
 ======================================================================
 
 ----------------------------------------------------------------------
- moonlite - 12-02-04 23:27 
-----------------------------------------------------------------------
-root@starbase /home/moonlite # hdparm /dev/hda
-
-/dev/hda:
- multcount    =  0 (off)
- IO_support   =  1 (32-bit)
- unmaskirq    =  1 (on)
- using_dma    =  1 (on)
- keepsettings =  0 (off)
- readonly     =  0 (off)
- readahead    = 256 (on)
- geometry     = 65535/16/63, sectors = 117266688, start = 0
-
-root@starbase /home/moonlite # cat /proc/interrupts 
-           CPU0       
-  0:   33434343          XT-PIC  timer
-  1:       9798          XT-PIC  i8042
-  2:          0          XT-PIC  cascade
-  8:    5473400          XT-PIC  rtc
-  9:          0          XT-PIC  acpi
- 11:     664320          XT-PIC  EMU10K1, eth0
- 12:     287484          XT-PIC  i8042
- 14:      64894          XT-PIC  ide0
- 15:         31          XT-PIC  ide1
-NMI:          0 
-ERR:          1
-
-Ok. so i see that my network-card and EMU10K1 is sharing IRQ.
-Maybe that's the problem?
-
-A friend pasted this out of his /proc/interrupts and said it gave him no
-problems though:
-< TenOfTen>   9:    7387506          XT-PIC  acpi, ehci_hcd, EMU10K1, eth0
-
-----------------------------------------------------------------------
  moonlite - 12-02-04 23:54 
 ----------------------------------------------------------------------
 Ok.
@@ -124,6 +88,15 @@ I don't know if this is a bug then?
 It is a rather strange behaviour that the problem rises when using kernels
 >2.4.19 but not otherwise.
 Oh well.
+
+----------------------------------------------------------------------
+ moonlite - 12-03-04 00:23 
+----------------------------------------------------------------------
+I changed the setting in BIOS, setting IRQ 11 to "reserved". I am not sure
+what that meant but now eth0 is on IRQ 10 instead of sharing with emu10k1
+which is good i guess.
+However that did not help me at all since the random beeps are still there
+:(
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -134,6 +107,7 @@ Date Modified  Username       Field                    Change
 12-02-04 17:32 pzad           Note Added: 0002687                          
 12-02-04 23:27 moonlite       Note Added: 0002699                          
 12-02-04 23:54 moonlite       Note Added: 0002700                          
+12-03-04 00:23 moonlite       Note Added: 0002701                          
 ======================================================================
 
 
