@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000632]: The recordings doesnt work properly
-Date: Fri, 5 Nov 2004 23:28:54 +0100
-Message-ID: <4f5ac57e450e67c6f55aa74a0d34d6dc@bugtrack.alsa-project.org>
+Date: Fri, 5 Nov 2004 23:31:22 +0100
+Message-ID: <4f24e3f39d7aa375f18316f633c0a998@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 67192275
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2004 23:28:54 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 25DBF275
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2004 23:31:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=632> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian SID
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             11-05-2004 23:28 CET
-Last Modified:              11-05-2004 23:28 CET
+Last Modified:              11-05-2004 23:31 CET
 ======================================================================
 Summary:                    The recordings doesnt work properly
 Description: 
@@ -56,12 +56,24 @@ version 2.6.9, but are still presents.
 I test the same recording on windows, and worked perfectly:-(
 ======================================================================
 
+----------------------------------------------------------------------
+ littlewing - 11-05-04 23:31 
+----------------------------------------------------------------------
+Another informations. 
+Thanks for helping and sorry for my english
+
+Soundcard: Creative Sound blaster audigy 2 ZS 
+Platinium pro
+ALSA : 1.0.6 - Debian packages
+More:udev, hotplug,cups,sane
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 11-05-04 23:28 littlewing     New Issue                                    
 11-05-04 23:28 littlewing     Distribution              => Debian SID      
 11-05-04 23:28 littlewing     Kernel Version            => 2.6.9           
+11-05-04 23:31 littlewing     Note Added: 0002307                          
 ======================================================================
 
 
