@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Wed, 19 Jan 2005 13:33:50 +0100
-Message-ID: <d55fd8598aa662abc007da9bb9cc8d26@bugtrack.alsa-project.org>
+Date: Wed, 19 Jan 2005 14:36:27 +0100
+Message-ID: <72f36671fa51e6e6ae20e42386eea46e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D0AC424F
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 13:33:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 563FA24F
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:36:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC3
 Kernel Version:             2.6.10-ac8
 ======================================================================
 Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-19-2005 13:33 CET
+Last Modified:              01-19-2005 14:36 CET
 ======================================================================
 Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
@@ -51,36 +51,21 @@ No SPDIF out.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-18-05 17:57 
+ tiwai - 01-19-05 14:25 
 ----------------------------------------------------------------------
-The system default doesn't include dmix but only softvol.
-If you want to use dmix together with softvol, too, define like the
-following:
+Did you unmute PCM?  Did you choose "default" for output PCM with xmms ALSA
+output plugin?  Too little information for debugging.
 
-pcm.!default {
-    type softvol
-    slave.pcm {
-        type dmix
-        ipc_key 5678293
-        ipc_key_add_uid yes
-        slave.pcm "hw:1,0"
-        slave.rate 44100
-    }
-    control {
-        name "PCM Playback Volume"
-        card 1
-    }
-}
+The SPDIF is not supported as default.  You need to pass the proper model
+option.  For example, model=full_dig.
 
 ----------------------------------------------------------------------
- 1g0R - 01-19-05 13:33 
+ 1g0R - 01-19-05 14:36 
 ----------------------------------------------------------------------
-Okay, here is:
-I make .asoundrc, and paste the code what you wrote.
-xmms start, and set Output to alsa.
-When i try to move the volume controll, nothing happen.The volume always
-the same level.on zero (trigger on the left) there is no sound.
-in alsamixer no change.All play level on zero, and no spdif out.
+The Spdif be the second thing.Let's see first the alsamixer settings.
+yes, i unmute pcm, and i choose "default" in xmms.
+What you need to debug this? I will send you what you
+need.(config,screenshot)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -101,6 +86,8 @@ Date Modified  Username       Field                    Change
 01-18-05 14:01 1g0R           Issue Monitored: 1g0R                        
 01-18-05 17:57 tiwai          Note Added: 0003254                          
 01-19-05 13:33 1g0R           Note Added: 0003264                          
+01-19-05 14:25 tiwai          Note Added: 0003265                          
+01-19-05 14:36 1g0R           Note Added: 0003272                          
 ======================================================================
 
 
