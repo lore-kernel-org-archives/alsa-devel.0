@@ -1,13 +1,12 @@
-From: Gorka Olaizola <gorka@escomposlinux.org>
-Subject: Channels jumping with snd_intel8x0, nforce2 and 5.1 output
-Date: Sun, 4 Jan 2004 18:55:52 +0100
+From: "Prakash K. Cheemplavam" <PrakashKC@gmx.de>
+Subject: quake3 and alsa trouble: resampler probably doesn't work properly?
+Date: Sun, 04 Jan 2004 19:06:33 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040104175552.GA16063@helvete.escomposlinux.org>
+Message-ID: <3FF85629.5070507@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oyUTqETQ0mS9luUI"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,44 +18,59 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
---oyUTqETQ0mS9luUI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I am using nforce2 with intel8x0 compiled into 2.6.1-rc1-mm1 based kernel.
 
-Hello,
+if you just start quake3 then you will have no sound. If you apply the 
+famous cat "bla direct" > /bla/pcm/bla (and the other disable for 
+capture), then sound reappears. Ok. But as soon as I load a map (except 
+the very first one) quake will "soft freeze" ie you will hear a portion 
+of sound getting repeated and quake3 as such seems to be frozen. But you 
+can simple kill it and the rest of the system is not affected. I then 
+compiled debug into alsa and got this assert error in the "soft freeze":
 
-I've been experimenting with a Nforce2 mobo during last month and the only
-thing I couldn't fix is this sound problem with 5.1 surround sound.
+ALSA sound/core/pcm_lib.c:61: BUG? (runtime->silence_filled <= 
+runtime->buffer_size) (called from c030c7ad)
 
-I have read all the messages in this and other lists refering this problem
-and I have tried 3 different versions of alsa drivers (0.9.8, 1.0.0rc2 and
-latest cvs 1.0.1). All of this present the same problem of jumping channels.
+(I got this error with alsa0.9.8, which can be provoked if you set 
+soundspeed to something high in the quake config, setting it to 0 quake 
+works with alsa 0.9.8, but not with latest alsa)
 
-When seeking in mplayer or using speaker_test the channels change their
-positions randomly.
-I know it's a known bug but I want to know if it's on the list of bugs
-to fix or if it is a bigger problem like lack of documentation or something.
+I treid setting the other alsa-oss options (read in the alsa 
+Documentation about alsa-oss) , as well, but didn't help. I noticed that 
+the "whole-frag" option didn't appear, even if I cat it into the proc 
+setting. might that be the problem? I looked into the source and this 
+option isn't there, so docs are not up to date.
 
-If there is a way I can help or something I can do to isolate this bug tell
-me.
 
-Thank you
 
---oyUTqETQ0mS9luUI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+So, I have an idea, what is wrong with alsa1.x. When using alsa 0.9.8:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
+------- sound initialization -------
+------------------------------------
+----- Sound Info -----
+sound system is muted
+1 stereo
+32768 samples
+16 samplebits
+1 submission_chunk
+22050 speed
+0x46a0c000 dma buffer
+No background file.
 
-iD8DBQE/+FOoAJWwPWWa2yoRAjwaAKDGWeO9aqLNvOHEUvaKxH8RKVRrwACdFxJd
-cExpaoZ122Wrf8aoMlf5BXE=
-=faL5
------END PGP SIGNATURE-----
 
---oyUTqETQ0mS9luUI--
+and quake3 works. Whereas with alsa1.x speed is set to 48000, no matter 
+what I set in the config file. Furthermore *if* I set sndspeed to 48000 
+then quake3 hangs also with alsa 0.9.8.
+
+So my conclusion: There is something wrong with alsa resampler. This 
+also can be seen in other instances and reports users have filed in. I 
+hope this gets fixed soon.
+
+Thanx,
+
+Prakash
 
 
 -------------------------------------------------------
