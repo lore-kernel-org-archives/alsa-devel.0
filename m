@@ -1,8 +1,11 @@
-From: Andrew Burgess <aab@cichlid.com>
-Subject: Re: Query devices in a non-blocking fashion
-Date: Fri, 12 Dec 2003 10:31:35 -0800
+From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: transport control bug...
+Date: Fri, 12 Dec 2003 22:29:53 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312121831.hBCIVZHQ024818@cichlid.com>
+Message-ID: <3FDA3351.4030106@folkwang-hochschule.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,18 +15,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->> Perhaps this could be refined in a future design of ALSA?
+hello everyone!
 
->We all think in the same way, but there's no simple solution for this
->problem. I prefer to have such configuration information in an user-space 
->database accessed via an alsa-lib API. It's nothing for the kernel space.
+i have jamin and ardour running. ardour reacts nicely to the "to start"=20
+and "to end" transport control buttons. now when i press "play" in=20
+jamin, the playhead in ardour starts moving, but no sound is heard.
+this happens regardless of the "jack transport master" setting in the=20
+options dialog.
+otoh, when i press "play" in ardour, everything is fine. can anyone=20
+reproduce this? if so, i'll put it up in mantis.
 
-It seems like a program could be run at boot time or immediately after a
-module is loaded and could query the sound device and compute this database.
-Then no conflicts are possible since noone else has it open yet.
+both ardour and jamin are current cvs from less than 6 hrs ago.
+
+(btw, what does the "jack transport master" option mean ? my=20
+understanding is that any client can issue transport commands...)
+
+best,
+j=F6rn
+
+--=20
+Happy Birthday, Professor !
+Noam Chomsky, born Dec 7, 1928
+
+J=F6rn Nettingsmeier
+Kurf=FCrstenstr 49, 45138 Essen, Germany
+http://spunk.dnsalias.org (my server)
+http://www.linuxaudiodev.org (Linux Audio Developers)
+
+
 
 
 
