@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000919]: Master volume doesn't control rear speakers...
-Date: Tue, 22 Feb 2005 09:57:20 +0100
-Message-ID: <9cf190d4b63fdd322e7f81fc08fcedc7@bugtrack.alsa-project.org>
+Date: Tue, 22 Feb 2005 09:58:00 +0100
+Message-ID: <7539cfc8a0b817a10eb3c249d069fd0d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6A446175
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:57:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF162174
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:58:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,12 +21,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0000172.
+The following issue has been ASSIGNED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=919> 
 ======================================================================
 Reported By:                adamk75
-Assigned To:                
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   919
@@ -34,7 +34,7 @@ Category:                   PCI - ymfpci
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
@@ -102,6 +102,8 @@ Date Modified  Username       Field                    Change
 02-18-05 15:02 tiwai          Note Added: 0003655                          
 02-22-05 09:56 perex          Relationship added       related to 0000154  
 02-22-05 09:57 perex          Relationship added       related to 0000172  
+02-22-05 09:57 perex          Status                   new => assigned     
+02-22-05 09:57 perex          Assigned To               => perex           
 ======================================================================
 
 
