@@ -1,15 +1,12 @@
-From: R CHAN <rspchan@starhub.net.sg>
-Subject: Re: Re: ALSA 1.0.0pre1 is released - intel8x0 is oopsing
- (2.6) - FIXED!
-Date: Fri, 21 Nov 2003 10:50:28 +0800
+From: Drake Wilson <drake@libcom.com>
+Subject: Kernel oops/panic/hang with ALSA 1.0.0pre1 on Linux 2.4.22 with OSS emulation
+Date: Thu, 20 Nov 2003 20:30:25 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FBD7D74.8040100@starhub.net.sg>
-References: <s5hn0as1hvn.wl@alsa2.suse.de> <1069291828.485.28.camel@cmn37.stanford.edu> <3FBC70F5.3060706@starhub.net.sg>
+Message-ID: <20031121013025.GA140@ampersand>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FBC70F5.3060706@starhub.net.sg>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,132 +15,185 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: R CHAN <rspchan@starhub.net.sg>
-Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The oops has been fixed by the intel8x0 patch. Thanks.
+After installing an unpatched ALSA 1.0.0pre1 on Linux 2.4.22, modprobe
+of snd-intel8x0 caused a kernel oops, and left the module in some
+strange half-initialized state from which it was impossible to rmmod
+it.  Reboot followed.
+
+Patching with the recent intel8x0-fix.dif posted to the list, modprobe
+of snd-intel8x0 seemed to work okay, but then trying to run mikmod
+(which uses the OSS interface) caused the kernel to panic; SysRq would
+attempt to give some response, but only cause more panicking, with a
+growing stack trace.  Reboot followed.
+
+Later modprobe'ing of snd-intel8x0 in order to attempt a ksymoops on
+the panic seemed to work okay, but trying to rmmod it after the
+ksymoops was finished caused the kernel to hang so hard that SysRq no
+longer gave any response.  Reboot followed.
+
+This mail follows that last reboot.  Both ksymoops logs are included
+inline, as well as the relevant (I think) entry from /proc/pci.  I
+think the first ksymoops may be wrong, however, as I was stupid enough
+not to capture it before patching ALSA; the second ksymoops doesn't
+seem to give as much useful information.  I also apologize if this bug
+report contains insufficient or redundant information, as I am not a
+Linux kernel, ALSA development, or bug reporting expert.  :-)  If more
+information is needed, I will mail it on request.
+
+kern-1.log.ksymoops:
+"""
+ksymoops 2.4.9 on i686 2.4.22.  Options used
+     -V (default)
+     -k /proc/ksyms (default)
+     -l /proc/modules (default)
+     -o /lib/modules/2.4.22/ (default)
+     -m /boot/System.map (specified)
+
+Nov 20 19:37:31 ampersand kernel: Unable to handle kernel NULL pointer dereference at virtual address 00000000
+Nov 20 19:37:31 ampersand kernel: c0115743
+Nov 20 19:37:31 ampersand kernel: *pde = 00000000
+Nov 20 19:37:31 ampersand kernel: Oops: 0000
+Nov 20 19:37:31 ampersand kernel: CPU:    0
+Nov 20 19:37:31 ampersand kernel: EIP:    0010:[__wake_up+51/160]    Not tainted
+Nov 20 19:37:31 ampersand kernel: EFLAGS: 00010097
+Nov 20 19:37:31 ampersand kernel: eax: cdddc0a8   ebx: cdddc0a8   ecx: 00000000   edx: 00000003
+Nov 20 19:37:31 ampersand kernel: esi: cdddc0ac   edi: 00000001   ebp: cefb3dec   esp: cefb3dd4
+Nov 20 19:37:31 ampersand kernel: ds: 0018   es: 0018   ss: 0018
+Nov 20 19:37:31 ampersand kernel: Process mikmod (pid: 529, stackpage=cefb3000)
+Nov 20 19:37:31 ampersand kernel: Stack: cde2b000 cde16000 cdddc000 cdddc0ac 00000082 00000003 00000013 d09244d5 
+Nov 20 19:37:31 ampersand kernel:        cf89be80 00000013 d091fce6 00000013 00000000 00000000 00001806 00000001 
+Nov 20 19:37:31 ampersand kernel:        cf89be80 cdddc000 00000000 d0927f2f cf89be80 cefb3e58 d09519ae cf5fb1a0 
+Nov 20 19:37:31 ampersand kernel: Call Trace:    [<d09244d5>] [<d091fce6>] [<d0927f2f>] [<d09519ae>] [<d095466f>]
+Nov 20 19:37:31 ampersand kernel:   [<d0927fd0>] [<d0927a80>] [<d094d1a8>] [<d0951df7>] [<d094d52f>] [<d094dad2>]
+Nov 20 19:37:31 ampersand kernel:   [<d094dc29>] [<d094f07e>] [fput+76/224] [filp_close+85/96] [sys_close+67/84] [system_call+51/56]
+Nov 20 19:37:31 ampersand kernel: Code: 8b 01 85 45 fc 74 4c 31 c0 9c 5e fa c7 01 00 00 00 00 83 79 
+Using defaults from ksymoops -t elf32-i386 -a i386
 
 
-/proc/asound/card0> cat ../cards
-0 [I82801DBICH4   ]: ICH - Intel 82801DB-ICH4
-                      Intel 82801DB-ICH4 at 0xdffffa00, irq 10
+>>eax; cdddc0a8 <_end+d987cd0/1045ec88>
+>>ebx; cdddc0a8 <_end+d987cd0/1045ec88>
+>>esi; cdddc0ac <_end+d987cd4/1045ec88>
+>>ebp; cefb3dec <_end+eb5fa14/1045ec88>
+>>esp; cefb3dd4 <_end+eb5f9fc/1045ec88>
 
-/proc/asound/card0> cat codec97#0/ac97#0-0
-0-0/0: Realtek ALC202 rev 0
+Trace; d09244d5 <[snd-pcm]snd_pcm_update_hw_ptr+145/1f0>
+Trace; d091fce6 <[snd-pcm]snd_pcm_action+46/50>
+Trace; d0927f2f <[snd-pcm]snd_pcm_lib_write1+3ff/410>
+Trace; d09519ae <END_OF_CODE+12067/????>
+Trace; d095466f <END_OF_CODE+14d28/????>
+Trace; d0927fd0 <[snd-pcm]snd_pcm_lib_write+90/b0>
+Trace; d0927a80 <[snd-pcm]snd_pcm_lib_write_transfer+0/b0>
+Trace; d094d1a8 <END_OF_CODE+d861/????>
+Trace; d0951df7 <END_OF_CODE+124b0/????>
+Trace; d094d52f <END_OF_CODE+dbe8/????>
+Trace; d094dad2 <END_OF_CODE+e18b/????>
+Trace; d094dc29 <END_OF_CODE+e2e2/????>
+Trace; d094f07e <END_OF_CODE+f737/????>
 
-Capabilities     :
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : Realtek 3D Stereo Enhancement
+Code;  00000000 Before first symbol
+00000000 <_EIP>:
+Code;  00000000 Before first symbol
+   0:   8b 01                     mov    (%ecx),%eax
+Code;  00000002 Before first symbol
+   2:   85 45 fc                  test   %eax,0xfffffffc(%ebp)
+Code;  00000005 Before first symbol
+   5:   74 4c                     je     53 <_EIP+0x53>
+Code;  00000007 Before first symbol
+   7:   31 c0                     xor    %eax,%eax
+Code;  00000009 Before first symbol
+   9:   9c                        pushf  
+Code;  0000000a Before first symbol
+   a:   5e                        pop    %esi
+Code;  0000000b Before first symbol
+   b:   fa                        cli    
+Code;  0000000c Before first symbol
+   c:   c7 01 00 00 00 00         movl   $0x0,(%ecx)
+Code;  00000012 Before first symbol
+  12:   83 79 00 00               cmpl   $0x0,0x0(%ecx)
+"""
 
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=1 AMAP DSA=0 SPDIF DRA VRA
-Extended status  : SPCV LDAC SDAC CDAC SPDIF=3/4 VRA
-PCM front DAC    : 48000Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
+kern-2.log.ksymoops:
+"""
+ksymoops 2.4.9 on i686 2.4.22.  Options used
+     -V (default)
+     -k /proc/ksyms (default)
+     -l /proc/modules (default)
+     -o /lib/modules/2.4.22/ (default)
+     -m /boot/System.map (specified)
 
-R CHAN wrote:
-> Just tried ALSA CVS and 2.6.0-test9 current bk.
-> CVS snd-intel8x0 is oopsing.
-> 
-> Unable to handle kernel NULL pointer dereference at virtual address 
-> 00000040
->  printing eip:
-> e1a3a9e6
-> *pde = 00000000
-> Oops: 0000 [#1]
-> CPU:    0
-> EIP:    0060:[<e1a3a9e6>]    Not tainted
-> EFLAGS: 00010202
-> EIP is at snd_intel8x0_mixer+0x2b6/0x400 [snd_intel8x0]
-> eax: 00000020   ebx: dd8ecc00   ecx: 00000008   edx: 00000080
-> esi: dc13f4c0   edi: 00000001   ebp: 00000020   esp: dc137c74
-> ds: 007b   es: 007b   ss: 0068
-> Process modprobe (pid: 887, threadinfo=dc136000 task=dec572e0)
-> Stack: dd8ecc00 00000080 e1a3f540 00000005 df678400 dda04a00 00000000 
-> dd8ecc00
->        e1a3a710 00000000 c1549400 00000000 00000000 00000000 00000000 
-> 00000000
->        00000000 00000000 00000000 00000000 00000000 00000000 00000000 
-> 00000000
-> Call Trace:
->  [<e1a3a710>] snd_intel8x0_mixer_free_ac97+0x0/0x20 [snd_intel8x0]
->  [<e1a3adc7>] snd_intel8x0_ich_chip_init+0x1d7/0x300 [snd_intel8x0]
->  [<e1a39290>] snd_intel8x0_codec_write+0x0/0xd0 [snd_intel8x0]
->  [<e1a39360>] snd_intel8x0_codec_read+0x0/0x110 [snd_intel8x0]
->  [<e1a3a700>] snd_intel8x0_mixer_free_ac97_bus+0x0/0x10 [snd_intel8x0]
->  [<e1a3bfea>] snd_intel8x0_probe+0x10a/0x280 [snd_intel8x0]
->  [<c016c531>] dput+0x31/0x220
->  [<c0202822>] pci_device_probe_static+0x52/0x70
->  [<c020287c>] __pci_device_probe+0x3c/0x50
->  [<c02028bc>] pci_device_probe+0x2c/0x50
->  [<c02428df>] bus_match+0x3f/0x70
->  [<c0242a0c>] driver_attach+0x5c/0xa0
->  [<c0242cd3>] bus_add_driver+0x93/0xb0
->  [<c024310f>] driver_register+0x2f/0x40
->  [<c0202aac>] pci_register_driver+0x5c/0x90
->  [<e195c013>] alsa_card_intel8x0_init+0x13/0x8e [snd_intel8x0]
->  [<c0135a09>] sys_init_module+0x119/0x230
->  [<c010b3d9>] sysenter_past_esp+0x52/0x71
-> 
-> Code: 0f b7 40 20 0f b6 84 83 c8 02 00 00 c0 e0 06 08 c1 eb cb 80
-> 
-> Anything else you need to know?
-> 
-> 
-> Fernando Pablo Lopez-Lezcano wrote:
-> 
->>> as you might have already seen on the web news page, we released
->>> 1.0.0pre1 tarball.  This is intended for the wide tests before the
->>> official 1.0.0 release.  We planned to release 1.0.0 (hopefully) in
->>> this month, so please everyone test this version and give bug reports
->>> now.
->>
->>
->>
->> Looks like somehow hdspmix and hdspconf did not make it to the
->> alsa-tools tarball (but they are there in CVS)....
->> -- Fernando
->>
->>
->>
->>
->> -------------------------------------------------------
->> This SF.net email is sponsored by: SF.net Giveback Program.
->> Does SourceForge.net help you be more productive?  Does it
->> help you create better code?  SHARE THE LOVE, and help us help
->> YOU!  Click Here: http://sourceforge.net/donate/
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->>
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.net email is sponsored by: SF.net Giveback Program.
-> Does SourceForge.net help you be more productive?  Does it
-> help you create better code?  SHARE THE LOVE, and help us help
-> YOU!  Click Here: http://sourceforge.net/donate/
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
+Nov 20 19:20:06 ampersand kernel: Unable to handle kernel NULL pointer dereference at virtual address 00000020
+Nov 20 19:20:06 ampersand kernel: d09427cc
+Nov 20 19:20:06 ampersand kernel: *pde = 00000000
+Nov 20 19:20:06 ampersand kernel: Oops: 0000
+Nov 20 19:20:06 ampersand kernel: CPU:    0
+Nov 20 19:20:06 ampersand kernel: EIP:    0010:[<d09427cc>]    Tainted: P 
+Using defaults from ksymoops -t elf32-i386 -a i386
+Nov 20 19:20:06 ampersand kernel: EFLAGS: 00010206
+Nov 20 19:20:06 ampersand kernel: eax: 00000000   ebx: 00000002   ecx: 0000002a   edx: 00000001
+Nov 20 19:20:06 ampersand kernel: esi: cf226000   edi: c6b74f60   ebp: 4015d8c0   esp: cbc0dc90
+Nov 20 19:20:06 ampersand kernel: ds: 0018   es: 0018   ss: 0018
+Nov 20 19:20:06 ampersand kernel: Process modprobe (pid: 17474, stackpage=cbc0d000)
+Nov 20 19:20:06 ampersand kernel: Stack: cf226000 00000080 d0945300 00000005 cfa18a00 ca2b2760 00000000 cf226000 
+Nov 20 19:20:06 ampersand kernel:        d09424e0 00000000 c13b8800 00000000 00000000 00000000 00000000 00000000 
+Nov 20 19:20:06 ampersand kernel:        00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 
+Nov 20 19:20:06 ampersand kernel: Call Trace:    [<d0945300>] [<d09424e0>] [<d0942bb4>] [<d0941310>] [<d09413b0>]
+Nov 20 19:20:06 ampersand kernel:   [<d09424d0>] [<d09455a0>] [<d0943e0a>] [<d0944d10>] [<d0945700>] [pci_announce_device+53/80]
+Nov 20 19:20:06 ampersand kernel:   [<d0944d10>] [<d0945700>] [pci_register_driver+72/96] [<d0945700>] [<d0944113>] [<d0945700>]
+Nov 20 19:20:06 ampersand kernel: Code: 0f b7 40 20 0f b6 84 86 c8 02 00 00 c0 e0 06 08 c1 eb cc 80 
 
 
+>>EIP; d09427cc <.data.end+2e85/????>   <=====
+
+>>esi; cf226000 <_end+edd1c28/1045ec88>
+>>edi; c6b74f60 <_end+6720b88/1045ec88>
+>>esp; cbc0dc90 <_end+b7b98b8/1045ec88>
+
+Trace; d0945300 <.data.end+59b9/????>
+Trace; d09424e0 <.data.end+2b99/????>
+Trace; d0942bb4 <.data.end+326d/????>
+Trace; d0941310 <.data.end+19c9/????>
+Trace; d09413b0 <.data.end+1a69/????>
+Trace; d09424d0 <.data.end+2b89/????>
+Trace; d09455a0 <.data.end+5c59/????>
+Trace; d0943e0a <.data.end+44c3/????>
+Trace; d0944d10 <.data.end+53c9/????>
+Trace; d0945700 <.data.end+5db9/????>
+Trace; d0944d10 <.data.end+53c9/????>
+Trace; d0945700 <.data.end+5db9/????>
+
+Code;  d09427cc <.data.end+2e85/????>
+00000000 <_EIP>:
+Code;  d09427cc <.data.end+2e85/????>   <=====
+   0:   0f b7 40 20               movzwl 0x20(%eax),%eax   <=====
+Code;  d09427d0 <.data.end+2e89/????>
+   4:   0f b6 84 86 c8 02 00      movzbl 0x2c8(%esi,%eax,4),%eax
+Code;  d09427d7 <.data.end+2e90/????>
+   b:   00 
+Code;  d09427d8 <.data.end+2e91/????>
+   c:   c0 e0 06                  shl    $0x6,%al
+Code;  d09427db <.data.end+2e94/????>
+   f:   08 c1                     or     %al,%cl
+Code;  d09427dd <.data.end+2e96/????>
+  11:   eb cc                     jmp    ffffffdf <_EIP+0xffffffdf>
+Code;  d09427df <.data.end+2e98/????>
+  13:   80 00 00                  addb   $0x0,(%eax)
+"""
+
+/proc/pci contains:
+"""
+  Bus  0, device  31, function  5:
+    Multimedia audio controller: Intel Corp. 82801DB AC'97 Audio Controller (rev 1).
+      IRQ 11.
+      I/O at 0xe400 [0xe4ff].
+      I/O at 0xe080 [0xe0bf].
+      Non-prefetchable 32 bit memory at 0xffa7f800 [0xffa7f9ff].
+      Non-prefetchable 32 bit memory at 0xffa7f400 [0xffa7f4ff].
+"""
+
+   ---> Drake Wilson
 
 
 -------------------------------------------------------
