@@ -1,17 +1,14 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: snd-usb-usx2y 0.8.5 against alsa-kernel cvshead:
- OHCI doesn't crash anymore
-Date: Tue, 26 Oct 2004 10:15:29 +0200 (CEST)
+From: karsten wiese <annabellesgarden@yahoo.de>
+Subject: Re: snd-usb-usx2y 0.8.5 against alsa-kernel cvshead: OHCI doesn't crash anymore
+Date: Tue, 26 Oct 2004 11:11:51 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0410261015120.9322@pnote.perex-int.cz>
-References: <200409302046.29798.annabellesgarden@yahoo.de>   
- <200410200228.16228.annabellesgarden@yahoo.de>    <s5hacuhivfb.wl@alsa2.suse.de>
-    <200410212021.22349.annabellesgarden@yahoo.de>
- <32787.192.168.1.5.1098742225.squirrel@192.168.1.5>
+Message-ID: <20041026091151.17461.qmail@web12210.mail.yahoo.com>
+References: <Pine.LNX.4.58.0410261015120.9322@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <32787.192.168.1.5.1098742225.squirrel@192.168.1.5>
+In-Reply-To: <Pine.LNX.4.58.0410261015120.9322@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,21 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rui Nuno Capela <rncbc@rncbc.org>
+To: Jaroslav Kysela <perex@perex.cz>, Rui Nuno Capela <rncbc@rncbc.org>
 Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>, Karsten Wiese <annabellesgarden@yahoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 25 Oct 2004, Rui Nuno Capela wrote:
+ --- Jaroslav Kysela <perex@perex.cz> schrieb: 
+> On Mon, 25 Oct 2004, Rui Nuno Capela wrote:
+> 
+> > May I ask what's the status of this, wrt.including
+> snd-usb-usx2y version
+> > 0.8.5 on the official alsa-kernel tree?
+> 
+> Could you resend this patch?
+> 
+wait some minutes, then I'll send the newest Version
 
-> May I ask what's the status of this, wrt.including snd-usb-usx2y version
-> 0.8.5 on the official alsa-kernel tree?
+Karsten
 
-Could you resend this patch?
 
-					Jaroslav
+	
 
------
-Jaroslav Kysela <perex@perex.cz>
+	
+		
+___________________________________________________________
+Gesendet von Yahoo! Mail - Jetzt mit 100MB Speicher kostenlos - Hier anmelden: http://mail.yahoo.de
 
 
 -------------------------------------------------------
