@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
-Date: Thu, 17 Feb 2005 20:31:00 +0100
-Message-ID: <054300eca3a441f9a533012a7391744f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
+Date: Thu, 17 Feb 2005 20:44:43 +0100
+Message-ID: <ddfd011d0bb5680ee9f56a4a68d9aea9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BEFBA269
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 20:31:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BFFCE269
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 20:44:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,75 +23,98 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
 ======================================================================
-Reported By:                christophe
-Assigned To:                
+Reported By:                vaxen
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   917
-Category:                   PCI - intel8x0
+Issue ID:                   914
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Ununtu
-Kernel Version:             2.6.11-rc3
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.9 2.6.10
 ======================================================================
-Date Submitted:             02-17-2005 20:16 CET
-Last Modified:              02-17-2005 20:30 CET
+Date Submitted:             02-16-2005 20:39 CET
+Last Modified:              02-17-2005 20:44 CET
 ======================================================================
-Summary:                    intel8x0 ACPI suspend/resume trouble
+Summary:                    nm256 causes kernel to hard freeze
 Description: 
-I have a problem with the driver for my soundcard after
-ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
-problem with prior kernels, I first tried with 2.6.8).
+Hi, here is my specs:
 
-This is a IBM x40 laptop (23865FU) with an intel chipset.
+Gateway solo 3300
+http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
+Audio chipset NM2200 interface to AC97 CODEC
 
-The relevant lspci line is:
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
-Audio Controller (rev
-+01)
+pegasos vaxen # lspci -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
+      +-0a.0  Texas Instruments PCI1211
+      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
+      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
 
-The driver I use is snd_intel8x0.
+I am using a custom patched kernel at
+http://morph-sources.sourceforge.net/?q=node/27 
 
-The problem is that after a suspend/resume cycle the sound
-output is either off or only on one side or with statics.
+It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
+alsa-bk-2005-01-14.patch.
 
-I tried to do:
+I compiled the drivers into the kernel, the kernel hard freezes after
+displaying these message:
+nm256:found card signature in video RAM: 0x27ec00
+nm256:Mapping port 1 from 0x2709a0-0x27ec00
+I have to switch off the laptop as it does not respond to any inputs.
 
-~$ alsactl power off
-~$ alsactl power on
+I also tried compiling the drivers as modules, when I tried to modprobe
+snd-nm256, the kernel hard freezes without any warning message.
 
-without any change.
+I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
+like 2.6.10.
 
-If I suspend/resume multiple time I can get the sound output
-a little better (like on one side instead of off). But so far
-to get the correct sound back I need to reboot.
+I have not tried alsa 1.0.7 driver.
 
-Is it a known problem?
-Is there a way to force the driver to reinitialized the chipset?
-
-Thanks for alsa,
-Christophe
-
+Please let me know if you need more diagnostic information to fix this
+problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-17-05 20:30 
+ tiwai - 02-17-05 18:31 
 ----------------------------------------------------------------------
-This might be a bug of AD1981 codec code.
+Well, it's really hard to debug this beast without hardware...
 
-Does reloading snd-intel8x0 module help?
+Try reset_workaround=1 module option at first.
+Make sure that you load this module before starting X.  Once after you
+start X, the video RAM is cleared, and this confuses the sound driver
+(which uses the video RAM for the sound buffer).
+
+----------------------------------------------------------------------
+ vaxen - 02-17-05 20:44 
+----------------------------------------------------------------------
+I tried this command
+'modprobe snd-nm256 reset_workaround=1' 
+The kernel freezes on me. Am I using the modprobe command properly?
+
+Thanks
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-17-05 20:16 christophe     New Issue                                    
-02-17-05 20:16 christophe     Distribution              => Ununtu          
-02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
-02-17-05 20:30 tiwai          Note Added: 0003636                          
+02-16-05 20:39 vaxen          New Issue                                    
+02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
+02-16-05 21:36 vaxen          Note Added: 0003626                          
+02-16-05 21:38 vaxen          Note Edited: 0003626                         
+02-16-05 21:56 vaxen          Note Edited: 0003626                         
+02-17-05 18:31 tiwai          Note Added: 0003632                          
+02-17-05 20:44 vaxen          Note Added: 0003638                          
 ======================================================================
 
 
