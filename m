@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000377]: AudioTrak MAYA44 USB is detected, but doesn't work.
-Date: Thu, 11 Nov 2004 09:22:47 +0100
-Message-ID: <805b5f2812844a0b2fae706cdb3b3f14@bugtrack.alsa-project.org>
+Date: Thu, 11 Nov 2004 09:22:25 +0100
+Message-ID: <ab64468e23aa7ef133fd79f23de2eba7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 206CC25C
-	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 09:22:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A3F5625C
+	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 09:22:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=377> 
 ======================================================================
@@ -35,7 +35,7 @@ Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     closed
+Status:                     resolved
 Distribution:               Slackware 10.0
 Kernel Version:             2.4.26 and 2.6.7
 Resolution:                 fixed
@@ -92,7 +92,6 @@ Date Modified  Username       Field                    Change
 11-11-04 09:22 Clemens LadischStatus                   assigned => resolved
 11-11-04 09:22 Clemens LadischResolution               open => fixed       
 11-11-04 09:22 Clemens LadischNote Added: 0002382                          
-11-11-04 09:22 Clemens LadischStatus                   resolved => closed  
 ======================================================================
 
 
