@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000930]: Ego Sys Juli@ does not work at all
-Date: Tue, 22 Feb 2005 09:26:50 +0100
-Message-ID: <707722e60282d10c0e0c965a95afc40d@bugtrack.alsa-project.org>
+Date: Tue, 22 Feb 2005 09:26:42 +0100
+Message-ID: <3a7d00f5248fb5bbe2b2db3f4b85b2cf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E0D92FA
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:26:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 37DBAFA
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:26:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,12 +21,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=930> 
 ======================================================================
 Reported By:                lingis
-Assigned To:                perex
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   930
@@ -34,7 +34,7 @@ Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               Ubuntu 4.10
 Kernel Version:             2.6.8.1-3-386
 ======================================================================
@@ -93,8 +93,6 @@ Date Modified  Username       Field                    Change
 02-22-05 00:32 lingis         Kernel Version            => 2.6.8.1-3-386   
 02-22-05 00:45 lingis         Issue Monitored: lingis                      
 02-22-05 09:26 perex          Note Added: 0003685                          
-02-22-05 09:26 perex          Status                   new => assigned     
-02-22-05 09:26 perex          Assigned To               => perex           
 ======================================================================
 
 
