@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000062]: No volume control - cmi9739 AC97 codec
-Date: Tue, 22 Feb 2005 09:47:19 +0100
-Message-ID: <1234de7ba61a7e8dd806c24b5f57fa7a@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000793]: Feature Request SRS
+Date: Tue, 22 Feb 2005 09:49:09 +0100
+Message-ID: <f095372f58797047fd0e6ab636c752f1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 54696174
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:47:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 12715174
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:49:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,67 +21,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=62> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=793> 
 ======================================================================
-Reported By:                LP
+Reported By:                gregh
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   62
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   793
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               gentoo
-Kernel Version:             2.6.0
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
 ======================================================================
-Date Submitted:             02-15-2004 02:21 CET
-Last Modified:              02-22-2005 09:47 CET
+Date Submitted:             01-08-2005 05:16 CET
+Last Modified:              02-22-2005 09:49 CET
 ======================================================================
-Summary:                    No volume control - cmi9739 AC97 codec
+Summary:                    Feature Request SRS
 Description: 
-Using motherboard asrock k7s8xe+(sis748 chipset) which features sis7012,
-cmi9739 AC97 codec it is not possible to control volume. Is there any
-chance, that this can be implemented in future alsa versions, I heard, the
-problem is, that this hardware doesn't have a hardware PCM-Out volume
-control.
-
-P.S. There is an OSS driver available:
-http://www.cmedia.com.tw/download/e_UDA9738_linux.htm
-which maybe helpful.
+Is there a way to use SRS with alsa?
+Is this even the correct forum to post a request?
+I apologise if it's not
 ======================================================================
 
 ----------------------------------------------------------------------
- LP - 03-02-04 00:05 
+ gregh - 01-08-05 05:17 
 ----------------------------------------------------------------------
-Cool thanks.
+I have set thi swith an incorrect category. It sould be request
 
 ----------------------------------------------------------------------
- perex - 02-22-05 09:47 
+ tiwai - 01-13-05 21:14 
 ----------------------------------------------------------------------
-The softvol plugin in alsa-lib fixes this issue. It is default now (in
-CVS).
+Any free library available for SRS?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-15-04 02:21 LP             New Issue                                    
-02-26-04 12:08 perex          Status                   new => assigned     
-02-26-04 12:08 perex          Assigned To               => perex           
-02-26-04 12:08 perex          Note Added: 0000341                          
-02-29-04 20:19 perex          Summary                  No volume control => No
-volume control - cmi9739 AC97 codec
-03-02-04 00:05 LP             Note Added: 0000428                          
-03-20-04 11:37 erol           Issue Monitored: erol                        
-11-22-04 20:58 ajir           Issue Monitored: ajir                        
-02-22-05 09:47 perex          Status                   assigned => resolved
-02-22-05 09:47 perex          Resolution               open => fixed       
-02-22-05 09:47 perex          Note Added: 0003693                          
+01-08-05 05:16 gregh          New Issue                                    
+01-08-05 05:16 gregh          Kernel Version            => 2.6.10          
+01-08-05 05:17 gregh          Note Added: 0003127                          
+01-13-05 21:14 tiwai          Note Added: 0003204                          
+02-22-05 09:48 perex          Project                  ALSA - driver => ALSA -
+lib
+02-22-05 09:49 perex          Category                 0_compilation problem_!!!
+=> pcm - digital audio
 ======================================================================
 
 
