@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000633]: missing snd_rawmidi_* symbols when loading snd-emu10k1x module
-Date: Mon, 8 Nov 2004 09:47:25 +0100
-Message-ID: <64c34a133e7ca607d0524dc630777f2e@bugtrack.alsa-project.org>
+From: "weifengsui" <fatcat1688@tom.com>
+Subject: SoundCards driver work  no correctly.
+Date: Mon, 8 Nov 2004 17:31:04 +0800
+Message-ID: <01fa01c4c575$adf756d0$0700a8c0@suiweifeng>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_01F5_01C4C5B8.B932B920"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE5E9289
-	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2004 09:47:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,74 +15,131 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=633> 
-======================================================================
-Reported By:                xbertje
-Assigned To:                fmoraes
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   633
-Category:                   PCI - emu10k1x
-Reproducibility:            have not tried
-Severity:                   crash
-Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8-1.521
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             11-07-2004 21:16 CET
-Last Modified:              11-08-2004 09:47 CET
-======================================================================
-Summary:                    missing snd_rawmidi_* symbols when loading
-snd-emu10k1x module
-Description: 
-When compiling the 1.0.7rc2 drivers on a Fedora Core 2
-(kernel version 2.6.8-1.521) with the following commands:
-./configure --with-cards=emu10k1x
-make
-make install
+------=_NextPart_000_01F5_01C4C5B8.B932B920
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-modprobe snd-emu10k1x
-results in several warning concerning snd_rawmidi_:
-dmesg output yields
-snd_emu10k1x: Unknown symbol snd_rawmidi_receive
-snd_emu10k1x: Unknown symbol snd_rawmidi_transmit
-snd_emu10k1x: Unknown symbol snd_rawmidi_new
-snd_emu10k1x: Unknown symbol snd_rawmidi_set_ops
+SGkNCg0KICAgSSBhbSBmYWNpbmcgcHJvYmxlbSB3aGVuIHByb2dyYW0gdGhlIGRyaXZlciBvZiBB
+TFNBIEhEQXVkaW8uIE15IFJlZGhhdCB2ZXJzaW9uIGlzIDkuMDEsdGhlIGxpbnV4IGtlcm5lbCB2
+ZXJzaW9uIGlzIDIuNi4wIGFuZCB0aGUgQUxTQSB2ZXJzaW9uIGlzIDEuMC42YS4NCiAgIDEsIFRo
+ZSBIREF1ZGlvIGRyaXZlciBjYW4gYmUgZGV0ZWN0ZWQgYnkgdGhlIEFMU0EtdXRpbHMgYXBsYXkg
+YW5kIHRoZSBkcml2ZXIgd29yayBPSywgYnV0IGl0IGNhbm4ndCBiZSBkZXRlY3RlZCBieSAnc3lz
+dGVtIHNldHRpbmdzL2RldGVjdCBzb3VuZCBjYXJkJy4NCiAgIDIsIFdoaWxlIGFwbGF5IHBsYXli
+YWNrIGEgV0FWIG9mIDI0Yml0IFN0ZXJlbyA0OGssIHRoZSBBTFNBIGFsd2F5cyBpbnNlcnQgYSBs
+aW5lYXIgcGx1Z2luIHRvIGNvbnZlcnQgMjRCaXQgaW50byAxNkJpdCxCdXQgbXkgaGFyZHdhcmUg
+c3VwcG9ydHMgMjRCaXQuDQoNCiAgIHRoZSBmb2xsb3dpbmcgaXMgdGhlIGRlc2NyaXB0aW9uIG9m
+IHNuZF9wY21faGFyZHdhcmVfdA0Kc3RhdGljIHNuZF9wY21faGFyZHdhcmVfdCBzbmRfYXp4X3Bs
+YXliYWNrX2h3ID0gew0KICAgIC5pbmZvID0gICAgICAgICAgICAoU05EUlZfUENNX0lORk9fTU1B
+UCB8IFNORFJWX1BDTV9JTkZPX0lOVEVSTEVBVkVEIHwNCiAgICAgICAgICAgICAgICAgU05EUlZf
+UENNX0lORk9fQkxPQ0tfVFJBTlNGRVIgfA0KICAgICAgICAgICAgICAgICBTTkRSVl9QQ01fSU5G
+T19NTUFQX1ZBTElEIHwNCiAgICAgICAgICAgICAgICAgU05EUlZfUENNX0lORk9fUEFVU0UgfA0K
+ICAgICAgICAgICAgICAgICBTTkRSVl9QQ01fSU5GT19SRVNVTUUpLA0KICAgIC5mb3JtYXRzID0g
+U05EUlZfUENNX0ZNVEJJVF9TMTZfTEUgfCBTTkRSVl9QQ01fRk9STUFUX1MyNF8zTEUsDQogICAg
+LnJhdGVzID0gICAoU05EUlZfUENNX1JBVEVfMTkyMDAwIHwgU05EUlZfUENNX1JBVEVfOTYwMDAg
+fA0KICAgICAgICAgICAgICAgU05EUlZfUENNX1JBVEVfNDgwMDAgfCBTTkRSVl9QQ01fUkFURV80
+NDEwMCksDQogICAgLnJhdGVfbWluID0gICAgICAgICA0NDEwMCwNCiAgICAucmF0ZV9tYXggPSAg
+ICAgICAgIDE5MjAwMCwNCiAgICAuY2hhbm5lbHNfbWluID0gICAgIDIsDQogICAgLmNoYW5uZWxz
+X21heCA9ICAgICA2LA0KICAgIC5idWZmZXJfYnl0ZXNfbWF4ID0gNjQgKiAxMDI0LA0KICAgIC5w
+ZXJpb2RfYnl0ZXNfbWluID0gMTI4LA0KICAgIC5wZXJpb2RfYnl0ZXNfbWF4ID0gNDA5NiwNCiAg
+ICAucGVyaW9kc19taW4gPSAgICAgIDQsDQogICAgLnBlcmlvZHNfbWF4ID0gICAgICAxNiwNCiAg
+ICAuZmlmb19zaXplID0gICAgICAgIDAsDQogICAgDQogICB0aGUgZm9sbG93aW5nIGlzIG1vZHVs
+ZSBjb25maWd1cmF0aW9uIGZpbGUgL2V0Yy9tb2R1bGVzLmNvbmYsIE15IEhEQXVkaW8gbW9kdWxl
+IG5hbWUgaXMgc25kLWF6eC4NCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjDQphbGlhcyB1
+c2ItY29udHJvbGxlciBlaGNpLWhjZA0KYWxpYXMgdXNiLWNvbnRyb2xsZXIxIHVzYi11aGNpDQoN
+CiMgQUxTQSBuYXRpdmUgZGV2aWNlIHN1cHBvcnQNCmFsaWFzIGNoYXItbWFqb3ItMTE2IHNuZA0K
+b3B0aW9ucyBzbmQgbWFqb3ItMTE2IGNhcmRzX2xpbWl0PTENCmFsaWFzIHNuZC1jYXJkLTAgc25k
+LWF6eA0Kb3B0aW9ucyBzbmQtYXp4IGluZGV4PTAgaWQgInRlc3QiDQoNCiMgT1NTL0ZyZWUgc2V0
+dXANCg0KYWxpYXMgc291bmQtc2xvdC0wIHNuZC1hengNCg0KIyMjIyMjIyMjIyMjIyMjIw0KDQog
+Im1vZHByb2JlIHNuZC1hengiLCAicm1tb2Qgc25kLWF6eCIsYW5kICJsc21vZCIsIGl0IHNlZW1z
+IHRvIHdvcmsgY29ycmVjdGx5LiANCg0KDQpJIGRvbnQga25vdyB3aHkuDQoNCkJlc3QgUmVnYXJk
+cywNCkZhdCBjYXQNCg0K
 
-It seems that in the configure file a line like
-CONFIG_SND_RAWMIDI="m"
-for "$card" = "emu10k1x" (line 8566) is missing,
-If I insert the line above in the configure file
-and reconfigure and recompile everything the errors
-disappear.
+------=_NextPart_000_01F5_01C4C5B8.B932B920
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 
-======================================================================
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9uYWwv
+L0VOIj4NCjxIVE1MPjxIRUFEPg0KPE1FVEEgaHR0cC1lcXVpdj1Db250ZW50LVR5cGUgY29udGVu
+dD0idGV4dC9odG1sOyBjaGFyc2V0PWdiMjMxMiI+DQo8TUVUQSBjb250ZW50PSJNU0hUTUwgNi4w
+MC4yNzIyLjkwMCIgbmFtZT1HRU5FUkFUT1I+DQo8U1RZTEU+PC9TVFlMRT4NCjwvSEVBRD4NCjxC
+T0RZIGJnQ29sb3I9I2ZmZmZmZj4NCjxESVY+PEZPTlQgc2l6ZT0yPg0KPERJVj48Rk9OVCBzaXpl
+PTI+DQo8RElWPjxGT05UIHNpemU9Mj5IaTwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0y
+PjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPiZuYnNwOyZuYnNwOyBJIGFt
+IGZhY2luZyZuYnNwO3Byb2JsZW0gd2hlbiBwcm9ncmFtIHRoZSBkcml2ZXIgDQpvZiBBTFNBIEhE
+QXVkaW8uIE15IFJlZGhhdCB2ZXJzaW9uIGlzIDkuMDEsdGhlIGxpbnV4IGtlcm5lbCB2ZXJzaW9u
+IGlzIDIuNi4wIGFuZCANCnRoZSBBTFNBIHZlcnNpb24gaXMgMS4wLjZhLjwvRk9OVD48L0RJVj4N
+CjxESVY+PEZPTlQgc2l6ZT0yPiZuYnNwOyZuYnNwOyAxLCBUaGUgSERBdWRpbyBkcml2ZXIgY2Fu
+IGJlIGRldGVjdGVkIGJ5IHRoZSANCkFMU0EtdXRpbHMgYXBsYXkgYW5kIHRoZSBkcml2ZXIgd29y
+ayBPSywgYnV0IGl0IGNhbm4ndCBiZSBkZXRlY3RlZCBieSAnc3lzdGVtIA0Kc2V0dGluZ3MvZGV0
+ZWN0IHNvdW5kIGNhcmQnLjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPiZuYnNwOyZu
+YnNwOyAyLCBXaGlsZSBhcGxheSZuYnNwO3BsYXliYWNrIGEgV0FWIG9mIA0KMjRiaXQmbmJzcDtT
+dGVyZW8gNDhrLCB0aGUgQUxTQSZuYnNwO2Fsd2F5cyBpbnNlcnQgYSBsaW5lYXIgcGx1Z2luIHRv
+IGNvbnZlcnQgDQoyNEJpdCBpbnRvIDE2Qml0LEJ1dCBteSBoYXJkd2FyZSZuYnNwO3N1cHBvcnRz
+IDI0Qml0LjxCUj4NCjxESVY+PEZPTlQgc2l6ZT0yPiZuYnNwOyZuYnNwOyB0aGUgZm9sbG93aW5n
+IGlzIHRoZSBkZXNjcmlwdGlvbiBvZiANCnNuZF9wY21faGFyZHdhcmVfdDwvRk9OVD48L0RJVj4N
+CjxESVY+PEZPTlQgc2l6ZT0yPnN0YXRpYyBzbmRfcGNtX2hhcmR3YXJlX3Qgc25kX2F6eF9wbGF5
+YmFja19odyA9IA0KezxCUj4mbmJzcDsmbmJzcDsmbmJzcDsgLmluZm8gDQo9Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IA0K
+KFNORFJWX1BDTV9JTkZPX01NQVAgfCBTTkRSVl9QQ01fSU5GT19JTlRFUkxFQVZFRCANCnw8QlI+
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IA0KU05EUlZfUENNX0lORk9f
+QkxPQ0tfVFJBTlNGRVIgDQp8PEJSPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyANClNORFJWX1BDTV9JTkZPX01NQVBfVkFMSUQgDQp8PEJSPiZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyANClNORFJWX1BDTV9JTkZPX1BBVVNFIA0KfDxCUj4mbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsgDQpTTkRSVl9QQ01fSU5GT19SRVNV
+TUUpLDxCUj4mbmJzcDsmbmJzcDsmbmJzcDsgLmZvcm1hdHMgPSBTTkRSVl9QQ01fRk1UQklUX1Mx
+Nl9MRSANCnwgU05EUlZfUENNX0ZPUk1BVF9TMjRfM0xFLDxCUj4mbmJzcDsmbmJzcDsmbmJzcDsg
+LnJhdGVzID0mbmJzcDsmbmJzcDsgDQooU05EUlZfUENNX1JBVEVfMTkyMDAwIHwgU05EUlZfUENN
+X1JBVEVfOTYwMDAgDQp8PEJSPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyANClNORFJWX1BD
+TV9SQVRFXzQ4MDAwIHwgU05EUlZfUENNX1JBVEVfNDQxMDApLDxCUj4mbmJzcDsmbmJzcDsmbmJz
+cDsgLnJhdGVfbWluIA0KPSZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyA0NDEwMCw8QlI+Jm5ic3A7Jm5ic3A7Jm5ic3A7IA0KLnJhdGVfbWF4ID0mbmJzcDsm
+bmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsgDQoxOTIwMDAsPEJSPiZu
+YnNwOyZuYnNwOyZuYnNwOyAuY2hhbm5lbHNfbWluID0mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsg
+DQoyLDxCUj4mbmJzcDsmbmJzcDsmbmJzcDsgLmNoYW5uZWxzX21heCA9Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7IA0KNiw8QlI+Jm5ic3A7Jm5ic3A7Jm5ic3A7IC5idWZmZXJfYnl0ZXNfbWF4ID0g
+NjQgKiAxMDI0LDxCUj4mbmJzcDsmbmJzcDsmbmJzcDsgDQoucGVyaW9kX2J5dGVzX21pbiA9IDEy
+OCw8QlI+Jm5ic3A7Jm5ic3A7Jm5ic3A7IC5wZXJpb2RfYnl0ZXNfbWF4ID0gDQo0MDk2LDxCUj4m
+bmJzcDsmbmJzcDsmbmJzcDsgLnBlcmlvZHNfbWluID0mbmJzcDsmbmJzcDsmbmJzcDsmbmJzcDsm
+bmJzcDsgDQo0LDxCUj4mbmJzcDsmbmJzcDsmbmJzcDsgLnBlcmlvZHNfbWF4ID0mbmJzcDsmbmJz
+cDsmbmJzcDsmbmJzcDsmbmJzcDsgDQoxNiw8QlI+Jm5ic3A7Jm5ic3A7Jm5ic3A7IC5maWZvX3Np
+emUgPSZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyANCjAsPC9GT05U
+PjwvRElWPjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPiZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOzxCUj4mbmJzcDsmbmJzcDsmbmJzcDt0aGUgZm9sbG93aW5nIGlzIA0KbW9kdWxlIGNv
+bmZpZ3VyYXRpb24gZmlsZSAvZXRjL21vZHVsZXMuY29uZiwgTXkgSERBdWRpbyBtb2R1bGUgbmFt
+ZSBpcyANCnNuZC1henguPC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+IyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyM8QlI+YWxpYXMgdXNiLWNvbnRyb2xsZXIgDQplaGNpLWhjZDxC
+Uj5hbGlhcyB1c2ItY29udHJvbGxlcjEgdXNiLXVoY2k8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05U
+IHNpemU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj4jIEFMU0EgbmF0
+aXZlIGRldmljZSBzdXBwb3J0PEJSPmFsaWFzIGNoYXItbWFqb3ItMTE2IA0Kc25kPEJSPm9wdGlv
+bnMgc25kIG1ham9yLTExNiBjYXJkc19saW1pdD0xPEJSPmFsaWFzIHNuZC1jYXJkLTAgDQpzbmQt
+YXp4PEJSPm9wdGlvbnMgc25kLWF6eCBpbmRleD0wIGlkICJ0ZXN0IjwvRk9OVD48L0RJVj4NCjxE
+SVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPiMg
+T1NTL0ZyZWUgc2V0dXA8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj48L0ZPTlQ+Jm5i
+c3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5hbGlhcyBzb3VuZC1zbG90LTAgc25kLWF6eDwv
+Rk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+
+PEZPTlQgc2l6ZT0yPiMjIyMjIyMjIyMjIyMjIyM8L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNp
+emU9Mj48L0ZPTlQ+Jm5ic3A7PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj4mbmJzcDsibW9kcHJv
+YmUgc25kLWF6eCIsICJybW1vZCBzbmQtYXp4IixhbmQgImxzbW9kIiwgaXQgDQpzZWVtcyB0byB3
+b3JrIGNvcnJlY3RseS4gPC9GT05UPjwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZu
+YnNwOzwvRElWPg0KPERJVj48Rk9OVCBzaXplPTI+PC9GT05UPiZuYnNwOzwvRElWPg0KPERJVj48
+Rk9OVCBzaXplPTI+SSBkb250IGtub3cgd2h5LjwvRk9OVD48L0RJVj4NCjxESVY+PEZPTlQgc2l6
+ZT0yPjwvRk9OVD4mbmJzcDs8L0RJVj4NCjxESVY+PEZPTlQgc2l6ZT0yPkJlc3QgUmVnYXJkcyw8
+L0ZPTlQ+PC9ESVY+DQo8RElWPjxGT05UIHNpemU9Mj5GYXQgDQpjYXQ8QlI+PC9ESVY+PC9GT05U
+PjwvRk9OVD48L0RJVj48L0ZPTlQ+PC9ESVY+PC9CT0RZPjwvSFRNTD4NCg==
 
-----------------------------------------------------------------------
- Clemens Ladisch - 11-08-04 09:47 
-----------------------------------------------------------------------
-Already fixed in CVS
-(<http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-driver/pci/Kconfig?r1=1.25&r2=1.26&diff_format=u>).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-07-04 21:16 xbertje        New Issue                                    
-11-07-04 21:16 xbertje        Distribution              => Fedora Core 2   
-11-07-04 21:16 xbertje        Kernel Version            => 2.6.8-1.521     
-11-08-04 09:47 Clemens LadischStatus                   assigned => resolved
-11-08-04 09:47 Clemens LadischResolution               open => fixed       
-11-08-04 09:47 Clemens LadischNote Added: 0002311                          
-======================================================================
+------=_NextPart_000_01F5_01C4C5B8.B932B920--
 
 
 
