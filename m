@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000611]: Can't access Digi32 with kernel 2.6.9
-Date: Wed, 29 Dec 2004 14:29:56 +0100
-Message-ID: <4c750f7984fa2824488e5c333f87f089@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000682]: alsamixer, rmedigicontrol and rme96 kernel driver
+Date: Wed, 29 Dec 2004 14:30:21 +0100
+Message-ID: <deab15315d01d7547d9a27e7a467834b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA21F26D
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 14:29:56 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B1F1F26D
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 14:30:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,76 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=611> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=682> 
 ======================================================================
-Reported By:                spirou
-Assigned To:                martin
+Reported By:                d637e16c5433737884c13889afdeaf34
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   611
-Category:                   PCI - RME 32
+Issue ID:                   682
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   minor
+Severity:                   trivial
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.9-gentoo-r1
-Resolution:                 fixed
+Distribution:               
+Kernel Version:             
+Resolution:                 duplicate
+Duplicate:                  570
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-27-2004 03:44 CEST
-Last Modified:              12-29-2004 14:29 CET
+Date Submitted:             11-27-2004 00:59 CET
+Last Modified:              12-29-2004 14:30 CET
 ======================================================================
-Summary:                    Can't access Digi32 with kernel 2.6.9
+Summary:                    alsamixer, rmedigicontrol and rme96 kernel driver
 Description: 
-The Driver for the digi32 in kernel 2.6.9 doesn't let me access the card.
-All I get is a "Device busy". With 2.6.8 everything is fine.
-lsmod shows the driver as loaded, permissions are the same as with 2.6.8.
+As it's impossible to use the alsamixer with the rme96 driver here's a
+small patch for it to make it work. (it's not from me, it's from undog
+#alsa on irc.freenode.org)
+
+This patch will break rmedigicontrol, so i made a small patch for
+rmedigicontrol that'll fix this, too.
+
+Adding is trivial, it's just editing 8 lines of source.
+
+
+Regards,
+Matthias
+
+PS: Added patch for rme96.c
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000570 Sparse mixer for RME96
 ======================================================================
 
 ----------------------------------------------------------------------
- martin - 11-28-04 18:35 
+ tiwai - 11-29-04 15:28 
 ----------------------------------------------------------------------
-Can I close this bug? Is it also resolved for you, if you are using newer
-code?
+The only question is backward compatibility.  I don't mind to change this
+at all.
 
 ----------------------------------------------------------------------
- tiwai - 11-29-04 15:53 
+ martin - 11-29-04 15:39 
 ----------------------------------------------------------------------
-Let's move this to resolve/fixed.  If the problem still exists, reopen
-this.
+For me it's a bug and not a new design.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-27-04 03:44 spirou         New Issue                                    
-10-27-04 03:44 spirou         Distribution              => Gentoo Linux    
-10-27-04 03:44 spirou         Kernel Version            => 2.6.9-gentoo-r1 
-11-09-04 19:16 tiwai          Note Added: 0002341                          
-11-10-04 02:47 spirou         Note Added: 0002354                          
-11-10-04 11:04 martin         Note Added: 0002360                          
-11-10-04 12:08 tiwai          Note Added: 0002363                          
-11-10-04 22:09 martin         File Added: rme32.stracelog.WRONG.gz              
-     
-11-10-04 22:10 martin         File Added: rme32.stracelog.FINE.gz               
-    
-11-10-04 22:33 martin         Note Added: 0002377                          
-11-10-04 22:37 martin         Note Added: 0002380                          
-11-11-04 15:04 tiwai          Note Added: 0002388                          
-11-11-04 16:11 martin         Note Added: 0002389                          
-11-14-04 15:07 martin         Note Added: 0002408                          
-11-14-04 20:05 martin         File Added: pcmnative.patch                    
-11-14-04 20:17 martin         Note Added: 0002409                          
-11-15-04 04:59 spirou         Note Added: 0002410                          
-11-15-04 20:25 martin         Note Added: 0002420                          
-11-16-04 16:19 tiwai          Note Added: 0002425                          
-11-16-04 23:54 martin         Note Added: 0002431                          
-11-28-04 18:35 martin         Note Added: 0002627                          
-11-29-04 15:53 tiwai          Status                   assigned => resolved
-11-29-04 15:53 tiwai          Resolution               open => fixed       
-11-29-04 15:53 tiwai          Note Added: 0002646                          
-12-29-04 14:29 tiwai          Status                   resolved => closed  
+11-27-04 00:59 d637e16c5433737884c13889afdeaf34New Issue                        
+           
+11-27-04 00:59 d637e16c5433737884c13889afdeaf34File Added: rme96.c.patch        
+           
+11-28-04 18:41 martin         Note Added: 0002628                          
+11-29-04 15:28 tiwai          Note Added: 0002639                          
+11-29-04 15:39 martin         Note Added: 0002642                          
+11-29-04 16:04 tiwai          Relationship added       duplicate of 0000570
+11-29-04 16:04 tiwai          Duplicate ID             0 => 570            
+11-29-04 16:04 tiwai          Status                   new => resolved     
+11-29-04 16:04 tiwai          Resolution               open => duplicate   
+11-29-04 16:04 tiwai          Assigned To               => tiwai           
+12-29-04 14:30 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
