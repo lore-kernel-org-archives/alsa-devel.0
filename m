@@ -1,14 +1,14 @@
-From: Richard Olsson <flame@home.se>
-Subject: Re: RC7 and CS46xx (GTXP)
-Date: Sat, 1 Feb 2003 17:00:36 +0100
+From: ljp <ljp@llornkcor.com>
+Subject: mutli channel
+Date: Sat, 1 Feb 2003 12:22:49 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030201170036.47cea5c3.flame@home.se>
-References: <20030201144858.0479188a.flame@home.se>
+Message-ID: <200302011222.49280.ljp@llornkcor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030201144858.0479188a.flame@home.se>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,24 +17,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: tiwai@suse.de
+To: alsa devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> Something between CVS 2002-12-18 and RC7 seriously broke the amplifier
-> stuff for me on my GTXP - sound is very disorted and volume is very
-> low. It's different from the troubles RC6 gave me though.  I'd guess
-> it's the recent amplifier patch that was applied to the CS46xx driver.
+I have a couple questions....
 
-Replying to my own mail, I know:)
+1) does alsa have support for multichannel output? If so, how would one go 
+about sending individual signals to channels 1-8?
 
-I reverted the changes the recent amplifier patch did to cs46xx_lib.c
-and RC7 works perfectly - no warning in dmesg either.
+2) I am not real clear on how to use the mixer. What would be the bare minimum 
+steps to get the main volume?
 
--- 
-Richard Olsson
-flame@home.se
-http://www.nyo-box.net/ - http://www.aelia-studios.org/
+thanks.
+ljp
 
 
 -------------------------------------------------------
