@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000906]: OSS mixer does not work
-Date: Sat, 19 Mar 2005 18:25:40 +0100
-Message-ID: <a6083ad965b610f71bc93bb2c4284cac@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: [PATCH] Fix AC3 output on alsa-lib ca0106.conf
+Date: Sat, 19 Mar 2005 17:45:59 +0000
+Message-ID: <423C6557.50005@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3A9231D2
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 18:25:40 +0100 (MET)
+Content-Type: multipart/mixed;
+ boundary="------------010307040200040506030806"
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,90 +14,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------010307040200040506030806
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=906> 
-======================================================================
-Reported By:                adaviel
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   906
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22
-======================================================================
-Date Submitted:             02-13-2005 07:02 CET
-Last Modified:              03-19-2005 18:25 CET
-======================================================================
-Summary:                    OSS mixer does not work
-Description: 
-OSS-based mixers such as aumix or xmixer will not
-work. aumix says "no device found". A second sound device on the same PC
-configured as snd-card-1 appears to work as /dev/mixer1
-Alsamixer appears to work on both the Audigy and Intel devices
-(at the time of writing I do not have physical access to the device
-to verify sound output)
-======================================================================
+Hi,
 
-----------------------------------------------------------------------
- tiwai - 02-14-05 16:27 
-----------------------------------------------------------------------
-Do you have /dev/mixer with a proper permission?
+This fixes AC3 SPDIF output. It now correctly turns SPDIF OUT on when 
+using the iec958 device.
 
-----------------------------------------------------------------------
- adaviel - 02-14-05 23:30 
-----------------------------------------------------------------------
-lrwxrwxrwx    1 root     root          /dev/mixer -> /dev/mixer0
-crw-rw-rw-    1 root     root      14, /dev/mixer0
-crw-rw-rw-    1 root     root      14, /dev/mixer1
+Sign off: James Courtier-Dutton
 
-card 0 is ca0106
-card 1 is Intel ich5 which seems to work OK
+--------------010307040200040506030806
+Content-Type: text/plain;
+ name="alsa-lib-ca0106-spdif-fix.diff.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa-lib-ca0106-spdif-fix.diff.txt"
 
-I want to use the vrvs.org/Mbone tool "rat" which needs full-duplex
-audio at (usually) 8kHz o 16kHz with microphone/speakers
-I cannot get any input on the VU meter with any input selected in
-alsamixer or
-with "capture into playback" set high. The input levels won't move in
-alsamixer
-for any inputs e.g. "AC97 in". I don't see "mic in" - but I'm not very
-familiar with ALSA or with this card. It's what a user found in a store
-when
-they wanted to retrofit sound to an older PC running RedHat 7.3.
+Index: alsa-lib/src/conf/cards/CA0106.conf
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/conf/cards/CA0106.conf,v
+retrieving revision 1.1
+diff -u -r1.1 CA0106.conf
+--- alsa-lib/src/conf/cards/CA0106.conf	6 Dec 2004 15:28:06 -0000	1.1
++++ alsa-lib/src/conf/cards/CA0106.conf	19 Mar 2005 17:43:42 -0000
+@@ -162,7 +162,7 @@
+ 				name "SPDIF Out"
+ 				lock true
+ 				preserve true
+-				value 0
++				value 1
+ 			}
+ 			{
+ 				name "IEC958 Playback Default"
 
-When I use OSS "play" on a WAV file the sound is very choppy and the rate
-sounds
-wrong. When I try aplay it's not choppy but the rate is still odd.
-However mpg123 sounds OK on an MP3 file. Will this card work for me in
-Rat,
-or is it only really good for playing DVDs/CDs ?
-
-----------------------------------------------------------------------
- jcdutton - 03-19-05 18:25 
-----------------------------------------------------------------------
-Known problem. "Master" control needs to be added to the sound card driver.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-13-05 07:02 adaviel        New Issue                                    
-02-13-05 07:02 adaviel        Distribution              => Fedora Core 1   
-02-13-05 07:02 adaviel        Kernel Version            => 2.4.22          
-02-14-05 16:27 tiwai          Note Added: 0003600                          
-02-14-05 23:30 adaviel        Note Added: 0003614                          
-03-19-05 18:25 jcdutton       Note Added: 0004065                          
-======================================================================
-
-
+--------------010307040200040506030806--
 
 
 -------------------------------------------------------
