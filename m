@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001006]: soundcard not supported
-Date: Tue, 22 Mar 2005 21:18:57 +0100
-Message-ID: <ac364541f524f385b89fe435361e9817@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000395]: No Sound-Output on FSC D1219 Mainboard (OSS-Free from Kenrel works)
+Date: Wed, 23 Mar 2005 16:11:25 +0100
+Message-ID: <8ba235f37e633632c89b638c2771e86c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0715528D
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 21:18:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 91B3A289
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 16:11:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,38 +21,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1006> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=395> 
 ======================================================================
-Reported By:                devas
+Reported By:                thorstenl
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1006
-Category:                   ISA - cs4236
+Issue ID:                   395
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               c't-debian
-Kernel Version:             2.4.27
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.6-1.435.2.3
 ======================================================================
-Date Submitted:             03-22-2005 21:18 CET
-Last Modified:              03-22-2005 21:18 CET
+Date Submitted:             07-17-2004 11:32 CEST
+Last Modified:              03-23-2005 16:11 CET
 ======================================================================
-Summary:                    soundcard not supported
+Summary:                    No Sound-Output on FSC D1219 Mainboard (OSS-Free
+from Kenrel works)
 Description: 
-configure: error: Unsupported soundcard cs4236
-
+On my Fujitsu Siemens D1219 Mainboard the snd-intel8x0 from alsa 1.05a
+(compiled by myself) or the version that comes with the Fedora Core 2
+Kernel (2.6.6-1.435.2.3; alsa 1.04a) are not able to output any sound.
+Trying to experiment with the different volume settings in alsamixer did
+not help. With the oss-free module i810_audio (compiled from the Fedora
+Core 2 kernel-sourcecode) it works fine.  
 ======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 03-23-05 16:11 
+----------------------------------------------------------------------
+Try switching 'External Amplifier' off.   Or on.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-05 21:18 devas          New Issue                                    
-03-22-05 21:18 devas          Distribution              => c't-debian      
-03-22-05 21:18 devas          Kernel Version            => 2.4.27          
+07-17-04 11:32 thorstenl      New Issue                                    
+07-17-04 11:32 thorstenl      File Added: fsc_d1219                        
+07-17-04 11:32 thorstenl      Distribution              => Fedora Core 2   
+07-17-04 11:32 thorstenl      Kernel Version            => 2.6.6-1.435.2.3 
+07-17-04 11:33 thorstenl      Issue Monitored: thorstenl                    
+03-23-05 16:11 jdthood        Note Added: 0004176                          
 ======================================================================
 
 
