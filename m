@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
-Date: Thu, 17 Feb 2005 21:01:07 +0100
-Message-ID: <f65354d76bdc80d9e8ee7da2863c9a02@bugtrack.alsa-project.org>
+Date: Thu, 17 Feb 2005 21:06:37 +0100
+Message-ID: <f1a8ef51c249f193dc8a2fa78bb07559@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5F071269
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 21:01:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 88BD9269
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 21:06:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Ununtu
 Kernel Version:             2.6.11-rc3
 ======================================================================
 Date Submitted:             02-17-2005 20:16 CET
-Last Modified:              02-17-2005 21:01 CET
+Last Modified:              02-17-2005 21:06 CET
 ======================================================================
 Summary:                    intel8x0 ACPI suspend/resume trouble
 Description: 
@@ -79,13 +79,6 @@ Christophe
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-17-05 20:30 
-----------------------------------------------------------------------
-This might be a bug of AD1981 codec code.
-
-Does reloading snd-intel8x0 module help?
-
-----------------------------------------------------------------------
  christophe - 02-17-05 21:01 
 ----------------------------------------------------------------------
 I will try to rmmod/modprobe the module asap.
@@ -100,6 +93,16 @@ Is it an option for the snd_ac97_codec module?
 Thanks,
 Christophe
 
+----------------------------------------------------------------------
+ christophe - 02-17-05 21:06 
+----------------------------------------------------------------------
+Looking at intel8x0.c,
+it seems that I should use the option with the value hp_only against the
+snd-intel8x0 module.
+
+I will try and report the result,
+Thanks.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -108,6 +111,7 @@ Date Modified  Username       Field                    Change
 02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
 02-17-05 20:30 tiwai          Note Added: 0003636                          
 02-17-05 21:01 christophe     Note Added: 0003639                          
+02-17-05 21:06 christophe     Note Added: 0003640                          
 ======================================================================
 
 
