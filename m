@@ -1,13 +1,13 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: [alsa-cvslog] CVS: alsa-lib/src/pcm pcm.c,1.227,1.228
-Date: Wed, 23 Oct 2002 19:31:15 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: rates and frame-based formats
+Date: Wed, 23 Oct 2002 19:29:43 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DB6DCE3.4452ABED@libero.it>
-References: <E180L07-0002h2-00@usw-pr-cvs1.sourceforge.net>
+Message-ID: <Pine.LNX.4.33.0210231920300.5772-100000@pnote.perex-int.cz>
+References: <20021023155747.15165.qmail@web11502.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20021023155747.15165.qmail@web11502.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,38 +16,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
+On Wed, 23 Oct 2002, Guilhem Tardy wrote:
+
+> Hi,
 > 
-> Added ommited clear() functions
-> 
-> Index: pcm.c
->  /**
-> + * \brief clear snd_pcm_hw_params_t structure
-> + * \param obj pointer to structure
-> + */
-> +void snd_pcm_hw_params_clear(snd_pcm_hw_params_t *obj)
-> +{
-> +       assert(obj);
-> +       memset(obj, 0, snd_pcm_hw_params_sizeof());
-> +}
+> There are some frame-based formats defined in asound.h and pcm.h. For full-rate
+> GSM, frames are 260 bits every 20 ms. So my question is:
+> In such a case, should an application use (and the driver define) a rate of
+> 50Hz, or the standard 8000Hz?
 
-Why that _clear functions?
-What's the expected semantic for "clear"?
+This is very good question. We should make a decision. If we use 50Hz, we 
+can easily calculate frames per second, otherwise we have to translate 
+sampling rate to physical rate.. But it's the only good point which I see.
 
-When we designed new API I took in consideration them, but the lack of
-usefulness and the ambiguity of semantic has pushed me to avoid them.
+Also, the situation is very easy for GSM where the sampling rate is fixed, 
+but what about some variable rate compressions with different sampling 
+rate / physical rate ratio?
 
+						Jaroslav
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
