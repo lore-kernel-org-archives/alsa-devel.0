@@ -1,15 +1,13 @@
-From: Carsten Koch <Carsten.Koch@icem.com>
-Subject: Re: optical SPDIF output on Abit NF7 nforce2 main board.
- (Summary)
-Date: Sun, 28 Sep 2003 21:41:15 +0200
+From: Shawn Smout <olorin_the_great@yahoo.com>
+Subject: Update/fix: Alsa-driver gawk/POSIX bug
+Date: Sun, 28 Sep 2003 13:38:50 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F77395B.8080208@icem.com>
-References: <3F532D5E.6040300@icem.com>	<s5hy8x8oefw.wl@alsa2.suse.de>	<3F534D6A.5030706@icem.com>	<s5hllt8oaye.wl@alsa2.suse.de>	<3F535A42.6020403@icem.com>	<s5hekz0o7wi.wl@alsa2.suse.de>	<3F536C97.5080008@icem.com>	<s5hbru4o444.wl@alsa2.suse.de>	<3F538893.1010801@icem.com> <s5h7k4snyhl.wl@alsa2.suse.de> <3F539A3E.3030508@icem.com> <3F53B38B.6070307@icem.com> <3F75D029.60502@icem.com>
+Message-ID: <20030928203850.9086.qmail@web40903.mail.yahoo.com>
+References: <20030928195534.95497.qmail@web40911.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F75D029.60502@icem.com>
+In-Reply-To: <20030928195534.95497.qmail@web40911.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,126 +19,101 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I forgot two more things:
+Apologies for not including this at first.  The proper
+fix is not to delete the { }, although this originally
+worked in my case.  The { } should actually be escaped
+as follows:
 
-1) If there is anything else you would like me to try out or any
-    additional information from that system, I will be glad to help.
+if (match($0, "\{.*\}"))
 
-2) Is anyone else having similar problems?
-    Is it just me or do other nforce2 users also have the feeling
-    that Alsa supports IEC958 much, much better on the CMI8738
-    than on nforce2?
+This works regardless of whether gawk is operating in
+POSIX mode.
 
-Thanks again and Cheers,
+The reason for this is that gawk by default decides
+based on context whether { } are metacharacters.  In
+this context it determined that they were not, and so
+the { } matched literal braces.  In POSIX mode, since
+{ } are metacharacters sometimes, they are always
+metacharacters; thus to match literal braces they must
+be escaped.
 
-Carsten.
-
-
-
-Carsten Koch wrote:
-> Hi,
+--- Shawn Smout <olorin_the_great@yahoo.com> wrote:
+> I have discovered a bug in
+> alsa-driver-0.9.7/utils/convert_isapnp_ids line 84. 
+> Ordinarilly in GNU gawk, the line
 > 
-> here is a summary of my adventures with Alsa sound through SPDIF
-> on my Abit NF7 nforce2 main board.
+> if (match($0, "{.*}"))
 > 
-> First I want to thank Takashi and James for their friendly and
-> sedulous help.
-> Without them, I would have gotten no sound to work through the SPDIF
-> output at all.
+> works fine.  However, if the environment
+> POSIXLY_CORRECT is set (it is on my system, since I
+> like things to be standards-compliant, although it
+> probably is not on most Linux systems), gawk has an
+> error on this line and compiling the drivers fails. 
+> It gives this error message when making
+> alsa-drivers:
 > 
-> In the end, we got almost everything to work, except for the loop-through
-> from SPDIF in to SPDIF out. Unfortunately, this is a requirement
-> for me, so I gave up and now installed an additional C-Media PCI CMI8738
-> sound card on my PC, which works perfectly right out of the box.
+> awk:
+>
+/usr/src/alsa-driver-0.9.7/utils/convert_isapnp_ids:89:
+> (FILENAME=- FNR=27056) fatal: Invalid preceding
+> regular expression: /{.*}/
 > 
-> In particular, with the C-Media PCI CMI8738, alsamixer provides me
-> with a "IEC958 Loop" switch, which I need to loop the digital sound
-> output of my DVB card to the sound card output which is connected
-> to my HiFi equipment.
+> I don't know much about awk; I have used some
+> regexes
+> though, and since I hadn't yet figured out why I was
+> getting this error message, I tried simply removing
+> the {}.  The driver compiled correctly and works
+> correctly.
 > 
-> Other things that I find *much* user-friendlier about Alsa with the
-> CMI8738 compared to Alsa with the on-board nforce 2 sound include:
+> This problem is not, as far as I can tell, listed in
+> gawk's documentation as something that changes when
+> gawk runs in POSIX compatibilty mode.  However, I
+> tried compiling the unmodified source without
+> POSIXLY_CORRECT set, which worked.  I then
+> immediately
+> did 'make clean ; setenv POSIXLY_CORRECT ; make'
+> (csh)
+> and the problem occurred again, so I am quite
+> certain
+> the bug is entirely because of POSIXLY_CORRECT being
+> set.
 > 
-> *  The CMI8738 default device (hw:0.0) plays through both the
->    analog output and the SPDIF output at the same time. No need
->    to tweak defaults through a .asoundrc file.
->    The nforce2 default device (hw:0.0) only plays through the
->    analog output.
+> On a side note, since gawk doesn't even document
+> this
+> discrepancy between POSIX and normal modes (though
+> it
+> does have a long list of differences from POSIX,
+> which
+> doesn't include this one), I also intend to file a
+> gawk bug, so that we can actually know when gawk is
+> going to break instead of spending a half hour
+> trying
+> to get drivers to compile when the problem is just a
+> single environment variable.
 > 
-> *  All programs I tested (mpg123, alsaplayer, mpg321, kde desktop
->    sound) simply worked with the CMI8738. No tweaking, no special
->    parameters, no quirks.
->    With nforce2 sound, I needed a different tweak for each
->    of them (if one was available at all) and some were causing
->    strange effects. See the previous mails in this thread.
-> 
-> So far my general remarks from a user perspective.
-> 
->  From a technical perspective, the nforce2 provides the following 8 
-> IEC958 controls:
-> 
-> % amixer controls | fgrep IEC958
-> numid=50,iface=MIXER,name='IEC958 Input Monitor'
-> numid=36,iface=MIXER,name='IEC958 Playback Con Mask'
-> numid=37,iface=MIXER,name='IEC958 Playback Pro Mask'
-> numid=40,iface=MIXER,name='IEC958 Playback AC97-SPSA'
-> numid=38,iface=MIXER,name='IEC958 Playback Default'
-> numid=39,iface=MIXER,name='IEC958 Playback Switch'
-> numid=48,iface=MIXER,name='IEC958 Capture Switch'
-> numid=49,iface=MIXER,name='Analog to IEC958 Output'
-> 
-> While the CMI8738 provides the following 11 IEC958 controls:
-> % amixer controls | fgrep IEC958
-> numid=30,iface=MIXER,name='IEC958 5V'
-> numid=29,iface=MIXER,name='IEC958 Copyright'
-> numid=32,iface=MIXER,name='IEC958 In Monitor'
-> numid=37,iface=MIXER,name='IEC958 In Phase Inverse'
-> numid=38,iface=MIXER,name='IEC958 In Select'
-> numid=28,iface=MIXER,name='IEC958 In Valid'
-> numid=31,iface=MIXER,name='IEC958 Loop'
-> numid=36,iface=MIXER,name='IEC958 Mix Analog'
-> numid=34,iface=MIXER,name='IEC958 Playback Con Mask',device=2
-> numid=27,iface=MIXER,name='IEC958 Output Switch'
-> numid=33,iface=PCM,name='IEC958 Playback Default',device=2
-> 
-> note in particular that the IEC958 Loop is missing on the nforce2.
-> Also, on the CMI8738, SPDIF out is available through hw:0,0 (the default
-> for most programs), while the nforce2 only gave me access to the
-> SPDIF out via hw:0,1 - and that was only 48kHz (a hardware attribute of the
-> chip), so I had to use plughw:0,1 which caused other problems.
-> 
-> So, for now my problem is solved by installing an additional sound card -
-> unfortunately at the expense of a precious PCI slot. :-(
-> 
-> Any work on Alsa that will make the nforce2 driver as good as the cmipci
-> driver will be highly appreciated.
-> 
-> Cheers,
-> 
-> Carsten.
+> __________________________________
+> Do you Yahoo!?
+> The New Yahoo! Shopping - with improved product
+> search
+> http://shopping.yahoo.com
 > 
 > 
-> 
-> -------------------------------------------------------
+>
+-------------------------------------------------------
 > This sf.net email is sponsored by:ThinkGeek
 > Welcome to geek heaven.
 > http://thinkgeek.com/sf
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
+>
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
--- 
-    ___________________________________________________________
-   (                                                           )
-   | Carsten Koch                  Phone: +49-4286-920001      |
-   | ICEM Technologies GmbH          Fax: +49-4286-1608        |
-   | Sotheler Mühlenweg 15        mailto:Carsten.Koch@icem.com |
-   | 27404 Elsdorf-Hatzte, Germany  http://www.icem.com        |
-   (___________________________________________________________)
-
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Shopping - with improved product search
+http://shopping.yahoo.com
 
 
 -------------------------------------------------------
