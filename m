@@ -1,14 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Division by zero in snd_pcm_rate_sw_params()
-Date: Sat, 24 Jul 2004 11:02:43 +0100
+Date: Sat, 24 Jul 2004 11:50:50 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <410233C3.80602@superbug.demon.co.uk>
-References: <4101BB9E.8010207@codeweavers.com>
+Message-ID: <Pine.LNX.4.58.0407241150360.1839@pnote.perex-int.cz>
+References: <4101BB9E.8010207@codeweavers.com> <410233C3.80602@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4101BB9E.8010207@codeweavers.com>
+In-Reply-To: <410233C3.80602@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,28 +16,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Francois Gouget <fgouget@codeweavers.com>
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Francois Gouget wrote:
-> Hi,
-> 
-> I am working on Wine and lately I have been tracking various sound 
-> related issues. One issue I noticed is a crash in Wine's winmm wave test 
-> when using the Alsa sound backend.
-> 
+On Sat, 24 Jul 2004, James Courtier-Dutton wrote:
 
-This and other problems are caused by the many bug/problems with the 
-pcm_rate.c plugin. I have been doing some work on the pcm_rate.c plugin, 
-and your patch contains something one of the bug fixes I already have 
-here fixes. I could reproduce it without needing wine.
+> Once I have tested my code more fully, I will post a patch to the list.
+> I have been posting patches for pcm_rate.c already, but although they 
+> are better than before, they still do not work in all cases.
 
-Once I have tested my code more fully, I will post a patch to the list.
-I have been posting patches for pcm_rate.c already, but although they 
-are better than before, they still do not work in all cases.
+I appreciate your work.
 
-James
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
