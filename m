@@ -1,14 +1,14 @@
-From: "Hicks, Jamey" <Jamey.Hicks@compaq.com>
-Subject: RE: UDA1341TS (iPAQ H3X00) sound driver for ALSA
-Date: Wed, 10 Apr 2002 09:39:45 -0400
+From: Richard Bown <bownie@bownie.com>
+Subject: sequencing ALSA ports and clients
+Date: Wed, 10 Apr 2002 14:38:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a91fds$i3d$2@main.gmane.org>
+Message-ID: <200204101341.AFH83147@msgdirector1.onetel.net.uk>
+Reply-To: bownie@bownie.com
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,45 +17,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>, alsa-devel@lists.sourceforge.net, Linux-arm-kernel@lists.arm.linux.org.uk
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Ok, earlier I sent this question to LAD but this is probably a better place
+to be asking it.  Apologies if you've already seen it.
 
-I would prefer that the ALSA driver for the iPAQ have a different name =
-than the OSS driver for the iPAQ, since they have different interfaces.  =
-How about h3600-alsa?
+Basically I'm still confused about synth clients and ports.  My SBLive presents
+four synth ports as default.  I create a port and subscribe or connect_to a specfic
+SBLive port and client.  When I'm sequencing out to this port should I be multiplexing
+among the other ports to exploit the synth's full polyphony?  Should I be adding to
+the ports myself or can I get away with just using the one?  If the latter then why
+are there four ports made available?  I'm sure there's a dunce's document someone
+can point me to!
 
-Jamey
-
-
-> -----Original Message-----
-> From: Kasparek Tomas [mailto:xkaspa06@stud.fee.vutbr.cz]
-> Sent: Wednesday, April 10, 2002 6:32 AM
-> To: alsa-devel@lists.sourceforge.net;
-> Linux-arm-kernel@lists.arm.linux.org.uk
-> Subject: UDA1341TS (iPAQ H3X00) sound driver for ALSA
->=20
->=20
-> Hi all,
->=20
-> updated version of $SUBJ is available in ALSA CVS. Let try it=20
-> and enjoy
-> it. Comments, bugreports and opinions are welcomed.
->=20
-> Bye
->=20
-> --
->=20
-> 	Tomas Kasparek (sioux, xkaspa06)
->  	 tomas.kasparek@[seznam.cz,volny.cz]
-> 	 linux@fit.vutbr.cz
-> 	student FIT VUT Brno
->=20
->=20
-> -------------------------------------------------------------------
-> Subscription options:=20
-> http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm-kernel
-> FAQ/Ettiquette:      =20
-> http://www.arm.linux.org.uk/armlinux/mailinglists.php
->=20
->=20
+R
+-- 
+http://www.all-day-breakfast.com/rosegarden
+http://www.bownie.com
