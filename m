@@ -1,16 +1,16 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000002]: 1.0.2: intel8x0.c build problem
-Date: Tue, 27 Jan 2004 20:11:30 +0100 (CET)
+Subject: [ALSA - lib 0000003]: alsa-lib-1.0.2: 'make check' fails
+Date: Tue, 27 Jan 2004 20:39:16 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040127191130.EC13021003@server.perex-int.cz>
+Message-ID: <20040127193916.B6D6121002@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA12845
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 20:11:35 +0100
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA13785
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 20:39:18 +0100
 Received: from server.perex-int.cz (server-a.perex-int.cz [192.168.100.3])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 07FD6EF
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 20:11:31 +0100 (MET)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id C7793EF
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 20:39:16 +0100 (MET)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,35 +25,35 @@ List-Id: alsa-devel@alsa-project.org
 
 The following NEW bug has been ADDED.
 ======================================================================
-http://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000002
+http://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000003
 ======================================================================
 Reporter:                   ZlatkO
 Handler:                    
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     2
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Bug ID:                     3
+Category:                   general
 Reproducibility:            always
-Severity:                   block
+Severity:                   trivial
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 8.1
-Kernel Version:             2.4.24
 ======================================================================
-Date Submitted:             01-27-2004 20:11 CET
-Last Modified:              01-27-2004 20:11 CET
+Date Submitted:             01-27-2004 20:39 CET
+Last Modified:              01-27-2004 20:39 CET
 ======================================================================
-Summary:                    1.0.2: intel8x0.c build problem
+Summary:                    alsa-lib-1.0.2: 'make check' fails
 Description: 
-alsa-driver-1.0.2 doesn't build out of the box with gcc-2.95.3. The
-attached patch fixes the problem.
+'make check' fails on a Slackware 8.1 system with gcc-2.95.3 due to three
+minor problems (one missing #define/#include statement, two misplaced
+variable delarations) in test/code.c and test/queue_timer.c. The attached
+patch fixes these problems.
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-27-04 20:11 ZlatkO         New Bug                                      
-01-27-04 20:11 ZlatkO         File Added: alsa-driver-1.0.2.diff                    
+01-27-04 20:39 ZlatkO         New Bug                                      
+01-27-04 20:39 ZlatkO         File Added: alsa-lib-1.0.2.diff                    
 ======================================================================
 
 
