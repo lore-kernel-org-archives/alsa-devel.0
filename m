@@ -1,10 +1,11 @@
-From: Shane Walton <dsrelist@yahoo.com>
-Subject: Hamerfall Light Digi9636 and Simple Capture Program
-Date: Mon, 23 Sep 2002 09:47:42 -0700 (PDT)
+From: Emmanuel Fleury <fleury@cs.auc.dk>
+Subject: sscape_ioctl.h not found!
+Date: Mon, 23 Sep 2002 19:05:54 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020923164742.88829.qmail@web20810.mail.yahoo.com>
+Message-ID: <3D8F49F2.7030607@cs.auc.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -14,43 +15,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: ALSA Development <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In the past I developed an application with release
-0.9.0beta6 on a dual 1Ghz Pentium 3 with the
-Hammerfall Light.  Tha application would read 2
-channels from a DAT player @48Khz.  I now must upgrade
-the hardware to a dual Pentium 4 and a newer kernel.
+Hi,
 
-The beta6 doesn't seem to work with the newer kernel,
-which is fine, if I can use a later release like rc3. 
-With this release I am unable to get any data when
-configured to read 2 channels.  The data is zeroed
-out.
+I get the last CVS snapshot (from today) of alsa-driver
+and I try to compile it on my new machine with a 2.4.19
+kernel.
 
-The application is basically the "Simple Capture"
-program found here,
-http://www.op.net/~pbd/alsa-audio.html#captureex with
-much added signal processing.  
+At the beginning, I had hard to figure out that the
+directory alsa-kernel was missing.
 
-Can anyone elaborate why the "Simple Capture" program
-fails to read real data instead of zeroes?  It is the
-same regardless of interleaved or planar aqcuisition.
+Ok, I get it from the rc3 release.
 
-Thank you kindly for you help.
+Then, I tried the following command line:
+./cvscompile --with-cards=cmipci --with-sequencer=yes --with-oss=yes 
+-with-isapnp=no --with-debug=none
 
+But then, during the dependencies building, I get:
 
-=====
-Shane M. Walton, Software Engineer
-Digital System Resources, Inc.
-dsrelist@yahoo.com : swalton@dsrnet.com
-703.234.1674
+gcc -M -D__KERNEL__ -DMODULE=1 
+-I/home/fleury/install/src/alsa-driver/include 
+-I/lib/modules/2.4.19custom/build/include -O2 
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall 
+-Wstrict-prototypes -fomit-frame-pointer -pipe -DALSA_BUILD  als100.c 
+azt2320.c cmi8330.c dt019x.c es18xx.c opl3sa2.c sgalaxy.c sscape.c > .depend
+sscape.c:41: sound/sscape_ioctl.h: No such file or directory
+make[1]: *** [fastdep] Error 1
+make[1]: Leaving directory `/home/fleury/install/src/alsa-driver/isa'
+make: *** [dep] Error 1
 
-__________________________________________________
-Do you Yahoo!?
-New DSL Internet Access from SBC & Yahoo!
-http://sbc.yahoo.com
+Actually, I didn't find any sound/sscape_ioctl.h anywhere... :-/
+
+Did I miss something ?
+
+Regards
+-- 
+Emmanuel
+
+Most of my cliches aren't original.
+   -- Chuck Knox, NFL football coach
+
 
 
 -------------------------------------------------------
