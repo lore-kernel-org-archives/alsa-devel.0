@@ -1,16 +1,13 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: CS4281 fixes (2nd try)
-Date: Tue, 20 Aug 2002 15:43:26 +0300 (EEST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: modules.conf in the alsa docs pages
+Date: Tue, 20 Aug 2002 23:11:07 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0208201542270.20550-100000@aino.wakkanet.fi>
-References: <Pine.LNX.4.44.0208201421520.20196-100000@aino.wakkanet.fi>
+Message-ID: <3D624DFB.50304@boosthardware.com>
+References: <20020820134024.430b48b2.sjt@star.sr.bham.ac.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from vaino.wakkanet.fi (vaino.wakkanet.fi [212.83.117.4])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA09307
-	for <alsa-devel@alsa-project.org>; Tue, 20 Aug 2002 15:04:13 +0200
-In-Reply-To: <Pine.LNX.4.44.0208201421520.20196-100000@aino.wakkanet.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,25 +16,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Cc: alsa-devel@alsa-project.org
+To: James Tappin <sjt@star.sr.bham.ac.uk>
+Cc: ALSA Development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 Aug 2002, Kai Vehmanen wrote:
+James Tappin wrote:
+> I just noticed when checking for something in the "install"
+> documentation on the ALSA page that the alias in the template
+> modules.conf is not being filled in any more; i.e. it reads:
+>        alias snd-card-0 snd-
+> for many cards (not all -- interwave seems to work, but ice1712
+> doesn't), I'm sure that it was OK last time I checked [a week or so
+> ago].
+> 
+> James
+> 
 
-> BTW; The cs4281 compilation problem I reported earlier is definitely
->      a compiler issue. On two different laptops (x20&x21 thinkpads),
->      compiling with the RH72 gcc 2.96 produces a snd-cs4281.o that fails 
->      to recognize the soundchip. By adding one "(volatile*)" (that shouldn't 
->      have any effect), driver works on all laptops. This happens with
->      current CVS and all 0.9.x release candidates. So beware 
->      of that gcc version.
+It looks like older browsers eg netscape, lynx cannot parse the 
+variables passed through the link if they contain spaces. I think I know 
+how to fix it but it might take a while.
 
-Same happens with gcc 2.96-110 that comes with RH73.
+Thanks.
 
---
- http://www.eca.cx
- Audio software for Linux!
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
 
 
