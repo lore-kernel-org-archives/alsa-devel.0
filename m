@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000885]: usx2y is unsupported in v 1.08 builds
-Date: Fri, 11 Feb 2005 15:42:26 +0100
-Message-ID: <3e6205d9bcab0df08d6cb129ed27f393@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: VT82C686 and MIDI fun
+Date: Fri, 11 Feb 2005 15:53:35 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0502111547410.15708-100000@studcom.urz.uni-halle.de>
+References: <1107965895.8941.21.camel@secures>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B030C1BF
-	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2005 15:42:26 +0100 (MET)
+In-Reply-To: <1107965895.8941.21.camel@secures>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +16,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Chris White <chriswhite@gentoo.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Chris White wrote:
+> I'm on a ppc system (2.6.9 kernel) using alsa driver 1.0.8
+> (latest), via82xx module (Via being the vendor, my model being in
+> the subject line), and all a nice midi keyboard hooked up to the
+> MIDI/Gameport with an adapater I got.  Now, I've tried the
+> following without much success:
+>
+> 1) I did the `modprobe snd-via82xx mpu_port=0x330` command to set the
+> mpu port, which is what it's documented as, /dev/midi does nothing
+> 2) Ok, maybe my setup is jacked, so I tried hooking it up to my x86
+> system, works like a charm
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=885> 
-======================================================================
-Reported By:                hamishtpb
-Assigned To:                karsten
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   885
-Category:                   USB - usb-usx2y
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo 2004.3
-Kernel Version:             2.4.28-Gentoo-r5
-======================================================================
-Date Submitted:             02-06-2005 05:57 CET
-Last Modified:              02-11-2005 15:42 CET
-======================================================================
-Summary:                    usx2y is unsupported in v 1.08 builds
-Description: 
-Whever I try to build any 1.0.8 alsa-driver I get "unsupported card error"
-when I set usb-usx2y as my card. I have manually installed 1.0.7 and the
-compile went smoothly.
-======================================================================
+Can the MIDI port be configured in the BIOS setup?  What is set for
+the interrupt (is it the same as the interrupt for the AC'97
+controller)?
 
-----------------------------------------------------------------------
- hamishtpb - 02-09-05 12:53 
-----------------------------------------------------------------------
-Additional to last bit: The compile error when using portage with no cards
-specified is known on the Gentoo bugs area - something to do with 'pcxhi'
-fails in compile (whatever that is? No-one can find a card with that name
-:-/ ). I don't know if this is relevant but I thought I would post just in
-case.
+It would be nice to know if MIDI output worked.
+
+You could try using it without interrupts by editing the file
+alsa-kernel/pci/via82xx.c and, in the call to snd_mpu401_uart_new
+(about line 1733), replacing "chip->irq" with "-1".
+
+> 3) I looked over the documentation.. which tells me to work with
+> snd-mpu401.. but I thought that was depricated by snd-mpu401-uart?
+
+There is no snd-mpu401-uart driver.  The module of that name is used
+as a library for other drivers because many sound cards have MPU-401
+compatible MIDI ports.
 
 
-
-----------------------------------------------------------------------
- Clemens Ladisch - 02-11-05 15:42 
-----------------------------------------------------------------------
-Are you using a 64-bit system?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-06-05 05:57 hamishtpb      New Issue                                    
-02-06-05 05:57 hamishtpb      Distribution              => Gentoo 2004.3   
-02-06-05 05:57 hamishtpb      Kernel Version            => 2.4.28-Gentoo-r5
-02-06-05 05:57 hamishtpb      Issue Monitored: hamishtpb                    
-02-06-05 15:53 hamishtpb      Note Added: 0003525                          
-02-09-05 11:55 tiwai          Note Added: 0003545                          
-02-09-05 12:23 hamishtpb      Note Added: 0003549                          
-02-09-05 12:44 hamishtpb      Note Added: 0003551                          
-02-09-05 12:53 hamishtpb      Note Edited: 0003551                         
-02-11-05 15:42 Clemens LadischNote Added: 0003564                          
-======================================================================
-
+HTH
+Clemens
 
 
 
