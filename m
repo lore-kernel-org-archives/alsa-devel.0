@@ -1,11 +1,10 @@
-From: Paul Davis <pbd@Op.Net>
-Subject: Re: Some problems with 0.9beta11 drivers
-Date: Mon, 25 Mar 2002 02:46:31 -0500
+From: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
+Subject: Meaning of "drain" function
+Date: Mon, 25 Mar 2002 15:43:45 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200203251246.HAA07609@renoir.op.net>
-References: <Pine.LNX.4.33.0203242118360.9245-100000@mcmillan.cadence.com>
-In-Reply-To: Your message of "Sun, 24 Mar 2002 21:40:54 PST."
-             <Pine.LNX.4.33.0203242118360.9245-100000@mcmillan.cadence.com>
+Message-ID: <Pine.BSF.4.44.0203251530260.38362-100000@fest.stud.fee.vutbr.cz>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,46 +13,154 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Ken McMillan <mcmillan@cadence.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Well, if I am running capture and playback channels in sync, I certainly
->don't want to restart the capture channel (and destroy my recording) in the
->case when the playback buffer under-runs. Keep in mind I have a very short
->buffer for playback (to keep latency down) but a long buffer for capture.
->What I want to happen is to get a momentary silence in the playback channel,
->but have it recover "in sync" with the capture channel (this was the subject
->of a previous question I asked on the list, to which Jaroslav's answer was
->to set stop_threshold high so the playback channel would never stop).
+Hi folks,
 
-i don't have an answer to your question just yet, but i would note
-that you are making some h/w-specific assumptions in this design. if
-you try what you describe on a hammerfall, you won't be able to
-configure the card. as one of the few devices that *truly* runs
-playback and capture from the same clock, you cannot have different
-sized periods or buffers for the playback and capture streams.
 
-different sized buffers for the two streams is not a design approach
-i've seen or read about or inferred from other software. maybe it has
-some advantages, but i can't think of any ...
+after processing all periods of DMA buffer (at the end of each calling
+snd_pcm_period_elapsed()) I leave last DMA callback. Then
+snd_pcm_playback_drain() function is entered and waiting on (10*HZ)
+timeout started. This timed out everytime. This means, that state of that
+stream is set to EXPIRED and everything ends with error message. Detailed
+listing of debug messages follows at the end of mail.
 
->Now, what I would like the driver to do in this case is to just carry on
->as if nothing had happened (outputting garbage) until my program "catches up"
->with the sound card. That is, ideally the "tail" pointer of the queue would
->be allowed to pass the "head" pointer, allowing the "length" of the queue to
->become increasingly negative, and writes would not block until the queue
->was once again full. There was some indication that this might actually happen
->,
->since the API doc for snd_status_get_delay says that the "delay" (which I
->interpret to be the length of the queue in frames) is negative in the case
->of a playback under-run. Of course I have no idea...
+I know, that schedule_timeout() could be interrupted, but I don't know
+how I should do that. Are there some actions, that must be undertaken to
+get next DMA buffer for transmission?
 
-did you try just carrying on with the write's? i don't recall if the
-status after an xrun prevents you from writing/reading. i think it
-does. the idea is that you failed to keep up with the device, and that
-cannot be penalty free. i have argued in the past that there should be
-a way to say "it should be penalty free", but i'm not sure whether
-that is possible at this time.
+2Jaroslav: Please, should you commit my changes to CVS so others could
+help me.
 
---p
+Thanks
+
+Listing:
+
+playback_open
+audio_init
+set_samplerate rate: 44100
+l3_configure fs: 256 format: 1
+set_samplerate done (new rate: 44100)
+dma_reset
+stop_dma stop + clear done ...
+playback_ioctl
+hw_params
+playback_prepare
+set_samplerate rate: 8000
+l3_configure fs: 512 format: 1
+set_samplerate done (new rate: 8000)
+playback_ioctl
+playback_trigger
+pcm_trigger id: 0 cmd: 1
+  sound: 2 x 8000 [Hz]
+  periods: 4 x 1000 [fr]
+  buffer_size: 4000 [fr]
+  dma_addr c0e68000
+process_dma
+  sending period 4 (dma_size[B]: 4000  offset[B]: 000000)... OK
+  sending period 3 (dma_size[B]: 4000  offset[B]: 004000)... OK
+  sending period 2 (dma_size[B]: 4000  offset[B]: 008000)...
+pcm_trigger done
+playback_pointer
+get_dma_pos 704 -> 176 [fr]
+  hw_ptr_interrupt: 00000000
+  updated pos [fr]: 176
+dma_callback
+  -> period done (still pending 1) <-
+playback_pointer
+get_dma_pos 4288 -> 1072 [fr]
+  hw_ptr_interrupt: 00000000
+  updated pos [fr]: 1072
+process_dma
+  sending period 2 (dma_size[B]: 4000  offset[B]: 008000)... OK
+  sending period 1 (dma_size[B]: 4000  offset[B]: 012000)...
+dma_callback done
+playback_pointer
+get_dma_pos 5272 -> 1318 [fr]
+  hw_ptr_interrupt: 000003e8
+  updated pos [fr]: 1318
+dma_callback
+  -> period done (still pending 1) <-
+playback_pointer
+get_dma_pos 8304 -> 2076 [fr]
+  hw_ptr_interrupt: 000003e8
+  updated pos [fr]: 2076
+process_dma
+  sending period 1 (dma_size[B]: 4000  offset[B]: 012000)... OK
+dma_callback done
+playback_pointer
+get_dma_pos 9128 -> 2282 [fr]
+  hw_ptr_interrupt: 000007d0
+  updated pos [fr]: 2282
+dma_callback
+  -> period done (still pending 1) <-
+playback_pointer
+get_dma_pos 12296 -> 3074 [fr]
+  hw_ptr_interrupt: 000007d0
+  updated pos [fr]: 3074
+process_dma
+dma_callback done
+playback_pointer
+get_dma_pos 12912 -> 3228 [fr]
+  hw_ptr_interrupt: 00000bb8
+  updated pos [fr]: 3228
+dma_callback
+  -> period done (still pending 0) <-
+playback_pointer
+get_dma_pos 16000 -> 4000 [fr]
+  hw_ptr_interrupt: 00000bb8
+  updated pos [fr]: 4000
+process_dma
+dma_callback done
+waiting in drain .....
+timed out in drain ...
+ALSA ../alsa-kernel/core/pcm_native.c:1087: playback drain error (DMA or
+IRQ trouble?)
+playback_pointer
+get_dma_pos 16000 -> 4000 [fr]
+  hw_ptr_interrupt: 00000fa0
+  updated pos [fr]: 4000
+playback_trigger
+pcm_trigger id: 0 cmd: 0
+  sound: 2 x 8000 [Hz]
+  periods: 4 x 1000 [fr]
+  buffer_size: 4000 [fr]
+  dma_addr c0e68000
+stop_dma stop + clear done ...
+pcm_trigger done
+hw_free
+hw_free
+playback_close
+
+
+And here is (modified) part of snd_pcm_playback_drain() function:
+
+	while (1) {
+		set_current_state(TASK_INTERRUPTIBLE);
+		if (signal_pending(current)) {
+			state = SIGNALED;
+			break;
+		}
+		spin_unlock_irq(&runtime->lock);
+                printk("waiting in drain .....\n");
+		if (schedule_timeout(10 * HZ) == 0) {
+                        printk("timed out in drain ...\n");
+			spin_lock_irq(&runtime->lock);
+			state = runtime->status->state ==
+			SNDRV_PCM_STATE_SUSPENDED ? SUSPENDED : EXPIRED;
+			break;
+		}
+		spin_lock_irq(&runtime->lock);
+		if (runtime->status->state != SNDRV_PCM_STATE_DRAINING) {
+			state = READY;
+			break;
+		}
+	}
+
+--
+
+	Tomas Kasparek (sioux, xkaspa06)
+ 	 Tomas.Kasparek@[seznam.cz,volny.cz]
+	 Linux@dcse.fee.vutbr.cz
+	student UIVT FEI VUT Brno
