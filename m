@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH]alsa-driver-0.9.6/acore/hwdep.c
-Date: Thu, 4 Sep 2003 20:12:38 +0200 (CEST)
+From: juan <jcb@niluge.net>
+Subject: alsa => hardware freeze on laptop
+Date: Fri, 5 Sep 2003 09:26:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0309042012160.6731@pnote.perex-int.cz>
-References: <200309041842.31333.annabellesgarden@yahoo.de>
+Message-ID: <20030905072618.GB3567@athena>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200309041842.31333.annabellesgarden@yahoo.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,26 +15,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 4 Sep 2003, Karsten Wiese wrote:
+hi,
 
-> Hi,
->
-> I'm trying the hwdep interface with poll().
-> looking for reasons why removal of USB-device caused bad MAGIC in hwdep.c,
-> I found this solution:
+i have a dell c600 and it randmonly freezes when i load the maestro3
+driver. my only choice is to reboot.
+i have no idea what can be the cause and how i can track the problem.
 
-Thanks. Applied with small changes to fix the error path.
+i tried inserting printks in maestro3.c but they are not great help .
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+i really need some advice here
 
 
 -------------------------------------------------------
