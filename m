@@ -1,9 +1,13 @@
-From: "David Sattler" <davidmindslip@hotmail.com>
-Subject: Strange SPDIF problems on SBLive! and HDA-Intel - No fix found yet!
-Date: Mon, 21 Feb 2005 17:05:30 -0500
-Message-ID: <BAY15-F391F76A381EF7A41EACFD2B9610@phx.gbl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000930]: Ego Sys Juli@ does not work at all
+Date: Tue, 22 Feb 2005 00:32:02 +0100
+Message-ID: <d1093065d58e767e0cd071dd836e96ca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A6C1C158
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 00:32:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -13,99 +17,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-	From: 	  davidmindslip@hotmail.com
-	Subject: 	SPDIF problems w/ SBLive! & hda-intel - No fix found yet...
-	Date: 	February 21, 2005 4:53:48 PM EST
-	To: 	  alsa-devel@lists.sourceforge.net
 
-Hi all,
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=930> 
+======================================================================
+Reported By:                lingis
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   930
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu 4.10
+Kernel Version:             2.6.8.1-3-386
+======================================================================
+Date Submitted:             02-22-2005 00:32 CET
+Last Modified:              02-22-2005 00:32 CET
+======================================================================
+Summary:                    Ego Sys Juli@ does not work at all
+Description: 
+When trying to load ice1724 driver, nothing happens:
 
-I know this is a question that's supposedly been fixed long ago, but I'm 
-seeing problems with 1.0.8 and with CVS (even up to today, which should have 
-an SPDIF patch for hda-intel) so I'll ask it again, hoping I don't get 
-ignored or such!
+sudo modprobe snd-ice1724
+dmesg | tail -n 20
+bt878: Bt878 AUDIO function found (0).
+ACPI: PCI interrupt 0000:00:0d.1[A] -> GSI 11 (level, low) -> IRQ 11
+bt878(0): Bt878 (rev 2) at 00:0d.1, irq: 11, latency: 32, memory:
+0xe3000000
+8139cp: 10/100 PCI Ethernet driver v1.2 (Mar 22, 2004)
+8139cp: pci dev 0000:00:0f.0 (id 10ec:8139 rev 10) is not an 8139C+
+compatible
+chip
+8139cp: Try the "8139too" driver instead.
+8139too Fast Ethernet driver 0.9.27
+ACPI: PCI interrupt 0000:00:0f.0[A] -> GSI 11 (level, low) -> IRQ 11
+eth0: RealTek RTL8139 at 0xe400, 00:50:fc:44:75:5d, IRQ 11
+eth0:  Identified 8139 chip type 'RTL-8139C'
+eth0: link up, 100Mbps, full-duplex, lpa 0x41E1
+NET: Registered protocol family 10
+Disabled Privacy Extensions on device c02cc0c0(lo)
+IPv6 over IPv4 tunneling driver
+ACPI: Power Button (FF) [PWRF]
+ACPI: Sleep Button (CM) [SLPB]
+eth0: no IPv6 routers present
+bttv0: timeout: drop=58 irq=7964/193355, risc=16103024, bits: HSYNC OFLOW
+FDSR
+bttv0: reset, reinitialize
+bttv0: PLL: 28636363 => 35468950 . ok
 
-Problem: Feeding .wav files to SPDIF on SBLive! has various results
-
-Command:
-	aplay -D "plug:spdif" -f cd file.wav
-Result:
-	Stutter... stutter.. stutter... stutter... stutter... of the first 1/2 
-second over and over again....
-
-Command:
-	aplay -D "spdif" -f cd file.wav
-(note not plug:spdif)
-Result:
-	Hear the file sped-up to 48KHz instead at the normal 44.1KHz pitch
-
-Note: Both commands fail the same way regardless of -f dat or -f cd
-
-Command:
-	aplay -D "hw:0,0" -f cd file.wav
-Result:
-	Same as "-D spdif" -- too fast
-
-Command:
-	aplay -D "hw:0,1" -f cd file.wav
-Result:
-	aplay: main:508: audio open error: No such file or directory
-
-Summary:
-	Nothing lets me play a wav file properly through SPDIF on the SBLive!
-
-
-Problem: Feeding AC3 or DTS to SBLive! results in amp playing static (not 
-recognizing AC3-ishness of data)
-
-Command:
-	aplay -D "plug:spdif" -f <dat|cd> <dts.file|ac3.file>
-Result:
-	With amp in DTS or Dolby Digital mode: no sound
-	With amp in Stereo PCM mode: undecoded garbage
-
-Summary:
-	Nothing lets me play a DTS or AC3 file properly through SPDIF on SBLive! 
-(note, this is a very high-end decoder)
-
-
-Problem: Nothing lets me use the SPDIF of my hda-intel (Asus P5GD1 
-motherboard)
-
-Command:
-	aplay -D "plug:spdif" whatever...
-Result:
-	ALSA lib setup.c:548:(add_elem) Cannot obtain info for CTL elem 
-(MIXER,'IEC958 Playback Default',0,0,0): No such file or directory
-	aplay: main:508: audio open error: No such file or directory
-
-Command:
-	aplay -D "hw:0,0" whatever....
-Result:
-	Front speakers... good sound
-
-Command:
-	aplay -D "hw:0,1" <0,2 0,3 etc.>
-Result:
-	aplay: main:508: audio open error: No such file or directory
-
-Also, I notice that in alsamixer I don't get anything referring to SPDIF, 
-IEC, Digital, etc.
+cat /proc/asound/cards
+--- no soundcards ---
 
 
-PLEASE (Takashi, I beg you!) I don't care which card I manage to get 
-working, but I've been through lists and trial/error and hacking for days 
-with no success. I'm *more* than happy to help debug, I've got the equipment 
-at my disposal as well as the time.
 
-ANY hints, either via list or personally at davidmindslip@hotmail.com would 
-be *greatly* appreciated!
+======================================================================
 
-Many thanks,
-David.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-22-05 00:32 lingis         New Issue                                    
+02-22-05 00:32 lingis         Distribution              => Ubuntu 4.10     
+02-22-05 00:32 lingis         Kernel Version            => 2.6.8.1-3-386   
+======================================================================
 
 
 
