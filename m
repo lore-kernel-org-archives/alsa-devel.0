@@ -1,11 +1,14 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: [PATCH] emu10k1: change "Music" to "Synth" in mixer control names.
-Date: Tue, 28 Dec 2004 20:24:13 -0500
-Message-ID: <1104283454.27377.3.camel@krustophenia.net>
+Subject: Re: [PATCH] emu10k1: change "Music" to "Synth" in
+	mixer control names.
+Date: Tue, 28 Dec 2004 21:07:44 -0500
+Message-ID: <1104286064.27377.15.camel@krustophenia.net>
+References: <1104283454.27377.3.camel@krustophenia.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1104283454.27377.3.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +21,42 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This patch changes "Music" to "Synth" in the mixer control names, in
-order to make it clear that these controls affect the wavetable synth.
-"Music" is confusing and could equally well refer to PCM, plus the
-Windows drivers (kX and Creative) call it "Synth" so users expect this.
+On Tue, 2004-12-28 at 20:24 -0500, Lee Revell wrote:
+>  	snd_emu10k1_init_stereo_control(&controls[nctl++], "Wave Playback Volume", gpr, 100);
+>  	gpr += 2;
 
-Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
+I have noticed that many of the PCM controls are assigned names like
+"Wave Playback Volume", and later renamed to "PCM Playback Volume" in
+the devinit routine.
 
-Index: alsa-2.6.10-rc2/alsa-kernel/pci/emu10k1/emufx.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emufx.c,v
-retrieving revision 1.66
-diff -u -r1.66 emufx.c
---- alsa-2.6.10-rc2/alsa-kernel/pci/emu10k1/emufx.c	23 Nov 2004 15:11:54 -0000	1.66
-+++ alsa-2.6.10-rc2/alsa-kernel/pci/emu10k1/emufx.c	29 Dec 2004 01:20:21 -0000
-@@ -1065,10 +1065,10 @@
- 	snd_emu10k1_init_stereo_control(&controls[nctl++], "Wave Playback Volume", gpr, 100);
- 	gpr += 2;
- 
--	/* Music Playback */
-+	/* Synth Playback */
- 	A_OP(icode, &ptr, iMAC0, A_GPR(stereo_mix+0), A_GPR(stereo_mix+0), A_GPR(gpr), A_FXBUS(FXBUS_MIDI_LEFT));
- 	A_OP(icode, &ptr, iMAC0, A_GPR(stereo_mix+1), A_GPR(stereo_mix+1), A_GPR(gpr+1), A_FXBUS(FXBUS_MIDI_RIGHT));
--	snd_emu10k1_init_stereo_control(&controls[nctl++], "Music Playback Volume", gpr, 100);
-+	snd_emu10k1_init_stereo_control(&controls[nctl++], "Synth Playback Volume", gpr, 100);
- 	gpr += 2;
- 
- 	/* Wave (PCM) Capture */
-@@ -1077,10 +1077,10 @@
- 	snd_emu10k1_init_stereo_control(&controls[nctl++], "PCM Capture Volume", gpr, 0);
- 	gpr += 2;
- 
--	/* Music Capture */
-+	/* Synth Capture */
- 	A_OP(icode, &ptr, iMAC0, A_GPR(capture+0), A_GPR(capture+0), A_GPR(gpr), A_FXBUS(FXBUS_MIDI_LEFT));
- 	A_OP(icode, &ptr, iMAC0, A_GPR(capture+1), A_GPR(capture+1), A_GPR(gpr+1), A_FXBUS(FXBUS_MIDI_RIGHT));
--	snd_emu10k1_init_stereo_control(&controls[nctl++], "Music Capture Volume", gpr, 0);
-+	snd_emu10k1_init_stereo_control(&controls[nctl++], "Synth Capture Volume", gpr, 0);
- 	gpr += 2;
- 
- 	/*
-@@ -1608,19 +1608,19 @@
- 	snd_emu10k1_init_stereo_onoff_control(controls + i++, "Wave Capture Switch", gpr + 2, 0);
- 	gpr += 4;
- 
--	/* Music Playback Volume */
-+	/* Synth Playback Volume */
- 	for (z = 0; z < 2; z++)
- 		VOLUME_ADD(icode, &ptr, playback + z, 2 + z, gpr + z);
--	snd_emu10k1_init_stereo_control(controls + i++, "Music Playback Volume", gpr, 100);
-+	snd_emu10k1_init_stereo_control(controls + i++, "Synth Playback Volume", gpr, 100);
- 	gpr += 2;
- 
--	/* Music Capture Volume + Switch */
-+	/* Synth Capture Volume + Switch */
- 	for (z = 0; z < 2; z++) {
- 		SWITCH(icode, &ptr, tmp + 0, 2 + z, gpr + 2 + z);
- 		VOLUME_ADD(icode, &ptr, capture + z, tmp + 0, gpr + z);
- 	}
--	snd_emu10k1_init_stereo_control(controls + i++, "Music Capture Volume", gpr, 0);
--	snd_emu10k1_init_stereo_onoff_control(controls + i++, "Music Capture Switch", gpr + 2, 0);
-+	snd_emu10k1_init_stereo_control(controls + i++, "Synth Capture Volume", gpr, 0);
-+	snd_emu10k1_init_stereo_onoff_control(controls + i++, "Synth Capture Switch", gpr + 2, 0);
- 	gpr += 4;
- 
- 	/* Surround Digital Playback Volume (renamed later without Digital) */
+    476         static char *emu10k1_rename_ctls[] = {
+    477                 "Surround Digital Playback Volume", "Surround Playback Volume",
+    478                 "Center Digital Playback Volume", "Center Playback Volume",
+    479                 "LFE Digital Playback Volume", "LFE Playback Volume",
+    480                 NULL    
+    481         };
 
+    503         static char *audigy_rename_ctls[] = {
+    504                 /* use conventional names */
+    505                 "Wave Playback Volume", "PCM Playback Volume",
+    506                 /* "Wave Capture Volume", "PCM Capture Volume", */
+    507                 "Wave Master Playback Volume", "Master Playback Volume",
+    508                 "AMic Playback Volume", "Mic Playback Volume",
+    509                 NULL
+    510         };
+
+    560         if (emu->audigy)
+    561                 c = audigy_rename_ctls; 
+    562         else    
+    563                 c = emu10k1_rename_ctls;
+    564         for (; *c; c += 2)
+    565                 rename_ctl(card, c[0], c[1]);
+
+
+Maybe I am missing something but why not just call it "PCM Playback
+Volume" in the first place, and clean up the code a bit?
+
+Lee
 
 
 
