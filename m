@@ -1,13 +1,14 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
 Subject: Re: Bug in OSS simulation (ALSA 0.9.4)
-Date: Fri, 11 Jul 2003 01:54:51 +0300 (EEST)
+Date: Fri, 11 Jul 2003 00:07:24 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307110150040.5612-100000@ecabase.localdomain>
-References: <20030710015134.GA12482@alinoe.com>
+Message-ID: <3F0DF1AC.6030709@superbug.demon.co.uk>
+References: <Pine.LNX.4.44.0307110145380.5612-100000@ecabase.localdomain>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030710015134.GA12482@alinoe.com>
+In-Reply-To: <Pine.LNX.4.44.0307110145380.5612-100000@ecabase.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,41 +17,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Carlo Wood <carlo@alinoe.com>
-Cc: alsa-devel@lists.sourceforge.net, xvoice@yahoogroups.com
+To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Cc: Carlo Wood <carlo@alinoe.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 10 Jul 2003, Carlo Wood wrote:
+Kai Vehmanen wrote:
+> On Thu, 10 Jul 2003, Carlo Wood wrote:
+> 
+> 
+>>But, when compiling it with:
+>>  gcc -DUSE_DSP_SETFMT=1 troep.c
+>>It stops rather quickly with reading data.
+> 
+> 
+My SB Live has the same problems as Carlo's
 
->> #fragments, #bytes: 0, 0
->> #fragments, #bytes: 1, 1632
->> Read 1024 bytes.
->> #fragments, #bytes: 2, 2048
-[...]
-> Ah... I noticed something else.
-> It doesn't have to do with whether or not
-> using SNDCTL_DSP_SETFMT, but with having
-> an overrun of the number of buffers.
-[...]
-> Why is the number of allocated buffers
-> so low?!
+Cheers
+James
 
-This is a feature of the SB-Live driver: in capture/recording direction,
-it supports max two interrupts per buffer. To increase the total
-buffersize you need to increase fragment size. In playback mode up to 1024 
-interrupts per buffer is supported. I got this info by reading through the 
-driver code, so I don't have further info about the issue.
-
-> And, is it normal that when the buffers
-> did overrun that nothing is returned anymore?
-> How about just skipping it? :/
-
-No, this definitely looks like a driver bug. In OSS-emulation mode the 
-xruns should be ignored (just lke kernel/OSS drivers do).
-
--- 
- http://www.eca.cx
- Audio software for Linux!
 
 
 
