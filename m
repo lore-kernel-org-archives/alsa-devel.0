@@ -1,13 +1,23 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000457]: No AC3 via SPDIF possible
-Date: Mon, 23 Aug 2004 15:46:29 +0200 (CEST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
+Date: Mon, 23 Aug 2004 16:39:20 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040823134629.43C6C1102F@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.LNX.4.58.0408231633260.1801@pnote.perex-int.cz>
+References: <Pine.HPX.4.33n.0408181538550.24798-100000@studcom.urz.uni-halle.de>
+ <1092842830.13603.3.camel@localhost.localdomain> <20040818181350.2b38e875@mango.fruits.de>
+ <Pine.LNX.4.58.0408181918160.1769@pnote.perex-int.cz>
+ <20040818201535.1f49a128@mango.fruits.de> <Pine.LNX.4.58.0408191050220.1779@pnote.perex-int.cz>
+ <s5h8ycbv4s9.wl@alsa2.suse.de> <Pine.LNX.4.58.0408191225170.1779@pnote.perex-int.cz>
+ <4129D6A2.7020801@pg.gda.pl> <Pine.LNX.4.58.0408231349520.1801@pnote.perex-int.cz>
+ <4129E473.6070702@pg.gda.pl>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=iso8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9EF382D7
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 15:46:29 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F3F561AF
+	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 16:48:04 +0200 (MEST)
+In-Reply-To: <4129E473.6070702@pg.gda.pl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,111 +26,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?ISO-8859-2?Q?Adam_Tla=B3ka?= <atlka@pg.gda.pl>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 23 Aug 2004, Adam Tla=B3ka wrote:
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000457
-======================================================================
-Reported By:                nospam2000
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     457
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Debian SID
-Kernel Version:             2.6.6
-======================================================================
-Date Submitted:             08-20-2004 17:42 CEST
-Last Modified:              08-23-2004 15:46 CEST
-======================================================================
-Summary:                    No AC3 via SPDIF possible
-Description: 
-I have a onboard ES1371 soundcard with SPDIF output. It works fine with the
-ALSA driver for analog and PCM output, even over SPDIF, but it is
-impossible to play AC3 sound over the SPDIF output. Only a clicking noise
-comes out of my speakers when I try this.
+> > I already stated: If you want to use real-time applications, buy real-t=
+ime=20
+> > hardware.
+> They are rather normal user applications then specialized RT apps - I=20
+> don't want to buy specialized hardware just to play some games
+> or mix system sounds with browser and communicator apps sounds.
 
-The problem is, that the raw data is modified by the sound chip and not
-passed 1:1 to the SPDIF output. To get correct AC3 playback, the mixer and
-the sample rate converter have to be bypassed. This means that
-additionally to the bit ES_1373_SPDIF_THRU the bits ES_1373_RECEN_B and
-ES_1373_BYPASS_P1/ES_1373_BYPASS_P2 have to be set to make AC3 playback
-work.
+Quake is special case. For standard applications, the mixing should be=20
+provided, but there're not latency issues.
 
-======================================================================
+I still think that the aoss library can be fixed so that quake will work.
+I think that OSS/Commercial also adds some delay on their "virtual"=20
+devices mixed together.
 
-----------------------------------------------------------------------
- tiwai - 08-20-2004 18:13 CEST 
-----------------------------------------------------------------------
-It's better to check the non-audio bit in the IEC958 status controls.
-Does the attached patch work?
+> Also switching two, 4 or 5.1 mode and headphone mode should be done
+> just by one click without application restarting. So down/up mixing
+> should be in a driver. I think it can't be done with todays ALSA in lib=
+=20
+> functionality approach and never will be.
 
-----------------------------------------------------------------------
- nospam2000 - 08-21-2004 00:54 CEST 
-----------------------------------------------------------------------
-Your original patch didn't work. The only problem was the "!" in
-"!(ensoniq->ctrl & ES_1373_SPDIF_THRU)" (actually the flag is named wrong,
-its name should be ES_1373_SPDIF_THRU_DISABLE).
+Why not? Most today's hardware can reroute samples or analog paths in=20
+hardware. So it's only about right mixer setup.
 
-I modified it to get it working and uploaded ens1371-ac3-fix_002.dif which
-has some more mostly cosmetic changes. The flag ES_1373_RECEN_B is not
-needed, but I noticed this too late, just after uploading the new patch.
+=09=09=09=09=09=09Jaroslav
 
-In my opinion it is totally correct to disable the sample rate converter
-when the bit IEC958_AES0_NONAUDIO is set in the channel status, but this
-is not the only reason. It also makes sense to disable it for correct 1:1
-playback of PCM data (e.g. directly from a audio CD).
-
-Actually I don't see the reason why it should not always be set when SPDIF
-is enabled and when the samplerate is 48 kHz. For me the mixer doesn't
-work in any case for the SPDIF output and analog inputs, that means I
-don't get the signal from "line in" at the SPDIF output regardless of the
-settings.
-
-Another point: Non audio data should not be output via the analog output.
-When I play AC3, I have to mute "PCM" in the mixer to avoid noise on my TV
-speakers. This could be done automatically.
-
-I know it's hard to keep compatibility and not to break existing use cases
-:-)
-
-----------------------------------------------------------------------
- tiwai - 08-23-2004 15:46 CEST 
-----------------------------------------------------------------------
-I think BYPASS_P1 suffices (P2 isn't used for SPDIF out), right?
-
-Dsabling SRC for 48k would be fine.  This doesn't break compatibility.
-Does non-48k SPDIF work?  If yes, we can disable SRC always for SPDIF
-output at any rate.
-
-Also, disabling the PCM output can be put into iec958 plug hook
-in /usr/share/alsa/cards/ENS1371.conf.  The disadvantage is that
-PCM is always disabled regardless of audio or non-audio SPDIF.
-
-Auto-muting in the driver is doable (e.g. cmipci driver does it),
-but it results in more codes.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-20-04 17:42 nospam2000     New Bug                                      
-08-20-04 17:42 nospam2000     File Added: alsa_ens1371_ac3_003.diff                    
-08-20-04 17:42 nospam2000     Distribution              => Debian SID      
-08-20-04 17:42 nospam2000     Kernel Version            => 2.6.6           
-08-20-04 17:51 nospam2000     Bug Monitored: nospam2000                    
-08-20-04 18:13 tiwai          Bugnote Added: 0001601                       
-08-20-04 18:13 tiwai          File Added: ens1371-ac3-fix.dif                    
-08-21-04 00:01 nospam2000     File Added: ens1371-ac3-fix_002.dif                    
-08-21-04 00:54 nospam2000     Bugnote Added: 0001602                       
-08-23-04 15:46 tiwai          Bugnote Added: 0001613                       
-======================================================================
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
