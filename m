@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000901]: The onboard audigyls chip on msi k8 diamond motherboard not recognized. Path supplied.
-Date: Sun, 13 Feb 2005 00:54:48 +0100
-Message-ID: <1d455d6d190a5b562c58d8f7b18ec61b@bugtrack.alsa-project.org>
+Date: Sun, 13 Feb 2005 01:08:28 +0100
+Message-ID: <721e1f3ad9c4805b29a3f16f3242ad97@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5AF881F7
-	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 00:54:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 064931F7
+	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 01:08:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             02-11-2005 23:49 CET
-Last Modified:              02-13-2005 00:54 CET
+Last Modified:              02-13-2005 01:08 CET
 ======================================================================
 Summary:                    The onboard audigyls chip on msi k8 diamond
 motherboard not recognized. Path supplied.
@@ -48,12 +48,6 @@ We'll. The driver fails to load (and dmesg comlaints about a missing AC97)
 
 Have made a path.
 ======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 02-13-05 00:18 
-----------------------------------------------------------------------
-cat /proc/asound/cards
-Does it say: "AudigyLS [Unknown]" after your patch?
 
 ----------------------------------------------------------------------
  sHINOBI - 02-13-05 00:54 
@@ -66,6 +60,19 @@ After the patch  cat /proc/asound/cards shows:
 The soundcard seems to be working, although the sound is choppy when
 playing sound  recorded at 44100 Hz. 48000 Hz audio like the one at DVD's
 is played correctly.
+
+----------------------------------------------------------------------
+ jcdutton - 02-13-05 01:08 
+----------------------------------------------------------------------
+In you patch change:
++	 { 0x00071102, "Live! by MSI [SB0000]"}, /* MSI SB Audigy2LS without
+AC97 */
+
+to
++	 { 0x10091462, "Live! by MSI [SB0438]"}, /* MSI SB Audigy2LS without
+AC97 */
+
+then see if "cat /proc/asound/cards" displays better info.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -81,6 +88,7 @@ Date Modified  Username       Field                    Change
 02-12-05 22:47 sHINOBI        Note Added: 0003572                          
 02-13-05 00:18 jcdutton       Note Added: 0003574                          
 02-13-05 00:54 sHINOBI        Note Added: 0003575                          
+02-13-05 01:08 jcdutton       Note Added: 0003576                          
 ======================================================================
 
 
