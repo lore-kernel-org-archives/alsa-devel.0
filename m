@@ -1,17 +1,23 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: Frank Barknecht <fbar@footils.org>
 Subject: Re: OSS vs ALSA war :-)
-Date: Tue, 10 Aug 2004 13:21:12 -0400
+Date: Tue, 10 Aug 2004 19:40:36 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1092158472.3290.12.camel@mindpipe>
-References: <200408101716.SAA04883@liam2.demon.co.uk>
+Message-ID: <20040810174036.GB4342@fliwatut.scifi>
+References: <200408100636.i7A6aMAo030159@www4.pobox.sk> <411875DF.7030203@free.fr> <20040810151525.GC1671@fliwatut.scifi> <4118ED57.50302@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 3135A1F0
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 19:20:54 +0200 (MEST)
-In-Reply-To: <200408101716.SAA04883@liam2.demon.co.uk>
+Received: from smtp1.netcologne.de (smtp1.netcologne.de [194.8.194.112])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4343C1F0
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 19:40:59 +0200 (MEST)
+Received: from fliwatut.scifi (xdsl-213-196-243-250.netcologne.de [213.196.243.250])
+	by smtp1.netcologne.de (Postfix) with ESMTP id B3ECF38C4E
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 19:40:55 +0200 (MEST)
+Received: from freak by fliwatut.scifi with local (Exim 4.34)
+	id 1Buac0-0001A9-7z
+	for alsa-devel@alsa-project.org; Tue, 10 Aug 2004 19:40:36 +0200
+Content-Disposition: inline
+In-Reply-To: <4118ED57.50302@free.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,51 +26,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: William <walsac3@liam2.demon.co.uk>
-Cc: geeceezee@free.fr, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2004-08-10 at 13:16, William wrote:
-> Lee Revell wrote:
-> > GCZ wrote:
-> >> Should I refrain from playing UT2004 just because Nvidia's drivers,
-> >> which work beautifully, are closed-source? Should I refrain from
-> >> playing Quake 3 because ALSA doesn't work with it?
-> > 
-> > No, this is why ALSA provides OSS emulation, so every legacy app doesn't
-> > have to be recoded.
+Hallo,
+GCZ hat gesagt: // GCZ wrote:
+
+> Frank Barknecht wrote:
 > 
-> One big problem is that some parts of ALSA's OSS emulation have been buggy
-> for a long time, especially its /dev/sequencer emulation:
-> https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=28
-> [First reported August 2002, present since before Alsa 0.9.0]
-> 
+> >I stay with open source software, because this libre thing is
+> >important to me.
+>
+> Jaroslav implied that I could, actually, actively help by providing a 
+> shell account and my feedback, which I will do. I didn't know that would 
+> actually help. But otherwise, when there's no Free Software alternative 
+> that works in a particular situation, I don't see any problem with 
+> buying closed-source software.
 
-Heh, the ALSA bug tracker is hosed right now.  It didn't seem to
-remember my login, then when I went to sign up for a new account I got:
+IMO the right thing libre-wise to do in that case is not to buy
+hardware from vendors that don't support open source development.
+According to my impression Terratec does generally support OS
+development, so the problem you have with their card is probably
+solvable. Nvidia however doesn't give a damn about open source, that's
+why I never would buy any of their products. (I could play Quake3 just
+fine with my Matrox card, if I wanted to, and I already have a closed
+source Playstation.) 
 
-ALSA bugtracking system
-Warning: Cannot modify header information - headers already sent by
-(output started at /srv/www/mantisbt-0.18.3/core/html_api.php:139) in
-/srv/www/mantisbt-0.18.3/core/gpc_api.php on line 220
+I don't want to tell anyone what to do, though. Everyone of course can
+and should run the software (s)he wants to. It's just not very nice to
+come here, and tell everyone on the ALSA list that you are using
+OSS/Nonfree now.  That's what provoked me to my sarcastic "goodbye"
+comment.
 
-Warning: Cannot modify header information - headers already sent by
-(output started at /srv/www/mantisbt-0.18.3/core/html_api.php:139) in
-/srv/www/mantisbt-0.18.3/core/print_api.php on line 37
-
-Warning: Cannot modify header information - headers already sent by
-(output started at /srv/www/mantisbt-0.18.3/core/html_api.php:139) in
-/srv/www/mantisbt-0.18.3/core/print_api.php on line 39
-
-Warning: Cannot modify header information - headers already sent by
-(output started at /srv/www/mantisbt-0.18.3/core/html_api.php:139) in
-/srv/www/mantisbt-0.18.3/core/print_api.php on line 44
-
-If you can access the text of that bug can you send it to me?
-
-Lee
-
-
+Ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
