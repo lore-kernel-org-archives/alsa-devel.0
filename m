@@ -1,15 +1,12 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000374]: Support for SB Audigy LS Soundcards
-Date: Sat, 10 Jul 2004 11:16:28 +0200
+Date: Sat, 10 Jul 2004 13:07:41 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <6b0eb9054cd812c565ab551268779f94@bugtrack.alsa-project.org>
+Message-ID: <53e9b4d48bfb6315ea8d46e05469485e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 522D925B
-	for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2004 11:16:28 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +19,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -49,7 +46,7 @@ Kernel Version:             2.6.5
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             07-10-2004 11:16 CEST
-Last Modified:              07-10-2004 11:16 CEST
+Last Modified:              07-10-2004 13:07 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -61,6 +58,14 @@ Drivers with ALSA? Or can anybody develop a working driver?
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+----------------------------------------------------------------------
+ jcdutton - 07-10-2004 13:07 CEST=20
+----------------------------------------------------------------------
+I am in the process of reverse engineering the Audigy LS, and there is
+currently a audigyls driver in the alsa-driver CVS that can produce
+sound.
+As we don't have datasheets, progress is slow.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -75,6 +80,8 @@ lly SuSE
 9.1 an above)
 07-10-04 11:16 whity          Kernel Version            =3D> 2.6.5       =
    =20
+07-10-04 13:07 jcdutton       Bugnote Added: 0001398                     =
+ =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
