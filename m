@@ -1,12 +1,15 @@
 From: "Nick French" <nick@greensignal.com>
 Subject: Multiple PCM files
-Date: Tue, 30 Jul 2002 10:50:01 +0100
+Date: Tue, 30 Jul 2002 10:52:16 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <100101c237ae$85238550$360110ac@dillon>
+Message-ID: <100e01c237ae$d91c6870$360110ac@dillon>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0FFE_01C237B6.DAE3E860"
+	boundary="----=_NextPart_000_100B_01C237B7.2B2E1B60"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from warrior.services.quay.plus.net (warrior.services.quay.plus.net [212.159.14.227])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id LAA30629
+	for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2002 11:50:57 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,12 +18,12 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0FFE_01C237B6.DAE3E860
+------=_NextPart_000_100B_01C237B7.2B2E1B60
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -36,7 +39,7 @@ Cheers
 
 Nick
 
-------=_NextPart_000_0FFE_01C237B6.DAE3E860
+------=_NextPart_000_100B_01C237B7.2B2E1B60
 Content-Type: text/html;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -49,6 +52,7 @@ charset=3Diso-8859-1">
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>
 <DIV><FONT face=3DArial size=3D2>Sorry I am new to ALSA so forgive me if =
 this is=20
 obvious.</FONT></DIV>
@@ -63,9 +67,10 @@ PCM stream. Any pointers gratefully appreciated.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
 <DIV><FONT face=3DArial size=3D2>Cheers</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Nick</FONT></DIV></BODY></HTML>
+<DIV><FONT face=3DArial =
+size=3D2>Nick</FONT></DIV></FONT></DIV></BODY></HTML>
 
-------=_NextPart_000_0FFE_01C237B6.DAE3E860--
+------=_NextPart_000_100B_01C237B7.2B2E1B60--
 
 
 
