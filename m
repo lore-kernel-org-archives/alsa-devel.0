@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000354]: Line-In Dead - Setting "Default PhoneJacks" in Linux
-Date: Thu, 1 Jul 2004 09:40:46 +0200
+Subject: [ALSA - driver 0000320]: FL is FL+FR and FR is FR+FL
+Date: Thu, 1 Jul 2004 09:43:53 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <6e07281b3f1fe70a4757d28649ef4393@bugtrack.alsa-project.org>
+Message-ID: <cf478d736da6bfde6134bb73874f28b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -19,182 +19,148 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug=
-_id=3D0000354
+_id=3D0000320
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                Quantum
-Assigned To:               =20
+Reported By:                Voluspa
+Assigned To:                pzad
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     354
-Category:                   PCI - via82xx
+Bug ID:                     320
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             Gentoo-2.6.5-r1
+Status:                     resolved
+Distribution:               Homebrew
+Kernel Version:             2.6.6
+Resolution:                 not a bug
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-30-2004 20:35 CEST
-Last Modified:              07-01-2004 09:40 CEST
+Date Submitted:             06-01-2004 10:12 CEST
+Last Modified:              07-01-2004 09:43 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Line-In Dead - Setting "Default PhoneJacks" i=
-n Linux
+Summary:                    FL is FL+FR and FR is FR+FL
 Description:=20
-Another full day of research.=20
-=20
- It's clear now that my mobo (MSI6712 KT4V Via8235) has several audio
-modes. If the optional S-panel is added, front speakers are the normal
-Line-Out and the others are on the S-panel. I do not have the S-panel
-though, and only need 2 channels and LineIn. LineIn is silent; really nee=
-d
-this for recording.=20
-=20
- There's a mode MSI calls "Default Phonejack". If enabled, the built-in
-jacks Mic/LineIn/LineOut are what you'd expect. If disabled though,
-LineOut is normal, LineIn is RearOut (4-channel) and Mic is sub/center
-(6-channel).=20
-=20
- Since my Mic and LineOut work but LineIn does not, it appears the mobo
-defaults to 4 channel, NON-Default Phonejack. So I must set that Default
-Phonejack bit in order to get LineIn; I'm sure it's a register setting in
-the mobo.=20
-=20
- All that appears to do that is a Winduhs utility, only for Winduhs.=20
-=20
- Tried all Alsa dxs_support options (only clean up the intermod
-distortion?) and ac97_quirk options (incl. 4) to no avail.. Sound out is
-fine; But I need to feed in sound through LineIn.=20
-=20
- Can you advise?=20
+Card: Sound Blaster Live!
+Chip: SigmaTel STAC9758/59
+
+Between 1.0.5rc1 and 1.0.5a the Front Left and Front Right signals are
+combined, which creates real crappy sound:
+
+Front Left speaker =3D Front Left + Front Right
+Front Right speaker =3D Front Right + Front Left
+
+Checking the new "Surround Mix" in alsamixer gets even more confusing:
+
+Front Left speaker =3D Front Left + Front Right + Center
+Front Right speaker =3D Front Right + Front Left + LFE
+
+There are no differences between the 1.0.5rc1 and 1.0.5a in the
+proc/asound/card0/codec97#0/ac97#0-0+regs
+
+Btw, the alsamixer options are getting really out of hand...
+Eg a new option called just "Front" (I keep it off since I can't hear any
+difference).
+
+Mvh
+Mats Johannesson
+
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- Quantum - 06-30-2004 21:13 CEST=20
+ pzad - 06-08-2004 08:40 CEST=20
 ----------------------------------------------------------------------
-More: in alsamixer, Line is the only capture device.  I can control volum=
+I think this AC97 codec problem.
+
+----------------------------------------------------------------------
+ pzad - 06-23-2004 15:21 CEST=20
+----------------------------------------------------------------------
+Could you attach asound.state or amixer output.
+And I think, that ac97 register were changed, but there are not in proc
+output, because these are in diffrent pages.
+
+----------------------------------------------------------------------
+ Voluspa - 06-24-2004 10:48 CEST=20
+----------------------------------------------------------------------
+OK, rechecked and the /proc-registers are set the same in 1.0.5rc1 and
+1.0.5a. Installed 1.0.5a without loading the rc1 asound.state, and
+handcrafted a new with alsamixer. Having set all options equal to rc1, th=
 e
-of Surround, Center, and Line, but not Line In.  Nothing is muted.
+asound.state file indeed shows some differences.
 
-So it seems clear that I am in 4-speaker mode ("Default Phonejack").
+Uploading asound.state-1.0.5rc1, asound.state-1.0.5a and the diff
+asound.state-diff-1.0.5rc1-1.0.5a
 
 ----------------------------------------------------------------------
- Quantum - 06-30-2004 21:31 CEST=20
+ pzad - 06-30-2004 09:00 CEST=20
 ----------------------------------------------------------------------
-# cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: Realtek ALC650 rev 2
+Could you try this patch ? It is already in alsa CVS.
 
-Capabilities     :
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : Realtek 3D Stereo Enhancement
+http://sourceforge.net/mailarchive/forum.php?thread_id=3D5027384&forum_id=
+=3D33141
 
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : on
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=3D0 rev=3D1 LDAC SDAC CDAC DSA=3D0 SPDIF DRA VRA
-Extended status  : SPCV LDAC SDAC CDAC SPDIF=3D3/4 SPDIF VRA
-PCM front DAC    : 44100Hz
-PCM Surr DAC     : 44100Hz
-PCM LFE DAC      : 44100Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer PCM Category=3D0x2 Generation=3D1 Rate=3D44.1=
-kHz
-SPDIF In Status  : Not Locked
-#
+----------------------------------------------------------------------
+ Voluspa - 06-30-2004 15:36 CEST=20
+----------------------------------------------------------------------
+I'm glad that the code review you did amounted to _some_ kind of bugfix
+after
+me having sent you on a wild goose chase, Peter. This bug report can be
+closed, 'cos it's (probably) no bug at all. Sorry... Here's what
+happened:
 
-# cat /proc/asound/card0/codec97#0/ac97#0-0+regs
-0:00 =3D 5980
-0:02 =3D 0505
-0:04 =3D 0000
-0:06 =3D 0005
-0:08 =3D 0000
-0:0a =3D 0004
-0:0c =3D 0006
-0:0e =3D 0045
-0:10 =3D 0506
-0:12 =3D 0505
-0:14 =3D 0505
-0:16 =3D 0505
-0:18 =3D 0606
-0:1a =3D 0404
-0:1c =3D 8000
-0:1e =3D 0000
+During the development of the STAC9758/59, I kept alsa-driver-1.0.4
+updated
+by patching in the relevant file changes (no CVS pulls, just manual
+changes).
+Last date was May 14. The _perceived_ breakage happened between that date
+and
+1.0.5rc1 - not 1.0.5a as I believed.
+
+1.0.4 + patches had /proc/asound/card0/codec97#0/ac97#0-0+regs
+[...]
 0:20 =3D 2000
 0:22 =3D 0000
-0:24 =3D 0000
-0:26 =3D 800f
-0:28 =3D 05c7
-0:2a =3D 05c5
-0:2c =3D ac44
-0:2e =3D ac44
-0:30 =3D ac44
-0:32 =3D bb80
-0:34 =3D 0000
-0:36 =3D 0605
-0:38 =3D 0505
-0:3a =3D 0824
-0:3c =3D 0000
-0:3e =3D 0000
-0:40 =3D 0000
-0:42 =3D 0000
-0:44 =3D 0000
-0:46 =3D 0000
-0:48 =3D 0000
-0:4a =3D 0000
-0:4c =3D 0000
-0:4e =3D 0000
-0:50 =3D 0000
-0:52 =3D 0000
-0:54 =3D 0000
-0:56 =3D 0000
-0:58 =3D 0000
-0:5a =3D 0000
-0:5c =3D 0000
-0:5e =3D 0000
-0:60 =3D 0000
-0:62 =3D 0000
-0:64 =3D 0808
-0:66 =3D 0808
-0:68 =3D 0000
-0:6a =3D 520f
-0:6c =3D 0000
-0:6e =3D 0014
-0:70 =3D 0211
-0:72 =3D 00a0
-0:74 =3D 0043
-0:76 =3D 0001
-0:78 =3D 8102
-0:7a =3D 57c7
-0:7c =3D 414c
-0:7e =3D 4720
-#
 
-----------------------------------------------------------------------
- pzad - 07-01-2004 09:40 CEST=20
-----------------------------------------------------------------------
-mute this "Duplicate Front"
-mute this "Line-In As Surround"
+The bit in register 20 means "3D EFFECT ENABLED", but the "33" value I
+had
+set with the alsamixer tool didn't take effect (would show up as 0004 in
+register 22).
+
+1.0.5rc1 had /proc/asound/card0/codec97#0/ac97#0-0+regs
+[...]
+0:20 =3D 2000
+0:22 =3D 0004
+
+And we see the "LINE_OUT SEPARATION RATIO; (LOW)" of "3D stereo
+enhancement
+function, SigmaTel Surround 3D (SS3D), built into the AC'97 component".
+
+If mixing Front Left and Front Right signals is part of how a 3D effect
+is
+achieved, then this is no bug. But using a 5.1 speaker system I can only
+say
+that the effect sounds terrible... So, in the future I keep "3D Control -
+Switch [Off]".
+
+Now using alsa-driver-1.0.5a plus the CVS patch you referred to, and all'=
+s
+well.
+
+Once again, sorry about the fuzz.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -202,20 +168,39 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-30-04 20:35 Quantum        New Bug                                    =
+06-01-04 10:12 Voluspa        New Bug                                    =
  =20
-06-30-04 20:35 Quantum        Distribution              =3D> Gentoo      =
+06-01-04 10:12 Voluspa        Distribution              =3D> Homebrew    =
    =20
-06-30-04 20:35 Quantum        Kernel Version            =3D> Gentoo-2.6.5=
--r1=20
-06-30-04 21:13 Quantum        Bugnote Added: 0001365                     =
+06-01-04 10:12 Voluspa        Kernel Version            =3D> 2.6.6       =
+   =20
+06-08-04 08:40 pzad           Bugnote Added: 0001294                     =
  =20
-06-30-04 21:27 Quantum        File Added: asound.state                   =
+06-23-04 15:21 pzad           Bugnote Added: 0001335                     =
  =20
-06-30-04 21:31 Quantum        Bugnote Added: 0001366                     =
+06-24-04 10:47 Voluspa        File Added: asound.state-1.0.5rc1          =
+      =20
  =20
-07-01-04 09:40 pzad           Bugnote Added: 0001369                     =
+06-24-04 10:48 Voluspa        Bugnote Added: 0001336                     =
  =20
+06-24-04 10:48 Voluspa        File Added: asound.state-1.0.5a            =
+      =20
+
+06-24-04 10:49 Voluspa        File Added: asound.state-diff-1.0.5rc1-1.0.=
+5a    =20
+             =20
+06-28-04 09:14 pzad           Assigned To               =3D> pzad        =
+   =20
+06-28-04 09:14 pzad           Status                   new =3D> assigned =
+   =20
+06-30-04 09:00 pzad           Bugnote Added: 0001348                     =
+ =20
+06-30-04 15:36 Voluspa        Bugnote Added: 0001349                     =
+ =20
+07-01-04 09:43 pzad           Resolution               open =3D> not a bu=
+g  =20
+07-01-04 09:43 pzad           Status                   assigned =3D> reso=
+lved
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
