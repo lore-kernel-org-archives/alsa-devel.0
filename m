@@ -1,11 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: valgrind and alsa
-Date: Fri, 25 Feb 2005 09:16:47 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0502250914540.19356-100000@studcom.urz.uni-halle.de>
-References: <421D9482.3090807@cs.ubc.ca>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000902]: Some channels not working
+Date: Fri, 25 Feb 2005 12:44:03 +0100
+Message-ID: <df1e4bd8469937ea5934f3280830fc7e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <421D9482.3090807@cs.ubc.ca>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB9FF23C
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2005 12:44:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,22 +17,126 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Charles \"Buck\" Krasic" <krasic@cs.ubc.ca>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Charles "Buck" Krasic wrote:
-> When checking my application with valgrind,  valgrin generates numerous
-> alsa related warnings.   They all seem to originate from a single
-> problem in my initial call to snd_pcm_writei.  Basically valgrind
-> doesn't like that alsa is making an ioctl with unitialized data.
 
-valgrind's heuristic is wrong in this case (the result field is
-initialized by the ioctl).  Use the --weird-hacks=lax-ioctls option.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=902> 
+======================================================================
+Reported By:                slammer
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   902
+Category:                   PCI - intel8x0
+Reproducibility:            have not tried
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware
+Kernel Version:             2.6.11-rc2
+======================================================================
+Date Submitted:             02-12-2005 00:02 CET
+Last Modified:              02-25-2005 12:44 CET
+======================================================================
+Summary:                    Some channels not working
+Description: 
+I wanted to get my Creative Inspire 5300 5.1 analog surround speaker set
+working  with my souncard working on linux.
+I use speaker-test for testing the speakers under linux. I have to add
+that they're working fine in Windows (tested each speaker using nvMixer).
+I have two independent sockets for LFE/Center and Rear channels (they're
+not shared with Mic and Line in as in some other products e.g. Epox
+8RDA+).
+I've noticed that the surround51 pcm defined in
+/usr/share/alsa/NFORCE.conf does some routing on the stream - namely swaps
+LFE/Center with rear channels and that seems right, because hw:0,0 tested
+by speaker-test plays them incorrectly. So when doing my test, creating
+own pcms and else I had it on my mind.
 
+However what this bug report is all about is that I can't get any sound
+playing from the first channel through anything connected to the socket
+originally (according to the MoBo manual) used for LFE/Center neither
+using the surround51 nor hw:0,0 pcm. I also tried to make my own pcm but
+the diagnosis is the 
+same.
 
-HTH
-Clemens
+Here are the facts:
+My speakers connected just the way they work in Windows.
+
+$speaker-test -c6 -Dsurround51
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Sine wave rate is 440.0000Hz
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 3 to 5461
+Period size range from 3 to 5461
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 5460
+To choose period_size = 1365
+was set period_size = 1365
+was set buffer_size = 5460
+ 0 - Front Left            # I hear the beep correctly from correct
+speaker
+ 4 - Center                # I hear the beep correctly from correct
+speaker
+ 1 - Front Right           # I hear the beep correctly from correct
+speaker
+ 3 - Rear Right            # No sound ;(((
+ 2 - Rear Left             # I hear the beep correctly from correct
+speaker
+ 5 - LFE                   # I hear the beep correctly from correct
+speaker (yes it's quiet, but I''m sure it comes from the Subwoofer only)
+
+When I create my own pcm that reroutes the 3rd channel to some other - it
+plays from the position where routed, but nothing ever gets played from
+that muted channel when routed there - hence my diagnosis.
+When I use hw:0,0 the situation's the same except the LFE/Center and Rear
+sockets are swapped, as stated before.
+
+Moreover if I turn the switches "Mic as Center" and "Line-in as surround"
+"on" to use it the Epox way, and plug my jacks where stated, the case is
+similar but even worse, since it won't play ANY of the first channels
+(i.e. Rear Right and LFE from surround51 pcm) at both sockets. Second
+channels (Center and Rear Left) work just fine.
+
+Or maybe it has something to do with settings for capture, because I
+haven't used it and played with it at all? Let me know if they can affect
+it and if so, I think there should be some notice somewhere (on the
+module's istalation manual), because I couldn't find any.
+
+Additionally when tried to play with the "Swap surround slot" option there
+was a thought of another may-be-issue that came to me. Namely when i turn
+the option "on" and physically do the swap, the "Duplicate Front" option
+duplicates front channels still to the Unswapped plug i.e. I hear the
+channels through the Center/LFE channels. I think that the "Duplicate
+front"  switch should be affected by the "Swap surround" switch. Don't You
+think so?
+
+I'm in a dead end right now and quite desperate. I also am interested in
+making Linux work on more hardware!
+
+======================================================================
+
+----------------------------------------------------------------------
+ slammer - 02-25-05 12:44 
+----------------------------------------------------------------------
+I checked it on my friend's machine (same hardware) and it seems the same,
+so I guess it's reproducible.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-12-05 00:02 slammer        New Issue                                    
+02-12-05 00:02 slammer        Distribution              => Slackware       
+02-12-05 00:02 slammer        Kernel Version            => 2.6.11-rc2      
+02-12-05 00:43 slammer        Issue Monitored: slammer                     
+02-25-05 12:44 slammer        Note Added: 0003733                          
+======================================================================
+
 
 
 
