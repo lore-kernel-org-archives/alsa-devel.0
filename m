@@ -1,15 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000590]: Audigy 2 Value
-Date: Thu, 21 Oct 2004 08:30:32 +0200
+From: esther <jenny@zfree.co.nz>
+Subject: =?Windows-1251?B?zuHz9+Xt6OUg8uXt7ejx8w==?=
+Date: Thu, 21 Oct 2004 06:38:09 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5954d108ee2f9d944df86a28ff1f9518@bugtrack.alsa-project.org>
+Message-ID: <E1CKWkN-0004Ks-7V@sc8-sf-mx1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=Windows-1251
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA55C308
-	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2004 08:30:32 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,29 +15,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+<HTML>
 
-The following issue has been SUBMITTED.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D590>=20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Issue History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-10-21-04 08:30 pzad           New Issue                                  =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+<BODY>
+<H3><FONT COLOR="#990000">Пpeдлaгaeм обучeниe тeнниcу!</FONT></H3>
+<p align=justify>
+Извините, ecли этo сообщение пришлo нe пo aдpeсу и принесло Вам неудобство.<BR>
+Предлагаем обучение теннису - постановка техники, навыки игры - в закрытых залах (размер зала 24х12м с деревянным покрытием без забегов) в районах: м.Академическая, м.Профсоюзная, м.Новые Черемушки, м.Шаболовская, м.Ленинский проспект, м.Тульская, м.Добрынинская.<BR> 
+Возраст обучающихся от 7 лет.<BR>
+<B>СТОИМОСТЬ 1 </B>занятия (включает оплату зала и тренера):<BR>
+<B>1 час 750 руб</B>.<BR>
+<B>ОПЛАТА</B> производится за месяц (не менее <B>4-х</B> занятий).<BR>
+Возможны занятия в группах от <B>2</B> до <B>4</B> человек, если Вы сами можете их сформировать.
+<p align=justify>
+<FONT COLOR="red"><U>НЕ ЗАНИМАЕМСЯ ПОДГОТОВКОЙ ПРОФЕССИОНАЛЬНЫХ СПОРТСМЕНОВ И СДАЧЕЙ КОРТОВ В АРЕНДУ!</U></FONT><BR>
+<B><FONT COLOR="#990000">Тел.: 8926-5265144</FONT></B> E-mail: <A HREF="mailto:tennis2004@gmail.ru">tennis2004@gmail.ru</A>
+</BODY>
+</HTML>
+
 
 
 
