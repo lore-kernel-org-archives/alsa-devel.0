@@ -1,12 +1,16 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: problems: flushing during snd_pcm_wait()
-Date: Fri, 11 Oct 2002 01:25:19 +1000
+From: "Jack O'Quin" <joq@io.com>
+Subject: Re: snd_ prefix for module options
+Date: 10 Oct 2002 11:11:06 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DA59BDF.7030904@superbug.demon.co.uk>
+Message-ID: <87u1juxoit.fsf@sulphur.joq.us>
+References: <s5hfzvh2fid.wl@alsa2.suse.de>
+	<DAELIEGDPLDDCIJPAICBEENLCDAA.annabellesgarden@yahoo.de>
+	<s5hwuor29tv.wl@alsa2.suse.de>
+	<200210091937.05652@advent.drealm.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200210091937.05652@advent.drealm.org.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,46 +19,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Peter L Jones <peter@drealm.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, Karsten Wiese <annabellesgarden@yahoo.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello
-I have an application that has many different threads.
-The sound card's PCM buffer is full during playback, and one thread is 
-currently in snd_pcm_wait() waiting for enough space to appear in the 
-buffer before doing the next snd_pcm_write().
-A different thread wants to flush the buffer. There are two types of 
-flush: -
-1) Immeadiately empty the buffer.
-2) Stop accepting snd_pcm_write() commands until the current buffer has 
-drained.
 
-Can someone please tell me which API calls I should make to get the 
-buffer to flush properly.
-I am currently doing things like: -
-int flush() {
- <snip...>
-      if ((result=snd_pcm_reset(this->audio_fd)) < 0) {
-        printf("audio_alsa_out: Reset call failed err=%d\n",result);
-      }
-      if ((result=snd_pcm_drain(this->audio_fd)) < 0) {
-        printf("audio_alsa_out: Drain call failed err=%d\n",result);
-      }
-      if ((result=snd_pcm_prepare(this->audio_fd)) < 0) {
-        printf("audio_alsa_out: Prepare call failed err=%d\n",result);
-      }
-}
+Peter L Jones <peter@drealm.org.uk> writes:
 
-But this is causing all sorts of problems, one of which is that the 
-application hangs, and has to be killed with -9, and the audio hardware 
-ring buffer is left playing a repeated sound even with: -
-/proc/asound/card0/pcm0p/sub0# cat status
-closed
+> I think it's not so nice.  Anyone running ALSA 0.9 should know it's
+> not a "release" version and be happy to have (some breakage).  If
+> all that's needed is a quick edit of modules.conf, it shouldn't
+> cause too many power-users grief.  Those using distro upgrade tools
+> should let their distro maintainer sort it out for them.
 
-Cheers
-James
+This whole thread makes no sense to me at all.
 
+Can someone please explain what terrible problem we're trying to solve
+that justifies introducing *any* breakage at all?
 
+I don't mean to single out Peter for this one statement.  But, I am
+totally frustrated with the attitude that ALSA is only for power users
+and that it's OK to introduce spurious incompatibilities on a whim.
+
+The excuse that 0.9 is not a "release" is wearing thin these days.
+Since 0.5, which *is* a release, is "no longer supported", what are
+ordinary users expected to run?  OSS?
+
+ALSA is part of the 2.5 kernel now.  It is mainstream Linux software,
+good technology, needed by many users.  Isn't it about time to start
+thinking and acting that way?
+-- 
+  Jack O'Quin
+  Austin, Texas, USA
 
 
 
