@@ -1,12 +1,19 @@
-From: "Vicky Yang" <vickyyang@linpus.com>
-Subject: Hi... we need ALC880 driver for Linux
-Date: Wed, 29 Sep 2004 15:35:28 +0800
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: [OT] FreeBSD Audigy LS Support.
+Date: Wed, 29 Sep 2004 11:55:44 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <KAEKLIKMIFHBHBDLBEHHIEJKCAAA.vickyyang@linpus.com>
+Message-ID: <415A94B0.1090302@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0046_01C4A639.F2C21990"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net [194.217.242.89])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3C702307
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 12:55:46 +0200 (MEST)
+Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
+	by anchor-post-31.mail.demon.net with esmtp (Exim 4.42)
+	id 1CCc8l-0004uu-5V
+	for alsa-devel@alsa-project.org; Wed, 29 Sep 2004 10:56:55 +0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,62 +22,15 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Some time ago I was contacted by someone wanting to add Audigy LS 
+support to BSD. I have lost their details, so I would like them to 
+contact me again, as I have some useful information for them now.
 
-------=_NextPart_000_0046_01C4A639.F2C21990
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: 7bit
-
-Dear Miss or Mr,
-
-We can't find the new driver for ALC880 from your website.
-Would you please provide us the driver of ALC880 for Linux,
-or tell us about your develop schedule that when we might 
-find it from your website.
-
-Thank you very much
-Vicky Yang
-------=_NextPart_000_0046_01C4A639.F2C21990
-Content-Type: text/html;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
-<META content=3D"MSHTML 6.00.2800.1458" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>Dear =
-Miss or=20
-Mr,</FONT></SPAN></DIV>
-<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>We =
-can't find the=20
-new driver for ALC880 from your website.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>Would =
-you please=20
-provide us the driver of ALC880 for Linux,</FONT></SPAN></DIV>
-<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>or =
-tell us about=20
-your develop schedule that when we might </FONT></SPAN></DIV>
-<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>find =
-it from your=20
-website.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial=20
-size=3D2></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>Thank =
-you very=20
-much</FONT></SPAN></DIV>
-<DIV><SPAN class=3D046323307-29092004><FONT face=3DArial size=3D2>Vicky=20
-Yang</FONT></SPAN></DIV></BODY></HTML>
-
-------=_NextPart_000_0046_01C4A639.F2C21990--
-
+Cheers
+James
 
 
 -------------------------------------------------------
