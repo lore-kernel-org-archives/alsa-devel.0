@@ -1,12 +1,15 @@
-From: Kaazaa Equivalent <shellton@sat.net.pk>
-Subject: Downl0ad National Treasure Movie
-Date: Tue, 14 Dec 2004 10:59:24 +0300
-Message-ID: <4982759449.09890@agenda.net>
+From: "guan yim" <guanyim@hotmail.com>
+Subject: Re: 0.9.8 lib + 1.0.6a driver + old sblive = no ac3passthrough
+Date: Tue, 14 Dec 2004 11:17:16 +0200
+Message-ID: <BAY22-F231E9515627185548335F1AFAC0@phx.gbl>
+References: <1103004608.13301.3.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from intraware.com (YahooBB219019012062.bbtec.net [219.19.12.62]) by intraware.com2 (8.12.11/8.12.11) with ESMTP id CBE4E23B84F02D for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 12:03:24 +0400
+Received: from hotmail.com (bay22-f23.bay22.hotmail.com [64.4.16.73])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A39C22A6
+	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 10:18:05 +0100 (MET)
+In-Reply-To: <1103004608.13301.3.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,64 +19,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-cvslog@alsa-project.org, abramo@alsa-project.orgabramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-user@alsa-project.org, alsa-devel@alsa-project.orgalsa-user@alsa-project.org
+To: rlrevell@joe-job.com
+Cc: alsa-devel@alsa-project.org, pranay_k@hotmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello
+Hi Lee,
 
-Un limited
-Music and MP 3 songs
-Movies
-Games
-Software
-TV Shows
-Song Lyrics
-Audio Books
+Thank you very much. I should now using all lib and drivers with matched 
+version.
 
-Download anything you could possibly want 
-in three simple, fast, and easy steps
-START DOWNLOADING NOW
-This service is Safe, Secure and Legal
+Thanks
+guanyim
 
-http://www.holidaydownloadclub.com/xmas.html
+>From: Lee Revell <rlrevell@joe-job.com>
+>To: guan yim <guanyim@hotmail.com>
+>CC: alsa-devel@alsa-project.org, pranay_k@hotmail.com
+>Subject: Re: [Alsa-devel] 0.9.8 lib + 1.0.6a driver + old sblive = no 
+>ac3passthrough
+>Date: Tue, 14 Dec 2004 01:10:08 -0500
+>
+>On Tue, 2004-12-14 at 06:20 +0200, guan yim wrote:
+> > Why I couldn't mix different
+> > version of lib and driver? Please tell me the reason.
+>
+>Because you are not supposed to do that.  Your ALSA lib and ALSA driver
+>version should match.
+>
+>In this specific case it is because the device changed from hw:x,3 to
+>hw:x,2.  But if your ALSA lib version matched then this change would not
+>be visible.
+>
+>Lee
+>
+>
+>
+>-------------------------------------------------------
+>SF email is sponsored by - The IT Product Guide
+>Read honest & candid reviews on hundreds of IT Products from real users.
+>Discover which products truly live up to the hype. Start reading now.
+>http://productguide.itmanagersjournal.com/
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@lists.sourceforge.net
+>https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-If you are a beginner, no need to worry,
-we will show you how to do it from start to finish
-We have made it so easy, you will be downloading anything 
-you could possibly want  
-This Service Comes with
+_________________________________________________________________
+Express yourself instantly with MSN Messenger! Download today it's FREE! 
+http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
 
-More  Bonuses
-
-DVD Copying Software
-MP3 Burning Software
-Anti-Virus Software
-Game Copying Software
-Pop-Up, Spyware, Adware Killer Software
-
-http://www.holidaydownloadclub.com/xmas.html
-
-Even More Benefits : 
-
-Latest FileSharing Software
-In-Depth Visual Tutorials
-Internet History Cleaner
-Privacy Protection Software
-Access to 90000000 Songs
-Unlimited Technical Support
-Stay Legal  Do not Get Sued
-
-
-Lifetime Membership is $34.95
-Check out to Join Now and Start Downloading in Minutess
-
-http://www.holidaydownloadclub.com/xmas.html
-
-
-Regards
-Corey Foster
-Affilate Manager
-Multimedia Download Center
 
 
 -------------------------------------------------------
