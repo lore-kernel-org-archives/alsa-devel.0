@@ -1,16 +1,12 @@
-From: Gabriel Ebner <ge@gabrielebner.at>
-Subject: Re: amd64 anyone?
-Date: Sat, 6 Mar 2004 19:50:22 +0100
+From: Ove Kaaven <ovek@transgaming.com>
+Subject: PCM hw mixing with volume
+Date: Sun, 07 Mar 2004 15:51:14 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200403061950.23332.ge@gabrielebner.at>
-References: <20040228101234.GA1809@finnendahl.de> <200403032231.27189.ge@gabrielebner.at> <20040306185216.407b2c81@laptop>
+Message-ID: <1078671074.18057.17.camel@renegade>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040306185216.407b2c81@laptop>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,18 +18,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+We have some games that want to mix several dynamic sound streams.
+That's easy enough at first glance, just snd_pcm_open() for each stream
+they want to output (and do software mixing when that fails). However,
+it seems that they want each stream to have independent volume and pan
+controls.
 
-Am Samstag, 6. M=E4rz 2004 18:52 schrieb Tim Blechmann:
-> would it be possible that you send me the lspci -vvv output? i'd like to
-> check which cardbus-to-pci bridge they used ...
-I should have mentioned that the laptop is still on the way to me...
+As far as I can tell, this is possible to do on SB Live and Audigy by
+messing with the "EMU10K1 PCM Send" volume controls, but this is pretty
+device-specific and few other hw-mixing ALSA drivers seem to have
+exposed such a feature. (And software plugins are not of interest.)
 
-But maybe tuxmobil.org can help you:
-00:09.0 CardBus bridge: ENE Technology Inc: Unknown device 1411 (rev 01)
+Are you planning to standardize such features or design a
+device-independent API for it? (And my manager wants to know which ALSA
+release this might get implemented in...)
 
-Sorry,
-	Gabriel.
+
 
 
 -------------------------------------------------------
