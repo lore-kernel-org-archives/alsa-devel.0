@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000221]: ac97 detect fails on xbox/i8x0
-Date: Tue,  7 Sep 2004 18:00:04 +0200 (CEST)
+From: Tisha Spears <Gxbynhv@aaccessusa.com>
+Subject: Re[6]: (no subject)
+Date: Tue, 07 Sep 2004 11:10:25 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907160004.5E604E001@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040907161406.03F5A278@alsa.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: multipart/related;
+ boundary="------------040902040207080107020009"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B3916275
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 18:00:04 +0200 (MEST)
+Received: from bb220-255-146-42.singnet.com.sg (bb220-255-146-42.singnet.com.sg [220.255.146.42])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 03F5A278
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 18:14:06 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,218 +21,113 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------040902040207080107020009
+Content-Type: text/html; charset="windows-1252"
+Content-Transfer-Encoding: 7Bit
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000221
-======================================================================
-Reported By:                chrb
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     221
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             04-19-2004 11:14 CEST
-Last Modified:              09-07-2004 18:00 CEST
-======================================================================
-Summary:                    ac97 detect fails on xbox/i8x0
-Description: 
-this test for ac97 in ac97_codec.c fails:
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"></head><body><p><a href="http://tsojue.dlhghln.info/?8FGmGe9eecLN7E8yogxwxznt"><IMG SRC="cid:part1.04020601.07070609@gradient@techweb.com" border="0" ALT=""></a></p><br><br><font size=1 face="Verdana">Quomodo autem fecisti caelum et terram et quae machina tam grandis</font></body></html>
 
-       /* test for AC'97 */
-        if (!(ac97->scaps & AC97_SCAP_SKIP_AUDIO) && !(ac97->scaps &
-AC97_SCAP_AUDIO)) {
-                /* test if we can write to the record gain volume register
-*/
-                snd_ac97_write_cache(ac97, AC97_REC_GAIN, 0x8a06);
-                if ((err = snd_ac97_read(ac97, AC97_REC_GAIN)) == 0x8a06)
-                        ac97->scaps |= AC97_SCAP_AUDIO;
-        }
+--------------040902040207080107020009
+Content-Type: image/gif;
+ name="cinquefoil.GIF"
+Content-Transfer-Encoding: base64
+Content-ID: <part1.04020601.07070609@gradient@techweb.com>
+Content-Disposition: inline;
+ filename="cinquefoil.GIF"
 
-The test writes to a record gain register but the xbox hardware doesn't
-have a record in line, or a hardware mixer. Could this test be made more
-generic?
+R0lGODlhQAEEAfcAAAAAAIAAAACAAICAAAAAgIAAgACAgICAgMDAwP8AAAD/AP//AAAA//8A/wD/
+/////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMwAAZgAAmQAAzAAA/wAzAAAzMwAzZgAzmQAzzAAz/wBm
+AABmMwBmZgBmmQBmzABm/wCZAACZMwCZZgCZmQCZzACZ/wDMAADMMwDMZgDMmQDMzADM/wD/AAD/
+MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMzADMzMzMzZjMzmTMzzDMz/zNmADNmMzNm
+ZjNmmTNmzDNm/zOZADOZMzOZZjOZmTOZzDOZ/zPMADPMMzPMZjPMmTPMzDPM/zP/ADP/MzP/ZjP/
+mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YzAGYzM2YzZmYzmWYzzGYz/2ZmAGZmM2ZmZmZmmWZm
+zGZm/2aZAGaZM2aZZmaZmWaZzGaZ/2bMAGbMM2bMZmbMmWbMzGbM/2b/AGb/M2b/Zmb/mWb/zGb/
+/5kAAJkAM5kAZpkAmZkAzJkA/5kzAJkzM5kzZpkzmZkzzJkz/5lmAJlmM5lmZplmmZlmzJlm/5mZ
+AJmZM5mZZpmZmZmZzJmZ/5nMAJnMM5nMZpnMmZnMzJnM/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwA
+M8wAZswAmcwAzMwA/8wzAMwzM8wzZswzmcwzzMwz/8xmAMxmM8xmZsxmmcxmzMxm/8yZAMyZM8yZ
+ZsyZmcyZzMyZ/8zMAMzMM8zMZszMmczMzMzM/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8A
+mf8AzP8A//8zAP8zM/8zZv8zmf8zzP8z//9mAP9mM/9mZv9mmf9mzP9m//+ZAP+ZM/+ZZv+Zmf+Z
+zP+Z///MAP/MM//MZv/Mmf/MzP/M////AP//M///Zv//mf//zP///ywAAAAAQAEEAQAI/wAfCBxI
+sKDBgwgTKlzIsKHDhxAjSpxIsaLFixgzatzIsaPHjyBDihxJsqTJkyhTqlzJsqXLlzBjypxJs6bN
+mzhz6tzJs6fPn0CDCh1KtKjRo0iTKl3KtKnTp1CjSp369J3Vqwqvan1XUCtJq1m3YrXp9SHYgWVR
+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
 
-At the moment this block:
+--------------040902040207080107020009--
 
-        if (!ac97_is_audio(ac97) && !ac97_is_modem(ac97)) {
-                if (!(ac97->scaps &
-(AC97_SCAP_SKIP_AUDIO|AC97_SCAP_SKIP_MODEM)))
-                        snd_printk(KERN_ERR "AC'97 %d access error (not
-audio or modem codec)\n", ac97->num);
-                snd_ac97_free(ac97);
-                return -EACCES;
-        }
-
-logs an error and exits. When this is commented out the driver works fine.
-Only the ac97 detection seems to be problematic.
-======================================================================
-
-----------------------------------------------------------------------
- perex - 04-19-2004 15:31 CEST 
-----------------------------------------------------------------------
-Could you send me output from /proc/asound/card0/codec97#0/ac97#0-0+regs ?
-
-edited on: 04-19-04 15:31
-
-----------------------------------------------------------------------
- chrb - 04-20-2004 14:10 CEST 
-----------------------------------------------------------------------
-0:00 = 0000
-0:02 = 0000
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 0000
-0:0c = 0000
-0:0e = 0000
-0:10 = 0000
-0:12 = 0000
-0:14 = 0000
-0:16 = 0000
-0:18 = 0000
-0:1a = 0000
-0:1c = 0000
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 0000
-0:28 = 0000
-0:2a = 0000
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 0000
-0:74 = 0000
-0:76 = 0000
-0:78 = 0000
-0:7a = 0000
-0:7c = 574d
-0:7e = 4c09
-
-----------------------------------------------------------------------
- perex - 04-20-2004 14:51 CEST 
-----------------------------------------------------------------------
-It's not ok. Registers should not be zero.
-Is something in /var/log/messages related to AC'97?
-What is in file /proc/asound/card0/intel8x0 ?
-
-----------------------------------------------------------------------
- chrb - 04-20-2004 16:03 CEST 
-----------------------------------------------------------------------
-On /etc/init.d/alsasound start I get:
-
-Apr 20 14:00:59 Pro kernel: PCI: Setting latency timer of device 00:06.0
-to 64
-Apr 20 14:01:01 Pro kernel: ALSA
-../../alsa-kernel/pci/ac97/ac97_codec.c:1759: AC'97 0 does not respond -
-RESET
-Apr 20 14:01:01 Pro kernel: ALSA
-../../alsa-kernel/pci/ac97/ac97_codec.c:1837: AC'97 0 analog subsections
-not ready
-Apr 20 14:01:01 Pro kernel: intel8x0_measure_ac97_clock: measured 49814
-usecs
-Apr 20 14:01:01 Pro kernel: intel8x0: clocking to 48000
-
-Those are the only logged messages from alsa. 
-
-/proc/asound/card0/intel8x0 contains:
-Intel8x0
-
-Global control        : 0x00000002
-Global status         : 0x00300100
-AC'97 codecs ready    : primary
-
-----------------------------------------------------------------------
- chrb - 07-23-2004 09:43 CEST 
-----------------------------------------------------------------------
-Reminder sent to perex
-
-Months go by... ping. Surely theres an audio playback register that we
-could write to test?
-
-----------------------------------------------------------------------
- perex - 09-07-2004 16:44 CEST 
-----------------------------------------------------------------------
-Sorry, no clue. It seems that another special initialization must be done
-before AC'97 codec can be used on Xbox.
-
-----------------------------------------------------------------------
- chrb - 09-07-2004 17:11 CEST 
-----------------------------------------------------------------------
-Perhaps I did not make it clear. The driver works fine on the xbox. You
-just need to change ac97 detection to not use REC_GAIN_REGISTER, as xbox
-does not have this register. Any of normal registers would do.
-
-----------------------------------------------------------------------
- perex - 09-07-2004 18:00 CEST 
-----------------------------------------------------------------------
-The problem is, that all registers except vendor and device IDs are read as
-zero. We cannot use a different register. So I added a workaround for xbox
-to our CVS.
-You should specify the xbox via a module parameter xbox=1.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-19-04 11:14 chrb           New Bug                                      
-04-19-04 15:29 perex          Assigned To               => perex           
-04-19-04 15:29 perex          Status                   new => assigned     
-04-19-04 15:31 perex          Bugnote Added: 0000857                       
-04-19-04 15:31 perex          Bugnote Edited: 0000857                      
-04-20-04 14:10 chrb           Bugnote Added: 0000880                       
-04-20-04 14:51 perex          Bugnote Added: 0000882                       
-04-20-04 16:03 chrb           Bugnote Added: 0000886                       
-04-20-04 17:59 eradicator     Bug Monitored: eradicator                    
-05-10-04 09:54 kingmob        Bug Monitored: kingmob                       
-07-23-04 09:43 chrb           Bugnote Added: 0001468                       
-09-07-04 16:44 perex          Bugnote Added: 0001715                       
-09-07-04 16:45 perex          Description Updated                          
-09-07-04 16:45 perex          Resolution               open => suspended   
-09-07-04 16:45 perex          View Status              @0@ => public       
-09-07-04 17:11 chrb           Bugnote Added: 0001720                       
-09-07-04 18:00 perex          Bugnote Added: 0001723                       
-======================================================================
 
 
 -------------------------------------------------------
