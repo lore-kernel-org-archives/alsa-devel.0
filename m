@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
-Date: Tue, 23 Nov 2004 23:23:06 +0100
-Message-ID: <42a9cfd7b25d79691adcbfeedc2bc4a2@bugtrack.alsa-project.org>
+Date: Tue, 23 Nov 2004 23:27:13 +0100
+Message-ID: <9b70869f4902691900ebbd2cfbcf1038@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 287CB2AF
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 23:23:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CF3A12AF
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 23:27:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             11-21-2004 02:53 CET
-Last Modified:              11-23-2004 23:23 CET
+Last Modified:              11-23-2004 23:27 CET
 ======================================================================
 Summary:                    No sound output  despite unmuting and maximizing all
 volume settings
@@ -74,11 +74,6 @@ them.  Still no sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-23-04 16:20 
-----------------------------------------------------------------------
-It's likely a mixer issue.  Could you attach /etc/asound.state?
-
-----------------------------------------------------------------------
  IceRAM - 11-23-04 23:23 
 ----------------------------------------------------------------------
 I've been fighting all day with my card to make it work and I came to this
@@ -102,6 +97,14 @@ equalizers etc), but I can't hear the sounds.
 I will attach some files that describe my current configuration - I hope
 it gets fixed soon.
 
+----------------------------------------------------------------------
+ IceRAM - 11-23-04 23:27 
+----------------------------------------------------------------------
+These files attached are from my system:
+ asound.state [^] (6,780 bytes) 11-23-04 23:24 [Delete]
+ modprobe.conf [^] (902 bytes) 11-23-04 23:25 [Delete]
+ iceram_lsmod.txt [^] (1,801 bytes) 11-23-04 23:26 [Delete]
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -114,6 +117,10 @@ Date Modified  Username       Field                    Change
 11-21-04 03:19 bji            Note Added: 0002484                          
 11-23-04 16:20 tiwai          Note Added: 0002522                          
 11-23-04 23:23 IceRAM         Note Added: 0002537                          
+11-23-04 23:24 IceRAM         File Added: asound.state                     
+11-23-04 23:25 IceRAM         File Added: modprobe.conf                    
+11-23-04 23:26 IceRAM         File Added: iceram_lsmod.txt                    
+11-23-04 23:27 IceRAM         Note Added: 0002538                          
 ======================================================================
 
 
