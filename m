@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000563]: No midi volume control
-Date: Mon,  4 Oct 2004 09:07:53 +0200 (CEST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: A need for support for SPI interfacing in alsa.
+Date: Mon, 4 Oct 2004 08:54:32 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041004070753.2054A3F01F@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.LNX.4.58.0410040848500.2446@pnote.perex-int.cz>
+References: <415EF5B2.6050106@superbug.co.uk>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 78AEA285
-	for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2004 09:07:53 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C230529E
+	for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2004 09:04:38 +0200 (MEST)
+In-Reply-To: <415EF5B2.6050106@superbug.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,60 +19,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 2 Oct 2004, James Courtier-Dutton wrote:
 
-The following bug has been RESOLVED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000563
-======================================================================
-Reported By:                keeron
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     563
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora core2
-Kernel Version:             Linux-2.6.8.1
-Resolution:                 fixed
-======================================================================
-Date Submitted:             10-03-2004 12:07 CEST
-Last Modified:              10-04-2004 09:07 CEST
-======================================================================
-Summary:                    No midi volume control
-Description: 
-The internal midi generator seem to work - but its silent. Its not
-availible in AC97/Nforce2 controls (alsamixer/amixer) nor when im locking
-into the source.
-======================================================================
+> Does anyone know how we might support SPI interfaces? I don't know much 
+> about them, and there is only one 32bit register and one interrupt pin 
+> on the P17 chip to control this.
 
-----------------------------------------------------------------------
- Clemens Ladisch - 10-04-2004 09:07 CEST 
-----------------------------------------------------------------------
-Onboard AC'97 chips do not have a MIDI synthesizer.
+SPI interface means only serial communication between chips. It does not 
+define the chip's registers etc. I suggest to create a library for SPI 
+codecs in i2c/other (see i2c/other/ak4117.c for example).
 
-The MIDI port can be used to communicate with external MIDI devices
-connected to the game port.
+Basically, from the driver view, you can directly control the wires or you 
+might only ask to read / write some register and the master chip will do 
+rest (like all AC97 bridges do). So, it depends on hardware - no common 
+way.
 
-To play MIDI, you have to use a software synthesizer like Timidity or
-fluidsynth.
+Also, we should move other WM drivers from ice1712 directory to i2c/other 
+as well.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-03-04 12:07 keeron         New Bug                                      
-10-03-04 12:07 keeron         Distribution              => Fedora core2    
-10-03-04 12:07 keeron         Kernel Version            => Linux-2.6.8.1   
-10-04-04 09:07 Clemens LadischBugnote Added: 0002009                       
-10-04-04 09:07 Clemens LadischAssigned To               => Clemens Ladisch 
-10-04-04 09:07 Clemens LadischResolution               open => fixed       
-10-04-04 09:07 Clemens LadischStatus                   new => resolved     
-======================================================================
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
