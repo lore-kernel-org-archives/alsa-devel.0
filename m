@@ -1,14 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: [PATCH] Audigy LS SPDIF output.
-Date: Wed, 23 Jun 2004 19:37:11 +0100
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: ld10k1 audigy patch
+Date: Wed, 23 Jun 2004 10:45:57 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40D9CDD7.9010402@superbug.demon.co.uk>
-References: <40D72EBF.80108@superbug.demon.co.uk>	<40D7463C.5090406@ait.nrl.navy.mil>	<40D75C54.7010700@superbug.demon.co.uk>	<40D7AF33.5030405@superbug.demon.co.uk>	<40D84EE9.6000405@superbug.demon.co.uk>	<s5hsmcnlia7.wl@alsa2.suse.de>	<40D885BB.80502@superbug.demon.co.uk> <s5h1xk6jijh.wl@alsa2.suse.de>
+Message-ID: <200406230845.i5N8jvZK018652@www6.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------050305030002080203040009"
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h1xk6jijh.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,80 +16,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: rlrevell@joe-job.com
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050305030002080203040009
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi,
 
-Takashi Iwai wrote:
-> At Tue, 22 Jun 2004 20:17:15 +0100,
-> James Courtier-Dutton wrote:
-> 
->>See attachements.
-> 
-> 
-> The patch to alsa-lib seems empty (invalid).
-> Could you regenerate it?
-> 
-> Meanwhile, I applied the patch to alsa-driver.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
+Message=20
+"You are probably user of audigy, audigy 2 and you not aplyed patch to
+enable tram"
+means that you can use tram in your effects, but ld10k1 will work.
 
-Sorry, correct version attached.
+You can see this message only:
+- on for audigy=20
+- when you are running ld10k1 as root - I will correct this in next
+version
+- or alsa (only on audigy) is not patched
+- or you use too big value in -t parameter range is from (from 0 - to 8)
+- or OS has not enought free continuous RAM (for -t 8 it needs 2 MB)
 
+Could you send me your emufx.c file ???
 
---------------050305030002080203040009
-Content-Type: text/plain;
- name="alsa-lib.diff.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-lib.diff.txt"
+I will update patch for Audigy on Monday.
 
-Index: alsa-lib/src/conf/cards/AudigyLS.conf
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/conf/cards/AudigyLS.conf,v
-retrieving revision 1.1
-diff -u -r1.1 AudigyLS.conf
---- alsa-lib/src/conf/cards/AudigyLS.conf	18 Jun 2004 14:29:03 -0000	1.1
-+++ alsa-lib/src/conf/cards/AudigyLS.conf	22 Jun 2004 18:10:47 -0000
-@@ -146,21 +146,20 @@
- 	slave.pcm {
- 		type hw
- 		card $CARD
--		device 2
-+		device 3
- 	}
- 	hooks.0 {
- 		type ctl_elems
- 		hook_args [
- 			{
--				name "IEC958 Output Switch"
-+				name "Analog/Digital Output Jack"
- 				lock true
- 				preserve true
--				value 1
-+				value 0
- 			}
- 			{
--				interface PCM
--				name "IEC958 Playback PCM Stream"
--				device 0
-+				name "IEC958 Playback Default"
-+				index 0
- 				lock true
- 				preserve true
- 				value [ $AES0 $AES1 $AES2 $AES3 ]
-
---------------050305030002080203040009--
+Peter Zubaj
+=0A____________________________________=0Ahttp://www.pobox.sk/ - spolahliva=
+ a bezpecna prevadzka=0A=0A=0A
 
 
 -------------------------------------------------------
