@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001009]: NVidia CK8S 8ch: a center speaker is always silent in native alsa mode (through alsa-lib), works with oss emulation though
-Date: Wed, 23 Mar 2005 13:01:37 +0100
-Message-ID: <ba7d67ea77f3ebf69e69f4ac8ddeec74@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000305]: sound is locked up after suspend/resume (APM)
+Date: Wed, 23 Mar 2005 00:39:26 +0100
+Message-ID: <f31040ce5e05d57883dcac37e374adb9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 66D3D230
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 13:01:40 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 899CF297
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 00:39:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,65 +23,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1009> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305> 
 ======================================================================
-Reported By:                modax
+Reported By:                klausr
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1009
-Category:                   PCI - intel8x0
+Issue ID:                   305
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.11.5 with self-compiled alsa-driver
-1.0.9rc1
+Distribution:               
+Kernel Version:             Debian kernel 2.6.5-4-686
 ======================================================================
-Date Submitted:             03-22-2005 22:34 CET
-Last Modified:              03-23-2005 13:01 CET
+Date Submitted:             05-25-2004 14:49 CEST
+Last Modified:              03-23-2005 00:39 CET
 ======================================================================
-Summary:                    NVidia CK8S 8ch: a center speaker is always silent
-in native alsa mode (through alsa-lib), works with oss emulation though
+Summary:                    sound is locked up after suspend/resume (APM)
 Description: 
-A center speaker stays quiet while playing 5.1 audio directly through
-alsa-lib (eg. with kaffeine (xine) or mplayer using alsa plugin). As a
-result, I'm unable to hear what people are speaking in movies because the
-speech is usually sent to the center speaker (correct me if i'm wrong. i'm
-new to all this 5.1 business). Anyway, adjusting the volume,
-muting/unmuting "Center" section, enabling/disabling "Mic As Center/LFE"
-doesn't have any effect on the center speaker. It stays silent. However,
-as I noted in the summary, the center speaker works with oss audio driver
-of xine/mplayer (using oss emulation). However, that mode is not perfect
-as the center speaker plays the role of left surround and vice versa. In
-addition, a right surround speaker stays always silent (i guess that's
-because the RS channel needs to be swapped with LFE; at least I got this
-impression by having a look at
-/usr/share/alsa/cards/NForce.conf:surround51). To sum up, my problem is
-that I can't get the center speaker (which, I guess, is channel 2 on my
-hardware) working with native alsa apps playing ac3/5.1 audio.
+Until recently I was running oss driver cs46xx without a problem. I could
+suspend in the middle of playback and xmms would keep playing after resume
+as if nothing happend at all.
+After switching to the 2.6 kernel, currently running 2.6.5, I also
+switched to ALSA beeing the new sound architecture of choice.
+Unforunately now when I suspend and resume my notebook sound stops working
+at all. Sometimes unloading all ALSA modules helps, sometimes even that is
+not possible anymore.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000226 Sound hangs after APM resume
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-23-05 13:01 
+ jdthood - 01-17-05 10:57 
 ----------------------------------------------------------------------
-Try speaker-test in alsa-utils.
+> one difference though. with alsa output plugin when i press pause in xmms
+to
+> pause music pressing pause again does not work.
 
-For more debugging, the content of /etc/asound.state and
-/proc/asound/card0/codec97#0/* files are necessary.
+This is probably a separate bug.  See
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=495, for example.
 
-What is the crash of alsa-lib 1.0.9rc1?  It's more important!
-(Note that you have to use alsa-driver 1.0.9rc1 with alsa-lib 1.0.9rc1.)
+Note that this bug (re: snd-cs46xx not working after suspend-'n'-resume)
+can probably be merged with ALSA bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=226.
+
+----------------------------------------------------------------------
+ rlrevell - 03-23-05 00:39 
+----------------------------------------------------------------------
+Make sure to turn off all "Fast Boot" BIOS options on Thinkpads.  Otherwise
+you may have bizarre sound problems.  This advice is from Alan Cox.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-05 22:34 modax          New Issue                                    
-03-22-05 22:34 modax          Distribution              => Debian unstable 
-03-22-05 22:34 modax          Kernel Version            => vanilla 2.6.11.5 with
-self-compiled alsa-driver 1.0.9rc1
-03-23-05 13:01 tiwai          Note Added: 0004156                          
+05-25-04 14:49 klausr         New Issue                                    
+05-25-04 14:49 klausr         Kernel Version            => Debian kernel
+2.6.5-4-686
+05-25-04 15:02 tiwai          Note Added: 0001213                          
+05-25-04 15:31 klausr         Note Added: 0001215                          
+05-25-04 15:59 klausr         Note Added: 0001217                          
+05-25-04 16:02 klausr         Issue Monitored: klausr                      
+05-25-04 16:05 tiwai          Note Added: 0001218                          
+05-25-04 16:44 klausr         Note Added: 0001220                          
+05-25-04 16:56 klausr         Note Edited: 0001220                         
+05-27-04 08:49 klausr         Issue End Monitor: klausr                    
+05-28-04 17:08 tiwai          Note Added: 0001269                          
+05-29-04 09:36 klausr         Note Added: 0001276                          
+01-17-05 10:57 jdthood        Note Added: 0003226                          
+03-22-05 15:02 jdthood        Relationship added       has duplicate 0000226
+03-23-05 00:39 rlrevell       Note Added: 0004145                          
 ======================================================================
 
 
