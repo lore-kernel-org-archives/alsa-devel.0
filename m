@@ -1,12 +1,13 @@
-From: =?utf-8?q?Pen Cleit?= <diagrammaticeyp@dufton.com>
-Subject: =?utf-8?q?Italian Crafted Role?=
- =?utf-8?q?x from $75 to $275 ?=
- =?utf-8?q?- Free Shipping?=
-Date: Tue, 1 Mar 2005 19:23:21 +0000
-Message-ID: <E1D6Ia3-0003WC-Gk@sc8-sf-mx1.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000951]: Fix bugs with early IRQs mishandling, missing silence fill, and wrong timing calculations
+Date: Wed, 2 Mar 2005 09:22:08 +0100
+Message-ID: <44b367cff09421cff02416c95128cd60@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	 boundary="qzD7yWPdkqGuvskUDrHxL"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 681981E9
+	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 09:22:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,51 +17,235 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?utf-8?q?Jeff Zttopi?= <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---qzD7yWPdkqGuvskUDrHxL
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=951> 
+======================================================================
+Reported By:                charles_levert
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   951
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.4.22
+======================================================================
+Date Submitted:             02-28-2005 21:26 CET
+Last Modified:              03-02-2005 09:22 CET
+======================================================================
+Summary:                    Fix bugs with early IRQs mishandling, missing
+silence fill, and wrong timing calculations
+Description: 
+A patch is forthcoming.
 
-Real Replications Watches
+Here is the text from the patch preamble.
 
-Our company have this brands available too:
+    This patch is against alsa-driver-1.0.8.
+    It covers:
+        alsa-kernel/core/pcm_lib.c
+        alsa-kernel/include/pcm.h
+        alsa-kernel/core/pcm_native.c
+        alsa-kernel/core/oss/pcm_oss.c
+    The main changes are in the first listed file.
 
-Frank Muller
-Vacheron Constantin
-Roger Dubuis
-Officine Panerai
-Ikepod
+    An original bug description was filed
+    under "[ALSA - driver] PCI - cmipci":
+        <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=946>
+    since the problems were first observed on this hardware.
 
-http://thcbdp.TlCKS.com/r/vron/sjui.htm
---qzD7yWPdkqGuvskUDrHxL
-Content-Type: text/html;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+    The patch fixes the following problems:
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
-<STYLE></STYLE>
-</HEAD>
-<HTML>
-<BODY>
-<A href=3D"http://criftsuda.FOSSlL.com/rep/vron/mave.cfm">
-Authentic Reproductions Wristwatches
-</A><BR>
-Our company have the following trademarks available besides:<BR>
-Carrier<BR>
-Chopard<BR>
-Jaeger-lecoultre<BR>
-Zenith<BR>
-Sinn<BR>
-</BODY>
-</HTML></HTML>
---qzD7yWPdkqGuvskUDrHxL--
+     -- Properly handle early IRQs in
+        snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c.
+
+        This does occur, at least with CMI8738MC6 hardware.
+
+        This bug had a major impact that caused the DMAs
+        to run for too long and irritating noise to be
+        heard at the end of playback.
+
+     -- Properly compute estimated time of next interrupt
+        in snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c;
+        this is no longer done with a
+        "... % runtime->period_size" kludge (which didn't
+        even attempt to round to nearest instead of merely
+        truncating).
+
+     -- Test whether hw_avail is big enough to handle
+        the next runtime->period_size in
+        snd_pcm_update_hw_ptr_post() in pcm_lib.c,
+        otherwise call snd_pcm_tick_prepare() to
+        tentatively set up a timer if needed (to be able
+        to take earlier action in that case).
+
+     -- Centralize all folding of values with regard to
+        runtime->boundary in the new snd_pcm_next_buf()
+        function in pcm_lib.c.
+
+        All relevant values are now systematically in
+        coherent synchronization without resorting to the
+        ugly and error-prone "value %= runtime->boundary"
+        kludge all over the place; unobvious wrapping
+        conditions testing is no longer needed in these
+        places.
+
+        A safe zone worth one runtime->buffer_size is now
+        kept on the left side of the operating interval,
+        just like it was the case for the right side;
+        this is necessary for proper simplified operation.
+
+     -- Direct manipulations of values with respect to
+        runtime->boundary needed to be brought in line
+        with new proper practices (and thus simplified)
+        in pcm.h, pcm_lib.c, pcm_native.c, and pcm_oss.c.
+
+     -- Isolate the second part of
+        snd_pcm_playback_silence() in the new
+        snd_pcm_playback_silence_fill() function in
+        pcm_lib.c.
+
+        This makes the code more readable since the
+        task this performs should not be confused with
+        what is done in the remaining first part of
+        snd_pcm_playback_silence().
+
+        The isolated code is unchanged.
+
+     -- Rewrite the remaining first part of
+        snd_pcm_playback_silence() to properly handle all
+        situations, including computing minimum silence
+        insertion even when "runtime->silence_size == 0".
+
+        This is needed for proper operation of the aplay
+        program, for one, and is much more forgiving on the
+        user; insertion of silence samples in user space
+        was always useless and a wrong solution anyway (but
+        user space specification of kernel space silence
+        insertion is useful and still very much supported).
+
+        The code is now much more straightforward to read.
+
+        Updates of runtime->control->appl_ptr (due
+        to the user writing samples) and updates to
+        runtime->status->hw_ptr (due to the audio hardware
+        consuming samples) are now _both_ properly
+        accounted for in all cases; the new code makes
+        this much more obvious.
+
+     -- All calls to snd_pcm_playback_silence() in
+        pcm_lib.c and pcm_native.c must no longer be under
+        the "runtime->silence_size > 0" condition.
+
+     -- Properly perform rounded-up integer division in
+        snd_pcm_system_tick_set() in pcm_lib.c.
+
+        This only had a minor impact.
+
+     -- Properly compute distance to next interrupt in
+        snd_pcm_tick_prepare() in pcm_lib.c; again, avoid
+        using any "... % runtime->period_size" kludge.
+
+     -- The usage of runtime->rate in
+        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
+        regarless of other changes.
+
+        The impact was that the timer was systematically
+        set to 1 single tick when it needed to be set to
+        typically hundreds of ticks.
+
+     -- The usage of runtime->sleep_min in
+        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
+        regarless of other changes.
+
+        The impact was that the number of ticks for
+        the timer was not properly adjusted up to what
+        sleep_min is documented to mean, when needed.
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000946 Early playback DMA IRQ with CMI8738MC6 ...
+======================================================================
+
+----------------------------------------------------------------------
+ charles_levert - 03-01-05 11:15 
+----------------------------------------------------------------------
+The snd_pcm_tick_prepare() change could be on its own.
+That's one chunk with 2 old lines replaced by 1 new line.
+
+The runtime->rate and runtime->sleep_min in
+snd_pcm_tick_prepare() could be together on their own.
+That's one chunk with 3 old lines replaced by 3 new lines.
+
+
+Everything else, however, forms a coherent ensemble.
+For example, snd_pcm_playback_silence() now relies on
+snd_pcm_update_hw_ptr_interrupt() having already updated
+runtime->hw_ptr_interrupt and done the snd_pcm_next_buf()
+type of update.  Splitting this in a fashion that would
+leave the code in a still-coherent state in-between each
+individual patch would mean writing intermediary code that
+does not exist at this point.  It is far from obvious that
+what would so be made to appear as intermediary points
+would bring any more insight into the single main issue.
+It could present things in a worst way, actually.
+
+I've been burned doing this type of work for nothing in
+the past.  Please provide me with a preliminary evaluation
+of the patch and some rough directions about what you would
+like to appear as intermediary points (and in which order
+of individual patch application), if any is justified,
+before I go any further.
+
+The patch is actually not that big.  I just was very
+verbose in its description.
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 03-02-05 09:22 
+----------------------------------------------------------------------
+As far as I can see there are several changes to fix bugs, and other
+changes
+that are enhancements not intended to change the outwards behaviour of
+ALSA.
+Please make one patch for each bug.  (Each _logical_ change should be one
+patch, see section 1.3 in SubmittingPatches.)
+
+There are several problems with this version of the patch:
+
+* snd_pcm_update_hw_ptr_interrupt() doesn't compute the time of the next
+interrupt; runtime->hw_ptr_interrupt is the beginning of the last
+(current) period.  It is not sufficient do add one period_size because
+some PCM interrupts might have been lost, therefore the new value must
+be derived from the actual hardware pointer.  (The same applies to the
+dist calculation in snd_pcm_tick_prepare().)
+
+* Xrun debugging was dropped.  Why?
+
+* The documented behaviour for frame pointers is to wrap around to zero
+when the boundary is reached.  Safe zones can only be implemented if the
+pointer values exported to user space and OSS emulation still show
+backwards-compatible behaviour.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-28-05 21:26 charles_levert New Issue                                    
+02-28-05 21:26 charles_levert Kernel Version            => 2.4.22          
+02-28-05 21:29 charles_levert File Added: early-irqs.patch                    
+03-01-05 09:36 perex          Relationship added       related to 0000946  
+03-01-05 09:40 perex          Note Added: 0003755                          
+03-01-05 11:15 charles_levert Note Added: 0003757                          
+03-02-05 09:22 Clemens LadischNote Added: 0003761                          
+======================================================================
+
 
 
 
