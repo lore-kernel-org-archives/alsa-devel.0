@@ -1,14 +1,13 @@
-From: Tommi Sakari Uimonen <tuimonen@cc.hut.fi>
-Subject: Re: ice1724: from 1.0.4 to 1.0.5a upgrading problem
-Date: Fri, 16 Jul 2004 13:58:28 +0300 (EEST)
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000263]: Maya44 MKII (Envy 24HT processor) probes correctly yet doesn't work.
+Date: Fri, 16 Jul 2004 13:34:04 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.OSF.4.60.0407161349550.53564@kosh.hut.fi>
-References: <200407141718.03846@goldspace.net> <s5h658qaf5b.wl@alsa2.suse.de>
- <200407141749.42615@goldspace.net> <s5h4qoaadzn.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Message-ID: <20040716113404.9D19C26008@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4qoaadzn.wl@alsa2.suse.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F1B8C255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 13:34:04 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,31 +16,537 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->> To tell the truth, have not understood the word "yet": just now (with 1.0.4)
->> my receiver (as qjackctl) shows 96KHz (alsaplayer-jack-alsadriver-hw:0,1-spdif).
->> Does it mean some redesign was done for this driver since 1.0.4?
->
-> The spdif doesn't support 96kHz without a special handling.
-> It was a bug that 96kHz was accepted for that interface.
 
-Does this affect all soundcards that use ice1712 driver?
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000263
+======================================================================
+Reported By:                Vladimir Dyakov
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     263
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               ASPLinux 9.2 (base on Fedora Core 1)
+Kernel Version:             kernel-2.6.5-mm6
+======================================================================
+Date Submitted:             05-08-2004 08:27 CEST
+Last Modified:              07-16-2004 13:34 CEST
+======================================================================
+Summary:                    Maya44 MKII (Envy 24HT processor) probes correctly yet doesn't work.
+Description: 
+I've got Audiotrak Maya44 MKII soundcard and Linux kernel-2.6.5-mm6 with
+alsa-1.0.4rc2. If I am not mistaken my soundcard is base on Envy24HT
+processor. There's a driver in alsa for this processor called ice1724.
+It's written in it's source that it supports only Prodigy 7.1.
 
-About a year ago I synced two MAudio Delta cards (AP 2496 & 1010LT) 
-through spdif and the rate was 96khz for the master card. I experienced 
-some driver lockups and I had to do '/etc/init.d/alsa restart' after every 
-recording to have 'fresh' start for new recording.
+Is there any way to make driver work with my audio card?
+======================================================================
 
-But other than that, sync worked fine.
+----------------------------------------------------------------------
+ Vladimir Dyakov - 05-08-2004 08:35 CEST 
+----------------------------------------------------------------------
+I tried to upload file with photographs and it failed with note to apply to
+site admin. The photos can be found here:
+http://linux.alhimia.ru/pub/maya_photos.rar (1.7 Mb)
 
-(I remember that few months later some patch was sent to fix some spdif 
-issue with ice1712, but I don't know if that would have fixed my problem, 
-or was it due to this current situation)
+----------------------------------------------------------------------
+ Vladimir Dyakov - 05-11-2004 07:03 CEST 
+----------------------------------------------------------------------
+Hi, I tried to get round EEPROM check in ice1724.c and had some intersting
+results.
 
-Tommi
+Here is the patch:
+--- cut ---
+--- ice1724.c.orig  2004-05-10 13:31:15.000000000 +0600 
++++ ice1724.c   2004-05-10 13:30:49.191099408 +0600 
+@@ -1777,6 +1777,8 @@ static int __devinit snd_vt1724_read_eep
+    ice->eeprom.size = snd_vt1724_read_i2c(ice, dev, 0x04);
+    if (ice->eeprom.size < 6)
+        ice->eeprom.size = 32;
++   if (ice->eeprom.size == 120) 
++       ice->eeprom.size = 32; 
+    else if (ice->eeprom.size > 32) {
+        snd_printk("invalid EEPROM (size = %i)\n", ice->eeprom.size);
+        return -EIO;
+--- /cut ---
+
+dmesg now says:
+--- cut ---
+invalid EEPROM version 120
+AC'97 0 does not respond - RESET
+AC'97 0 access is not valid [0xffffffff], removing mixer.
+ice1712: cannot initialize pro ac97, skipped
+--- /cut ---
+
+lsmod:
+--- cut ---
+Module                  Size  Used by
+ac                      3980  0
+asb100                 21632  0
+asus_acpi               9368  0
+autofs                 13184  0
+battery                 8204  0
+bluetooth              41444  4 rfcomm,l2cap
+button                  4760  0
+cdrom                  38944  1 ide_cd
+eeprom                  6408  0
+fan                     3084  0
+fat                    40384  1 vfat
+hid                    31364  0
+i2c_core               18692  5
+eeprom,w83l785ts,asb100,i2c_sensor,i2c_nforce2
+i2c_nforce2             5376  0
+i2c_sensor              2560  3 eeprom,w83l785ts,asb100
+ide_cd                 38276  0
+ipv6                  244260  12
+isofs                  31032  3
+l2cap                  19972  5 rfcomm
+md                     41416  0
+ntfs                   86476  1
+nvidia               1703180  10
+ohci_hcd               17564  0
+processor              14896  1 thermal
+reiserfs              257140  1
+rfcomm                 33692  0
+sd_mod                 19072  0
+snd_ac97_codec         60932  1 snd_ice1724
+snd_ak4xxx_adda         5632  2 snd_ice1724,snd_ice17xx_ak4xxx
+snd_ice1724            35532  1
+snd_ice17xx_ak4xxx      3328  1 snd_ice1724
+snd_mpu401_uart         6016  1 snd_ice1724
+snd_rawmidi            20000  1 snd_mpu401_uart
+supermount             89748  1
+thermal                11536  0
+udf                    96644  0
+vfat                   12032  1
+w83l785ts               6148  0
+zlib_inflate           21376  1 isofs
+--- /cut ---
+
+the window of alsamixer:
+--- cut ---
+lqqqqqqqqqqqqqqqqqqqqqqqqqq[AlsaMixer v1.00 (Press Escape to
+quit)]qqqqqqqqqqqqqqqqqqqqqqqqqqqk
+x Card: ICEnsemble ICE1724                                                
+                   x
+x Chip: ICE1724 - multitrack                                              
+                   x
+x Item: IEC958                                                            
+                   x
+x                                                                         
+                   x
+x             lMMk                       lqqk     lqqk     lqqk     lqqk  
+  lMMk     lqqk    x
+x             x  x                       x  x     x  x     x  x     x  x  
+  x  x     x  x    x
+x             x  x                       x  x     x  x     x  x     x  x  
+  x  x     x  x    x
+x             x  x                       x  x     x  x     x  x     x  x  
+  x  x     x  x    x
+x             x  x                       x  x     x  x     x  x     x  x  
+  x  x     x  x    x
+x             x  x                       x  x     x  x     x  x     x  x  
+  x  x     x  x    x
+x             x  x                       x  x     x  x     x  x     x  x  
+  x  x     x  x    x
+x  H/W In 0   x  x   PCM Out   44100     x  x     x  x     x  x     x  x  
+  x  x     x  x    x
+x             x  x                       x  x     x  x     x  x     x  x  
+  x  x     x  x    x
+x             x  x                       x  x     x  x     x  x     x  x  
+  x  x     x  x    x
+x             x  x                       x  x     x  x     x  x     x  x  
+  x  x     x  x    x
+x             mqqj                       mqqj     mqqj     mqqj     mqqj  
+  mqqj     mqqj    x
+x                                        0<>0     0<>0     0<>0     0<>0  
+                   x
+x < IEC958 >IEC958 O IEC958 1 Multi Tr Multi Tr Multi Tr Multi Tr Multi Tr
+Multi Tr Multi Tr  x
+x                                                                         
+                   x
+mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj
+--- /cut ---
+
+ls -lRa /proc/asound
+--- cut ---
+/proc/asound:
+total 1
+dr-xr-xr-x    5 root     root            0 May 10 14:48 .
+dr-xr-xr-x  103 root     root            0 May 10  2004 ..
+lrwxrwxrwx    1 root     root            5 May 10 14:49 ICE1724 -> card0
+dr-xr-xr-x    7 root     root            0 May 10 14:49 card0
+-r--r--r--    1 root     root            0 May 10 14:49 cards
+-r--r--r--    1 root     root            0 May 10 14:49 devices
+dr-xr-xr-x    2 root     root            0 May 10 14:49 oss
+-r--r--r--    1 root     root            0 May 10 14:49 pcm
+dr-xr-xr-x    2 root     root            0 May 10 14:49 seq
+-r--r--r--    1 root     root            0 May 10 14:49 timers
+-r--r--r--    1 root     root            0 May 10 14:49 version
+
+/proc/asound/card0:
+total 0
+dr-xr-xr-x    7 root     root            0 May 10 14:49 .
+dr-xr-xr-x    5 root     root            0 May 10 14:48 ..
+dr-xr-xr-x    2 root     root            0 May 10 14:49 codec97#0
+-r--r--r--    1 root     root            0 May 10 14:49 ice1724
+-r--r--r--    1 root     root            0 May 10 14:49 id
+-r--r--r--    1 root     root            0 May 10 14:49 midi0
+-rw-r--r--    1 root     root            0 May 10 14:49 oss_mixer
+dr-xr-xr-x    3 root     root            0 May 10 14:49 pcm0c
+dr-xr-xr-x    3 root     root            0 May 10 14:49 pcm0p
+dr-xr-xr-x    3 root     root            0 May 10 14:49 pcm1c
+dr-xr-xr-x    3 root     root            0 May 10 14:49 pcm1p
+
+/proc/asound/card0/codec97#0:
+total 0
+dr-xr-xr-x    2 root     root            0 May 10 14:49 .
+dr-xr-xr-x    7 root     root            0 May 10 14:49 ..
+
+/proc/asound/card0/pcm0c:
+total 0
+dr-xr-xr-x    3 root     root            0 May 10 14:49 .
+dr-xr-xr-x    7 root     root            0 May 10 14:49 ..
+-r--r--r--    1 root     root            0 May 10 14:49 info
+-rw-r--r--    1 root     root            0 May 10 14:49 oss
+dr-xr-xr-x    2 root     root            0 May 10 14:49 sub0
+
+/proc/asound/card0/pcm0c/sub0: 
+total 0
+dr-xr-xr-x    2 root     root            0 May 10 14:49 .
+dr-xr-xr-x    3 root     root            0 May 10 14:49 ..
+-r--r--r--    1 root     root            0 May 10 14:49 hw_params
+-r--r--r--    1 root     root            0 May 10 14:49 info
+-r--r--r--    1 root     root            0 May 10 14:49 prealloc
+-r--r--r--    1 root     root            0 May 10 14:49 status
+-r--r--r--    1 root     root            0 May 10 14:49 sw_params
+
+/proc/asound/card0/pcm0p:
+total 0
+dr-xr-xr-x    3 root     root            0 May 10 14:49 .
+dr-xr-xr-x    7 root     root            0 May 10 14:49 ..
+-r--r--r--    1 root     root            0 May 10 14:49 info
+-rw-r--r--    1 root     root            0 May 10 14:49 oss
+dr-xr-xr-x    2 root     root            0 May 10 14:49 sub0
+
+/proc/asound/card0/pcm0p/sub0:
+total 0
+dr-xr-xr-x    2 root     root            0 May 10 14:49 .
+dr-xr-xr-x    3 root     root            0 May 10 14:49 ..
+-r--r--r--    1 root     root            0 May 10 14:49 hw_params
+-r--r--r--    1 root     root            0 May 10 14:49 info
+-r--r--r--    1 root     root            0 May 10 14:49 prealloc
+-r--r--r--    1 root     root            0 May 10 14:49 status
+-r--r--r--    1 root     root            0 May 10 14:49 sw_params
+
+/proc/asound/card0/pcm1c:
+total 0
+dr-xr-xr-x    3 root     root            0 May 10 14:49 .
+dr-xr-xr-x    7 root     root            0 May 10 14:49 ..
+-r--r--r--    1 root     root            0 May 10 14:49 info
+-rw-r--r--    1 root     root            0 May 10 14:49 oss
+dr-xr-xr-x    2 root     root            0 May 10 14:49 sub0
+
+/proc/asound/card0/pcm1c/sub0:
+total 0
+dr-xr-xr-x    2 root     root            0 May 10 14:49 .
+dr-xr-xr-x    3 root     root            0 May 10 14:49 ..
+-r--r--r--    1 root     root            0 May 10 14:49 hw_params
+-r--r--r--    1 root     root            0 May 10 14:49 info
+-r--r--r--    1 root     root            0 May 10 14:49 prealloc
+-r--r--r--    1 root     root            0 May 10 14:49 status
+-r--r--r--    1 root     root            0 May 10 14:49 sw_params
+
+/proc/asound/card0/pcm1p: 
+total 0
+dr-xr-xr-x    3 root     root            0 May 10 14:49 .
+dr-xr-xr-x    7 root     root            0 May 10 14:49 ..
+-r--r--r--    1 root     root            0 May 10 14:49 info
+-rw-r--r--    1 root     root            0 May 10 14:49 oss
+dr-xr-xr-x    2 root     root            0 May 10 14:49 sub0
+
+/proc/asound/card0/pcm1p/sub0:
+total 0
+dr-xr-xr-x    2 root     root            0 May 10 14:49 .
+dr-xr-xr-x    3 root     root            0 May 10 14:49 ..
+-r--r--r--    1 root     root            0 May 10 14:49 hw_params
+-r--r--r--    1 root     root            0 May 10 14:49 info
+-r--r--r--    1 root     root            0 May 10 14:49 prealloc
+-r--r--r--    1 root     root            0 May 10 14:49 status
+-r--r--r--    1 root     root            0 May 10 14:49 sw_params
+
+/proc/asound/oss:
+total 0
+dr-xr-xr-x    2 root     root            0 May 10 14:49 .
+dr-xr-xr-x    5 root     root            0 May 10 14:48 ..
+-r--r--r--    1 root     root            0 May 10 14:49 devices
+-r--r--r--    1 root     root            0 May 10 14:49 sndstat
+
+/proc/asound/seq:
+total 0
+dr-xr-xr-x    2 root     root            0 May 10 14:49 .
+dr-xr-xr-x    5 root     root            0 May 10 14:48 ..
+-r--r--r--    1 root     root            0 May 10 14:49 clients
+-r--r--r--    1 root     root            0 May 10 14:49 drivers
+-r--r--r--    1 root     root            0 May 10 14:49 oss
+-r--r--r--    1 root     root            0 May 10 14:49 queues
+-r--r--r--    1 root     root            0 May 10 14:49 timer
+--- /cut ---
+
+----------------------------------------------------------------------
+ Vladimir Dyakov - 05-11-2004 07:07 CEST 
+----------------------------------------------------------------------
+Alsamixer output in my previous post seems to be looking corrupted, so I
+have put more humanic screenshot here:
+http://linux.alhimia.ru/pub/alsamixer.html
+
+----------------------------------------------------------------------
+ tiwai - 05-18-2004 20:44 CEST 
+----------------------------------------------------------------------
+what shows the EEPROM of /proc/asound/card0/ice1724 after your patch?
+
+----------------------------------------------------------------------
+ Vladimir Dyakov - 05-19-2004 13:31 CEST 
+----------------------------------------------------------------------
+$ cat /proc/asound/card0/ice1724 | grep EPROM
+EEPROM:
+$ cat /proc/asound/card0/ice1724
+ICEnsemble ICE1724 at 0xd000, irq 11
+
+EEPROM:
+  Subvendor        : 0x30315441
+  Size             : 32 bytes
+  Version          : 120
+  System Config    : 0x78
+  ACLink           : 0x78
+  I2S              : 0x45
+  S/PDIF           : 0x47
+  GPIO direction   : 0x59534f
+  GPIO mask        : 0xffff53
+  GPIO state       : 0xffffff
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000018        : 0xff
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000019        : 0xff
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000020        : 0xff
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000021        : 0xff
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000022        : 0xff
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000023        : 0xff
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000024        : 0xff
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000025        : 0xff
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000026        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000027        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000028        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000029        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000030        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000031        : 0x0
+
+Registers:
+  PSDOUT03 : 0x00000002
+  CCS00    : 0x00
+  CCS01    : 0x00
+  CCS02    : 0x00
+  CCS03    : 0x00
+  CCS04    : 0x78
+  CCS05    : 0x00
+  CCS06    : 0x45
+  CCS07    : 0x47
+  CCS08    : 0x00
+  CCS09    : 0x00
+  CCS0a    : 0x00
+  CCS0b    : 0x00
+  CCS0c    : 0x00
+  CCS0d    : 0x0a
+  CCS0e    : 0x00
+  CCS0f    : 0x00
+  CCS10    : 0x00
+  CCS11    : 0x00
+  CCS12    : 0x30
+  CCS13    : 0x80
+  CCS14    : 0xbc
+  CCS15    : 0xa4
+  CCS16    : 0x53
+  CCS17    : 0xff
+  CCS18    : 0x4f
+  CCS19    : 0x53
+  CCS1a    : 0x59
+  CCS1b    : 0x00
+  CCS1c    : 0x00
+  CCS1d    : 0x00
+  CCS1e    : 0x22
+  CCS1f    : 0xff
+  MT00     : 0x00
+  MT01     : 0x00
+  MT02     : 0x00
+  MT03     : 0x08
+  MT04     : 0x00
+  MT05     : 0x30
+  MT06     : 0x00
+  MT07     : 0x00
+  MT08     : 0x00
+  MT09     : 0x00
+  MT0a     : 0x00
+  MT0b     : 0x00
+  MT0c     : 0x00
+  MT0d     : 0x00
+  MT0e     : 0x00
+  MT0f     : 0x00
+  MT10     : 0x00
+  MT11     : 0x00
+  MT12     : 0x00
+  MT13     : 0x00
+  MT14     : 0x00
+  MT15     : 0x00
+  MT16     : 0x00
+  MT17     : 0x00
+  MT18     : 0x00
+  MT19     : 0x00
+  MT1a     : 0x00
+  MT1b     : 0x00
+  MT1c     : 0x00
+  MT1d     : 0x00
+  MT1e     : 0x00
+  MT1f     : 0x00
+  MT20     : 0x00
+  MT21     : 0x00
+  MT22     : 0x00
+  MT23     : 0x00
+  MT24     : 0x00
+  MT25     : 0x00
+  MT26     : 0x00
+  MT27     : 0x00
+  MT28     : 0x00
+  MT29     : 0x00
+  MT2a     : 0x00
+  MT2b     : 0x00
+  MT2c     : 0x02
+  MT2d     : 0x00
+  MT2e     : 0x00
+  MT2f     : 0x00
+
+----------------------------------------------------------------------
+ Vladimir Dyakov - 05-19-2004 13:35 CEST 
+----------------------------------------------------------------------
+I submitted information from proc that you have asked but again it seems to
+have been corrupted by the bugtracking system. It is available in origin
+here: http://linux.alhimia.ru/pub/ice1724
+
+----------------------------------------------------------------------
+ tiwai - 05-25-2004 14:51 CEST 
+----------------------------------------------------------------------
+hmm,the values look bogus.
+
+try to dump all 120 bytes in the probe routine (via printk)
+for checking the real EEPROM image offset and size.
+
+----------------------------------------------------------------------
+ Vladimir Dyakov - 05-26-2004 04:33 CEST 
+----------------------------------------------------------------------
+> try to dump all 120 bytes in the probe routine (via printk)
+> for checking the real EEPROM image offset and size.
+
+Feel myself a fool but do not know how to. Is printk that what goes to
+dmesg?
+
+----------------------------------------------------------------------
+ tiwai - 05-26-2004 14:35 CEST 
+----------------------------------------------------------------------
+i meant to add a debug output in snd_vt1724_read_eeprom():
+    for (i = 0; i < 120; i++)
+        printk(KERN_DEBUG "EEPROM: %02x %02x\n",
+            i, snd_vt1724_read_i2c(ice, dev, i));
+
+then attach the resultant dump in the kernel message.
+
+----------------------------------------------------------------------
+ Vladimir Dyakov - 05-31-2004 05:26 CEST 
+----------------------------------------------------------------------
+> i meant to add a debug output in snd_vt1724_read_eeprom():
+> ...
+> then attach the resultant dump in the kernel message.
+
+I've done both correct eeprom size detection and printk() output. The
+patch, dmesg and /proc/asound/card0/ice1724 are here:
+http://linux.alhimia.ru/pub/alsa/2/
+
+----------------------------------------------------------------------
+ Vladimir Dyakov - 05-31-2004 05:29 CEST 
+----------------------------------------------------------------------
+All previous stuff is available here (if you will need it):
+http://linux.alhimia.ru/pub/alsa/1/
+
+----------------------------------------------------------------------
+ Vladimir Dyakov - 06-17-2004 06:51 CEST 
+----------------------------------------------------------------------
+Hi.
+I've plugged in alsa-1.0.5a driver and now get this in dmesg:
+http://linux.alhimia.ru/pub/alsa/3/dmesg
+
+----------------------------------------------------------------------
+ Apostolos Dimitromanolakis - 06-17-2004 08:02 CEST 
+----------------------------------------------------------------------
+The ice1724 driver will need to be extended to handle your card, it will
+not work as it is since I don't think any othe card has a WM8731 chip (not
+sure about this, at least not Prodigy, M-Audio Revolution and Aureon). The
+thing to do is figure out the connections between envy24 and WM8731 codecs
+and then maybe someone can modift the driver to work. This is a bit
+difficult if you don't have the card but possible with some patience. Look
+what the guys at some other new eny24 card did:
+
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000142
+
+----------------------------------------------------------------------
+ Vladimir Dyakov - 06-17-2004 08:39 CEST 
+----------------------------------------------------------------------
+I've found some information. Maybe it will help.
+Description of WM8731 chip: http://www.wolfsonmicro.com/products/WM8731/
+Description of Maya44MKII: http://www.audiotrak.net/maya44mk2.htm
+
+Still, this information seems to be quiet poor and more marketing than
+technical. If id does not help plaease let me know, I'll try then to
+contact Audiotrak.
+
+----------------------------------------------------------------------
+ Vladimir Dyakov - 06-17-2004 08:46 CEST 
+----------------------------------------------------------------------
+Here is a short discussion at audiotrak's forum:
+http://www.audiotrack.co.kr/spboard/board.cgi?id=USER&action=view&gul=2145-1-1-1&page=1&go_cnt=3&chk_name=&chk_sub=on&chk_cmt=on&keyword=linux&start_num=
+
+----------------------------------------------------------------------
+ Vladimir Dyakov - 07-16-2004 13:34 CEST 
+----------------------------------------------------------------------
+Sorry for disturbing. Is my soundcard going to be supported ever? :)
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-08-04 08:27 Vladimir DyakovNew Bug                                      
+05-08-04 08:27 Vladimir DyakovDistribution              => ASPLinux 9.2 (base on Fedora Core 1)
+05-08-04 08:27 Vladimir DyakovKernel Version            => kernel-2.6.5-mm6
+05-08-04 08:35 Vladimir DyakovBugnote Added: 0001070                       
+05-11-04 07:03 Vladimir DyakovBugnote Added: 0001081                       
+05-11-04 07:07 Vladimir DyakovBugnote Added: 0001082                       
+05-18-04 20:44 tiwai          Bugnote Added: 0001144                       
+05-19-04 13:31 Vladimir DyakovBugnote Added: 0001151                       
+05-19-04 13:35 Vladimir DyakovBugnote Added: 0001152                       
+05-25-04 14:51 tiwai          Bugnote Added: 0001212                       
+05-26-04 04:33 Vladimir DyakovBugnote Added: 0001245                       
+05-26-04 14:35 tiwai          Bugnote Added: 0001256                       
+05-31-04 05:26 Vladimir DyakovBugnote Added: 0001279                       
+05-31-04 05:29 Vladimir DyakovBugnote Added: 0001280                       
+06-17-04 06:51 Vladimir DyakovBugnote Added: 0001314                       
+06-17-04 08:02 Apostolos DimitromanolakisBugnote Added: 0001315                       
+06-17-04 08:39 Vladimir DyakovBugnote Added: 0001316                       
+06-17-04 08:46 Vladimir DyakovBugnote Added: 0001317                       
+06-18-04 18:02 Apostolos DimitromanolakisBug Monitored: Apostolos Dimitromanolakis                    
+07-16-04 13:34 Vladimir DyakovBugnote Added: 0001452                       
+======================================================================
 
 
 -------------------------------------------------------
