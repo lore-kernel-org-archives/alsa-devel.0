@@ -1,15 +1,19 @@
-From: Mathieu Dube <mdube@8d.com>
-Subject: Re: mixer and group
-Date: Mon, 18 Mar 2002 16:20:05 -0500
+From: max-cn@163.com (max)
+Subject: Need agent for porcelain tiles
+Date: Tue, 19 Mar 2002 02:41:42 +0000 (UTC)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <02031816200502.10843@mdube.usine.8D.com>
-References: <02031814141301.10843@mdube.usine.8D.com>
-Reply-To: mdube@8d.com
+Message-ID: <1016505466.895@163.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <02031814141301.10843@mdube.usine.8D.com>
+Content-Type: text/plain; charset="US-ASCII"; format=flowed
+Received: from sm1.163.com ([202.108.44.203])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id DAA27206
+	for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2002 03:40:03 +0100
+Received: from localhost (localhost [127.0.0.1])
+	by sm1.163.com (Postfix) with SMTP id E19501D05A661
+	for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2002 10:39:42 +0800 (CST)
+Received: from smtp.163.com (unknown [61.142.233.210])
+	by 192.168.1.203 (Coremail) with SMTP id WwEAAOakljyjfunS.1
+	for <alsa-devel@alsa-project.org>; Tue, 19 Mar 2002 10:39:42 +0800 (CST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,35 +22,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Actually nevermind,
-		I figured it out by looking at the struct definitions, if anyone is 
-interested here's how I did it:
-	copied "Master" to group.gid.name and put group.gid.index to 0. 
+Dear Sir/Madam,
 
-One could also use PCM or any other group...
+We are original manufacturer in China producing polished porcelain floor 
+tiles in high quality with competitive and reasonable price for decoration 
+use.  We need agent in each district.  Please visit our website 
+http://www.huiya.com to get more information.
 
-Later
--Mat
+Please feel free to contact me.
 
-On Monday 18 March 2002 14:14, Mathieu Dube wrote:
-> Hi,
-> 	I dont know if anybody ever had that problem. When I open the mixer all
-> seems well and there is no error.
-> 	But when I try to read the group it says "No such device or address". Is
-> it talking about the mixer? and if so why is snd_mixer_open not returning
-> an error?
->
-> Thanks
->
-> -Mat
+Thanks & Regards,
 
--- 
-Mathieu Dube -- mdube@8d.com
-8D Technologies Inc.
-http://www.8d.com
+Max
+HUIYA CERAMIC CO., LTD.
+Wuxing Industrial Zone, Xiaotang Town, Nanhai, Guangdong, P. R. China
+PHONE: +86 757 6669738
+FAX: +86 757 6668628
+http://www.huiya.com
+max-cn@163.com
+
+You will NOT receive regular information, if you don't answer.
+
+
+
+
+_____________________________________________________________________
+Batch broadcast email messages such as newsletters and reports to
+groups of people with no CC headers. To try [32bit Email Broadcaster]
+for FREE, click http://www.electrasoft.com/32bea.htm
+You may not use 32bit Email Broadcaster to send SPAM.
+
 
 _______________________________________________
 Alsa-devel mailing list
