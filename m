@@ -1,9 +1,12 @@
-From: Paul Davis <pbd@Op.Net>
-Subject: Re: latency timer
-Date: Tue, 26 Feb 2002 17:27:01 -0500
-Message-ID: <200202262227.RAA00414@renoir.op.net>
-In-reply-to: Your message of "Tue, 26 Feb 2002 23:06:38 +0100."
-             <002601c1bf11$e23a37e0$0300a8c0@wgilmenau>
+From: "Ivica Bukvic" <ico@fuse.net>
+Subject: RE: question regarding latest CS4205 laptop    soundcard driver
+Date: Tue, 26 Feb 2002 17:49:58 -0500
+Message-ID: <000b01c1bf17$eadd9df0$ac1f830a@ico>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20020226072437.47ED22756@sitemail.everyone.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,39 +15,106 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Robert Br ckmann <robert.brueckmann@stud.tu-ilmenau.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: pshirkey@boosthardware.com
+Cc: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->I wanted to use two RME hammerfalls to record 48 channels of audio via adat,
->do some signal processing and play them back again. But I experienced a very
->poor performance of my computer (dual pentium III 1.3GHz, 512MB RAM). It
->wasn't even able to record 48 channels without xruns.
+First off, thanks for your reply.
+
+I am, however, baffled by what you had to say. Crystal company claims
+complete Linux "friendliness" and I've seen several sites which carry
+detailed specs of the CS4205 chip in PDF file, so I am not sure what
+aspect of the sound chip is missing for such information to be complete.
+Could you please clarify your point?
+
+Also, is there a way to contact Crystal company and request additional
+info?
+
+Finally, if this soundcard is not capable of hardware downmixing, is
+there ANY laptop soundcard at all out there that IS capable of doing
+that.
+
+P.S. What about Yamaha/Intel 753 chip that is found in the Toshiba
+Satellite 5005's?
+
+Thanks for your assistance!
+
+Ico
+
+> -----Original Message-----
+> From: Patrick Shirkey [mailto:kotau@firstlinux.net]
+> Sent: Tuesday, February 26, 2002 2:25 AM
+> To: Ivica Bukvic; alsa-user@alsa-project.org
+> Subject: Re: [Alsa-devel] question regarding latest CS4205 laptop
+> soundcard driver
+> 
+> --- "Ivica Bukvic" <ico@fuse.net> wrote:
+> >Hi all!
+> >
+> >I have a quick question regarding the latest CrystalClear soundcard
+that
+> >is found in Dell Inspirons and other laptops (model name CS4205).
+> >
+> >My understanding is that the maker of this DSP chip is rather Linux
+> >friendly, so my question is does the driver for this soundcard (which
+I
+> >believe is Intel810 and has been reported to be working in Linux)
+> >supports hardware mixing (i.e. opening sound device multiple times as
+is
+> >the case with SBLive!), since this card also advertises having
+hardware
+> >mixer like SBLive! does. I=92ve also heard that most other modern
+> >mainstream soundcards have that capability and some of them simply
+> don=92t
+> >do that due to lack of documentation (i.e. Ess maestro 3i). So what
+is
+> >then the case with this one and how does it stack-up against other
+> >mobile built-in soundcards?
+> >
+> 
+> IIRC The docs for this chip are not sufficient for the hardware mixing
+to
+> be used.
+> 
+> In regards to how well it works I have had ok sound from it and have
+> recorded quite clean through it but it is nothing special IMO.
+> 
+> 
+> --
+> Patrick Shirkey - Boost Hardware Ltd
+> For the discerning hardware connoisseur
+> Http://www.boosthardware.com
+> Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
+> 
+> >Ivica Ico Bukvic, composer, multimedia sculptor,
+> >programmer, webmaster & computer consultant
+> >http://meowing.ccm.uc.edu/~ico/
+> >ico@fuse.net
 >
->I modified aplay/arecord that it plays/records more than 32 channels (btw:
->why did the developers insert such a silly check which didn't allow more
->than 32 channels???), but arecord gave many xruns while recording (aplay
->worked fine):
+>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3
+D=
+> 3D=
+> >=3D=3D=3D
+> >"To be is to do"=A0=A0 - Socrates
+> >"To do is to be"=A0=A0 - Sartre
+> >"Do be do be do"=A0=A0 - Sinatra
+> >"I am"=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 - God
+> >
+> >
+> >
+> >
+> >_______________________________________________
+> >Alsa-devel mailing list
+> >Alsa-devel@lists.sourceforge.net
+> >https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
+> _____________________________________________________________
+> Want a new web-based email account ? ---> http://www.firstlinux.net
+> 
+> _____________________________________________________________
+> You deserve a better email address! Get personalized email @yourname
+> or @yourcompany from Everyone.net --> http://www.everyone.net?tag
 
-arecord *CANNOT* do this. it is not designed to do serious multitrack
-recording. you will never get it to work unless you have a disk
-subsystem with unbelievable seek and sustained i/o performance. if
-arecord could do this, the work that i've put into ardour over the
-last couple of years would be (partly) a waste of time. you can't
-stream that much data to disk in real time without a multithreaded
-design, which arecord does not have.
-
-i doubt that arecord could go much above 12 channels with its
-single-threaded design, certainly if using 32 bit samples.
-
->BTW: Might the low latency check help with my problem?
-
-i presume you are referring to the low latency patch. it is only of
-critical if you are using low period sizes, which for recording 48
-tracks is not the optimal setting. however, it can help any audio
-program, even xmms and the like.
-
---p
 
 
 _______________________________________________
