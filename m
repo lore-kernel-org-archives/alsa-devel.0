@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000781]: make install fails with current alsa-utils cvs.
-Date: Mon, 3 Jan 2005 13:50:49 +0100
-Message-ID: <9f078474b1a570e0699dec2835cbf24a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000780]: More laptops with LEDs (from: 0000667- How to integrate turning on and off LED:s on laptops)
+Date: Mon, 3 Jan 2005 14:23:32 +0100
+Message-ID: <9b3f007a83425f5443fc7675dd5e8ad1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DE8F21D1
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 13:50:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 870CD24C
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 14:23:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=781> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=780> 
 ======================================================================
-Reported By:                jcdutton
+Reported By:                piesis
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   781
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   780
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
-Date Submitted:             01-03-2005 13:44 CET
-Last Modified:              01-03-2005 13:50 CET
+Date Submitted:             01-03-2005 12:39 CET
+Last Modified:              01-03-2005 14:23 CET
 ======================================================================
-Summary:                    make install fails with current alsa-utils cvs.
+Summary:                    More laptops with LEDs (from: 0000667- How to
+integrate turning on and off LED:s on laptops)
 Description: 
-alsa-utils # make install
-Making install in m4
-make[1]: Entering directory `/u/alsacvs/alsa-utils/m4'
-make[2]: Entering directory `/u/alsacvs/alsa-utils/m4'
-make[2]: Nothing to be done for `install-exec-am'.
-make[2]: Nothing to be done for `install-data-am'.
-make[2]: Leaving directory `/u/alsacvs/alsa-utils/m4'
-make[1]: Leaving directory `/u/alsacvs/alsa-utils/m4'
-Making install in include
-make[1]: Entering directory `/u/alsacvs/alsa-utils/include'
-make[2]: Entering directory `/u/alsacvs/alsa-utils/include'
-make[2]: Nothing to be done for `install-exec-am'.
-make[2]: Nothing to be done for `install-data-am'.
-make[2]: Leaving directory `/u/alsacvs/alsa-utils/include'
-make[1]: Leaving directory `/u/alsacvs/alsa-utils/include'
-Making install in alsactl
-make[1]: Entering directory `/u/alsacvs/alsa-utils/alsactl'
-make[2]: Entering directory `/u/alsacvs/alsa-utils/alsactl'
-test -z "/usr/sbin" || mkdir -p -- "/usr/sbin"
-  /bin/install -c 'alsactl' '/usr/sbin/alsactl'
-test -z "/usr/man/man1" || mkdir -p -- "/usr/man/man1"
- /bin/install -c -m 644 './alsactl.1' '/usr/man/man1/alsactl.1'
-make[2]: Leaving directory `/u/alsacvs/alsa-utils/alsactl'
-make[1]: Leaving directory `/u/alsacvs/alsa-utils/alsactl'
-Making install in alsaconf
-make[1]: Entering directory `/u/alsacvs/alsa-utils/alsaconf'
-Making install in po
-make[2]: Entering directory `/u/alsacvs/alsa-utils/alsaconf/po'
-../.././mkinstalldirs /usr/share
-make[2]: ../.././mkinstalldirs: Command not found
-make[2]: *** [install-data-yes] Error 127
-make[2]: Leaving directory `/u/alsacvs/alsa-utils/alsaconf/po'
-make[1]: *** [install-recursive] Error 1
-make[1]: Leaving directory `/u/alsacvs/alsa-utils/alsaconf'
-make: *** [install-recursive] Error 1
+The previous issue
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0000667 is marked as
+fixed and resolved, but it is not
+good:
+there seem to exist (many) more laptops utilizing this mute led feature,
+therefore the list of machines with this quirk should stay somehow open
+and updateable.
+
+Not all machines currently available are included (only two so far);
+New models will appear.
+
+To begin with - my HP zv5000 has the same led (I used an amixer command in
+lineakd to mute sound and turn on the led with that key).
+If I'm not wrong, the respective PCI IDs are:
+
+.vendor = 0x10de,
+.device = 0x00da,
+(from lspci:
+0000:00:06.0 Class 0401: 10de:00da (rev a2)
+0000:00:06.0 Multimedia audio controller: nVidia Corporation nForce3 Audio
+(rev a2))
+
+The AC97 codec is AD1981B.
+
+But there exists an equivalent laptop - Compaq r3000, so I will try to get
+some info about IDs in those machines and post them here.
+
+Final note about this issue in whole:
+what is this "External Amp" used/intended for?
+Because: if we mute the main output, then there is no signal to the amp -
+it may safely be shut down? Or is this control pin used for something else
+as well?
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 01-03-05 13:50 
+ tiwai - 01-03-05 14:23 
 ----------------------------------------------------------------------
-alsa-utils-fix.diff.txt  fixes the problem.
+For more quirks, simply open a new bug entry at each time.
+I don't like to open the bugs just for future.
+
+The pci id you provided doesn't help, unfortunately.
+Please provide the PCI "subsystem" ID, which is shown via lspci -nv.
+
+"External Amplifier" is for that it's called: it controls EAPD pin.
+On some machines, the external amplifier is turned on/off with this pin. 
+On most of machines, however, it doesn't mean anything.  The amp doesn't
+exist or not controllable via this bit.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 13:44 jcdutton       New Issue                                    
-01-03-05 13:50 jcdutton       File Added: alsa-utils-fix.diff.txt               
-    
-01-03-05 13:50 jcdutton       Note Added: 0003060                          
+01-03-05 12:39 piesis         New Issue                                    
+01-03-05 12:39 piesis         Distribution              => Gentoo          
+01-03-05 12:39 piesis         Kernel Version            => 2.6.9-gentoo-r9 
+01-03-05 14:23 tiwai          Note Added: 0003061                          
 ======================================================================
 
 
