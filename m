@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000079]: Dell Inspiron 8500 ICH4 no sound through internal speakers, headphone ok.
-Date: Thu, 10 Mar 2005 15:24:35 +0100
-Message-ID: <c0ea38477c2e5ee20a3ffcd5ca7049da@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000203]: Line-In is not working with ICH - Intel ICH5 Intel8x0
+Date: Thu, 10 Mar 2005 15:30:01 +0100
+Message-ID: <526af61bd9bc8ae3b6bc38e22e87f2ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 62B8D157
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:24:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9A1DF1D5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:30:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,58 +23,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=79> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=203> 
 ======================================================================
-Reported By:                rocco
+Reported By:                dkg
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   79
+Issue ID:                   203
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.3
+Distribution:               Crux Linux
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             02-22-2004 21:40 CET
-Last Modified:              03-10-2005 15:24 CET
+Date Submitted:             04-12-2004 20:16 CEST
+Last Modified:              03-10-2005 15:30 CET
 ======================================================================
-Summary:                    Dell Inspiron 8500 ICH4 no sound through internal
-speakers, headphone ok.
+Summary:                    Line-In is not working with ICH - Intel ICH5
+Intel8x0
 Description: 
-Alsa from kernel tree 2.6.3. Internal speakers of the laptop are not
-working, when pluggin in something in the headphone output sound is
-working. Mixer volume looks ok.
+ Today I upgraded to 2.6.5 because I thought it may help me in solving my
+problem with my soundcard. But it doesnt. It still exists. Mic and
+Line-Out are ok. But my Line-In is not working. I need it to record sound
+which comes from my turntables. Following are some informations about my
+card. It would be great if someone could help me.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-10-04 17:57 
+ Voluspa - 04-13-04 10:53 
 ----------------------------------------------------------------------
-now the switch is renamed to 'External Amplifier'.
-it's a bit more obvious than before :)
+Card: Intel 82801BA-ICH2
+Chip: Realtek ALC200/200P rev 0
 
-about the default value: could you check again the default
-EAPD value?  stop once alsa service, then remove /etc/asound.state
-(or make backup), and start alsa again.
+Same problem here. In kernel 2.6.4 both channels (left - right) on line-in
+were dead. In kernel 2.6.5 only the right channel is dead; if indeed we
+can talk about channels. Could as well be mono coming from the left
+speaker, don't know.
+
+edited on: 04-13-04 10:53
 
 ----------------------------------------------------------------------
- jdthood - 03-10-05 15:24 
+ jdthood - 03-10-05 15:30 
 ----------------------------------------------------------------------
-> stop once alsa service, then remove /etc/asound.state
-> (or make backup), and start alsa again.
-
-Submitter: What is the default External Amplifier state now?
+Submitter: Was this problem fixed in more recent ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-22-04 21:40 rocco          New Issue                                    
-02-26-04 13:00 rocco          Note Added: 0000346                          
-03-01-04 20:13 tiwai          Note Added: 0000424                          
-03-10-04 17:57 tiwai          Note Added: 0000565                          
-03-10-05 15:24 jdthood        Note Added: 0003864                          
+04-12-04 20:16 dkg            New Issue                                    
+04-12-04 20:16 dkg            Distribution              => Crux Linux      
+04-12-04 20:16 dkg            Kernel Version            => 2.6.5           
+04-13-04 10:51 Voluspa        Note Added: 0000787                          
+04-13-04 10:53 Voluspa        Note Edited: 0000787                         
+03-10-05 15:30 jdthood        Note Added: 0003865                          
 ======================================================================
 
 
