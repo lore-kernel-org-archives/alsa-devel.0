@@ -1,15 +1,16 @@
-From: Dan Mills <dmills@spamblock.demon.co.uk>
-Subject: Could someone have a look at a my driver code please.
-Date: Wed, 30 Jul 2003 22:52:09 +0100
+From: Nicola Orru' <nigu@itadinanta.it>
+Subject: Re: emufxtool, formerly ld10k1
+Date: Wed, 30 Jul 2003 23:50:51 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <03073022520900.00991@spamblock>
-References: <200307302036.h6UKaJ6p001930@localhost.localdomain>
+Message-ID: <20030730235051.0401f7ce.nigu@itadinanta.it>
+References: <Pine.LNX.4.44.0307302045290.9821-100000@pnote.perex-int.cz>
+	<Pine.LNX.4.44.0307302054090.9821-100000@pnote.perex-int.cz>
+	<20030730225350.3341ee6e.nigu@itadinanta.it>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200307302036.h6UKaJ6p001930@localhost.localdomain>
+In-Reply-To: <20030730225350.3341ee6e.nigu@itadinanta.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,29 +22,49 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-I have written a  *very*  crude driver for the waveterminal 192L (mostly 
-my guesswork as to how the thing is hooked up). It is based on the ice1724 
-code but is really an engineering prototype (worked for the first time 20 
-minutes ago) and not ready for prime time.
- 
-In particular it ignores the eeprom except for a check that its contents 
-match that of the one on my card. It works for output pair 1, and may work 
-for the others but that is uncertain at this point. It probably also has 
-locking issues at present. 
+> > If it is possible, can you guys settle details about linker communication
+> > (and probably finish it)? We can integrate both projects then.
+> 
+> I didn't know about Peter's ld10k1 existence, but it seems to be what I thought initially of emufxtool, before starting to improve the assembly/disassembly core and the file format.
+> 
+> I think it is a good idea, at least there will not duplicated code and, if I understand correctly, emufxtool might use ld10k1 as a "backend" to load patches onto the DSP.
+> 
+> I am just downloading ld10k1 from sf. Will take more than a look at that.
 
-Would someone be willing to take a look and give some pointers as to how 
-to make this thing into a fully correct alsa driver? 
+I took a look at ld10k1/lo10k1. Its architecture is well thought and offers lots of possibilities.
 
-Undocumented hardware and a driver architecture with which you are not 
-familiar make development fun!
+I can remove from emufxtool the "direct" access to the driver by IOCTL and use the pipe to communicate to ld10k1 server.  Before doing that, maybe we should define well the "communication protocol" between clients and server, as suggested by Jaroslav.
 
-My code will go up on the web once I have shaken a few more bugs out
-(The mixer does nothing very useful at present & I am fairly sure that
-playing with the GPIO pins some will get the phantom power and mic pre 
-working.....). 
+This system solves also the problem of multiple patch loading and code relocation, which my emufxtool solves at compile time (to use more than one patch you have to compile and load them as a whole). The same method could be used by the disassembler code to fetch DSP content (or loader server-side DSP "images").
 
-Regards, Dan.
+The next step could be a MIDI based loader, that allows you to store/fetch patches using SYSEX messages sent to /dev/sequencer or alsa midi virtual ports, or anything else (a new device that replaces the pipe?), maybe requiring some work on the modules... (Not a choice I can make, anyway...)
+
+I ignore if Peter Zubaj can receive this message, but I think it would be a good idea if we merged our projects into a single one ( : ). A good start may be the definition of the "protocol" above.
+
+The protocol can be "message based", each "message" may be defined, for instance, by primitive types and surrounded by a header/footer standard pair (containing a message id, the length of the message, and something like a checksum to avoid "garbage").
+
+Client and server "speak" through a sequence of "Request"/"Response" message pairs, usually initiated and closed by the client. 
+
+I.E. Message: SET PATCH
+
+Offset   Length (in bytes) Type                Value
+   0     2                 unsigned short (*)  0004 (ID_SET_PATCH)
+   2     4		   unsigned (*)        total length of message
+   6     30		   character string    name of the patch
+  36     2		   unsigned short (*)  number of DSP instr.
+....
+length+36 4		   unsigned	       checksum
+
+(*) endianness to be defined
+
+and so on...
+
+-- 
+Ciao,
+Nicola
+--------------------------------------------------------------------
+* Nicola Orru' - Via Dei Tulipani, 9 - 09034 Assemini (CA) - ITALY *
+--------------------------------------------------------------------
 
 
 -------------------------------------------------------
