@@ -1,8 +1,8 @@
-From: Christian Esken <c.esken@cityweb.de>
-Subject: alsa-lib: Error code 1 from snd_mixer_selem_set_capture_switch_all()
-Date: Wed, 12 Nov 2003 13:03:42 +0100
+From: Martin Wolters <wol@codingtechnologies.com>
+Subject: EZ-Bus supported?
+Date: Wed, 12 Nov 2003 14:06:20 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311121303.42282.c.esken@cityweb.de>
+Message-ID: <200311121406.20414.wol@codingtechnologies.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
@@ -20,25 +20,28 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi, 
 
-I have a problem with snd_mixer_selem_set_capture_switch_all() from alsa-lib.
-The documentation states:
+I can't find the EZ-Bus Mixer/USB interface 
+(http://www.event1.com/Products/Digital/EZbus.html) on the soundcard matrix 
+or on the Wiki page. But it was mentioned on the linux-audio mailing list, 
+that the EZ-Bus is supported. Can someone confirm that? 
 
-/**
- * \brief Set value of capture switch control for all channels of a mixer 
-simple element
- * \param elem Mixer simple element handle
- * \param value control value
- * \return 0 on success otherwise a negative error code
- */
-int snd_mixer_selem_set_capture_switch_all(snd_mixer_elem_t *elem, int value)
+Are there specific functionalities of the EZ-Bus which are not supported? All 
+digital I/O and MIDI work simultaneously (record + playback)? No specific 
+firmware download (like for the TASCAM 428) is required? 
 
-So I should receive either 0 or a negative value. But I receive a return value 
-of 1. Does anybody know what this means?!? Any help is appreciated greatly.
+Thanks in advance
 
-Greetings,
-           Chris
+-M
+
+PS.: If someone recommends either the Tascam 428, the EZ-Bus or another 
+Mixer/USB-Interface for a small MIDI- and recording application with a couple 
+external MIDI devices, you are welcome to send your comments in general as 
+well. I am back into that homerecording business after a break for several 
+years. So I am not up-to-speed yet - and of course I never used Linux for 
+homerecording before either.
+
 
 
 -------------------------------------------------------
