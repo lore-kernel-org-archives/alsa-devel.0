@@ -1,12 +1,15 @@
-From: "Jami Drake" <j.drakepc@standrews.sa.edu.au>
-Subject: buy C,ialis soft`tabs without embarrassment
-Date: Wed, 15 Dec 2004 00:35:10 +0000
-Message-ID: <601f01c4e23d$653f4eda$7e173182@stanja.de>
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: snd-usb-usx2y 0.8.7 hwdep pcm oopses!
+Date: Wed, 15 Dec 2004 00:17:23 -0000 (WET)
+Message-ID: <32825.192.168.1.5.1103069843.squirrel@192.168.1.5>
+References: <64648.195.245.190.93.1103017646.squirrel@195.245.190.93>   
+    <200412141949.50054.annabellesgarden@yahoo.de>
+    <32821.192.168.1.5.1103069479.squirrel@192.168.1.5>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <32821.192.168.1.5.1103069479.squirrel@192.168.1.5>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,20 +19,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-announce@alsa-project.org, alsa-devel@alsa-project.org
+To: Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-New ClALlS softtabs =3D lNSTANT R0CKHARD ERECTl0NS<p>
-Simply disolve HALF A PlLL under your tongue 10min before action,<br>
-for results that last all weekend.<p>
-Normal retail is $19/PlLL<br>
-<a href=3D"http://ifjxwdcstqh.k5medical.com/">0rder from us today at the =
-price of $3.54</a>
-<p><br><br><br><br><br><br><br><br><br>
-<a href=3D"http://ljbgtgcxalxt.k5medical.com/rm.php">not interested(0pt-0=
-ut)</a>
-</html>
+Hi Karsten,
+>>
+>> The first one is about a repeatable kernel crash happening on my SUSE
+>> 9.2 Pro box (P4/HT), but also on my Mdk 10.1 laptop (P4/UP), everytime
+>> I try to aplay against the hw:N,2 device (N=soundcard index). See below
+>> for the whole data and the proper oops dumps. As every kernel crash,
+>> the system is left in a very dangerous and unstable state, so that this
+>> particular issue should be addressed ASAP.
+>
+> OK, that one is fixed by attached patch.
+> Takashi: Please apply with
+>>>>>>>
+> Summary: return -EBUSY from snd_usX2Y_usbpcm_open(),
+>   if the associated hwdep device is not opened.
+>
+> It now works as originally intended. Had forgotten a pair of parenthesis.
+>
+> Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
+> <<<<<<
+>
+
+With this patch applied, I always get:
+
+ALSA lib pcm_hw.c:1172:(snd_pcm_hw_open) open /dev/snd/pcmC2D2p failed:
+Device or resource busy
+
+either from jackd or aplay on hw:2,2. It doesn't matter whether
+snd-usb-usx2y is loaded on index=1 or index=2. The resulty is *always*
+resource busy.
+
+Guess the patch doesn't really help, eh? I does not crash however ;)
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
+
+
 
 
 -------------------------------------------------------
