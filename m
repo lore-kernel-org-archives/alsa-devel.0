@@ -1,14 +1,15 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: drivers in alsa-driver tree with 2.6 kernels
-Date: Thu, 11 Mar 2004 19:08:47 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: FW: DMA producer/consumer
+Date: Thu, 11 Mar 2004 19:00:07 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040311180847.GA564@tuba.home>
-References: <s5hd67jldi8.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.58.0403111857170.1961@pnote.perex-int.cz>
+References: <F509E6111989D311B63700805FA761DA09F29093@DBDE01>
+ <s5hznanjven.wl@alsa2.suse.de> <Pine.LNX.4.58.0403111840580.1961@pnote.perex-int.cz>
+ <s5hr7vzjmi1.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hd67jldi8.wl@alsa2.suse.de>
+In-Reply-To: <s5hr7vzjmi1.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,30 +19,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: "Gupta, Kshitij" <kshitij@ti.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 11, 2004 at 02:27:59PM +0100, Takashi Iwai wrote:
-> Hi,
-> 
-> does anyone use the following drivers with a 2.6 kernel successfully?
-> if it's confirmed, i'd like to move them to alsa-kernel tree, so that
-> they can be submitted to 2.6 linux tree soon.
-> 
-> - snd-usb-usx2y
-> - snd-hdspm
-> - snd-intel8x0m
-> 
-> 
-> note that now au88x0 and atiixp drivers are already in alsa-kernel
-> tree.
-> 
+On Thu, 11 Mar 2004, Takashi Iwai wrote:
 
-Don't forget snd-msnd in the isa directory. I guess it's quite a long time
-in the alsa-driver tree. ( btw: I don't have such a card. )
+> At Thu, 11 Mar 2004 18:43:39 +0100 (CET),
+> Jaroslav wrote:
+> > 
+> > On Thu, 11 Mar 2004, Takashi Iwai wrote:
+> > 
+> > > unfortunately, the current implementation of ALSA PCM middle layer
+> > > isn't well suited for this kind of hardwares.  it'll be a bit more
+> > > complicated than you think.
+> > 
+> > I don't think that's this case. I'm not sure, if the basic midlevel 
+> > mechanism is understood: The midle level code expects that driver 
+> > start/stop the stream in the trigger callback, so if you can queue
+> > more 'periods' into the DMA engine, do it and abort/pause the transfer
+> > only the trigger callback request. You don't need to check appl/hw_ptr
+> > in the lowlevel code.
+> 
+> hmm, if i understand correctly, this DMA engine needs the update of
+> DMA queue.  i.e. the driver needs to feed chunks manually in prior
+> to the DMA start, and continues feeding the available chunks after
+> that as long as the stream is running.  this is somewhat analogous
+> with the case with the external hardware buffer.
 
-bye,
-martin
+It was case for sb8 driver, I think that all newer hardware which can do
+DMA transfers is designed to enqueue more blocks to avoid fifo underruns 
+at the block boundary. At least the SA11xx ARM platform has the DMA engine 
+for two blocks (one can be prepared during transfer of the opposite).
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
