@@ -1,17 +1,10 @@
-From: Andrzej Zaremba <anzar@megapolis.pl>
-Subject: PKO BP Zyskali inwestorzy, stracil Skarb Panstwa
-Date: 13 Nov 2004 05:38:05 +0100
-Message-ID: <20041113043708.CF1FB391DC@mail.perex.cz>
+From: Pete Zaitcev <zaitcev@yahoo.com>
+Subject: snd_pcm_writei is stuck with EPIPE
+Date: Fri, 12 Nov 2004 22:24:47 -0800 (PST)
+Message-ID: <20041113062447.51636.qmail@web60404.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/html
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="0-1200859685-1100327087=:51627"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A4263198
-	for <alsa-devel@alsa-project.org>; Sat, 13 Nov 2004 05:37:09 +0100 (MET)
-Received: from megapolis.pl (unknown [217.153.130.50])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id CF1FB391DC
-	for <alsa-devel@alsa-project.org>; Sat, 13 Nov 2004 05:37:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,148 +14,641 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: mh@mpg123.de, syrjala@sci.fi, ahermans@vf.telia.no, zaitcev@yahoo.com
 List-Id: alsa-devel@alsa-project.org
 
-<html>
+--0-1200859685-1100327087=:51627
+Content-Type: text/plain; charset=us-ascii
+Content-Id: 
+Content-Disposition: inline
 
-<head>
-<meta http-equiv=3D"Content-Language" content=3D"pl">
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-885=
-9-2">
-<title>cenaPKOBP</title>
-</head>
+Hello, All:
 
-<body leftmargin=3D"30" rightmargin=3D"30" bottommargin=3D"0" bgcolor=3D"=
-#FFFFFF">
+I have updated mpg123 to ALSA 0.9.0 API. The support for ALSA in currently
+available mpg123-0.59r does not build on Fedora Core 3.
 
-<p align=3D"justify" style=3D"margin-top: 15px"><font style=3D"font-size:=
- 16pt">PKO BP</font><font style=3D"font-size: 15pt">=20
-&#8211; </font><font style=3D"font-size: 16pt">Zani=BFona cena sprzeda=BF=
-y akcji</font></p>
-<p align=3D"justify" style=3D"margin-top: -15px">
-<font style=3D"font-size: 26pt; font-weight: 700">Zysk inwestor=F3w, stra=
-ta Skarbu=20
-Pa=F1stwa</font></p>
-<p align=3D"justify" style=3D"line-height: 22px; margin-top: 5px">
-<span style=3D"font-size: 12pt">Minister Socha w wywiadach udzielanych w =
-trakcie=20
-emisji akcji PKO BP m=F3wi=B3 o czynniku natury spo=B3ecznej i atrakcyjno=
-=B6ci=20
-inwestycji maj=B1cej zach=EAci=E6 osoby fizyczne do gie=B3dy. Cena emisyj=
-na mia=B3a=20
-gwarantowa=E6 godziwy zysk przysz=B3ym nabywcom. &#8222;Czynnik spo=B3ecz=
-ny&#8221; maj=B1cy zagwarantowa=E6 osobom=20
-fizycznym godziwy zysk rozci=B1gn=B1=B3 si=EA na osoby zagraniczne, w&nbs=
-p;tym=20
-inwestor=F3w instytucjonalnych... Jaki jest pow=F3d aby zapewni=E6 inwest=
-orom=20
-zagranicznym godziwy zysk na prywatyzacji PKO BP?</span></p>
-<p align=3D"justify" style=3D"line-height: 22px; margin-top: -5px">
-<span style=3D"font-size: 12pt">Dlaczego minister Socha sprzedaje PKO BP =
-znacznie=20
-taniej ani=BFeli cena r=F3wnowagi popytu i poda=BFy? Na jakiej podstawie =
-minister=20
-skarbu zabiega o wp=B3ywy (zarobek) nabywc=F3w akcji, zamiast o zarobek s=
-karbu=20
-pa=F1stwa? Firma jest warta tyle ile nabywcy chc=B1 w danej sytuacji rynk=
-owej za ni=B1=20
-zap=B3aci=E6. 90% redukcja zapis=F3w =B6wiadczy, i=BF ustalono cen=EA akc=
-ji znacznie poni=BFej=20
-jej warto=B6ci rynkowej &#8211; &#8222;czynnik natury spo=B3ecznej&#8221;=
-. Minister skarbu je=BFeli ma=20
-tak=B1 wol=EA mo=BFe rozdawa=E6 sw=F3j prywatny maj=B1tek, ale dlaczego r=
-ozdaje maj=B1tek=20
-publiczny? </span></p>
-<p align=3D"justify" style=3D"line-height: 22px; margin-top: -4px">
-<span style=3D"font-size: 12pt">Za zysk os=F3b i funduszy nabywaj=B1cych =
-akcje PKO BP=20
-zap=B3ac=B1 wszyscy obywatele. Pieni=B1dze podziel=B1 pomi=EAdzy siebie n=
-abywcy akcji PKO.=20
-Wszyscy zarobili na niskiej cenie PKO BP, tylko Skarb Pa=F1stwa straci=B3=
- - czyli=20
-ca=B3e spo=B3ecze=F1stwo, tak=BFe ci kt=F3rych nie sta=E6 by=B3o na zakup=
- akcji oraz nie sta=E6=20
-na zakup lek=F3w, kt=F3re powinny by=E6 finansowane z publicznych pieni=EA=
-dzy. Panie=20
-Ministrze, dlaczego sprzedaje Pan &#8211; z premedytacj=B1 &#8211; maj=B1=
-tek publiczny za cen=EA=20
-ni=BFsz=B1 od rynkowej? R=F3=BFnica tylko 1 z=B3oty w cenie akcji PKO BP =
-oznacza przy=20
-sprzeda=BFy 380 mln akcji warto=B6=E6 380 mln z=B3otych odebranych Pa=F1s=
-twu &#8211; czyli=20
-wszystkim obywatelom.<br>
-Czy minister Socha zamierza zwr=F3ci=E6 kwot=EA kilkuset milion=F3w z=B3o=
-tych ze swojego=20
-prywatnego maj=B1tku?</span></p>
-<p align=3D"justify" style=3D"line-height: 22px; margin-top: -4px">
-<span style=3D"font-size: 12pt">Zarobi=B3y osoby, kt=F3re zakupi=B3y akcj=
-e, reszta stanowi=B1ca=20
-99% spo=B3ecze=F1stwa straci=B3a. Kto=B6 zarobi=B3 aby kto=B6 m=F3g=B3 st=
-raci=E6. Zarobili ci co=20
-maj=B1 pieni=B1dze i kupuj=B1 akcje, a stracili ci co nie maj=B1 pieni=EA=
-dzy i nie kupili=20
-akcji. Sprzedawany by=B3 maj=B1tek wszystkich, nie prywatne akcje ministr=
-a Sochy.=20
-Inwestorzy zamierzali kupi=E6 od skarbu pa=F1stwa znacznie dro=BFej, jedn=
-ak minister=20
-si=EA upar=B3 i powiedzia=B3, =BFe chce sprzeda=E6 taniej. Ograniczenie g=
-=F3rnej ceny=20
-spowodowa=B3o, =BFe t=B3um si=EA ustawi=B3 w kolejki, a na sesji by=B3a 9=
-0% redukcja... Po=20
-prostu minister si=EA upar=B3, =BFe da zarobi=E6 inwestorom kosztem skarb=
-u pa=F1stwa.</span></p>
-<p align=3D"justify" style=3D"line-height: 22px; margin-top: -4px">
-<span style=3D"font-size: 12pt">Minister Socha z premedytacj=B1 zani=BFy=B3=
- cen=EA=20
-sprzeda=BFy akcji PKO BP w oparciu o &#8222;czynnik natury spo=B3ecznej&#=
-8221;. Ten<span lang=3D"en">&nbsp;</span>sam czynnik=20
-powinien doprowadzi=E6 ministra Soch=EA przed oblicze wymiaru sprawiedliw=
-o=B6ci.
-</span></p>
-<p align=3D"justify" style=3D"word-spacing: 10px; line-height: 22px; marg=
-in-top: -12px">
-<b><span style=3D"font-size: 11pt">Stop-korupcji@mail.com</span></b><br>
-<br>
-<b><span style=3D"font-size: 12pt">Komentarz:</span></b></p>
-<p align=3D"justify" style=3D"line-height: 22px; margin-top: -15px">
-<span style=3D"font-size: 12pt">Wszyscy zarobili, a zap=B3aci=B3 za to mi=
-nister=20
-skarbu. Zap=B3aci=B3 nie swoimi pieni=EAdzmi. MSP sprzeda=B3o akcje za 20=
-.50<span lang=3D"en">&nbsp;</span>z=B3otych,=20
-a mog=B3o sprzeda=E6 za 22.50-23 z=B3ote. Minister=20
-Socha rzeczywi=B6cie na si=B3=EA chcia=B3 da=E6 zarobi=E6 inwestorom. Czy=
- kurs wzro=B6nie po sprzeda=BFy w=20
-ofercie publicznej czy nie to ju=BF inna sprawa - albo wzro=B6nie o 30% a=
-lbo spadnie=20
-o 30% - tego nie wie nikt. Przy czym opcja stabilizacji kursu jak najbard=
-ziej ma znaczenie=20
-&#8211; dzi=EAki niej akcje s=B1 obarczone mniejszym ryzykiem i za to mo=BF=
-na uzyska=E6=20
-w=B3a=B6nie wy=BFsz=B1 cen=EA sprzeda=BFy.<br>
-Wa=BFne jest to, =BFe gdy Socha sprzedawa=B3 akcje po ustalonej przez sie=
-bie cenie to=20
-popyt znacznie przewy=BFsza=B3 ofert=EA -&nbsp; <span style=3D"letter-spa=
-cing: 1px">w<span lang=3D"en">&nbsp;</span>ka=BFdej kategorii inwestor=F3=
-w!</span> Minister Socha zamiast ustali=E6 cen=EA r=F3wnowagi, ustali=B3 =
-cen=EA ni=BFsz=B1. <br>
-Gdyby zarz=B1dzaj=B1cy prywatnym maj=B1tkiem tak sprzedawa=B3 akcje swoje=
-go mocodawcy to=20
-by =BCle sko=F1czy=B3. Ale minister zarz=B1dza maj=B1tkiem publicznym...<=
-/span></p>
-<p align=3D"justify" style=3D"line-height: 22px; margin-top: -10px">
-<span style=3D"font-weight: 700; font-size: 12pt">Jaros=B3aw Sup=B3acz</s=
-pan></p>
-<p align=3D"justify" style=3D"word-spacing: 10px; line-height: 22px; marg=
-in-top: -16px">
-<span style=3D"font-size: 11pt">j.suplacz@rediffmail.com</span><br>
-&nbsp;</p>
+Everything seems to work, except that a single underflow is enough to
+kill everything. When an underflow happens, instead of a mere skip,
+snd_pcm_writei starts to return EPIPE and that's it. The device has to
+be closed and reopened before it can work again. Does anyone have an
+idea what may be going on?
 
-</body>
+I am attaching a patch and audio_alsa.c file itself in case anyone
+is curious.
 
-</html>
+Thanks,
+-- Pete
 
 
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Check out the new Yahoo! Front Page. 
+www.yahoo.com 
+ 
+
+--0-1200859685-1100327087=:51627
+Content-Type: application/octet-stream; name="audio_alsa.c"
+Content-Transfer-Encoding: base64
+Content-Description: audio_alsa.c
+Content-Disposition: attachment; filename="audio_alsa.c"
+
+LyoKICogIERyaXZlciBmb3IgQWR2YW5jZWQgTGludXggU291bmQgQXJjaGl0
+ZWN0dXJlLCBodHRwOi8vYWxzYS5qY3UuY3oKICogCiAqICBDb2RlIGJ5IEFu
+ZGVycyBTZW1iIEhlcm1hbnNlbiA8YWhlcm1hbnNAdmYudGVsaWEubm8+CiAq
+ICBDbGVhbnVwcyBieSBKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QGpjdS5jej4K
+ICogICAgICAgICAgICAgIFZpbGxlIFN5cmphbGEgPHN5cmphbGFAc2NpLmZp
+PgogKiAgQUxTQSAwLjkuMCBBUEkgYnkgUGV0ZSBaYWl0Y2V2IDx6YWl0Y2V2
+QHlhaG9vLmNvbT4KICoKICogIFlvdSBjYW4gdXNlIC1hIDxzb3VuZGNhcmQg
+bmFtZT46PGRldmljZSAjPlssPHN1YmRldmljZSAjPl0uLi4KICogIEZvciBl
+eGFtcGxlOiBtcGcxMjMgLWEgaHc6MCwwIGFhYS5tcGcKICogICAgICAgICAg
+ICAgICBtcGcxMjMgLWEgZ3VzcG5wOjEgYWFhLm1wZwogKgogKiBUaGlzIGZp
+bGUgY29tZXMgdW5kZXIgR1BMIGxpY2Vuc2UuIAogKi8KCiNpbmNsdWRlICJt
+cGcxMjMuaCIKCiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPGN0eXBl
+Lmg+CiNpbmNsdWRlIDxhbHNhL2Fzb3VuZGxpYi5oPgoKc3RhdGljIGludCBh
+dWRpb19zZXRfcGxheWJhY2tfcGFyYW1zKHN0cnVjdCBhdWRpb19pbmZvX3N0
+cnVjdCAqYWkpOwoKaW50IGF1ZGlvX29wZW4oc3RydWN0IGF1ZGlvX2luZm9f
+c3RydWN0ICphaSkKewoJaW50IGVycjsKCWNoYXIgKmRldmljZTsKCglpZigh
+YWkpCgkJcmV0dXJuIC0xOwoJaWYoYWktPmRldmljZSkgewkvKiBwYXJzZSBB
+TFNBIGRldmljZSBuYW1lICovCgkJZGV2aWNlID0gYWktPmRldmljZTsKCX0g
+ZWxzZSB7CgkJZGV2aWNlID0gImh3OjAsMCI7Cgl9CgoJaWYgKChlcnIgPSBz
+bmRfcGNtX29wZW4oJmFpLT5oYW5kbGUsIGRldmljZSwgU05EX1BDTV9TVFJF
+QU1fUExBWUJBQ0ssIDApKSA8IDApCgl7CgkJZnByaW50ZihzdGRlcnIsICJv
+cGVuIGZhaWxlZCBmb3IgJXM6ICVzXG4iLCBkZXZpY2UsIHNuZF9zdHJlcnJv
+cihlcnIpKTsKCQkvKgoJCSAqIEFuIGV4aXQgaXMgcHJldHR5IGRpc2d1c3Rp
+bmcsIGZvciBhIGxpYnJhcnkuCgkJICogV2UgYXJlIHRyeWluZyB0byBwcmV2
+ZW50IHBlcnJvcigpIGluIG1wZzEyMyBmcm9tCgkJICogdXNpbmcgYSBib2d1
+cyBlcnJuby4KCQkgKi8KCQlleGl0KDEpOwoJfQoKCWlmICgoZXJyID0gc25k
+X3BjbV9od19wYXJhbXNfbWFsbG9jKCZhaS0+cGFyYW1zKSkgPCAwKSB7CgkJ
+ZnByaW50ZihzdGRlcnIsICJwYXJhbXMgbWFsbG9jIGZhaWxlZDogJXNcbiIs
+IHNuZF9zdHJlcnJvcihlcnIpKTsKCQlzbmRfcGNtX2Nsb3NlKGFpLT5oYW5k
+bGUpOwoJCXJldHVybiAtMTsKCX0KCglhdWRpb19zZXRfcGxheWJhY2tfcGFy
+YW1zKGFpKTsJLyogUHJvYmFibHkgbm90IHJlYWxseSBuZWVkZWQuICovCgly
+ZXR1cm4gMDsKfQoKLyoKICogQUxTQSdzIHNldHRpbmcgbW9kZWwgaXMgYSBw
+aGFudGFzbWFnb3JpYyBuaWdodG1hcmUuIEl0IGhhcyBubyBub3Rpb24gb2Yg
+YQogKiBjdXJyZW50IHNldHRpbmcsIGJ1dCBvbmx5IGEgbm90aW9uIG9mIGEg
+Y3VycmVudCBzZXQgb2Ygc2V0dGluZ3MuIFRoZSBvbmx5IHdheQogKiB0byBz
+ZXQgcmF0ZSBhbmQgZm9ybWF0IGlzIHRvIHN0YXJ0IHdpdGggYSBzZXQgd2hp
+Y2ggaW5jbHVkZXMgYWxsIHNldHRpbmdzLAogKiB0aGVuIG5hcnJvdyBpdCBk
+b3duIHRvIHRoZSBzZXR0aW5ncyB5b3UgbmVlZC4KICovCnN0YXRpYyBpbnQg
+YXVkaW9fc2V0X3BsYXliYWNrX3BhcmFtcyhzdHJ1Y3QgYXVkaW9faW5mb19z
+dHJ1Y3QgKmFpKQp7CglzbmRfcGNtX2h3X3BhcmFtc190ICpwcCA9IGFpLT5w
+YXJhbXM7CglpbnQgZXJyOwojaWYgMAoJaW50IGRpcjsKCXNuZF9wY21fdWZy
+YW1lc190IGJ1ZmZlcl9zaXplOwoJc25kX3BjbV91ZnJhbWVzX3QgcGVyaW9k
+X3NpemUsIG1pbl9wZXJpb2Rfc2l6ZSwgbWF4X3BlcmlvZF9zaXplOwojZW5k
+aWYKCXNuZF9wY21fZm9ybWF0X3QgZm9ybWF0OwoKCS8qCgkgKiBGaXJzdCwg
+b2J0YWluIHRoZSBjb21wbGV0ZSBzZXQuCgkgKi8KCWlmICgoZXJyID0gc25k
+X3BjbV9od19wYXJhbXNfYW55KGFpLT5oYW5kbGUsIHBwKSkgPCAwKSB7CgkJ
+ZnByaW50ZihzdGRlcnIsICJzbmRfcGNtX2h3X3BhcmFtc19hbnkgZmFpbGVk
+OiAlc1xuIiwKCQkgICAgc25kX3N0cmVycm9yKGVycikpOwoJCXJldHVybiAt
+MTsKCX0KCgkvKgoJICogTmFycm9yb3cgYWNjZXNzIChub3Qgc2V0dGFibGUp
+CgkgKi8KCWVyciA9IHNuZF9wY21faHdfcGFyYW1zX3NldF9hY2Nlc3MoYWkt
+PmhhbmRsZSwgcHAsIFNORF9QQ01fQUNDRVNTX1JXX0lOVEVSTEVBVkVEKTsK
+CWlmIChlcnIgPCAwKSB7CgkJZnByaW50ZihzdGRlcnIsICJzbmRfcGNtX2h3
+X3BhcmFtc19zZXRfYWNjZXNzIGZhaWxlZDogJXNcbiIsCgkJICAgIHNuZF9z
+dHJlcnJvcihlcnIpKTsKCQlyZXR1cm4gLTE7Cgl9CgoJLyoKCSAqIE5hcnJv
+dyB0aGUgc2V0IHdpdGggbXBnMTIzIHNldHRhYmxlczogY2hhbm5lbHMsIGZv
+cm1hdCwgcmF0ZS4KCSAqLwoJaWYgKGFpLT5jaGFubmVscyA+PSAxKSB7CgkJ
+ZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2NoYW5uZWxzKGFpLT5oYW5k
+bGUsIHBwLCBhaS0+Y2hhbm5lbHMpOwoJCWlmIChlcnIgPCAwKSB7CgkJCWZw
+cmludGYoc3RkZXJyLAoJCQkgICAgInNuZF9wY21faHdfcGFyYW1zX3NldF9j
+aGFubmVscyBmYWlsZWQ6ICVzXG4iLAoJCQkgICAgc25kX3N0cmVycm9yKGVy
+cikpOwoJCQlyZXR1cm4gLTE7CgkJfQoJfQoKCXN3aXRjaChhaS0+Zm9ybWF0
+KQoJewoJY2FzZSBBVURJT19GT1JNQVRfU0lHTkVEXzE2OgoJZGVmYXVsdDoK
+CQlmb3JtYXQgPSBTTkRfUENNX0ZPUk1BVF9TMTY7CgkJYnJlYWs7CgljYXNl
+IEFVRElPX0ZPUk1BVF9VTlNJR05FRF84OgoJCWZvcm1hdCA9IFNORF9QQ01f
+Rk9STUFUX1U4OwoJCWJyZWFrOwoJY2FzZSBBVURJT19GT1JNQVRfU0lHTkVE
+Xzg6CgkJZm9ybWF0ID0gU05EX1BDTV9GT1JNQVRfUzg7CgkJYnJlYWs7Cglj
+YXNlIEFVRElPX0ZPUk1BVF9VTEFXXzg6CgkJZm9ybWF0ID0gU05EX1BDTV9G
+T1JNQVRfTVVfTEFXOwoJCWJyZWFrOwoJY2FzZSBBVURJT19GT1JNQVRfQUxB
+V184OgoJCWZvcm1hdCA9IFNORF9QQ01fRk9STUFUX0FfTEFXOwoJCWJyZWFr
+OwoJY2FzZSBBVURJT19GT1JNQVRfVU5TSUdORURfMTY6CgkJZm9ybWF0ID0g
+U05EX1BDTV9GT1JNQVRfVTE2OwoJCWJyZWFrOwoJfQoJZXJyID0gc25kX3Bj
+bV9od19wYXJhbXNfc2V0X2Zvcm1hdChhaS0+aGFuZGxlLCBwcCwgZm9ybWF0
+KTsKCWlmIChlcnIgPCAwKSB7CgkJZnByaW50ZihzdGRlcnIsCgkJICAgICJz
+bmRfcGNtX2h3X3BhcmFtc19zZXRfZm9ybWF0IGZhaWxlZDogJXNcbiIsCgkJ
+ICAgIHNuZF9zdHJlcnJvcihlcnIpKTsKCQlyZXR1cm4gLTE7Cgl9CgoJaWYg
+KGFpLT5yYXRlID49IDApIHsKCQllcnIgPSBzbmRfcGNtX2h3X3BhcmFtc19z
+ZXRfcmF0ZShhaS0+aGFuZGxlLCBwcCwgYWktPnJhdGUsIDApOwoJCWlmIChl
+cnIgPCAwKSB7CgkJCWZwcmludGYoc3RkZXJyLAoJCQkgICAgInNuZF9wY21f
+aHdfcGFyYW1zX3NldF9yYXRlIGZhaWxlZDogJXNcbiIsCgkJCSAgICBzbmRf
+c3RyZXJyb3IoZXJyKSk7CgkJCXJldHVybiAtMTsKCQl9Cgl9CgoJLyoKCSAq
+IFJlY2FsY3VsYXRlIHRoZSBsYXRlbmN5IHNldHRpbmdzLiBUaGlzIGlzIG5v
+dCBzb21ldGhpbmcgeW91IHdhbnQKCSAqIG9mdGVuLiBUaGUgbXBnMTIzIG5l
+ZWRzIHRoaXMgd2hlbiB5b3UgZG8gIG5ldGNhdHxtcGcxMjMgIHRvIGxpc3Rl
+bgoJICogdG8gdGhlIHJhZGlvLgoJICovCiNpZiAwIC8qIEtlZXAgdGhpcyBv
+ZmYgdGVtcG9yYXJpbHkgd2hpbGUgd2UgZGVidWcgY3V0b2ZmcyBvbiB1bmRl
+cmZsb3cgKi8KCWlmICgoZXJyID0gc25kX3BjbV9od19wYXJhbXNfZ2V0X3Bl
+cmlvZF9zaXplKHBwLCAmcGVyaW9kX3NpemUsICZkaXIpKSAhPSAwKSB7CgkJ
+ZnByaW50ZihzdGRlcnIsICJzbmRfcGNtX2h3X3BhcmFtc19nZXRfcGVyaW9k
+X3NpemUgZXJyb3IgJWRcbiIsIGVycik7Cgl9CglwcmludGYoIm9sZCBwZXJp
+b2Qgc2l6ZSAlZCAoZGlyICVkKVxuIiwgKGludCkgcGVyaW9kX3NpemUsIGRp
+cik7IC8qIFAzICovCgoJc25kX3BjbV9od19wYXJhbXNfZ2V0X3BlcmlvZF9z
+aXplX21pbihwcCwgJm1pbl9wZXJpb2Rfc2l6ZSwgJmRpcik7CglzbmRfcGNt
+X2h3X3BhcmFtc19nZXRfcGVyaW9kX3NpemVfbWF4KHBwLCAmbWF4X3Blcmlv
+ZF9zaXplLCAmZGlyKTsKCWlmIChzbmRfcGNtX2h3X3BhcmFtc19nZXRfYnVm
+ZmVyX3NpemUocHAsICZidWZmZXJfc2l6ZSkgIT0gMCkgewoJCWZwcmludGYo
+c3RkZXJyLCAic25kX3BjbV9od19wYXJhbXNfZ2V0X2J1ZmZlcl9zaXplIGVy
+cm9yXG4iKTsKCX0KCglwZXJpb2Rfc2l6ZSA9IGJ1ZmZlcl9zaXplLzQ7Cglp
+ZiAocGVyaW9kX3NpemUgPiBtYXhfcGVyaW9kX3NpemUpIHBlcmlvZF9zaXpl
+ID0gbWF4X3BlcmlvZF9zaXplOwoJaWYgKHBlcmlvZF9zaXplIDwgbWluX3Bl
+cmlvZF9zaXplKSBwZXJpb2Rfc2l6ZSA9IG1pbl9wZXJpb2Rfc2l6ZTsKCXBy
+aW50ZigibmV3IHBlcmlvZCBzaXplICVkXG4iLCAoaW50KSBwZXJpb2Rfc2l6
+ZSk7IC8qIFAzICovCglpZiAoKGVyciA9IHNuZF9wY21faHdfcGFyYW1zX3Nl
+dF9wZXJpb2Rfc2l6ZShhaS0+aGFuZGxlLCBwcCwgcGVyaW9kX3NpemUsIDAp
+KSAhPSAwKSB7CgkJZnByaW50ZihzdGRlcnIsICJwbGF5YmFjayBwYXJhbXMg
+ZmFpbGVkOiAlc1xuIiwgc25kX3N0cmVycm9yKGVycikpOwoJfQoKCS8vIFAz
+CgkvLyBwcC5mcmFnbWVudHNfbWF4ID0gLTE7CgkvLyBwcC5mcmFnbWVudHNf
+cm9vbSA9IDE7CiNlbmRpZgoKCS8qCgkgKiBGaW5hbGx5LCBjb21taXQgc2V0
+dGluZ3MgdG8gdGhlIGhhcmR3YXJlLgoJICovCglpZiAoKGVyciA9IHNuZF9w
+Y21faHdfcGFyYW1zKGFpLT5oYW5kbGUsIHBwKSkgPCAwKSB7CgkJZnByaW50
+ZihzdGRlcnIsICJzbmRfcGNtX2h3X3BhcmFtcyBmYWlsZWQ6ICVzXG4iLCBz
+bmRfc3RyZXJyb3IoZXJyKSk7CgkJLyogTm90IGZhdGFsIGZvciBwYXJ0aWFs
+IHNldHRpbmdzIGF0IGluaXRpYWxpemF0aW9uICovCgkJcmV0dXJuIDA7Cgl9
+CgoJcmV0dXJuIDA7Cn0KCmludCBhdWRpb19yZXNldF9wYXJhbWV0ZXJzKHN0
+cnVjdCBhdWRpb19pbmZvX3N0cnVjdCAqYWkpCnsKCglhdWRpb19zZXRfcGxh
+eWJhY2tfcGFyYW1zKGFpKTsKCXJldHVybiAwOwp9CgppbnQgYXVkaW9fcmF0
+ZV9iZXN0X21hdGNoKHN0cnVjdCBhdWRpb19pbmZvX3N0cnVjdCAqYWkpCnsK
+CXJldHVybiAwOwp9CgppbnQgYXVkaW9fc2V0X3JhdGUoc3RydWN0IGF1ZGlv
+X2luZm9fc3RydWN0ICphaSkKewoKCWlmKCFhaSB8fCBhaS0+cmF0ZSA8IDAp
+CgkJcmV0dXJuIC0xOwoJcmV0dXJuIGF1ZGlvX3NldF9wbGF5YmFja19wYXJh
+bXMoYWkpOwp9CgppbnQgYXVkaW9fc2V0X2NoYW5uZWxzKHN0cnVjdCBhdWRp
+b19pbmZvX3N0cnVjdCAqYWkpCnsKCglpZihhaS0+Y2hhbm5lbHMgPCAwKQoJ
+CXJldHVybiAwOwoJcmV0dXJuIGF1ZGlvX3NldF9wbGF5YmFja19wYXJhbXMo
+YWkpOwp9CgppbnQgYXVkaW9fc2V0X2Zvcm1hdChzdHJ1Y3QgYXVkaW9faW5m
+b19zdHJ1Y3QgKmFpKQp7CgoJaWYoYWktPmZvcm1hdCA9PSAtMSkKCQlyZXR1
+cm4gMDsKCXJldHVybiBhdWRpb19zZXRfcGxheWJhY2tfcGFyYW1zKGFpKTsK
+fQoKaW50IGF1ZGlvX2dldF9mb3JtYXRzKHN0cnVjdCBhdWRpb19pbmZvX3N0
+cnVjdCAqYWkpCnsKCXNuZF9wY21fZm9ybWF0X21hc2tfdCAqbWFzazsKCWlu
+dCBpOwoJaW50IGZtdCA9IC0xOwoKCXN0YXRpYyBpbnQgZm10c1tdID0gewoJ
+CUFVRElPX0ZPUk1BVF9TSUdORURfMTYsIEFVRElPX0ZPUk1BVF9VTlNJR05F
+RF8xNiwKCQlBVURJT19GT1JNQVRfVU5TSUdORURfOCwgQVVESU9fRk9STUFU
+X1NJR05FRF84LAoJCUFVRElPX0ZPUk1BVF9VTEFXXzgsIEFVRElPX0ZPUk1B
+VF9BTEFXXzgKCX07CglzdGF0aWMgaW50IGFmbXRzW10gPSB7CgkJU05EX1BD
+TV9GT1JNQVRfUzE2LCBTTkRfUENNX0ZPUk1BVF9VMTYsCgkJU05EX1BDTV9G
+T1JNQVRfVTgsIFNORF9QQ01fRk9STUFUX1M4LAoJCVNORF9QQ01fRk9STUFU
+X01VX0xBVywgU05EX1BDTV9GT1JNQVRfQV9MQVcKCX07CgoJc25kX3BjbV9m
+b3JtYXRfbWFza19hbGxvY2EoJm1hc2spOwoKCXNuZF9wY21faHdfcGFyYW1z
+X2FueShhaS0+aGFuZGxlLCBhaS0+cGFyYW1zKTsKCXNuZF9wY21faHdfcGFy
+YW1zX2dldF9mb3JtYXRfbWFzayhhaS0+cGFyYW1zLCBtYXNrKTsKCWZvciAo
+aSA9IDA7IGkgPCA2OyBpKyspIHsKCQlpZiAoc25kX3BjbV9mb3JtYXRfbWFz
+a190ZXN0KG1hc2ssIGFmbXRzW2ldKSkgewoJCQlpZiAoZm10ID09IC0xKQoJ
+CQkJZm10ID0gMDsKCQkJZm10IHw9IGZtdHNbaV07CgkJfQoJfQoKCXJldHVy
+biBmbXQ7Cn0KCmludCBhdWRpb19wbGF5X3NhbXBsZXMoc3RydWN0IGF1ZGlv
+X2luZm9fc3RydWN0ICphaSx1bnNpZ25lZCBjaGFyICpidWYsaW50IGxlbikK
+ewoJc3NpemVfdCByZXQ7Cgl1bnNpZ25lZCBpbnQgZmFjdG9yOwoKCWZhY3Rv
+ciA9IDA7CglpZiAoYWktPmNoYW5uZWxzICE9IDEpIGZhY3RvciArPSAxOwoJ
+aWYgKGFpLT5mb3JtYXQgJiBBVURJT19GT1JNQVRfTUFTSykgZmFjdG9yICs9
+IDE7CglyZXQgPSBzbmRfcGNtX3dyaXRlaShhaS0+aGFuZGxlLCBidWYsIGxl
+biA+PiBmYWN0b3IpOwoJaWYgKHJldCA8IDApIHsKCQlmcHJpbnRmKHN0ZGVy
+ciwgInNuZF9wY21fd3JpdGUgZmFpbGVkOiAlc1xuIiwgc25kX3N0cmVycm9y
+KHJldCkpOwoJfQoJcmV0dXJuIHJldDsKfQoKaW50IGF1ZGlvX2Nsb3NlKHN0
+cnVjdCBhdWRpb19pbmZvX3N0cnVjdCAqYWkpCnsKCWludCByZXQ7CgoJcmV0
+ID0gc25kX3BjbV9jbG9zZShhaS0+aGFuZGxlKTsKCXNuZF9wY21faHdfcGFy
+YW1zX2ZyZWUoYWktPnBhcmFtcyk7CglyZXR1cm4gcmV0Owp9Cg==
+
+--0-1200859685-1100327087=:51627
+Content-Type: text/x-patch; name="mpg123-0.59r-p3.diff"
+Content-Description: mpg123-0.59r-p3.diff
+Content-Disposition: inline; filename="mpg123-0.59r-p3.diff"
+
+diff -upr mpg123-0.59r/audio_alsa.c mpg123-0.59r-p3/audio_alsa.c
+--- mpg123-0.59r/audio_alsa.c	1999-05-28 03:25:50.000000000 -0700
++++ mpg123-0.59r-p3/audio_alsa.c	2004-11-12 22:00:26.704988507 -0800
+@@ -4,9 +4,10 @@
+  *  Code by Anders Semb Hermansen <ahermans@vf.telia.no>
+  *  Cleanups by Jaroslav Kysela <perex@jcu.cz>
+  *              Ville Syrjala <syrjala@sci.fi>
++ *  ALSA 0.9.0 API by Pete Zaitcev <zaitcev@yahoo.com>
+  *
+- *  You can use -a <soundcard #>:<device #>...
+- *  For example: mpg123 -a 1:0 aaa.mpg
++ *  You can use -a <soundcard name>:<device #>[,<subdevice #>]...
++ *  For example: mpg123 -a hw:0,0 aaa.mpg
+  *               mpg123 -a guspnp:1 aaa.mpg
+  *
+  * This file comes under GPL license. 
+@@ -16,97 +17,179 @@
+ 
+ #include <stdlib.h>
+ #include <ctype.h>
+-#include <sys/asoundlib.h>
++#include <alsa/asoundlib.h>
+ 
+-#ifdef SND_LITTLE_ENDIAN
+-#define SND_PCM_SFMT_S16_NE SND_PCM_SFMT_S16_LE
+-#define SND_PCM_SFMT_U16_NE SND_PCM_SFMT_U16_LE
+-#define SND_PCM_FMT_S16_NE SND_PCM_FMT_S16_LE
+-#define SND_PCM_FMT_U16_NE SND_PCM_FMT_U16_LE
+-#else
+-#define SND_PCM_SFMT_S16_NE SND_PCM_SFMT_S16_BE
+-#define SND_PCM_SFMT_U16_NE SND_PCM_SFMT_U16_BE
+-#define SND_PCM_FMT_S16_NE SND_PCM_FMT_S16_BE
+-#define SND_PCM_FMT_U16_NE SND_PCM_FMT_U16_BE
+-#endif
++static int audio_set_playback_params(struct audio_info_struct *ai);
+ 
+ int audio_open(struct audio_info_struct *ai)
+ {
+ 	int err;
+-	int card=0,device=0;
+-	char scard[128], sdevice[128];
++	char *device;
+ 
+ 	if(!ai)
+ 		return -1;
+ 	if(ai->device) {	/* parse ALSA device name */
+-		if(strchr(ai->device,':')) {	/* card with device */
+-			strncpy(scard, ai->device, sizeof(scard)-1);
+-			scard[sizeof(scard)-1] = '\0';
+-			if (strchr(scard,':')) *strchr(scard,':') = '\0';
+-			card = snd_card_name(scard);
+-			if (card < 0) {
+-				fprintf(stderr, "wrong soundcard number: %s\n", scard);
+-				exit(1);
+-			}
+-			strncpy(sdevice, strchr(ai->device, ':') + 1, sizeof(sdevice)-1);
+-		} else {
+-			strncpy(sdevice, ai->device, sizeof(sdevice)-1);
+-		}
+-		sdevice[sizeof(sdevice)-1] = '\0';
+-		device = atoi(sdevice);
+-		if (!isdigit(sdevice[0]) || device < 0 || device > 31) {
+-			fprintf(stderr, "wrong device number: %s\n", sdevice);
+-			exit(1);
+-		}
++		device = ai->device;
++	} else {
++		device = "hw:0,0";
+ 	}
+ 
+-	if((err=snd_pcm_open(&ai->handle, card, device, SND_PCM_OPEN_PLAYBACK)) < 0 )
++	if ((err = snd_pcm_open(&ai->handle, device, SND_PCM_STREAM_PLAYBACK, 0)) < 0)
+ 	{
+-		fprintf(stderr, "open failed: %s\n", snd_strerror(err));
++		fprintf(stderr, "open failed for %s: %s\n", device, snd_strerror(err));
++		/*
++		 * An exit is pretty disgusting, for a library.
++		 * We are trying to prevent perror() in mpg123 from
++		 * using a bogus errno.
++		 */
+ 		exit(1);
+ 	}
+ 
+-	if(audio_reset_parameters(ai) < 0)
+-	{
+-		audio_close(ai);
++	if ((err = snd_pcm_hw_params_malloc(&ai->params)) < 0) {
++		fprintf(stderr, "params malloc failed: %s\n", snd_strerror(err));
++		snd_pcm_close(ai->handle);
+ 		return -1;
+ 	}
+ 
++	audio_set_playback_params(ai);	/* Probably not really needed. */
+ 	return 0;
+ }
+ 
+-static void audio_set_playback_params(struct audio_info_struct *ai)
++/*
++ * ALSA's setting model is a phantasmagoric nightmare. It has no notion of a
++ * current setting, but only a notion of a current set of settings. The only way
++ * to set rate and format is to start with a set which includes all settings,
++ * then narrow it down to the settings you need.
++ */
++static int audio_set_playback_params(struct audio_info_struct *ai)
+ {
++	snd_pcm_hw_params_t *pp = ai->params;
+ 	int err;
+-	snd_pcm_playback_info_t pi;
+-	snd_pcm_playback_params_t pp;
++#if 0
++	int dir;
++	snd_pcm_uframes_t buffer_size;
++	snd_pcm_uframes_t period_size, min_period_size, max_period_size;
++#endif
++	snd_pcm_format_t format;
+ 
+-	if((err=snd_pcm_playback_info(ai->handle, &pi)) < 0 )
+-	{
+-		fprintf(stderr, "playback info failed: %s\n", snd_strerror(err));
+-		return;	/* not fatal error */
++	/*
++	 * First, obtain the complete set.
++	 */
++	if ((err = snd_pcm_hw_params_any(ai->handle, pp)) < 0) {
++		fprintf(stderr, "snd_pcm_hw_params_any failed: %s\n",
++		    snd_strerror(err));
++		return -1;
+ 	}
+ 
+-	bzero(&pp, sizeof(pp));
+-	pp.fragment_size = pi.buffer_size/4;
+-	if (pp.fragment_size > pi.max_fragment_size) pp.fragment_size = pi.max_fragment_size;
+-	if (pp.fragment_size < pi.min_fragment_size) pp.fragment_size = pi.min_fragment_size;
+-	pp.fragments_max = -1;
+-	pp.fragments_room = 1;
++	/*
++	 * Narrorow access (not settable)
++	 */
++	err = snd_pcm_hw_params_set_access(ai->handle, pp, SND_PCM_ACCESS_RW_INTERLEAVED);
++	if (err < 0) {
++		fprintf(stderr, "snd_pcm_hw_params_set_access failed: %s\n",
++		    snd_strerror(err));
++		return -1;
++	}
++
++	/*
++	 * Narrow the set with mpg123 settables: channels, format, rate.
++	 */
++	if (ai->channels >= 1) {
++		err = snd_pcm_hw_params_set_channels(ai->handle, pp, ai->channels);
++		if (err < 0) {
++			fprintf(stderr,
++			    "snd_pcm_hw_params_set_channels failed: %s\n",
++			    snd_strerror(err));
++			return -1;
++		}
++	}
+ 
+-	if((err=snd_pcm_playback_params(ai->handle, &pp)) < 0 )
++	switch(ai->format)
+ 	{
++	case AUDIO_FORMAT_SIGNED_16:
++	default:
++		format = SND_PCM_FORMAT_S16;
++		break;
++	case AUDIO_FORMAT_UNSIGNED_8:
++		format = SND_PCM_FORMAT_U8;
++		break;
++	case AUDIO_FORMAT_SIGNED_8:
++		format = SND_PCM_FORMAT_S8;
++		break;
++	case AUDIO_FORMAT_ULAW_8:
++		format = SND_PCM_FORMAT_MU_LAW;
++		break;
++	case AUDIO_FORMAT_ALAW_8:
++		format = SND_PCM_FORMAT_A_LAW;
++		break;
++	case AUDIO_FORMAT_UNSIGNED_16:
++		format = SND_PCM_FORMAT_U16;
++		break;
++	}
++	err = snd_pcm_hw_params_set_format(ai->handle, pp, format);
++	if (err < 0) {
++		fprintf(stderr,
++		    "snd_pcm_hw_params_set_format failed: %s\n",
++		    snd_strerror(err));
++		return -1;
++	}
++
++	if (ai->rate >= 0) {
++		err = snd_pcm_hw_params_set_rate(ai->handle, pp, ai->rate, 0);
++		if (err < 0) {
++			fprintf(stderr,
++			    "snd_pcm_hw_params_set_rate failed: %s\n",
++			    snd_strerror(err));
++			return -1;
++		}
++	}
++
++	/*
++	 * Recalculate the latency settings. This is not something you want
++	 * often. The mpg123 needs this when you do  netcat|mpg123  to listen
++	 * to the radio.
++	 */
++#if 0 /* Keep this off temporarily while we debug cutoffs on underflow */
++	if ((err = snd_pcm_hw_params_get_period_size(pp, &period_size, &dir)) != 0) {
++		fprintf(stderr, "snd_pcm_hw_params_get_period_size error %d\n", err);
++	}
++	printf("old period size %d (dir %d)\n", (int) period_size, dir); /* P3 */
++
++	snd_pcm_hw_params_get_period_size_min(pp, &min_period_size, &dir);
++	snd_pcm_hw_params_get_period_size_max(pp, &max_period_size, &dir);
++	if (snd_pcm_hw_params_get_buffer_size(pp, &buffer_size) != 0) {
++		fprintf(stderr, "snd_pcm_hw_params_get_buffer_size error\n");
++	}
++
++	period_size = buffer_size/4;
++	if (period_size > max_period_size) period_size = max_period_size;
++	if (period_size < min_period_size) period_size = min_period_size;
++	printf("new period size %d\n", (int) period_size); /* P3 */
++	if ((err = snd_pcm_hw_params_set_period_size(ai->handle, pp, period_size, 0)) != 0) {
+ 		fprintf(stderr, "playback params failed: %s\n", snd_strerror(err));
+-		return; /* not fatal error */
+ 	}
++
++	// P3
++	// pp.fragments_max = -1;
++	// pp.fragments_room = 1;
++#endif
++
++	/*
++	 * Finally, commit settings to the hardware.
++	 */
++	if ((err = snd_pcm_hw_params(ai->handle, pp)) < 0) {
++		fprintf(stderr, "snd_pcm_hw_params failed: %s\n", snd_strerror(err));
++		/* Not fatal for partial settings at initialization */
++		return 0;
++	}
++
++	return 0;
+ }
+ 
+ int audio_reset_parameters(struct audio_info_struct *ai)
+ {
+-	audio_set_format(ai);
+-	audio_set_channels(ai);
+-	audio_set_rate(ai);
+ 
++	audio_set_playback_params(ai);
+ 	return 0;
+ }
+ 
+@@ -117,81 +200,33 @@ int audio_rate_best_match(struct audio_i
+ 
+ int audio_set_rate(struct audio_info_struct *ai)
+ {
+-	int ret;
+ 
+ 	if(!ai || ai->rate < 0)
+ 		return -1;
+-
+-	ai->alsa_format.rate=ai->rate;
+-
+-	if((ret=snd_pcm_playback_format(ai->handle, &ai->alsa_format)) < 0 )
+-		return -1;
+-
+-	audio_set_playback_params(ai);
+-
+-	return 0;
++	return audio_set_playback_params(ai);
+ }
+ 
+ int audio_set_channels(struct audio_info_struct *ai)
+ {
+-	int ret;
+ 
+-	if(ai->alsa_format.channels < 0)
++	if(ai->channels < 0)
+ 		return 0;
+-
+-	ai->alsa_format.channels = ai->channels;
+-
+-	if((ret=snd_pcm_playback_format(ai->handle, &ai->alsa_format)) < 0 )
+-		return -1;
+-
+-	audio_set_playback_params(ai);
+-
+-	return 0;
++	return audio_set_playback_params(ai);
+ }
+ 
+ int audio_set_format(struct audio_info_struct *ai)
+ {
+-	int ret;
+ 
+ 	if(ai->format == -1)
+ 		return 0;
+-
+-	switch(ai->format)
+-	{
+-		case AUDIO_FORMAT_SIGNED_16:
+-		default:
+-			ai->alsa_format.format=SND_PCM_SFMT_S16_NE;
+-			break;
+-		case AUDIO_FORMAT_UNSIGNED_8:
+-			ai->alsa_format.format=SND_PCM_SFMT_U8;
+-			break;
+-		case AUDIO_FORMAT_SIGNED_8:
+-			ai->alsa_format.format=SND_PCM_SFMT_S8;
+-			break;
+-		case AUDIO_FORMAT_ULAW_8:
+-			ai->alsa_format.format=SND_PCM_SFMT_MU_LAW;
+-			break;
+-		case AUDIO_FORMAT_ALAW_8:
+-			ai->alsa_format.format=SND_PCM_SFMT_A_LAW;
+-			break;
+-		case AUDIO_FORMAT_UNSIGNED_16:
+-			ai->alsa_format.format=SND_PCM_SFMT_U16_NE;
+-			break;
+-	}
+-
+-	if((ret=snd_pcm_playback_format(ai->handle, &ai->alsa_format)) < 0 )
+-		return -1;
+-
+-	audio_set_playback_params(ai);
+-
+-	return 0;
++	return audio_set_playback_params(ai);
+ }
+ 
+ int audio_get_formats(struct audio_info_struct *ai)
+ {
+-	int i, err;
++	snd_pcm_format_mask_t *mask;
++	int i;
+ 	int fmt = -1;
+-	snd_pcm_playback_info_t pi;
+ 
+ 	static int fmts[] = {
+ 		AUDIO_FORMAT_SIGNED_16, AUDIO_FORMAT_UNSIGNED_16,
+@@ -199,19 +234,17 @@ int audio_get_formats(struct audio_info_
+ 		AUDIO_FORMAT_ULAW_8, AUDIO_FORMAT_ALAW_8
+ 	};
+ 	static int afmts[] = {
+-		SND_PCM_FMT_S16_NE, SND_PCM_FMT_U16_NE,
+-		SND_PCM_FMT_U8, SND_PCM_FMT_S8,
+-		SND_PCM_FMT_MU_LAW, SND_PCM_FMT_A_LAW
++		SND_PCM_FORMAT_S16, SND_PCM_FORMAT_U16,
++		SND_PCM_FORMAT_U8, SND_PCM_FORMAT_S8,
++		SND_PCM_FORMAT_MU_LAW, SND_PCM_FORMAT_A_LAW
+ 	};
+ 
+-	if((err=snd_pcm_playback_info(ai->handle, &pi)) < 0 )
+-	{
+-		fprintf(stderr, "playback info failed: %s\n", snd_strerror(err));
+-		return -1;
+-	}
++	snd_pcm_format_mask_alloca(&mask);
+ 
++	snd_pcm_hw_params_any(ai->handle, ai->params);
++	snd_pcm_hw_params_get_format_mask(ai->params, mask);
+ 	for (i = 0; i < 6; i++) {
+-		if (pi.formats & afmts[i]) {
++		if (snd_pcm_format_mask_test(mask, afmts[i])) {
+ 			if (fmt == -1)
+ 				fmt = 0;
+ 			fmt |= fmts[i];
+@@ -224,15 +257,23 @@ int audio_get_formats(struct audio_info_
+ int audio_play_samples(struct audio_info_struct *ai,unsigned char *buf,int len)
+ {
+ 	ssize_t ret;
++	unsigned int factor;
+ 
+-	ret=snd_pcm_write(ai->handle, buf, len);
+-
++	factor = 0;
++	if (ai->channels != 1) factor += 1;
++	if (ai->format & AUDIO_FORMAT_MASK) factor += 1;
++	ret = snd_pcm_writei(ai->handle, buf, len >> factor);
++	if (ret < 0) {
++		fprintf(stderr, "snd_pcm_write failed: %s\n", snd_strerror(ret));
++	}
+ 	return ret;
+ }
+ 
+ int audio_close(struct audio_info_struct *ai)
+ {
+ 	int ret;
++
+ 	ret = snd_pcm_close(ai->handle);
++	snd_pcm_hw_params_free(ai->params);
+ 	return ret;
+ }
+Only in mpg123-0.59r-p3: audio_alsa.o
+diff -upr mpg123-0.59r/audio.c mpg123-0.59r-p3/audio.c
+--- mpg123-0.59r/audio.c	1999-04-06 08:53:05.000000000 -0700
++++ mpg123-0.59r-p3/audio.c	2004-11-10 23:04:58.000000000 -0800
+@@ -17,9 +17,7 @@ void audio_info_struct_init(struct audio
+   ai->output = -1;
+ #ifdef ALSA
+   ai->handle = NULL;
+-  ai->alsa_format.format = -1;
+-  ai->alsa_format.rate = -1;
+-  ai->alsa_format.channels = -1;
++  ai->params = NULL;
+ #endif
+   ai->device = NULL;
+   ai->channels = -1;
+diff -upr mpg123-0.59r/audio.h mpg123-0.59r-p3/audio.h
+--- mpg123-0.59r/audio.h	1999-06-15 13:22:03.000000000 -0700
++++ mpg123-0.59r-p3/audio.h	2004-11-10 22:15:16.000000000 -0800
+@@ -35,9 +35,8 @@ enum { DECODE_TEST, DECODE_AUDIO, DECODE
+ #include <dmedia/audio.h>
+ #endif
+ 
+-
+ #ifdef ALSA
+-#include <sys/asoundlib.h>
++#include <alsa/asoundlib.h>
+ #endif
+ 
+ struct audio_info_struct
+@@ -53,8 +52,8 @@ struct audio_info_struct
+   long gain;
+   int output;
+ #ifdef ALSA
+-  void *handle;
+-  snd_pcm_format_t alsa_format;
++  snd_pcm_t *handle;
++  snd_pcm_hw_params_t *params;
+ #endif
+   char *device;
+   int channels;
+
+--0-1200859685-1100327087=:51627--
 
 
 -------------------------------------------------------
