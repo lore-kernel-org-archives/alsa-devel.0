@@ -1,11 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: via82xx problem
-Date: Thu, 10 Feb 2005 17:30:11 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0502101729210.12439-100000@studcom.urz.uni-halle.de>
-References: <420B7305.8010704@home.se>
+From: Liam Girdwood <Liam.Girdwood@wolfsonmicro.com>
+Subject: [RFC] New method for adding AC97 SNDRV_CTL_ELEM_TYPE_ENUMERATED
+ controls
+Date: Thu, 10 Feb 2005 16:33:10 +0000
+Message-ID: <1108053190.4533.140.camel@cearnarfon>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <420B7305.8010704@home.se>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,19 +15,100 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tobias Svensson <tobiassvensson@home.se>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Tobias Svensson wrote:
-> My soundcard does not work with the last 1.0.8 release of alsa (worked
-> fine with 1.0.7)
+I'm interested to know what people think of the following change to the
+way that custom controls of type SNDRV_CTL_ELEM_TYPE_ENUMERATED are
+added in ac97_codec.c and ac97_patch.c. 
 
-Driver doesn't load?  No sound?  Crashes?  Green demons coming out of
-your speakers?  ;-)
+Currently, we have to do something like this for every custom
+SNDRV_CTL_ELEM_TYPE_ENUMERATED control we want to add:-
+
+int snd_add_ctl(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo)
+{
+	static char *texts[6] = {
+		"Mic1", "Mic2", "Mono", "Stereo", "Line L", Line R"
+	};
+
+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+	uinfo->count = 1;
+	uinfo->value.enumerated.items = 6;
+	if (uinfo->value.enumerated.item > 5)
+		uinfo->value.enumerated.item = 5;
+	strcpy(uinfo->value.enumerated.name,
+texts[uinfo->value.enumerated.item]);
+	return 0;
+}
+
+I would like to make it easier to add a lot of larger and more complex
+controls without the need of adding a lot of new code (and re inveting
+the wheel). I'm proposing adding an AC97_ENUM_SINGLE macro i.e.
+
+#define AC97_ENUM_SINGLE(xname, reg, shift, item, invert) \
+{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .info =
+snd_ac97_info_enum_single, \
+  .get = snd_ac97_get_enum_single, .put = snd_ac97_put_enum_single, \
+  .private_value = reg | (shift << 8) | (item << 16) | (invert << 24) }
+
+and also changing AC97_ENUM_DOUBLE:-
+
+#define AC97_ENUM_DOUBLE(xname, reg, shift_l, shift_r, item, invert) \
+{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .info =
+snd_ac97_info_enum_double, \
+  .get = snd_ac97_get_enum_double, .put = snd_ac97_put_enum_double, \
+  .private_value = reg | (shift_l << 8) | (shift_r << 12) | (item << 16)
+| (invert << 24) }
 
 
-Clemens
+This now makes it possible to add the new controls to a regular array of
+type snd_kcontrol_new_t. i.e.
+
+static const snd_kcontrol_new_t wm13_snd_ac97_controls_recsel[7] = {
+AC97_ENUM_SINGLE("Record to Headphone Path", AC97_VIDEO, 14, 5, 0),
+AC97_SINGLE("Record to Headphone Volume", AC97_VIDEO, 11, 7, 0),
+AC97_ENUM_SINGLE("Record to Mono Path", AC97_VIDEO, 9, 5, 0),
+AC97_SINGLE("Record to Mono Boost (+20dB)", AC97_VIDEO, 8, 1, 0),
+AC97_SINGLE("Record ADC Boost (+20dB)", AC97_VIDEO, 6, 1, 0),
+AC97_ENUM_SINGLE("Record Select Left", AC97_VIDEO, 3, 6, 0),
+AC97_ENUM_SINGLE("Record Select Right", AC97_VIDEO, 0, 7, 0),
+};
+
+The text and mask for the control exists in a table of type 
+
+struct ac97_enum_info {
+	int mask;	/* number of bits in selector */
+	char* text[8];	/* selector description */
+};
+
+e.g.
+
+static struct ac97_enum_info enum_info[] = {
+	{ 2, {"pre 3D", "post 3D", NULL, NULL, NULL, NULL, NULL, NULL}}, /* std
+GP */
+	{ 2, {"Mix", "Mic", NULL, NULL, NULL, NULL, NULL, NULL}}, /* std GP */
+	{ 2, {"Mic1", "Mic2", NULL, NULL, NULL, NULL, NULL, NULL}}, /* std PG
+*/
+	{ 8, {"Mic", "CD", "Video", "Aux", "Line", "Mix", "Mix Mono",
+"Phone"}}, /* std REC select */
+	{ 4, {"Stereo", "Mic1", "Mic2", "Mute", NULL, NULL, NULL, NULL}},
+	{ 4, {"Stereo", "Left", "Right", "Mute", NULL, NULL, NULL, NULL}},
+	{ 8, {"Mic1", "Mic2", "Line L", "Mono In", "HP Mix L", "Spk Mix", "Mono
+Mix", "Zh"}},
+	{ 8, {"Mic1", "Mic2", "Line R", "Mono In", "HP Mix R", "Spk Mix", "Mono
+Mix", "Zh"}},
+};
+
+
+I've already implemented this for the wm9713 codec and it works well. I
+can now add new routing and mixer enum controls very quickly without too
+much new driver bloat.
+
+If this is acceptable, I'll submit a patch.
+
+Liam 
+
+
 
 
 
