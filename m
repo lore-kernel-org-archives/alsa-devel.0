@@ -1,15 +1,12 @@
 From: "Tais M. Hansen" <tais.hansen@osd.dk>
-Subject: Re: VIA823x testing
-Date: Wed, 29 Jan 2003 00:19:47 +0100
+Subject: Aplay duration
+Date: Wed, 29 Jan 2003 01:05:09 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301290019.55309.tais.hansen@osd.dk>
-References: <200301221234.33054.tais.hansen@osd.dk> <200301281425.38097.tais.hansen@osd.dk> <s5hznplkzyh.wl@alsa2.suse.de>
+Message-ID: <200301290105.13357.tais.hansen@osd.dk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: Multipart/Mixed;
+  boundary="------------Boundary-00=_L88GL6ZNQU706DR1DXWU"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hznplkzyh.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,96 +15,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
+
+
+--------------Boundary-00=_L88GL6ZNQU706DR1DXWU
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-On Tuesday 28 January 2003 17:21, Takashi Iwai wrote:
-> > > please check the mixer configuration.
-> > > there must be any sounds, even though pops/clicks and error message=
-s
-> > > might come.
-> > No sound at all. I've tried turning everything up to full volume,
-> > unmuting everything, tried all three onboard minijacks. Not a peep.
-> hmm, then it seems something goes wrong completely.
-> at least, i see the "invalid CURR_PTR" error at each call.
-> it's weird.  did you see this in the log of ogg123?
+Hi,
 
-Yes. Lots of those. I also noticed something else. Seems like there's som=
-e=20
-kind of overflow in the logging or something. I found a few lines that ha=
-s=20
-been truncated like these:
+There's a minor problem with the duration parameter for aplay. When used =
+like=20
+this:
 
-Jan 28 17:30:44 proficio kernel: ALSA ../alsa-kernel/pci/via82xx.c:733:=20
-invURR_COUNT reg
+aplay -d 10 test.wav
 
-Jan 28 17:30:46 proficio kernel: ALSA ../alsa-kernel/pcURR_COUNT reg
-
-Jan 28 17:30:46 proficio kernel: ALSA ../alsa-kernel/p3: invalid CURR_COU=
-NT=20
-reg
-
-I'm guessing that too much output comes too fast, filling some buffer and=
+It's supposed to play 10 seconds of the wav-file, but it only plays about=
 =20
-truncating the rest. It's probably syslogd which truncates, but I thought=
- I'd=20
-mention it anyway.
+0.1sec. The problem lies in the function playback() in aplay.c where=20
+calc_count() is called before hwparams is updated (by calling test_wave()=
+)=20
+with the actual wave-parameters.
 
-
-> > - From what I can see when playing with ogg123, it's speeding through=
- the
-> > ogg-file. It took 4.8s to play 10s ogg-file.
-> interesting.
-> the new patch will put the timestamp at each interrupt, so you can
-> measure the period time between interrupts.
-> this shoud be (period-size-in-frames * 4 / sample-rate)
-
-I edited the patch. You inited a timeval tval, but referred to tv->sec an=
-d=20
-tv->usec. I'm guessing it should have been tval.tv_sec and tval.tv_usec.
-
-> please compare the measured values.
-
-I'm not sure what you mean with 'period-size-in-frames', so I just wrote =
-up=20
-the numbers here.
-
-8 'period elapsed' from ogg123 test (44100 Hz, 2 ch):
-
-1043795039.736837 idx 0 ptr 0x0
-+0.008531 idx+1 ptr+0x1000
-1043795039.745368 idx 1 ptr 0x1000
-+0.001152 idx+1 ptr+0x1000
-1043795039.746520 idx 2 ptr 0x2000
-+0.012034 idx+1 ptr+0x1000
-1043795039.758554 idx 3 ptr 0x3000
-+0.012041 idx+1 ptr+0x1000
-1043795039.770595 idx 4 ptr 0x4000
-+0.004189 idx+1 ptr+0x1000
-1043795039.774784 idx 5 ptr 0x5000
-+0.000696 idx+1 ptr+0x1000
-1043795039.775480 idx 6 ptr 0x6000
-+0.012130 idx+1 ptr+0x1000
-1043795039.787610 idx 7 ptr 0x7000
-
-5 'period elapsed' from aplay test (44100 Hz, 2 ch, Signed 16 bit Little=20
-Endian) period_size 4410:
-
-1043794327.002204 idx 0 ptr 0x0
-+0.012029 idx+5 ptr+0x44e8
-1043794327.014233 idx 5 ptr 0x44e8
-+0.012031 idx+5 ptr+0x44e8
-1043794327.026264 idx 10 ptr 0x89d0
-+0.012029 idx+5 ptr+0x44e8
-1043794327.038293 idx 15 ptr 0xceb8
-+0.012032 idx+6 ptr+0x44e8
-1043794327.050325 idx 21 ptr 0x113a0
-
-I'm not sure what to make of this. Sorry.
+I've attached a quick and dirty fix for this particular issue.
 
 - --=20
 Regards,
@@ -117,20 +52,47 @@ OSD
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.0 (GNU/Linux)
 
-iQIVAwUBPjcQGIIvLOJqwYc4AQIWzhAAgk2e6Bpelgc539+zXr3tQhOH6DSPlcQ7
-c2J1ta1PkKuqY9OH1uvYqxcIbR2wqQ5wdB6y6zaLsD0pdODQr0adtuY4FX+FiiyB
-iMpI23E0T8JY21gw09dmn0hrvfFH/0xsW+rFBtIur+1uHYg/eKLdKs6rHo6vng5h
-0NgAbiN2Xd9Mx9yZBVTj81VwZm/d7GRFu52xgafhgtRACcLM4bDve4ErouvhleY4
-YClGXcZyBhprYMXxKr0Rv/3lSM+iP2bDis/B1lVotVABQRrino5NbM4CCBr7Hrrt
-Zl/Ay1tphQ9sBuqrSumvMJ7IA9FMnt/BjAxuN+7VIQjDSGguYde1oWuinYPXTo//
-4BoKRu46/5WOuJzi13aJXAI3pa2V+DVEVPOvmHoodTc8UV2mOWlAsVaUjw7I+ipy
-e0R2JvDfL4O2F8XDVUsxjwxwkKlm+70CyM4PtNw1kBrkgDONQ6G9HQkIOe/ie4oh
-dQR2btvxv273gsrRdz0JSfYDvd8r3uWjPffNsSzxlQk9q9yORgd2KytBkUZvj5bS
-WHPC8R9KAjiAnju9cv+yX9n507VsyEAX594ISLK179bADdzrpZActJRIkvNvYSBh
-8CXU4ZkQRPFOrGk5AF0MhGuiWHazOOshX7clxTTl9Tlf1iOEODz3nosJbpEre9aJ
-pKqcrOVNBSs=3D
-=3D6lBB
+iQIVAwUBPjcat4IvLOJqwYc4AQKuBQ//da2oy/kWE7SCs86DCE9BERkjG1LZkN/X
+enYGlTBmS76qOmx+xZNRRRgEKzemzvEg6ANh4n6EVag1DL7ftTo62KWZMTxDyAps
+D8M4xmDKjHPwPr0F8sC+CC0OfSbzjOSVHVYmXSxlFU0JYeinP8/Y0oSxCwLpjYiP
+AJGaI9gRHbebWkX/xmQ+FvqdFgHtLn5WCT+1nmcTroA74Kv9nlUgt/LUKzZ+AHSA
+gEtjpFUIC2OQayMiLJ08nXdeiClUQLEGNziRK3v6+Yx0q8V8HCLgo71xFqbjmvd9
+xhOi5+4XRN4CHEMgcAPWWeuEq50F44dq+BNSDxCQRoCNqsJ58S2usyqtcY4iIkMp
+0wceF/90rMFaL4T5ytA3QE4+916enhOJyPh694XJu1o2tnJ2eO3uiw/LRVV8qs/Q
+xvm04HVASSMNlu/oR7Gf5vBQdfzBOEY1yUZnzUKku7J9l5cMdHYJDMCfWC4QQ0j7
+UGxR2Tg64DTAirs51BlQ7XT2spWWPE/tGigyOMccdwNIpEHJkhSWg8h2Q9mNYkRd
+Yd+hC2YjyXZIaCuRR7tI4T/GXMpEWKXkrC2K4DvhwizWx1KF6fUaDWLd95W+lVXi
+kdwu0V9qv6F4vdrrFNdPqKEbgyzySt7qC0O/b1K+UK2oBFgglnC8Q66cY4Ukb88M
+wik2uv5W4+U=3D
+=3DaZey
 -----END PGP SIGNATURE-----
+
+--------------Boundary-00=_L88GL6ZNQU706DR1DXWU
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="alsa-aplay-duration-patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="alsa-aplay-duration-patch"
+
+Index: ./alsa-utils/aplay/aplay.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-utils/aplay/aplay.c,v
+retrieving revision 1.155
+diff -u -4 -p -r1.155 aplay.c
+--- ./alsa-utils/aplay/aplay.c	19 Dec 2002 11:26:55 -0000	1.155
++++ ./alsa-utils/aplay/aplay.c	28 Jan 2003 23:55:34 -0000
+@@ -1796,8 +1796,9 @@ static void playback(char *name)
+ 		goto __end;
+ 	}
+ 	/* read bytes for WAVE-header */
+ 	if ((dtawave = test_wavefile(fd, audiobuf, dta)) >= 0) {
++		count = calc_count();
+ 		playback_go(fd, dtawave, count, FORMAT_WAVE, name);
+ 	} else {
+ 		/* should be raw data */
+ 		init_raw_data();
+
+--------------Boundary-00=_L88GL6ZNQU706DR1DXWU--
 
 
 
