@@ -1,13 +1,14 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: VIA 8233A with ALC650 codec
-Date: Mon, 24 Feb 2003 08:34:15 +0100
+From: Alec Edworthy <alec@edworthyuk.co.uk>
+Subject: Re: AOpen (Yamaha) AW744
+Date: Mon, 24 Feb 2003 09:05:12 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200302240734.IAA27436@www2.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <20030224090512.GI2124@wcs-test.lut.ac.uk>
+References: <20030218170620.GL18280@wcs-test.lut.ac.uk> <s5h8ywchbce.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <s5h8ywchbce.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa Dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This weekend i tested via8233a + alc650.
-Surround output jack is swaped with center/LFE jack (but not controls=20
-in mixer - surround control controls volume of center/LFE, ..)
-Please change condition in via82xx.c
+On Wed, Feb 19, 2003 at 10:24:33AM +0100, Takashi Iwai wrote:
+> At Tue, 18 Feb 2003 17:06:20 +0000,
 
-unsigned short val;
-if (runtime->channels > 4)
-    /* slot mapping: 3,4,7,8 */
-    val =3D 0;=20
+<snip>
 
-to=20
+> 
+> how about adjusting "IEC958 AC97 Playback Volume"?
 
-if (runtime->channels < 5)
+Unfortunately that did not have any effect either. I am now using
+the latest CVS snapshot of the code and still cannot get CDs
+audio to come out of the optical out unless I use xmms to play
+the CD.
 
-then everything works ok.
+Alec
 
-Thanks
-Peter Zubaj
-
-=0A____________________________________=0Ahttp://www.pobox.sk/ - urcujeme t=
-rendy=0A
+-- 
+Alec Edworthy
+alec@edworthyuk.co.uk
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: SlickEdit Inc. Develop an edge.
-The most comprehensive and flexible code editor you can use.
-Code faster. C/C++, C#, Java, HTML, XML, many more. FREE 30-Day Trial.
-www.slickedit.com/sourceforge
+This sf.net email is sponsored by:ThinkGeek
+Welcome to geek heaven.
+http://thinkgeek.com/sf
