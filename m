@@ -1,8 +1,8 @@
 From: tom burkart <alsa@aussec.com>
 Subject: Re: 0.9.3c build failure + partial patch
-Date: Wed, 28 May 2003 11:48:51 +1000 (EST)
+Date: Wed, 28 May 2003 10:13:13 +1000 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305281141590.1139-100000@home.aussec.com>
+Message-ID: <Pine.LNX.4.44.0305281007180.1139-100000@home.aussec.com>
 References: <s5hr86kpkrm.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -25,20 +25,26 @@ On May 27, Takashi Iwai wrote:
 > each distribution has different file location (although LSB exists).
 > creating the file always is not preferred way in the case of init
 > script.
-Correct.  The existing checks are fine as they check /etc/... for the most
-common distributions and so it installs it in the correct place.  What I
-am adding is that install checks whether the destination directory exists
-and creates it if it doesn't.  If the "if" statement evaluates to true
-then the directory exists and is the correct one.  If you have a $DESTDIR
-set, the actual installation dir will most likely not exist and install
-fails.  Hence the reason for getting install to check that the directories
-are there and to install them as required.
+This is correct.  That is why make install checks which one of the
+various directories actually exists and then does the appropriate install
+in DESTDIR/whatever, which is the correct way of doing it.  All I was
+adding was for install to actually create the directories in case they did
+not exist (for the case of package creation installs).
 
 > perhaps it's better not to install it as default but via
 > "make install-debian" or something like that.
-Absolutely not necessary as the existing code is nearly correct.
+This is more painful, I would have thought.
+
+Basically, I am suggesting to leave the install alone as it is correct, I
+am only adding the option of creating the directories if they don't
+already exist.
 
 tom.
+Consultant
+
+AUSSEC    Phone: 61 4 1768 2202
+339 Blaxland Rd., Ryde NSW 2112
+Email: tom@aussec.com
 
 
 
