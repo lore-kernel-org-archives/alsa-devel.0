@@ -1,7 +1,7 @@
-From: Marcus Better <marcus@better.se>
-Subject: Voice support for SmartLink softmodem
-Date: Sat, 15 Jan 2005 23:33:52 +0100
-Message-ID: <41E99A50.1080003@better.se>
+From: Eric Dantan Rzewnicki <eric@zhevny.com>
+Subject: alsa-utils-1.0.8 make error
+Date: Sat, 15 Jan 2005 18:41:59 -0500
+Message-ID: <41E9AA47.3040107@zhevny.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,23 +16,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: sashak@smlink.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+I got the following error when attempting to make alsa-utils-1.0.8:
 
-could someone tell me whether it would be possible to get voice support 
-with the SmartLink softmodem driver in ALSA mode, for example using the 
-snd_intel8x0m module?
+Making all in po
+make[2]: Entering directory 
+`/home/eric/audio_code/recent_releases/alsa-utils-1.0.8/alsaconf/po'
+mv: cannot stat `t-ja.gmo': No such file or directory
+make[2]: *** [ja.gmo] Error 1
+make[2]: Leaving directory 
+`/home/eric/audio_code/recent_releases/alsa-utils-1.0.8/alsaconf/po'
 
-Would it work in full duplex?
+this patch to alsa-utils-1.0.8/alsaconf/po/Makefile.in lets it compile 
+... but, I don't understand what I've done:
 
-If so, it should be possible to use the modem together with the 
-Asterisk PBX (http://www.asterisk.org) which would be very cool.
 
-Regards,
+--- Makefile.in 2005-01-15 18:27:52.000000000 -0500
++++ Makefile.in.ok      2005-01-15 18:29:25.000000000 -0500
+@@ -24,19 +24,15 @@
+  MSGMERGE_UPDATE = @MSGMERGE@ --update
 
-Marcus
+  DISTFILES = $(POFILES) Makefile.in
+-CATALOGS = $(POFILES:.po=.gmo)
++CATALOGS = $(POFILES:.po)
+
+  all: $(CATALOGS)
+
+-.SUFFIXES: .po .gmo .mo
++.SUFFIXES: .po .mo
+
+  .po.mo:
+         $(MSGFMT) -c -o t-$@ $< && mv t-$@ $@
+
+-.po.gmo:
+-       @lang=`echo $* | sed -e 's,.*/,,'`; \
+-       rm -f $${lang}.gmo && $(GMSGFMT) -c --statistics -o 
+t-$${lang}.gmo $${lang}.po && mv t-$${lang}.gmo $${lang}.gmo
+-
+  $(DOMAIN).pot: $(GETTEXT_SRC)
+         $(XGETTEXT) -o$@ --default-domain=$(DOMAIN) \
+           --add-comments=TRANSLATORS: --language=Shell \
+
+
+
+-Eric Rz.
 
 
 -------------------------------------------------------
