@@ -1,12 +1,13 @@
-From: Howard Abrams <abramsh@acm.org>
-Subject: Re: This changes in MINIMAL FULL DUPLEX  is not enought!
-Date: Sat, 30 Mar 2002 21:36:44 -0800
+From: Robert Joop <rj@rainbow.in-berlin.de>
+Subject: Re: help needed for my AD1816A based soundcard
+Date: Sun, 31 Mar 2002 13:38:24 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CA6A06C.2010000@acm.org>
-References: <5cdd1dce41e23a9a973146fe99fd5df5@www1.mail.volny.cz>
+Message-ID: <20020331113824.GI707@rainbow.internal>
+References: <20020330202713.GF707@rainbow.internal> <20020330225341F.siemer@panorama.hadiko.de> <20020331004854.GH707@rainbow.internal> <20020331032556Y.siemer@panorama.hadiko.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20020331032556Y.siemer@panorama.hadiko.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,66 +16,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Robert Siemer <siemer@panorama.hadiko.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Exactly.
+On 02-03-31 03:25:56 MET DST, Robert Siemer wrote:
+> You don't need to try anything with ALSA code, as 'kernel isapnp'
+> does not find your card.
 
-These changes were only enough to get the example to compile,
-it still doesn't work for me either.
+ok, if you are sure about this.
+i must admit that i didn't give the kernel isapnp's output much
+attention, because i read somewhere that alsa does its own isapnp.
 
-Does ANYONE have a working example of a FULL DUPLEX alsa program?
+> Try isapnp_rdp=0x273 and play with isapnp_reset module parameter.
 
-h.
+doesn't help.
 
-pavelni@volny.cz wrote:
+is pnp necessary anyway?!
+this is the first time ever (in about 9 years of using linux) that i
+give pnp a try.
+with kernel 2.2.19 it was just
 
-> These changes in MINIMAL FULL DUPLEX AP is not enought!
-> I did this changes before, but was not able to get loop
-> from input to output, althought I have programed the same application
-> with using OSS before. So I little experiment to solve the problem.  
->   I set length of buffer at 44100 and tryed what happend. First it
-> recorded first buffer length. Then it  played the same length. And
-> that is all. Then no sound recorded and no sound played. Is it
-> somebody able to solve this problem to get final version of MINIMAL
-> FULL DUPLEX?                                 Thanks
->                                      Pavel
-> 12c10
-> < if ((snd_pcm_open ( &playback_handle, argv[1],
-> SND_PCM_STREAM_PLAYBACK, 0)) < 0) { ---
-> 
->>if ((playback_handle = snd_pcm_open (argv[1],
->>
-> SND_PCM_STREAM_PLAYBACK, 0)) < 0) { 17c15
-> < if ((snd_pcm_open ( &capture_handle, argv[1],
-> SND_PCM_STREAM_CAPTURE, 0)) < 0) { ---
-> 
->>if ((capture_handle = snd_pcm_open (argv[1],
->>
-> SND_PCM_STREAM_CAPTURE, 0)) < 0) { 27c25
-> < snd_pcm_hw_params_set_rate_near (playback_handle, hw_params, 44100,
-> 0); ---
-> 
->>snd_pcm_hw_params_set_rate_near (playback_handle, hw_params,
->>
-> 44100); 35c33
-> < snd_pcm_hw_params_set_rate_near (capture_handle, hw_params, 44100,
-> 0); ---
-> 
->>snd_pcm_hw_params_set_rate_near (capture_handle, hw_params, 44100);
->>
-> 45,46c43,44
-> < snd_pcm_writei (playback_handle, pbuf, sizeof (pbuf));
-> < snd_pcm_readi (capture_handle, cbuf, sizeof (cbuf));
-> ---
-> 
->>snd_pcm_write (playback_handle, pbuf, sizeof (pbuf));
->>snd_pcm_read (capture_handle, cbuf, sizeof (cbuf));
->>
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
-> 
+  alias sound-slot-0 gen_sound
+  alias sound-service-0-3 gen_sound
+  alias gen_sound sb
+  options sb io=0x220 irq=5 dma=1 dma16=0
+
+but this hangs the machine with 2.4.18, and i couldn't find out the
+correct module parameters for neither the kernel's ad1816 driver nor
+alsa's...
+
+rj
