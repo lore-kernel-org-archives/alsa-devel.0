@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000929]: Left/Right reversed when using the raw iec958 on Audigy2
-Date: Mon, 21 Feb 2005 15:04:18 +0100
-Message-ID: <ba2e6006de544890cf4813a14bf399f8@bugtrack.alsa-project.org>
+Date: Mon, 21 Feb 2005 15:14:21 +0100
+Message-ID: <ad9b346f4219d9fa778cb22868f759c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9E23725B
-	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 15:04:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4AEEC25B
+	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 15:14:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -37,7 +37,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             02-21-2005 14:56 CET
-Last Modified:              02-21-2005 15:04 CET
+Last Modified:              02-21-2005 15:14 CET
 ======================================================================
 Summary:                    Left/Right reversed when using the raw iec958 on
 Audigy2
@@ -79,11 +79,21 @@ Do you mean playing stereo sound using spdif has swapped left and right ?
 
 Channel swap in Audigy2.conf is needed for AC3 (DTS) passthrough.
 
+----------------------------------------------------------------------
+ TheOrwithVagrant - 02-21-05 15:14 
+----------------------------------------------------------------------
+Yes, stereo sound gets reversed. AC3 passthrough, whether DTS or DD, has
+sadly never worked for me with any version of alsa, regardless of whether
+i leave Audigy2.conf untouched, or tweak it to fix the channel reversal as
+above. It was in my long toilings with trying to get _that_ to work that I
+noticed this channel reversal bug/feature.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-21-05 14:56 TheOrwithVagrantNew Issue                                    
 02-21-05 15:04 pzad           Note Added: 0003679                          
+02-21-05 15:14 TheOrwithVagrantNote Added: 0003680                          
 ======================================================================
 
 
