@@ -1,55 +1,82 @@
-From: Rusty Russell <rusty@rustcorp.com.au>
-Subject: Re: [patch] voluntary-preempt-2.6.9-rc1-bk4-Q8
-Date: Fri, 03 Sep 2004 11:10:30 +1000
-Sender: netfilter-devel-bounces@lists.netfilter.org
-Message-ID: <1094126377.16999.49.camel@bach>
-References: <OF04883085.9C3535D2-ON86256F00.0065652B@raytheon.com>
-	<20040902063335.GA17657@elte.hu> <20040902065549.GA18860@elte.hu>
-	<1094108653.11364.26.camel@krustophenia.net>
-	<20040902071525.GA19925@elte.hu>
-	<1094110289.11364.32.camel@krustophenia.net>
-	<20040902074604.GA21144@elte.hu>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-bounces@lists.netfilter.org>
-In-Reply-To: <20040902074604.GA21144@elte.hu>
-List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=unsubscribe>
-List-Archive: </pipermail/netfilter-devel>
-List-Post: <mailto:netfilter-devel@lists.netfilter.org>
-List-Help: <mailto:netfilter-devel-request@lists.netfilter.org?subject=help>
-List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-devel>,
-	<mailto:netfilter-devel-request@lists.netfilter.org?subject=subscribe>
-Errors-To: netfilter-devel-bounces@lists.netfilter.org
-To: Ingo Molnar <mingo@elte.hu>
-Cc: Daniel Schmitt <pnambic@unu.nu>, netfilter-devel@lists.netfilter.org, linux-kernel <linux-kernel@vger.kernel.org>, "K.R. Foley" <kr@cybsft.com>, Lee Revell <rlrevell@joe-job.com>, Mark_H_Johnson@raytheon.com, alsa-devel <alsa-devel@lists.sourceforge.net>, Felipe Alfaro Solana <lkml@felipe-alfaro.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000472]: Built-in soundcard on Soltek SL-75DRV5 motherboard works only with ac97_quirk=0 option.
+Date: Wed,  1 Sep 2004 22:49:55 +0200 (CEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20040901204955.2605FE001@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7BD5B2A5
+	for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2004 22:49:55 +0200 (MEST)
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-09-02 at 17:46, Ingo Molnar wrote:
-> Rusty, what's going on in this code?
 
-Good question!  Not my code, fortunately...
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000472
+======================================================================
+Reported By:                Dawid Gajownik
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     472
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.8-1.521
+======================================================================
+Date Submitted:             08-29-2004 21:34 CEST
+Last Modified:              09-01-2004 22:49 CEST
+======================================================================
+Summary:                    Built-in soundcard on Soltek SL-75DRV5 motherboard works only with ac97_quirk=0 option.
+Description: 
+Built-in soundcard on Soltek SL-75DRV5 motherboard works only with
+ac97_quirk=0 option. This mobo has VIA VT8233A southbridge (snd-via82xx
+ALSA kernel module).
 
-> #1: we kmalloc(GFP_KERNEL) with a spinlock held and softirqs off - ouch!
-> 
-> #2: why does it do the kmalloc() anyway? It could store the position in
->     the seq pointer just fine. No need to alloc an integer pointer to
->     store the value in ...
-> 
-> #3: to fix the latency, ct_seq_show() could take the ip_conntrack_lock 
->     and could check the current index against ip_conntrack_htable_size. 
->     There's not much point in making this non-preemptible, there's 
->     a 4K granularity anyway.
+Is there any possibility, that it would be set up automatically by the
+alsa driver? (I'm not a programmer, but I've seen some ac97_quirk
+structure in via82xx.c source file).
+======================================================================
 
-The code tries to put an entire hash bucket into a single seq_read(). 
-That's not going to work if the hash is really deep.  On the other hand,
-not much will, and it's simple.
+----------------------------------------------------------------------
+ tiwai - 08-31-2004 13:36 CEST 
+----------------------------------------------------------------------
+The same PCI subsystem ID is already used for ASrock board, so
+I don't see the solution, so far.
 
-The lock is only needed on traversing: htable_size can't change after
-init anyway, so it should be done in ct_seq_show.
+----------------------------------------------------------------------
+ tiwai - 09-01-2004 22:49 CEST 
+----------------------------------------------------------------------
+Could you attach the output of /proc/asound/card0/codec97#0/* files?
+It might be possible to distinguish two machines from the difference
+of AC97 codec chips.
 
-Fix should be fairly simple...
-Rusty.
--- 
-Anyone who quotes me in their signature is an idiot -- Rusty Russell
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-29-04 21:34 Dawid Gajownik New Bug                                      
+08-29-04 21:34 Dawid Gajownik Distribution              => Fedora Core 2   
+08-29-04 21:34 Dawid Gajownik Kernel Version            => 2.6.8-1.521     
+08-31-04 13:36 tiwai          Bugnote Added: 0001673                       
+09-01-04 22:49 tiwai          Bugnote Added: 0001677                       
+======================================================================
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by BEA Weblogic Workshop
+FREE Java Enterprise J2EE developer tools!
+Get your free copy of BEA WebLogic Workshop 8.1 today.
+http://ads.osdn.com/?ad_id=5047&alloc_id=10808&op=click
