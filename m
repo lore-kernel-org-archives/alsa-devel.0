@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000835]: Possible race condition leading to crash in gnome-volume-control
-Date: Wed, 19 Jan 2005 14:28:04 +0100
-Message-ID: <93870e7f0f01d82f34cb64f38ba82db5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
+Date: Wed, 19 Jan 2005 13:33:50 +0100
+Message-ID: <d55fd8598aa662abc007da9bb9cc8d26@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A969024F
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:28:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D0AC424F
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 13:33:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,45 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=835> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
 ======================================================================
-Reported By:                jcspray
-Assigned To:                
+Reported By:                1g0R
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   835
-Category:                   PCI - emu10k1
-Reproducibility:            sometimes
-Severity:                   major
+Issue ID:                   822
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             2.6.8
+Status:                     feedback
+Distribution:               FC3
+Kernel Version:             2.6.10-ac8
 ======================================================================
-Date Submitted:             01-18-2005 22:49 CET
-Last Modified:              01-19-2005 14:28 CET
+Date Submitted:             01-16-2005 19:06 CET
+Last Modified:              01-19-2005 13:33 CET
 ======================================================================
-Summary:                    Possible race condition leading to crash in
-gnome-volume-control
+Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
-The maintainer of the gstreamer-based gnome-volume-control utility believes
-that a crash may be the result of a race condition in ALSA driver.
-
-Please see http://bugzilla.gnome.org/show_bug.cgi?id=156921#c9
+The compile went fine.
+I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
+I cant raise the trigger.
+No SPDIF out.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 14:28 
+ tiwai - 01-18-05 17:57 
 ----------------------------------------------------------------------
-A small (better) testcase is needed for debugging...
+The system default doesn't include dmix but only softvol.
+If you want to use dmix together with softvol, too, define like the
+following:
+
+pcm.!default {
+    type softvol
+    slave.pcm {
+        type dmix
+        ipc_key 5678293
+        ipc_key_add_uid yes
+        slave.pcm "hw:1,0"
+        slave.rate 44100
+    }
+    control {
+        name "PCM Playback Volume"
+        card 1
+    }
+}
+
+----------------------------------------------------------------------
+ 1g0R - 01-19-05 13:33 
+----------------------------------------------------------------------
+Okay, here is:
+I make .asoundrc, and paste the code what you wrote.
+xmms start, and set Output to alsa.
+When i try to move the volume controll, nothing happen.The volume always
+the same level.on zero (trigger on the left) there is no sound.
+in alsamixer no change.All play level on zero, and no spdif out.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-18-05 22:49 jcspray        New Issue                                    
-01-18-05 22:49 jcspray        Distribution              => Ubuntu          
-01-18-05 22:49 jcspray        Kernel Version            => 2.6.8           
-01-19-05 14:28 tiwai          Note Added: 0003267                          
+01-16-05 19:06 1g0R           New Issue                                    
+01-16-05 19:06 1g0R           Distribution              => FC3             
+01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
+01-17-05 15:05 tiwai          Status                   new => resolved     
+01-17-05 15:05 tiwai          Resolution               open => not an issue
+01-17-05 15:05 tiwai          Assigned To               => tiwai           
+01-17-05 15:05 tiwai          Note Added: 0003235                          
+01-17-05 15:05 tiwai          Assigned To              tiwai =>            
+01-17-05 16:43 1g0R           Status                   resolved => feedback
+01-17-05 16:43 1g0R           Resolution               not an issue => reopened
+01-17-05 16:43 1g0R           Note Added: 0003238                          
+01-17-05 16:43 1g0R           Assigned To               => tiwai           
+01-18-05 14:01 1g0R           Note Added: 0003249                          
+01-18-05 14:01 1g0R           Issue Monitored: 1g0R                        
+01-18-05 17:57 tiwai          Note Added: 0003254                          
+01-19-05 13:33 1g0R           Note Added: 0003264                          
 ======================================================================
 
 
