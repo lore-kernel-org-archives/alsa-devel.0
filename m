@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000452]: Rate control sticks in IEC958 value
-Date: Wed, 18 Aug 2004 12:51:49 +0200 (CEST)
+Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
+Date: Wed, 18 Aug 2004 13:16:20 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040818105149.91A951102F@server.perex-int.cz>
+Message-ID: <20040818111620.45CCD1102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E15A825D
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 12:51:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7E667234
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 13:16:20 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id A115B18CF4
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 12:51:49 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 5637118D14
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 13:16:20 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,37 +25,34 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000452
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000453
 ======================================================================
 Reported By:                Andrew
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     452
+Bug ID:                     453
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             08-18-2004 12:51 CEST
-Last Modified:              08-18-2004 12:51 CEST
+Date Submitted:             08-18-2004 13:16 CEST
+Last Modified:              08-18-2004 13:16 CEST
 ======================================================================
-Summary:                    Rate control sticks in IEC958 value
+Summary:                    it is impossible to select spdif as capture source
 Description: 
-After setting Multi Track Internal Clock control
-to IEC958 value, this control sticks in this value.
-It is impossible to change the control value to any
-other of the enumerated values. Rebooting does not
-help here. All audio apps do not work now.
+There are no anything spdif-input-related among
+capture source enumeration.
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 12:51 Andrew         New Bug                                      
+08-18-04 13:16 Andrew         New Bug                                      
 ======================================================================
 
 
