@@ -1,12 +1,12 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: design suggestions for minimal-latency full-duplex io?
-Date: Mon, 03 Feb 2003 11:12:20 -0500
+From: Bo Forslund <bo.forslund@abc.se>
+Subject: alsa-conf doesn't compile
+Date: 03 Feb 2003 23:14:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18fj8y-0005Ba-00@sc8-sf-list1.sourceforge.net>
-References: <200302031648.48890.Marcus.Blomenkamp@epost.de>
+Message-ID: <1044310446.7486.5.camel@li.mine.nu>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Mon, 03 Feb 2003 16:48:48 +0100."
-             <200302031648.48890.Marcus.Blomenkamp@epost.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,39 +15,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Marcus Blomenkamp <Marcus.Blomenkamp@epost.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Is it possible to have both stream pointers working on the same physical 
->buffer? A slightly delayed start of playback should then give a nice IO 
->latency. Are there any other approaches viable? Ideally i'd like to get this 
->working while not depending on userspace scheduling heavily.
 
-you have to depend on userspace scheduling unless you write a kernel module.
 
->Any suggestions/constraints about the following ideas?
->1. traditional blocking read/write in seperate threads
->2. traditional non-blocking read/write in a single thread
->3. asynchronous SIG_IO triggered read/write handling
->4. mmap'ed buffer for read+write
+Hello!
 
-the JACK code for its alsa_driver shows the way to get the lowest
-latency and greatest efficiency that i know of without playing "dirty"
-tricks.
+latest cvs version of alsa-conf doesn't compile. I get messages like
+below. Do I neet to install something alsa depends on?
 
-it uses mmap access, and sleeps using poll(2) to wait for the audio
-interface to be ready. read/write access would not change the latency,
-it would be just a little less efficient for large numbers of
-channels. the code is rather complex, however. there is a simpler
-example in my ALSA primer which has links on the ALSA programmers
-documenation page at www.alsa-project.org.
+Thanks BF
 
-personally, i'd just fire up JACK and use a slight, tiny modification
-to the jack_simple_client example to do this. you hardly have to write
-any code then.
 
---p
+ 
+
+g++ -DHAVE_CONFIG_H -I. -I. -I. -I./newt    -g -Wall -ftemplate-depth-20
+-c Def.cc
+In file included from Value.hh:26,
+                 from Def.hh:27,
+                 from Def.cc:22:
+Ptr.hh:181: friend declaration requires class-key, i.e. `friend class
+CPtr<T>'
+In file included from Def.hh:27,
+                 from Def.cc:22:
+Value.hh:67: parse error before `<' token
+Value.hh:70: parse error before `&' token
+Value.hh:72: non-member function `const Field* search(const String&)'
+cannot have `const' method qualifier
+
+Do 
+
 
 
 -------------------------------------------------------
