@@ -1,14 +1,14 @@
 From: Tobias Peters <tpeters@uni-oldenburg.de>
 Subject: Re: hw_pointer error message triggered without need
-Date: Wed, 22 Oct 2003 10:16:47 +0200
+Date: Wed, 22 Oct 2003 10:25:49 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F963CEF.30105@uni-oldenburg.de>
-References: <3F9552BA.1020404@uni-oldenburg.de>	<s5hd6cqcyry.wl@alsa2.suse.de>	<Pine.LNX.4.53.0310211910520.1483@pnote.perex-int.cz> <s5h8ynecw5s.wl@alsa2.suse.de>
+Message-ID: <3F963F0D.70205@uni-oldenburg.de>
+References: <3F9552BA.1020404@uni-oldenburg.de>	 <s5hd6cqcyry.wl@alsa2.suse.de>	 <Pine.LNX.4.53.0310211910520.1483@pnote.perex-int.cz>	 <s5h8ynecw5s.wl@alsa2.suse.de> <1066788033.2882.40.camel@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h8ynecw5s.wl@alsa2.suse.de>
+In-Reply-To: <1066788033.2882.40.camel@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,32 +20,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Manuel Jander wrote:
+> There really something wrong. 
+> ALSA sound/core/pcm_lib.c:157: Unexpected hw_pointer value (stream = 0,
+> delta: -297, max jitter = 1024): wrong interrupt acknowledge?
 
->>>well, it's not unnecessary but too strict.
+>>>>At Tue, 21 Oct 2003 17:37:30 +0200,
+>>>>Tobias Peters wrote:
+>>>>>ALSA ../alsa-kernel/core/pcm_lib.c:216: Unexpected hw_pointer value
+>>>>>(stream = 0, delta: -255, max jitter = 256): wrong interrupt acknowledge?
 
-Yes.
+Compare the line numbers, yours is a different error message.
 
-> the problem is that this check is too strict when only two periods are
-> used.  since buffer_size/2 == period_size, if the update of hwptr is
-> delayed even for one sample, it won't pass.
-
-This is exactly what happens in my case.
-
->>Anyway, I think that we should leave the check as is for debugging
->>purposes (we should know that something is failing).
-> 
-> 
-> sure, it's harmless message (as long as it comes from
-> snd_pcm_update_hw_ptr()) but too annoying.  there are too many
-> sloppy hardwares...
-
-After printing the error message is printed, the function returns 
-immediately. Can you confirm that this does not have negative side 
-effects like dropped frames?
-
-Besides, the error messages popping up in the console interfere visually 
-with the text mode interface of the sound app that I use.
+The minus sign in the message I got is just fine, because the new 
+hw_pointer value really is lesser than it was before.
 
    Tobias
 
