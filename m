@@ -1,14 +1,17 @@
-From: Jan Depner <eviltwin69@cableone.net>
-Subject: Re: alsa & snd-hdsp
-Date: 23 May 2003 19:13:56 -0500
+From: Florin Andrei <florin@andrei.myip.org>
+Subject: Re: Audigy 2 support - update
+Date: 23 May 2003 20:37:36 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1053735237.27571.3.camel@eviltwin>
-References: <1053726881.414.4.camel@localhost>
+Message-ID: <1053747456.6906.1.camel@rivendell.home.local>
+References: <20030523051240.GA10831@www.angiotech.com>
+	 <1053675028.18540.70.camel@rivendell.home.local>
+	 <20030524004334.GA15947@www.angiotech.com>
+Reply-To: alsa-devel@lists.sourceforge.net
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1053726881.414.4.camel@localhost>
+In-Reply-To: <20030524004334.GA15947@www.angiotech.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,36 +20,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "David E. Storey" <dave@tamos.net>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-David,
-
-	I asked about this early on and I believe that the answer is that you
-control the input gain externally.  Some kind of mixer or pre-amp is
-needed.
-
-Jan
-
-On Fri, 2003-05-23 at 16:54, David E. Storey wrote:
-> ok...
+On Fri, 2003-05-23 at 17:43, Stephen Hassard wrote:
+> On Fri, May 23, 2003 at 12:30:28AM -0700, Florin Andrei wrote:
+> > On Thu, 2003-05-22 at 22:12, Stephen Hassard wrote:
+> > How about MIDI output?
 > 
-> I'd like to know if I fumez le crack! Is there any way to adjust the
-> gain on any HDSP inputs via alsa? I know there exist simple controls,
-> which control the output volume and the mixer controls which handily set
-> the volume between any input and output.... so what about input? The
-> mixer in winbloze seems not to adjust input level either? Is this a
-> firmware issue? Do I need to get an 8-channel pre-amp in order to adjust
-> the signals into my multiface?
-> 
-> d!
-> -- 
-> Don't ever take a fence down until you know the reason it was put up.
->         - G.K. Chesterton
-> 
-> 
+> MIDI output seems to work fine too.
 
+Thank you Stephen!
+
+And thanks to the ALSA developers. Now i'll go ahead and buy an Audigy2.
+Yeah, it's going to be a Platinum, yeah, maybe a few gizmos on the front
+panel won't work (we'll see), but as long as there is at least one pair
+of MIDI in/out that works, i'm happy.
+
+Keep up the good work!
+
+-- 
+Florin Andrei
+
+http://florin.myip.org/
 
 
 
