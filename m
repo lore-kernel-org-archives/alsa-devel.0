@@ -1,12 +1,12 @@
-From: Unet <burududu@hotpop.com>
-Subject: Fwd: Problem wth alsa-driver (rc3-rc4) rc5
-Date: Thu, 24 Oct 2002 19:34:37 +0100
+From: Daniel Haus <daniel.haus@vizarts.de>
+Subject: sassi, can you hear me? or Re: A little report on Guillemots MAXI
+ Studio ISIS...
+Date: 24 Oct 2002 20:55:37 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200210241934.38927.burududu@hotpop.com>
+Message-ID: <1035485738.10187.23.camel@saturn.sol>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,76 +16,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel mailinglist <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I am very interested if there is any progress with the Guillemot Maxi
+Studio ISIS, or the Dream SAM9707 chip at all All I could find was -
+except the usual "buy some other card"-messages this very interesting
+post from Sassi, that gave me hope that at least there used to be
+someone who really had the will to make it work with alsa.
 
-I have a problem having alsa-driver to work since rc3.
+http://sourceforge.net/mailarchive/message.php?msg_id=104782
+from 2001-12-02, a long time.
 
-The driver compiles fine, but when I try to register the modules, here's =
-what
-I got:
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/acore/oss/snd-mixer-oss.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/acore/oss/snd-pcm-oss.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/acore/seq/oss/snd-seq-oss.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/acore/seq/snd-seq-device.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/acore/seq/snd-seq-instr.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/acore/seq/snd-seq-midi-emul.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/acore/seq/snd-seq-midi-event.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/acore/seq/snd-seq-midi.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/acore/seq/snd-seq.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/acore/snd-hwdep.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/acore/snd-pcm.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/acore/snd-rawmidi.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/acore/snd-timer.o
-depmod: *** Unresolved symbols in
- /lib/modules/2.4.19/kernel/sound/acore/snd.o depmod: *** Unresolved symb=
-ols
- in
-/lib/modules/2.4.19/kernel/sound/drivers/mpu401/snd-mpu401-uart.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/drivers/opl3/snd-opl3-lib.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/drivers/opl3/snd-opl3-synth.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/pci/ac97/snd-ac97-codec.o
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.19/kernel/sound/pci/ymfpci/snd-ymfpci.o
+Now, even if I don't have much experience developing device drivers,
+too, I am really willing to spend time trying to make alsa and isis
+friends. At least for the learning effect.
 
+Does anyone have such a card or know if there is development? Sassi,
+where are you?
 
-I'd *love* to know what is wrong.
+Guillemot's drivers for win98/me are as ugly as win itself .. argh .. 
 
-I'm using 2.4.19 with preempt + low-latency patches.
+Regards,
+Daniel
 
-Thank you :)
+And thanks to all of you for developing such fantastic software!
 
---
--------------------------------------------------
-=09        Unet !=3D UUnet
+----------------------------------------------------------------------
+daniel.haus@vizarts.de
+icq# 38148428
 
->SourceMage
-
-=09Grimoire Guru for Audio<
-void Unet_im(gabber unet@bravegnuworld.com);
-void Unet_dm(mail burududu@hotpop.com)
-=09{
-=09=09subject(to change);
-=09};
---------------------------------------------------
 
 
 
