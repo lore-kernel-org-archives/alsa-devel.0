@@ -1,15 +1,16 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Badness in remove_proc_entry
-Date: Fri, 2 Apr 2004 23:08:18 +0200
+From: "John H." <mrmailer@myway.com>
+Subject: Re: cannot submit datapipe for urb 0 on /dev/dsp access -extigy
+Date: Fri,  2 Apr 2004 16:26:57 -0500 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040402230818.49d1a4de.pochini@shiny.it>
-References: <20040327215238.6e3f0762.pochini@shiny.it>
-	<Pine.LNX.4.58.0403280954360.1828@pnote.perex-int.cz>
+Message-ID: <20040402212657.75BE312D00@mprdmxin.myway.com>
+Reply-To: mrmailer@myway.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0403280954360.1828@pnote.perex-int.cz>
+Received: from mprdmxin.myway.com (nn2.excitenetwork.com [207.159.120.56])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA27650
+	for <alsa-devel@alsa-project.org>; Fri, 2 Apr 2004 23:27:40 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,55 +19,92 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: clemens@ladisch.de, mrmailer@myway.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 28 Mar 2004 09:54:46 +0200 (CEST)
-Jaroslav Kysela <perex@suse.cz> wrote:
 
-> On Sat, 27 Mar 2004, Giuliano Pochini wrote:
-> 
-> > I'm not sure if this is alsa's fault. It happens when I unload the module.
-> > Yup, snd_gina24 is the driver I'm developing, but it also happens with
-> > snd-powermac and when I try to load a module for a card I don't have.
->
-> It's fixed in 1.0.4rc1.
-
-I ported my driver to 1.0.4rc2. There is no "badness" in the message anymore
-:) but it still comes up. Now it only happens if I try two modules I'm
-developing. Example:
-
-modprobe snd-layla24
-
-No errors, but I don't have that card. lsmod shows the module is
-loaded.
-
-modprobe snd-gina24 (my card) --> dmesg:
+see, this is what is weird, it worked last week, now it doesn't work with exaudio or alsa! same errors!
 
 
-kobject_register failed for Echoaudio (-17)
-Call trace:
- [c000bbe4] dump_stack+0x18/0x28
- [c00dfb24] kobject_register+0x68/0x6c
- [c012adec] bus_add_driver+0x50/0xf0
- [c012b2b4] driver_register+0x38/0x48
- [c00ec408] pci_register_driver+0x50/0x6c
- [e66669b0] alsa_card_Echo_init+0x1c/0x774 [snd_gina24]
- [c003de50] sys_init_module+0x200/0x3e0
- [c0007b1c] ret_from_syscall+0x0/0x44
-Echoaudio soundcard not found or device busy
+
+line in works, but not pcm/oss.\
 
 
-If I load snd-gina24 and then snd-layla24, it complains when I load the
-latted, even if snd-gina24 is loaded and running fine. It does not happen if
-the first module I load is something else (eg. hdsp). Maybe there is
-something I'm not aware of... I already tried to use different
-MODULE_DESCRIPTION and MODULE_DEVICES without success.
+
+aplay file.wav does not work
 
 
---
-Giuliano.
 
+after i ran aplay foo.wav i tried xmms, and it said
+
+ALSA lib pcm_hw.c:1057:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Device or resource busy
+
+ 
+
+** WARNING **: alsa_setup(): Failed to open pcm device (default): Device or resource busy
+
+
+
+
+
+ ls -la /proc/asound/
+
+total 1.0K
+
+dr-xr-xr-x    5 root root 0 Apr  2 15:25 .
+
+dr-xr-xr-x  118 root root 0 Apr  2 09:09 ..
+
+dr-xr-xr-x    6 root root 0 Apr  2 15:25 card0
+
+-r--r--r--    1 root root 0 Apr  2 15:25 cards
+
+-r--r--r--    1 root root 0 Apr  2 15:25 devices
+
+lrwxrwxrwx    1 root root 5 Apr  2 15:25 Extigy -> card0
+
+-r--r--r--    1 root root 0 Apr  2 15:25 modules
+
+dr-xr-xr-x    2 root root 0 Apr  2 15:25 oss
+
+-r--r--r--    1 root root 0 Apr  2 15:25 pcm
+
+dr-xr-xr-x    2 root root 0 Apr  2 15:25 seq
+
+-r--r--r--    1 root root 0 Apr  2 15:25 timers
+
+-r--r--r--    1 root root 0 Apr  2 15:25 version
+
+
+
+
+
+
+
+
+
+ --- On Thu 04/01, Clemens Ladisch < clemens@ladisch.de > wrote:
+
+From: Clemens Ladisch [mailto: clemens@ladisch.de]
+
+To: mrmailer@myway.com
+
+     Cc: alsa-devel@alsa-project.org
+
+Date: Thu, 01 Apr 2004 15:38:40 +0200 (METDST)
+
+Subject: Re: [Alsa-devel] cannot submit datapipe for urb 0 on /dev/dsp access -extigy
+
+
+
+John H. wrote:<br>> I get this error repeatedly<br>><br>> ALSA /tmp/alsa-driver-1.0.4rc2/usb/usbaudio.c:811:<br>> cannot submit datapipe for urb 0, err = -38<br>><br>> whenever i try to use /dev/dsp now, and i can only get sound from line in.<br>><br>> i have kernel 2.6.4 and drivers 1.0.4rc2<br><br>What is in /proc/asound/cards?<br><br>Is your host controller UHCI or OHCI?<br><br>Does it work with "aplay something.wav"?<br><br>Does it work with a 2.4.x kernel?<br><br><br>Regards,<br>Clemens<br><br><br><br><br>-------------------------------------------------------<br>This SF.Net email is sponsored by: IBM Linux Tutorials<br>Free Linux tutorial presented by Daniel Robbins, President and CEO of<br>GenToo technologies. Learn everything from fundamentals to system<br>administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click<br>_______________________________________________<br>A
+ lsa-devel mailing list<br>Alsa-devel@lists.sourceforge.net<br>https://lists.sourceforge.n!
+ et/lists/listinfo/alsa-devel<br>
+
+_______________________________________________
+No banners. No pop-ups. No kidding.
+Introducing My Way - http://www.myway.com
 
 
 -------------------------------------------------------
