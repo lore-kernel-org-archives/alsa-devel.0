@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000992]: no supported card
-Date: Wed, 6 Apr 2005 18:15:59 +0200
-Message-ID: <cdfe4cf52e012f79bf9d3f9bee94f35d@bugtrack.alsa-project.org>
+Date: Wed, 6 Apr 2005 18:40:10 +0200
+Message-ID: <bacdf691a07ed91511b09459a8fffefc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1E74C205
-	for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2005 18:16:00 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE8E1205
+	for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2005 18:40:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.4
 ======================================================================
 Date Submitted:             03-14-2005 21:52 CET
-Last Modified:              04-06-2005 18:15 CEST
+Last Modified:              04-06-2005 18:40 CEST
 ======================================================================
 Summary:                    no supported card
 Description: 
@@ -49,15 +49,15 @@ this model ever be supported?
 ======================================================================
 
 ----------------------------------------------------------------------
- rav0r - 03-21-05 17:13 
+ rav0r - 04-06-05 18:16 
 ----------------------------------------------------------------------
-so, what should I do?
-should I recompile my kernel?
+actually, my sound functioned in fc3...
 
 ----------------------------------------------------------------------
- rav0r - 04-06-05 18:15 
+ jcdutton - 04-06-05 18:40 
 ----------------------------------------------------------------------
-So, it is not because of the drivers..?
+can you post the output of this command:
+lspci -vn | grep -1 0401
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -76,6 +76,8 @@ Date Modified  Username       Field                    Change
 03-21-05 15:44 mikma          Note Added: 0004118                          
 03-21-05 17:13 rav0r          Note Added: 0004120                          
 04-06-05 18:15 rav0r          Note Added: 0004347                          
+04-06-05 18:16 rav0r          Note Added: 0004348                          
+04-06-05 18:40 jcdutton       Note Added: 0004349                          
 ======================================================================
 
 
