@@ -1,14 +1,14 @@
 From: Frank Barknecht <fbar@footils.org>
 Subject: Re: usb_get_device_descriptor when building for 2.6.2-rc3
-Date: Mon, 2 Feb 2004 19:22:24 +0100
+Date: Mon, 2 Feb 2004 19:33:16 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040202182224.GA7305@fliwatut.scifi>
-References: <20040202163144.GA4349@fliwatut.scifi> <s5hoeshuzyh.wl@alsa2.suse.de>
+Message-ID: <20040202183316.GA10289@fliwatut.scifi>
+References: <20040202163144.GA4349@fliwatut.scifi> <s5hoeshuzyh.wl@alsa2.suse.de> <s5hllnluz9n.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <s5hoeshuzyh.wl@alsa2.suse.de>
+In-Reply-To: <s5hllnluz9n.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,26 +23,20 @@ List-Id: alsa-devel@alsa-project.org
 Hallo,
 Takashi Iwai hat gesagt: // Takashi Iwai wrote:
 
-> At Mon, 2 Feb 2004 17:31:44 +0100,
-> Frank Barknecht wrote:
-> > I'm trying to build ALSA-CVS for 2.6.2-rc3, because that kernel has
-> > support for the emi62m firmware. Now I get unresolved symbols in
-> > snd-usb-audio: 
-> > 
-> > request_module: failed /sbin/modprobe -- snd-card-1. error = 256
-> > snd_usb_audio: Unknown symbol usb_get_device_descriptor
-> 
-> do you enable the modle version?
+> well, it turned out that the USB in 2.6.2-rc3 changed its API... :-<
+> we'll need a hack again.
 
-No, I didn't enable mod versions. Should I?
+Urgh. ;)
 
-> then you'll need to rebuild alsa-driver, too.
+Well, but I've found out another thing: There was a compile warning in 
+usbaudio.c at function snd_usb_extigy_boot_quirk() about "implicit
+definition of usb_get_device_descriptor" or similar.
 
-Yes, I did that. I ran configure again and "make dep; make; make
-install-modules"
+Temporarily I commented out lines 2632 and 2634, after that
+snd-usb-audio loaded without the error.
 
-Previously there was Kernel 2.6.1 installed, so the modules were
-installed into another, new directory anyways.
+I will now try to plug in a USB device. But first I send this mail, in
+case anything goes badly wrong. :)
 
 ciao
 -- 
