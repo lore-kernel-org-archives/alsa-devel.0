@@ -1,14 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd-usb-midi, midi input, oss, oops!
-Date: Wed, 18 Sep 2002 11:04:30 +0200 (METDST)
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: new "in-compatible" alsa-lib PCM API
+Date: Wed, 18 Sep 2002 11:12:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0209181036450.6852-100000@studcom.urz.uni-halle.de>
-References: <200209171947.MAA06264@cmn29.stanford.edu>
+Message-ID: <Pine.LNX.4.33.0209181104270.534-100000@pnote.perex-int.cz>
+References: <87ptvc14wa.fsf@sulphur.joq.us>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200209171947.MAA06264@cmn29.stanford.edu>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA17514
+	for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2002 11:12:54 +0200
+In-Reply-To: <87ptvc14wa.fsf@sulphur.joq.us>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,91 +19,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jack O'Quin <joq@io.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fernando Pablo Lopez-Lezcano wrote:
-> > snd-usb-midi should be loaded when you try to access the sequencer device.
-> > "aconnect -o" or trying to play/record something usually does the job.
->
-> "aconnect -o" does it, starting Muse (which uses alsa native
-> midi) does it but starting Pd (which uses the OSS emulation
-> midi raw devices) does not load the snd-usb-midi modules. Is
-> there a reason why the load is delayed?
+On 17 Sep 2002, Jack O'Quin wrote:
 
-ALSA loads sequencer drivers lazily because most users only want to play
-.wav and MP3^H^H^HOgg files and thus do not have to suffer the overhead of
-the sequencer which is quite big. In most cases, the sequencer would have
-been loaded because of the existence of the OPL3 FM synthesize which
-nodody wants to use anyway.
+> Is this a "Release-Critical" bug fix?  
+> 
+> If not, I think source- and binary-incompatible changes are highly
+> inappropriate right now.  A "release candidate" is supposed to
+> *stabilize* the interface and implementation.  Making an incompatible
+> change between rc3 and rc4 looks like a big step backwards.
+> 
+> If at all possible, let's postpone this cleanup until after ALSA 0.9.0
+> is released.  Put the release in maintenance mode, then clean up these
+> functions in the 1.0.0 development tree.  That will also be a good
+> time to increment the library version number.
 
-> Or maybe I need to put something in /etc/modules.conf to
-> accomplish this?
+You're right, if we don't provide the possibility to build a compatible 
+library. If you don't like our changes, simply configure your library with 
+--with-compat-rc3 and your - not yet updated - applications will be happy.
+Note that these binaries will use newer (0.9.0rc4) library without any 
+problems so the co-existence between older and newer applications is 
+assured. The binary compatibility is really important thing for us, so I 
+spend a few of days to create this compatibility layer.
 
-I think add-above/below could do what you want. Please have a look at the
-manpage.
+I really regret to make this sort of modifications at the time, but:
 
-> > Please compare /proc/bus/usb/devices before and after. It really should
-> > not be possible to replace a driver already connected to the device.
->
-> This is what it shows (diffs from previous state):
->
-> - first load all alsa drivers, including snd-usb-audio and snd-usb-midi
->   [baseline]
->
-> - then unload all alsa drivers:
->
-> -I:  If#= 0 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00 Driver=snd-usb-audio
-> -I:  If#= 1 Alt= 0 #EPs= 2 Cls=01(audio) Sub=03 Prot=00 Driver=snd-usb-audio
-> +I:  If#= 0 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00 Driver=(none)
-> +I:  If#= 1 Alt= 0 #EPs= 2 Cls=01(audio) Sub=03 Prot=00 Driver=(none)
+- any later modifications will cause more changes for applications 
+  developers (the amount software around alsa-lib grows)
+- the symbol versioning is really a good thing; the fact that the basic
+  glibc 2.0 is build with this method is a good approved example to keep
+  the binary compatibility with all applications build on top of this 
+  library, look for implementation of some functions there, the syntax 
+  slightly changed for many of them
 
-Interface 0 is the AudioControl interface. Its purpose is to list all
-AudioStreaming and MIDIStreaming interfaces of the device. In this case,
-if0 has a pointer to MIDI if1 (see lsusb for the boring details), and
-snd-usb-audio grabs both interfaces.
+						Jaroslav
 
-> - just load the alsa audio drivers (alsasound startup script)
->   [no changes]
->
-> - load the "audio" module
->   [no changes]
-
-audio looks at the control interface, doesn't find any AudioStreaming
-interfaces, and therefore doesn't do anything.
-
-> - load the "usb-midi" module
->
->  I:  If#= 0 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00 Driver=(none)
-> -I:  If#= 1 Alt= 0 #EPs= 2 Cls=01(audio) Sub=03 Prot=00 Driver=(none)
-> +I:  If#= 1 Alt= 0 #EPs= 2 Cls=01(audio) Sub=03 Prot=00 Driver=midi
-
-usb-midi does _not_ look at the control interface, it simply grabs all
-MIDIStreaming interfaces. (The old snd-usb-midi driver from 0.9.0rc3 did
-the same.)
-
-> - load snd-usb-audio, snd-usb-midi
->
-> -I:  If#= 0 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00 Driver=(none)
-> -I:  If#= 1 Alt= 0 #EPs= 2 Cls=01(audio) Sub=03 Prot=00 Driver=midi
-> +I:  If#= 0 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=00 Driver=snd-usb-audio
-> +I:  If#= 1 Alt= 0 #EPs= 2 Cls=01(audio) Sub=03 Prot=00 Driver=snd-usb-audio
->
-> So it appears things are being replaced when they should not be.
-
-Yes.
-
-Interface 0 doesn't have a driver, so the Linux kernel tries to load
-snd-usb-audio for it. snd-usb-audio then looks at the list of streaming
-interfaces (see above) and grabs interface 1 without checking if this
-interface is used by another driver.
-
-This is a bug in snd-usb-audio.
-
-
-Regards,
-Clemens
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 
