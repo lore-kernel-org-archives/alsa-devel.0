@@ -1,12 +1,14 @@
-From: Arve Knudsen <aknuds-1@broadpark.no>
-Subject: Broken pipe when starting pcm
-Date: Fri, 31 Oct 2003 18:27:16 +0100
+From: Marcel <shizuma@magma.ca>
+Subject: Re: CMI8738-MC6 surround40 plugin on 4 SP systems]
+Date: Fri, 31 Oct 2003 12:39:18 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <oprxw33qopq1sf88@mail.broadpark.no>
+Message-ID: <20031031173918.GA29835@dailyplanet.net>
+References: <20031030174239.GB2771@dailyplanet.net> <s5hptgduzgs.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <s5hptgduzgs.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,27 +17,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+* Takashi Iwai (tiwai@suse.de) wrote:
+> At Thu, 30 Oct 2003 12:42:39 -0500,
+> Marcel wrote:
+> > 
+> > 
+> > I've been trying to finetune my cmipci for several weeks now.   And this is
+> > the best way I've been able to get transparent operation with various audio
+> > material: stereo, mono, 4.0, 5.1.  The main problem being no surround sound
+> > iif "Exchange DAC" setting was not set, and sound on the rear speakers only
+> > if it was.
+> 
+> ah, this might be true.
+> does it happen both on 4.0 and 5.1 outputs?
+> i don't remember that it's necessary for 5.1 at the last time i
+> tested.
 
-Whenever I turn on xrun detection, setting stop_threshold to buffer size=20
-instead of -1, snd_pcm_start refuses to work. The exit message to do with=
-=20
-broken pipe. I figured it might be caused by an empty buffer, so I fill i=
-t=20
-with silence before start. snd_pcm_avail_update confirms this (zero frame=
-s=20
-available), but it makes no difference. This happens with both my cards,=20
-nForce2 onboard and RME DIGI9636. If someone could point out the cause of=
-=20
-this, I'd truly appreciate it. If it matters I am running a development=20
-kernel, 2.6.0 test9-mm1.
+With surround40 plugin, 4 speakers, yes it's needed for both 4.0 and 5.1
+material.  Applications such as mplayer or xine will remix 5.1 material to
+4 channels.  For 6 speakers systems, I really don't know.
 
-Thanks
+> perhaps we should simply remove this control from user and handle
+> internally for the MC6 chip.
+> 
 
-Arve Knudsen
+I agree.  Its usage is confusing and may results in improper operation
 
 
 -------------------------------------------------------
