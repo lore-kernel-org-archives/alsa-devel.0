@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000784]: CMI 9739A PCM does not allow volume control only on/off (when on starts with full volume)
-Date: Tue, 4 Jan 2005 22:42:04 +0100
-Message-ID: <b3e81fba1f739102ab1ed2d9f6c7b611@bugtrack.alsa-project.org>
+From: Mark_H_Johnson@raytheon.com
+Subject: Re: 2.6.10-mm1: ALSA ac97 compile error with CONFIG_PM=n
+Date: Tue, 4 Jan 2005 13:25:40 -0600
+Message-ID: <OF5A3BD386.A1A4C579-ON86256F7F.00688E0E@raytheon.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	Boundary="0__=09BBE5ECDFFB089E8f9e8a93df938690918c09BBE5ECDFFB089E"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB55E261
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 22:42:04 +0100 (MET)
+Received: from dfw-gate4.raytheon.com (dfw-gate4.raytheon.com [199.46.199.233])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D711A2A3
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 23:45:49 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +19,140 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Cc: Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org, Adrian Bunk <bunk@stusta.de>, lkml <linux-kernel@vger.kernel.org>, perex@suse.cz, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+--0__=09BBE5ECDFFB089E8f9e8a93df938690918c09BBE5ECDFFB089E
+Content-type: text/plain; charset=US-ASCII
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=784> 
-======================================================================
-Reported By:                ajir
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   784
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.8.1
-======================================================================
-Date Submitted:             01-04-2005 20:34 CET
-Last Modified:              01-04-2005 22:42 CET
-======================================================================
-Summary:                    CMI 9739A PCM does not allow volume control only
-on/off (when on starts with full volume)
-Description: 
-This issue was studied before but without any effect. Some says that this
-codec has different hadrware and it can not be controled.BUT WINDOWS
-DRIVER CAN CONTROL damn VOLUME. Please can it be fixed?
-======================================================================
+A follow up on this patch. This fixed my build / module load problem when
+using CONFIG_PM=N on my system. The audio worked OK (except as noted
+below). Do you want Andrew Morton to pick this up (or will you incorporate
+the fix into another ALSA patch)?
 
-----------------------------------------------------------------------
- rlrevell - 01-04-05 20:57 
-----------------------------------------------------------------------
-Please, stop reporting this as a bug!  Besides I am sure there's already an
-open bug report for it.  The upcoming ALSA 1.0.8 release will have a
-"software volume" plugin that should solve the problem.
+I did have some other minor problems during my testing but I have seen
+these before. Perhaps one of the ALSA developers could comment on the
+correct / incorrect behavior of the audio system. The testing is done on a
+Fedora Core 2 system with the 2.6.10-mm1 kernel (with the patch below). Let
+me know if you need more information on the system configuration, and
+.config.
 
-----------------------------------------------------------------------
- rlrevell - 01-04-05 22:42 
-----------------------------------------------------------------------
-Update: try ALSA CVS.  This should work now.
+[1] After system start up & log in, I do the sequence:
+  su -
+  (password entered)
+  system-config-soundcard
+  Simple mixer control 'PCM',0
+    Capabilities: pvolume pswitch pswitch-joined
+    Playback channels: Front Left - Front Right
+    Limits: Playback 0 - 31
+    Front Left: Playback 23 [74%] [on]
+    Front Right: Playback 23 [74%] [on]
+  sox: Can't open output file '/dev/dsp': Device or resource busy
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-04-05 20:34 ajir           New Issue                                    
-01-04-05 20:34 ajir           Kernel Version            => 2.6.8.1         
-01-04-05 20:57 rlrevell       Note Added: 0003080                          
-01-04-05 22:42 rlrevell       Note Added: 0003087                          
-======================================================================
+At this point, I get the window asking if I heard the sound (I did not). If
+I repeat the test after waiting a short period, it eventually succeeds.
 
+I get basically the same error message from latencytest when it says...
+  ERROR: open /dev/dsp: Device or resource busy
+[even after I had a successful play of the test sound in
+system-config-soundcard]
+
+I realize this may be some KDE or GNOME background application hogging the
+sound output, but it is extremely annoying since I never had this problem
+with the 2.4 kernels I have used. Is that the likely cause or would
+something else cause this problem?
+
+[2] When running latencytest (from
+http://www.gardena.net/benno/linux/audio/) the sound is not consistent
+(like it was on 2.4 with OSS) and occasionally I hear "rapid playback"
+where the repeating audio pattern is much faster than it should be. In
+addition, the charts generated by latencytest show at least two different
+patterns:
+  a. The time between write() calls to the audio interface varies from
+roughly 1.16 msec to 2.0 msec. If you add code to dump out the durations
+you can see it is a sawtooth pattern, some periods it returns too quickly
+and some periods it returns too slowly.
+  b. The time between write() calls is roughly 1.2 msec. I believe this
+behavior occurs at the same time the audio pattern repeats too quickly.
+In all cases, the between write() calls should be 1.45 msec (the length of
+the audio fragment) as I measured on a consistent basis with 2.4 kernels. I
+can somewhat understand the behavior of (a) if the driver is queueing up
+audio fragments in the write() call. I do not necessarily agree that the
+audio driver should do that but I can understand why it may do that. The
+behavior of (b) sounds broken to me.
+
+Let me know if you want to see a copy of the charts - I should be able to
+email (or post on an ftp site temporarily) to individuals who want to view
+them [and compare with the 2.4 results].
+
+--Mark H Johnson
+  <mailto:Mark_H_Johnson@raytheon.com>
+
+
+                                                                                                                                       
+                      Mark H Johnson                                                                                                   
+                                               To:      Adrian Bunk <bunk@stusta.de>                                                   
+                      01/04/2005 11:01         cc:      Mark_H_Johnson@RAYTHEON.COM, Andrew Morton <akpm@osdl.org>, lkml               
+                      AM                       <linux-kernel@vger.kernel.org>, perex@suse.cz, Takashi Iwai <tiwai@suse.de>,            
+                                               alsa-devel@alsa-project.org                                                             
+                                               Subject: Re: 2.6.10-mm1: ALSA ac97 compile error with CONFIG_PM=n(Document link: Mark   
+                                               the Maniac)                                                                             
+                                                                                                                                       
+
+
+
+>That's not the problem, since function and definition are in the same
+>module.
+>
+>You didn't send your .config, but looking at the code it seems
+>CONFIG_PM=n was the culprit.
+Yes. CONFIG_PM=N in my .config.
+
+>As a workaround, it should work after enabling the following option:
+>  Power management options (ACPI, APM)
+>    Power Management support
+Hmm. I don't want to do that for my real time testing. I turned that off
+to eliminate a class of possible latencies.
+
+>This is only a workaround, I've Cc'ed the ALSA maintainers for a real
+>fix.
+
+How about the attached patch instead (which moves the #ifdef CONFIG_PM
+and snd_ac97_suspend after the two functions I am having problems with).
+Apparently the use of snd_ac97_restore_status and snd_ac97_restore_iec958
+is in ac97_patch.c as well as in the power management code. I have not
+run the code yet a quick build didn't find any problems with it. I have
+a full build / test coming later today.
+
+  --Mark
+
+PS: On the other message you sent related to [add|del]_mtd_partitions
+applies with the 2nd hunk failing (that code not present) but the first
+hunk makes the build problem I had go away. Thanks.
+
+--0__=09BBE5ECDFFB089E8f9e8a93df938690918c09BBE5ECDFFB089E
+Content-type: application/octet-stream;
+	name="ac97-fix-nopm.patch"
+Content-Disposition: attachment; filename="ac97-fix-nopm.patch"
+Content-transfer-encoding: base64
+
+LS0tIGtlcm5lbC0yLjYuMTBtbTEvc291bmQvcGNpL2FjOTcvYWM5N19jb2RlYy5jLm9yaWcJMjAw
+NS0wMS0wNCAwNzo0MDoyNy4wMDAwMDAwMDAgLTA2MDAKKysrIGtlcm5lbC0yLjYuMTBtbTEvc291
+bmQvcGNpL2FjOTcvYWM5N19jb2RlYy5jCTIwMDUtMDEtMDQgMTA6NDg6MjEuMDAwMDAwMDAwIC0w
+NjAwCkBAIC0yMjAxLDE4ICsyMjAxLDYgQEAKIH0KIAogCi0jaWZkZWYgQ09ORklHX1BNCi0vKioK
+LSAqIHNuZF9hYzk3X3N1c3BlbmQgLSBHZW5lcmFsIHN1c3BlbmQgZnVuY3Rpb24gZm9yIEFDOTcg
+Y29kZWMKLSAqIEBhYzk3OiB0aGUgYWM5NyBpbnN0YW5jZQotICoKLSAqIFN1c3BlbmRzIHRoZSBj
+b2RlYywgcG93ZXIgZG93biB0aGUgY2hpcC4KLSAqLwotdm9pZCBzbmRfYWM5N19zdXNwZW5kKGFj
+OTdfdCAqYWM5NykKLXsKLQlzbmRfYWM5N19wb3dlcmRvd24oYWM5Nyk7Ci19Ci0KIC8qCiAgKiBy
+ZXN0b3JlIGFjOTcgc3RhdHVzCiAgKi8KQEAgLTIyNTMsNiArMjI0MSwxOCBAQAogCX0KIH0KIAor
+I2lmZGVmIENPTkZJR19QTQorLyoqCisgKiBzbmRfYWM5N19zdXNwZW5kIC0gR2VuZXJhbCBzdXNw
+ZW5kIGZ1bmN0aW9uIGZvciBBQzk3IGNvZGVjCisgKiBAYWM5NzogdGhlIGFjOTcgaW5zdGFuY2UK
+KyAqCisgKiBTdXNwZW5kcyB0aGUgY29kZWMsIHBvd2VyIGRvd24gdGhlIGNoaXAuCisgKi8KK3Zv
+aWQgc25kX2FjOTdfc3VzcGVuZChhYzk3X3QgKmFjOTcpCit7CisJc25kX2FjOTdfcG93ZXJkb3du
+KGFjOTcpOworfQorCiAvKioKICAqIHNuZF9hYzk3X3Jlc3VtZSAtIEdlbmVyYWwgcmVzdW1lIGZ1
+bmN0aW9uIGZvciBBQzk3IGNvZGVjCiAgKiBAYWM5NzogdGhlIGFjOTcgaW5zdGFuY2UK
+
+--0__=09BBE5ECDFFB089E8f9e8a93df938690918c09BBE5ECDFFB089E--
 
 
 
