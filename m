@@ -1,12 +1,12 @@
 From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: access to GPLONLY symbol SNAFU?
-Date: Tue, 04 Mar 2003 11:09:14 -0500
+Date: Tue, 04 Mar 2003 11:44:03 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18qEvh-0000x8-00@sc8-sf-list1.sourceforge.net>
-References: <Pine.LNX.4.44.0303041646420.2089-100000@pnote.perex-int.cz>
+Message-ID: <E18qFTV-0004q2-00@sc8-sf-list1.sourceforge.net>
+References: <s5hptp7f61l.wl@alsa2.suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 04 Mar 2003 16:48:34 +0100."
-             <Pine.LNX.4.44.0303041646420.2089-100000@pnote.perex-int.cz>
+In-reply-to: Your message of "Tue, 04 Mar 2003 17:30:30 +0100."
+             <s5hptp7f61l.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,24 +15,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->> module-init-tools 0.9.10
->  ^^^^^^^^^^^^^^^^^
+>> good first guess, but no luck. i uninstalled it, reinstalled modutils
+>> 2.4.9, and the same problem occurs.
 >
->Probably bug in this package. I don't know the exact status of modules in 
->2.5 (it's dramaticaly changing), but all ALSA modules are GPLed, thus this 
->problem shouldn't occur.
+>modutils-2.4.9 is fairly old..  isn't it 2.4.19?
 
-good first guess, but no luck. i uninstalled it, reinstalled modutils
-2.4.9, and the same problem occurs. i don't understand how this
-happens: the kernel image contains only vmalloc_to_page, but
-/proc/ksyms has only the GPL version. i was hoping that someone with
-even more experience of this than i might have an idea what has gone
-wrong. it all works under 2.5 BTW, but i can't use 2.5 right now
-because the main serial driver is broken.
+GACK!! this is what happens when the output of ftp's "ls" command
+scrolls off the screen, and you conclude that 2.4.9 is the latest. 
+
+reinstalling 2.4.19 fixes the problem. thanks takashi!
+
+--p
 
 
 -------------------------------------------------------
