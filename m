@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000645]: azx driver is a bit broken
-Date: Sun, 28 Nov 2004 12:39:47 +0100
-Message-ID: <40592c93113b9c4e8c1dfa43b671722f@bugtrack.alsa-project.org>
+From: Sergey Vlasov <vsu@altlinux.ru>
+Subject: Re: Mixer control names out of control?
+Date: Sun, 28 Nov 2004 12:54:26 +0300
+Message-ID: <20041128095426.GA2317@sirius.home>
+References: <41A84850.5000604@developers.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CCBBC1E4
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 12:39:47 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <41A84850.5000604@developers.dk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,112 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Peter Christensen <peter@developers.dk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=645> 
-======================================================================
-Reported By:                russell
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   645
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian/Ubuntu
-Kernel Version:             2.6.8.1
-======================================================================
-Date Submitted:             11-12-2004 16:58 CET
-Last Modified:              11-28-2004 12:39 CET
-======================================================================
-Summary:                    azx driver is a bit broken
-Description: 
-The azx driver doesn't work well on the hardware which I have. It pretty
-much doesn't work at all in OSS emulation mode. The following patch
-improves its stability on my machine enormously (although it is still not
-100%), and makes OSS emulation work nicely. As a side effect, the code is
-simplified, and to my fairly untrained eyes seems a bit more efficient.
+--PEIAKu/WMn1b1Hv9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-There are also a number of fixes in this patch which make the driver work
-more like my understanding of the Intel "High Definition Audio
-Specification Revision 1.0" document, and my limited understanding of the
-ALSA system. These include:
+On Sat, Nov 27, 2004 at 10:26:40AM +0100, Peter Christensen wrote:
+> First of all, the AC97 driver uses the name "IEC958 Playback SPSA". What'=
+s=20
+> wrong with "IEC958 Playback Volume"?
 
- - ALSA buffer size now matches the Cyclic Buffer Length (length of entire
-buffer)
- - ALSA period size now matches size of each BDL, the number of BDLs are
-properly set, and the BDLEs are not changed during playback (as suggested
-in the azx spec)
+Because it is not a volume.  This control sets the SPSA bits in the
+AC'97 Extended Audio Status and Control Register (0x2a):
 
-The #define'd STREAM_REST_BIT was renamed to STREAM_RESET_BIT (because
-that's what it is).
+- SPSA[1,0] =3D 00 S/PDIF source data assigned to AC-link slots 3&4
+- SPSA[1,0] =3D 01 S/PDIF source data assigned to AC-link slots 7&8
+  [2-ch Primary Codec default]
+- SPSA[1,0] =3D 10 S/PDIF source data assigned to AC-link slots 6&9
+  [4-ch Primary Codec default]
+- SPSA[1,0] =3D 11 S/PDIF source data assigned to AC-link slots 10&11
+  [6-ch Primary Codec default]
 
-This is a patch to azx.c only, and is against the current CVS version
-(1.11).
+So you can set routing of some other channel (front, rear, center/LFE)
+to SPDIF with this control.
 
-I have not done *ANY* work on the capture side of things -- most of my
-diffs for output can probably be translated almost directly for input.
+However, representing SPSA as volume is really confusing.  What about
+making it an enumeration instead?
 
-There are some other issues which should be addressed in this driver. Off
-the top of my head:
- - Will pci_set_dma_mask() be needed if the card is not capable of 64 bit
-addressing? Perhaps.
- - The mixer code in 1.0.7rc2 causes a crash on my system, I have pointed
-this out to Clemens Ladisch in email. I will work on this problem soon if
-nobody else has the time. Commenting out the mixer initialisation code is
-working well for me at the moment :)
- - The driver still does not work 100%. When my system is very idle, I get
-repeated sections of sound. I used to get a LOT of static, but with my
-changes it now just sounds like ALSA is never updating the buffer. I'm
-completely baffled by this, any suggestions for me to try, or hints on
-debugging this sort of behaviour would be appreciated!
+--PEIAKu/WMn1b1Hv9
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-And one issue which I am unclear on, what does the fifo_size field in the
-snd_pcm_hardware_t struct actually define?
-======================================================================
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
 
-----------------------------------------------------------------------
- tiwai - 11-27-04 19:32 
-----------------------------------------------------------------------
-I'm rewriting the driver code heavily for the time being.
-The code from Realtek will be merged there, too, so the support on
-ALC880/260 should be improved.  Will check your patch, too.
+iD8DBQFBqaBSW82GfkQfsqIRApaLAJwPJTURhre3Zi5cq1v4M0AM2/YyJACdEs4I
+9jpMVfUJTSEnChDK1zDnuIU=
+=/RLt
+-----END PGP SIGNATURE-----
 
-About the DMA mask, no, it's not needed.  The chip supports 64bit - that
-is, it accepts any physical address in 64bit.
-
-----------------------------------------------------------------------
- pforai - 11-28-04 12:39 
-----------------------------------------------------------------------
-@tiwai:
-
-when can we expact to see a working snd_azx ;) ?
-
-no working sound at all makes me go crazy! :D
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-12-04 16:58 russell        New Issue                                    
-11-12-04 16:58 russell        File Added: azx.c.diff                       
-11-12-04 16:58 russell        Distribution              => Debian/Ubuntu   
-11-12-04 16:58 russell        Kernel Version            => 2.6.8.1         
-11-12-04 17:30 russell        Note Added: 0002399                          
-11-15-04 22:28 Grazy          Issue Monitored: Grazy                       
-11-23-04 21:53 footcow        Note Added: 0002531                          
-11-27-04 16:04 pforai         Note Added: 0002615                          
-11-27-04 16:06 pforai         Note Edited: 0002615                         
-11-27-04 19:32 tiwai          Note Added: 0002617                          
-11-28-04 12:39 pforai         Note Added: 0002622                          
-======================================================================
-
-
+--PEIAKu/WMn1b1Hv9--
 
 
 -------------------------------------------------------
