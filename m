@@ -1,15 +1,12 @@
-From: Paul Davis <pbd@op.net>
-Subject: double speed (ADAT), and hw params ordering
-Date: Thu, 18 Jul 2002 14:58:07 -0400
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: quattro multi plugin.
+Date: Fri, 19 Jul 2002 16:11:54 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200207181858.g6IIw7D01719@op.net>
+Message-ID: <3D37BBBA.7030308@boosthardware.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA12110
-	for <alsa-devel@alsa-project.org>; Thu, 18 Jul 2002 20:56:17 +0200
-Received: from unknown (HELO op.net) ([209.92.61.119]) (envelope-sender <pbd@op.net>)
-          by newmx1.fast.net (qmail-ldap-1.03) with SMTP
-          for <alsa-devel@alsa-project.org>; 18 Jul 2002 18:56:11 -0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,32 +15,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-i've been wondering what to do about setting sample rates in the
-hammerfall and h-dsp drivers. fernando and gary from CCRMA have made
-the excellent suggestion that rather than have the driver pretend that
-all rates are available all the time, as it currently does, that we
-have a control switch to go between regular rates and the "double
-speed" or "bitsplit" rates (64kHz-96kHz) which reduce the channel
-count.  i think this is an excellent idea. you would not be able to
-use the switch while the device was open. when you opened it, you
-would find (for example) a device with 14 channels (12 ADAT plus 2
-SPDIF) at 64-96kHz or 26 channels (24 ADAT+2 SPDIF) at 32-48kHz.
+I have had some luck with getting 4 channels to register using the multi 
+plugin.
 
-if anyone objects to this model, please let me know. right now, its
-more or less impossible to get access to the higher rates.
+I have the following in .asoundrc.
 
-on a related note, although the above suggestion will fix this
-particular problem, it seems that it might be wise to consider adding
-a parameter order information field to the driver API, so that drivers
-can say "you have to set param P first, then param N, then param
-O". the default would obviously be "don't care", but for devices that
-lose certain capabilities when certain parameters are set, it would
-make things very much easier.
+----
+pcm.quattro {
+         type multi;
 
---p
+         slaves.a.pcm "hw:2,0";
+         slaves.a.channels 3;
+
+
+         bindings.0.slave a;
+         bindings.0.channel 0;
+         bindings.1.slave a;
+         bindings.1.channel 1;
+         bindings.2.slave a;
+         bindings.2.channel 2;
+	
+}
+
+ctl.quattro {
+         type hw;
+         card 0;
+}
+
+pcm.q4 {
+         type route;
+         slave.pcm "quattro";
+         ttable.1.1 1;
+         ttable.2.2 1;
+
+}
+----
+
+When I run jackd I get this output though:
+
+----
+  jackd -v -d alsa -d q4
+jackd 0.37.1
+Copyright 2001-2002 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+
+611 waiting for signals
+creating alsa driver ... q4|1024|2|48000|swmon
+new client: alsa_pcm, id = 1 type 1 @ 0x8067930 fd = 14
+port alsa_pcm:in_1 buf shm key 0x164398c5 at offset 4096 bi = 0x8066d00
+registered port alsa_pcm:in_1, offset = 4096
+port alsa_pcm:in_2 buf shm key 0x164398c5 at offset 8192 bi = 0x8066d10
+registered port alsa_pcm:in_2, offset = 8192
+port alsa_pcm:in_3 buf shm key 0x164398c5 at offset 12288 bi = 0x8066d20
+registered port alsa_pcm:in_3, offset = 12288
+port alsa_pcm:in_4 buf shm key 0x164398c5 at offset 16384 bi = 0x8066d30
+registered port alsa_pcm:in_4, offset = 16384
+registered port alsa_pcm:out_1, offset = 0
+registered port alsa_pcm:out_2, offset = 0
+registered port alsa_pcm:out_3, offset = 0
+registered port alsa_pcm:out_4, offset = 0
+-- jack_rechain_graph():
+client alsa_pcm: inprocess client, execution_order=0.
+ALSA: poll time out polled for 45558.694314
+driver wait function failed, exiting
+telling signal thread that the engine is done
+jack main caught signal 1
+----
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
 
 
