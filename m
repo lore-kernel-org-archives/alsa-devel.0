@@ -1,16 +1,13 @@
-From: Andrew Gaydenko <a@etver.com>
-Subject: Re: build error in pcm_native.c
-Date: Fri, 16 Jul 2004 17:42:08 +0400
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000394]: Master/PCM don't control optical-spdif out
+Date: Fri, 16 Jul 2004 16:12:37 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200407161742.08527@goldspace.net>
-References: <200407161357.56902@goldspace.net> <s5hisco6qwx.wl@alsa2.suse.de> <s5hhds86qlb.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040716141237.8FC742E004@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhds86qlb.wl@alsa2.suse.de>
-Content-Disposition: inline
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BF8A71B2
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 16:12:56 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,44 +16,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi,
 
-Drivers were build successfully. Thanks!
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000394
+======================================================================
+Reported By:                msc
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     394
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               debian/unstable
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             07-16-2004 16:12 CEST
+Last Modified:              07-16-2004 16:12 CEST
+======================================================================
+Summary:                    Master/PCM don't control optical-spdif out
+Description: 
+I can't control volume/mute with master/pcm mixer controls for spdif
+out.(analog out works fine)
+Only Wave Playback change volume.
 
-Andrew
+======================================================================
 
-======= On Friday 16 July 2004 17:15, you wrote: =======
-At Fri, 16 Jul 2004 15:08:14 +0200,
-I wrote:
-> 
-> At Fri, 16 Jul 2004 16:57:23 +0400,
-> Andrew Gaydenko wrote:
-> > 
-> > clean/(re)cvscompile were done.
-> > 
-> > I'm not bash guru, but from common view some configure fragment seems
-> > strange to me. I have got
-> > 
-> > checking for new remap_page_range... "no"
-> 
-> You have an old version of kernel, don't you?
-> 
-> > Here 1 is assigned to new_remap (line 2). But CONFIG_OLD_REMAP_PAGE_RANGE
-> > is defined (line 8) only when new_remap equals 0 (line 6).  Must new_remap 
-> > assignement be reverted?
-> 
-> It defines CONFIG_ *OLD* _REMAP_PAGE_RANGE.  So it's correct.
-
-Doh, I found you're right, the 1 and 0 are reverted.
-And another silly typo.  The corrected (additional) patch is below.
-
-
-Takashi
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-04 16:12 msc            New Bug                                      
+07-16-04 16:12 msc            Distribution              => debian/unstable 
+07-16-04 16:12 msc            Kernel Version            => 2.6.7           
+======================================================================
 
 
 -------------------------------------------------------
