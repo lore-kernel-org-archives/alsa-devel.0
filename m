@@ -1,12 +1,12 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Plan 9 /dev multiplexing (was: JACK 0.71.1 released)
-Date: Sat, 10 May 2003 17:41:39 -0400
+From: Rene Rebe <rene.rebe@gmx.net>
+Subject: powerpc and snd-powermac mixer
+Date: Sun, 11 May 2003 12:47:56 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19Ec1z-0005o0-00@sc8-sf-list1.sourceforge.net>
-References: <001301c3171f$049fea80$ac1f830a@ICO>
+Message-ID: <20030511.124756.468706978.rene.rebe@gmx.net>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Sat, 10 May 2003 14:07:28 EDT."
-             <001301c3171f$049fea80$ac1f830a@ICO>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,43 +15,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ivica Bukvic <ico@fuse.net>
-Cc: linux-audio-dev@music.columbia.edu, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
->Hey guys, the other day I got a chance to speak to a buddy of mine who
->is a cpu/OS guru and he was telling me how the author of original Unix
->(whose name I can't recall) made this "new" OS called Plan 9 (currently
->owned by Bell labs) that essentially fixes all of the shortcomings in
+Hi,
 
-as mentioned, Plan 9 is at least a decade old at this point. the name
-is rob pike, btw. plan 9 has some really cool features, but its hard
-to see any of them making it so much better than linux that its worth
-switching. i think that every core member of the linux kernel team is
-aware of plan 9's design, and a few of them have almost certainly
-tried it out.
+the powermac driver has some problems on my (three weeks old) iBook
+(800Mhz).
 
->Unix, one of them being multiplexing the /dev stuff on the kernel level.
->This would mean that driver implementation API would not need to do
->software down-mixing when all that would be done in kernel-space. Seems
+PCM access is useable (and I hear the sound very quietly) - but the
+mixer is not doing anything noticeable with the hardware (i.e. no
+volume change).
 
-welcome to ALSA. the kernel side of ALSA doesn't do this either. its
-all in user space. the kernel side offers very simple services to user
-space, nothing more. providing complex services in the kernel is a bad
-idea, and worse, if it ever involves floating point math, imposes
-extra load on the kernel. currently, the kernel doesn't save/restore
-FP state for itself, because FP operations are not allowed in the
-kernel. saving FP state is expensive.
+The in-kernel oss driver does not even load - only the updated one
+from the -benh kernel tree is loadable and does indeed work correctly.
 
->that the preliminary results are rather impressive (but probably not
->sample accurate, hence we would still need jack for pro stuff). Yet, I
+So I guess the als-driver needs some cut'n paste of register tables or
+so.
 
-the new dmix ALSA plugin is very impressive and very clever. it
-doesn't provide sample sync, its true, but its the answer to what most
-consumer apps want. try it. you'll like it.
+- Ren=E9
 
---p
+--  =
 
+Ren=E9 Rebe - Europe/Germany/Berlin
+e-mail:   rene@rocklinux.org, rene.rebe@gmx.net
+web:      http://www.rocklinux.org/people/rene http://gsmp.tfh-berlin.d=
+e/rene/
+
+Anyone sending unwanted advertising e-mail to this address will be
+charged $25 for network traffic and computing time. By extracting my
+address from this message or its header, you agree to these terms.
 
 
 -------------------------------------------------------
