@@ -1,10 +1,15 @@
-From: "Ronald S. Bultje" <rbultje@ronald.bitfreak.net>
-Subject: why do elements disappear?
-Date: Tue, 15 Feb 2005 22:12:53 +0100
-Message-ID: <1108501973.2845.87.camel@tux.lan>
+From: Michael Gerdau <mgd@technosis.de>
+Subject: Re: ALSA support for Unitor8/AMT8 ?
+Date: Tue, 15 Feb 2005 23:02:12 +0100
+Message-ID: <200502152302.25375.mgd@technosis.de>
+References: <Pine.HPX.4.33n.0502150852220.4445-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/signed;
+  boundary="nextPart1229888.H9UVSsmczS";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <Pine.HPX.4.33n.0502150852220.4445-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,69 +20,86 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--nextPart1229888.H9UVSsmczS
+Content-Type: multipart/mixed;
+  boundary="Boundary-01=_lFnECHup548Zt+I"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-a mixer app of mine (you know, one of those controlling volumes) is
-updating itself (if other apps change settings) by continuously running
-get-volume (et al) on all mixer elements every once in a while (10Hz).
-Right, so I could use signals or whatever it is that libalsa provides,
-but this is what OSS and such require, so I'm using this for now. This
-all works really well, except if new applications are started accessing
-the soundcard and the soundcard is a sb!live (which is true for quite a
-bunch of people). It will then sometimes crash. Backtraces look like
-this:
+--Boundary-01=_lFnECHup548Zt+I
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-#3  <signal handler called>
-#4  0x001ef7a2 in _dl_sysinfo_int80 () from /lib/ld-linux.so.2
-#5  0x023cb955 in raise () from /lib/tls/libc.so.6
-#6  0x023cd319 in abort () from /lib/tls/libc.so.6
-#7  0x023c4f41 in __assert_fail () from /lib/tls/libc.so.6
-#8  0x00b5e237 in snd_mixer_selem_get_playback_volume ()
-   from /lib/libasound.so.2
+> > Last not least I'm interested in (participating in) creating the
+> > software required for ALSA to support the Unitor8/AMT family of
+> > MIDI devices.
+>=20
+> Please show the output of "lsusb -v".
 
-Here's some more debug on the track we're accessing (this is GStreamer
-information, but you'll get the idea):
+=46ind it attached.
 
-(gdb) print *alsa_track
-$1 = {parent = {parent = {g_type_instance = {g_class = 0x8a37870},
-ref_count = 3, qdata = 0x8ab1528}, label = 0x8a63488 "EMU10K1 PCM",
-flags = GST_MIXER_TRACK_OUTPUT, num_channels = 3, min_volume = 0,
-max_volume = 65535}, element = 0x8a7bb00, track_num = 40, alsa_flags =
-2, volumes = {65535, 65535, 65535, 0 <repeats 29 times>}}
+Best,
+Michael
+=2D-=20
+ Vote against SPAM - see http://www.politik-digital.de/spam/
+ Michael Gerdau       email: mgd@technosis.de
+ GPG-keys available on request or at public keyserver
 
-OK, so this is specific to the EMU10K1 PCM tracks (there's 32 of them).
-Those are *not* the first elements, definately, I don't know what they
-do exactly though though... But it's something specific to them.
+--Boundary-01=_lFnECHup548Zt+I
+Content-Type: application/x-gzip;
+  name="lsusb.txt.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="lsusb.txt.gz"
 
-I figured I could be an idiot, so here's valgrind:
+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
 
-==20529== Invalid read of size 4
-==20529==    at 0x1BB870B0: snd_mixer_selem_has_playback_switch (in
-/lib/libasound.so.2.0.0)
-==20529==    by 0x1D01AB2B: gst_alsa_mixer_update (gstalsamixer.c:412)
-==20529==    by 0x1D01AC4A: gst_alsa_mixer_get_volume
-(gstalsamixer.c:439)
-==20529==    by 0x1C416998: gst_mixer_get_volume (mixer.c:185)
-==20529==  Address 0x1CE2B678 is 0 bytes inside a block of size 44
-free'd
-==20529==    at 0x1B904FB1: free (vg_replace_malloc.c:153)
-==20529==    by 0x1BB8390C: snd_mixer_elem_remove (in
-/lib/libasound.so.2.0.0)
-==20529==    by 0x1BB86630: (within /lib/libasound.so.2.0.0)
-==20529==    by 0x1BB8668C: (within /lib/libasound.so.2.0.0)
+--Boundary-01=_lFnECHup548Zt+I--
 
-It appears that alsa removes the EMU10K1 PCM elements when I call
-snd_mixer_handle_events(). Why does it do that, how do I make it stop
-doing it and/or how do I handle this?
+--nextPart1229888.H9UVSsmczS
+Content-Type: application/pgp-signature
 
-Thanks,
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
 
-Ronald
--- 
-Ronald S. Bultje <rbultje@ronald.bitfreak.net>
+iD8DBQBCEnFxUYYhyuxDQc4RAqCWAJ9kTphiaxZ9dAhy+XzCzFn222nwxgCdGzYB
+KULBT44eJHPAFl2KEA4zpRk=
+=pfqW
+-----END PGP SIGNATURE-----
 
+--nextPart1229888.H9UVSsmczS--
 
 
 -------------------------------------------------------
