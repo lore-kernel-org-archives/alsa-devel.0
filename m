@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000709]: Recording doesnt work
-Date: Sun, 5 Dec 2004 16:33:52 +0100
-Message-ID: <bd408ec4a69d4b7d18e40802c17000f3@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "Sebastian " <ngmhpnqqler@yahoo.com>
+Subject: This is the Best
+Date: Sun, 05 Dec 2004 14:34:00 -0200
+Message-ID: <E1A572M-7951nV-00ouzqteiatcyj@yahoo.com>
+References: <20031002150239.GG32185@asuka.tech.sitadelle.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 69F71323
-	for <alsa-devel@alsa-project.org>; Sun,  5 Dec 2004 16:33:52 +0100 (MET)
+In-Reply-To: Your message of "Sun, 05 Dec 2004 21:43:00 +0500."
+             <20031002150239.GG32185@asuka.tech.sitadelle.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,47 +15,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org, andy@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Alsa-announce
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=709> 
-======================================================================
-Reported By:                tigermb
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   709
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             12-05-2004 16:33 CET
-Last Modified:              12-05-2004 16:33 CET
-======================================================================
-Summary:                    Recording doesnt work
-Description: 
-Soundcard: Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+Our very besstt price of medss:
 
-The recording doesnt work.
-When trying to record, nuthing happens. No errors. Although gnome-meeting
-got an error and wonders if i have permission to device. But i tried it
-under root and i get the same error. arecord give no error, but just
-doesnt do anything.
-======================================================================
+Viicodin 	- $90 (30 pi|ls)
+Hydr0c0done 	- $90 (30 pil|s)
+V1a'gra 	- $90 (30 pil|s)
+Va|ium 		- $90 (30 pil|s)
+Cia|is 		- $90 (30 pi||s)
+Xa'nax 		- $90 (30 pi|ls)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-05-04 16:33 tigermb        New Issue                                    
-======================================================================
+You Can't find this 0ffers available anywhere.
+Visit Us T0day!
+
+http://www.eoinf.com/_c33b87142ce3416662baa654773c6a8e/
+
+
+
+
+
+
+
+
+This is 1 -time mailing. N0-re m0val are re'qui-red
+
 
 
 
