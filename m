@@ -1,18 +1,16 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Problems running latencytest: "error setting freq
- 1024"
-Date: Wed, 24 Mar 2004 09:20:11 +0100 (CET)
+Subject: Re: snd_pcm_wait()  More details required.
+Date: Wed, 24 Mar 2004 09:59:58 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403240919210.1860@pnote.perex-int.cz>
-References: <20040323205352.GA3246@fliwatut.scifi>
- <Pine.LNX.4.58.0403240916440.1860@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.58.0403240959270.1860@pnote.perex-int.cz>
+References: <Pine.HPX.4.33n.0403240854480.20041-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA16562
-	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2004 09:21:20 +0100
-In-Reply-To: <Pine.LNX.4.58.0403240916440.1860@pnote.perex-int.cz>
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA17606
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2004 10:01:07 +0100
+In-Reply-To: <Pine.HPX.4.33n.0403240854480.20041-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,19 +19,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Frank Barknecht <fbar@footils.org>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 24 Mar 2004, Jaroslav Kysela wrote:
+On Wed, 24 Mar 2004, Clemens Ladisch wrote:
 
-> > $ measure -p ./out/x11.png -o ./out/x11.out -c 0 -f 1024 -n 2 -t 2
-> > I get this error message: "error setting freq 1024"
+> Jaroslav Kysela wrote:
+> > On Tue, 23 Mar 2004, Clemens Ladisch wrote:
+> > > The following test program shows strange behaviour:
+> >
+> > Thanks. It's fixed in CVS now.
 > 
-> Frequency should be equal or greater than 5000Hz.
+> The second problem persists, i.e., snd_pcm_wait() returns although the
+> pcm isn't actually ready:
+> 
+> $ ./waittest dmix:hw:0
+> 12000 frames written
+> pcm is not ready!
+> 6000 frames written
 
-Sorry, it appears to be the rtc frequency, of course. I was referring to
-the PCM rate.
+Fixed again. I was not able reproduce this problem with some hardware.
 
 						Jaroslav
 
