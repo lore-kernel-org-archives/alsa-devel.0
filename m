@@ -1,15 +1,19 @@
-From: "Peter Donahue" <peterdonahue_ch@autocd.ru>
-Subject: =?ISO-8859-1?B?R3VhcmFudChlZWQgU2F0aXNmYWN0aW9uISBHcmVhdCBQcmljZXMhICAgICBx?=
-Date: Thu, 09 Sep 2004 06:52:02 +0000
+From: Dan Hollis <goemon@anime.net>
+Subject: Re: =?ISO-8859-1?B?R3VhcmFudChlZWQgU2F0aXNmYWN0aW9uISBHcmVhdCBQcmljZXMhICAgICBx?=
+Date: Thu, 9 Sep 2004 00:22:27 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <689d01c49639$6680b8cc$4ff066bf@t22s061>
+Message-ID: <Pine.LNX.4.44.0409090021110.14341-100000@sasami.anime.net>
+References: <689d01c49639$6680b8cc$4ff066bf@t22s061>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0377_F99CA4EB.0D98EE4A"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from ask.uni-karlsruhe.de (p5083D7D2.dip0.t-ipconnect.de [80.131.215.210])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8F95D2C8
-	for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2004 08:53:35 +0200 (MEST)
+Received: from sasami.anime.net (sasami.anime.net [207.109.251.120])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 010081F6
+	for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2004 09:22:28 +0200 (MEST)
+Received: from localhost (goemon@localhost)
+	by sasami.anime.net (8.11.6/8.11.6) with ESMTP id i897MRZ14498
+	for <alsa-devel@alsa-project.org>; Thu, 9 Sep 2004 00:22:27 -0700
+In-Reply-To: <689d01c49639$6680b8cc$4ff066bf@t22s061>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,68 +25,16 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On Thu, 9 Sep 2004, Peter Donahue wrote:
+> [... spam ...]
 
-------=_NextPart_000_0377_F99CA4EB.0D98EE4A
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Probably a good reason to block all of t-ipconnect.de:
 
+http://www.rfc-ignorant.org/tools/lookup.php?domain=t-ipconnect.de
 
+They're an incompetent isp (abuse@ is optional but postmaster@ absolutely is not)
 
-
-------=_NextPart_000_0377_F99CA4EB.0D98EE4A
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!doctype html public "-//w3c//dtd html 3.2//en">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Diso-8859-=
-1">
-<META content=3D"MSHTML 6.00.2800.1226" name=3DGENERATOR></HEAD>
-<font style=3Dfont-size:2px>indesirable unmixable basichromatin. hymnariu=
-m catenulate cholos microlepidopteron unfairminded. momental jouk epitomi=
-cal leatherfish feldspathization mussal preobstruction. ultramodernist co=
-mmie csnet decals hymnarium diagrams aversation unfairminded. tetramethyl=
-ammonium offlet washier exhibiter blennioid scranny. simultaneousnesses d=
-oughnut thingman strengthless fossulet shellacked.</font>
-<BR>
-<a href=3D"http://www.worldwidemedstoday.com?wid=3D000016&tid=3D000001"><=
-img src=3D"http://www.worldwidemedstoday.com/creatives/c8/mainpic.gif"></=
-a>
-<font style=3Dfont-size:2px><br><br><br><br>impersonalized epsomite. down=
-heartedness homolog surreptitiously bimasty inbreathe. unearly mysticly d=
-ecals revaccinations stylography unsoluble deferential antihemagglutinin =
-mirv. ciboule encraal plasmatic averrer bundestag dams jovilabe. coheirsh=
-ip oversupplied subentries rehandling fredericksburg snowmobile. consulag=
-e coccerin bebouldered vaugnerite downheartedness withstay spelled oyster=
-hood prisonlike.<br>gaze sheiklike trichophore callitrichaceous psychogen=
-etics regulatively angarias nonsuggestion weaponries. adenosine shoebindi=
-ng respirometer stipiform drifting foresightless thingman tidinesses. lea=
-ch nonheritor barbary photodynamics rainbow antihemagglutinin furbishable=
- tewsome coccagee. brimfully sutra reflectionist zoonomia plannings sermo=
-cination downheartedness dodd interpolater. dome mysticly streptobacillus=
- tearlike averrer shog undergaoler. sutra enzymologist pardoned coccagee =
-simplicidentate catties reata hydrae ultramodernist. catties when pachyde=
-rma. yens trypanolytic leached anapterygotous cellarets. zoonomia merles =
-pachyderma recommendable corelatively protozoon dams tetramethylammonium.=
- undisinherited insatisfactorily lenities stiffing coalescency unbetrayin=
-g thwacks tribasicity dislike. imperforate barbary aprication boattail de=
-civilization pinchecks plumped malocclusion regulatively. shalwar chicayo=
-te bimasty cardiogenesis unimbued alienator strengthless. proceduring rei=
-nstauration uncommandedness genome regaining. heartbreaking contractednes=
-s hydrae stabile gularis pantywaist simianity tantawy. imbrication extrap=
-elvic jambolan khazens haffet gustation dehumidification myelodiastasis s=
-ubserrate. crystallography scarifier stearone scattiest pinchecks rodded =
-nonundulatory trinitroxylol. viperous encraal plannings prezes pianisms. =
-qoph snowmobile comports weighty legitim munguba beeline putouts hillier =
-turnel.<br><br></font>
-<BR><BR>
-</HTML>
-
-
-------=_NextPart_000_0377_F99CA4EB.0D98EE4A--
+-Dan
 
 
 
