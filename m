@@ -1,15 +1,14 @@
-From: Jeremy Hall <jhall@maoz.com>
+From: Abramo Bagnara <abramo.bagnara@libero.it>
 Subject: Re: rme9652: possible deadlock
-Date: Mon, 28 Apr 2003 04:44:31 -0400 (EDT)
+Date: Mon, 28 Apr 2003 10:58:44 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200304280844.h3S8iVtT030058@sith.maoz.com>
-References: <Pine.LNX.4.44.0304232101560.18005-100000@pnote.perex-int.cz>
+Message-ID: <3EACED44.2020102@libero.it>
+References: <200304280823.h3S8NCUh029997@sith.maoz.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0304232101560.18005-100000@pnote.perex-int.cz> from
- Jaroslav Kysela at "Apr 23, 2003 09:19:27 pm"
+In-Reply-To: <200304280823.h3S8NCUh029997@sith.maoz.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,87 +17,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Jeremy Hall <jhall@maoz.com>, "paul@linuxaudiosystems.com" <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Jeremy Hall <jhall@maoz.com>
+Cc: Jaroslav Kysela <perex@suse.cz>, "paul@linuxaudiosystems.com" <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-oh I didn't see this bit before
+Jeremy Hall ha scritto:
+> Will this fix allow both CPUs to run snd_pcm_period_elapsed() and friends 
+> concurrently and then if XRUN is encountered grab the group lock, or will 
+> one stream run at a time, in effect only allowing one card to process at a 
+> time?
 
-In the new year, Jaroslav Kysela wrote:
-> On Wed, 23 Apr 2003, Jeremy Hall wrote:
-> 
-> > In the new year, Jaroslav Kysela wrote:
-> > > On Tue, 22 Apr 2003, Jeremy Hall wrote:
-> > > 
-> > > > If both cards try to ru> > > If we stop all linked streams at one time XRUN, application must restart 
-> > > all things and the driver will GUERANTEE that the restarted streams are 
-> > > in sample sync if hardware supports this feature. I don't see any problem 
-> > > in this area.
-> > > 
-> > yes, if we stop them at one time, but we might not stop them at the "same" 
-> > time.
-> 
-> Note: We don't even stop the stream for once card "precisely" at period 
-> boundary (if interrupt arrived late) so it's academic question. Does it 
-> hurt something if streams are in different position after XRUN? They must 
-> be restarted anyway.
-> 
-If we know exactly where and on what channels the XRUN occurred, we might 
-be able to save more audio and minimize the xrun to the actual xrun time 
-rather than the nearest fragment boundary (if that is what we do) if our 
-fragment size (if you will allow me to use a deprecated term) is big, say 
-4096 frames, then you're telling me that if a xrun happens in that moment 
-the whole 4096 frames will be lost? or 8192 or whatever you set your 
-fragsize to
+As I've pointed to Jaroslav, current CVS code does not permit to both 
+CPUs to run the interrupt handler of two linked streams concurrently.
 
-> > > And yes, applications might use no-xrun mode. The sample sync is always 
-> > > guaranteed, but the transferred stream might be invalid.
-> > > 
-> > What does jack use?
-> 
-> Jack uses standard xrun mode and Paul doesn't probably work with multiple 
-> cards connected together. He uses RME hardware with 24 channels.
+This is due to unconditional substitution of stream specific lock with a 
+linked group lock.
 
-I have two rme9652 connected together synced with wordclock and have 
-chosen to cable them so that the 24 channels are spread across both cards 
-in such a way that to use 24 channels at 96 all I need to do is press the 
-DS button on my adi8DS's and don't need to reconfig the optical cables.  
-So in theory I should have hardware synch, but in the case of XRUN it 
-seems both cards lose.
+This is of course deadlock safe, but I think it's not the right solution.
 
-I think we are speaking past one another.  You say that sample-synch is 
-guaranteed, and that is because both cards have the same fragment size and 
-are told to go get one fragment.  Paul has considered the possability that 
-the RME9652 may not tell us the hw pointer position properly--maybe there 
-is a firmware upgrade for this--maybe not, but is that why we must go on 
-fragment synch?
+I draw my current proposal (my previous proposal to Jaroslav concerning 
+that was flawed):
 
-but I am saying that if an XRUN occurs time is no longer a constant, and 
-thus samples in the buffer are no longer relative.  Restarting the 
-substreams might be similar to closing the barn door after the horse has 
-already run away, closing an empty stall.
+let's call stream specific locks S and the linked group lock G.
 
-_J
+Whomever need to take stream specific lock take S.
 
-> 
-> 						Jaroslav
-> 
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SuSE Labs
-> 
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
+When this need to be promoted to G, my proposal is to use code like this:
+
+	if (!spin_trylock(G)) {
+		spin_unlock(S);
+		spin_lock(G);
+		spin_lock(S);
+	}
+
+This should solve all deadlock issues while retaining minimal lock 
+granularity.
+
+-- 
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 
