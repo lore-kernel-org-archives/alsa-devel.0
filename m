@@ -1,13 +1,15 @@
-From: Martin Habets <errandir_news@mph.eclipse.co.uk>
-Subject: Re: ALSA Driver for Sparc DBRI chips
-Date: Sat, 18 Dec 2004 15:15:09 +0000
-Message-ID: <20041218151509.GA13178@palantir8>
-References: <20041121095008.GA18392@palantir8> <s5hpt22ni23.wl@alsa2.suse.de>
+From: <gooch55@voila.fr>
+Subject: =?koi8-r?B?SGVsbG8gRnJpZW5k?=
+Date: Sat, 18 Dec 2004 15:50:23 -0000
+Message-ID: <75291027.20040527090353@voila.fr>
+Reply-To: <norvensi199@yahoo.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed;
+ boundary="----------4776C8326EB"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hpt22ni23.wl@alsa2.suse.de>
+Received: from gorkon.momentous.ca (gorkon.backboneservers.com [66.6.63.5])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 68D4B290
+	for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2004 16:50:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,37 +19,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi,
+------------4776C8326EB
+Content-Type: text/plain; charset=koi8-r
+Content-Transfer-Encoding: quoted-printable
 
-Sorry for the late reply. I was travelling and forgot to check alsa-devel
-(shame on me!). Besides, it seems quite hard to get hold of a sparc32 to
-test on while on the road.
 
-On Thu, Nov 25, 2004 at 03:01:56PM +0100, Takashi Iwai wrote:
-> I modified some codes to adapt to the latest 2.6.10-rc2, and reduced
-> compile warnings (just checked with the cross-compile environment.)
-> ALso, the spin_lock() is changed to spin_lock_irq() in the prepare
-> callback since the recent version is it became non-atomic.
-> The patch is below.
-> 
-> If you think your driver is mature to merge to Linux kernel, let me
-> know.   Otherwise I'll merge it to alsa-driver tree which is regarded
-> as the experimental tree and not submitted to mainstream kernel.
 
-I consider the code still expermental, so alsa-driver is okay. I'd like some
-other sparc folks to try it before it gets submitted to mainstream, even if
-it works okay for me.
+Hello alsa-devel@alsa-project.org
+=20
+You can earn from $300 to $2000 per week easily !=20
 
-> BTW, the build environment of alsa-driver for sparc has been fixed
-> recently on CVS.
+You shouldn't invest or purchase anything, it will not cost even $1 for y=
+ou.=20
+You should just spend some time, about 1-2 hours per day and even in the =
+first week you will start to receive your earned money.=20
+If you are interested in that, just write us to the following e-mail artu=
+r@freelance-biz.info .=20
+It is obligatory to indicate in the letter what country are you from and =
+we will send you a detailed description how you can earn those money.
 
-Thanks for the tip. I'll check it out.
+Sincerely yours, Artur Vovan
 
-Martin
+Your mail is alsa-devel@alsa-project.org
+Your  fax=20
+
+g dfsd6f546sadfc23zcx2v3x21cgv4f65sd54g6s5dfg6sadg
+------------4776C8326EB--
+
+
 
 
 -------------------------------------------------------
