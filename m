@@ -1,14 +1,14 @@
-From: Hartmut Geissbauer <nwgbh@swissonline.ch>
-Subject: Re: Full support for Creamware Noah and SFP
-Date: Tue, 09 Mar 2004 22:58:33 +0100
+From: Steve Harris <S.W.Harris@ecs.soton.ac.uk>
+Subject: Re: Firewire 410
+Date: Tue, 9 Mar 2004 22:28:29 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1078869513.2430.28.camel@chief.local>
-References: <1078855426.11076.36.camel@zauberwald.zeitgeist>
+Message-ID: <20040309222829.GB31667@login.ecs.soton.ac.uk>
+References: <200403091832.i29IWEPO027305@dhin.linuxaudiosystems.com> <1078857898.19902.39.camel@licorne.ircam.fr>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1078855426.11076.36.camel@zauberwald.zeitgeist>
+Content-Disposition: inline
+In-Reply-To: <1078857898.19902.39.camel@licorne.ircam.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,46 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Willie Sippel <willie@froq.net>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Willie,
+On Tue, Mar 09, 2004 at 07:44:59 +0100, Simon Schampijer wrote:
+> I have tried to use the m-audio with the iec61883 jack driver.
+> After doing some test, I have found that I can have some noise only
+> after an hot reboot of my powerbook (Mac OS X to Yellowdog Linux) with
+> the card plugged.
 
-Willie Sippel wrote:
-> Hi.
-> 
-> As some of you may know, Creamware (http://www.creamware.de) is under
-> new management since 2004 - and they have changed their mind regarding
-> Linux support.
+After talking with Bob, I think that he didnt even expect the iec61883 to
+be compatible with any hardware. It is in very early stages of
+development, and he has no hardware to test against. The initial aim was
+to get jack to jack communications working using something similar.
 
-Fine.
-
-[snipped interesting information about the SFP]
-
-I'm a user of the Creamware Noah (Ex). With extensive help from Clemens
-Ladisch we've got the audio and the midi interface working with the
-current alsa-cvs. (driver snd-usb-audio)
-
-I would really be amazed to have full Linux support for that device and
-I've some programming capabilities as well.
-
-But I'm not sure about, wether the NDA agrees in the basic alsa
-principles. What are the developers of alsa are thinking about that
-agreement?
-
-I'm working (for now only for my own requirements) on a midi based gui
-to control the different plugins. Without the possibilty to upload
-plugins so far. That's done by my one Windows machine. Ok, that doesn't
-happen that much. But it would be fine, to manage the CF-Card and other
-settings via the attached computer. 
-
-The architecture that I'm able to provide is x86.
-
-Regards, Hartmut
--- 
-Hartmut Geissbauer <nwgbh@swissonline.ch>
-
+- Steve 
 
 
 -------------------------------------------------------
