@@ -1,10 +1,12 @@
-From: Roman I Khimov <khimov@3os.ru>
-Subject: [PATCH] VIA DXS whitelist for MiTAC notebook (ALSA)
-Date: Fri, 04 Mar 2005 01:24:14 +0300
-Message-ID: <1109888653.13458.102.camel@rik-note.loc>
-Reply-To: khimov@3os.ru
+From: Pierre Ossman <drzeus-list@drzeus.cx>
+Subject: Re: Re: intel 8x0 went silent in 2.6.11
+Date: Fri, 04 Mar 2005 01:37:59 +0100
+Message-ID: <4227ADE7.3080100@drzeus.cx>
+References: <4227085C.7060104@drzeus.cx>	<29495f1d05030309455a990c5b@mail.gmail.com>	<Pine.LNX.4.62.0503031342270.19015@krusty.vfxcomputing.com>	<1109875926.2908.26.camel@mindpipe>	<Pine.LNX.4.62.0503031356150.19015@krusty.vfxcomputing.com>	<1109876978.2908.31.camel@mindpipe>	<Pine.LNX.4.62.0503031527550.30702@krusty.vfxcomputing.com> <20050303154929.1abd0a62.akpm@osdl.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-/mPoImh6UyUiKqJHSqZW"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <20050303154929.1abd0a62.akpm@osdl.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,59 +16,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: Mark Canter <marcus@vfxcomputing.com>, rlrevell@joe-job.com, nish.aravamudan@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Andrew Morton wrote:
 
---=-/mPoImh6UyUiKqJHSqZW
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+>Mark Canter <marcus@vfxcomputing.com> wrote:
+>  
+>
+>>To close this issue out of the LKML and alsa-devel, a bug report has been 
+>>written.
+>>
+>>It appears to be an issue with the 'headphone jack sense' (as kde labels 
+>>it).  The issue is in the way the 8x0 addresses the docking station/port 
+>>replicator's audio output jack.  The mentioned quick fix does not work for 
+>>using the ds/pr audio output, but does resolve it for a user that is only 
+>>using headphones/internal speakers.
+>>    
+>>
+>
+>But there was a behavioural change: applications which worked in 2.6.10
+>don't work in 2.6.11, is that correct?
+>
+>If so, the best course of action is to change the kernel so those
+>applications work again.  Can that be done?
+>
+>  
+>
+Yes. Speakers worked in 2.6.10 and stopped working in 2.6.11. This could 
+be changed by setting the default for the two new volumes to muted. I 
+don't know how this affects the issue with the docking station or the 
+bug that this is supposed to solve though.
 
-Adds MiTAC S2054S DXS whitelist entry in VIA sound driver (ALSA).
-
-Signed-off-by: Roman I Khimov <khimov@3os.ru>
-
---- linux-2.6.11/sound/pci/via82xx.c.old	2005-03-04 01:14:27.774913928 +030=
-0
-+++ linux-2.6.11/sound/pci/via82xx.c	2005-03-04 01:16:00.290849368 +0300
-@@ -2106,6 +2106,7 @@ static int __devinit check_dxs_list(stru
- 		{ .vendor =3D 0x1043, .device =3D 0x80b0, .action =3D VIA_DXS_NO_VRA }, =
-/* ASUS A7V600 & K8V*/=20
- 		{ .vendor =3D 0x1071, .device =3D 0x8375, .action =3D VIA_DXS_NO_VRA }, =
-/* Vobis/Yakumo/Mitac notebook */
- 		{ .vendor =3D 0x10cf, .device =3D 0x118e, .action =3D VIA_DXS_ENABLE }, =
-/* FSC laptop */
-+		{ .vendor =3D 0x1106, .device =3D 0x3059, .action =3D VIA_DXS_NO_VRA }, =
-/* MiTAC S2054S notebook */
- 		{ .vendor =3D 0x1106, .device =3D 0x4161, .action =3D VIA_DXS_NO_VRA }, =
-/* ASRock K7VT2 */
- 		{ .vendor =3D 0x1106, .device =3D 0x4552, .action =3D VIA_DXS_NO_VRA }, =
-/* QDI Kudoz 7X/600-6AL */
- 		{ .vendor =3D 0x1106, .device =3D 0xaa01, .action =3D VIA_DXS_NO_VRA }, =
-/* EPIA MII */
-
---=20
-  Roman.
-http://www.3os.ru/   http://www.osrc.info/
-gpg --recv-keys 0xE5E055C3
-
---=-/mPoImh6UyUiKqJHSqZW
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: =?koi8-r?Q?=FC=D4=C1?= =?koi8-r?Q?_=DE=C1=D3=D4=D8?=
-	=?koi8-r?Q?_=D3=CF=CF=C2=DD=C5=CE=C9=D1?=
-	=?koi8-r?Q?_=D0=CF=C4=D0=C9=D3=C1=CE=C1?=
-	=?koi8-r?Q?_=C3=C9=C6=D2=CF=D7=CF=CA?=
-	=?koi8-r?Q?_=D0=CF=C4=D0=C9=D3=D8=C0?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQBCJ46NXJ70z+XgVcMRAkuZAJ9Y3K5huHgcq4qVjJQKTwnajG5fLQCcCQhF
-ExoZzFNX716lCnZSXJEfZrY=
-=1DkZ
------END PGP SIGNATURE-----
-
---=-/mPoImh6UyUiKqJHSqZW--
+Rgds
+Pierre
 
 
 
