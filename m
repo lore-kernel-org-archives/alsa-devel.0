@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000798]: Make alsaconf optinal able to create an asound.conf
-Date: Wed, 19 Jan 2005 18:38:15 +0100
-Message-ID: <a1b73fcbce3b683c15f1c95cb327b243@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000821]: Audigy 2 NX USB
+Date: Wed, 19 Jan 2005 17:53:00 +0100
+Message-ID: <47dd381d56cf131a258cc8246dc43f1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3354724E
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 18:38:15 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6441226D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 17:53:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=798> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=821> 
 ======================================================================
-Reported By:                christeck
-Assigned To:                tiwai
+Reported By:                clusty
+Assigned To:                Clemens Ladisch
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   798
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   821
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 won't fix
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-09-2005 22:05 CET
-Last Modified:              01-19-2005 18:38 CET
+Date Submitted:             01-16-2005 16:47 CET
+Last Modified:              01-19-2005 17:52 CET
 ======================================================================
-Summary:                    Make alsaconf optinal able to create an asound.conf
+Summary:                    Audigy 2 NX USB
 Description: 
-An asound.conf is difficult to create manually due to its difficult to
-understand syntax. Would be great if alsaconf could optional create it, so
-the user can
-
-* Define in which order the cards appear (e.g., internal AC97, Modem,
-USB-Audio and an USB MIDI card)
-
-* Define some dmix devices
-
-* Else? Not familiar enough with dmix, I do not use it :)
+Whenever I play a song with XMMS using ALSA output plugin it works for 2-3
+seconds and then it mutes. If I restart the player it does the same.
 ======================================================================
 
 ----------------------------------------------------------------------
- christeck - 01-19-05 18:33 
+ kempokaraterulz - 01-19-05 17:52 
 ----------------------------------------------------------------------
-You're certainly right, but it seems that I cannot close this entry; I
-guess you have permissions, can you please close this entry?
-
-Thanks and sorry for the traffic :) .
-
-----------------------------------------------------------------------
- tiwai - 01-19-05 18:38 
-----------------------------------------------------------------------
-OK, closing now.
+With a sound blaster live 24bit usb the sound works for anywhere between
+several minutes and like an hour or so ... before muting itself ...
+hitting stop then start again or pausing and unpausing the player restores
+sound. nothing in dmesg or any logs either . i just compiled this kernel
+with usb debugging so i will report back if i can find anything good in
+there.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-09-05 22:05 christeck      New Issue                                    
-01-19-05 15:29 jdthood        Note Added: 0003287                          
-01-19-05 16:48 tiwai          Note Added: 0003293                          
-01-19-05 16:54 jdthood        Note Added: 0003297                          
-01-19-05 16:56 tiwai          Note Added: 0003298                          
-01-19-05 18:33 christeck      Note Added: 0003309                          
-01-19-05 18:38 tiwai          Status                   new => resolved     
-01-19-05 18:38 tiwai          Resolution               open => won't fix   
-01-19-05 18:38 tiwai          Assigned To               => tiwai           
-01-19-05 18:38 tiwai          Note Added: 0003312                          
+01-16-05 16:47 clusty         New Issue                                    
+01-16-05 16:49 clusty         Issue Monitored: clusty                      
+01-19-05 17:52 kempokaraterulzNote Added: 0003308                          
 ======================================================================
 
 
