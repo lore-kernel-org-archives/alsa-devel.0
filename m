@@ -1,12 +1,12 @@
-From: mru@users.sourceforge.net (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
-Subject: Re: Fwd: RE: To ESS Tech Support
-Date: 12 Jun 2003 12:53:10 +0200
+From: p z oooo <pzad@pobox.sk>
+Subject: SB Live - hwdep
+Date: Thu, 12 Jun 2003 12:54:16 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1x65nb1sa1.fsf@zaphod.guide>
-References: <200306110058.09727.wturkal@cbu.edu> <1055414524.16774.22.camel@littlewolf2.littlewolf>
+Message-ID: <200306121054.MAA02302@www7.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,30 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-Devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Allan Klinbail <allank@labyrinth.net.au> writes:
+Hi,
 
-> > Here is a message from ESS regarding getting some information for
-> > the ESS1988/Allegro-1 series cards in order to get better support
-> > for them in linux. I hope that some others will help me badger the
-> > ESS people in order to (A) release info needed to make the Linux
-> > driver or (B) release the Windows driver source so that it can be
-> > used for ideas for the Linux driver.
-> > 
-> Looks like they didn't read your email...
-> 
-> Essentially you are offering them a favour and they see the word linux
-> and run away scared.. 
+Ioctl SNDRV_EMU10K1_IOCTL_PCM_PEEK in snd_emu10k1_fx8010_ioctl=20
+allocate structure to ipcm which is then passed to=20
+snd_emu10k1_ipcm_peek which then uses one of member (ipcm->substream)=20
+which is not initialized (may come from user space ???).
 
-It may very well have been an automatic reply triggered by the work
-linux in the question.  I've seen such things before.
+Peter Zubaj
 
--- 
-Måns Rullgård
-mru@users.sf.net
 
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislusenstva=0APAL=
+M Zire v cenach uz od 4.950,- Sk bez DPH=0ANavstivte nas na adrese http://w=
+ww.somi.sk/akcie.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
 
 
 -------------------------------------------------------
