@@ -1,14 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Creative Lab's Extigy
-Date: Fri, 13 Sep 2002 10:38:25 +0200 (METDST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Setting hw constraints
+Date: Fri, 13 Sep 2002 11:02:41 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0209131007120.11125-100000@studcom.urz.uni-halle.de>
-References: <20020912172659.GA20084@undertone.org>
+Message-ID: <Pine.LNX.4.33.0209131058260.521-100000@pnote.perex-int.cz>
+References: <5.1.1.6.1.20020913022555.4320e3d0@pop.alternex.com.br>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20020912172659.GA20084@undertone.org>
+In-Reply-To: <5.1.1.6.1.20020913022555.4320e3d0@pop.alternex.com.br>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,57 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php=alsa-devel>
-To: mark@undertone.org
-Cc: alsa-devel@lists.sourceforge.net
+To: Haroldo Gamal <gamal@alternex.com.br>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-mark@undertone.org wrote:
-> While I appreciate the tremendous work done with the USB audio
-> support, I'm just not getting access to the featureset I want on my
-> extigy (external USB audigy card from cl).
+On Fri, 13 Sep 2002, Haroldo Gamal wrote:
 
-What features are missing?
+> Hi!
+> 
+> I am trying to improve the korg1212 driver and I am finding a difficult
+> situation. Let me explain... The korg1212 card has a fixed size audio
+> frame containing two different sample size, 16 bits and 32 bits, that
+> are filled by the card at same time. Ten channels of this frame have 16
+> bits (ADAT + analog channels), two others have 20 bits (SPDIF) and 32
+> bits of ADAT Time-code information.
+> I am trying to establish three different devices to support these
+> different sample size and interface type (ADAT, analog and SPDIF). To do
+> this, I will have a frame size greater than the number of samples times
+> its size.
 
-> I admit I do not have much experience writing device drivers. However,
-> I'd like to believe myself to be technically competant enough with the
-> linux kernel to begin doing so. What I'm looking for here are a few
-> pointers and tips for where to start, what code to stare at for a
-> while, etc. The ALSA documentation is pretty good as is, but I think
-> I'd need a little more than that as far as driver development goes.
+Nope. The frame size should be equal to real samples, but the physical
+lenght might be greater. Simply, define your copy() and silence()
+callbacks for standard read/write operations and override
+SNDRV_PCM_IOCTL_CHANNEL_INFO with the right step and first value.
 
-The current state of ALSA driver development documentation is "Use the
-source, Luke!"  Especially, there's alsa-kernel/drivers/dummy.c as an
-example driver.
+						Jaroslav
 
-I'd suggest to read about generic Linux driver development. There's much
-useful information in the Documentation/ directory of the kernel, and
-there's <http://www.oreilly.com/catalog/linuxdrive2/chapter/book/>.
-
-For a USB audio driver, you have to read (and understand :) the relevant
-parts from the USB specification <http://www.usb.org/developers/docs.html>
-and from the Audio Class specifications
-<http://www.usb.org/developers/devclass_docs.html>. If your brain is still
-working after that :-) , read the files in alsa-kernel/usb/.
-
-> Is it fiesable? Would a driver need to be written from scratch? Could
-> I just hook some extentions into the present usb-audio driver?
-
-If the missing features are something already implemented in the ALSA
-driver but not describes by the USB descriptors, it would be possible to
-extend the quirk mechanism of the driver (currently, it's used for some
-USB MIDI devices). <http://www.cs.umass.edu/~cochran/> mentions the MIDI
-and IR parts of the Extigy have this problem.
-
-> Does Creative Labs even release enough info/specs to write a decent
-> driver?
-
-I didn't find any on their opensource website. I'd guess you'd have to
-sign an NDA.
-
-
-HTH
-Clemens
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 
