@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000626]: Oops on cat /dev/urandom > /dev/dsp
-Date: Tue, 9 Nov 2004 18:51:20 +0100
-Message-ID: <63792aa5df0120d518081804d97358a0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000622]: snd-ens1371 hisses and garbled sound
+Date: Tue, 9 Nov 2004 18:54:18 +0100
+Message-ID: <6f0894846195540d80397576b5a14f1e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F1A432B6
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 18:51:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C71AA2B6
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 18:54:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,109 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=626> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=622> 
 ======================================================================
-Reported By:                Luke-Jr
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   626
-Category:                   PPC - powermac
+Issue ID:                   622
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             11-03-2004 15:14 CET
-Last Modified:              11-09-2004 18:51 CET
+Date Submitted:             11-01-2004 11:29 CET
+Last Modified:              11-09-2004 18:54 CET
 ======================================================================
-Summary:                    Oops on cat /dev/urandom > /dev/dsp
+Summary:                    snd-ens1371 hisses and garbled sound
 Description: 
-Oops: kernel access of bad area, sig: 11
-[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-NIP: D253BD20 LR: D253C634 SP: CE547DB0 REGS: ce547d00 TRAP: 0300    Not
-tainted
-MSR: 00009032 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
-DAR: D254203C, DSISR: 40000000
-TASK = c07c77d0[7282] 'cat' THREAD: ce546000Last syscall: 4
-GPR00: 000007FC CE547DB0 C07C77D0 CF7B7B40 CFC38980 C063C8E0 00000200
-00000B03
-GPR08: 00000001 D2541840 000007FC D2541880 CF7B7B24 1001C140 00000000
-00000000
-GPR16: 00000001 CFC38980 C063C8E0 00000000 00000000 10015080 00000001
-00000000
-GPR24: 00000000 CFC400A0 CFC38980 D253BCD8 CFC38980 CF7B7BB0 CF7B7B40
-00000B03
-NIP [d253bd20] resample_expand+0x48/0x3a8 [snd_pcm_oss]
-LR [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
-Call trace:
- [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
- [d2539020] snd_pcm_plug_write_transfer+0x1cc/0x2a0 [snd_pcm_oss]
- [d2534518] snd_pcm_oss_write2+0xb4/0x12c [snd_pcm_oss]
- [d2536c94] snd_pcm_oss_write+0x220/0x26c [snd_pcm_oss]
- [c0058320] vfs_write+0x114/0x13c
- [c0058424] sys_write+0x4c/0x90
- [c00063a0] ret_from_syscall+0x0/0x44
+Please see Debian bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=239575:
 
+    http://bugs.debian.org/239575
+
+The submitter writes in part:
+
+------------------------------------------------------
+Before installing [Debian] sarge I happily used the ALSA sound system on a
+2.4.20 [kernel] with my SB PCI 128 soundcard. With the 2.4.24 kernel [...]
+the following problems occur:
+After initilization of the snd-ens1371 module a loud hiss comes out of the
+speakers. The artsd fails and displays a message that it will use the null
+output device. All ALSA or arts enabled apps either crash, remain in a
+infinite loop  initializing or start with sound disabled.
+------------------------------------------------------
+
+Another person adds:
+
+------------------------------------------------------
+Sound system is working rather properly but I get continual hisses out of
+my soundcard, some sound is coming out as well but is completely garbled.
+------------------------------------------------------
+
+Any idea what might be wrong?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 18:51 
+ jdthood - 11-02-04 21:27 
 ----------------------------------------------------------------------
-Hmm, I remember that this function has had problems with the old gcc.
-Which gcc version are you using?
+One of the submitters added the following information.
+------------------------------------------------------
+[Using alsa-lib 1.0.6]
+
+Actually, I found a workaround to my problem under:
+http://www.mail-archive.com/gentoo-user@gentoo.org/msg39015.html
+
+It reads:
+> I upgraded to KDE 3.2 (also had an upgrade to alsa-driver .9.8) and
+afterward 
+> had bad sound.  (I have a Creative PCI 128 card, or something like that,
+that 
+> linux identifies as an Ensoniq 5880, for which alsa uses the ens1371
+card 
+> drivers, whatever)
+> 
+> If I turned up the volume (on the speaker) I got  a lot of hiss and
+static on 
+> the left channel.  Even when I turned the volume in kmix all the way
+down       
+> (should be just silence) I would get hiss, static and whatever was
+playing 
+> (like a song on xmms) 
+> 
+> After trying a lot of complex things, the solution was pretty simple,
+click 
+> the little Advanced box in kmix, and uncheck the button for IEC958.
+> 
+
+That's what I did and it solved also my problem, though I would be 
+pretty happy to have some explanations on the why. I tried also with 
+alsamixer and (M)ute on IEC958 works as well, and the setup did survive 
+an "alsactl store/restore" cycle. So it looks good for me.
+
+So, for me, the severity can be reduced. I do still think that the 
+problem needs to be fixed (for new users), or at least documented.
+
+Cheers, Eric
+
+----------------------------------------------------------------------
+ tiwai - 11-09-04 18:54 
+----------------------------------------------------------------------
+This might be a KDE problem, which automatically turned on
+this volume switch, although the driver default is OFF...
+
+Maybe it's better to remove this one to avoid these reports.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-03-04 15:14 Luke-Jr        New Issue                                    
-11-09-04 18:51 tiwai          Note Added: 0002334                          
+11-01-04 11:29 jdthood        New Issue                                    
+11-02-04 21:27 jdthood        Note Added: 0002299                          
+11-09-04 18:54 tiwai          Note Added: 0002335                          
 ======================================================================
 
 
