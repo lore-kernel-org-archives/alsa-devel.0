@@ -1,15 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH 1/5] emu10k1 SB Live: Master volume and
- front channels via fxbus 8,9
-Date: Tue, 22 Feb 2005 09:31:36 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0502220925540.1748@pnote.perex-int.cz>
-References: <421A3A3A.6070009@glocalnet.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000613]: Getting configure error
+Date: Tue, 22 Feb 2005 09:40:57 +0100
+Message-ID: <acd32d14133ec1785adf7a2721e88d63@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 44D78174
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:39:18 +0100 (MET)
-In-Reply-To: <421A3A3A.6070009@glocalnet.net>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E2D41174
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:40:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,33 +17,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 21 Feb 2005, Mikael Magnusson wrote:
 
-> This is the first in a set of five patches that add master volume and 
-> switch controls and front pcm channels via fxbus 8,9 to SB Live.
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=613> 
+======================================================================
+Reported By:                glower0617
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   613
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Distribution:               Mandrake
+Kernel Version:             2.6.8.1-10MDK
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             10-28-2004 07:22 CEST
+Last Modified:              02-22-2005 09:40 CET
+======================================================================
+Summary:                    Getting configure error
+Description: 
+checking how to run the C++ preprocessor... /lib/cpp
+configure: error: C++ preprocessor "/lib/cpp" fails sanity check
+See `config.log' for more details.
+make: *** No targets specified and no makefile found.  Stop.
+make: *** No rule to make target `install'.  Stop.
 
-I still feel that it's broken idea. We have also problems with AC97
-where the surround/center&lfe volumes are separate from AC97 Master Volume
-control, too (at least for Sigmatel codecs).
+======================================================================
 
-We need a layer in user space to handle these issues where we can express
-the control relations in very easy way and not mess the kernel with more 
-dust which is not necessary.
+----------------------------------------------------------------------
+ perex - 02-22-05 09:40 
+----------------------------------------------------------------------
+Appearently, you don't have installed gcc package in your system.
 
-It might be easy to write a small daemon which will create "Master Volume" 
-control for SB cards at this time until a decent solution in alsa-lib is 
-finished.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-28-04 07:22 glower0617     New Issue                                    
+10-28-04 07:22 glower0617     Distribution              => Mandrake        
+10-28-04 07:22 glower0617     Kernel Version            => 2.6.8.1-10MDK   
+02-22-05 09:40 perex          Status                   assigned => resolved
+02-22-05 09:40 perex          Resolution               open => fixed       
+02-22-05 09:40 perex          Note Added: 0003688                          
+======================================================================
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
