@@ -1,14 +1,13 @@
-From: "Thomas Charbonnel" <thomas@undata.org>
-Subject: Re: RME Hammerfall HDSP 9652: no configurations available
-Date: Sat, 19 Jul 2003 09:25:02 +0200 (CEST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [OOPS] Alsa 0.9.4 / kernel 2.6.0-test1-mm1
+Date: Sat, 19 Jul 2003 10:19:07 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1085.62.39.221.155.1058599502.squirrel@www.undata.org>
-References: <200307182118.27990.torger@ludd.luth.se>
+Message-ID: <Pine.LNX.4.44.0307191018430.3903-100000@pnote.perex-int.cz>
+References: <3F1839AF.1050709@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200307182118.27990.torger@ludd.luth.se>
+In-Reply-To: <3F1839AF.1050709@free.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,46 +16,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: torger@ludd.luth.se
-Cc: alsa-devel@lists.sourceforge.net
+To: Vince <fuzzy77@free.fr>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->
-> I'm trying out the HDSP driver from CVS (checked out today), on a RME
-> HDSP 9652 PCI card, but I don't manage to get it to run, with my basic
-> test
->
-> # aplay -D hw -f S32_LE -c 26 -r 48000 /dev/zero
->
-> Playing raw data '/dev/zero' : Signed 32 bit Little Endian, Rate 48000
-> Hz, Channels 26
-> aplay: set_params:787: Broken configuration for this PCM: no
-> configurations available
->
-> The firmware is loaded using hdsploader. Running aplay on another sound
-> card on the machine works.
->
+On Fri, 18 Jul 2003, Vince wrote:
 
-Note you don't need to run hdsploader with hdsp9652 cards.
+> P.S.: I intended to test alsa 0.9.5 (in the hope that this bug was 
+> already known & has already been fixed), but unfortunately I get a 
+> compile error (I simply dropped alsa-kernel 0.9.5 in the 2.6.0-test1-mm1 
+> source tree):
 
-> Any ideas why this happens? It seems like snd_pcm_hw_params_any returns
-> no parameters at all. That is strange, since when I put in some debug
-> logs in the driver it seems like the driver returns a proper
-> parameters.
->
-> /Anders Torger
->
+Copy also header files from alsa-kernel/include to linux/include/sound.
 
-There was a problem with the number of channels in a recent driver version
-for hdsp9652 cards. It was fixed in cvs yesterday. Unfortunately
-sourceforge's cvs has a 24 hours delay for anonymous checkout. You can
-check the number of channels using alsamixer or amixer. If the number
-reported is 14 instead of 26, then you need to update your tree or
-manually apply the patch I posted on this list 2 days ago.
+						Jaroslav
 
-Thomas
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
