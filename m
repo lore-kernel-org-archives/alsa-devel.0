@@ -1,15 +1,15 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
+From: "Thomas Charbonnel" <thomas@undata.org>
 Subject: RE: hdsp driver status
-Date: Thu, 3 Jul 2003 13:37:51 -0700
+Date: Fri, 4 Jul 2003 03:20:00 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGKEIDCKAB.mknecht@controlnet.com>
+Message-ID: <33235.81.50.18.84.1057281600.squirrel@www.undata.org>
 References: <32880.81.50.18.84.1057263758.squirrel@www.undata.org>
+        <NDBBLGIKBJENLAMOLFHGKEIDCKAB.mknecht@controlnet.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <32880.81.50.18.84.1057263758.squirrel@www.undata.org>
+In-Reply-To: <NDBBLGIKBJENLAMOLFHGKEIDCKAB.mknecht@controlnet.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,31 +18,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: mknecht@controlnet.com
+Cc: thomas@undata.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
-> The documentation is the driver code. Paul is in contact with people from
-> RME. As of today I'm not, but I'll try to contact them. I'd be as happy as
-> you to see the driver working smoothly in all possible configurations.
->
-> Thomas
+> I'm sort of concerned that after 6 months of no mixer on the HDSP 9652,
+> the DF/MF mixer will get fixed, and then I'll find out it has nothing to
+> do the HDSP 9652 and be let down again.
 >
 
-Thomas,
-   We RME users are very happy to have you on our side!
+The MF/DF mixer works, but firmware upload to the iobox fails with some
+card revision. On the HDSP 9652 no firmware has to be uploaded (hdsploader
+is unecessary), but the mixer is broken.
 
-   Can you give some insight (if you have enough info to comment!) into how
-much of the driver for the HDSP/DF/MF is also used for the HDSP 9652? I'm
-sort of concerned that after 6 months of no mixer on the HDSP 9652, the
-DF/MF mixer will get fixed, and then I'll find out it has nothing to do the
-HDSP 9652 and be let down again.
+>    Is it one common design, or is the mixer different?
 
-   Is it one common design, or is the mixer different?
+It is one common design BUT the mixer is different...
 
-Thanks,
-Mark
+Thomas
+
 
 
 
