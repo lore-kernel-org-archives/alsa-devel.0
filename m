@@ -1,13 +1,20 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re:line in not supported Audigy and Audigy2 ?
-Date: Mon, 24 May 2004 09:48:04 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: 1.0.5rc1 release
+Date: Mon, 24 May 2004 21:49:11 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405240748.i4O7m3Nj010688@www3.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Message-ID: <Pine.LNX.4.58.0405242146260.1779@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA13867
+	for <alsa-devel@alsa-project.org>; Mon, 24 May 2004 21:41:50 +0200
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id EA401562
+	for <alsa-devel@alsa-project.org>; Mon, 24 May 2004 21:41:49 +0200 (MEST)
+Received: from pnote.perex-int.cz (localhost [127.0.0.1])
+	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id D181C110BB
+	for <alsa-devel@alsa-project.org>; Mon, 24 May 2004 21:41:49 +0200 (CEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,27 +23,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James@superbug.demon.co.uk
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi all,
 
-If you think Line In on back side of card then:
+	ALSA 1.0.5rc1 is out. Please, report (especially 
+compilation) problems.
 
-try to unmute and set volume for
-Line In
-Analog Mix (best 100 %)
-Front (best 100 %)
-Master (best 100 %)
+					Thanks,
+						Jaroslav
 
-I am sure that it works on audigy 1.
-
-Peter Zubaj
-
-
-=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
-bte radost svojmu telefonu=0A
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
