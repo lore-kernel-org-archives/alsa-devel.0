@@ -1,14 +1,12 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: midi problems with Quattro usb interface
-Date: Mon, 24 Mar 2003 09:03:22 +0100 (MET)
+Subject: [PATCH] seq-midi running status fix
+Date: Mon, 24 Mar 2003 09:10:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0303240901300.19990-100000@studcom.urz.uni-halle.de>
-References: <1048299352.3921.57.camel@cmn37.Stanford.EDU>
+Message-ID: <Pine.HPX.4.33n.0303240903260.19990-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1048299352.3921.57.camel@cmn37.Stanford.EDU>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,28 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Fernando Pablo Lopez-Lezcano wrote:
-> [...]
-> Apparently having active sensing midi bytes coming in to the Quattro
-> while the driver is being loaded kills input. I was not able to make
-> things work if the keyboard is connected to the interface when alsa
-> starts.
->
-> A MidiSport2x2 works fine under the same conditions (using the open
-> source firmware). It is not affected by the same Oxygen8 keyboard being
-> plugged in when the driver starts.
 
-This may be a bug (feature) of the Quattro firmware (which can't be
-changed). It would be nice to know if the MidiSport 2x2 with Midiman's
-firmware behaves in the same way.
+When a seq-midi device is used multiple times, it doesn't reset the parser
+when opening/closing the underlying rawmidi device, so it is possible that
+the first command to the newly opened rawmidi device uses running status.
+This may not work because the device may have been reset by the 0xff sent
+when closing the rawmidi device before, or the user might have connected
+another device.
+
+This patch initializes the parser when opening the rawmidi device so that
+the first command always includes the status byte.
 
 
-HTH
-Clemens
+Index: alsa-kernel/core/seq/seq_midi.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/core/seq/seq_midi.c,v
+retrieving revision 1.13
+diff -u -r1.13 seq_midi.c
+--- alsa-kernel/core/seq/seq_midi.c	27 Feb 2003 11:10:36 -0000	1.13
++++ alsa-kernel core/seq/seq_midi.c	24 Mar 2003 07:52:56 -0000
+@@ -236,6 +236,7 @@
+ 		snd_rawmidi_kernel_release(&msynth->output_rfile);
+ 		return err;
+ 	}
++	snd_midi_event_reset_decode(msynth->parser);
+ 	return 0;
+ }
+
 
 
 
