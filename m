@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000916]: no sound
-Date: Thu, 3 Mar 2005 05:42:31 +0100
-Message-ID: <17c84bde3a00feeb76db85d5e494e0d1@bugtrack.alsa-project.org>
+Date: Thu, 3 Mar 2005 05:44:22 +0100
+Message-ID: <401c6bf719dd2c9354a60741493f82a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7531F201
-	for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2005 05:42:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1C6AE201
+	for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2005 05:44:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               FC3
 Kernel Version:             2.6.10-1.766_FC3
 ======================================================================
 Date Submitted:             02-17-2005 17:00 CET
-Last Modified:              03-03-2005 05:42 CET
+Last Modified:              03-03-2005 05:44 CET
 ======================================================================
 Summary:                    no sound
 Description: 
@@ -53,14 +53,6 @@ My sound card is an Intel 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) AC'97 Audio
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-17-05 18:27 
-----------------------------------------------------------------------
-First, try ALSA 1.0.8.
-
-If you have still the same problem, attach the contents of
-/proc/asound/card0/codec97#0/* files and /etc/asound.state for debugging.
-
-----------------------------------------------------------------------
  manu-972 - 03-03-05 05:42 
 ----------------------------------------------------------------------
 I have the same problem on a hp dv1000 (I think it is the same sound system
@@ -71,6 +63,12 @@ I think this bug as been corrected but I don't know in which version
 (perhaps 1.0.8).
 HTH
 
+----------------------------------------------------------------------
+ manu-972 - 03-03-05 05:44 
+----------------------------------------------------------------------
+Just to be more precise here is the fix that I think cure this:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg11772.html
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -79,6 +77,7 @@ Date Modified  Username       Field                    Change
 02-17-05 17:00 mbarrett       Kernel Version            => 2.6.10-1.766_FC3
 02-17-05 18:27 tiwai          Note Added: 0003631                          
 03-03-05 05:42 manu-972       Note Added: 0003783                          
+03-03-05 05:44 manu-972       Note Added: 0003784                          
 ======================================================================
 
 
