@@ -1,14 +1,12 @@
-From: Cournapeau David <cournape@atr.jp>
-Subject: Re: Question regarding period/buffer and error handling
-Date: Mon, 31 May 2004 10:04:38 +0900
+From: =?gb2312?q?Roc=20Wu?= <cooloney@yahoo.com.cn>
+Subject: how to cross compile the alsa util?
+Date: Mon, 31 May 2004 10:28:39 +0800 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40BA84A6.30406@atr.jp>
-References: <Pine.HPX.4.33n.0405281746010.24462-100000@studcom.urz.uni-halle.de>
+Message-ID: <20040531022839.56401.qmail@web15201.mail.bjs.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=gb2312
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0405281746010.24462-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,49 +15,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: ALSA LIST <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
+Hello alls:
 
->Cournapeau David wrote:
->  
->
->>    My second problem is related to snd_card_next: If the card value
->>returned by snd_card_next is different from -1, does that always mean
->>than a alsa audio device is present on the system ?
->>    
->>
->
->It means that same kind of device with an ALSA driver is present.
->This does not mean that you'll be able to play PCM data to it.  And
->there may be software devices available.
->
->  
->
->>Is it the best method to probe a soundcard with alsa support?
->>    
->>
->
->snd_card_next() and snd_ctl_pcm_next_device() will give you a list of
->hardware devices only.
->
->Usually, you should use the device named "default" and let the user
->allow to specify another device name.
->
->  
->
-Ok, that's what I thought reading the different sources I checked, 
-concerning the device name. But I am still a bit confused how to probe a 
-soundcard to play a pcm stream to it: what  should I do after having 
-found an hardware device with snd_card_next ?
+Sorry for post the mail again. I posted it several
+days ago, but no response. Anybody can give me some
+hints?
 
-Is there always a "default" name ? Or is it user dependant ?
+I cross compiled the alsa-lib-1.04 to arm platform.
+The 2.6.6 kernel including alsa driver is ok on our
+ARM board, so I want to test the driver. how to do it?
 
-cheers,
+I think maybe the first step is to crosscompile the
+alsa utils to play a wave audio file.
 
-David
+CC=arm-linux-gcc ./configure --host=i686-linux
+--target=arm-linux
+make
+make install
+
+then compiled and installed the libasound.*/ asound.h
+to /usr/lib and /usr/include/sys.
+Then I try to cross compile the alsa-utils:
+
+CC=arm-linux-gcc ./configure --host=arm-linux
+--target=arm-linux
+
+checking for libasound headers version >= 0.9.0... not
+present.
+configure: error: Sufficiently new version of
+libasound not found.
+
+So how to make it and is there any simple method to
+test the alsa?
+
+Thanks a lot
+Best Regards
+
+Bryan Wu
+
+
+_________________________________________________________
+Do You Yahoo!? 
+œ”” œ‰Ã´–°£ø—≈ª¢µÁ” ◊‘÷˙¿©»›£°
+http://cn.rd.yahoo.com/mail_cn/tag/10m/*http://cn.mail.yahoo.com/event/10m.html
 
 
 -------------------------------------------------------
