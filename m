@@ -1,16 +1,12 @@
-From: Chris Cannam <cannam@all-day-breakfast.com>
-Subject: Re: alsa timer slippage
-Date: Sun, 14 Dec 2003 18:54:25 +0000
+From: Kristof vansant <de_lupus@pandora.be>
+Subject: plz fix this before alsa 1.0.0 get's released
+Date: Mon, 15 Dec 2003 01:38:15 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312141854.25649.cannam@all-day-breakfast.com>
-References: <200312141335.00239.cannam@all-day-breakfast.com> <1071410558.10990.3.camel@eviltwin> <200312141434.59757.cannam@all-day-breakfast.com>
+Message-ID: <1071448695.2358.6.camel@d51521F3E.kabel.telenet.be>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200312141434.59757.cannam@all-day-breakfast.com>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,28 +15,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jan Depner <eviltwin69@cableone.net>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 14 Dec 2003 2:34 pm, Chris Cannam wrote:
-> On Sunday 14 Dec 2003 2:02 pm, Jan Depner wrote:
-> > If I'm not mistaken the timing for your audio is coming from your
-> > sound card not your system clock.
->
-> [...] what if you have more
-> than one soundcard or no soundcard at all
+alsa won't compile on kernel 2.6 
+removing sndversions.h in vxp440.c and vxpocket.c does the trick. 
 
-And of course I can trivially test that by disabling my soundcard in 
-modules.conf.  So I did, and now I have no cards (at least, that's 
-what /proc/asound/cards says) and yet the queue timer test program 
-still runs and the queue timer still goes screwy.
+/home/lupus/alsa-driver-1.0.0rc2/pcmcia/vx/vxp440.c:6:31:
+linux/modversions.h: Onbekend bestand of map
+/home/lupus/alsa-driver-1.0.0rc2/pcmcia/vx/vxp440.c:7:25: sndversions.h:
+Onbekend bestand of map
+make[3]: *** [/home/lupus/alsa-driver-1.0.0rc2/pcmcia/vx/vxp440.o] Fout
+1
+make[2]: *** [/home/lupus/alsa-driver-1.0.0rc2/pcmcia/vx] Fout 2
+make[1]: *** [/home/lupus/alsa-driver-1.0.0rc2/pcmcia] Fout 2
+make[1]: Weggaan uit map `/lib/modules/2.6.0-0.test11.1.102/build'
+make: *** [compile] Fout 1
 
-So it's not a problem with the soundcard, unless ALSA is magically 
-sync'ing from a soundcard I haven't told it about.
-
-
-Chris
 
 
 
