@@ -1,16 +1,13 @@
-From: Richard Lemon <richard@clinicdesign.com.au>
-Subject: Re: nforce2 (snd_intel8x0) channels scrolling
-Date: 14 Nov 2003 10:54:21 +1030
+From: Peter Kirk <pwk.linuxfan@gmx.de>
+Subject: smart and automatic use of dmix and dsnoop - feature suggestion.
+Date: Fri, 14 Nov 2003 02:43:37 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1068769461.2826.1.camel@baked.spud.com>
-References: <ACB58D7EB1318947B319C01D1A5C38634B6B3E@neo.spud.com>
-	<3FB020B1.4090406@superbug.demon.co.uk>
-	<20031113181846.7d9b5d83.uvi@ezmail.ru>
+Message-ID: <200311140246.14873.pwk.linuxfan@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: Text/Plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20031113181846.7d9b5d83.uvi@ezmail.ru>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,75 +19,88 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Vladimir,
+WARNING: Unsanitized content follows.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I have written a small program to show the channel scrolling problem on
-the nforce 2 chipset. 
+Hi guys,
 
-James tested it on his system and the problem did not occur. I tested it
-on an Intel/Analog devices system the problem does not occur. It is
-specific to the nforce2 chipset. 
+In the last few days I have been reading a lot about how to mix streams int=
+o=20
+one in order to allow *weak* soundcards to play multiple streams, even thou=
+gh=20
+they cant do that in hardware. This seems to be doable with dmix. Also, I=
+=20
+have thought about the situation where the capture devices are used up, for=
+=20
+this I found the plugin "dsnoop".=20
+After thinking a bit about the situation I thought the following would be a=
+=20
+great idea (a feature suggestion to alsa):
 
-I was wrong when I said it occurred on the intel system (There is
-another problem I am tracking down in my code which does occur on both).
+Alsa knows howmany playback and howmany capture devices it has, and it also=
+=20
+knows howmany times they can be opened. So, the result are two numbers:
+The amount of streams that can be played back in hardware, AND
+The amount of times an application can open a capture stream.
 
-I am going to try to track down and fix the problem, but I have a fair
-bit of learning to do before I will be able to figure it out.
+So, these are two numbers - and basicly all is fine as long as you dont wan=
+t=20
+to excede them, but if you do, you need to use dmix or dsnoop. Why not use=
+=20
+dmix and dsnoop automaticly when necessary ? Wouldnt it be possible to have=
+=20
+every application play through something like a "smartdmix", that would jus=
+t=20
+pass on the sound-streams to real-world devices, as long as there are still=
+=20
+playback devices that can handle annother stream...once the user opens a=20
+playback stream while there is no *free*slot* for it, the "smartdmix" would=
+=20
+start mixing this stream with one of the already existing streams, making i=
+t=20
+possible to play back although the hardware wouldnt have supported the extr=
+a=20
+stream.
+Same idea with the capture part...as long as there are still capture device=
+s a=20
+utility called "smartdsnoop" would just pass on the capture stream directly=
+=20
+from the existing capture device, and only once the first application is=20
+opened that claims to need to capture and for which there is no free captur=
+e=20
+device, smartdsnoop would split one capture stream into two - and so be abl=
+e=20
+to serve this new application.
 
-Richard.
+After all this babble, here is what I expect from the above:
+- - Near zero overhead as long as the system uses the soundcard in the limi=
+ts=20
+the soundcard provides.
+- - Support for any amount of playback and capture streams, no matter on wh=
+at=20
+soundcard (provided of course the soundcard has at least one playback and o=
+ne=20
+capture device :D).
+- - Near zero configuration/tuning work needed to be done by the user, all =
+done=20
+by smartdmix and smartdsnoop.
+- - Low cpu and latency misuse  - since the *mixing* or *spliting* capabili=
+ties=20
+are only activated when needed, and deactivated when not used anymore.
 
-On Fri, 2003-11-14 at 01:48, Vladimir I. Umnov wrote:
-> On Mon, 10 Nov 2003 23:35:13 +0000
-> James Courtier-Dutton <James@superbug.demon.co.uk> wrote:
-> 
-> > Richard Lemon wrote:
-> > > Hi All,
-> > > 
-> > > This is one of the problems I have been seeing with the intel8x0
-> > > driver as well. The problem occurs when you call snd_pcm_start a
-> > > second time after an xrun, or after you have shut down a program
-> > > with ctl-c and started it again in the same console. I used the 
-> > > 
-> > > If you close the console and open a new one the problem seems to go
-> > > away!? I used the example code pcm.c from the alsa-lib test
-> > > directory.
-> > > 
-> > > It occurs with both [nforce2 ALC650] combo and [Intel 82901EB-ICH5
-> > > Analog devices id 75].
-> > > 
-> > > I also have a problem when the drivers have been running for a long
-> > > time (around 5 hours). Without an xrun the snd_pcm_delay() function
-> > > starts returning impossible numbers. Checking drift against either
-> > > rdtsc or gettimeofday() alsa starts giving me a 0.1 second per
-> > > second drift.
-> > > 
-> > > I haven't got a machine I can set up for this style of kernel
-> > > debugging unfortunately, so I am trying to code around these
-> > > problems.
-> > > 
-> > > richard.
-> > > 
-> > > 
-> > Would you be able to submit a small self contained (like the 
-> > speaker-test code I submitted) source code that would reproduce the 
-> > problem quickly.
-> > I would expect that writing code to force xruns would be quite easy.
-> > I have a ICH5 with ALC650 chip on Motherboard here, so I might be able
-> > to help you out if I could reproduce your problem.
-> try to open/close (without seeking) in mplayer or xine - always scrolls
-> to next position (i think 3 positions at all).
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email sponsored by: ApacheCon 2003,
-> 16-19 November in Las Vegas. Learn firsthand the latest
-> developments in Apache, PHP, Perl, XML, Java, MySQL,
-> WebDAV, and more! http://www.apachecon.com/
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+Hope to hear your opinions on this,
+Peter
+- --=20
+Take what you can use and let the rest go by.
+		-- Ken Kesey
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
+iD8DBQE/tDNJg2ieGvTmHiURAl0XAJ9iEIqiEQAfhGElsAh8ddNtBu9YKQCbB7qF
+jx5IU70naqNZrMbYtejShFY=3D
+=3DdFm/
+-----END PGP SIGNATURE-----
 
 
 
