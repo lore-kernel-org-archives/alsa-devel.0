@@ -1,14 +1,10 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: intel 8x0 went silent in 2.6.11
-Date: Fri, 04 Mar 2005 15:44:11 -0500
-Message-ID: <1109969051.6710.17.camel@mindpipe>
-References: <Pine.LNX.4.62.0503031342270.19015@krusty.vfxcomputing.com>
-	 <4227085C.7060104@drzeus.cx> <1109875926.2908.26.camel@mindpipe>
-	 <4228C7CE.5010109@tmr.com>
+Subject: TODO-1.1
+Date: Fri, 04 Mar 2005 16:02:54 -0500
+Message-ID: <1109970174.6710.25.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <4228C7CE.5010109@tmr.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,33 +14,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Bill Davidsen <davidsen@tmr.com>
-Cc: Mark Canter <marcus@vfxcomputing.com>, Nish Aravamudan <nish.aravamudan@gmail.com>, Pierre Ossman <drzeus-list@drzeus.cx>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-03-04 at 15:40 -0500, Bill Davidsen wrote:
-> Lee Revell wrote:
-> > On Thu, 2005-03-03 at 13:46 -0500, Mark Canter wrote:
-> > 
-> >>The same issue exists on a T42p (ICH4).  Doesn't that kind of defeat the 
-> >>purpose?  The thought of having to disable the headphone jack and reenable 
-> >>it each time is trivial considering you can go with the fact that sound 
-> >>did not require the sound system touched under <= 2.6.10.
-> > 
-> > 
-> > You don't have to disable and re-enable it each time, if your system is
-> > configured correctly then your mixer settings will be saved.
-> 
-> I don't think you understand the problem. Saving the settings does help, 
-> you have to change the settings every time you switch from headphones to 
-> speaker. Assuming I follow the o.p. issue... alsamixer shows no "sense" 
-> settings for my ASUS laptop, and I have to boot 2.4 to get sound.
+I just noticed the TODO-1.1 file in ALSA CVS, and it seems like a lot of
+it is done.
+
+>   - [ti] software volume control on alsa-lib (for c-media chips)
 > 
 
-Thanks, I understand it now.  It looked like the same bug but there is
-actually something else going on.
+This one is done...
+
+> Emu10k1:
+> ========
+>   - [ti] mixer redesign - Peter's patch for audigy looks better,
+>        a bit clean up is needed.
+
+Would anyone care to elaborate on this one?  Personally I don't think a
+mixer redesign is needed.  Applying Mikael's patch would put the SBLive
+and Audigy mixer in a good state.  Splitting the view to "Playback" and
+"Capture" made the emu10k1 mixer a lot more comprehensible.  Finally,
+the multichannel patch lets JACK users bypass the mixer completely.
+
+>   - ld10k1 development?
+
+I propose this be added to alsa-tools.  Although Peter will not be
+maintaining it anymore, others have volunteered, and it's quite useful.
+
+>   - [ti] ALSA-native sfxload
+
+Is there any reason asfxload can't be added to alsa-tools too?
 
 Lee
+
 
 
 
