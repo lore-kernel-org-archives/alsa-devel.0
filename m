@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
-Date: Sun, 27 Mar 2005 01:13:32 +0100
-Message-ID: <a745d5e362d2b0b024b66aec27f6a426@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: memory leaks?
+Date: Sat, 26 Mar 2005 23:14:46 -0500
+Message-ID: <1111896886.2408.1.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E355A21A
-	for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2005 01:13:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,73 +14,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+I recently started getting these messages every time I relaod my ALSA modules:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
-======================================================================
-Reported By:                sHINOBI
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   907
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.766_FC3
-======================================================================
-Date Submitted:             02-13-2005 11:36 CET
-Last Modified:              03-27-2005 01:13 CET
-======================================================================
-Summary:                    The sound is choppy and sometimes played at wrong
-speed
-Description: 
-The soundcard is working, although the sound is choppy when playing sound
-at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
-======================================================================
+usbcore: registered new driver snd-usb-audio
+usbcore: deregistering driver snd-usb-audio
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/usb/usbmidi.c:178: urb status -108
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/usb/usbmidi.c:163: usb_submit_urb: -90
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:71: Not freed snd_alloc_kmalloc = 864
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:80: kmalloc(164) from e0979806 not freed
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:80: kmalloc(268) from e09796fe not freed
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:80: kmalloc(164) from e0979806 not freed
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:80: kmalloc(268) from e09796fe not freed
+PCI: Found IRQ 7 for device 0000:00:0f.0
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:71: Not freed snd_alloc_kmalloc = 432
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:80: kmalloc(164) from e098a806 not freed
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:80: kmalloc(268) from e098a6fe not freed
+(     ksoftirqd/0-2    |#0): new 48 us maximum-latency wakeup.
+PCI: Found IRQ 7 for device 0000:00:0f.0
+usb 2-2: USB disconnect, address 3
+(          IRQ 12-664  |#0): new 51 us maximum-latency wakeup.
+(          IRQ 10-2804 |#0): new 70 us maximum-latency wakeup.
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:71: Not freed snd_alloc_kmalloc = 432
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:80: kmalloc(164) from e08b4806 not freed
+ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:80: kmalloc(268) from e08b46fe not freed
+PCI: Found IRQ 7 for device 0000:00:0f.0
+(     ksoftirqd/0-2    |#0): new 85 us maximum-latency wakeup.
+(     ksoftirqd/0-2    |#0): new 90 us maximum-latency wakeup.
+(          IRQ 11-691  |#0): new 100 us maximum-latency wakeup.
 
-----------------------------------------------------------------------
- sHINOBI - 03-23-05 19:40 
-----------------------------------------------------------------------
-Ah my mistake. ALSA-native apps seems to be OK. I've noticed these problems
-mainly in games (KIS, Majesty Nwn) and in Xine (when I choose OSS audio
-driver). XMMS seems to be working both in ALSA and OSS output plugin.
-Without the above mentioned asound.conf these problems are also in
-ALSA-native apps (in Xine it should be corrected by setting resampling to
-48 kHz).
-I hope I wrote it a little bit cleaner now :-).
+Does this indicate a memory leak in ALSA?
 
-----------------------------------------------------------------------
- sHINOBI - 03-27-05 01:13 
-----------------------------------------------------------------------
-I'd like to update issue, with version 1.0.9rc2 the sound problems in games
-are  gone in tested games (KIS, NwN and Majesty seems to be OK), I'm
-observing sound problems only in plaympeg program for now. I'll try to
-test more applications.
-Thanks for your great work guys.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-13-05 11:36 sHINOBI        New Issue                                    
-02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
-02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
-02-13-05 11:38 sHINOBI        Note Added: 0003583                          
-03-02-05 13:22 Juha           Note Added: 0003770                          
-03-19-05 18:24 jcdutton       Note Added: 0004064                          
-03-22-05 22:14 tiwai          Note Added: 0004138                          
-03-22-05 22:56 sHINOBI        Note Added: 0004144                          
-03-23-05 12:56 tiwai          Note Added: 0004155                          
-03-23-05 19:40 sHINOBI        Note Added: 0004185                          
-03-27-05 01:13 sHINOBI        Note Added: 0004219                          
-======================================================================
-
+Lee
 
 
 
