@@ -1,8 +1,8 @@
 From: Florian Bomers <Florian.Bomers@sun.com>
-Subject: snd_get_version() ?
-Date: Mon, 04 Nov 2002 11:32:36 -0800
+Subject: save to use new API ?
+Date: Mon, 04 Nov 2002 11:38:41 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DC6CB54.E27A381E@sun.com>
+Message-ID: <3DC6CCC1.BB5876B8@sun.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -20,16 +20,15 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-I need to retrieve the installed ALSA version from within my program at run
-time, and I am missing functions like 
+if I released a program now in binary form, is it safer to use the new function
+prototypes of alsa-lib by defining ALSA_PCM_NEW_HW_PARAMS_API or better use the
+old, deprecated ones ?
 
-  void snd_get_str_version(char* buffer, int len);
-  void snd_get_num_version(int* major, int* minor, int* subminor, int* suffix);
+My program compiles with or without, and I'd prefer to use the new API, but I
+noticed that when I compile against rc5, it doesn't even run with rc4, so I fear
+that my binary compiled against rc5 won't run with later versions of ALSA lib.
 
-Currently I parse /proc/asound/version which is ugly and may break in future if
-that string's format is modified.
-
-Thanks,
+Thanks for letting me know.
 Florian
 
 -- 
