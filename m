@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
-Date: Fri, 7 Jan 2005 18:59:29 +0100
-Message-ID: <643d3e16427de9565334e5770704181a@bugtrack.alsa-project.org>
+From: Mikhail Ramendik <mr@ramendik.ru>
+Subject: Re: Compiling the newest code for testing?
+Date: Fri, 7 Jan 2005 21:27:38 +0300
+Message-ID: <200501072127.38967.mr@ramendik.ru>
+References: <200501070525.45603.mr@ramendik.ru> <s5hu0ptwkuc.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="koi8-r"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0E11E2FA
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 18:59:30 +0100 (MET)
+In-Reply-To: <s5hu0ptwkuc.wl@alsa2.suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,92 +19,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+You wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=359> 
-======================================================================
-Reported By:                davidsrsb
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   359
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10.0
-Kernel Version:             2.4.26
-======================================================================
-Date Submitted:             07-01-2004 16:26 CEST
-Last Modified:              01-07-2005 18:59 CET
-======================================================================
-Summary:                    Alsa always uses card0 and does not use card1, even
-when card0 is a modem
-Description: 
-PC is laptop with AC97 DAA (Si3036 modem) detected as card0 and sound is
-Intel 8x0 as card1. Alsamixer has to be run with -c1 option to avoid "no
-mixer elems" error (like bug 338)
-KDE has no sound ( same as bug 353)
-======================================================================
+> > - Which alsa kernel code should I run for testing? The 2.6.10-kernel
+> > version? 1.0.8rc2? CVS? 1.0.8rc2 plus some files from CVS [those related
+> > to i8x0]?
+>
+> For testing purpse, I recommend ALSA CVS version.
+> ATM, 1.0.8rc2 is very new, so it should be fine in most cases, too.
 
-----------------------------------------------------------------------
- jdthood - 01-07-05 18:59 
-----------------------------------------------------------------------
-> The problem is that the current "numbering" concept doesn't match
-> with the idea of hotplug. We need either stop using numbers, or
-> introduce the mangling of physical and logical device numbers.
+OK, I'll do 1.0.8rc2, to avoid CVS-related issues.
 
+> > - Is it OK to compile this kernel code by merely copying the relevant
+> > directories (sound [except for sound/oss] and include/sound) from the
+> > alsa tree into the kernel tree? I run an RPM-based system, and would like
+> > to keep the existing approach to kernel building (full RPM rebuild)
+> > alive; it's slow but reliable.
+>
+> Not always.  The ALSA cvs may contain the codes for the very latest
+> kernel (rc or mm).  Copying the files to kernel might not work when
+> the kernel function / API is changed.  The difference is usually
+> absorbed by patches in alsa-driver tree.
 
-I agree that a general solution is for sound applications to select
-cards by type or id rather than by index.  However, it remains the
-fact that some existing applications open card
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0.  So GNU/Linux
-distributors would like to set things up so that modems and TV cards
-don't grab index 0.
+Which kernel is 1.0.8rc2 for? There apparently is no recent -rc at the moment. 
+If it's against an -mm version, I can compile that too, at least for the alsa 
+tests. I just need to be sure which kernel version it's tied to.
 
-My proposed solution is to apply the following patch and then use:
+And, will compiling ALSA separately resolve the kernel version vs. ALSA 
+version issues? (I have read the INSTALL file and have questions, but I won't 
+ask them until I'm sure this stuff will be needed; I'd really prefer to go 
+with in-kernel compilation).
+ 
+> > - Which alsa-lib and alsa-utils code should I be running? (I know how to
+> > compile it using RPM, I just need to understand the version).
+>
+> It should match with the ALSA driver version.
+> The library itself has backward compatibility, but the configurations
+> included in alsa-lib package may not match with the old drivers.
 
-    options snd-bt87x index=-2
+OK, that's clear.
 
-----------------------------------------------------------------------
- jdthood - 01-07-05 18:59 
-----------------------------------------------------------------------
-> The problem is that the current "numbering" concept doesn't match
-> with the idea of hotplug. We need either stop using numbers, or
-> introduce the mangling of physical and logical device numbers.
+> > And an i8x0-specific question: in the above-mentioned current code,
+> > should output to hw:0,0 go only to analog, or to both analog and spdif?
+>
+> Analog only.
+>
+> Basically, you should avoid to access "hw:0,0".  If you want to output
+> to analog front, you can use "front", instead.  Similarly, for spdif,
+> use "spdif" (or "iec958").
 
+But OSS emulation is needed for some of the stuff I use, and that writes to 
+hw:0,0 . I know I should be searching for fixed on the other end as well.
 
-I agree that a general solution is for sound applications to select
-cards by type or id rather than by index.  However, it remains the
-fact that some existing applications open card
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0.  So GNU/Linux
-distributors would like to set things up so that modems and TV cards
-don't grab index 0.
+> Regarding the dubbed output to analog and spdif - I once had a patch
+> for testing but the tester couldn't apply it.  The latest patch is
+> attached below (to 1.0.8rc2 or CVS).  If you're interested in it,
+> please give it a try.
 
-My proposed solution is to apply the following patch and then use:
+I suspect I was that tester.
 
-    options snd-bt87x index=-2
+As soon as I get an alsa+kernel that works, I'll try the patch.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-01-04 16:26 davidsrsb      New Issue                                    
-07-01-04 16:26 davidsrsb      Distribution              => Slackware 10.0  
-07-01-04 16:26 davidsrsb      Kernel Version            => 2.4.26          
-07-02-04 14:34 pzad           Note Added: 0001374                          
-01-05-05 23:34 jdthood        Note Added: 0003090                          
-01-06-05 17:48 phormix        Note Added: 0003092                          
-01-07-05 18:10 tiwai          Note Added: 0003108                          
-01-07-05 18:28 jdthood        Note Added: 0003112                          
-01-07-05 18:59 jdthood        Note Added: 0003114                          
-01-07-05 18:59 jdthood        Note Added: 0003115                          
-======================================================================
+Thanks!
 
+-- 
+Yours, Mikhail Ramendik
 
 
 
