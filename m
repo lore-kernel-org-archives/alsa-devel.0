@@ -1,11 +1,14 @@
-From: Josh Huber <huber+keyword+alsa.9c0e1c@alum.wpi.edu>
-Subject: snd-powermac in CVS busted?
-Date: Thu, 19 Sep 2002 23:06:13 -0400
+From: Ivan Middleton <ivan_middleton@yahoo.com>
+Subject: Re: problems with external MIDI port
+Date: Thu, 19 Sep 2002 20:14:00 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87it11icm2.fsf@mail.paradoxical.net>
+Message-ID: <20020920031400.53365.qmail@web13406.mail.yahoo.com>
+References: <s5hy99you7x.wl@alsa2.suse.de>
+Reply-To: ivan_middleton@yahoo.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hy99you7x.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,98 +17,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I've finally decided to switch from using OSS to ALSA, and everything
-works great, except I don't get any sound output!  I'm sending this to
-the devel list since I'm dealing with the CVS version of the driver.
+--- Takashi Iwai <tiwai@suse.de> wrote:
+> Hi,
+> 
+> At Wed, 18 Sep 2002 14:10:19 -0700 (PDT),
+> Ivan Middleton wrote:
+> > 
+> > Hi all,
+> > 
+> > I'm having a problem with the ALSA sequencer.  First I was using
+> > 0.9.0rc2, and then I switched to cvs, hoping that things would be
+> fixed
+> > there.  But alas, the problems occur in both.  I was going to try
+> the
+> > 0.5 release, but it didn't want to compile for me.
+> > 
+> > The problem is as follows: I am running a program (called Linux
+> Pipe
+> > Organ) which reads from the external MIDI port (64:0) via an ALSA
+> > sequencer connection, and which also starts a TiMidity process and
+> > sends events to it via ALSA sequencer connections.  (Basically, the
+> > program is just relaying MIDI events, after some modifications.) 
+> This
+> > works fine for a few minutes, and then suddenly... nothing.  The
+> ALSA
+> > sequencer stops relaying events from the external MIDI port.  Now,
+> my
+> > digital piano is connected to the MIDI port, and it sends something
+> > like 30 MIDI events per second (I don't know exactly what these
+> are)
+> > even when no keys are being pressed.  The problem I just described
+> > occurs even if I never press any keys on the piano; I can tell by
+> > watching /proc/asound/seq/clients, looking at the following lines
+> > 
+> > Client 132 : "Linux Organ" [User]
+> >   Port   0 : "Linux Organ" (rWe-)
+> >     Connected From: 64:0
+> >   Input pool :
+> >     Pool size          : 200
+> >     Cells in use       : 0
+> >     Peak cells in use  : 30
+> >     Alloc success      : 27513
+> >     Alloc failures     : 0
+> > 
+> > and noticing that after a while the "Alloc success" number stops
+> > changing (when everything is working it goes up by about 30 every
+> > second).
+> 
+> this could be due to the timer routine.
+> could you check /proc/asound/seq/queue and /proc/asound/seq/timer
+> whether the timer and queue are still running correctly in such a
+> situation?
 
-Using alsamixer I tried setting the Master channel at 100% as well as
-the "PC Speaker" channel at 100%.
+am I doing something wrong?  I don't see anything in either
+/proc/asound/seq/queue or /proc/asound/seq/timer, no matter what.
 
-The detection of headphones seems to work, since the pc speaker
-channel gets auto-muted when headphones are plugged in. (but, still no
-sound is played out the headphone jack.
-
-Using alsaplayer works great, and the visual plugins show that sound
-should be playing. xmms works with the OSS compatibility driver as
-well.
-
-I built the drivers with --enable-debug=full, but I don't see any
-additional kernel messages from ALSA.
-
-I'm running Debian unstable (sid), on a Powerbook G3 Lombard, which
-has the AWACS sound chip.  I'm using the CVS version of the drivers,
-and the packages for libasound (0.9.0rc3), alsa-utils (0.9.0rc3), and
-alsaplayer (0.99.71).
-
-Any ideas?  What can I do to further debug this problem?
-
-Here's the output from amixer:
-
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-  Playback channels: Front Left - Front Right 
-  Capture channels: Mono
-  Limits: Playback 0 - 15 
-  Mono: Capture [off] 
-  Front Left: Playback 15 [100%] [on] 
-  Front Right: Playback 15 [100%] [on] 
-Simple mixer control 'Headphone Detection',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off] 
-Simple mixer control 'Line',0
-  Capabilities: cswitch cswitch-joined
-  Capture channels: Mono
-  Mono: Capture [off] 
-Simple mixer control 'CD',0
-  Capabilities: cswitch cswitch-joined
-  Capture channels: Mono
-  Mono: Capture [off] 
-Simple mixer control 'Mic',0
-  Capabilities: cswitch cswitch-joined
-  Capture channels: Mono
-  Mono: Capture [off] 
-Simple mixer control 'Mic Boost',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 2
-  Mono: 2 [100%] 
-Simple mixer control 'PC Speaker',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right 
-  Limits: Playback 0 - 15 
-  Front Left: Playback 15 [100%] [on] 
-  Front Right: Playback 15 [100%] [on] 
-Simple mixer control 'Capture',0
-  Capabilities: cvolume
-  Capture channels: Front Left - Front Right 
-  Limits: Capture 0 - 15
-  Front Left: Capture 15 [100%] 
-  Front Right: Capture 15 [100%] 
-Simple mixer control 'Auto Mute',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on] 
-Simple mixer control 'Beep',0
-  Capabilities: pvolume pvolume-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 100 
-  Mono: Playback 15 [15%] 
+Ivan
 
 
-I've seen mention of people wondering where the PCM slider is in the
-mixer, does this have anything to do with my problem? (perhaps?)  Am I
-supposed to have a PCM channel?
-
-Thanks in advance for the help,
-
--- 
-Josh Huber
-
-
+__________________________________________________
+Do you Yahoo!?
+New DSL Internet Access from SBC & Yahoo!
+http://sbc.yahoo.com
 
 
 -------------------------------------------------------
