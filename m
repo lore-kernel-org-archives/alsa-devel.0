@@ -1,13 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: RE: Alsa-devel digest, Vol 1 #1786 - 3 msgs
-Date: Thu, 1 Apr 2004 11:11:39 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: [PATCH] fixes Re: problem compiling alsa-lib CVS.
+Date: Thu, 01 Apr 2004 12:57:35 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0404011110570.1843@pnote.perex-int.cz>
-References: <01be01c417c8$babb6d80$f8b6a8c0@ent.ti.com>
+Message-ID: <406C03AF.30405@superbug.demon.co.uk>
+References: <405F1A01.8080408@superbug.demon.co.uk> <405F1C2A.1070000@superbug.demon.co.uk> <406B258B.4080106@superbug.demon.co.uk> <Pine.LNX.4.58.0404011041480.1843@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <01be01c417c8$babb6d80$f8b6a8c0@ent.ti.com>
+Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA17760
+	for <alsa-devel@alsa-project.org>; Thu, 1 Apr 2004 13:56:00 +0200
+In-Reply-To: <Pine.LNX.4.58.0404011041480.1843@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,37 +20,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pavana Sharma <pavans@india.ti.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 1 Apr 2004, Pavana Sharma wrote:
-
-> Hi,
-> I am new to ALSA driver impementation. I am registering the  driver
-> interface functions like (probe,remove) using driver_register call. I expect
-> that the probe function will be called in which I am allocating sound card
-> and registering the card using snd_card_register. When I compile the sound
-> driver as a static module and boot my kernel I see that the init function in
-> which I am registering the device is getting called but the probe function
-> is not getting called.
-> We see a message from sound/last.c file asla_sound_last_init fucntion where
-> it searches snd_Cards array to find whether any sound cards are registered.
-> As our sound card card is not registered(because probe is not getting
-> called), we see a messaged "No Soundcards found".
+Jaroslav Kysela wrote:
+> On Wed, 31 Mar 2004, James Courtier-Dutton wrote:
 > 
-> Can someone give us some clues like why probe function is not getting
-> called??
+> 
+>>Is there any reason why this patch was not added to the alsa-lib cvs ?
+> 
+> 
+> It's better to put this information to configure.in?
 
-The probe function is not called from ALSA, but from the kernel subsystem 
-like PCI or ISA PnP etc. Check this code.
+No, because it selects which version of aclocal etc. that are used, 
+which is before configure.in is even looked at.
 
-						Jaroslav
+> 
+> 						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
