@@ -1,23 +1,13 @@
-From: Ryan Pavlik <rpav@nwlink.com>
-Subject: Re: Re: MTP-AV problems (Re: intel8x0 sequencer &
- MTP-AV) - success
-Date: Sun, 16 Feb 2003 21:30:05 -0800
+From: p z oooo <pzad@pobox.sk>
+Subject: Audigy + Bas, treble control
+Date: Mon, 17 Feb 2003 07:33:45 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030216213005.7b731da4.rpav@nwlink.com>
-References: <1044258789.30428.61.camel@littlewolf2.littlewolf>
-	<s5h3cn5ino4.wl@alsa2.suse.de>
-	<1044273602.2013.6.camel@littlewolf2.littlewolf>
-	<s5hheb8l05o.wl@alsa2.suse.de>
-	<1045193186.10268.392.camel@littlewolf2.littlewolf>
-	<s5h4r77jdmm.wl@alsa2.suse.de>
-	<1045389509.6765.21.camel@littlewolf2.littlewolf>
-	<20030216130654.16d44488.rpav@nwlink.com>
-	<1045458034.3353.20.camel@littlewolf2.littlewolf>
+Message-ID: <200302170633.HAA16375@www2.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97783000-1804289383-1045463625=:16369"
+Content-Transfer-Encoding: 8BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1045458034.3353.20.camel@littlewolf2.littlewolf>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -26,85 +16,209 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Allan Klinbail <allank@labyrinth.net.au>
-Cc: alsa-devel@lists.sourceforge.net, tiwai@suse.de
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 17 Feb 2003 16:00:27 +1100
-Allan Klinbail <allank@labyrinth.net.au> wrote:
+--97783000-1804289383-1045463625=:16369
+Content-Type: TEXT/plain; CHARSET=US-ASCII
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-<snip>
-> Hi Ryan (hope you don't mind all the cutting otherwise it just gets
-> too hard to read) 
+This add bass and treble control to SB Audigy. It's modified copy=20
+from SB Live code. It works for me, but I'm not sure if it is good.
 
-Nope, cutting is good. ;)
+Peter Zubaj
 
-<snip> 
-> If you are saying that you are seeing this in multiple softwares it
-> probably is a driver issue that needs to be investigated further...
-> I'll keep my eyes wide open when I'm up and running again. 
 
-Yeah, I'm pretty sure it's the driver, but I'm not sure what it's from. 
-I have a hunch it may be how broadcast is handled, but I haven't
-investigated.  Other possibilities are odd MIDI causing the mtpav to
-broadcast, or just plain old bugs.
+=0A____________________________________=0Ahttp://www.pobox.sk/ - urcujeme t=
+rendy=0A
+--97783000-1804289383-1045463625=:16369
+Content-Type: APPLICATION/octet-stream; name="A:\\emu_tone.diff"
+Content-Transfer-Encoding: BASE64
 
-<snip>
-> I've only been using CVS releases until today  (I'm having trouble
-> compiling see other notes, don't know why though). I'm downloading
-> that version now to see what happens.. but I was under the impression
-> the mtpav code had only just been cleaned up in CVS.  
+LS0tIGVtdWZ4LmMub3JpZwkyMDAyLTExLTA3IDIxOjA3OjA5LjAwMDAwMDAw
+MCArMDEwMAorKysgZW11ZnguYwkyMDAzLTAyLTE2IDIwOjMyOjE2LjAwMDAw
+MDAwMCArMDEwMApAQCAtMTIxOCw3ICsxMjE4LDcgQEAKIAljdGwtPmdwclsx
+XSA9IGdwciArIDE7IGN0bC0+dmFsdWVbMV0gPSBkZWZ2YWw7CiAJY3RsLT5t
+aW4gPSAwOwogCWN0bC0+bWF4ID0gMTAwOwotCWN0bC0+dHJhbnNsYXRpb24g
+PSBFTVUxMEsxX0dQUl9UUkFOU0xBVElPTl9UQUJMRTEwMDsJCisJY3RsLT50
+cmFuc2xhdGlvbiA9IEVNVTEwSzFfR1BSX1RSQU5TTEFUSU9OX1RBQkxFMTAw
+OwogfQogCiBzdGF0aWMgdm9pZCBfX2RldmluaXQgc25kX2VtdTEwazFfaW5p
+dF9tb25vX29ub2ZmX2NvbnRyb2woZW11MTBrMV9meDgwMTBfY29udHJvbF9n
+cHJfdCAqY3RsLCBjb25zdCBjaGFyICpuYW1lLCBpbnQgZ3ByLCBpbnQgZGVm
+dmFsKQpAQCAtMTI0OSwxMiArMTI0OSwxNCBAQAogICogaW5pdGlhbCBEU1Ag
+Y29uZmlndXJhdGlvbiBmb3IgQXVkaWd5CiAgKi8KIAorI2RlZmluZSBBX0dQ
+Ul9BQ0NVIDB4ZDYKKwogc3RhdGljIGludCBfX2RldmluaXQgX3NuZF9lbXUx
+MGsxX2F1ZGlneV9pbml0X2VmeChlbXUxMGsxX3QgKmVtdSkKIHsKLQlpbnQg
+ZXJyLCBpLCBncHIsIHRtcCwgcGxheWJhY2ssIGNhcHR1cmUsIG5jdGw7CisJ
+aW50IGVyciwgaSwgeiwgZ3ByLCB0bXAsIHBsYXliYWNrLCBjYXB0dXJlLCBu
+Y3RsOwogCXUzMiBwdHI7CiAJZW11MTBrMV9meDgwMTBfY29kZV90ICppY29k
+ZTsKLQllbXUxMGsxX2Z4ODAxMF9jb250cm9sX2dwcl90ICpjb250cm9sczsK
+KwllbXUxMGsxX2Z4ODAxMF9jb250cm9sX2dwcl90ICpjb250cm9scywgKmN0
+bDsKIAltbV9zZWdtZW50X3Qgc2VnOwogCiAJc3Bpbl9sb2NrX2luaXQoJmVt
+dS0+Zng4MDEwLmlycV9sb2NrKTsKQEAgLTEyNjYsNyArMTI2OCw3IEBACiAJ
+CWtmcmVlKGljb2RlKTsKIAkJcmV0dXJuIC1FTk9NRU07CiAJfQotCQorCiAJ
+LyogY2xlYXIgZnJlZSBHUFJzICovCiAJZm9yIChpID0gMDsgaSA8IDI1Njsg
+aSsrKQogCQlzZXRfYml0KGksIGljb2RlLT5ncHJfdmFsaWQpOwpAQCAtMTI3
+NSwxMCArMTI3NywxMCBAQAogCXB0ciA9IDA7CiAJbmN0bCA9IDA7CiAJcGxh
+eWJhY2sgPSAxMDsKLQljYXB0dXJlID0gcGxheWJhY2sgKyAxMDsgLyogd2Ug
+cmVzZXJ2ZSAxMCB2b2ljZXMgKi8KKwljYXB0dXJlID0gcGxheWJhY2sgKyAo
+U05EX0VNVTEwSzFfUExBWUJBQ0tfQ0hBTk5FTFMgKiAyKTsgLyogd2UgcmVz
+ZXJ2ZSAxMCB2b2ljZXMgKi8KIAlncHIgPSBjYXB0dXJlICsgMTA7Ci0JdG1w
+ID0gMHg4MDsKLQkKKwl0bXAgPSAweDg4OworCiAJLyogc3RvcCBGWCBwcm9j
+ZXNzb3IgKi8KIAlzbmRfZW11MTBrMV9wdHJfd3JpdGUoZW11LCBBX0RCRywg
+MCwgKGVtdS0+Zng4MDEwLmRiZyA9IDApIHwgQV9EQkdfU0lOR0xFX1NURVAp
+OwogCkBAIC0xNDE5LDIxICsxNDIxLDExMSBAQAogI2RlZmluZSBBX1BVVF9T
+VEVSRU9fT1VUUFVUKG91dDEsb3V0MixzcmMpIFwKIAl7QV9QVVRfT1VUUFVU
+KG91dDEsc3JjKTsgQV9QVVRfT1VUUFVUKG91dDIsc3JjKzEpO30KIAorI2Rl
+ZmluZSBfQV9TV0lUQ0goaWNvZGUsIHB0ciwgZHN0LCBzcmMsIHN3KSBcCisJ
+QV9PUCgoaWNvZGUpLCBwdHIsIGlNQUNJTlQwLCBkc3QsIEFfQ18wMDAwMDAw
+MCwgc3JjLCBzdyk7CisjZGVmaW5lIEFfU1dJVENIKGljb2RlLCBwdHIsIGRz
+dCwgc3JjLCBzdykgXAorCQlfQV9TV0lUQ0goaWNvZGUsIHB0ciwgQV9HUFIo
+ZHN0KSwgQV9HUFIoc3JjKSwgQV9HUFIoc3cpKQorI2RlZmluZSBfQV9TV0lU
+Q0hfTkVHKGljb2RlLCBwdHIsIGRzdCwgc3JjKSBcCisJQV9PUCgoaWNvZGUp
+LCBwdHIsIGlBTkRYT1IsIGRzdCwgc3JjLCBBX0NfMDAwMDAwMDEsIEFfQ18w
+MDAwMDAwMSk7CisjZGVmaW5lIEFfU1dJVENIX05FRyhpY29kZSwgcHRyLCBk
+c3QsIHNyYykgXAorCQlfQV9TV0lUQ0hfTkVHKGljb2RlLCBwdHIsIEFfR1BS
+KGRzdCksIEFfR1BSKHNyYykpCisKKworCS8qCisJICogIFByb2Nlc3MgdG9u
+ZSBjb250cm9sCisJICovCisJQV9PUChpY29kZSwgJnB0ciwgaUFDQzMsIEFf
+R1BSKHBsYXliYWNrICsgU05EX0VNVTEwSzFfUExBWUJBQ0tfQ0hBTk5FTFMg
+KyAwKSwgQV9HUFIocGxheWJhY2sgKyAwKSwgQV9DXzAwMDAwMDAwLCBBX0Nf
+MDAwMDAwMDApOyAvKiBsZWZ0ICovCisJQV9PUChpY29kZSwgJnB0ciwgaUFD
+QzMsIEFfR1BSKHBsYXliYWNrICsgU05EX0VNVTEwSzFfUExBWUJBQ0tfQ0hB
+Tk5FTFMgKyAxKSwgQV9HUFIocGxheWJhY2sgKyAxKSwgQV9DXzAwMDAwMDAw
+LCBBX0NfMDAwMDAwMDApOyAvKiByaWdodCAqLworCUFfT1AoaWNvZGUsICZw
+dHIsIGlBQ0MzLCBBX0dQUihwbGF5YmFjayArIFNORF9FTVUxMEsxX1BMQVlC
+QUNLX0NIQU5ORUxTICsgMiksIEFfR1BSKHBsYXliYWNrICsgMiksIEFfQ18w
+MDAwMDAwMCwgQV9DXzAwMDAwMDAwKTsgLyogcmVhciBsZWZ0ICovCisJQV9P
+UChpY29kZSwgJnB0ciwgaUFDQzMsIEFfR1BSKHBsYXliYWNrICsgU05EX0VN
+VTEwSzFfUExBWUJBQ0tfQ0hBTk5FTFMgKyAzKSwgQV9HUFIocGxheWJhY2sg
+KyAzKSwgQV9DXzAwMDAwMDAwLCBBX0NfMDAwMDAwMDApOyAvKiByZWFyIHJp
+Z2h0ICovCisJQV9PUChpY29kZSwgJnB0ciwgaUFDQzMsIEFfR1BSKHBsYXli
+YWNrICsgU05EX0VNVTEwSzFfUExBWUJBQ0tfQ0hBTk5FTFMgKyA0KSwgQV9H
+UFIocGxheWJhY2sgKyA0KSwgQV9DXzAwMDAwMDAwLCBBX0NfMDAwMDAwMDAp
+OyAvKiBjZW50ZXIgKi8KKwlBX09QKGljb2RlLCAmcHRyLCBpQUNDMywgQV9H
+UFIocGxheWJhY2sgKyBTTkRfRU1VMTBLMV9QTEFZQkFDS19DSEFOTkVMUyAr
+IDUpLCBBX0dQUihwbGF5YmFjayArIDUpLCBBX0NfMDAwMDAwMDAsIEFfQ18w
+MDAwMDAwMCk7IC8qIExGRSAqLworCisJY3RsID0gJmNvbnRyb2xzW25jdGwg
+KyAwXTsKKwljdGwtPmlkLmlmYWNlID0gU05EUlZfQ1RMX0VMRU1fSUZBQ0Vf
+TUlYRVI7CisJc3RyY3B5KGN0bC0+aWQubmFtZSwgIlRvbmUgQ29udHJvbCAt
+IEJhc3MiKTsKKwljdGwtPnZjb3VudCA9IDI7CisJY3RsLT5jb3VudCA9IDEw
+OworCWN0bC0+bWluID0gMDsKKwljdGwtPm1heCA9IDQwOworCWN0bC0+dmFs
+dWVbMF0gPSBjdGwtPnZhbHVlWzFdID0gMjA7CisJY3RsLT50cmFuc2xhdGlv
+biA9IEVNVTEwSzFfR1JQX1RSQU5TTEFUSU9OX0JBU1M7CisJY3RsID0gJmNv
+bnRyb2xzW25jdGwgKyAxXTsKKwljdGwtPmlkLmlmYWNlID0gU05EUlZfQ1RM
+X0VMRU1fSUZBQ0VfTUlYRVI7CisJc3RyY3B5KGN0bC0+aWQubmFtZSwgIlRv
+bmUgQ29udHJvbCAtIFRyZWJsZSIpOworCWN0bC0+dmNvdW50ID0gMjsKKwlj
+dGwtPmNvdW50ID0gMTA7CisJY3RsLT5taW4gPSAwOworCWN0bC0+bWF4ID0g
+NDA7CisJY3RsLT52YWx1ZVswXSA9IGN0bC0+dmFsdWVbMV0gPSAyMDsKKwlj
+dGwtPnRyYW5zbGF0aW9uID0gRU1VMTBLMV9HUlBfVFJBTlNMQVRJT05fVFJF
+QkxFOworCisjZGVmaW5lIEJBU1NfR1BSCTB4OGMKKyNkZWZpbmUgVFJFQkxF
+X0dQUgkweDk2CisKKwlmb3IgKHogPSAwOyB6IDwgNTsgeisrKSB7CisJCWlu
+dCBqOworCQlmb3IgKGogPSAwOyBqIDwgMjsgaisrKSB7CisJCQljb250cm9s
+c1tuY3RsICsgMF0uZ3ByW3ogKiAyICsgal0gPSBCQVNTX0dQUiArIHogKiAy
+ICsgajsKKwkJCWNvbnRyb2xzW25jdGwgKyAxXS5ncHJbeiAqIDIgKyBqXSA9
+IFRSRUJMRV9HUFIgKyB6ICogMiArIGo7CisJCX0KKwl9CisJZm9yICh6ID0g
+MDsgeiA8IDM7IHorKykgewkJLyogZnJvbnQvcmVhci9jZW50ZXItbGZlICov
+CisJCWludCBqLCBrLCBsLCBkOworCQlmb3IgKGogPSAwOyBqIDwgMjsgaisr
+KSB7CS8qIGxlZnQvcmlnaHQgKi8KKwkJCWsgPSAweGIwICsgKHogKiA4KSAr
+IChqICogNCk7CisJCQlsID0gMHhlMCArICh6ICogOCkgKyAoaiAqIDQpOwor
+CQkJZCA9IHBsYXliYWNrICsgU05EX0VNVTEwSzFfUExBWUJBQ0tfQ0hBTk5F
+TFMgKyB6ICogMiArIGo7CisKKwkJCUFfT1AoaWNvZGUsICZwdHIsIGlNQUMw
+LCBBX0NfMDAwMDAwMDAsIEFfQ18wMDAwMDAwMCwgQV9HUFIoZCksIEFfR1BS
+KEJBU1NfR1BSICsgMCArIGopKTsKKwkJCUFfT1AoaWNvZGUsICZwdHIsIGlN
+QUNNViwgQV9HUFIoaysxKSwgQV9HUFIoayksIEFfR1BSKGsrMSksIEFfR1BS
+KEJBU1NfR1BSICsgNCArIGopKTsKKwkJCUFfT1AoaWNvZGUsICZwdHIsIGlN
+QUNNViwgQV9HUFIoayksIEFfR1BSKGQpLCBBX0dQUihrKSwgQV9HUFIoQkFT
+U19HUFIgKyAyICsgaikpOworCQkJQV9PUChpY29kZSwgJnB0ciwgaU1BQ01W
+LCBBX0dQUihrKzMpLCBBX0dQUihrKzIpLCBBX0dQUihrKzMpLCBBX0dQUihC
+QVNTX0dQUiArIDggKyBqKSk7CisJCQlBX09QKGljb2RlLCAmcHRyLCBpTUFD
+MCwgQV9HUFIoaysyKSwgQV9HUFJfQUNDVSwgQV9HUFIoaysyKSwgQV9HUFIo
+QkFTU19HUFIgKyA2ICsgaikpOworCQkJQV9PUChpY29kZSwgJnB0ciwgaUFD
+QzMsIEFfR1BSKGsrMiksIEFfR1BSKGsrMiksIEFfR1BSKGsrMiksIEFfQ18w
+MDAwMDAwMCk7CisKKwkJCUFfT1AoaWNvZGUsICZwdHIsIGlNQUMwLCBBX0Nf
+MDAwMDAwMDAsIEFfQ18wMDAwMDAwMCwgQV9HUFIoaysyKSwgQV9HUFIoVFJF
+QkxFX0dQUiArIDAgKyBqKSk7CisJCQlBX09QKGljb2RlLCAmcHRyLCBpTUFD
+TVYsIEFfR1BSKGwrMSksIEFfR1BSKGwpLCBBX0dQUihsKzEpLCBBX0dQUihU
+UkVCTEVfR1BSICsgNCArIGopKTsKKwkJCUFfT1AoaWNvZGUsICZwdHIsIGlN
+QUNNViwgQV9HUFIobCksIEFfR1BSKGsrMiksIEFfR1BSKGwpLCBBX0dQUihU
+UkVCTEVfR1BSICsgMiArIGopKTsKKwkJCUFfT1AoaWNvZGUsICZwdHIsIGlN
+QUNNViwgQV9HUFIobCszKSwgQV9HUFIobCsyKSwgQV9HUFIobCszKSwgQV9H
+UFIoVFJFQkxFX0dQUiArIDggKyBqKSk7CisJCQlBX09QKGljb2RlLCAmcHRy
+LCBpTUFDMCwgQV9HUFIobCsyKSwgQV9HUFJfQUNDVSwgQV9HUFIobCsyKSwg
+QV9HUFIoVFJFQkxFX0dQUiArIDYgKyBqKSk7CisJCQlBX09QKGljb2RlLCAm
+cHRyLCBpTUFDSU5UMCwgQV9HUFIobCsyKSwgQV9DXzAwMDAwMDAwLCBBX0dQ
+UihsKzIpLCBBX0NfMDAwMDAwMTApOworCisJCQlBX09QKGljb2RlLCAmcHRy
+LCBpQUNDMywgQV9HUFIoZCksIEFfR1BSKGwrMiksIEFfQ18wMDAwMDAwMCwg
+QV9DXzAwMDAwMDAwKTsKKworCQkJaWYgKHogPT0gMikJLyogY2VudGVyICov
+CisJCQkJYnJlYWs7CisJCX0KKwl9CisJbmN0bCArPSAyOworCisjdW5kZWYg
+QkFTU19HUFIKKyN1bmRlZiBUUkVCTEVfR1BSCisKKwlmb3IgKHogPSAwOyB6
+IDwgNjsgeisrKSB7CisJCUFfU1dJVENIKGljb2RlLCAmcHRyLCB0bXAgKyAw
+LCBwbGF5YmFjayArIFNORF9FTVUxMEsxX1BMQVlCQUNLX0NIQU5ORUxTICsg
+eiwgZ3ByICsgMCk7CisJCUFfU1dJVENIX05FRyhpY29kZSwgJnB0ciwgdG1w
+ICsgMSwgZ3ByICsgMCk7CisJCUFfU1dJVENIKGljb2RlLCAmcHRyLCB0bXAg
+KyAxLCBwbGF5YmFjayArIHosIHRtcCArIDEpOworCQlBX09QKGljb2RlLCAm
+cHRyLCBpQUNDMywgQV9HUFIocGxheWJhY2sgKyBTTkRfRU1VMTBLMV9QTEFZ
+QkFDS19DSEFOTkVMUyArIHopLCBBX0dQUih0bXAgKyAwKSwgQV9HUFIodG1w
+ICsgMSksIEFfQ18wMDAwMDAwMCk7CisJfQorCXNuZF9lbXUxMGsxX2luaXRf
+c3RlcmVvX29ub2ZmX2NvbnRyb2woY29udHJvbHMgKyBuY3RsKyssICJUb25l
+IENvbnRyb2wgLSBTd2l0Y2giLCBncHIsIDApOworCWdwciArPSAyOworCiAJ
+LyogZGlnaXRhbCBvdXRwdXRzICovCi0JQV9QVVRfU1RFUkVPX09VVFBVVChB
+X0VYVE9VVF9GUk9OVF9MLCBBX0VYVE9VVF9GUk9OVF9SLCBwbGF5YmFjayk7
+Ci0JQV9QVVRfU1RFUkVPX09VVFBVVChBX0VYVE9VVF9SRUFSX0wsIEFfRVhU
+T1VUX1JFQVJfUiwgcGxheWJhY2srMik7Ci0JQV9QVVRfT1VUUFVUKEFfRVhU
+T1VUX0NFTlRFUiwgcGxheWJhY2srNCk7Ci0JQV9QVVRfT1VUUFVUKEFfRVhU
+T1VUX0xGRSwgcGxheWJhY2srNSk7CisJQV9QVVRfU1RFUkVPX09VVFBVVChB
+X0VYVE9VVF9GUk9OVF9MLCBBX0VYVE9VVF9GUk9OVF9SLCBwbGF5YmFjayAr
+IFNORF9FTVUxMEsxX1BMQVlCQUNLX0NIQU5ORUxTKTsKKwlBX1BVVF9TVEVS
+RU9fT1VUUFVUKEFfRVhUT1VUX1JFQVJfTCwgQV9FWFRPVVRfUkVBUl9SLCBw
+bGF5YmFjaysyICsgU05EX0VNVTEwSzFfUExBWUJBQ0tfQ0hBTk5FTFMpOwor
+CUFfUFVUX09VVFBVVChBX0VYVE9VVF9DRU5URVIsIHBsYXliYWNrKzQgKyBT
+TkRfRU1VMTBLMV9QTEFZQkFDS19DSEFOTkVMUyk7CisJQV9QVVRfT1VUUFVU
+KEFfRVhUT1VUX0xGRSwgcGxheWJhY2srNSArIFNORF9FTVUxMEsxX1BMQVlC
+QUNLX0NIQU5ORUxTKTsKIAogCS8qIGFuYWxvZyBzcGVha2VycyAqLwotCS8v
+QV9QVVRfU1RFUkVPX09VVFBVVChBX0VYVE9VVF9BRlJPTlRfTCwgQV9FWFRP
+VVRfQUZST05UX1IsIHBsYXliYWNrKTsKLQlBX1BVVF9TVEVSRU9fT1VUUFVU
+KEFfRVhUT1VUX0FDOTdfTCwgQV9FWFRPVVRfQUM5N19SLCBwbGF5YmFjayk7
+Ci0JQV9QVVRfU1RFUkVPX09VVFBVVChBX0VYVE9VVF9BUkVBUl9MLCBBX0VY
+VE9VVF9BUkVBUl9SLCBwbGF5YmFjaysyKTsKLQlBX1BVVF9PVVRQVVQoQV9F
+WFRPVVRfQUNFTlRFUiwgcGxheWJhY2srNCk7Ci0JQV9QVVRfT1VUUFVUKEFf
+RVhUT1VUX0FMRkUsIHBsYXliYWNrKzUpOworCS8vQV9QVVRfU1RFUkVPX09V
+VFBVVChBX0VYVE9VVF9BRlJPTlRfTCwgQV9FWFRPVVRfQUZST05UX1IsIHBs
+YXliYWNrICsgU05EX0VNVTEwSzFfUExBWUJBQ0tfQ0hBTk5FTFMpOworCUFf
+UFVUX1NURVJFT19PVVRQVVQoQV9FWFRPVVRfQUM5N19MLCBBX0VYVE9VVF9B
+Qzk3X1IsIHBsYXliYWNrICsgU05EX0VNVTEwSzFfUExBWUJBQ0tfQ0hBTk5F
+TFMpOworCUFfUFVUX1NURVJFT19PVVRQVVQoQV9FWFRPVVRfQVJFQVJfTCwg
+QV9FWFRPVVRfQVJFQVJfUiwgcGxheWJhY2srMiArIFNORF9FTVUxMEsxX1BM
+QVlCQUNLX0NIQU5ORUxTKTsKKwlBX1BVVF9PVVRQVVQoQV9FWFRPVVRfQUNF
+TlRFUiwgcGxheWJhY2srNCArIFNORF9FTVUxMEsxX1BMQVlCQUNLX0NIQU5O
+RUxTKTsKKwlBX1BVVF9PVVRQVVQoQV9FWFRPVVRfQUxGRSwgcGxheWJhY2sr
+NSArIFNORF9FTVUxMEsxX1BMQVlCQUNLX0NIQU5ORUxTKTsKIAogCS8qIGhl
+YWRwaG9uZSAqLwotCUFfUFVUX1NURVJFT19PVVRQVVQoQV9FWFRPVVRfSEVB
+RFBIT05FX0wsIEFfRVhUT1VUX0hFQURQSE9ORV9SLCBwbGF5YmFjayk7CisJ
+QV9QVVRfU1RFUkVPX09VVFBVVChBX0VYVE9VVF9IRUFEUEhPTkVfTCwgQV9F
+WFRPVVRfSEVBRFBIT05FX1IsIHBsYXliYWNrICsgU05EX0VNVTEwSzFfUExB
+WUJBQ0tfQ0hBTk5FTFMpOwogCiAJLyogQURDIGJ1ZmZlciAqLwogCUFfUFVU
+X09VVFBVVChBX0VYVE9VVF9BRENfQ0FQX0wsIGNhcHR1cmUpOwpAQCAtMTU1
+OCw3ICsxNjUwLDcgQEAKIAlncHIgPSBjYXB0dXJlICsgU05EX0VNVTEwSzFf
+Q0FQVFVSRV9DSEFOTkVMUzsKIAl0bXAgPSAweDg4OwkvKiB3ZSBuZWVkIDQg
+dGVtcG9yYXJ5IEdQUiAqLwogCS8qIGZyb20gMHg4YyB0byAweGZmIGlzIHRo
+ZSBhcmVhIGZvciB0b25lIGNvbnRyb2wgKi8KLQkKKwogCS8qIHN0b3AgRlgg
+cHJvY2Vzc29yICovCiAJc25kX2VtdTEwazFfcHRyX3dyaXRlKGVtdSwgREJH
+LCAwLCAoZW11LT5meDgwMTAuZGJnID0gMCkgfCBFTVUxMEsxX0RCR19TSU5H
+TEVfU1RFUCk7CiAKQEAgLTE2MDUsNyArMTY5Nyw3IEBACiAJaWNvZGUtPmdw
+cl9tYXBbZ3ByICsgMTJdID0gMDsKIAogCS8qIGlmIHRoZSB0cmlnZ2VyIGZs
+YWcgaXMgbm90IHNldCwgc2tpcCAqLwotCS8qIDAwOiAqLyBPUChpY29kZSwg
+JnB0ciwgaU1BQzAsIENfMDAwMDAwMDAsIEdQUihpcGNtLT5ncHJfdHJpZ2dl
+ciksIENfMDAwMDAwMDAsIENfMDAwMDAwMDApOyAKKwkvKiAwMDogKi8gT1Ao
+aWNvZGUsICZwdHIsIGlNQUMwLCBDXzAwMDAwMDAwLCBHUFIoaXBjbS0+Z3By
+X3RyaWdnZXIpLCBDXzAwMDAwMDAwLCBDXzAwMDAwMDAwKTsKIAkvKiAwMTog
+Ki8gT1AoaWNvZGUsICZwdHIsIGlTS0lQLCBHUFJfQ09ORCwgR1BSX0NPTkQs
+IENDX1JFR19aRVJPLCBHUFIoZ3ByICsgNikpOwogCS8qIGlmIHRoZSBydW5u
+aW5nIGZsYWcgaXMgc2V0LCB3ZSdyZSBydW5uaW5nICovCiAJLyogMDI6ICov
+IE9QKGljb2RlLCAmcHRyLCBpTUFDMCwgQ18wMDAwMDAwMCwgR1BSKGlwY20t
+Pmdwcl9ydW5uaW5nKSwgQ18wMDAwMDAwMCwgQ18wMDAwMDAwMCk7Cg==
 
-Actually, I meant the MusE CVS version as opposed to muse 0.6.0pre
-something.  I'll check it out anyhow.  I've only been using ALSA CVS as
-well, mostly due to the fact I want to fix the mtpav stuff where
-possible.
-
-<snip>
-> With the version I used yesterday I was using a version of MusE
-> without Jack. MIDI clock was streaming fine. 
-
-Hmm, cool, I'll have to give it another try.  I also would like to get
-the rtctimer module working in the latest 2.4 kernel, as this is
-supposed to alleviate latency problems with an irregular clock.  Some
-changes in the kernel's rtc seem to have similar modifications, so I
-haven't gone through and seen what's what yet.
-
-> I've had to experiment without having a manual (MOTU won't put up a
-> pdf on the web and want a change of ownership kind of certificate
-> thing), I had mine shipped over from the US second hand, I don't even
-> have the details of the guy I bought it from. 
-
-Silly Motu.  IP antics are for the RIAA/MPAA.  I'd like to know what
-they expect when someone wants documentation... you made a copy of the
-hardware?  Or you're considering buying it?  Or maybe you want to write
-software so it's more useful and perhaps others purchase it?
-
-I just wish Midiman made something like the mtpav.  They seem to be
-great about open specs.
-
-> As far as I understand it should generate SMTPE timecode from video
-> sync, I don't know if it's possible for it to happen from MIDI clock.
-> I can only get sync happening when it is set on Internal and the
-> computer is sending sync... 
-
-Hmm... I don't have any video gear to play with. :( ;)
-
-> However, in my dim memory I'm sure I've seen it get a good lock from
-> some little test apps Takashi developed to test it and also some RTC
-> kernel patches (although they seem to have stopped at 2.4.20) ... As I
-> couldn't get multiple ports working I've been using the box in
-> standalone mode with a single port from another card being the
-> interface to the PC that is until now...  
-<snip>
-
-Cool.  Good luck, I'll keep checking on progress.
-
--- 
-Ryan Pavlik <rpav@users.sf.net>
-
-"Why are we even *mentioning* semi-regular polyhedrons
- and real space?" - 8BT
+--97783000-1804289383-1045463625=:16369--
 
 
 -------------------------------------------------------
