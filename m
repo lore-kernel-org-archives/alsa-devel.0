@@ -1,14 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: problem with  MU -LAW
-Date: Tue, 01 Jul 2003 13:50:48 +0100
+From: Prince John <princejohnm@yahoo.com>
+Subject: Re: problems in /proc read and alsamixer
+Date: Tue, 1 Jul 2003 06:00:35 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F0183A8.3070906@superbug.demon.co.uk>
-References: <20030701032432.30106.qmail@webmail26.rediffmail.com>
+Message-ID: <20030701130035.95109.qmail@web11706.mail.yahoo.com>
+References: <s5hwuf3lv4p.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030701032432.30106.qmail@webmail26.rediffmail.com>
+In-Reply-To: <s5hwuf3lv4p.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,35 +16,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mahendra sp <mahendra_sp@rediffmail.com>
-Cc: alsa-user-request@lists.sourceforge, alsa-devel@lists.sourceforge.net, tiwai@suse.de
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-mahendra sp wrote:
+>Has anybody face this problem?
+> > Any ideas to resolve it?
 > 
-> hi, alsa  people,
+> this kind of problem has appeared when different gcc
+> versions were
+> used for the kernel and the ALSA modules.  not sure
+> whether it's your
+> case.  the problem #2 also seems like the behavior
+> happening with the
+> gcc-mismatch above.
 > 
->   I have wriiten the application which realises full duplex.But there is 
-> playback buffer underrun proble. The buffer tries to read the value but 
-> -ve value. After writink the -ve value for some timesay 3 minutes, it 
-> becomes alright. again after some time buffer under run occurs. whts 
-> the  problem . how to over come it. is it dependednt on periodsize and 
-> buffersize?
-> 
->   and  also i want to implement G711. does it happen automatically by 
-> using snd_pcm_format_mulaw? if not how to do it?
-> 
-> thanks, regards,
-> mahendra
-> ___________________________________________________
-G.711 uses two audio formats. A-Law (Europe), and mu-Law(USA).
+>  
+> Takashi
+-------------
+Hi Takashi,
+Thank you verymuch for your response.
+I'm using sh4-linux-gcc ver 3.0.4 for both Kernel and
+ALSA driver, lib and utils. I'm using ALSA driver -
+Ver. 0.9.1. Will it help if I change to the latest
+version?
 
-So, if one talks about A-Law and mu-Law, one is talking about G.711
+> can SH4 trace oops via ksymoops?
 
-Cheers
-James
+Sorry, I didn't get it. Could u please clarify it?
+
+Thanks,
+Prince
 
 
+
+__________________________________
+Do you Yahoo!?
+SBC Yahoo! DSL - Now only $29.95 per month!
+http://sbc.yahoo.com
 
 
 -------------------------------------------------------
