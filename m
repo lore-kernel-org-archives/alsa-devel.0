@@ -1,15 +1,13 @@
-From: Frans Ketelaars <ketelaars@wanadoo.nl>
-Subject: Re: Configuring ALSA in kernel-2.5
-Date: Thu, 27 Mar 2003 21:06:24 +0100
+From: Andrew de Quincey <adq_dvb@lidskialf.net>
+Subject: Fix for front speaker output on Audigy2
+Date: Thu, 27 Mar 2003 20:51:18 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200303272106.24524.ketelaars@wanadoo.nl>
-References: <1048788276.2474.3.camel@tiger> <20030327193627.GA26072@www.angio.com> <1048794921.2474.31.camel@tiger>
+Message-ID: <200303272051.18647.adq_dvb@lidskialf.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1048794921.2474.31.camel@tiger>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -19,21 +17,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 27 March 2003 20:55, Louis Garcia wrote:
-> Sorry no, I'm not running devfs. Where is that script snddevices?
->
-> Thanks for your help, --Lou
 
-<big snip>
+Hi, this patch enables output from the front speakers on Audigy2 cards. I've removed the 
+rubbish I had for disabling the AC97 codec mixer.
 
-In the alsa-driver directory :)
+--- CUT HERE ---
+Index: pci/emu10k1/emu10k1_main.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c,v
+retrieving revision 1.23
+diff -r1.23 emu10k1_main.c
+241c241
+<       
+---
+> 
+243,244c243,249
+<               unsigned int reg = inl(emu->port + HCFG);
+<               outl(reg | HCFG_GPOUT0, emu->port + HCFG);
+---
+>               if (!emu->audigy) {
+>                       unsigned int reg = inl(emu->port + HCFG);
+>                       outl(reg | HCFG_GPOUT0, emu->port + HCFG);
+>               } else {
+>                       unsigned int reg = inl(emu->port + A_IOCFG);
+>                       outl(reg | A_IOCFG_GPOUT0, emu->port + A_IOCFG);
+>               }
+Index: pci/emu10k1/emufx.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emufx.c,v
+retrieving revision 1.30
+diff -r1.30 emufx.c
+1505,1506c1505,1509
+<       //A_PUT_STEREO_OUTPUT(A_EXTOUT_AFRONT_L, A_EXTOUT_AFRONT_R, playback + SND_EMU10K1_PLAYBACK_CHANNELS);
+<       A_PUT_STEREO_OUTPUT(A_EXTOUT_AC97_L, A_EXTOUT_AC97_R, playback + SND_EMU10K1_PLAYBACK_CHANNELS);
+---
+>       if (emu->audigy && emu->revision == 4) { /* audigy2 */
+>               A_PUT_STEREO_OUTPUT(A_EXTOUT_AFRONT_L, A_EXTOUT_AFRONT_R, playback + SND_EMU10K1_PLAYBACK_CHANNELS);
+>       } else {
+>               A_PUT_STEREO_OUTPUT(A_EXTOUT_AC97_L, A_EXTOUT_AC97_R, playback + SND_EMU10K1_PLAYBACK_CHANNELS);
+>       }
+--- CUT HERE ---
 
-HTH,
-
-    -Frans
+-- 
+adq
 
 
 -------------------------------------------------------
