@@ -1,13 +1,16 @@
-From: "Lonnie Mendez" <lmendez19@austin.rr.com>
-Subject: Re: Problem with snd-usb-audio (usbmixer)
-Date: Wed, 18 Aug 2004 00:59:02 -0500
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000448]: System hangs up
+Date: Tue, 17 Aug 2004 13:02:28 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <001801c484e8$7640e4e0$0200a8c0@jedi>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040817110228.D1FFB1102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 26608245
+	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 13:02:29 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id E1E2118A0F
+	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 13:02:28 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,32 +19,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
------ Original Message ----- 
-From: "Matt Flax" <flatmax@Matt.Flax>
-To: "Lonnie Mendez" <lmendez19@austin.rr.com>
-Sent: Wednesday, August 18, 2004 2:26 AM
-Subject: Re: [Alsa-devel] Problem with snd-usb-audio (usbmixer)
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000448
+======================================================================
+Reported By:                zadnica
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     448
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-17-2004 13:02 CEST
+Last Modified:              08-17-2004 13:02 CEST
+======================================================================
+Summary:                    System hangs up
+Description: 
+Systems hangs up, when modules snd-via82xx is loaded. When I using OSS
+module via82cxxx_audio everything works fine.
+======================================================================
 
-
-> What hardware are you trying to use specificly ?
-
-USB-Audio - Burr-Brown Japan PCM2702
-
-    It is pretty much a usb speaker application, which transmitts on
-specific fm frequences.  LineX sells these units.  I know it works, as I've
-used it standalone with the linux kernel usb audio driver for usb-audio
-speakers and other devices... I'm trying to have it run from the alsa
-snd-usb-audio driver now.  I've had some luck with configuring a mixer map
-for it, if I add entries for VID/PID and set the "ignore get/set error"
-variable to 1... however no dsp device seems to exist so I can not test my
-progress.  I'm guessing this is going to require not only the custom mixer
-map, but an entry in the usbquirks file.  If you need more information from
-me, please refer to the info provided in my last few messages... there
-should be more than enough to diagnose this one.
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-17-04 13:02 zadnica        New Bug                                      
+======================================================================
 
 
 -------------------------------------------------------
