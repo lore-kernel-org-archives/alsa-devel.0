@@ -1,14 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Question regarding period/buffer and error handling
-Date: Fri, 28 May 2004 17:52:23 +0200 (METDST)
+From: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
+Subject: Re: alsa-lib spamming terminal
+Date: Fri, 28 May 2004 18:15:11 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0405281746010.24462-100000@studcom.urz.uni-halle.de>
-References: <40B6970F.90507@atr.jp>
+Message-ID: <yw1xpt8omsts.fsf@kth.se>
+References: <yw1xaczs29y6.fsf@kth.se> <Pine.HPX.4.33n.0405281744340.24462-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <40B6970F.90507@atr.jp>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,31 +16,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Cournapeau David <cournape@atr.jp>
-Cc: ALSA LIST <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Cournapeau David wrote:
->     My second problem is related to snd_card_next: If the card value
-> returned by snd_card_next is different from -1, does that always mean
-> than a alsa audio device is present on the system ?
+Clemens Ladisch <clemens@ladisch.de> writes:
 
-It means that same kind of device with an ALSA driver is present.
-This does not mean that you'll be able to play PCM data to it.  And
-there may be software devices available.
+> Måns Rullgård wrote:
+>> Is there a way to make alsa-lib stop spamming the terminal with error
+>> messages, for instance when a non-blocking open fails?
+>
+> snd_lib_error_set_handler()
 
-> Is it the best method to probe a soundcard with alsa support?
+Thanks.  I wonder why I didn't find that when reading the docs.
 
-snd_card_next() and snd_ctl_pcm_next_device() will give you a list of
-hardware devices only.
-
-Usually, you should use the device named "default" and let the user
-allow to specify another device name.
-
-
-HTH
-Clemens
-
+-- 
+Måns Rullgård
+mru@kth.se
 
 
 
