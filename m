@@ -1,12 +1,14 @@
-From: Andrei Boros <andrei@srr.ro>
-Subject: dummy driver and Makefile inconsistency
-Date: Wed, 19 Mar 2003 10:48:09 +0200
+From: Jon Ellis <ashura666@mac.com>
+Subject: Re: Fwd: arecord bug?
+Date: Wed, 19 Mar 2003 18:44:52 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E782EC9.EBB0A68@srr.ro>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <6EF113B8-59EF-11D7-BB3C-0003934489D0@mac.com>
+References: <Pine.LNX.4.44.0303181633140.9177-100000@vaino.wakkanet.fi>
+Mime-Version: 1.0 (Apple Message framework v551)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.44.0303181633140.9177-100000@vaino.wakkanet.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,74 +20,48 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Thanks for the workaround.
 
- alsa-kernel/core/seq/Makefile contains the following:
+Cheers
 
-obj-$(CONFIG_SND_SEQ_DUMMY) += snd-seq-dummy.o
+j.
 
-However, there is no definition of CONFIG_SND_SEQ_DUMMY anywhere !!!
+On Tuesday, March 18, 2003, at 11:43  PM, Kai Vehmanen wrote:
 
-I believe CONFIG_SND_SEQ_DUMMY should be set to "m" if dummy driver and
-sequencer support are enabled.
+> On Tue, 18 Mar 2003, Kai Vehmanen wrote:
+>
+>> ecasound -f:16,2,44100 -i alsa -o stdout |oggenc -r -q 0 -o 
+>> recording.ogg -
+>
+> Btw; ecasound can also launch oggenc by itself. To modify oggenc 
+> params,
+> you have to edit ~/.ecasound/ecasoundrc (see man ecasoundrc(5) for 
+> info).
+> So the above command would be:
+>
+> ecasound -f:16,2,44100 -i alsa -o recording.ogg
+>
+> As another example, to get vu-meter while recording, you can issue:
+>
+> ecasignalview -f:16,2,44100 alsa recording.ogg
+>
+> Ecasignalview, too, comes with the standard ecasound package and thus
+> should be in Gentoo. If you prefer a GUI, try recording with:
+>
+> ecamegapedal alsa recording.ogg
+>
+> Independently of how you do the recording, you always get the benefits 
+> of
+> ecasound's realibility features. The key feature is separation of audio
+> and disk processing to separate execution contexts. If this is not done
+> (like is the case with arecord), any burst of disk activity can cause
+> xruns to the recording process.
+>
+> --
+>  http://www.eca.cx
+>  Audio software for Linux!
+>
 
----------------------------------------------------------------
-I made several changes so that ./configure sets this properly and the
-module gets built properly, but I am having some trouble integrating it
-with autoconf in the cvs tree before running cvscompile.
-
-Here are the modifications I made in my alsa-driver/ : 
-
-Makefile line 50:
------------------------------------------------------------------
-CONFIG_PCMCIA           = @CONFIG_PCMCIA@
-CONFIG_SND_SEQUENCER    = @CONFIG_SND_SEQUENCER@
-+CONFIG_SND_SEQ_DUMMY    = @CONFIG_SND_SEQ_DUMMY@
-CONFIG_SND_OSSEMUL      = @CONFIG_SND_OSSEMUL@
-ifeq (y,$(CONFIG_SND_OSSEMUL))
-  CONFIG_SND_MIXER_OSS  = m
-  CONFIG_SND_PCM_OSS    = m
------------------------------------------------------------------
-configure.in line 792 :
------------------------------------------------------------------
-fi
-AC_SUBST(CONFIG_SND_SEQUENCER)
-+dnl if test "$CONFIG_SND_DUMMY" = "m"; then
-+  CONFIG_SND_SEQ_DUMMY="m"
-+  AC_SUBST(CONFIG_SND_SEQ_DUMMY)
-+  AC_DEFINE_CONFIG_SND_SEQ_DUMMY)
-+dnl fi
-if test "$CONFIG_SND_SEQUENCER" = "m"; then
-  AC_DEFINE(CONFIG_SND_SEQUENCER)
------------------------------------------------------------------
-configure line 2930 : (I don't know how to integrate this with autoconf
-and cvscompile)
------------------------------------------------------------------
-#define CONFIG_SND_DUMMY_MODULE 1
-EOF
-+        if test "$CONFIG_SND_SEQUENCER" = "m"; then
-+            CONFIG_SND_SEQ_DUMMY="m"
-+        fi
-
-        CONFIG_SND_VIRMIDI="m"
-        cat >> confdefs.h <<\EOF
------------------------------------------------------------------
-configure line 3408 : (I don't know how to integrate this with autoconf
-and cvscompile)
------------------------------------------------------------------
-#define CONFIG_SND_DUMMY_MODULE 1
-EOF
-+                if test "$CONFIG_SND_SEQUENCER" = "m"; then
-+                    CONFIG_SND_SEQ_DUMMY="m"
-+                fi
-
-                ;;
------------------------------------------------------------------
-
--- 
-ing. Andrei Boros
-mailto:andrei@srr.ro / +40-21-303-1870
-Centrul pt. Tehnologia Informatiei
-Societatea Romana de Radiodifuziune
 
 
 -------------------------------------------------------
