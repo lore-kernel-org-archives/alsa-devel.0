@@ -1,10 +1,9 @@
 From: Abramo Bagnara <abramo.bagnara@libero.it>
 Subject: Re: help for a levelmeter
-Date: Thu, 17 Oct 2002 22:48:54 +0200
+Date: Thu, 17 Oct 2002 23:24:19 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DAF2236.EA2A74BD@libero.it>
-References: <20021015224039.59921.qmail@web12207.mail.yahoo.com>
-		<3DADC922.5000808@club-internet.fr> <3DAE626C.7601185C@libero.it> <87r8ep9ca1.fsf@sulphur.joq.us>
+Message-ID: <3DAF2A83.8E3B4E6@libero.it>
+References: <3DAC1C6C000947E6@ims5a.libero.it> (added by postmaster@libero.it)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -17,62 +16,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jack O'Quin <joq@io.com>
-Cc: Laurent Georget <lgeorget2@club-internet.fr>, karsten wiese <annabellesgarden@yahoo.de>, Devel Alsa <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <pbd@linuxaudiosystems.com>
+Cc: Jack O'Quin <joq@io.com>, Laurent Georget <lgeorget2@club-internet.fr>, karsten wiese <annabellesgarden@yahoo.de>, Devel Alsa <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Jack O'Quin wrote:
+Paul Davis wrote:
 > 
-> Abramo Bagnara <abramo.bagnara@libero.it> writes:
+>    [ ... ]
 > 
-> > The correct plugin has already been written and available inside
-> > alsa-lib.
-> >
-> > The name is pcm_meter, it's lockless and perfectly integrated with ALSA
-> > PCM chains.
-> >
-> > A sample implementation for curses level meter is already available and
-> > working.
-> >
-> > It's very simple to add other *-meters, scopes, etc.
+> >The rest is obvious, of course ;-)))
 > 
-> That's great!
-> 
-> Is there any user-level documentation for all this cool stuff?
+> i deeply and sincerely this was funny. but it isn't.
 
-Ehm... guess what...
+What do you mean with that?
 
-No, wait: I wrote some lines in asoundrc.txt:
+Documentation has not been written for lack of funding and lack of
+volunteers.
 
-  type meter            # Meter PCM
-  slave STR             # Slave name (see pcm_slave)
-  # or
-  slave {               # Slave definition or name
-    pcm STR             # Slave PCM name
-    # or
-    pcm { }             # Slave PCM definition
-  }
-  [frequency INT]       # Updates per second
-  scopes {              # Scopes
-    ID STR              # Scope name (see pcm_scope)
-  # or
-    ID { }              # Scope definition (see pcm_scope)
-  }
+This is self-evident and if you're insinuating I'm the one to blame I
+believe you're definitely unfair.
 
-# PCM scope type definition
-pcm_scope_type.NAME {
-  [lib STR]             # Library file (default libasound.so)
-  [open STR]            # Open function (default
-_snd_pcm_scope_NAME_open)
-}
+Alternatively I should have to interpret this as angered knock on the
+heaven's door...
 
-# PCM scope definition
-pcm_scope.NAME {
-  type STR              # Scope type
-  ...
-}
-
-The rest is obvious, of course ;-)))
+"Success is simply a matter of luck. Ask any failure."
 
 -- 
 Abramo Bagnara                       mailto:abramo.bagnara@libero.it
