@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000494]: aoss crashes (patch)
-Date: Mon, 13 Sep 2004 18:01:45 +0200 (CEST)
+From: Shannan Ly <hgcwex@mail.mah.se>
+Subject: Investors Inside For IEVM, Must See. xdujam
+Date: Sun, 12 Sep 2004 20:40:25 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040913160145.B99481200A@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040913153849.B95942A1@alsa.alsa-project.org>
+Reply-To: <hgcwex@mail.mah.se>
+Mime-Version: 1.0
+Content-Type: text/html; charset=us-ascii
+Content-Transfer-Encoding: plain
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2E02E266
-	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 18:01:46 +0200 (MEST)
+Received: from mail.mah.se (h000bdbbdd0af.ne.client2.attbi.com [24.62.178.150])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id B95942A1
+	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 17:38:49 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,86 +22,24 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+<html><body><p>Hello Shannan</p><p><font color=#000033>Investors Weekly Edge Highly Recommends: IEVM.OB this one has the potential to easily shoot over $1.00 within 3 to 5 days. Today is the beginning of a two week promotion and will be featured in over 18 Highly Profiled newsletters. So don't miss it, take a look at it immediately.</font></p><p><font color=#FF0000><B>Company Name: Integrated Environmental Technologies Ltd.<br> Ticker: IEVM.OB<br> Current: .50 Cent$<br> 3-5 Day Potential Price:1.00<br> 2 -4 Week Potential Price:1.50-2.00</B></font></p><p>Integrated Environmental Technologies LTD. (&quot;IET&quot; or the &quot;Company&quot;) is a development stage company that is rapidly approaching commercial operation. Management of the Company changed the name from Naturol Holdings to Integrated Environmental Technologies to reflect the environmental focus of its two businesses. The op
+ erational direction for IET was established in the later part of 2003, when the Company en
+ tered into exclusive licensing agreements for two unique technologies with significant growth potential.</p><p>Water Treatment: The first of these technologies, a process of water purification using an electro-chemical activation (&quot;ECA&quot;) process, is expected to become commercial at the end of the first quarter of 2005. The Company has orders for ECA equipment and is now equipping the production facilities to produce the ECA units.</p><p>Electro-chemical evaluation was developed to remove particulate matter and minerals in process water, such as drilling fluids in oil and gas fields. Later uses were in industrial applications such as petrochemicals, poultry &amp; farming, printed -circuit board manufacturing and food processing applications. In these applications it was discovered that the process was an effective disinfectant and germ-sterilizing agent. ECA is an environmental
+ ly safe process of passing a diluted saline solution, often as dilute as tap water, throug
+ h a specially designed electrolytic cell in order to modify the functional properties of the water. The process does not add reagents. After treatment, the solution kills microorganisms in extremely short contact time; it is non-toxic and leaves no synthetic chemical residue.</p><p>As seen at the left, the size of the ECA delivery system has been reduced and designed to fit into a cylindrical shaped container that incorporates the cathode and anode electrodes that make up the unit. These cylinders can then be attached to manifolds that provide a capacity range of between 5 to 700 gallons per hour.</p><p>The potential applications for the ECA technology are diverse and substantial. The timeliest use can be for military and civilian management of biological and chemical decontamination programs. The solution can be used for hard surface disinfection for food safety in restaurants and food
+  processing plants. An early target use is for poultry and beef processing plants. For mun
+ icipal applications, the ECA treatment may apply for initial water treatment as well as for wastewater treatment in municipal, industrial and agricultural areas.</p><p>IET has entered into a collaborative agreement with Coastal Carolina University, located in Myrtle Beach, South Carolina to explore product development and market applications for the ECA technology as well as the Company's oil extraction technology. The Company's license for the ECA technology was executed in September of 2003 and to date there has not been time for a through exploration of market potential. The market potential is estimated to be in the hundreds of millions, if not billions of dollars per year.<br> <br> Oil Extraction from Botanicals: The second license acquired in late 2003 by IET is an exclusive license for a new, environmentally clean, safe and efficient process to extract essential oils from plants.
+  Oils have been extracted from plants for centuries, for use in medicines, fragrances, foo
+ ds, art and production processes. Currently the Naturol technology is used in Thailand for the extraction of compounds and oils for the food and fragrance industries.</p><p>Current extraction techniques use chemicals, such as hexane, distillation or super critical carbon dioxide. Hexane dominates the solvent extraction techniques, but it is highly flammable, toxic, carcinogenic and leaves measurable residues. Steam distillation of oils uses an excess of energy and is expensive. Super critical carbon dioxide uses high pressures and is also high in cost.</p><p>The Naturol technology is a simple, yet efficient process for extraction of oils from a diverse range of botanical materials. The technique uses ozone friendly solvents to extract oils form almost any raw material ( resins, seeds, petals, herbs). The technology also meets the stringent environmental and safety regulations laid down 
+ by industrial economies, covering all aspects of the food, pharmaceutical and fragrance in
+ dustries.<br> The global business of extracting/recovering oils and bioactive compounds from plants represents a $100 billion per year enterprise, and is growing. Plant based compounds are used in several markets, including pharmaceutical ($400 billion total), nutraceutical ($50 billion) and flavor and fragrance ($10 billion). Each of these industries is increasing demand for compounds derived from natural sources.</p><p>IET has entered into a license agreement and joint venture with the Coach House Group, an UK based company specializing in international geopolitical consulting and licensing of environmental technologies. The joint venture will construct a 150-liter extraction plant (three modules of 50 L each). One of the modules will be dedicated to research while the other two can be used for production. The equipment is expected to be available at the end of the first quarter of 20
+ 04.</p><p>This technology is also a part of the collaborative agreement with the Coastal C
+ arolina University, whereby the University will assist in identifying plants growing in South Carolina that can be used as feedstock in the extraction process. The University will also assist in the economic assessment of prospective feedstocks and production processes that can use natural plants or agricultural crops for development.</p><p><font color=#FF0000><B>Company Name: Integrated Environmental Technologies Ltd.<br> Ticker: IEVM.OB<br> Current: .50 Cent$<br> 3-5 Day Potential Price:1.00<br> 2 -4 Week Potential Price:1.50-2.00</B></font></p><p>The Company expects to conduct research and development for the extracted oils during the next twelve months, and is expected to have pilot production in one or both of the production modules before the year is complete.</p><p align=center><font color=#FF0000 size=4>Our Gains Last Month Was over 400% if you're looking for a winner look no fu
+ rther,<br> Get IEVM.OB immediately Huge Promotions &amp; Gains For The Next 2 Weeks!</font
+ ><br></p><p><font size=-1>pksevr Information within this email contains &quot;forward looking statements&quot; within the meaning of Section 27A of the Securities Act of 1933 and Section 21B of the Securities Exchange Act of 1934. Any statements that express or involve discussions with respect to predictions, goals, expectations, beliefs, plans, projections, objectives, assumptions or future events or performance are not statements of historical fact and may be &quot;forward looking statements.&quot; Please be advised that nothing within this email shall constitute a solicitation or an offer to buy or sell any security mentioned herein. This newsletter is neither a registered investment advisor nor affiliated with any broker or dealer. All statements made are our express opinion only and should be treated as such. We may own, buy and sell any securities mentioned at any time. This repor
+ t includes forward-looking statements within the meaning of The Private Securities Litigat
+ ion Reform Act of 1995. These statements may include terms as &quot;expect&quot;, &quot;believe&quot;, &quot;may&quot;, &quot;will&quot;, move&quot;,&quot;undervalued&quot; and &quot;intend&quot; or similar terms. This newsletter was paid $12500 from third party to send this report. PLEASE DO YOUR OWN DUE DILIGENCE BEFORE INVESTING IN ANY PROFILED COMPANY. You may lose money from investing in Penny Stocks. To be removed from further emails send email too: exit (at) 163 . com ipbcmy mqwfmp vnusyu ckirue rvkall</font></p></body></html>
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000494
-======================================================================
-Reported By:                stsp
-Assigned To:                
-======================================================================
-Project:                    ALSA - liboss
-Bug ID:                     494
-Category:                   
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             09-09-2004 20:46 CEST
-Last Modified:              09-13-2004 18:01 CEST
-======================================================================
-Summary:                    aoss crashes (patch)
-Description: 
-aoss always causes a SIGSEGV for me. Here is a
-stack trace:
----
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000000  0x00000000 in ?? ()
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001  0x4002a76d in fopen (path=0x40039c3a "/proc/mounts", mode=0x40039c38
-"r")
-    at alsa-oss.c:661
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000002  0x40036d4d in print_access_vector () from /lib/libselinux.so.1
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000003  0x40038971 in setfscreatecon () from /lib/libselinux.so.1
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000004  0x4002fc55 in _init () from /lib/libselinux.so.1
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000005  0x4000bf71 in _dl_init_internal () from /lib/ld-linux.so.2
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000006  0x400007f5 in _dl_start_user () from /lib/ld-linux.so.2
----
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-13-2004 15:49 CEST 
-----------------------------------------------------------------------
-Could you give the patch summary and signed-off-by line to apply
-your patch (preferably with detailed description).
-
-It looks like below.
-
-Summary: [ALSA-OSS] Fix segfault at fopen
-
-This patch fixes the bug....
-More description...
-
-Signed-off-by: Foo Bar <foo@bar.com>
-
-----------------------------------------------------------------------
- stsp - 09-13-2004 18:01 CEST 
-----------------------------------------------------------------------
-Hmm, OK. Thanks for the hint.
-Lets try that:
-
------------
-
-Summary: [ALSA-OSS] Always initialize pointers before use
-
-Description:
-This patch makes sure that the initialize() is always called
-before any pointer to function is used. Somehow it happens
-that the __attribute__((constructor)) is not always sufficient -
-other libs may have that attribute either, and may call fopen()
-from within their constructors, which leads to a SIGSEGV, that
-this patch fixes. Perhaps the __attribute__((constructor)) is no
-longer needed with that patch at all.
-
-Signed-off-by: Stas Sergeev <stsp@aknet.ru>
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-09-04 20:46 stsp           New Bug                                      
-09-09-04 20:46 stsp           File Added: alsa-oss.c.diff                    
-09-13-04 15:49 tiwai          Bugnote Added: 0001749                       
-09-13-04 18:01 stsp           Bugnote Added: 0001751                       
-======================================================================
 
 
 -------------------------------------------------------
