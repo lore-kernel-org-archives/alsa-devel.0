@@ -1,15 +1,16 @@
-From: Gareth Duncan <gareth@gduncan.uklinux.net>
-Subject: Re: sblive mixer (was: guitar + sblive + ardour + ladspa effects)
-Date: Thu, 1 Aug 2002 11:18:05 +0000
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: More CS4630, secondary CODEC output.
+Date: Thu, 01 Aug 2002 11:39:37 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200208011114.46075.gareth@gduncan.uklinux.net>
-References: <E17ZHUa-0008M8-00@usw-sf-list1.sourceforge.net> <1027977926.10978.104.camel@insanity> <1028116511.4043.6.camel@insanity>
+Message-ID: <3D4901D9.7040409@cucumelo.org>
+References: <3D41D4DC.60004@cucumelo.org> <s5h1y9ic3xs.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1028116511.4043.6.camel@insanity>
+Received: from cucumelo.org (as1-4-7.bn.g.bonet.se [194.236.61.89])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA04205
+	for <alsa-devel@alsa-project.org>; Thu, 1 Aug 2002 12:29:40 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,44 +19,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 31 July 2002 11:55 am, Bob Ham wrote:
-> On Mon, 2002-07-29 at 22:25, Bob Ham wrote:
-> > On Mon, 2002-07-29 at 21:53, Paul Davis wrote:
-> > > you will also probably want to turn down the line-in level, so that
-> > > the direct feed is not audible. that is also an sblive issue.
-> >
-> > It's, unfortunately, the only issue :/
 >
-> I want to capture the line-in, but not hear it.  Surely somebody must
-> have an idea as to how this can be done?
 >
-> Bob
+>
+>I merged your codes into the cvs.
+>The codes are almost identical except for small bugfixes,
+>re-indentation, and replacement of debug printing.
+>
+-:)
 
-Hi,
+>
+>To be sure, the old dsp image is still chosen unless
+>CONFIG_SND_CS46XX_NEW_DSP is set to yes.
+>For compiling the new dsp image, please remove the comments in
+>alsa-driver/pci/cs46xx/Makefile.
+>
+With the new PCM multi channel support, I believe  there no way
+to have the support for the old image,  to many changes in cs46xx_lib.c now
+hardly depends on the new stuff.
+So if we want to still support the old code i think the only way is to 
+create
+a new directory  alsa-driver/pci/cs46xx_old/_new, having to independent
+cs46xx drivers.
+But I hope that in some near future we can discard the old cs46xx.
+Of course that we must be sure it work at least so good as before with all
+known CS46xx soundcards before discarding anything.
 
-I don't have the livedrive but to do what you want with the line in on the 
-back of the pci card, I do the following.
+>Please send patches againt cvs if you modify the driver more, so that
+>I can commit it soon.
+>
+Well, i got some more work to do. I will try fixup my new code changes 
+so it follows
+the coding-style used by ALSA, and then become mergable with current CVS.
+(and you dont have to do all thoose indentation fixes again)
 
-Load up alsamixer and find the item Line and press space to capture it. Now go 
-to the capture item and press space to capture that aswell, you should now 
-here the input from the line in. Make sure that the AC97 Capture volume is at 
-maximum. Finally reduce the AC97 volume to zero, you should now not be able 
-to hear the input from the line in.
+Regards
 
-I don't know if this is of any help at all, but maybe if you can replace the 
-capture of the Line item with the equivalent on the livedrive (whatever that 
-might be) it might work.
+/Benny
 
-Bye,
-
-Gareth.
-
--- 
-Ego is the anesthetic given by a kindly nature to relieve the pain
-of being a damned fool.
 
 
 -------------------------------------------------------
