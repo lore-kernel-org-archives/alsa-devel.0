@@ -1,14 +1,14 @@
 From: mark@undertone.org
-Subject: Re: Re: btw
-Date: Thu, 17 Oct 2002 09:44:40 -0500
+Subject: Re: btw
+Date: Thu, 17 Oct 2002 10:20:42 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021017144440.GA14352@undertone.org>
-References: <20021014191214.GB6704@undertone.org> <20021014192959.GA6792@undertone.org> <20021014193407.GA6821@undertone.org> <s5h8z106km8.wl@alsa2.suse.de> <20021015175750.GA8918@undertone.org> <s5hof9u666f.wl@alsa2.suse.de> <20021016194055.GA11982@undertone.org> <s5h8z0x5v3r.wl@alsa2.suse.de> <20021017134235.GA14241@undertone.org>
+Message-ID: <20021017152042.GB14352@undertone.org>
+References: <20021014191214.GB6704@undertone.org> <20021014192959.GA6792@undertone.org> <20021014193407.GA6821@undertone.org> <s5h8z106km8.wl@alsa2.suse.de> <20021015175750.GA8918@undertone.org> <s5hof9u666f.wl@alsa2.suse.de> <20021016194055.GA11982@undertone.org> <s5h8z0x5v3r.wl@alsa2.suse.de> <20021017134235.GA14241@undertone.org> <s5h4rbl5e9y.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <20021017134235.GA14241@undertone.org>
+In-Reply-To: <s5h4rbl5e9y.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,131 +21,51 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In a bit of good news, although playing back streams dont really want
-to work, if I use the line in on the card and shove in the output from
-my onboard sound card, I actually get sound of the card now while it
-is connected via usb to the laptop. Earlier, the only way to get sound
-of the card while booted into linux was to disconnect it completely
-and use it as a stand-alone device in the same manner. As a result, I
-can test a couple of the mixer settings for you. I'm using alsamixer
-for this, doing it by hand via amixer would take a while . . .
+On Thu, Oct 17, 2002 at 04:30:17PM +0200, Takashi Iwai wrote:
+> this is shown exactly in /proc/asound/card*/stream*.
 
-The first 4 master controls control front,back, and center-woofer. Not
-sure about the exchange with the last two, I only have a 4.1 sound
-system hooked up into the device. "Master 1" is a general master that
-controls all sound. Bass and treble follow... The PCM interface I
-can't test, due to the same earlier problems. Line and Line 1 seem to
-do the same thing for me at the moment. I would guess that "line" is
-for the specific line in 1/8 jack im using in the front of the unit,
-and that "line 1" is a general control for all input lines... it didnt
-control the mic though. Only the "Mic" control controls the mic. 
+Neat.
 
-Now on to the "odd" stuff ... I cant test the digital in and outs. I
-just don't have another optical audio device here. The "Speaker"
-interface seems like a master mute button. All other interfaces, uh,
-don't seem to do anything. If you can suggest better ways to test, I'm
-all ears. I could do more extensive testing if you like, but uh hmm
-not sure exactly how the logistics of that would work out in real
-life, heh.
+> iirc, the 48000Hz 16bit 2ch is the only supported format on extigy.
+> (there should be more, but they are likely not parsed correctly - see
+>  below.)
 
-Still cant seem to control the CMSS functionality (fake surround
-sound). When the sound card has the usb hooked into the machine, the
-CMSS switch is "locked" into whatever state it was in before
-communicating with the machine. If its any hint, it would appear as
-though all the front-panel controls (except the power) are disabled
-once the device is communicating via usb. This includes the CMSS
-button and two software-controled gain knobs for the Mic and master
-volume. I say software controled because there is no internal,
-traditional "hardware" mechanism with the knobs, its just a physical
-interface to the gain levels I can otherwise control via software.
+How very interesting. I immediately start wondering how it processes
+3d audiofiles or surround sound off a dvd... left as an exersise for
+myself I guess...
 
--Mark
+> but anyway it's strange that the format above is not accepted by
+> plughw.  please check
+> 
+> - whether the files mathing with native format are ok.
 
-(I have a feeling that the pcm in/out works just fine and I'm not
-using the alsa software properly . . )
+Yup, seems to work fine. To continue the testing from before with this
+newfound pcm stream, the only newfound knowledge is that the "pcm"
+control seems to work.
 
+> - whether the file above with OSS emulation works (which converts
+>   inside the kernel).
 
-On Thu, Oct 17, 2002 at 08:42:35AM -0500, mark@undertone.org wrote:
-> On Thu, Oct 17, 2002 at 10:26:48AM +0200, Takashi Iwai wrote:
-> > ah, since 8000Hz 8 bit is not supported on this device.
-> > please use plughw instead of hw, that is,
-> > 
-> > 	% aplay -Dplughw:1,0 foo.wav
-> 
-> atrophy:~# aplay -Dplughw:1,0 foo.wav
-> Playing raw data 'foo.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
-> ALSA lib pcm_hw.c:428:(snd_pcm_hw_prepare) SNDRV_PCM_IOCTL_PREPARE failed: Invalid argument
-> aplay: set_params:813: Unable to install hw params:
-> ACCESS:  RW_INTERLEAVED
-> FORMAT:  U8
-> SUBFORMAT:  STD
-> SAMPLE_BITS: 8
-> FRAME_BITS: 8
-> CHANNELS: 1
-> RATE: 8000
-> PERIOD_TIME: (124988 124989)
-> PERIOD_SIZE: (999 1000)
-> PERIOD_BYTES: (999 1000)
-> PERIODS: (4 5)
-> BUFFER_TIME: 500000
-> BUFFER_SIZE: 4000
-> BUFFER_BYTES: 4000
-> TICK_TIME: 10000
-> atrophy:~# 
-> 
-> I've tried an entire array of different wav's in different formats,
-> all with similar debugging output.
-> 
-> I've also tried installing various modules and drivers in a vain and
-> blind attempt to just get it to play the stream. What "is supported"
-> natively by the driver?
-> 
-> > for the control (mixer) interface, no second zero, that is, use
-> > '-Dhw:1'.  (btw, it's equitvalent "amixer -c 1").
-> 
-> Yes, I've been able to mix the thing properly now. Thanks. Uh, I'm
-> guessing the code is the best place to actually get a decent
-> description why this is?
-> 
-> > > I compiled both controler modules and have tried using them
-> > > interchangably. Same result. There is no difference in the stream0
-> > > file - checked with a diff.
-> > 
-> > you can check this also via the output of 'lsusb -v'.
-> 
-> Only differences were fairly cosmetic:
-> 
-> atrophy:~/alsa# diff uhci usb-uhci 
-> 15c15
-> <   iProduct                2 USB UHCI-alt Root Hub
-> ---
-> >   iProduct                2 USB UHCI Root Hub
-> 50c50
-> < Bus 001 Device 002: ID 041e:3000 Creative Labs 
-> ---
-> > Bus 001 Device 005: ID 041e:3000 Creative Labs 
-> 
-> I had to disconnect my minihub and connect only the extigy by itself
-> in order to use the usb-uhci driver. I normally only use uhci, as I
-> need to use a usb mouse and the extigy, which requires a hub that
-> doesnt like usb-uhci.
-> 
-> Given the output above, I'm probably doing something rather silly
-> again with regards to some kind of random compatibility issue. I am
-> still running the mixer with the debug hack you put in.
-> 
-> -mark
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by: viaVerio will pay you up to
-> $1,000 for every account that you consolidate with us.
-> http://ad.doubleclick.net/clk;4749864;7604308;v?
-> http://www.viaverio.com/consolidator/osdn.cfm
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+Uh hmm doesn't seem to. I'm truthfully not sure of the most ideal way
+to test this. I tested it by loading up the alsa-oss modules and using
+some oss programs that reference /dev/dsp (which in this case gets
+symlinked to sound/dsp).
+
+> i'm not sure what's going on there, but the lsusb output once you sent
+> me contains much more supported formats.
+> and i experienced that the similar phenomenon happened on other
+> usb-audio devices - not the whole descriptors are parsed.
+> the behavior might be changed if you reboot.  sigh...
+
+I've rebooted many times. Seems consistant.
+
+> i guess it's likely a bug of usb controller modules.
+
+Suck. With the work being put in, I wonder how hard it would be to
+cajole Creative Labs to ship you a free extigy to play with, heh. Who
+knows, they might even end up supplying some specs.
+
+-mark
 
 
 -------------------------------------------------------
