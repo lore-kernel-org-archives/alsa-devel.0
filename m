@@ -1,12 +1,11 @@
-From: =?iso-8859-1?Q?J=F6rn?= Nettingsmeier <nettings@folkwang-hochschule.de>
-Subject: Re: Reverse engineering from Windows 2000 WDM drivers?
-Date: Sat, 11 May 2002 17:44:21 +0200
+From: valter5@jippii.fi
+Subject: Terratec DMX Xfire 1024
+Date: Sat, 11 May 2002 18:52:47 +0300 (EEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CDD3C55.5595C86E@folkwang-hochschule.de>
-References: <3CDBDD6F.F67EEA8F@informatik.uni-kl.de>
+Message-ID: <7630657.1021132367130.JavaMail.valter5@jippii.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; Charset=iso-8859-15; Format=Flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -19,47 +18,26 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-J=FCrgen Zimmermann wrote:
-> =
+Hello.
 
-> Hello,
-> I wonder if anyone has experience in doing reverse engineering
-> Windows 2000 WDM drivers in order to create a new driver for
-> the ALSA chipset.
-> =
+I've noticed that there isn't any conversation of Terratec's Windows 
+control panel to Linux. Since it's very important for all the owners of 
+this sound card, since it controls: playback, record, digital inputs and 
+outputs, midi, 3D settings - and, the most important thing - EQ!
 
-> The card I have in question is a YAMAHA SW1000XG, and there are both
-> Windows9x and Windows 2000 WDM drivers available, but to my knowledge
-> there are no signs for Linux support (as this is a "professional"
-> card... Hm...).
-> =
+This EQ is DMX Xfire 1024's (headphone) amplifier, and it's very 
+important when listening to music, watching videos etc - I would 
+recommend that somebody should somehow try to convert this control panel 
+to Linux!
 
-> On the other hand, perhaps it could be possible to setup the card
-> and create a driver with the knowledge derived from the Windows drivers=
-=2E
-> =
+More information can be read from: www.terratec.co.uk
 
-> So, can anyone give me some hints how to "trace" the card's setup and
-> working?
-> =
+Thank you.
 
+__
+Ota itsellesi luotettava kotimainen email http://www.jippii.fi/
+Tutustu samalla netin parhaaseen pelipaikkaan JIPPIIGAMESIIN.
 
-there are now so many professional cards supported under linux that it's
-a waste of time IMHO to reverse engineer stuff. many vendors have
-understood that providing specs is an important aspect of customer care.
-the vendors who haven't should just learn it the hard way. buy
-elsewhere. (yeah, i know you probably already have that card, but hey,
-that's what ebay is for :)
-
-just my personal .02 EUR
-
-j=F6rn
-
-
---
-Watch out where the huskies go and don't you eat
-the yellow snow !
-	- Frank Zappa
 
 _______________________________________________________________
 
