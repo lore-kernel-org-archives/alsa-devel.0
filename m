@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000265]: Error building [hwdep.o] for alsa-driver
-Date: Tue,  7 Sep 2004 16:43:30 +0200 (CEST)
+Subject: [ALSA - driver 0000244]: aplay loops like a broken record with YMF-724F
+Date: Tue,  7 Sep 2004 16:53:07 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907144330.C086DE01F@server.perex-int.cz>
+Message-ID: <20040907145307.DD853E01F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 232A828E
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:43:31 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3C4CD28E
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:53:08 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,254 +22,78 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000265
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000244
 ======================================================================
-Reported By:                umka27
+Reported By:                dant
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     265
-Category:                   0_compilation problem_!!!
+Bug ID:                     244
+Category:                   PCI - ymfpci
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.4.26-vanilla
+Distribution:               
+Kernel Version:             2.4.26-1.ll.rh90.ccrma
 Resolution:                 fixed
 ======================================================================
-Date Submitted:             05-09-2004 02:28 CEST
-Last Modified:              09-07-2004 16:43 CEST
+Date Submitted:             04-28-2004 04:18 CEST
+Last Modified:              09-07-2004 16:53 CEST
 ======================================================================
-Summary:                    Error building [hwdep.o] for alsa-driver
+Summary:                    aplay loops like a broken record with YMF-724F
 Description: 
+I have downloaded the latest kernel and Alsa RPMs from CCRMA site and was
+able to get the sound drivers to work
+for Yamaha YMF-724F sound card.
 
-When compiling alsa-driver I get an error while trying to
-build [hwdep.o]. I have trouble figuring out what the error is. Below is
-the output that I get. This problem occurs when
-I try to compile any of these:
+KMidi seems to play fine.  The only problem so far that I can see is
+'aplay' with WAV files.
 
- - alsa-driver-1.0.2c.ebuild  
- - alsa-driver-1.0.3.ebuild      
- - alsa-driver-1.0.4.ebuild
- - alsa-driver-1.0.4-r1.ebuild
+Here is what I tried:
 
+[root@linux sounds]# aplay email.wav
+Playing WAVE 'email.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Mono
+ALSA lib pcm_hw.c:523:(snd_pcm_hw_drain) SNDRV_PCM_IOCTL_DRAIN failed:
+Input/output error
 
+This sound was supposed to play once.  I hear a repeat of this sound 20
+times exactly.  I tried all other wave files with the same results!  It
+sounds like a broken record up to 20 times.
 
+I have scanned google and found only two references where others have
+reported simliar results but no response fixes were given.
 
-gcc -D__KERNEL__ -DMODULE=1
--I/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include 
--I/usr/src/linux/include -O2 -mpreferred-stack-boundary=2 -march=i686
--DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include  -E -D__GENKSYMS__ vx_entry.c
-| /sbin/genksyms -k 2.4.26  >
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/modules/pcmcia-vx__vx_entry.ver.tmp
-mv
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/modules/pcmcia-vx__vx_entry.ver.tmp
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/modules/pcmcia-vx__vx_entry.ver
-make[3]: Leaving directory
-`/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/pcmcia/vx'
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sndversions.h
-was updated
-make[2]: Leaving directory
-`/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/pcmcia'
-make[1]: Leaving directory
-`/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c'
-make[1]: Entering directory
-`/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/acore'
-gcc -D__KERNEL__ -DMODULE=1
--I/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include 
--I/usr/src/linux/include -O2 -mpreferred-stack-boundary=2 -march=i686
--DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include   -DEXPORT_SYMTAB -c hwdep.c
-In file included from
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
-                 from hwdep.c:22:
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:134:
-redefinition of `PDE'
-/usr/src/linux/include/linux/proc_fs.h:213: `PDE' previously defined here
-In file included from
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
-                 from hwdep.c:22:
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:189:1:
-warning: "snprintf" redefined
-In file included from /usr/src/linux/include/linux/modversions.h:176,
-                 from
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:42,
-                 from
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
-                 from hwdep.c:22:
-/usr/src/linux/include/linux/modules/ksyms.ver:676:1: warning: this is the
-location of the previous definition
-In file included from
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
-                 from hwdep.c:22:
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:190:1:
-warning: "vsnprintf" redefined
-In file included from /usr/src/linux/include/linux/modversions.h:176,
-                 from
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:42,
-                 from
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
-                 from hwdep.c:22:
-/usr/src/linux/include/linux/modules/ksyms.ver:682:1: warning: this is the
-location of the previous definition
-In file included from
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
-                 from hwdep.c:22:
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:395:1:
-warning: "vmalloc_to_page" redefined
-In file included from /usr/src/linux/include/linux/modversions.h:176,
-                 from
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:42,
-                 from
-/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
-                 from hwdep.c:22:
-/usr/src/linux/include/linux/modules/ksyms.ver:68:1: warning: this is the
-location of the previous definition
-make[1]: *** [hwdep.o] Error 1
-make[1]: Leaving directory
-`/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/acore'
-make: *** [compile] Error 1
+Help!
 
-
+Best regards!
+Dan Thurman
+dant@cdkkt.com
 ======================================================================
 
 ----------------------------------------------------------------------
- umka27 - 05-25-2004 19:53 CEST 
+ tiwai - 04-30-2004 10:56 CEST 
 ----------------------------------------------------------------------
-So, I went to the directory
-/var/tmp/portage/alsa-driver-1.0.3/work/alsa-driver-1.0.3/acore
-
-Then use make file to compile stuff within the directory:
-
-Iceberg acore # make
-gcc -D__KERNEL__ -DMODULE=1 -I/tmp/alsa-driver-1.0.4/include
--I/lib/modules/2.4.26/build/include -O2 -mpreferred-stack-boundary=2
--march=i686 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
--Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
--nostdinc -iwithprefix include -DEXPORT_SYMTAB -c hwdep.c
-In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/tmp/alsa-driver-1.0.4/include/adriver.h:134: redefinition of `PDE'
-/lib/modules/2.4.26/build/include/linux/proc_fs.h:213: `PDE' previously
-defined here
-In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/tmp/alsa-driver-1.0.4/include/adriver.h:191:1: warning: "snprintf"
-redefined
-In file included from
-/lib/modules/2.4.26/build/include/linux/modversions.h:176,
-from /tmp/alsa-driver-1.0.4/include/adriver.h:42,
-from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/lib/modules/2.4.26/build/include/linux/modules/ksyms.ver:676:1: warning:
-this is the location of the previous definition
-In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/tmp/alsa-driver-1.0.4/include/adriver.h:192:1: warning: "vsnprintf"
-redefined
-In file included from
-/lib/modules/2.4.26/build/include/linux/modversions.h:176,
-from /tmp/alsa-driver-1.0.4/include/adriver.h:42,
-from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/lib/modules/2.4.26/build/include/linux/modules/ksyms.ver:682:1: warning:
-this is the location of the previous definition
-In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/tmp/alsa-driver-1.0.4/include/adriver.h:434:1: warning: "vmalloc_to_page"
-redefined
-In file included from
-/lib/modules/2.4.26/build/include/linux/modversions.h:176,
-from /tmp/alsa-driver-1.0.4/include/adriver.h:42,
-from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/lib/modules/2.4.26/build/include/linux/modules/ksyms.ver:68:1: warning:
-this is the location of the previous definition
-make: *** [hwdep.o] Error 1
-Iceberg acore #
-
-
-
-
-Then I tried to run gcc command separately and I didn't get any errors
-but no .o files were created.
-
-
-
-
-Iceberg acore # gcc -D__KERNEL__ -DMODULE=1
--I/tmp/alsa-driver-1.0.4/include -I/lib/modules/2.4.26/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
--pipe -DALSA_BUILD -nostdinc -iwithprefix include -DEXPORT_SYMTAB -c
-hwdep.c
-In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/tmp/alsa-driver-1.0.4/include/adriver.h:134: redefinition of `PDE'
-/lib/modules/2.4.26/build/include/linux/proc_fs.h:213: `PDE' previously
-defined here
-In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/tmp/alsa-driver-1.0.4/include/adriver.h:191:1: warning: "snprintf"
-redefined
-In file included from
-/lib/modules/2.4.26/build/include/linux/modversions.h:176,
-from /tmp/alsa-driver-1.0.4/include/adriver.h:42,
-from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/lib/modules/2.4.26/build/include/linux/modules/ksyms.ver:676:1: warning:
-this is the location of the previous definition
-In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/tmp/alsa-driver-1.0.4/include/adriver.h:192:1: warning: "vsnprintf"
-redefined
-In file included from
-/lib/modules/2.4.26/build/include/linux/modversions.h:176,
-from /tmp/alsa-driver-1.0.4/include/adriver.h:42,
-from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/lib/modules/2.4.26/build/include/linux/modules/ksyms.ver:682:1: warning:
-this is the location of the previous definition
-In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/tmp/alsa-driver-1.0.4/include/adriver.h:434:1: warning: "vmalloc_to_page"
-redefined
-In file included from
-/lib/modules/2.4.26/build/include/linux/modversions.h:176,
-from /tmp/alsa-driver-1.0.4/include/adriver.h:42,
-from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
-from hwdep.c:22:
-/lib/modules/2.4.26/build/include/linux/modules/ksyms.ver:68:1: warning:
-this is the location of the previous definition
-Iceberg acore # ls *.o
-ls: *.o: No such file or directory
-Iceberg acore #
-
-
-
-I also tried using the tarball directrly from alsa-project.org, but I get
-the
-same exact problems.
+the symoptom looks like an IRQ problem.
+if you have PNP-OS setting in BIOS, try to turn it off.
 
 ----------------------------------------------------------------------
- perex - 09-07-2004 16:43 CEST 
+ perex - 09-07-2004 16:53 CEST 
 ----------------------------------------------------------------------
-The problem is fixed in recent ALSA releases.
+Yes, it looks like a general IRQ problem. Please, ask on lkml or enter this
+problem to kernel's bugzilla.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-09-04 02:28 umka27         New Bug                                      
-05-09-04 02:28 umka27         Distribution              => Gentoo          
-05-09-04 02:28 umka27         Kernel Version            => 2.4.26-vanilla  
-05-25-04 19:53 umka27         Bugnote Added: 0001236                       
-09-07-04 16:43 perex          Bugnote Added: 0001714                       
-09-07-04 16:43 perex          Resolution               open => fixed       
-09-07-04 16:43 perex          Status                   assigned => resolved
+04-28-04 04:18 dant           New Bug                                      
+04-28-04 04:18 dant           Kernel Version            => 2.4.26-1.ll.rh90.ccrma
+04-30-04 10:55 tiwai          Category                 0_compilation problem_!!! => PCI - ymfpci
+04-30-04 10:56 tiwai          Bugnote Added: 0000974                       
+09-07-04 16:53 perex          Bugnote Added: 0001718                       
+09-07-04 16:53 perex          Resolution               open => fixed       
+09-07-04 16:53 perex          Status                   assigned => resolved
 ======================================================================
 
 
