@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000732]: If PCM is set to norma to mt Sound Blaster Live, It emit a very high frequency sound damaging ears
-Date: Mon, 20 Dec 2004 00:04:58 +0100
-Message-ID: <d6493378a4e6a8ba436395994c107312@bugtrack.alsa-project.org>
+Date: Mon, 20 Dec 2004 00:10:33 +0100
+Message-ID: <eeaf39dbf42889cfe06ee0cbc905fc36@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8956927D
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 00:04:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 50B2327F
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 00:10:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.10-rc3
 ======================================================================
 Date Submitted:             12-19-2004 15:10 CET
-Last Modified:              12-20-2004 00:04 CET
+Last Modified:              12-20-2004 00:10 CET
 ======================================================================
 Summary:                    If PCM is set to norma to mt Sound Blaster Live, It
 emit a very high frequency sound damaging ears
@@ -60,19 +60,6 @@ version of the code?
 ======================================================================
 
 ----------------------------------------------------------------------
- Eric Valette - 12-19-04 23:16 
-----------------------------------------------------------------------
-Unfortunately, I have only tree kernels I keep with lilo :
-current, previous and a good one.
-
-If current obviously fails, then current = previous and good = previous
-and then lilo so that I can start hacking.
-
-Unfortunately, As I do not listen to music or watch video frequently, I
-missed the exact point when it started misbehaving and probably crash the
-good kernel when migrating from 2.6.10-rc1 to something newer.
-
-----------------------------------------------------------------------
  Eric Valette - 12-20-04 00:04 
 ----------------------------------------------------------------------
 So after recompiling stock 2.6.9 : problem is still the same. So I purely
@@ -89,6 +76,20 @@ I guess there as been an inconsistency between /var/lib/alsa/asound.state,
 the alsactl and the kernel driver at some point in time that caused this
 problem. By chance, level was low enough when it occured so that I did not
 really damaged my ears.
+
+----------------------------------------------------------------------
+ rlrevell - 12-20-04 00:10 
+----------------------------------------------------------------------
+OK great let's close this one.
+
+It seems to me that you have your speakers or external amplifier turned up
+WAY too loud, if a burst of random noise from the computer hurts your
+ears.  Linux PCs are not (usually)  hard realtime systems, they can and do
+fail, and it's up to you to configure things so that such a failure won't
+cause physical injury.  Just my $0.02.
+
+This might be as simple as turning down the speakers before booting a new
+kernel for the first time ;-)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -107,6 +108,7 @@ Date Modified  Username       Field                    Change
 12-19-04 23:11 Eric Valette   Note Added: 0002859                          
 12-19-04 23:16 Eric Valette   Note Added: 0002860                          
 12-20-04 00:04 Eric Valette   Note Added: 0002861                          
+12-20-04 00:10 rlrevell       Note Added: 0002862                          
 ======================================================================
 
 
