@@ -1,16 +1,18 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Mark Knecht <markknecht@comcast.net>
 Subject: Re: snd-rme9652 fails
-Date: Fri, 19 Dec 2003 13:11:56 +0100 (CET)
+Date: Fri, 19 Dec 2003 05:27:10 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312191311310.8959@pnote.perex-int.cz>
+Message-ID: <1071840430.1857.4.camel@Wizard.knechthome.com>
 References: <3FE02BA2.8020900@emt.iis.fhg.de> <3FE1676C.40806@ifrance.com>
- <1071738574.2020.24.camel@localhost.localdomain>  <1071777684.26967.5.camel@cmn37.stanford.edu>
-  <20031218225205.GA534@tuba.home>  <Pine.LNX.4.58.0312191021540.8959@pnote.perex-int.cz>
- <1071826640.10230.2.camel@lithium.ircam.fr> <3FE2EB20.2030508@emt.iis.fhg.de>
+	 <1071738574.2020.24.camel@localhost.localdomain>
+	 <1071777684.26967.5.camel@cmn37.stanford.edu>
+	 <20031218225205.GA534@tuba.home>
+	 <1071802967.5163.4.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FE2EB20.2030508@emt.iis.fhg.de>
+In-Reply-To: <1071802967.5163.4.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,29 +21,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Martin Wilhelm <wilhelmm@emt.iis.fhg.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 19 Dec 2003, Martin Wilhelm wrote:
+On Thu, 2003-12-18 at 19:02, Mark Knecht wrote:
 
-> Patrice Tisserand wrote:
+>    Has someone intentionally renumbered where audio should be?
 > 
-> > I have the card and everything is fine with this fix.
-> > Thanks a lot for your bug fix.
+> Mark
 > 
-> Works for me too! :)
-> What about merging this fix in the alsa maintree/next release (this
-> would be a great christmas present for us ;))?
 
-It's already in CVS and will be in 1.0 final.
+Is anyone addressing this? 
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
