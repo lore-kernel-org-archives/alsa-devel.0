@@ -1,12 +1,11 @@
-From: Better than Napster <sfl@bdmail.net>
-Subject: Downl0ad Holiday Music
-Date: Thu, 16 Dec 2004 14:45:13 +0200
-Message-ID: <Pine.LNX.4.44.3000721132336.65928-100000@oyster.com>
+From: Movies Download Newsletter <sofia_zamudio@trccargo.com.mx>
+Subject: Downl0ad Finding Neverland Movie
+Date: Thu, 16 Dec 2004 13:44:31 +0100
+Message-ID: <5222503975.22375@aerogel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7Bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from superonline.com (S0106000625df7cde.cg.shawcable.net [68.147.22.230]) by l-daemon (iPlanet Messaging Server 5.2 HotFix 1.18 (built Jul 28 2003)) with ESMTP id <D578CC7D9A7B69@l-daemon> for alsa-devel@alsa-project.org; Thu, 16 Dec 2004 13:43:13 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,7 +16,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
-Cc: alsa-user@alsa-project.org
+Cc: alsa-cvslog@alsa-project.org, abramo@alsa-project.orgabramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hello
@@ -72,7 +71,7 @@ http://www.holidaydownloadclub.com/xmas.html
 
 
 Regards
-Harvey Bonner
+Clay Darnell
 Affilate Manager
 Multimedia Download Center
 
