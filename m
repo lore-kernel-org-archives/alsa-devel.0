@@ -1,15 +1,14 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: buffer_size and period_size
-Date: Mon, 27 Jan 2003 11:16:28 -0800
+From: Anton Worshevsky <gbdj@linux.spb.org>
+Subject: Re[2]: via8235 swaped channels
+Date: Mon, 27 Jan 2003 22:40:58 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGEEHEBDAB.mknecht@controlnet.com>
-References: <20030127181707.8561D3EF7F@vivaldi.controlnet.com>
+Message-ID: <17945.030127@linux.spb.org>
+References: <s5h4r7ypmpe.wl@alsa2.suse.de>
+Reply-To: Anton Worshevsky <gbdj@linux.spb.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=Windows-1251
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030127181707.8561D3EF7F@vivaldi.controlnet.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,65 +17,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Paul Davis [mailto:paul@linuxaudiosystems.com]
-> Sent: Monday, January 27, 2003 10:39 AM
-> To: Mark Knecht
-> Cc: alsa-devel@lists.sourceforge.net
-> Subject: Re: [Alsa-devel] buffer_size and period_size
->
->
-> >Paul,
-> >   So with -p 64 -n 2 settings, what number of bytes of audio data is
-> >transferred across the PCI bus between each interrupt?
->
-> the period size is always (as with almost all ALSA metrics) in units
-> of audio frames (1 sample for each channel). so with JACK running at
-> -p 64, 64 frames of data are transferred. how many bytes that is
-> depends on the sample width and the number of channels.
+Friday, January 24, 2003, 6:54:53 PM, you wrote:
 
-Cool, so this says my RME HSDP puts out 26 samples 64 times, and then
-signals with an interrupt, while my Hammerfall Light puts out 18 samples 64
-times?  If true, then both cards interrupt at the same rate, but the HDSP
-9652 uses more PCI bandwidth. (26/18)
+>> >> >  if someone has VIA8233, VIA8233A, VIA8233C or VIA8235 chipset, could
+>> >> >  you help the testing of the new driver?
+>> >> >  the new driver code is found at
+>> >> >
+>> >> >         http://www.alsa-project.org/~iwai/via82xx.c
+>> >>
+>> >> i has VIA8235 and ALC650 codec. After installing new driver from cvs from
+>> >> 20030113, there is following problem:
+>> >>
+>> >> In 5.1-channel dvd playback with xine using surround51 device,
+>> >> i has swapped Rear and Center/lfe channels.
+>> >> RL <-> Center, RR <-> LFE
+>>
+>> this can be fixed just by exchanging Rear and Center/LFE jacks
+>>
+>> >> i fixed this with following patch for via82xx.c
+>> >>
+>> >> 812,813c812,815
+>> >> <       case 5: slots = (1<<0) | (2<<4) | (5<<8) | (3<<12) | (4<<16); break;
+>> >> <       case 6: slots = (1<<0) | (2<<4) | (5<<8) | (6<<12) | (3<<16) | (4<<20); break;
+>> >> ---
+>> >> > //    case 5: slots = (1<<0) | (2<<4) | (5<<8) | (3<<12) | (4<<16); break;
+>> >> > //    case 6: slots = (1<<0) | (2<<4) | (5<<8) | (6<<12) | (3<<16) | (4<<20); break;
+>> >> >       case 5: slots = (1<<0) | (2<<4) | (3<<8) | (4<<12) | (5<<16); break;
+>> >> >       case 6: slots = (1<<0) | (2<<4) | (3<<8) | (4<<12) | (5<<16) | (6<<20); break;
+>> >>
+>> >> I'm not sure that it is alsa problem, xine' may be.
+>>
+>> TI> hmm, it could be due to the setting of ALC650.  how is the status of
+>> TI> "Exchange Center/LFE" mixer switch?
+>>
+>> This switch has no effect. Strange. Usually its muted.
+>> Now i think this is ALC650 problem.
+>> Is there problem exist on via8235 with other codecs?
 
-Presumably each sample uses 24-bits of audio data, packed in a 32-bit
-hardware DWORD moving across the PCI bus? This would be clean and easy for
-software to deal with. If true, then the number of bytes would be 4
-bytes/channel * 26 channels * 64 frames = 6656 bytes across the PCI bus
-between interrupts. (Or desire to interrupt, not necessarily interrupt
-services.)
+TI> the switch above is irrelevant to this behavior.  sorry for confusion.
+TI> but there is another register bits, and i fixed it on the cvs.
 
+TI> please update your alsa-kernel tree via cvs and give a try.
 
->
-> >   Also, does the number of bytes transferred change based on how many
-> >channels are enabled? Or does my RME always transfer 26 channels of data
-> >even if I am not using some channels?
->
-> its hardware dependent. for the RME, the same amount is always moved,
-> regardless of how many channels are enabled. in the case of the RME
-> Hammerfall series, its more accurate to say that you cannot change the
-> number of channels enabled. this is not true of all other hardware.
+cvs from 25.01 don`t change this. as i understand we must to modify bits
+15:14 in ALC650 vendor specific register MX6A (Multi-Channel Control).
+i see that value of this register is always 0000h. in addition,
+"Exchange Center/LFE" mixer switch, which must to set MX6A.3=1 do
+nothing. MX6A still has 0000h value.
 
-Sure. Sensible. They just always send 26 channels of data. The loading on
-the PCI bus is therefore independent of how many channels I'm actually
-using.
+ALC650 uses following default slot mapping (as in AC’97 spec. rev2.2)
+if MX6A=0000h
+L  R  SL SR CEN LFE
+3  4  7  8  6   9
+now i`m again not sure that this is codec problem.
 
->
-> >   I am assuming that a card like the RME is a bus master, moves so many
-> >bytes, and then interrupts to tell the system that the bytes are
-> there. Is
-> >this basically the case?
->
-> yes. keep in mind that this only covers 1 direction: the interrupt
-> also tells the system that its possible to put data into the "hardware
-> buffer".
+can anyone test this with other codec ?
 
-Good point. Thanks!
+Anton Worshevsky
+
 
 
 
