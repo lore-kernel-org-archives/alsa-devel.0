@@ -1,17 +1,12 @@
-From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: Re: OSS vs ALSA war :-)
-Date: Tue, 10 Aug 2004 22:45:30 +0200
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: today's CVS breaks my system
+Date: Tue, 10 Aug 2004 17:01:33 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m2fz6uoh79.fsf@vador.mandrakesoft.com>
-References: <200408101716.SAA04883@liam2.demon.co.uk>
+Message-ID: <1092171692.5061.1.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from office.mandrakesoft.com (ezoffice.mandrakesoft.com [212.11.15.34])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F6281F0
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 22:45:34 +0200 (MEST)
-In-Reply-To: <200408101716.SAA04883@liam2.demon.co.uk> (walsac3@liam2.demon.co.uk's
- message of "Tue, 10 Aug 2004 18:16:12 +0100")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,25 +15,14 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: William <walsac3@liam2.demon.co.uk>
-Cc: Lee Revell <rlrevell@joe-job.com>, geeceezee@free.fr, alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-William <walsac3@liam2.demon.co.uk> writes:
+One of the changes comitted to CVS today or yesterday causes my system
+to lock up hard when anything accesses the audio interface.  I would
+imagine it's related to the locking/serialization changes.
 
-> > > Should I refrain from playing UT2004 just because Nvidia's
-> > > drivers, which work beautifully, are closed-source? Should I
-> > > refrain from playing Quake 3 because ALSA doesn't work with it?
-> > 
-> > No, this is why ALSA provides OSS emulation, so every legacy app
-> > doesn't have to be recoded.
-> 
-> One big problem is that some parts of ALSA's OSS emulation have been
-> buggy for a long time, especially its /dev/sequencer emulation:
-> https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=28
-> [First reported August 2002, present since before Alsa 0.9.0]
-
-the odds that quake3 uses /dev/sequencer are not that high :-)
+Lee
 
 
 
