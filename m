@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
-Date: Thu, 23 Sep 2004 18:48:47 +0200 (CEST)
+Subject: [ALSA - driver 0000500]: CS4236+ soundcard not found or device busy
+Date: Thu, 23 Sep 2004 19:16:20 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040923164847.35C2B4500F@server.perex-int.cz>
+Message-ID: <20040923171620.9F4A74500E@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9E06633B
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 18:48:47 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3C42229A
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:16:21 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,130 +22,102 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000453
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000500
 ======================================================================
-Reported By:                Andrew
+Reported By:                nlmarco
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     453
-Category:                   PCI - ice1724
+Bug ID:                     500
+Category:                   ISA - cs4236
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.5-7.108
 ======================================================================
-Date Submitted:             08-18-2004 13:16 CEST
-Last Modified:              09-23-2004 18:48 CEST
+Date Submitted:             09-14-2004 02:18 CEST
+Last Modified:              09-23-2004 19:16 CEST
 ======================================================================
-Summary:                    it is impossible to select spdif as capture source
+Summary:                    CS4236+ soundcard not found or device busy
 Description: 
-There are no anything spdif-input-related among
-capture source enumeration.
+After the ALSA version 1.0.3, which is distributed with SuSE 9.1, didn't
+want to run at all and froze the system, I downloaded, compiled and
+installed the version 1.0.6a. This doesn't freeze anymore, but doesn't
+work either and produces strange log messages:
+
+/var/log/messages:
+---
+Sep 14 02:06:14 sexbomb kernel: snd_page_alloc: unsupported module,
+tainting kernel.
+Sep 14 02:06:14 sexbomb kernel: snd: unsupported module, tainting kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_timer: unsupported module, tainting
+kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_pcm: unsupported module, tainting
+kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_cs4231_lib: unsupported module,
+tainting kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_seq_device: unsupported module,
+tainting kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_rawmidi: unsupported module, tainting
+kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_mpu401_uart: unsupported module,
+tainting kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_cs4236_lib: unsupported module,
+tainting kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_hwdep: unsupported module, tainting
+kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_opl3_lib: unsupported module, tainting
+kernel.
+Sep 14 02:06:16 sexbomb kernel: snd_cs4236: unsupported module, tainting
+kernel.
+Sep 14 02:06:16 sexbomb kernel: CS4236+ soundcard not found or device
+busy
+---
+
+Please HELP! I've already invested days into that and googling around, I
+saw that others have similar problems to get ALSA running on IBM ThinkPad
+600E.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-25-2004 19:55 CEST 
+ nlmarco - 09-14-2004 22:28 CEST 
 ----------------------------------------------------------------------
-Did you use 'iec958' pcm?
-
-    % arecord -Diec958 -fdat foo.wav
-
-----------------------------------------------------------------------
- Andrew - 08-25-2004 23:47 CEST 
-----------------------------------------------------------------------
-A dat fromat doesn't work: "Sample format non available"
-I have tried
-
-arecord -Diec958 -fs32_LE -r48000 -c2 -d600 foo.wav
-
-Format/rate are accepted, but the resulted file is empty.
-I use aureon 7.1.
-
-While filing the isuue, I have thought about capture selecting via
-mixer Capture Source control. Does this (others?) control influence
-to shown above command working?
+I just tried it again with 1.0.7rc1, but the problem remains the same. BTW:
+I tried legacy probe (all possible IRQ/DMA combinations for CS4236,
+CS4232, CS4231) with alsaconf, but it didn't find anything.
 
 ----------------------------------------------------------------------
- tiwai - 08-27-2004 19:39 CEST 
+ tiwai - 09-21-2004 11:59 CEST 
 ----------------------------------------------------------------------
-You can use'plug:iec958' for 16bit conversion.
+You can ignore "unsupported module..." messages.  They are harmless,
+indicating
+that the modules are not provided by SUSE.
 
-"Capture Source" shouldn't affect the digital input.
-It might be a wrong CS8415 initialization sequence in the driver...
-
-----------------------------------------------------------------------
- Andrew - 09-07-2004 10:33 CEST 
-----------------------------------------------------------------------
-I have tried with plug:iec958 with the same silent file. Is there any way
-to be sure spdif input is receiving some signal?
+If it's TP600E, it has to be a non-isapnp chip.
+I guess the IRQ 9 conflicts with ACPI.  You can change it via setpnp
+program
+(you'll need to compile by yourself, SUSE doesn't ship this any more).
 
 ----------------------------------------------------------------------
- tiwai - 09-08-2004 17:16 CEST 
+ nlmarco - 09-23-2004 19:16 CEST 
 ----------------------------------------------------------------------
-Could you elaborate more?
-Is the DMA working?  Or did you get the short-cut output?
-Is it all zero or any signals in the output?
-
-Also, as I wrote, the CS8415 init sequence might be wrong.
-Compare the CS8415 init data in aureon.c with the datasheet
-whether it's correct for your setting.
-
-----------------------------------------------------------------------
- Andrew - 09-08-2004 17:55 CEST 
-----------------------------------------------------------------------
-Takashi,
-
-You think I'm more clever than I am :-)
-
-OK, the aim is simple: to be able to record from FM tuner. Last one is an
-"onboard" tuner of AV receiver. Last one is the only source I can try as
-source
-with spdif output. All this is the reason of my last question about a way
-to be
-sure spdif input is receiving some signal: my sound card is the only
-device I
-can use to receive something via spdif.
-
-All my attempts of capturing from spdif input lead to silent wav file.
-
-I will be happy to answer to your question about DMA and init data, but
-I don't understand these things. I see, the issue is not of high
-priority,
-so I'm ready to wait for the moment you will find a minute to clarify
-starting point(s) for my next attempts to bugnote in more informative
-manner :-)
-
-----------------------------------------------------------------------
- tiwai - 09-23-2004 18:48 CEST 
-----------------------------------------------------------------------
-My question is what do you mean 'silent' and 'empty' in your texts.
-
-Are the all data in the recorded file value zero, or the no
-(or shorter) data is recorded?  Or, the data values are not zero
-but significantly small values?
-
-All these three have different meanings.  The first case is usually
-that the signal is not routed or processed in codec but the DMA is
-running to get data.  The second case implies that the DMA is not
-running or stopped due to lack of data.  The last one implies that
-the signal is physically processed (and DMA running) but something
-(e.g. digital attenuation) in codec is not set properly.  In the
-case of SPDIF, the last one shouldn't happen, though.
+I just came back from Berlin (was fighting against software patents
+<http://swpat.ffii.org>) and wanted to try it out. But unfortunately, I
+was not able to find where to download setpnp (neither source nor binary).
+Could you please provide a link?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 13:16 Andrew         New Bug                                      
-08-25-04 19:55 tiwai          Bugnote Added: 0001625                       
-08-25-04 23:47 Andrew         Bugnote Added: 0001628                       
-08-27-04 19:39 tiwai          Bugnote Added: 0001648                       
-09-07-04 10:33 Andrew         Bugnote Added: 0001706                       
-09-08-04 17:16 tiwai          Bugnote Added: 0001734                       
-09-08-04 17:55 Andrew         Bugnote Added: 0001737                       
-09-23-04 18:48 tiwai          Bugnote Added: 0001832                       
+09-14-04 02:18 nlmarco        New Bug                                      
+09-14-04 02:18 nlmarco        Kernel Version            => 2.6.5-7.108     
+09-14-04 02:18 nlmarco        Bug Monitored: nlmarco                       
+09-14-04 22:28 nlmarco        Bugnote Added: 0001759                       
+09-21-04 11:59 tiwai          Bugnote Added: 0001798                       
+09-23-04 19:16 nlmarco        Bugnote Added: 0001833                       
 ======================================================================
 
 
