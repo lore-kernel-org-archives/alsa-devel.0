@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000505]: SPDIF sound distorted on non-48000 rates
-Date: Mon, 27 Sep 2004 05:20:52 +0200 (CEST)
+From: =?UTF-8?B?QWRhbSBUbGHFgmth?= <atlka@pg.gda.pl>
+Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
+Date: Mon, 27 Sep 2004 08:38:39 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040927032052.702A914028@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <4157B56F.9000905@pg.gda.pl>
+References: <200409270300.i8R30Ro1016070@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B1BBD2D4
-	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 05:20:52 +0200 (MEST)
+In-Reply-To: <200409270300.i8R30Ro1016070@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,154 +17,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> no, thats not the type of wrapping that matters. suppose the h/w
+> buffer is 4096 frames in size. suppose that a rogue PCI driver or
+> device prevents receipt of an interrupt for an entire buffer's worth
+> of time, maybe even longer. looking at the value of the h/w ptr by
+> itself doesn't tell you anything about whether there is an xrun. you
+> have to constantly monitor the *expected* time of the next interrupt
+> along with the *expected* position of the h/w ptr in order to
+> establish if there was an xrun or not (at least for the class of xruns
+> caused by this kind of delay).
+NO NO NO - look at the OSS man page. GETOPTR call returns also bytes 
+value which represents a number of bytes processed since opening the 
+device. So I can easily detect xruns just by comparing two returned
+bytes values - a previous and a current one. There is also a blocks 
+value which represents number of fragments transitions (hw periods 
+transfers) since the previous call to this ioctl - reset to 0 after each 
+call. I am not monitoring hw-ptr difference but count of data processed 
+be a device. I need hw-ptr only for correct mixing of data but not for 
+xrun detection. Anyway if some hw device blocks hw handler of a sound 
+card you will not detect xruns without counting interuppts and their 
+time in the device driver. This situaction means badly designed system 
+or hardware.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000505
-======================================================================
-Reported By:                ramendik
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     505
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               RH-based
-Kernel Version:             2.6.8.1
-======================================================================
-Date Submitted:             09-19-2004 10:03 CEST
-Last Modified:              09-27-2004 05:20 CEST
-======================================================================
-Summary:                    SPDIF sound distorted on non-48000 rates
-Description: 
-I have an Intel ICH AC97 sound subsystem, on an Intel i865 motherboard(ASUS
-P4P800). It has an analog output and an SPDIF output.When I play 48Khz
-files, thinks are OK on all outputs. But when I play 44.1 Khz files, the
-sound on the SPDIF output is audibly distorted. The analog output is OK.
+> user-space is not in a position to determine this, because the
+> interrupt handler is the only place where the value of the h/w ptr can
+> be reliably determined (even though on many cards, there are other
+> ways and times as well).
+I just need to obtain hw_ptr from a device driver in mmapped mode.
+If there is a ioctl getting it that is good thing IMHO. In ALSA I must 
+maintain my appl_ptr and call snd_pcm_delay or snd_pcm_avail_update and 
+then calculate hw_ptr by myself. Of course I must be aware of boundary 
+wrap to obtain the correct result.
 
-I am using the 2.6.8.1 kernel, and tried both the ALSA inside it (1.0.4)
-and newer alsa-driver 1.0.7rc1. This same problem shows up with 2.6.6 and
-2.6.7 kernels. So apparently it's present across several versons of ALSA.
+> ALSA and the entire kernel development team have spent the last 5
+> years moving things *out* of kernel space. forget ALSA - you will have
+> a very, very hard time explaining to the kernel crew why this is
+> actually a good idea.
+Hmm, actually from my observation this approach (in lib mixing and 
+effects) makes more problems and disadventages then doing this in a 
+device manner and as a kernel RT thread. I tried to modify AOSS to use 
+callbacks (works almost good but scheduling/swapping effects still 
+there) but I found an app which disables SIGIO for example.
+So now I in a dead end. I think that ALSA lib approach has serious 
+compability limitations which could not be solved.
 
-======================================================================
+Regards
 
-----------------------------------------------------------------------
- tiwai - 09-23-2004 18:37 CEST 
-----------------------------------------------------------------------
-Which ac97 codec?  Please attach /proc/asound/card0/codec97#0/* files.
-Also, check the IEC958 status bits (run iecset) during playback of
-44.1kHz samples.
-
-----------------------------------------------------------------------
- ramendik - 09-23-2004 19:50 CEST 
-----------------------------------------------------------------------
-Well, iecset showed 48000 Hz during the playback of 44100 Hz samples. So
-apparently this is the bug. Here is the full result:
-
-# iecset
-Mode: consumer
-Data: audio
-Rate: 48000 Hz
-Copyright: protected
-Emphasis: none
-Category: PCM coder
-Original: original
-Clock: 1000 ppm
-
-----------------------------------------------------------------------
- ramendik - 09-23-2004 19:52 CEST 
-----------------------------------------------------------------------
-I have uploaded both files from /proc/asound/card0/codec97#0/ .
-
-----------------------------------------------------------------------
- ramendik - 09-23-2004 19:58 CEST 
-----------------------------------------------------------------------
-BTW, "iecset rate 44100" does make things better on 44100 Hz - but breaks
-them on 48000.
-
-----------------------------------------------------------------------
- tiwai - 09-23-2004 20:06 CEST 
-----------------------------------------------------------------------
-How about the attached patch (it's already applied to CVS).
-
-----------------------------------------------------------------------
- ramendik - 09-23-2004 22:16 CEST 
-----------------------------------------------------------------------
-Unfortunately the patch did NOT help. The distortion is in place, and when
-a 44100 Hz file is played (using mplayer), iecset still shows a 48000 Hz
-sample rate.
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 12:14 CEST 
-----------------------------------------------------------------------
-What shows /proc/asound/cards entry?  If it's ICH4, ICH5 or ESB,
-try hw:0,2 PCM for SPDIF output.
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 12:16 CEST 
-----------------------------------------------------------------------
-Oh, hw:0,2 might be incorrect.  Please check /proc/asound/pcm
-and choose the "IEC958" device.
-
-----------------------------------------------------------------------
- ramendik - 09-24-2004 23:42 CEST 
-----------------------------------------------------------------------
-/proc/asound/cards:
-
-0 [ICH5           ]: ICH - Intel ICH5
-                     Intel ICH5 at 0xfebff400, irq 11
-
-/proc/asound/pcm:
-
-00-00: Intel ICH : Intel ICH5 : playback 1 : capture 1
-00-01: Intel ICH - MIC ADC : Intel ICH5 - MIC ADC : capture 1
-00-02: Intel ICH - MIC2 ADC : Intel ICH5 - MIC2 ADC : capture 1
-00-03: Intel ICH - ADC2 : Intel ICH5 - ADC2 : capture 1
-00-04: Intel ICH - IEC958 : Intel ICH5 - IEC958 : playback 1
-
-When I try alsaplayer -d hw:0,2 myfile.wav , it just says "no such
-device". The same with 0,1 and 0,3.
-
-But when I try with hw:0,4 , a strange thing happens. The file does not
-start to play, alsaplayer reacts to any button presses (with the mouse) by
-requesting a new filename. BUT, iecset shows 44100 Hz now - and this
-happens both when the played file is 44100 Hz and when it is 48000 Hz! I
-have tried setting the rate back to 48000 Hz with iecset, then running
-alsaplayer -d hw:0,4 myfile.wav again ; and iecset showed 44100 Hz again!
-
-----------------------------------------------------------------------
- ramendik - 09-27-2004 05:20 CEST 
-----------------------------------------------------------------------
-The strange behaviour with hw:0,4 happens both with and without the patch
-that is attached here...
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-19-04 10:03 ramendik       New Bug                                      
-09-19-04 10:03 ramendik       Distribution              => RH-based        
-09-19-04 10:03 ramendik       Kernel Version            => 2.6.8.1         
-09-19-04 10:05 ramendik       Bug Monitored: ramendik                      
-09-23-04 18:37 tiwai          Bugnote Added: 0001831                       
-09-23-04 19:50 ramendik       Bugnote Added: 0001839                       
-09-23-04 19:51 ramendik       File Added: ac97#0-0                         
-09-23-04 19:52 ramendik       File Added: ac97#0-0+regs                    
-09-23-04 19:52 ramendik       Bugnote Added: 0001843                       
-09-23-04 19:58 ramendik       Bugnote Added: 0001845                       
-09-23-04 20:06 tiwai          Bugnote Added: 0001846                       
-09-23-04 20:06 tiwai          File Added: intel-spdif-fix.dif                    
-09-23-04 22:16 ramendik       Bugnote Added: 0001852                       
-09-24-04 12:14 tiwai          Bugnote Added: 0001871                       
-09-24-04 12:16 tiwai          Bugnote Added: 0001872                       
-09-24-04 23:42 ramendik       Bugnote Added: 0001906                       
-09-27-04 05:20 ramendik       Bugnote Added: 0001931                       
-======================================================================
+-- 
+Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
+System  & Network Administration Group           ~~~~~~
+Computer Center,  Gdansk University of Technology, Poland
+PGP public key:   finger atlka@sunrise.pg.gda.pl
 
 
 -------------------------------------------------------
