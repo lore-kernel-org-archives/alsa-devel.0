@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000832]: sound randomly distorts, clicks, pops and low level
-Date: Fri, 28 Jan 2005 11:06:18 +0100
-Message-ID: <e849ce3979d143fe7f8d58749c17a1c3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000854]: Can't load module snd-cs4236, snd-cs4236 or snd-sb8
+Date: Fri, 28 Jan 2005 13:23:35 +0100
+Message-ID: <27fbc5a1612770ea68de3822bccbb914@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D32C225
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 11:06:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 789331F9
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 13:23:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=832> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=854> 
 ======================================================================
-Reported By:                Alister
+Reported By:                mrpee
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   832
-Category:                   PCI - ens1371
+Issue ID:                   854
+Category:                   ISA - cs4236
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Suse linux
-Kernel Version:             2.6.5-7.111.19-default
+Distribution:               Debian
+Kernel Version:             2.6.8-2-386
 ======================================================================
-Date Submitted:             01-17-2005 22:07 CET
-Last Modified:              01-28-2005 11:06 CET
+Date Submitted:             01-28-2005 13:18 CET
+Last Modified:              01-28-2005 13:23 CET
 ======================================================================
-Summary:                    sound randomly distorts, clicks, pops and low level
+Summary:                    Can't load module snd-cs4236, snd-cs4236 or snd-sb8
 Description: 
-reported here:
-http://forums.suselinuxsupport.de/index.php?showtopic=7828
+I can't load any modules for my sound carc Cirrus Logic cs4237b on my Dell
+Latitude CP M233XT. I tried snd-cs4236, snd-cs4236 and also the
+soundblaster module snd-sb8 with the same result "no such device".
 
-but in summary:
-HW works perfectly under windows partition.
-Despite several (hopeful) upgrades, sound persists in randomly becoming
-low- level and/or VERY distorted (clipped?). Occurs anytime from few
-seconds to many minutes after being cleared. Occassionally corrects itself
-(temporary) just as randomly. But spends most of the time being badly
-distorted, low level and no left channel.
-Can always clear (temporarily) by using volume control in YaST to set max
-volumes and play high level sound through card.
-Left channel always affected worse than right.
+I think I'll tried everything, kernel 2.4 with alsamodules, 2.6.1, alsa
+1.0.7-2. half/full duplex, changing irq, dma etc.
+
+Here is a link from another forum whith the same problem:
+http://www.talkaboutsoftware.com/group/linux.debian.laptop/messages/7049.html
 ======================================================================
 
 ----------------------------------------------------------------------
- Alister - 01-28-05 11:06 
+ mrpee - 01-28-05 13:23 
 ----------------------------------------------------------------------
-I am very willing to help test any proposed solutions, please contact me if
-required.
+Sorry It should say cd4232 and cs4236 in the summary and description
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-05 22:07 Alister        New Issue                                    
-01-17-05 22:07 Alister        Distribution              => Suse linux      
-01-17-05 22:07 Alister        Kernel Version            =>
-2.6.5-7.111.19-default
-01-28-05 11:06 Alister        Note Added: 0003425                          
+01-28-05 13:18 mrpee          New Issue                                    
+01-28-05 13:18 mrpee          Distribution              => Debian          
+01-28-05 13:18 mrpee          Kernel Version            => 2.6.8-2-386     
+01-28-05 13:23 mrpee          Note Added: 0003426                          
 ======================================================================
 
 
