@@ -1,16 +1,13 @@
-From: "Aurelia Whitley" <awhitley_un@moda.freeserve.co.uk>
-Subject: Fake Role.x Watch
-Date: Fri, 22 Oct 2004 00:14:04 +0000
+From: Richard K. Lee <bret@access.mountain.net>
+Subject: =?iso-8859-1?B?Q2lhbGlzIC0gTE9XIHByaWNlIQ==?=
+Date: Fri, 22 Oct 2004 05:22:53 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <59e901c4b7cc$d8dbc57f$6ad634bf@stamm-excalibur.de>
+Message-ID: <927701c4b7f7$5fecbe9f$5654cb8c@access.mountain.net>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/related;
+    type="multipart/alternative";
+    boundary="----=_NextPart_000_0000_3094DD02.2B85E59F"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from stamm-excalibur.de (modemcable106.220-130-66.mc.videotron.ca [66.130.220.106])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 0494E33B
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 00:18:58 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,29 +16,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0000_3094DD02.2B85E59F
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_001_0001_DEE49983.9023D998"
+
+
+------=_NextPart_001_0001_DEE49983.9023D998
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
+
+Stable & full erections
+Starts working in just 15 min.
+Long lasting effects
+No prescription asked
+
+CIALIS:
+http://www.galamed.ws
+
+Pick up the manufacturer you trust!
+Fast delivery to over 120 countries
+
+
+_________________________________________________________________________
+To be taken out, go here: http://www.galamed.ws/uns.htm
+_________________________________________________________________________
+
+
+------=_NextPart_001_0001_DEE49983.9023D998
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
+
+<body>
 <html>
-Real gold 18kt Rolex replicas that look EXACTLY like the originals<p>
-we have all the latest models:<br>
-- <a href=3D"http://susctblqusub.nteri.com/replica/den4/bsmjolbtggpb">rol=
-ex submariner</a><br>
-- <a href=3D"http://tbewppcdalgx.nteri.com/replica/den4/ptoyesbaniib">rol=
-ex daytona</a><br>
-- <a href=3D"http://kixzufkxrcw.nteri.com/replica/den4/vcdgycommgpdd">rol=
-ex datejust</a><br>
-- <a href=3D"http://kwnumxcmyoeem.nteri.com/replica/den4/iuafcibambavh">r=
-olex rolex yachtmaster</a><br>
-- <a href=3D"http://qptodveqhjfd.nteri.com/replica/den4/bpyuzlbsteqdt">ro=
-lex oyster perpetual</a><p>
-These are perfectly identical to the originals,<br>
-but at a tiny fraction of the cost.<br>
-<a href=3D"http://qltujlbiomgzp.nteri.com/replica/den4/zuesgxbyex">Have a=
- look, you'll be amazed</a>
-<p><br><br><br><br><br>
-<a href=3D"http://nrqbkjbeeazm.nteri.com/z.php">No, thanks</a>
-</html>
+<CENTER>
+<TABLE cellSpacing=0 cellPadding=0 width=600 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD>
+      <P>
+Fuller & harder erections<br>
+Starts working in just 15 minutes<br>
+Long lasting effects<br>
+No prescription asked<br><br>
+
+CIALIS:<br>
+<a href="http://www.galamed.ws">http://www.galamed.ws</a><br><br>
+
+Pick up the manufacturer you can trust!<br>
+Prompt shipping to any destination<br><br><br>
+
+
+_________________________________________________________________________<br>
+To be taken off future campaigns, go here: <a href="http://www.galamed.ws/uns.htm">http://www.galamed.ws/uns.htm</a><br>
+_________________________________________________________________________
+
+</P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
+
+
+------=_NextPart_001_0001_DEE49983.9023D998--
+
+
+
+------=_NextPart_000_0000_3094DD02.2B85E59F--
+
 
 
 -------------------------------------------------------
