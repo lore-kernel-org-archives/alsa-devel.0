@@ -1,15 +1,11 @@
-From: Joachim Blaabjerg <styx@gentoo.org>
-Subject: Re: Fwd: [Alsa-user] VIA VT8235 (ALC201) problems
-Date: Thu, 14 Nov 2002 14:43:20 +0100
+From: Remy Bruno <remy.bruno@libertysurf.fr>
+Subject: hwparams question
+Date: Thu, 14 Nov 2002 17:11:49 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200211141443.20536.styx@gentoo.org>
-References: <200210161628.19666.styx@gentoo.org> <200210191221.23517.styx@gentoo.org> <s5hn0p63fxl.wl@alsa2.suse.de>
+Message-ID: <20021114171149.A21129@immersivesound.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hn0p63fxl.wl@alsa2.suse.de>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -19,41 +15,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Sorry for being unresponsive about this lately.
+Hi,
 
-On Tuesday 22 October 2002 12:51, Takashi Iwai wrote:
-> Ehm, could you elaborate the symptom?
+I sent a mail some times ago, but maybe it was not very clear.
 
-Daniel S. Tarbuck described it very well:
+I wonder how it is possible to change the hwparams after having opened a
+playback or capture stream. I tried to close and re-open the streams, but it
+crashed (at least with 0.9.0beta10). What are the functions to call to change
+hwparams, like the number of channels? And how is it possible to link a stream
+to another after one of them has been run? (snd_pcm_link() requires that the
+stream be in a specific state, and I don't know how to reach this state again
+after the stream has been run) I didn't find examples where this is done...
 
-> The modules load and the mixer seems to work, but whenever I try to play
-> some audio, it replays the same bit of audio 13 or 14 times before
-> moving on to the next bit.  This takes about 10 seconds, so I sound that
-> loops every 2/3 seconds for 14 loops and then moves on to the next bit
-> of sound (looping 14 times).
-> 
-> This appears to be a timing issue of some sort.  When using mpg321,
-> after I stop the player, it reports that it has been playing for less
-> time than it has (roughly 1/14th of the actual time).
+Thanks in advance.
 
-Observing the ALSA-user mailing list lately, I see that four or five other 
-people are having the same problem with this driver.
 
-> Also, please check whether the count in /proc/interrupts increases
-> during playback.  If not, it's usually a hardware configuration
-> problem.  if it increases, most likely a driver bug.
-
-Well, in my case it doesn't. I'm 99% sure there are no IRQ conflicts, and I 
-can't see anything else that could be wrong.
-
-I'd gladly give you root access to my machine if that would help you 
-diagnose/fix the problem.
-
-Best Regards,
+Best regards,
+Remy Bruno
 
 
 -------------------------------------------------------
