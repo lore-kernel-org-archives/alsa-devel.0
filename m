@@ -1,14 +1,13 @@
-From: El =?iso-8859-1?q?t=EDo=20Anacondo?= <anacondo@mail.ru>
-Subject: Envy24HT questions
-Date: Thu, 19 Jun 2003 21:23:12 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: programming with dmix ?
+Date: Thu, 19 Jun 2003 22:14:07 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200306192123.12122.anacondo@mail.ru>
+Message-ID: <Pine.LNX.4.44.0306192213320.1930-100000@pnote.perex-int.cz>
+References: <20030619184036.62520.qmail@web40904.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <20030619184036.62520.qmail@web40904.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,23 +16,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alex Kuang <alex_sfu@yahoo.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi. I originally posted this to the alsa-user mailing list, with no responses. 
-Hope you guys can help me.
+On Thu, 19 Jun 2003, Alex Kuang wrote:
 
-> Hi! I plan to replace my card with a new one, based on the Envy24HT chip 
-> (Terratec Aureon Sky or M-Audio Revolution). My current card's chip (Crystal 
-> 4624) supports hardware mixing. After some bad experiences with arts and my 
-> on-board CM-8738 I decided to buy it, and I discovered that my problems with 
-> multiple streams were solved. Now I want a card with such capability, but in 
-> the "Alsa sound-card matrix" there are cards with the Envy24 chip which 
-> are marked as supporting this feature while some others not (don't know, 
-> it depends on the chip or the card itself?). The M-Audio Revolution 
-> apparently does, but I'd like to know if the Aureon Sky also
-> does or not, because it's cheaper and a lot easier to find where I live. Any 
-> help? Thanks in advance
+> Hi there,
+> 
+> Just wondered how I can apply the cool feature - dmix
+> - to my own program to mix sounds? for example, after
+> I compile my small c++ program, I can run it one at a
+> time:
+> 
+> ./a.out TestMusic.wav
+> 
+> The thing's that how I can mix sounds when I run:
+> 
+> ./a.out TestMusic01.wav &
+> ./a.out TestMusic02.wav &
+> ./a.out TestMusic03.wav &
+> 
+> Thank you very much,
+
+Simply use different pcm name as argument to snd_pcm_open().
+Replace 'default' with 'plug:dmix'.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
