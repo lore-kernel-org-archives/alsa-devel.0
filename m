@@ -1,15 +1,15 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: Where could I find devices number for each card ?
-Date: Sun, 14 Apr 2002 18:25:34 -0400
+From: "alsa-devel" <alsa-devel@alsa-project.org>
+Subject: alsa-devel , Your first targeted e-mailing is FREE
+Date: Sat, 13 Apr 2002 23:43:02 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200204142224.AAA06415@alsa.alsa-project.org>
-References: <20020414182324.A917@pengouin.univ-valenciennes.fr>
+Message-ID: <200204150341.FAA10106@alsa.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA06415
-	for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2002 00:24:21 +0200
-In-Reply-To: Your message of "Sun, 14 Apr 2002 18:23:24 +0200."
-             <20020414182324.A917@pengouin.univ-valenciennes.fr>
+Received: from localhost2891.com (131-23-86-213.DSL.ONCOLT.COM [213.86.23.131])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id FAA10106
+	for <alsa-devel@alsa-project.org>; Mon, 15 Apr 2002 05:41:38 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,23 +18,241 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Charles Fl che <charles.fleche@meletu.univ-valenciennes.fr>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->Just a simple question : in the rawmidi functions, I have to know the 
->card and the device number... OK ! But where could I find this number ? 
->I'm using alsa 0.5 serie, and so I have no asound.conf (or equivalent). 
-           ^^^^^^^^
+=3Chtml=3E
 
-	   thats your first problem. 0.5.X is not unsupported at this
-	   point, but nobody involved in the development or heavy use
-	   of ALSA at this time is using 0.5.X. the API and the
-	   internal design are dead (and problematic). upgrade and
-	   save yourself more hassle.
+=3Chead=3E
+=3Ctitle=3ETarget E-mailing & Creative Services=3C=2Ftitle=3E
+=3Cmeta name=3D=22title=22 content=3D=22Target E-mailing & Creative Services=22=3E
+=3Cmeta name=3D=22description=22 content=3D=22Our custom marketing databases=2C state-of-the-art merge=2Fpurge data hygiene products=2C marketing automation and customer-centric solutions help companies market more effectively to their prospects and customers=2E=22=3E
+=3Cmeta name=3D=22keywords=22 content=3D=22data warehouse=2C direct email=2C direct mail marketing=2C direct marketing=2C email marketing=2C list of email addresses=2C target marketing=22=3E
+=3Cmeta http-equiv=3D=22Content-Type=22 content=3D=22text=2Fhtml=3B charset=3Diso-8859-1=22=3E
+=3Cstyle=3E
+=3C!--
+td=2Ebodytext=09{  font-family=3A Verdana=2C Arial=2C Helvetica=2C sans-serif=3B font-size=3A 10px=3B font-style=3A normal=3B color=3Ablack=3B }
+td=2Enavtext=09{  font-family=3A Verdana=2C Arial=2C Helvetica=2C sans-serif=3B font-size=3A 10px=3B font-style=3A normal=3B color=3Ablack=3B }
+a=09{  font-family=3A Verdana=2C Arial=2C Helvetica=2C sans-serif=3B font-size=3A 10px=3B font-style=3A normal=3B color=3A#000000=3B text-decoration=3A underline=3B hover=3B }
+=2Enav=09{  font-family=3A Verdana=2C Arial=2C Helvetica=2C sans-serif=3B font-size=3A 10px=3B font-style=3A normal=3B color=3A#000000=3B text-decoration=3A none=3B hover=3B }
+font=2Ebodytext=09{  font-family=3A Verdana=2C Arial=2C Helvetica=2C sans-serif=3B font-size=3A 10px=3B font-style=3A normal=3B color=3Ablack=3B }
+font=2Enavtext=09{  font-family=3A Verdana=2C Arial=2C Helvetica=2C sans-serif=3B font-size=3A 10px=3B font-style=3A normal=3B color=3A#000000=3B text-decoration=3A none}
+a=3Ahover=09{  font-family=3A Verdana=2C Arial=2C Helvetica=2C sans-serif=3B font-size=3A 10px=3B font-style=3A normal=3B font-weight=3A normal=3B color=3A #993366=3B }
+--=3E
+=3C=2Fstyle=3E
+=3C=2Fhead=3E
+=3Cbody bgcolor=3D=22#FFFFFF=22 leftmargin=3D=220=22 topmargin=3D=220=22 marginwidth=3D=220=22 marginheight=3D=220=22 text=3D=22#000000=22 link=3D=22#000000=22 vlink=3D=22#000000=22 alink=3D=22#000000=22=3E
+=3Ctable width=3D=22810=22 border=3D=220=22 cellspacing=3D=220=22 cellpadding=3D=220=22 height=3D=22874=22 bgcolor=3D=22#CCCC99=22=3E
+  =3Ctr bgcolor=3D=22#cccc99=22 align=3D=22left=22 valign=3D=22top=22=3E 
+    =3Ctd height=3D=2251=22=3E&nbsp=3B=3C=2Ftd=3E
+    =3Ctd height=3D=2251=22=3E 
+      =3Ctable width=3D=22827=22 border=3D=220=22 cellspacing=3D=220=22 cellpadding=3D=220=22 height=3D=2228=22 bgcolor=3D=22#CCCC66=22=3E
+        =3Ctr=3E 
+          =3Ctd align=3D=22left=22 valign=3D=22top=22 width=3D=22329=22=3E 
+            =3Cdiv align=3D=22center=22=3E 
+              =3Chr=3E
+              =3Cfont face=3D=22Geneva=2C Arial=2C Helvetica=2C san-serif=22=3E=3Cfont color=3D=22#993399=22 face=3D=22Times New Roman=2C Times=2C serif=22 size=3D=224=22=3E=3Cb=3ETarget 
+              Emailing &amp=3B Creative Services=3C=2Fb=3E=3C=2Ffont=3E=3C=2Ffont=3E=3Cfont color=3D=22#993399=22 size=3D=222=22=3E=3Cfont size=3D=221=22 face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22 color=3D=22#993399=22=3E=3Cbr=3E
+              =3C=2Ffont=3E=3C=2Ffont=3E
+              =3Chr=3E
+              =3Cfont color=3D=22#993399=22 size=3D=222=22=3E=3Cfont size=3D=221=22 face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22 color=3D=22#993399=22=3E 
+              =3C=2Ffont=3E=3C=2Ffont=3E=3Cfont color=3D=22#993399=22=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22 size=3D=221=22=3E=3Cfont size=3D=222=22=3E=3Cb=3E=3Cfont face=3D=22Times New Roman=2C Times=2C serif=22 color=3D=22#660099=22=3EHome 
+              of 'EMail-IT' True Stealth System=3Cbr=3E
+              =3C=2Ffont=3E=3Cfont color=3D=22#660099=22 size=3D=223=22=3E=3Cfont face=3D=22Times New Roman=2C Times=2C serif=22 size=3D=224=22=3EPh=3A 
+              407-539-0615=3C=2Ffont=3E=3C=2Ffont=3E=3C=2Fb=3E=3C=2Ffont=3E=3C=2Ffont=3E=3C=2Ffont=3E =3C=2Fdiv=3E
+          =3C=2Ftd=3E
+          =3Ctd align=3D=22center=22 width=3D=22498=22 valign=3D=22top=22=3E =3Cfont size=3D=222=22 color=3D=22#660099=22=3E=3Cb=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22 color=3D=22#0000FF=22 size=3D=223=22=3E=3Ca href=3D=22mailto=3Aremoval=5Flist4864=40email=2Eit=3Fsubject=3DPleaseRemoveAddress-3578786=22=3E=3Cfont size=3D=224=22=3ECLICK 
+            HERE TO BE REMOVED=3C=2Ffont=3E=3C=2Fa=3E=3C=2Ffont=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22=3E=3Cbr=3E
+            =3C=2Ffont=3E=3C=2Fb=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22=3E=3Cfont face=3D=22Times New Roman=2C Times=2C serif=22=3E=3Cbr=3E
+            FAST! FAST! FAST!=3Cbr=3E
+            Use your CABLE or DSL connection for unbelievable SPEEDS!=3C=2Ffont=3E=3C=2Ffont=3E=3Cb=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22=3E=3Cfont face=3D=22Times New Roman=2C Times=2C serif=22=3E=3Cbr=3E
+            =3C=2Ffont=3E=3C=2Ffont=3E=3C=2Fb=3E=3C=2Ffont=3E=3Cfont size=3D=222=22 color=3D=22#000000=22 face=3D=22Times New Roman=2C Times=2C serif=22=3E&quot=3BFinally=2E=2E=2EFreedom 
+            to e-mail safely and never lose your ISP again!&quot=3B =3C=2Ffont=3E =3C=2Ftd=3E
+        =3C=2Ftr=3E
+      =3C=2Ftable=3E
+      =3Cdiv align=3D=22left=22=3E
+        =3Ctable width=3D=2231%=22 border=3D=220=22 bgcolor=3D=22#FFFFCC=22 height=3D=220%=22 cellpadding=3D=2210=22 align=3D=22center=22=3E
+          =3Ctr=3E 
+            =3Ctd width=3D=2224%=22 align=3D=22left=22 valign=3D=22top=22=3E 
+              =3Ctable width=3D=22100%=22 border=3D=220=22 cellspacing=3D=223=22 cellpadding=3D=225=22 height=3D=220%=22 align=3D=22center=22=3E
+                =3Ctr=3E 
+                  =3Ctd bgcolor=3D=22#000000=22 nowrap valign=3D=22top=22 align=3D=22center=22 height=3D=224=22=3E=3Cfont size=3D=222=22 face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22=3E&nbsp=3B=3Cfont color=3D=22#FFFFFF=22=3E=3Cb=3ETargeted 
+                    Opt-In Mailings=3C=2Fb=3E=3C=2Ffont=3E=3C=2Ffont=3E=3C=2Ftd=3E
+                =3C=2Ftr=3E
+                =3Ctr=3E 
+                  =3Ctd valign=3D=22top=22 width=3D=2224%=22=3E 
+                    =3Cdiv align=3D=22justify=22=3E 
+                      =3Cp=3E=3Cfont class=3D=22textblack10=22 size=3D=222=22=3ETailored for your 
+                        individual needs=2E Highly targeted E-mail &quot=3BOpt-In&quot=3B 
+                        and Postal Mail campaigns=2E=3Cbr=3E
+                        =3C=2Ffont=3E=3Cfont class=3D=22textblack10=22 size=3D=222=22=3E=3C=2Ffont=3E=3Cfont class=3D=22textblack10=22 size=3D=222=22 face=3D=22Georgia=2C Times New Roman=2C Times=2C serif=22=3E=3Cbr=3E
+                        =3C=2Ffont=3E=3Cfont size=3D=222=22=3EIncluded in every campaign at no 
+                        extra cost=3A =3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp align=3D=22left=22=3E=3Cfont size=3D=221=22 face=3D=22Georgia=2C Times New Roman=2C Times=2C serif=22=3E=3Cb=3EDesign 
+                        of your broadcast message including Graphics=2C=3Cbr=3E
+                        =3C=2Fb=3E=3Cbr=3E
+                        =3Cb=3EConversion to HTML and Hosting=2E=3C=2Fb=3E=3C=2Ffont=3E=3Cfont size=3D=221=22 face=3D=22Georgia=2C Times New Roman=2C Times=2C serif=22=3E=3Cbr=3E
+                        =3Cbr=3E
+                        =3Cb=3EOpt-In List Generation=2FManagement=3A =3C=2Fb=3EWe can help 
+                        you generate your own opt-in lists or manage your current 
+                        lists for a fraction of what you would pay a broker=2E=3Cbr=3E
+                        =3Cb=3E 100% List &quot=3BOWNERSHIP&quot=3B !=3C=2Fb=3E=3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp align=3D=22center=22=3E=3Cfont size=3D=221=22 face=3D=22Georgia=2C Times New Roman=2C Times=2C serif=22=3EWeb 
+                        Site Design=3A Let us design your private marketing site=2E 
+                        =3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp align=3D=22center=22=3E=3Cfont size=3D=221=22 face=3D=22Georgia=2C Times New Roman=2C Times=2C serif=22=3ENews 
+                        Letter Promotions=3A Promote your company through monthly 
+                        newsletters=2E =3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp align=3D=22center=22=3E=3Cfont size=3D=221=22 face=3D=22Georgia=2C Times New Roman=2C Times=2C serif=22=3ERECEIVE 
+                        THE GREATEST RETURN ON YOUR MARKETING DOLLAR=3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp=3E=3Cfont size=3D=222=22 face=3D=22Georgia=2C Times New Roman=2C Times=2C serif=22=3ETargeted 
+                        Messages Delivered=3Cbr=3E
+                        Base Price=3C=2Ffont=3E=3Cfont size=3D=222=22=3E=3Cbr=3E
+                        =3Cbr=3E
+                        500=2C000 Messages $1=2C750 =3Cbr=3E
+                        1 Million Messages $3=2C399 =3Cbr=3E
+                        2 Million Messages $4=2C499 =3Cbr=3E
+                        3 Million Messages $7=2C799 =3Cbr=3E
+                        5 Million Messages $12=2C299 =3Cbr=3E
+                        10 Million Messages $16=2C899 =3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp=3E=3Cfont size=3D=222=22=3E=3Cfont color=3D=22#660099=22=3E&quot=3BCompanies 
+                        who outsource their e-mail marketing operations actually 
+                        have a better conversion rate =286%=29 than companies that 
+                        do not =281=2E4%=29=2E&quot=3B =3C=2Ffont=3E=3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp=3E=3Cfont color=3D=22#993399=22=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22 size=3D=221=22=3E=3Cfont size=3D=222=22=3E=3Cb=3EMore 
+                        info=3A 407-539-0615=3C=2Fb=3E=3C=2Ffont=3E=3C=2Ffont=3E=3C=2Ffont=3E =3C=2Fp=3E
+                    =3C=2Fdiv=3E
+                  =3C=2Ftd=3E
+                =3C=2Ftr=3E
+              =3C=2Ftable=3E
+            =3C=2Ftd=3E
+            =3Ctd width=3D=2224%=22 align=3D=22left=22 valign=3D=22top=22=3E 
+              =3Ctable width=3D=2236%=22 border=3D=220=22 cellspacing=3D=223=22 cellpadding=3D=225=22 align=3D=22center=22 height=3D=22454=22=3E
+                =3Ctr=3E 
+                  =3Ctd bgcolor=3D=22#CCCC66=22 nowrap valign=3D=22top=22=3E=3Cfont face=3D=22Verdana=2C Arial=2C Helvetica=2C sans-serif=22 size=3D=222=22 color=3D=22#FFFFFF=22=3E=3Cb=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22=3EFresh 
+                    Email Addresses=3C=2Ffont=3E=3C=2Fb=3E=3C=2Ffont=3E=3C=2Ftd=3E
+                =3C=2Ftr=3E
+                =3Ctr=3E 
+                  =3Ctd valign=3D=22top=22 align=3D=22left=22 width=3D=2224%=22 height=3D=22378=22=3E 
+                    =3Cdiv align=3D=22justify=22=3E 
+                      =3Cp=3E=3Cfont size=3D=222=22=3EThe key to a good return on your email 
+                        campaign is NEW addresses=2E Our automated servers harvest 
+                        new addresses around the clock=2E We offer lists as a direct 
+                        purchase or as a monthly service=2E=3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp=3E=3Cfont size=3D=222=22=3E250=2C000 e-mails $100=2E00=3Cbr=3E
+                        500=2C000 e-mails $125=2E00=3Cbr=3E
+                        1=2C000=2C000 e-mails $200=2E00=3Cbr=3E
+                        5=2C000=2C000 e-mails $400=2E00=3Cbr=3E
+                        =3C=2Ffont=3E=3Cfont color=3D=22#993399=22=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22 size=3D=221=22=3E=3Cfont size=3D=222=22=3E=3Cb=3E=3Cbr=3E
+                        =3C=2Fb=3E=3C=2Ffont=3E=3Cfont color=3D=22#993399=22 size=3D=223=22=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22=3E=3Cb=3E407-539-0615=3C=2Fb=3E=3C=2Ffont=3E=3C=2Ffont=3E 
+                        =3C=2Ffont=3E=3C=2Ffont=3E=3Cfont size=3D=223=22=3E =3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp align=3D=22left=22=3E=3Cfont size=3D=222=22 face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22=3EMonthly 
+                        Service 150=2E00*=3Cbr=3E
+                        Includes=3A =3Cbr=3E
+                        4=2C000=2C000 e-mails=2Fmonth=3Cbr=3E
+                        'E-Mail-IT' Cloaking Software Updates=3Cbr=3E
+                        FTP Access=3Cbr=3E
+                        URL Cloaking Software =3C=2Ffont=3E=3C=2Fp=3E
+                    =3C=2Fdiv=3E
+                    =3Cdiv align=3D=22justify=22=3E 
+                      =3Cp align=3D=22center=22=3E=3Cfont size=3D=222=22 face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22=3E*Three 
+                        months required=2C lists and software download from our 
+                        FTP server=2E=3C=2Ffont=3E=3C=2Fp=3E
+                    =3C=2Fdiv=3E
+                  =3C=2Ftd=3E
+                =3C=2Ftr=3E
+              =3C=2Ftable=3E
+            =3C=2Ftd=3E
+            =3Ctd width=3D=2224%=22 align=3D=22center=22 valign=3D=22top=22=3E 
+              =3Ctable width=3D=2226%=22 border=3D=220=22 cellspacing=3D=223=22 cellpadding=3D=225=22 height=3D=22417=22 align=3D=22center=22=3E
+                =3Ctr=3E 
+                  =3Ctd bgcolor=3D=22#660099=22 nowrap height=3D=2219=22 valign=3D=22top=22=3E=3Cb=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22 size=3D=222=22 color=3D=22#FFFFFF=22=3EEmail-IT 
+                    CSC Proxy Service=3C=2Ffont=3E=3C=2Fb=3E=3C=2Ftd=3E
+                =3C=2Ftr=3E
+                =3Ctr=3E 
+                  =3Ctd valign=3D=22top=22 width=3D=2224%=22 align=3D=22center=22 height=3D=22386=22=3E 
+                    =3Cdiv align=3D=22justify=22=3E 
+                      =3Cp=3E=3Cfont class=3D=22textblack10=22 size=3D=222=22=3E=3Cb=3ESend your e-mails 
+                        directly through our servers=2E =3C=2Fb=3E=3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp=3E=3Cfont size=3D=222=22=3EOur in house =3Cb=3E'Email-IT' True Stealth 
+                        System=3C=2Fb=3E is based on Unix know-how sending technology=2C 
+                        providing real anonymous instant delivery=2E =3Cbr=3E
+                        =3Cbr=3E
+                        Forget problems with ISP 's your IP address will never 
+                        be shown in our e-mail headers=2E =3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp=3E=3Cfont size=3D=222=22=3EYou send directly into OUR servers which 
+                        then send your mail out to the world=2C FAST!=3C=2Ffont=3E =3C=2Fp=3E
+                      =3Cp align=3D=22center=22=3E=3Cfont size=3D=222=22=3EFAST! FAST! FAST!=3Cbr=3E
+                        Use your CABLE or DSL connection for mind blowing SPEEDS!=3Cbr=3E
+                        =3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp align=3D=22center=22=3E=3Cfont size=3D=222=22=3E'Email-IT' Pricing is based 
+                        on number of e-mails you can send monthly=2E You only pay 
+                        for what you send successfully!=3Cbr=3E
+                        =3Cbr=3E
+                        Priced from $400=3Cbr=3E
+                        =3C=2Ffont=3E=3Cfont color=3D=22#993399=22=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22 size=3D=221=22=3E=3Cfont size=3D=222=22=3E=3Cb=3E=3Cfont size=3D=223=22=3EInfo=3A=3C=2Ffont=3E=3C=2Fb=3E=3Cfont color=3D=22#993399=22 size=3D=223=22=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22=3E=3Cb=3E407-539-0615=3C=2Fb=3E=3C=2Ffont=3E=3C=2Ffont=3E=3C=2Ffont=3E 
+                        =3C=2Ffont=3E=3C=2Ffont=3E=3C=2Fp=3E
+                    =3C=2Fdiv=3E
+                  =3C=2Ftd=3E
+                =3C=2Ftr=3E
+              =3C=2Ftable=3E
+            =3C=2Ftd=3E
+            =3Ctd width=3D=2224%=22 align=3D=22center=22 valign=3D=22top=22=3E 
+              =3Ctable width=3D=2289%=22 border=3D=220=22 cellspacing=3D=223=22 cellpadding=3D=225=22 height=3D=22365=22=3E
+                =3Ctr=3E 
+                  =3Ctd bgcolor=3D=22#993399=22 nowrap valign=3D=22top=22=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22=3E&nbsp=3B=3Cfont size=3D=222=22 color=3D=22#FFFFFF=22=3E=3Cb=3ESafe 
+                    Bulk Email Software=3C=2Fb=3E=3C=2Ffont=3E=3C=2Ffont=3E=3C=2Ftd=3E
+                =3C=2Ftr=3E
+                =3Ctr=3E 
+                  =3Ctd valign=3D=22top=22 width=3D=2224%=22 height=3D=22390=22=3E 
+                    =3Cdiv align=3D=22justify=22=3E 
+                      =3Cp=3E=3Cfont class=3D=22textblack10=22 size=3D=222=22=3EDon't worry about 
+                        losing your ISP again=2E Our NEW software system goes beyond 
+                        open relays and desktop servers=2E This is NEW and it is 
+                        the ONLY software of it's kind=2E=3Cbr=3E
+                        =3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp=3E=3Cfont class=3D=22textblack10=22 size=3D=222=22=3E'EMail-IT' Home &amp=3B 
+                        Office Kit Includes=3A=3Cbr=3E
+                        =3Cfont color=3D=22#333333=22=3E=3Cb=3EStealth System Software=3Cbr=3E
+                        Bulk Mailer=3Cbr=3E
+                        List Manager=3Cbr=3E
+                        Email Extractor=3Cbr=3E
+                        =3C=2Fb=3E=3C=2Ffont=3E=3C=2Ffont=3E=3Cb=3E=3Cfont class=3D=22textblack10=22 size=3D=222=22 color=3D=22#333333=22=3EDaisy 
+                        Chain Connector=3Cbr=3E
+                        WWW URL Cloaking Device=3Cbr=3E
+                        1 User License and Key=3C=2Ffont=3E=3C=2Fb=3E=3Cb=3E=3Cfont class=3D=22textblack10=22 size=3D=222=22 color=3D=22#333333=22=3E=3Cbr=3E
+                        2 Instructional Cd's =3Cbr=3E
+                        1 =3C=2Ffont=3E=3Cfont class=3D=22textblack10=22 size=3D=222=22=3E'EMail-IT' 
+                        =3C=2Ffont=3E=3Cfont class=3D=22textblack10=22 size=3D=222=22 color=3D=22#333333=22=3EOwners=3C=2Ffont=3E 
+                        =3Cfont class=3D=22textblack10=22 size=3D=222=22 color=3D=22#333333=22=3EManual=3Cbr=3E
+                        1 Full hour walk through =3C=2Ffont=3E=3Cfont size=3D=222=22 color=3D=22#333333=22=3Eof 
+                        your installation and set up!=3C=2Ffont=3E=3Cfont class=3D=22textblack10=22 size=3D=222=22 color=3D=22#333333=22=3E=3Cbr=3E
+                        =3C=2Ffont=3E=3C=2Fb=3E=3Cfont class=3D=22textblack10=22 size=3D=222=22=3E=3Cbr=3E
+                        Also includes=3A =3Cbr=3E
+                        Complete How To Files &amp=3B=3Cbr=3E
+                        Telephone Support*=3C=2Ffont=3E=3C=2Fp=3E
+                      =3Cp=3E=3Cfont size=3D=222=22=3E=3Cfont class=3D=22textblack10=22=3EPrice=3A $475=3Cbr=3E
+                        =3C=2Ffont=3E Fedex=3Cfont class=3D=22textblack10=22=3E shipping included!=3Cbr=3E
+                        =3C=2Ffont=3E=3C=2Ffont=3E=3Cfont color=3D=22#993399=22=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22 size=3D=221=22=3E=3Cbr=3E
+                        =3Cfont color=3D=22#993399=22 size=3D=223=22=3E=3Cfont face=3D=22Tahoma=2C Verdana=2C Georgia=2C Arial=22=3E=3Cb=3E407-539-0615=3C=2Fb=3E=3C=2Ffont=3E=3C=2Ffont=3E=3C=2Ffont=3E=3C=2Ffont=3E=3Cfont class=3D=22textblack10=22 size=3D=222=22=3E=3Cbr=3E
+                        =3C=2Ffont=3E=3Cfont size=3D=222=22=3E=3Cfont class=3D=22textblack10=22=3E =3C=2Ffont=3E=3Cbr=3E
+                        =3Cb=3EO=3C=2Fb=3Erder now and we will start you off with 100=2C000=3C=2Ffont=3E 
+                        fresh email addresses=2E=3Cbr=3E
+                      =3C=2Fp=3E
+                      =3Cp=3E=3Cfont size=3D=222=22=3E*Telephone Support Free for first 30 days 
+                        only=2E=3C=2Ffont=3E=3C=2Fp=3E
+                    =3C=2Fdiv=3E
+                  =3C=2Ftd=3E
+                =3C=2Ftr=3E
+              =3C=2Ftable=3E
+            =3C=2Ftd=3E
+          =3C=2Ftr=3E
+        =3C=2Ftable=3E
+      =3C=2Fdiv=3E
+    =3C=2Ftd=3E
+  =3C=2Ftr=3E
+=3C=2Ftable=3E
+=3Cbr=3E
+=3C=2Fbody=3E
 
-	   or follow tim's (and my) advice and use open/read/write/close
-	   with /dev/snd/midiCcDd where c and d typically small
-	   integers starting at 0.
-
---p
+=3C=2Fhtml=3E
