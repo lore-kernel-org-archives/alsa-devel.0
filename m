@@ -1,16 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: dmix plugin
-Date: Sun, 16 Feb 2003 14:27:59 +0100 (CET)
+From: =?ISO-8859-1?Q?Benny_Sj=F6strand?= <gorm@cucumelo.org>
+Subject: [PATCH] Re: [Alsa-user] Hercules Gametheater XP (cs46xx)
+Date: Sun, 16 Feb 2003 15:33:38 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302161418120.1060-100000@pnote.perex-int.cz>
-References: <3E4B992F.BFDE3E41@libero.it>
+Message-ID: <3E4FA142.3010406@cucumelo.org>
+References: <3E4E98B5.7030409@dsl.pipex.com> <3E4EFA55.8090804@cucumelo.org> <3E4F8839.9070701@dsl.pipex.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed;
+ boundary="------------060402080500090102010209"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA32222
-	for <alsa-devel@alsa-project.org>; Sun, 16 Feb 2003 14:28:00 +0100
-In-Reply-To: <3E4B992F.BFDE3E41@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,67 +16,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Abramo Bagnara <abramo.bagnara@libero.it>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Johan Groth <jgroth@dsl.pipex.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 13 Feb 2003, Abramo Bagnara wrote:
+This is a multi-part message in MIME format.
+--------------060402080500090102010209
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> Jaroslav Kysela wrote:
-> > 
-> > Hi all,
-> > 
-> >         a next step to get the lowlatency sharing of exclusive PCM devices
-> > is in ALSA CVS - the dmix (direct mixing) plugin..
-> >         How it works? Basically, the playback in driver runs forewer
-> > without any xrun detection. The ring buffer (only just played areas) is
-> > also silenced in each interrupt. Then we have multiple clients and a
-> > process (server) which passes the file descriptor of playback devices to
-> > them. The server also takes care about freeing of used shm memory and
-> > semaphore.
-> >         The big step forward is that we share one mmaped ring buffer
-> > accross many processes and each process can add samples into it without
-> > any process<->kernel swaps. Also, each processes are independant, thus
-> > failing of one doesn't break others. It's not multithreaded, we don't need
-> > this mechanism.
-> 
-> Good work, Jaroslav!
-> 
-> I'd like to understand how you've thought to solve:
-> a) contemporary access to same sample
-> b) sum overflow (now I'm unable to remember the technical term)
-> 
-> For a) I can imagine some effective tricks (xadd or
-> store/sum/check/retry or period size mutex), but I really don't see what
-> you'll invent for b) ;-)
+> Sorry, but latest CVS does not work. Sound is still very distorted. 
+> CVS from 2002-12-09 12:00 works well though, which is what I'm using 
+> now :) It is using version 1.37 alsa-kernel/pci/cs46xx/cs46xx_lib.cc.
 
-a) yes, we need look for the most effective locking scheme for sample 
-   updates; at first glance, the instruction which does add+saturation 
-   doesn't exist for i386 (MMX offers saturation, but it operates only
-   with mmx registers)
-b) sum overflow: we can lower volume of samples before sum; I think that
-   hardware works in this way, too
+Current CVS still seems to be broken. The hercules_init(...) function 
+will reset the EGPIO's to default state  turning of the amplifier. This 
+patch changes the initialization order calling amplifier_ctrl(...) after 
+mixer_init.
 
-> Without this correctness concerns this approach is very much efficient
-> (compared to server based one), I wonder only if this will be true also
-> when correctness will be taken in account. BTW someone knows how much is
-> relevant the audible impact of this lack of correctness?
+/Benny
 
-I don't hear any audiable problems on my UP machine with current scheme 
-which doesn't take care about a) nor b). I tried six simultaneous streams.
+--------------060402080500090102010209
+Content-Type: text/plain;
+ name="cs46xx.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="cs46xx.patch"
 
-> One thing I'm definitely sure is that this is the *perfect* approach for
-> pcm_share (at least now I don't see any drawbacks).
+--- cs46xx_lib.c.orig	2003-02-16 15:28:21.000000000 +0100
++++ cs46xx_lib.c	2003-02-16 15:28:34.000000000 +0100
+@@ -2516,9 +2516,6 @@
+ 	strcpy(id.name, "External Amplifier Power Down");
+ 	chip->eapd_switch = snd_ctl_find_id(chip->card, &id);
+     
+-	/* turn on amplifier */
+-	chip->amplifier_ctrl(chip, 1);
+-
+ #ifdef CONFIG_SND_CS46XX_NEW_DSP
+ 	/* do soundcard specific mixer setup */
+ 	if (chip->mixer_init) {
+@@ -2526,6 +2523,9 @@
+ 		chip->mixer_init(chip);
+ 	}
+ #endif
++
++ 	/* turn on amplifier */
++	chip->amplifier_ctrl(chip, 1);
+     
+ 	return 0;
+ }
 
-Yes, my next goal is to move common code for such plugins to separate file 
-and create share and capture-tee (any idea for better name?) plugins.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+--------------060402080500090102010209--
 
 
 
