@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000727]: segmentation fault when running modprobe & alsaconf, no sound, no mixer on D915GAV
-Date: Fri, 21 Jan 2005 21:03:00 +0100
-Message-ID: <46f650e0652ed017d4c11216093eed7a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000739]: Invalid "AutoSync Reference" value reported using controlers
+Date: Fri, 21 Jan 2005 21:03:17 +0100
+Message-ID: <4f6aec855d4a52ed1d575b602cd362b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA7AF21B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:03:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB49C21B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:03:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,112 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=727> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=739> 
 ======================================================================
-Reported By:                IMAMUDDIN AKBAR
-Assigned To:                tiwai
+Reported By:                remy
+Assigned To:                charbonnel
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   727
-Category:                   PCI - azx
+Issue ID:                   739
+Category:                   PCI - RME HDSP
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               FEDORA CORE 3
-Kernel Version:             2.6.9-1.667
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-16-2004 09:09 CET
-Last Modified:              01-21-2005 21:02 CET
+Date Submitted:             12-21-2004 18:41 CET
+Last Modified:              01-21-2005 21:03 CET
 ======================================================================
-Summary:                    segmentation fault when running modprobe & alsaconf,
-no sound, no mixer on D915GAV
+Summary:                    Invalid "AutoSync Reference" value reported using
+controlers
 Description: 
-
-i have compiled alsa-driver-1.0.7 alsa-lib-1.0.7 alsa-utils-1.0.7
-but thereis still no sound, and nomiser appear when running alsamixer
-
-i use Intel D915GAV with lspci -v:
-00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Intel Corp.: Unknown device e203
-        Flags: bus master, fast devsel, latency 0, IRQ 169
-        Memory at ffa3c000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-when i run 
-# modprobe snd-azx
-Segmentation fault
-#lsmod
-snd_azx                31094  6
-snd_pcm_oss            51752  0
-snd_mixer_oss          21760  1 snd_pcm_oss
-snd_pcm                89860  2 snd_azx,snd_pcm_oss
-snd_timer              27524  1 snd_pcm
-
-when i run amixer
-no mixer appear on screen
-
-and when i reboot my computer it cannot boot and just hang...
-so i have to uninstall all alsa from rescue to boot again.
-
-Help me to make mysound work fine...
- 
-
-
-
-
+The value returned by controllers for control number 14 ("AutoSync
+Reference") is incorrect and different from that reported by doing a cat
+/proc/asound/card0/hdsp.
+The value reported is not "AutoSync Reference" but "Preferred Sync
+Reference" instead.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-21-04 18:10 
+ remy - 12-21-04 18:54 
 ----------------------------------------------------------------------
-Probably because the azx driver is so new that system-config-soundcard does
-not know about it yet.  Once ALSA 1.0.8 is released then I would imagine
-there will be a new Fedora RPM available.
-
-If this is a problem for you please file a Fedora bug report.
-
-This one can be closed.
+Ok, sorry
+Signed-off-by: Rémy Bruno <remy.bruno@trinnov.com>
 
 ----------------------------------------------------------------------
- tiwai - 12-21-04 18:31 
+ tiwai - 12-21-04 19:00 
 ----------------------------------------------------------------------
-OK, moved to FIXED now.
-
-BTW, 1.0.8rc1 will be released soon.
+Thanks, applied to CVS.  Perhaps the change appears in 1.0.8rc2.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-16-04 09:09 IMAMUDDIN AKBARNew Issue                                    
-12-16-04 17:21 tiwai          Status                   new => resolved     
-12-16-04 17:21 tiwai          Resolution               open => fixed       
-12-16-04 17:21 tiwai          Assigned To               => tiwai           
-12-16-04 17:21 tiwai          Note Added: 0002829                          
-12-16-04 17:21 tiwai          Assigned To              tiwai =>            
-12-17-04 10:36 IMAMUDDIN AKBARDistribution              => FEDORA CORE 3   
-12-17-04 10:36 IMAMUDDIN AKBARKernel Version            => 2.6.9-1.667     
-12-17-04 10:36 IMAMUDDIN AKBARStatus                   resolved => feedback
-12-17-04 10:36 IMAMUDDIN AKBARResolution               fixed => reopened   
-12-17-04 10:36 IMAMUDDIN AKBARNote Added: 0002848                          
-12-17-04 10:37 IMAMUDDIN AKBARAssigned To               => tiwai           
-12-20-04 16:04 tiwai          Note Added: 0002880                          
-12-21-04 02:39 IMAMUDDIN AKBARNote Added: 0002894                          
-12-21-04 03:08 rlrevell       Note Added: 0002895                          
-12-21-04 10:29 IMAMUDDIN AKBARNote Added: 0002897                          
-12-21-04 18:10 rlrevell       Note Added: 0002898                          
-12-21-04 18:31 tiwai          Status                   feedback => resolved
-12-21-04 18:31 tiwai          Resolution               reopened => fixed   
-12-21-04 18:31 tiwai          Note Added: 0002899                          
-01-21-05 21:02 tiwai          Status                   resolved => closed  
+12-21-04 18:41 remy           New Issue                                    
+12-21-04 18:41 remy           File Added: hdsp.c.diff                      
+12-21-04 18:46 tiwai          Note Added: 0002902                          
+12-21-04 18:54 remy           Note Added: 0002903                          
+12-21-04 19:00 tiwai          Status                   assigned => resolved
+12-21-04 19:00 tiwai          Resolution               open => fixed       
+12-21-04 19:00 tiwai          Note Added: 0002904                          
+01-21-05 21:03 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
