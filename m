@@ -1,12 +1,15 @@
 From: Mark Knecht <markknecht@attbi.com>
-Subject: HDSP 9652 - Some first results, but lockups and no actual audio
-Date: 12 Apr 2003 10:37:46 -0700
+Subject: Re: HDSP 9652 - Some first results, but lockups and no
+	actual audio
+Date: 12 Apr 2003 11:22:21 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1050169066.1183.31.camel@Wizard>
+Message-ID: <1050171742.1218.14.camel@Wizard>
+References: <1050169066.1183.31.camel@Wizard>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1050169066.1183.31.camel@Wizard>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,180 +18,88 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
-Cc: PlanetCCRMA <planetccrma@ccrma.stanford.edu>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>, PlanetCCRMA <planetccrma@ccrma.stanford.edu>
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
-   OK, I'm finally starting to get on-line with the newest versions of
-Alsa and the new HDSP 9652 driver as released on PlanetCCRMA last night.
-I'm getting a lot of reasonable or even good results, but no actual
-audio unfortunately. Also, I've had three hard lockups of the machine
-that has required a reset button pushes to get out.
+Just a bit more info. By rebooting and doing a couple of power cycles on
+the external A/D/D/A I have been able to get the RME to acknowledge that
+it's seeing an ADAT sync at 44.1K, so I think at least the clock is
+being sent.
 
-   IMPORTANT - THIS IS A NEW MACHINE! This specific machine has been up
-and stable for about 3 weeks running RH 8.0, doing email and waiting for
-this driver. This machine has never run Alsa successfully, so whatever
-problems I'm seeing may well be of my own creation somehow. The HDSP did
-work previously, but now has new firmware. (Rev. 11) I will continue to
-go back through the Planet instructions to see if I've missed anything.
+This specific external unit (AI-3 for now) supports a loopback, where
+the ADAT in can be looped and sent back on its ADAT out. In doing this,
+I cannot see the audio signal I send it, implying that it is actually
+not receiving one.
 
-   IDEA - The machine was previously configured to use the on-board Via
-Sound Chip while I waited for the HDSP driver to be available. I never
-actually hooked up speakers though. Possibly something about that
-previous configuration is effecting me now???
+Also, I sent the wave file recorded using jackrec to my Windows box. (A
+copy of a Yellowjackets tune) It plays fine, so it appears that jack and
+alsaplayer are working OK.
 
-   The new PlanetCCRMA kernel is 2.4.20-4.ll.acpi. I have disabled acpi
-at the grub command line. Alsa is installed and apparently running.
-(lsmod looks at least reasonable.)
-
-   Jack is running at all buffer sizes with no xruns. I've run alsamixer
-to set levels on all channels to 76. I've run alsactl store to save
-state and rebooted to make sure that the state is restored.
-
-   qjackconnect runs and shows jack application and hardware audio
-ports. alsaplayer runs and plays a CD, but no audio is apparently
-delivered to my external D/A. I can run meterbridge and see apparent
-audio in the PC. gamix runs and shows me things that look like it
-understands the HDSP 9652. (26 I/O's, ADAT sync info, preferred clock
-source, etc.)
-
-   And, yes, power is turned on for my D/A! ;-)
-
-   jackrec runs and creates a file. The file can be loaded into Sweep
-and looks like audio. I have not listened to the file as of yet since I
-cannot get audio. I will send it to my Windows box soon to ensure it's
-OK.
-
-   NOTE BELOW - I have told Jack to run at 44.1K, but the ADAT 1 lock
-seems to be at 48K which is the default frequency of the external A/D if
-it doesn't receive a clock on it's input. More evidence that nothing is
-really being transmitted? Not sure...
-
-   The one major sort of problem I've seen 3 times now is that with
-alsaplayer open, if I open alsamixer to set levels I've locked the
-machine up twice. The machine locked up a third time, but I do not
-remember exactly what I was doing at the time. All three times required
-a reset button push.
-
-   I'll attach some system info, and will certainly try anything that
-might be suggested to get this working. Thanks in advance for any ideas
-about what I've missed.
+Thanks in advance again.
 
 Cheers,
 Mark
 
-[root@Wizard etc]# more modules.conf
-alias char-major-10-134 off
-alias parport_lowlevel parport_pc
-alias eth0 bcm4400
-alias usb-controller ehci-hcd
-alias usb-controller1 usb-uhci
-alias ieee1394-controller ohci1394
+On Sat, 2003-04-12 at 10:37, Mark Knecht wrote:
+> [root@Wizard card0]# more /proc/asound/card0/hdsp
+> RME HDSP 9652 (Card #1)
+> Buffers: capture dde00000 playback ddc00000
+> IRQ: 10 Registers bus: 0xe8800000 VM: 0xe0967000
+> Control register: 0x1008098
+> Status register: 0x6086a48
+> Status2 register: 0xffff8061
+> FIFO status: 0
+> MIDI1 Output status: 0xffffff00
+> MIDI1 Input status: 0xffffff80
+> MIDI2 Output status: 0xffffff00
+> MIDI2 Input status: 0xffffff5f
+> 
+> Buffer Size (Latency): 1024 samples (2 periods of 4096 bytes)
+> Hardware pointer (frames): 1024
+> Passthru: no
+> Line out: on
+> Firmware version: 1
+> 
+> Sample Clock Source: Internal 44.1 kHz
+> Preferred Sync Reference: ADAT1
+> AutoSync Reference: ADAT1
+> AutoSync Frequency: 48000
+> System Clock Mode: Master
+> System Clock Frequency: 44100
+> 
+> IEC958 input: Internal
+> IEC958 output: Coaxial only
+> IEC958 quality: Consumer
+> IEC958 emphasis: off
+> IEC958 NonAudio: off
+> IEC958 sample rate: Error flag set
+> 
+> ADAT1: Lock
+> ADAT2: No Lock
+> ADAT3: No Lock
+> SPDIF: No Lock
+> Word Clock: No Lock
+> ADAT Sync: No Lock
+> 
+> [root@Wizard card0]#
+> 
 
-# --- BEGIN: Generated by ALSACONF, do not edit. ---
-# --- ALSACONF verion 0.9.0 ---
-alias char-major-116 snd
-alias snd-card-0 snd-hdsp
-alias char-major-14 soundcore
-alias sound-slot-0 snd-card-0
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
-options snd major=116 cards_limit=1 device_mode=0666
-options snd-hdsp index=0
-# --- END: Generated by ALSACONF, do not edit. ---
-
-add options -k snd-card-0
-
-post-install snd-hdsp /usr/bin/hdsploader
-[root@Wizard etc]#
-
-
-[root@Wizard etc]# hdsploader
-hdsploader - firmware loader for RME Hammerfall DSP cards
-Looking for HDSP + Multiface or Digiface cards :
-Card 0 : RME HDSP 9652 at 0xe8800000, irq 10
-[root@Wizard etc]#
-
-
-
-[root@Wizard root]# lsmod
-Module                  Size  Used by    Not tainted
-ide-cd                 35548   0  (autoclean)
-cdrom                  33344   0  (autoclean) [ide-cd]
-snd-mixer-oss          16536   2  (autoclean)
-snd-seq-midi            5280   0  (unused)
-snd-seq-midi-event      5928   0  [snd-seq-midi]
-snd-seq                49648   0  [snd-seq-midi snd-seq-midi-event]
-snd-hdsp               39212   2
-snd-pcm                85888   0  [snd-hdsp]
-snd-page-alloc          8452   0  [snd-pcm]
-snd-timer              20776   0  [snd-seq snd-pcm]
-snd-rawmidi            19712   0  [snd-seq-midi snd-hdsp]
-snd-seq-device          6380   0  [snd-seq-midi snd-seq snd-rawmidi]
-snd-hwdep               7008   0  [snd-hdsp]
-snd                    44836   0  [snd-mixer-oss snd-seq-midi
-snd-seq-midi-event snd-seq snd-hdsp snd-pcm snd-timer snd-rawmidi
-snd-seq-device snd-hwdep]
-soundcore               6724   5  [snd]
-snd-hammerfall-mem      2976   0  [snd-hdsp]
-autofs                 13588   0  (autoclean) (unused)
-bcm4400                31136   1
-ipt_REJECT              3928   6  (autoclean)
-iptable_filter          2412   1  (autoclean)
-ip_tables              14904   2  [ipt_REJECT iptable_filter]
-ohci1394               29224   0  (unused)
-ieee1394               60044   0  [ohci1394]
-mousedev                5588   0  (unused)
-keybdev                 2912   0  (unused)
-hid                    22148   0  (unused)
-input                   5824   0  [mousedev keybdev hid]
-usb-uhci               27116   0  (unused)
-ehci-hcd               20488   0  (unused)
-usbcore                79840   1  [hid usb-uhci ehci-hcd]
-ext3                   71808   1
-jbd                    53908   1  [ext3]
-[root@Wizard root]#
-
-
-[root@Wizard root]# cat /proc/interrupts
-           CPU0
-  0:    1977701          XT-PIC  timer
-  1:       8743          XT-PIC  keyboard
-  2:          0          XT-PIC  cascade
-  3:       2178          XT-PIC  eth0
-  8:          1          XT-PIC  rtc
-  9:          0          XT-PIC  ehci-hcd, usb-uhci, usb-uhci, usb-uhci
- 10:      57026          XT-PIC  hdsp
- 11:          2          XT-PIC  ohci1394
- 12:      48832          XT-PIC  PS/2 Mouse
- 14:      13159          XT-PIC  ide0
- 15:       9355          XT-PIC  ide1
-NMI:          0
-LOC:    1977713
-ERR:       2364
-MIS:          0
-[root@Wizard root]#
-
-
-[root@Wizard card0]# more /proc/asound/card0/hdsp
+[mark@Wizard mark]$ cat /proc/asound/card0/hdsp
 RME HDSP 9652 (Card #1)
-Buffers: capture dde00000 playback ddc00000
+Buffers: capture de600000 playback de400000
 IRQ: 10 Registers bus: 0xe8800000 VM: 0xe0967000
-Control register: 0x1008098
-Status register: 0x6086a48
-Status2 register: 0xffff8061
+Control register: 0x1008090
+Status register: 0x2040008
+Status2 register: 0xffff8041
 FIFO status: 0
 MIDI1 Output status: 0xffffff00
-MIDI1 Input status: 0xffffff80
+MIDI1 Input status: 0xffffff3d
 MIDI2 Output status: 0xffffff00
-MIDI2 Input status: 0xffffff5f
+MIDI2 Input status: 0xffffff39
 
-Buffer Size (Latency): 1024 samples (2 periods of 4096 bytes)
-Hardware pointer (frames): 1024
+Buffer Size (Latency): 64 samples (2 periods of 256 bytes)
+Hardware pointer (frames): 0
 Passthru: no
 Line out: on
 Firmware version: 1
@@ -196,7 +107,7 @@ Firmware version: 1
 Sample Clock Source: Internal 44.1 kHz
 Preferred Sync Reference: ADAT1
 AutoSync Reference: ADAT1
-AutoSync Frequency: 48000
+AutoSync Frequency: 44100
 System Clock Mode: Master
 System Clock Frequency: 44100
 
@@ -207,14 +118,14 @@ IEC958 emphasis: off
 IEC958 NonAudio: off
 IEC958 sample rate: Error flag set
 
-ADAT1: Lock
+ADAT1: Sync
 ADAT2: No Lock
 ADAT3: No Lock
 SPDIF: No Lock
 Word Clock: No Lock
 ADAT Sync: No Lock
 
-[root@Wizard card0]#
+[mark@Wizard mark]$
 
 
 
