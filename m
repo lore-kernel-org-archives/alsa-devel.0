@@ -1,15 +1,11 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Avance ALS-007
-Date: Sun, 7 Jul 2002 15:11:19 +0200
+From: Mark Rages <markrages@mlug.missouri.edu>
+Subject: Audio hardware with a queue, not a circular buffer
+Date: Sun, 7 Jul 2002 17:24:40 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020707131119.GA535@localhost>
-Reply-To: martin-langer@gmx.de
+Message-ID: <20020707222440.GA8318@mlug.missouri.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id OAA17908
-	for <alsa-devel@alsa-project.org>; Sun, 7 Jul 2002 14:58:34 +0200
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -19,21 +15,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I'm (still) writing a driver for the Gadget Labs Wave/4.
 
-Hi,
+I don't know what to return for the pointer callback:
 
-looks like that my old Avance ALS-007 card is still unsupported by ALSA. 
+on 09/26/2001, Paul Davis advised:
+>>       pointer
+>
+> this is called to find out where the h/w pointer is in the ring buffer
+> used for capture/playback. some devices do not support it, but most do.
 
-- Are there any interesting documents about the ALS007, except OSS sources?
-- Any hints to the best starting point: als100 or sb16?
-- Or does this card work with alsa and I am the problem?
+My card uses a queue, not a ring buffer. What should I do for this 
+function? I can read a value for queue depth out of the card, but this 
+doesn't appear to be what the mid-level code is looking for.
 
-
-thanks,
-martin
+Regards,
+Mark
 
 
 -------------------------------------------------------
