@@ -1,7 +1,7 @@
 From: claus@ridi.com
 Subject: Re: Hoontech Audio DSP24 Value (+bracket)
-Date: 12 Feb 2002 14:41:32 UT
-Message-ID: <00007239.3C6937A8@oz.ridi.com>
+Date: 12 Feb 2002 14:49:33 UT
+Message-ID: <0000723B.3C693976@oz.ridi.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset="iso-8859-1"
@@ -17,24 +17,37 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@alsa.alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jaroslav,
+Hi,
 
-> I'm also not sure about differences between models, because the full
-> version expects some additional I/O boxes, but there is no way to detect
-> which (and if) a box is connected. The DSP24 Value version looks like a
-> card with simplified build-in I/O box.
+> > Since your card was recognized as STDSP24, it means that both cards
+> > have the same sub vendor/device id.  Thus it's difficult to guess
+> > which chip is.  Perhaps trying to detect ak4524 at first, then one
+> > can recognize it as DSP24 Value or not.
+>
+> I asked Hoontech about that too.
 
-That's correct. The input needs to be initzialized as box number 1.
- 
-> I think that I have a contact to a guy from Taiwan (Hoontech) from Claus
-> Riethmueller, so I asked him for more information about differences
-> between DSP24 and DSP24 Value, but he has not replied.
+It is not possible to distinguish between a DSP24 Value and a DSP24 card in
+software. Also you cannot detect the converter on the card (as it is not 
+needed).
 
-Hoontech is a Korean company. I sent you all GPIO related information with 
-example source code back on 09/08/2000. I did not receive further questions 
-from you about this. I rememeber some discussion about the AC-97 codec on the
-card but that has no relation to the recording section and GPIO at all. If you 
-need more info, contact me and tell me what you need exactly.
+The DSP24 PCI card provides a interface that is called "H-BUS" and allows you
+to connect several external boxes (ADC, DAC, Digital I/O interfaces, etc.) to
+one card. Via GPIO you can (and need to) controll this interface. Up to four
+external boxes with up to 4 stereo input channels on each box can be adressed
+at the same time. You can patch any of these stereo inputs to the Envy24 input
+by GPIO during runtime. This allows you for example to use a DS2000 (ADAT/TDIF
+interface) and a ADC&DAC2000 (analog I/O) at the same time and to switch 
+between the inputs when needed. An introduction to this can be found on our
+website: check www.staudio.com -> Service -> Knowledge Base -> DSP24 -> H-BUS.
+
+The DSP24 Value simulates this by connecting the ADC on the card virtually as
+box number 1, input 1/2.
+
+> The DAC & ADC volume
+> don't seem to work though.
+
+The hardware does not provide any function to change the input or output level
+of the analog I/O.
 
 Best regards,
 
