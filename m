@@ -1,11 +1,11 @@
-From: kreuzritter2000@gmx.de
-Subject: Major Bug in Alsa 0.9  for over 1 year
-Date: Fri, 25 Oct 2002 06:02:58 +0200 (MEST)
+From: Bruce Paterson <bruce@tele-ip.com>
+Subject: Help !  Distorted sound on re-run
+Date: Fri, 25 Oct 2002 15:09:40 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <22050.1035518578@www52.gmx.net>
+Message-ID: <3DB8D214.674FEFB6@tele-ip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,168 +15,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+HELP !
+I've tried everything I can think of and I'm at a loss.
 
-I allways have the same bug when trying to modprobe the cs4232 or cs4236
-sounddriver for my Terratec EWS654XL soundcard.
+Setup:
+alsa 0.9.0rc2
+soundcard Terratec EWS88 (envy24 driver)
+direct hw:0,0 using snd_pcm_readi & writei with descriptor polling.
+length approx 50s similtaneous read & write. read from all channels.
+modified 'envy24setup' to preset hardware levels on startup
+full restart of sound system each 'pass' (new handles etc.)
 
-The bug is called unresolved symbol, this bug exists in ALSA 0.9 since the
-existing of ALSA 0.9.
+Problem:
+The first pass works fine with beautiful audio.
+The next pass the output is badly distorted (sounds like an incomplete
+buffer or something), but
+no errors reported, no under/overruns.... only evidence that something
+is wrong is to listen to it.
 
-I tried nearly every ALSA 0.9x version.
+What fixes it:
+Waiting. Yup...if I wait > 1 minute before the 2nd pass then that is
+also fine. Something 'happens'
+in that time to make it all ok again.
+This is why it's taken me ages to actually notice the problem at all !
+(program has been running
+for months).
 
-Alsa 0.9.0  -> didn't work
-Alsa 0.9.0beta1 -> didn't work
-Alsa 0.9.0beta2 -> didn't work
-Alsa 0.9.0beta3 -> didn't work
-....
-Alsa 0.9.0beta9 -> didn't work
-Alsa 0.9.0beta10 -> didn't work
-Alsa 0.9.0rc1 -> didn't work
-Alsa 0.9.0rc2 -> "
-Alsa 0.9.0rc3 -> "
-Alsa 0.9.0rc5 -> "
+What *doesn't* help:
+Not doing a full sound restart between passes (ie. merely doing a drop
+afterwards, then restart with
+prepare & start, leaving pcm handles alive).
+Playing a wav file with 'aplay' in between passes.
+Exiting from my program and starting again between passes.
+adding hw_free commands prior to close of the in & out handles.
 
-I wrote nearly for every ALSA  version a bugreport including
-a lot of pnpdumps, module.conf, dmesg output files etc. etc. but no one
-could help me and fix this problem.
-I am really fed up with this.
-
-I can't write a driver myself, the only thing i can do for the alsa-project
-is 
-writing bug reports, i can't fix this bug, but you can, so it's up to you.
-
-The soundcard "worked" fine with the old ALSA 0.5x drivers,
-the soundcard and its two chips the cs4232/cs4236 and the sam9407
-are well documented, sources, documentations it's all there.
-So fixing this bug is not impossible!
-But still, this bug was never fixed.
-
-No, this time i won't sent plenty of pnpdump files, module.confs files etc.
-to you.  If you need my pnpdump files, you will find many in the alsa-devel
-mailinglist archives of it. (search for EWS64)
-It never helped, and it won't help in future.
- 
-I am giving up, i am frustrated and this was my last bug report
-to the alsa-mailinglist.
-
-Perhaps i will stick with only one chip of my soundcard (the sam9407) and
-use this great sam9407 OSS driver or buy a new soundcard -> problem solved.
-
-I really tried everthing.
-Every option, nothing did help.
-
-Perhaps no one tried to go the steps i did step by step, like
-installing Slackware (my main distribution), upgrading the kernel and
-checking if the cs4232/6 drivers work on Slackware without this unresolved symbols.
-
-
-There are 2 or 3 people on this mailinglist that have the same soundcard,
-maybe that one could send me their modules.conf file and step by step
-installation guide, that would be the last try, i could do that.
-But i am not continuing this writing bug reports and  seeing no progress.
+Wild groping theories:
+Due to time alone fixing it I'm wondering if it's a code problem at all
+(at least in my code), but
+I'm at a loss to know why waiting fixes the problem !
+Does the EWS hardware "timeout" somehow ?
   
-So that's the end.
-
-Best Regards 
- Oliver C.
-
-
-Here's the unsresolved symbol error:
-
-modprobe snd-cs4232
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: init_module: No
-such device
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: Hint: insmod
-errors can be caused by incorrect module parameters, including invalid IO or IRQ
-parameters.
-      You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: insmod
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o failed
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: insmod snd-cs4232
-failed
-
-
-insmod snd-cs4232
-Using /lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol
-snd_card_new_R506deba1
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol
-snd_card_free_Rff997e04
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol
-snd_cs4231_pcm_R75bb3150
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol
-snd_card_register_R4baee9de
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol
-snd_verbose_printk_R49d4e4d1
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol
-snd_opl3_create_R7cfd1ec5
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol
-snd_opl3_hwdep_new_Rd214f5bf
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol
-snd_cs4231_create_Rce85e590
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol
-snd_cs4231_mixer_Re022cecf
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol
-snd_wrapper_kfree
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol
-snd_mpu401_uart_new_R606a10b8
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol
-snd_cs4231_timer_R7a2d8746
-
-insmod snd-cs4236
-Using /lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol
-snd_cs4236_create_Racbbd0d2
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol
-snd_card_new_R506deba1
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol
-snd_card_free_Rff997e04
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol
-snd_card_register_R4baee9de
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol
-snd_verbose_printk_R49d4e4d1
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol
-snd_opl3_create_R7cfd1ec5
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol
-snd_cs4236_pcm_R25584f2a
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol
-snd_cs4236_mixer_R248fd9c7
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol
-snd_opl3_hwdep_new_Rd214f5bf
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol
-snd_wrapper_kfree
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol
-snd_mpu401_uart_new_R606a10b8
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol
-snd_cs4231_timer_R7a2d8746
-
-
-modprobe snd-cs4236
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: init_module: No
-such device
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: Hint: insmod
-errors can be caused by incorrect module parameters, including invalid IO or IRQ
-parameters.
-      You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: insmod
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o failed
-/lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: insmod snd-cs4236
-failed
-
-
-
 -- 
-+++ GMX - Mail, Messaging & more  http://www.gmx.net +++
-NEU: Mit GMX ins Internet. Rund um die Uhr für 1 ct/ Min. surfen!
+Cheers,
+Bruce
+-------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom
+they are addressed. If you have received this email in error please
+notify the system manager.
 
+    /\\\/\\\/\\\    /   /      Bruce Paterson          
+   /  \\\ \\\ \\\  /   /    Senior Design Engineer
+  /   /\\\/\\\/\\\/   /   87 Peters Ave, Mulgrave, Vic, 3170
+ /   /  \\\ \\\ \\\  /  PO Box 4112, Mulgrave, Vic, 3170, Australia
+/   /    \\\/\\\ \\\/   Ph: +61 3 8561 4232   Fax: +61 3 9560 9055
+      Tele-IP Ltd.      Email: bruce@tele-ip.com    Icq: #32015991
+                        WWW:   http://www.tele-ip.com       VK3TJN
+-------------------------------------------------------------------
 
 
 -------------------------------------------------------
 This sf.net email is sponsored by: Influence the future 
 of Java(TM) technology. Join the Java Community 
 Process(SM) (JCP(SM)) program now. 
-http://ads.sourceforge.net/cgi-bin/redirect.pl?sunm0003en
+http://ads.sourceforge.net/cgi-bin/redirect.pl?sunm0004en
