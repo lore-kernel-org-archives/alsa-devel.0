@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Fri, 21 Jan 2005 21:28:02 +0100
-Message-ID: <721c489d01be7100d974cdef28149538@bugtrack.alsa-project.org>
+Date: Fri, 21 Jan 2005 21:30:27 +0100
+Message-ID: <15e45c187eb524e09b65a45590cfbbdb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F37D9225
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:28:02 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C64BA225
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:30:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC3
 Kernel Version:             2.6.10-ac8
 ======================================================================
 Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-21-2005 21:28 CET
+Last Modified:              01-21-2005 21:30 CET
 ======================================================================
 Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
@@ -51,24 +51,21 @@ No SPDIF out.
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 01-21-05 21:19 
-----------------------------------------------------------------------
-[root@skynet lib]# ls -l libasound*
--rw-r--r--  1 root root 1171458 dec  1 02:15 libasound.a
--rwxr-xr-x  1 root root     803 jan 21 21:04 libasound.la
-lrwxrwxrwx  1 root root      18 jan 21 21:04 libasound.so ->
-libasound.so.2.0.0
-lrwxrwxrwx  1 root root      18 jan 21 21:04 libasound.so.2 ->
-libasound.so.2.0.0
--rwxr-xr-x  1 root root 1941669 jan 21 21:04 libasound.so.2.0.0
-[root@skynet lib]#  
-
-I think its okay.I compilled 10 minutes ago.
-
-----------------------------------------------------------------------
  rlrevell - 01-21-05 21:28 
 ----------------------------------------------------------------------
 OK so what is the output of "ldd `which aplay`"?
+
+----------------------------------------------------------------------
+ tiwai - 01-21-05 21:30 
+----------------------------------------------------------------------
+Make sure that your aplay is linked correctly.
+
+Check 'which aplay' whether aplay is found in /usr/bin.
+Check ldd /usr/bin/aplay whether it's linked to the correct library,
+/usr/lib/libasound.so.2.
+
+If still doesn't work (and surely you have no ~/.asoundrc), run "strace
+aplay foo.wav" and attach its log.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -115,6 +112,7 @@ Date Modified  Username       Field                    Change
 01-21-05 21:15 tiwai          Note Added: 0003359                          
 01-21-05 21:19 1g0R           Note Added: 0003361                          
 01-21-05 21:28 rlrevell       Note Added: 0003362                          
+01-21-05 21:30 tiwai          Note Added: 0003363                          
 ======================================================================
 
 
