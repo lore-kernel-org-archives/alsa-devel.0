@@ -1,22 +1,15 @@
-From: "Jordan Breeding" <jordan.breeding@inet.com>
-Subject: Questions regarding cs46xx support
-Date: Fri, 3 May 2002 12:04:50 -0500
+From: "Martijn Sipkema" <m.j.w.sipkema@student.tudelft.nl>
+Subject: Re: unitor8/amt8 driver for alsa 0.9.0rc1
+Date: Wed, 1 May 2002 14:02:33 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <HAEOIKGLLLDPLCHFOMMOMEBPCAAA.jordan.breeding@inet.com>
+Message-ID: <006901c1f110$84014110$0400a8c0@martijn>
+References: <Pine.LNX.4.40.0205011238180.988-100000@dunk.hq.fett.net>
+Reply-To: "Martijn Sipkema" <m.j.w.sipkema@student.tudelft.nl>
 Mime-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from zeke.inet.com (zeke.inet.com [199.171.211.198])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA02725
-	for <alsa-devel@alsa-project.org>; Fri, 3 May 2002 19:07:16 +0200
-Received: from tex.inetint.com (tex [172.16.99.35])
-	by zeke.inet.com (8.12.1/8.12.1) with ESMTP id g43H70Ha023958
-	for <alsa-devel@alsa-project.org>; Fri, 3 May 2002 12:07:03 -0500 (CDT)
-Received: from harpo.inetint.com (localhost [127.0.0.1])
-	by tex.inetint.com (8.12.1/8.12.1) with ESMTP id g43H6A5a020005
-	for <alsa-devel@alsa-project.org>; Fri, 3 May 2002 12:06:13 -0500 (CDT)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -25,27 +18,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
-Cc: Jordan Breeding <jordan.breeding@attbi.com>
+To: Manush Dodunekov <manush@stendahls.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+> > This is nice. What documentation did you use for writing the driver?
+> 
+> http://www.math.tu-berlin.de/~sbartels/unitor/unitor8_doc.txt
+> 
+> It's in German. I have a translation of it I made using some online
+> translation thingy a while ago, but I still find the German version a bit
+> more readable (and my German really sucks).
 
-  I have a SBLive! currently and love the support in for it in alsa
-including the fact that it has multi open on /dev/dsp so that if I run esd
-for an app that needs it I can still run xmms in regular oss mode or with
-alsa drivers and not worry about the fact that esd is also using /dev/dsp.
-I do not like however the actual sound that my SBLive! produces (I never
-have) and am thinking of going back to using a Turtle Beach Santa Cruz
-(based on the cs46xx).  At one point I got to use one of these cards and was
-very impressed with the sound quality in Windows and Linux, but at the time
-alsa wasn't available as an in kernel driver (2.5.x) and the oss drivers in
-the kernel didn't support multi open on /dev/dsp for the cs46xx, so my
-question is do the newest alsa drivers for this card (Santa Cruz - cs46xx)
-support multi open through both alsa and oss emulation on /dev/dsp?  Thanks
-for any information.  Please Cc: me as I am not on the list.
+I have that document also. Emagic would not give me any AMT
+documentation, that's why I aksed.
 
-Jordan Breeding
+> > Also, using a kernel driver does not allow using many different serial
+> > hardware, right?
+> 
+> I don't see why not. As long as it doesn't limit itself to a maximum of
+> one instance at a time.
+
+How does this work then? Can a file be opened from kernel space? Or
+is there a kernel module with an standard interface for serial devices?
+This would be needed in order to be able to use other than standard
+pc serial hardware such as usb serial convertors and professional multi
+port serial adapters, right? I was under the impression you were accessing
+the serial hardware directly.
+
+
 
 
 _______________________________________________________________
