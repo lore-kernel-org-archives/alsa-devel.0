@@ -1,11 +1,11 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: busy-wait questions
-Date: Wed, 28 Apr 2004 23:09:36 +0200
+From: Nikhil Deo <nikhil_deo@usa.net>
+Subject: Re: [Re: Configuring the mixer]
+Date: Wed, 28 Apr 2004 17:17:29 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040428230936.4e3e5fc5.pochini@shiny.it>
+Message-ID: <508iDbVRd8672S02.1083187049@uwdvg002.cms.usa.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,43 +15,113 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Just wanted to mention that I was able to do this yesterday <grin>. I had=
+ to
+find all the mixer groups. Their params told me that only Mic-In was bein=
+g
+captured, both channels. If I started capturing both channels of Line-In,=
+ I
+could not capture Mic-In at all as mentioned by clemens. But to my deligh=
+t I
+could capture left channel of Line-In and right channel of Mic-In by
+configuring the appropriate Mixer group structure's 'capture' element pro=
+perly
+and send it to the mixer and it came out Line-out on the required channel=
+s
+respectively. =
 
 
-After a lot of cleanups and coding style changes, my driver still has some
-things that must be fixed properly. Busy-waits are one of those.
+Now I am off to my next step: trying to separate the left and right chann=
+el
+data from a buffer that I have captured/read. If you have not figured out=
 
-The most used busy-waits have a timeout of 10ms and 100ms and they are
-called with a spinlock_irq held or from the irq handler. With my card
-the longest wait I measured was 190us, so I guess it's ok.
-
-But two functions, read_dsp() and write_dsp() have a timeout of 10s. They
-are used exclusively for loading the DSP firmware and the ASICs. They are
-very fast on my card, but other cards (the driver supports 8 cards) may be
-slower. I was thinking about calling the scheduler in case of a long wait,
-but two cards need to reload the ASICs in order to switch between S/PDIF and
-ADAT and one card also has to reload the ASICs when the sample rate crosses
-the 50KHz boundary. Since those operations are protected by a spinlock, it's
-not a great idea to call the scheduler. Any hint ?  Perhaps we could just
-live with it, since the reload is not required very often...
+already, I am trying to use an echo cancellor and after I separate out th=
+is
+left and right channels I would feed it to the echo-can software. =
 
 
-While looking for examples I noticed that all busy waits in the ens1370
-driver have this form:
+Any idea how the captured buffer stores the different channels that I nee=
+d to
+extract?
 
-for (t = 0; t < POLL_COUNT; t++) {
-	if (inl(xxxx))
-		break;
-}
-
-IMHO it isn's correct because it waits for an amout of time that depends on
-the processor speed.
+Thanks in advance. =
 
 
---
-Giuliano.
+
+ =
+
+
+Clemens Ladisch <clemens@ladisch.de> wrote:
+
+> Nikhil Deo wrote:
+> > It is to be done on QNX
+> =
+
+> By now, QNX's API is completely different.
+> =
+
+> > I need to capture input from the mic AND the line in.
+> =
+
+> This will work only if your hardware supports this.  Many sound cards
+> can select exactly one input for recording.
+> =
+
+> > Then I need to output the mic input on the Right-LineOut and
+> > leftLineIn on leftLineOut. (right line in can be ignored)
+> =
+
+> This is easy once you have captured the data.
+> =
+
+> =
+
+> Another possibility would be to configure the mixer to route the
+> inputs as you want them.  Again, this is dependent on the capabilities
+> of your hardware/drivers.
+> =
+
+> > in 2, my mixer group was input gain and although it seemed to be
+recording
+> > something, I could not figure out what it was. How do I make it take =
+the
+input
+> > from  mic in only?
+> =
+
+> In ALSA, most cards have a mixer control "Capture Source" which allows
+> to select between several input.  Some cards have "Capture Volume"
+> controls for each input and mix all together.
+> =
+
+> =
+
+> HTH
+> Clemens
+> =
+
+> =
+
+> =
+
+> =
+
+> -------------------------------------------------------
+> This SF.net email is sponsored by: The Robotic Monkeys at ThinkGeek
+> For a limited time only, get FREE Ground shipping on all orders of $35
+> or more. Hurry up and shop folks, this offer expires April 30th!
+> http://www.thinkgeek.com/freeshipping/?cpg=3D12297
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> =
+
+
+
 
 
 
