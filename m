@@ -1,18 +1,12 @@
-From: "Karsten Wiese" <annabellesgarden@yahoo.de>
-Subject: AW: general audio card Q
-Date: Tue, 30 Jul 2002 11:56:59 +0200
+From: Paul Davis <pbd@op.net>
+Subject: Re: Multiple PCM files
+Date: Tue, 30 Jul 2002 06:11:29 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <DAELIEGDPLDDCIJPAICBMEBOCDAA.annabellesgarden@yahoo.de>
-References: <F118RXf2LTrpwACkWHZ000183fb@hotmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <E17ZTx8-0006Hz-00@usw-sf-list1.sourceforge.net>
+References: <100101c237ae$85238550$360110ac@dillon>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp013.mail.yahoo.com (smtp013.mail.yahoo.com [216.136.173.57])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id LAA30677
-	for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2002 11:55:34 +0200
-In-Reply-To: <F118RXf2LTrpwACkWHZ000183fb@hotmail.com>
+In-Reply-To: Your message of "Tue, 30 Jul 2002 10:50:01 BST."
+             <100101c237ae$85238550$360110ac@dillon>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,24 +15,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Nick French <nick@greensignal.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Besides the RME PST card, are there other sound cards which can do
-> interrupt driven data transfer to double-buffers (ie. no DMA) for
-> playback?
+>Sorry I am new to ALSA so forgive me if this is obvious.
 
-i'm not exactly shure, what is double-buffers...
-the turtle beach pinnacle/fiji has shared memory, that can be accessed
-simultanously
-from the pc & the sound card.
+don't be sorry about that. instead, be sorry for this: whether you
+know it or not, the email program you are using is sending out copies
+of your mail in both plain text and HTML formats. increasingly on the
+net, there are filters being put in place that silently dump
+HTML-formatted email. some mailing lists will not ever accept such
+posts. as long as you do this, you are (1) wasting network bandwidth
+by sending messages that are typically more than twice as long as they
+could be (2) making it harder for people using traditional email
+readers to read them (3) risking the chance that people will never see
+your mail because its filtered before reaching their email inbox.
 
-regards, karsten
+>Is there any way with ALSA to play multiple PCM files at the same time. =
+>Say for example under OSS open DSP0 and DSP1. I thought I read that it =
+>could but have only found samples for playing a single PCM stream. Any =
+>pointers gratefully appreciated.
 
-__________________________________________________________________=0D
-=0D
-Gesendet von Yahoo! Mail - http://mail.yahoo.de=0D
-M=F6chten Sie mit einem Gru=DF antworten? http://grusskarten.yahoo.de=0D
+Your question isn't very well defined. There are several things you
+might be thinking of:
+
+1) a single process playing multiple audio files to a single audio
+   interface
+2) multiple processes playing multiple audio files to a single audio
+   interface
+3) multiple processes playing multiple audio files to multiple audio
+   interfaces
+4) a single process playing multiple audio files to multiple audio
+   interfaces
+
+tell us which one it is, and we can provide more specific help. the
+use of /dev/dsp0 and /dev/dsp1 under OSS corresponds to either 3 or 4
+in the list above, but its not clear which.
+
+--p
 
 
 -------------------------------------------------------
