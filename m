@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000317]: Use a real SSL certificate issuer
-Date: Wed, 29 Sep 2004 14:28:34 +0200 (CEST)
+Subject: [ALSA - driver 0000410]: Cannot listen to line-in and aux at the same time
+Date: Wed, 29 Sep 2004 05:47:36 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040929122834.CFB145003@server.perex-int.cz>
+Message-ID: <20040929034736.44E9D3C04C@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 300E42D9
-	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 14:28:35 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A6C54265
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 05:47:36 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,75 +20,172 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000317
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000410
 ======================================================================
-Reported By:                sehh
-Assigned To:                perex
+Reported By:                skamp
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     317
-Category:                   OTHERS
-Reproducibility:            N/A
+Bug ID:                     410
+Category:                   PCI - ice1724
+Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
+Status:                     feedback
+Distribution:               LFS 5.1.1, BLFS 5.1
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             05-31-2004 02:57 CEST
-Last Modified:              09-29-2004 14:28 CEST
+Date Submitted:             07-27-2004 18:48 CEST
+Last Modified:              09-29-2004 05:47 CEST
 ======================================================================
-Summary:                    Use a real SSL certificate issuer
+Summary:                    Cannot listen to line-in and aux at the same time
 Description: 
-I noticed that you use your own issued SSL certificate. Its
-wise to avoid the commercialised and blood-drinking root
-certificates which charge a fortune for a certification.
+I cannot listen to sound coming from line-in and aux at the same time,
+since I have to switch between either one of them with the "capture"
+switch.
+I can't listen to both line-in or aux and pcm, for that matter, since I
+have to switch H/W and H/W 1 from PCM Out to H/W In 0 and vice versa.
 
-There is one solution thought, there is a non-profit
-certificate authority which issues certificates free
-of charge. We've used them for many of our web sites
-with great success.
-
-The url is:
-
-http://www.cacert.org/
-
-
+I have my TV plugged to line-in, and my DXR3 MPEG2 decoder plugged to aux,
+and I found it convenient with my former sound card (Sound Blaster Live!
+with OSS drivers) to be able to listen to either source (TV, DVD or PCM)
+without unplugging my headphones or triggering any switch.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 05-31-2004 11:53 CEST 
+ tiwai - 07-30-2004 16:51 CEST 
 ----------------------------------------------------------------------
-Thanks for this good tip. I registered there. It looks promising. I will
-try to generate a certificate request for signing when I find a little of
-spare time.
-
-And yes, I hate commercial certificates.
+Isn't it a hardware limitation?
 
 ----------------------------------------------------------------------
- sehh - 05-31-2004 14:55 CEST 
+ skamp - 08-01-2004 14:29 CEST 
 ----------------------------------------------------------------------
-Superb!
+How would I know? I can't believe a €80+ sound card wouldn't provide this
+feature anyway - if that's the case, then I've been really screwed...
 
 ----------------------------------------------------------------------
- perex - 09-29-2004 14:28 CEST 
+ skamp - 08-01-2004 18:00 CEST 
 ----------------------------------------------------------------------
-Once again, thanks. I've changed the certificate now. It works great.
+OK, I just installed Windows Server 2003 in order to test Terratec's
+official drivers, and I found out what I expected: the drivers and control
+panel allow me to listen to as well as record from all sources (pcm,
+line-in, aux...), either each one separately or all of them
+simultaneously. I can actually select exactly which source(s) I want to
+listen to or record from. This is the expected feature set, and it works
+right out of the box.
+
+I would like to know what is needed for bringing full support of this
+sound card to linux (via alsa, I guess): documentation from the
+manufacturer? time? motivation? money? more developers? user feedback?
+testing?
+
+----------------------------------------------------------------------
+ tiwai - 08-02-2004 18:21 CEST 
+----------------------------------------------------------------------
+AFAIK, some inputs are just a connection from AC97 codec.
+You can try to adjust Line, Aux, etc playback volumes and
+choose 'Mix' as the capture source, so that the mixed playback
+(passthru) signals on that ac97 chip is routed back to the
+capture.
+
+----------------------------------------------------------------------
+ ungod - 09-28-2004 22:37 CEST 
+----------------------------------------------------------------------
+This is fixed in the latest CVS (See bugnote 0000510 for details)
+
+----------------------------------------------------------------------
+ tiwai - 09-28-2004 23:15 CEST 
+----------------------------------------------------------------------
+Ok, then close this bug now.
+
+----------------------------------------------------------------------
+ skamp - 09-29-2004 02:14 CEST 
+----------------------------------------------------------------------
+I just installed alsa-* from CVS: the bug is NOT fixed. I still can't
+listen to both line-in AND sound coming from applications (line-out - I'm
+not talking about optical-out). Besides, line-in is now monophonic,
+although I can hear the sound in both speakers of my headphones.
+"amixer cset numid=24 on,off" (that's the "Capture switch") returns
+"values=off,on", and so does "amixer cset numid=24 off,off".
+The mixer (or driver, I don't know) is also very buggy (as you predicted);
+it took me about 15 minutes just to figure out how to hear sound coming
+from line-in at a reasonable volume.
+
+----------------------------------------------------------------------
+ ungod - 09-29-2004 04:33 CEST 
+----------------------------------------------------------------------
+Weird.
+
+As far as I know, the Sky, Space and Universe cards ought to be identical
+at that point. In the latest CVS, the aureon driver should give you mixer
+control to Line/CD/AUX/Mic/AC97 (AC97 being line/CD/AUX/Mic mixed
+together) and a Mic boost.
+In order to get both line, aux and wave sound; line, aux, ac97 and front
+should be unmuted and volumes set accordingly, and the H/W and H/W 1
+should be PCM Out.
+
+At least on my Space I can hear it all, and the line in sound is perfectly
+stereo.
+
+But I see that it is actually not possible with the current drivers, to
+record the AC97 mixed sound without also hearing it on the front channels
+(the recorded sound should however only be the AC97 sound), but I probably
+change the way at which the AC97 is muted, so that only playback sound is
+muted (currently the AC97 chip itself is muted)
+
+----------------------------------------------------------------------
+ ungod - 09-29-2004 05:05 CEST 
+----------------------------------------------------------------------
+Well, I've made some changes, so that you may record while not listening.
+Strangely however, the capture volume for left and right are not
+identical, although the mixer claims so.
+
+Well, I've uploaded a patch for the AC'97 mute, although I can't imagine
+this would solve you problem, if indeed it is a driver problem.
+
+Patch description:
+
+Summary: Fix AC97 master mute
+
+Instead of muting the AC97 chip and thus eliminating the possibility of
+recording, muting is done by setting front playback to DAC only instead of
+DAC+AUX.
+
+Signed-off-by: Peter Christensen <ungod@developers.dk>
+
+----------------------------------------------------------------------
+ skamp - 09-29-2004 05:47 CEST 
+----------------------------------------------------------------------
+Still no luck. I've uploaded an updated version of aadebug's output, since
+I've moved to LFS-6.0 SVN since my first bugnote.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-31-04 02:57 sehh           New Bug                                      
-05-31-04 11:50 perex          Assigned To               => perex           
-05-31-04 11:50 perex          Status                   new => assigned     
-05-31-04 11:53 perex          Bugnote Added: 0001282                       
-05-31-04 14:55 sehh           Bugnote Added: 0001283                       
-09-29-04 14:28 perex          Bugnote Added: 0001971                       
-09-29-04 14:28 perex          Resolution               open => fixed       
-09-29-04 14:28 perex          Status                   assigned => resolved
+07-27-04 18:48 skamp          New Bug                                      
+07-27-04 18:48 skamp          File Added: aadebug                          
+07-27-04 18:48 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
+07-27-04 18:48 skamp          Kernel Version            => 2.4.26          
+07-30-04 16:51 tiwai          Bugnote Added: 0001491                       
+08-01-04 14:29 skamp          Bugnote Added: 0001515                       
+08-01-04 18:00 skamp          Bugnote Added: 0001516                       
+08-02-04 18:21 tiwai          Bugnote Added: 0001523                       
+09-28-04 22:37 ungod          Bugnote Added: 0001958                       
+09-28-04 23:15 tiwai          Bugnote Added: 0001959                       
+09-28-04 23:15 tiwai          Assigned To               => tiwai           
+09-28-04 23:15 tiwai          Resolution               open => fixed       
+09-28-04 23:15 tiwai          Status                   new => resolved     
+09-29-04 02:14 skamp          Bugnote Added: 0001963                       
+09-29-04 02:14 skamp          Resolution               fixed => reopened   
+09-29-04 02:14 skamp          Status                   resolved => feedback
+09-29-04 02:15 skamp          Bug Monitored: skamp                         
+09-29-04 04:33 ungod          Bugnote Added: 0001964                       
+09-29-04 05:05 ungod          Bugnote Added: 0001965                       
+09-29-04 05:05 ungod          File Added: aureon-ac97mute.diff                    
+09-29-04 05:45 skamp          File Added: aadebug                          
+09-29-04 05:47 skamp          Bugnote Added: 0001967                       
 ======================================================================
 
 
