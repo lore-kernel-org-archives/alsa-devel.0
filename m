@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
-Date: Thu, 31 Mar 2005 13:14:19 +0200
-Message-ID: <16c002342e3beaa24597744638550cb3@bugtrack.alsa-project.org>
+Date: Thu, 31 Mar 2005 13:23:04 +0200
+Message-ID: <23c9d7526093afeacf38095f372f6f54@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0F5FB225
-	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 13:14:19 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 93942225
+	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 13:23:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
 Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              03-31-2005 13:14 CEST
+Last Modified:              03-31-2005 13:23 CEST
 ======================================================================
 Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
@@ -69,40 +69,6 @@ alias eth0 8139too
 ======================================================================
 
 ----------------------------------------------------------------------
- yafrank - 03-31-05 10:49 
-----------------------------------------------------------------------
-The ens1371 kernel module is loaded in 2.6.11
-[frank@twinhead html]$ uname -a
-Linux twinhead.localdomain 2.6.11-prep
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Wed Mar 30 17:11:30 CST
-2005
-i686 i686 i386 GNU/Linux
-[frank@twinhead html]$ cat /proc/asound/cards0
-[AudioPCI       ]: ENS1371 - Ensoniq AudioPCI
-                   Ensoniq AudioPCI ENS1371 at 0xfcc0, irq 5
-[frank@twinhead html]$ /sbin/lsmod | grep snd
-snd_ens1371            28452  1
-snd_rawmidi            27808  1 snd_ens1371
-snd_seq_device          8972  1 snd_rawmidi
-snd_ac97_codec         67576  1 snd_ens1371
-snd_pcm_oss            49328  0
-snd_mixer_oss          18048  2 snd_pcm_oss
-snd_pcm                94472  3 snd_ens1371,snd_ac97_codec,snd_pcm_oss
-snd_timer              31492  1 snd_pcm
-snd                    55652  8
-snd_ens1371,snd_rawmidi,snd_seq_device,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              11232  2 snd
-snd_page_alloc          9988  1 snd_pcm
-
-    As concern to "no sound", I've tested xmms playing mp3 file, mplayer
-with wma and aplay with wav file. Alsamixer can always be invoked, but PCM
-channel is missing if 2.6.11 kernel used. It seems that the former PCM
-volume setting is now occupied by "Center" channel. Enable every channel
-and miximum each volume setting in alsamixer doens't help either. 
-    Aplay can be started without any error and VU meter can be seen if -vv
-option applied.
-
-----------------------------------------------------------------------
  yafrank - 03-31-05 13:14 
 ----------------------------------------------------------------------
 More info of the sound card.
@@ -121,6 +87,11 @@ ParErr- Stepping- SERR- FastB2B-
 
     If other info is needed, just let me know.
 
+----------------------------------------------------------------------
+ perex - 03-31-05 13:23 
+----------------------------------------------------------------------
+Could you try to compile and test the 1.0.9rc2 drivers?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -130,6 +101,7 @@ Date Modified  Username       Field                    Change
 03-30-05 18:08 tiwai          Note Added: 0004266                          
 03-31-05 10:49 yafrank        Note Added: 0004277                          
 03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
 ======================================================================
 
 
