@@ -1,15 +1,13 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: Trivial hdsp.c patch to support rev 50 cards
-Date: Fri, 15 Aug 2003 11:26:29 -0700
+From: Anthony <avan@uwm.edu>
+Subject: Guillemot ISIS Maxi Studio
+Date: Fri, 15 Aug 2003 23:19:45 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGCEKDCPAB.mknecht@controlnet.com>
-References: <3F3C400A.6000605@vertice.ca>
+Message-ID: <20030816041945.GA23675@ice_nine.wi.rr.com>
+Reply-To: avan@uwm.edu
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F3C400A.6000605@vertice.ca>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,126 +16,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dan Nyborg <nyborg@vertice.ca>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dan,
-   Actually, I misread your description until Thomas pointed out that your
-complete system is freezing, or al least that's what I read now. In my case
-it's only the audio freezing and coming back. The system itself is fine.
+Hi, 
 
-   Sorry you haven't managed to get this working. We'll be around to help
-when you do get back to it, and Thomas has made lots of headway with his
-tools recently (hdspconf, hdspmixer) so maybe they'll help you get to the
-bottom of this.
+Curious if there is any progress/info regarding the
+Guillemot ISIS Maxi Studio card. I found some mails
+back in 2000 which weren't very positive. I understand
+this has two chipsets, a es1968 and a sam9457. There
+are some kernel drivers for the later which dont help
+with using jack and the es1968 driver loads, appears
+happy but no output at all. So is there a user base out
+there to make some progress on this? I'd be happy to
+devote some time provided I'm not stabbing away in the
+dark.
 
-Best of luck,
-Mark
-
-> -----Original Message-----
-> From: Dan Nyborg [mailto:nyborg@vertice.ca]
-> Sent: Thursday, August 14, 2003 7:06 PM
-> To: Mark Knecht
-> Cc: alsa-devel@lists.sourceforge.net
-> Subject: Re: [Alsa-devel] Trivial hdsp.c patch to support rev 50 cards
->
->
-> hello mark,
->
-> sorry i did not reply sooner, i've been bogged down with work as well as
-> preparation for a show.
->
-> i am in the same state that i was  earlier. paul had suggested that it
-> was a mid-level alsa problem... so i found an ancient (ie: small) hard
-> drive and now have a reasonably fsckable system to "debug" with. i dove
-> into the code and littered it with "printk" statements to try and catch
-> something, but i haven't alotted sufficient time to this brutish attempt.
->
-> i am thinking that somewhere in the pcm open or capture callbacks, a
-> pointer gets lost and some mem write process goes way out of range,
-> hosing memory reserved for something else... uh, that's what i think
-> atleast. it's bad, as i get no (hee hee hee)oops, whatsoever. however,
-> my kernel programming knowledge consists of what i have crammed in over
-> the last few weeks, so it is miniscule and confused ;).
->
-> by the end of next week, i'll be able to get back at it.
->
-> best of luck all around,
->
-> dan.
->
-> Mark Knecht wrote:
->
-> >Dan,
-> >   I was revisiting the Alsa-Dev archives looking for
-> information and came
-> >across this email from you. I had suggested you look at mono files. It
-> >didn't work for you.
-> >
-> >   Thomas Charbonnel and I have been working on the HDSP 9652 driver. He
-> >does coding then I do testing. I am now consistently in pretty much the
-> >state you described below. However, for me, I don't really have
-> to reboot.
-> >If I just start a CD playing using alsaplayer, then I will get between 1
-> >second and maybe 45 seconds of audio, followed by a dead time
-> with no audio,
-> >but if I wait, I'll again get more audio for a few seconds. On,
-> off on, off.
-> >
-> >   I am on Alsa 0.9.6 with a bunch of patches that Thomas has
-> done, but my
-> >results sound pretty similar to your. (I was not in as good a
-> state earlier
-> >when we first talked!)
-> >
-> >   Have you made any headway solving this on your system?
-> >
-> >Thanks,
-> >Mark
-> >
-> >
-> >hello,
-> >
-> >i modified hdsp.c to support my rev. 50 card last week (the trivial way),
-> >and
-> >have been experimenting with it for the past three days.
-> everything seems to
-> >work - midi, spdif lock... - i even downloaded Charbonnel's
-> mixer app, and
-> >it
-> >works great! i use a multiface.
-> >
-> >however, when i try to play something with alsaplayer or aplay, my system
-> >freezes after 2 sec to 2 min of playback... sometimes i can get through a
-> >whole file, sometimes only partial, but an eventual lock-up is
-> inevitable. i
-> >have not tried sending anything other than stereo, 44100kHz, 16bit files.
-> >
-> >has anyone seen such behavior with this driver?
-> >
-> >i am assuming it may have something to do with my setup: linux
-> 2.4.20, alsa
-> >0.9.5 (with trivial patch to hdsp.c), devfs, recent
-> multiface/pci card with
-> >rev. 50 firmware.
-> >
-> >there's atleast one other person with the same hammerfall set who will be
-> >trying it out in linux later this week...
-> >
-> >any comments appreciated,
-> >
-> >dan.
-> >
-> >
-> >
-> >
-> >
->
->
->
-
-
+--ant
 
 
 -------------------------------------------------------
