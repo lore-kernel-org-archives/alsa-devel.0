@@ -1,15 +1,14 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: aoss failures under Alsa-1.0.0rc1
-Date: Fri, 5 Dec 2003 07:53:01 -0800
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: aoss failures under Alsa-1.0.0rc1
+Date: Fri, 05 Dec 2003 18:06:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGIEHIECAB.mknecht@controlnet.com>
-References: <1070636690.1793.13.camel@Wizard.knechthome.com>
+Message-ID: <Pine.HPX.4.33n.0312051804500.8570-100000@studcom.urz.uni-halle.de>
+References: <NDBBLGIKBJENLAMOLFHGIEHIECAB.mknecht@controlnet.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1070636690.1793.13.camel@Wizard.knechthome.com>
+In-reply-to: <NDBBLGIKBJENLAMOLFHGIEHIECAB.mknecht@controlnet.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,18 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@comcast.net>, Clemens Ladisch <clemens@ladisch.de>
+To: Mark Knecht <mknecht@controlnet.com>
 Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->
-> I am using 1.0.0.rc1 on Gentoo with a 2.4.20-r9 kernel. I got the same
-> behavior on 0.9.8 and reported it but never got a response.
->
+Mark Knecht wrote:
+> I didn't see an announcement, but the Alsa page now shows 1.0.0rc2. Are you
+> suggesting that this might actually have been fixed in rc2? If so, what was
+> the cause?
 
-I didn't see an announcement, but the Alsa page now shows 1.0.0rc2. Are you
-suggesting that this might actually have been fixed in rc2? If so, what was
-the cause?
+There is a change in alsa-oss.c, immediately after rc1 came out, with
+the following log message:
+
+- avoid the assert in snd_pcm_drain().
+- fixed the possible segfault at the wrong release of resources.
+- more debug messages.
+
+
+HTH
+Clemens
 
 
 
