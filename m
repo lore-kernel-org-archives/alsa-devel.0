@@ -1,60 +1,57 @@
-From: "Lance A. Brown" <lance@bearcircle.net>
-Subject: Re: alsa cvs, redhat9, kernel 2-4-20-8
-Date: 09 Apr 2003 00:58:50 -0400
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <1049864330.10782.14.camel@circle.homeip.net>
-References: <se8e13a5.075@mail.teklinks.com>
-	 <20030405120028.6812ba7e.matthias@rpmforge.net>
-	 <s5hznn2r4n9.wl@alsa2.suse.de>
+From: Steven Feil <sfeil@io.com>
+Subject: Best value for periods and periodsize
+Date: Wed, 9 Apr 2003 01:02:46 -0500 (CDT)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <Pine.LNX.4.44.0304090059300.10725-100000@hagbard.io.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <s5hznn2r4n9.wl@alsa2.suse.de>
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Matthias Saou <matthias@rpmforge.net>, Jeremy Sanders <jsanders@teklinks.com>, jason@corekin.no-ip.com, alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, matthias.saou@est.une.marmotte.net
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2003-04-07 at 06:19, Takashi Iwai wrote:
-> At Sat, 5 Apr 2003 12:00:28 +0200,
-> Matthias Saou wrote:
-> > 
-> > "Jeremy Sanders" <jsanders@teklinks.com> wrote :
-> > 
-> > > Maybe matthias.saou@est.une.marmotte.net is the one to ask. He's the one
-> > > who built the freshrpm package that works with the redhat 9 kernel.
-> > > Maybe he can shed some light on what he had to do.
-> > > 
-> > > Matthias,
-> > > 
-> > > Do you have any ideas about this?
-> > 
-> > Yes I have :-)
-> > I didn't think of it myself though, someone had suggested me this solution
-> > a while back for the latest Rawhide kernels. Take a look at my spec file if
-> > you like: http://freshrpms.net/packages/builds/index.html?build=alsa-driver
-> > 
-> > The part that "fixes" the schedule_work problem is:
-> > 
-> > # Temporary Rawhide kernel workaround - Disable ALSA workqueue wrapper
-> > touch include/linux/workqueue.h
+I'm trying to find out what are the "best" values for the parameters
+periods and periodsize, or if I can just avoid setting them all
+together and let the ALSA driver/libs handle it.  From reading the
+ALSA documentation, I can see that the parameters periods and
+periodsize have something to do with the ring buffer used beneath the
+user level. What I do not understand is, should these low level
+buffers "line up" or avoid "lining up" with user level reads.
 
-This trick worked for me like a treat!
+I will describe an outline of my PCM reading program, so that you can
+get an idea of what would be the best parameters for periods and
+periodsize.
 
---[Lance]
+As it turns out my program uses it's own ring buffer to hold incoming
+sounds from the PCM in a state of limbo. My ring buffer is actually a
+series of frames arranged into a ring. Each frame is treated as an
+indivisible unit. The size of the frames is determined by the variable
+Samples_Per_Frame_Per_Channel. This variable is usually a 2^x number
+(because FFT's like 2^x numbers ), with 512 or 1024 a typical
+value. Theoretically Total_Frames_Used is only limited by memory,
+however, the largest practical value would seem to be a few minutes
+worth of sound. Most testing is done with 5 to 15 seconds worth of
+sound. My program is multi-threaded, with a thread dedicated to taking
+sound from the PCM and storing it in the aforementioned ring buffer.
+Other task are handled by different threads
 
--- 
-  Carolina Spirit Quest:  http://www.carolinaspiritquest.org/
-  Celebrate The Circle: http://www.angelfire.com/nc/celebratethecircle/
-  My LiveJournal: http://www.livejournal.com/users/labrown/
+Under these circumstances, what do you think would be the best way to
+set periods and periodsize?
+
+=======================================================================
+ Steven Feil              | Gram-pa, back at the turn of the      .~.  
+ Programmer/Developer     | century, why did people use an        /V\  
+ sfeil@io.com             | operating system, when they were not // \\ 
+                          | allowed to see the source code?      (X_X) 
+=======================================================================
+
 
 
 
