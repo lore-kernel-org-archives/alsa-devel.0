@@ -1,15 +1,12 @@
-From: Miha Tomsic <miha.tomsic@guest.arnes.si>
-Subject: Re: Problem with alsamixer, amixer
-Date: 10 Oct 2002 17:34:36 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: problems: flushing during snd_pcm_wait()
+Date: Fri, 11 Oct 2002 01:25:19 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1034264077.525.251.camel@josef>
-References: <1034262491.1337.230.camel@josef>
-	<s5hzntmcof8.wl@alsa2.suse.de>
+Message-ID: <3DA59BDF.7030904@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hzntmcof8.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,36 +15,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-	Hello Takashi!
+Hello
+I have an application that has many different threads.
+The sound card's PCM buffer is full during playback, and one thread is 
+currently in snd_pcm_wait() waiting for enough space to appear in the 
+buffer before doing the next snd_pcm_write().
+A different thread wants to flush the buffer. There are two types of 
+flush: -
+1) Immeadiately empty the buffer.
+2) Stop accepting snd_pcm_write() commands until the current buffer has 
+drained.
 
-On =E8et, 2002-10-10 at 17:18, Takashi Iwai wrote:
-> can you change each one switch or volume value by the follwoing way?
-> - call "alsactl -f foo store"
-> - modify the file "foo"
-> - call "alsactl -f foo restore"
-> if it works, then the problem is alsamixer or alsa-lib.
-> the latest alsamixer can handle playback and capture separately, so
-> this problem should have been fixed.
+Can someone please tell me which API calls I should make to get the 
+buffer to flush properly.
+I am currently doing things like: -
+int flush() {
+ <snip...>
+      if ((result=snd_pcm_reset(this->audio_fd)) < 0) {
+        printf("audio_alsa_out: Reset call failed err=%d\n",result);
+      }
+      if ((result=snd_pcm_drain(this->audio_fd)) < 0) {
+        printf("audio_alsa_out: Drain call failed err=%d\n",result);
+      }
+      if ((result=snd_pcm_prepare(this->audio_fd)) < 0) {
+        printf("audio_alsa_out: Prepare call failed err=%d\n",result);
+      }
+}
 
-Yes, this works too. Only the simple controls (or simple mixer elements)
-don't work correctly.
+But this is causing all sorts of problems, one of which is that the 
+application hangs, and has to be killed with -9, and the audio hardware 
+ring buffer is left playing a repeated sound even with: -
+/proc/asound/card0/pcm0p/sub0# cat status
+closed
 
-And I forgot to mention that I am using alsa-*-0.9.0rc3.
+Cheers
+James
 
-Should I get the CVS version? Is the new CVS compatible with rc3? I am
-not following the discussions too closely, but will it break rc3 native
-ALSA apps? I've seen that there are patches for jack to make it work
-with new CVS alsa.
 
-Is rc4 comming any time soon?
-
-Thanks and take care,
-
-	Miha...
 
 
 
