@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000755]: get error when trying to build 1.0.5 drivers with kernel 2.6.10
-Date: Wed, 29 Dec 2004 00:56:43 +0100
-Message-ID: <75f8d601e37e6decfbdb95164e592d01@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000756]: ASRock k7vt4a+ with CMedia CMI9761 no mixer!
+Date: Wed, 29 Dec 2004 01:15:45 +0100
+Message-ID: <1dbaea0a816b1b7b2b8e75c6390cbf21@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D3D8A2D6
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 00:56:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5CB9E2D6
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 01:15:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=755> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=756> 
 ======================================================================
 Reported By:                wschrep
-Assigned To:                perex
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   755
-Category:                   0_compilation problem_!!!
+Issue ID:                   756
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               knoppmyth r4v5
+Status:                     new
+Distribution:               debian/knoppmyth
 Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             12-29-2004 00:50 CET
-Last Modified:              12-29-2004 00:56 CET
+Date Submitted:             12-29-2004 01:15 CET
+Last Modified:              12-29-2004 01:15 CET
 ======================================================================
-Summary:                    get error when trying to build 1.0.5 drivers with
-kernel 2.6.10
+Summary:                    ASRock k7vt4a+ with CMedia CMI9761 no mixer!
 Description: 
-make -C /lib/modules/2.6.10/build
-SUBDIRS=/root/alsa/alsa-driver-1.0.5/kbuild modules
-make[1]: Entering directory `/usr/src/linux-2.6.10'
-  CC [M]  /root/alsa/alsa-driver-1.0.5/kbuild/../acore/hwdep.o
-  CC [M]  /root/alsa/alsa-driver-1.0.5/kbuild/../acore/memalloc.o
-/root/alsa/alsa-driver-1.0.5/acore/memalloc.c:54: error: initializer
-element is not constant
-/root/alsa/alsa-driver-1.0.5/acore/memalloc.c:54: error: (near
-initialization for `__param_arr_enable.num')
-make[3]: *** [/root/alsa/alsa-driver-1.0.5/kbuild/../acore/memalloc.o]
-Error 1
-make[2]: *** [/root/alsa/alsa-driver-1.0.5/kbuild/../acore] Error 2
-make[1]: *** [_module_/root/alsa/alsa-driver-1.0.5/kbuild] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.10'
-make: *** [compile] Error 2
-root@mythtv:~/alsa/alsa-driver-1.0.5 # uname -r
-2.6.10
-root@mythtv:~/alsa/alsa-driver-1.0.5 # gcc --version
-gcc (GCC) 3.3.2 20030812 (Debian prerelease)
-Copyright (C) 2003 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is
-NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.
+Well on the website it states I have this chip:
+CMedia CMI9761 6 channel AC'97 audio codec
+
+When I do an lsmod I get this: 
+00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233 AC97
+Audio Controller (rev 50)
+
+So I use the via82xx alsa sound driver module
+
+I get sound but when I use the mixer settings only mute works I cannot
+change the levels of the audio output neither master or pcm changes
+anything.
+
+I did have to use the 1.0.4 drivers instead of 1.0.5 release because of
+compilation bug see other bugreport. The libs and utils from version 1.0.4
+and 1.0.5 compile without problems but with neither can I get the controls
+to work.
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-29-04 00:56 
-----------------------------------------------------------------------
-Please don't report bugs for old ALSA versions.  Try 1.0.8-rc1.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-04 00:50 wschrep        New Issue                                    
-12-29-04 00:50 wschrep        Distribution              => knoppmyth r4v5  
-12-29-04 00:50 wschrep        Kernel Version            => 2.6.10          
-12-29-04 00:56 rlrevell       Note Added: 0002988                          
+12-29-04 01:15 wschrep        New Issue                                    
+12-29-04 01:15 wschrep        Distribution              => debian/knoppmyth
+12-29-04 01:15 wschrep        Kernel Version            => 2.6.10          
 ======================================================================
 
 
