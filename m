@@ -1,15 +1,14 @@
-From: "Thomas Charbonnel" <thomas@undata.org>
-Subject: Re: hdsp driver status
-Date: Thu, 8 May 2003 11:15:50 +0200 (CEST)
+From: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
+Subject: Re: Some remarks/bugs/question about M-audio Revolution
+ (ice1724)
+Date: Thu, 08 May 2003 11:30:00 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32905.217.128.4.25.1052385350.squirrel@www.undata.org>
-References: <200305080204.h48248c05344@linuxaudiosystems.com>
-        <Pine.LNX.4.44.0305080835540.1435-100000@pnote.perex-int.cz>
+Message-ID: <3EBA2398.2050405@student.kuleuven.ac.be>
+References: <200305072154.27740.zeb@zebulon.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0305080835540.1435-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,24 +17,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: paul@linuxaudiosystems.com, alsa-devel@lists.sourceforge.net, thomas@undata.org
+To: =?ISO-8859-1?Q?Z=E9bulon?= <zeb@zebulon.org.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> On Wed, 7 May 2003, Paul Davis wrote:
->
->> somebody ripped out the definition of HDSP_IO_Type, and
->>
-> It's defined in alsa-kernel/include/hdsp.h...
 >
 >
+>Some remarks though :
+>
+>- the sound sometimes cracks with some DVDs
+>
+Are you using a stock mandrake kernel? or a lowlatency one?
+I've expierienced that DVD's are not played fluently on my box when 
+running a stock redhat 2.4.18 kernel, but there is no problem at all 
+when using a low-latency patched kernel. More info at 
+http://www.linuxdj.com/audio/lad/resourceslatency.php3
 
-I moved the definition there to make it usable by userspace applications.
-I should have warned you about that, sorry.
+>- xine-alsa crashes, I need to use oss driver in xine (probably through 
+>snd-pcm-oss), but not directly the alsa drivers. Then no multichannel could 
+>be used.
+>
+I also expierenced that, but only when using multichannel audio. Stereo 
+works fine.
 
-Thomas
-
-
+Pieter
 
 
 
