@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000798]: Make alsaconf optinal able to create an asound.conf
-Date: Sun, 9 Jan 2005 22:05:27 +0100
-Message-ID: <497917eea8f33cf28091239dec54329b@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000799]: Make controls in alsamixer configurable
+Date: Sun, 9 Jan 2005 22:09:06 +0100
+Message-ID: <2831b804850ae61a6d700d319ffb3310@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6816A227
-	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2005 22:05:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C9ABA227
+	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2005 22:09:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,40 +24,41 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=798> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=799> 
 ======================================================================
 Reported By:                christeck
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   798
-Category:                   alsaconf
+Issue ID:                   799
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             01-09-2005 22:05 CET
-Last Modified:              01-09-2005 22:05 CET
+Date Submitted:             01-09-2005 22:09 CET
+Last Modified:              01-09-2005 22:09 CET
 ======================================================================
-Summary:                    Make alsaconf optinal able to create an asound.conf
+Summary:                    Make controls in alsamixer configurable
 Description: 
-An asound.conf is difficult to create manually due to its difficult to
-understand syntax. Would be great if alsaconf could optional create it, so
-the user can
+It would be great if one could define which control should be shown in
+alsamixer or not.
 
-* Define in which order the cards appear (e.g., internal AC97, Modem,
-USB-Audio and an USB MIDI card)
+Reason: If an AC97 chip is found, alsamixer offers lots of controls for
+mixing signals, which have no connection from the chip to the computer
+case, so these are useless on this particular machine.
 
-* Define some dmix devices
-
-* Else? Not familiar enough with dmix, I do not use it :)
+Perhaps it could ask the user some questions like
+&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=187;Does your computer
+have two mic inputs&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=171;
+or similar.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-09-05 22:05 christeck      New Issue                                    
+01-09-05 22:09 christeck      New Issue                                    
 ======================================================================
 
 
