@@ -1,13 +1,14 @@
-From: Rusty Phillips <rustyp@freeshell.org>
-Subject: Re: Omnistudio USB
-Date: Wed, 12 Jan 2005 15:50:02 -0500
-Message-ID: <1105563002.14697.45.camel@localhost>
-References: <Pine.HPX.4.33n.0501121001170.22429-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
+Date: Wed, 12 Jan 2005 20:45:26 +0100
+Message-ID: <6981b3ed328cd172bdb800d6d1454d9d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0501121001170.22429-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4E4982D8
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 20:45:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,33 +18,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Okay, I've been trying most of my testing with the first two channels.
 
-However, I just figured out that recording and playback works on
-channels #3 and #4 at 96000.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
+======================================================================
+Reported By:                pcmcginty
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   748
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Arch Linux
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             12-26-2004 06:50 CET
+Last Modified:              01-12-2005 20:45 CET
+======================================================================
+Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
+chipset choppy, plays to fast
+Description: 
+I've been spending a lot of time getting sound to work on my Sharp Actius
+MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
+ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
+2.6.10 kernel series cause the sound to become garbled as if the song is
+skipping through the music faster than it should. I have not tried ont he
+2.6.8 series. I can compile and try out if required. It is possible this
+is some other kernel issue, however I'm not sure how to track down where
+the kernel might be breaking the ALSA driver.
+======================================================================
 
-The first two are the best ones to get, though, because those are the
-ones with built-in preamps and XLR inputs.  Note that even bypassing the
-preamps by going directly through the line-ins doesn't work, though.
+----------------------------------------------------------------------
+ JonathanL - 01-12-05 16:13 
+----------------------------------------------------------------------
+I've tried version 1.0.5a and 1.0.6a with a kernel 2.6.7, and
+1.0.7,1.0.8_rc1,1.0.8_rc2 and cvs(today) with a kernel 2.6.10 (I cannot
+compile 1.0.5a with 2.6.10)
 
-Clues?
+working versions are :
+1.0.5a + 2.6.7
+2.6.7 + modules included in the kernel 2.6.7 distribution
 
-On Wed, 2005-01-12 at 10:02 +0100, Clemens Ladisch wrote:
-> Rusty Phillips wrote:
-> > I recently purchased one, and have been trying to find out
-> > anything I can about getting it to work.  So far all I've gotten
-> > is playback on two channels at 48Khz with alsa (from the 2.6.10
-> > kernel as well as from alsa CVS).
-> 
-> What are the contents of /proc/asound/cardX/stream0?
-> Is there a second output device in the output of "aplay -l"?
-> 
-> 
-> Clemens
-> 
+I've re-attached the files
+
+----------------------------------------------------------------------
+ tiwai - 01-12-05 20:45 
+----------------------------------------------------------------------
+Could you attach the output of /proc/asound/card0/pcm0p/sub0/* files
+_during playback_?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-26-04 06:50 pcmcginty      New Issue                                    
+12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
+12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
+12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
+12-27-04 15:12 tiwai          Note Added: 0002961                          
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
+12-27-04 19:28 pcmcginty      Note Added: 0002973                          
+01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
+01-12-05 14:13 JonathanL      Note Added: 0003163                          
+01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
+    
+01-12-05 15:02 tiwai          Note Added: 0003164                          
+01-12-05 15:03 tiwai          Note Added: 0003165                          
+01-12-05 15:04 tiwai          Note Added: 0003166                          
+01-12-05 16:01 JonathanL      File Added: kernel-2.6.7                     
+01-12-05 16:02 JonathanL      File Added: kernel-2.6.10_alsa-cvs                
+   
+01-12-05 16:13 JonathanL      Note Added: 0003174                          
+01-12-05 20:45 tiwai          Note Added: 0003178                          
+======================================================================
 
 
 
