@@ -1,13 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000934]: crash in snd-serial-u16550 as non-root user
-Date: Tue, 8 Mar 2005 11:45:41 +0100
-Message-ID: <acb6c42a93b9307af830068efa3c8871@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: bt87x new card
+Date: Tue, 8 Mar 2005 12:02:11 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503081158280.835-100000@studcom.urz.uni-halle.de>
+References: <4229AD7E.1050704@ugr.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4AC1F1B7
-	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2005 11:45:41 +0100 (MET)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <4229AD7E.1050704@ugr.es>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,56 +15,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Ruben Garcia <ruben@ugr.es>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Ruben Garcia wrote:
+> I have a Leadtek Winfast 2000 / XP
+> The bt87x driver does not detect it; when probing all cards, it told me
+> to post this information:
+>
+> - -card id 0x107d:0x6606
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=934> 
-======================================================================
-Reported By:                laurent
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   934
-Category:                   GENERIC - serial-u16550
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.4.29 and 2.6.10
-======================================================================
-Date Submitted:             02-23-2005 07:42 CET
-Last Modified:              03-08-2005 11:45 CET
-======================================================================
-Summary:                    crash in snd-serial-u16550 as non-root user
-Description: 
-Whenever I try to use a sequencer application (I tried: seq24, museseq,
-rosegarden) as a non-root user, I get a kernel Oops.
+Thanks.
 
-I was using alsa-driver 1.0.8 with the 2.4.29 kernel, and the built-in
-modules for the 2.6.10 kernel.
+> When recording, I get no sound from the TV and radio; I have yet to try
+> the line in in the card; I'll post when I find the correct digital_rate
 
-If you need more information than the stacks traces and lsmod please ask
-and I will do my best to provide them.
-======================================================================
+That is, so far you didn't get _any_ sound?
 
-----------------------------------------------------------------------
- Clemens Ladisch - 03-08-05 11:45 
-----------------------------------------------------------------------
-What are the module parameters of snd-serial-u16550?
+A wrong digital_rate would just result in a recording labeled with the
+wrong frequency, it would not result in no sound (and it only affects
+recording from the digital PCM device).  It's quite possible that the
+digital input of your card isn't connected.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-23-05 07:42 laurent        New Issue                                    
-02-23-05 07:42 laurent        Distribution              => Gentoo          
-02-23-05 07:42 laurent        Kernel Version            => 2.4.29 and 2.6.10
-03-08-05 11:45 Clemens LadischNote Added: 0003814                          
-======================================================================
 
+Regards,
+Clemens
 
 
 
