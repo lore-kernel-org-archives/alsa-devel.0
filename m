@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - lib 0000293]: alsa-lib does not compile with current GCC CVS head
-Date: Fri, 16 Jul 2004 13:03:37 +0200 (CEST)
+Subject: [ALSA - utils 0000177]: Can not off/on MIC as Center/LFE
+Date: Fri, 16 Jul 2004 13:03:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716110337.3B37626008@server.perex-int.cz>
+Message-ID: <20040716110318.DB54326008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 724EC255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 13:03:37 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 389B1255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 13:03:19 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,63 +22,48 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000293
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000177
 ======================================================================
-Reported By:                robmoss2k
-Assigned To:                tiwai
+Reported By:                buboleck
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     293
-Category:                   general
+Project:                    ALSA - utils
+Bug ID:                     177
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   trivial
 Priority:                   normal
 Status:                     closed
 ======================================================================
-Date Submitted:             05-21-2004 14:06 CEST
+Date Submitted:             04-02-2004 00:20 CEST
 Last Modified:              07-16-2004 13:03 CEST
 ======================================================================
-Summary:                    alsa-lib does not compile with current GCC CVS head
+Summary:                    Can not off/on MIC as Center/LFE
 Description: 
-GCC 3.3.x and 3.4.x deprecate the use of cast expressions as lvalues. This
-behaviour causes an error, rather than a warning, in current GCC CVS head.
-Also, there is an issue with the unary operator which I'm slightly unsure
-of the fix on, although things do appear to work.
-
-The patch attached allows the compilation of alsa-lib-1.0.4 with this
-version of GCC.
+Alsa mixer can't control MIC as Center/LFE. It's on by default and I can't
+turn it off. 
 ======================================================================
 
 ----------------------------------------------------------------------
- robmoss2k - 05-21-2004 14:08 CEST 
+ buboleck - 04-03-2004 18:52 CEST 
 ----------------------------------------------------------------------
-NB: The questionable bit of the patch is the very last bit. I just removed
-the ampersand; I'm not sure if this is correct, I'm a little rusty!
+It's is resolved in current version. Mark it as resolved.
 
 ----------------------------------------------------------------------
- tiwai - 05-21-2004 15:12 CEST 
+ perex - 04-07-2004 19:50 CEST 
 ----------------------------------------------------------------------
-the last one is wrong.  simply removing the cast is ok.
-snd_config_get_integer() takes long *, anyway.
-
-the other parts were already fixed on ALSA cvs in other way...
-
-----------------------------------------------------------------------
- tiwai - 05-25-2004 12:59 CEST 
-----------------------------------------------------------------------
-fixed on 1.0.5.
+Resolved.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-21-04 14:06 robmoss2k      New Bug                                      
-05-21-04 14:06 robmoss2k      File Added: alsa-lib-1.0.4-gcc35.patch                    
-05-21-04 14:08 robmoss2k      Bugnote Added: 0001164                       
-05-21-04 15:12 tiwai          Bugnote Added: 0001165                       
-05-25-04 12:59 tiwai          Bugnote Added: 0001208                       
-05-25-04 12:59 tiwai          Assigned To               => tiwai           
-05-25-04 12:59 tiwai          Resolution               open => fixed       
-05-25-04 12:59 tiwai          Status                   new => resolved     
+04-02-04 00:20 buboleck       New Bug                                      
+04-03-04 18:52 buboleck       Bugnote Added: 0000739                       
+04-07-04 19:50 perex          Bugnote Added: 0000762                       
+04-07-04 19:50 perex          Assigned To               => perex           
+04-07-04 19:50 perex          Resolution               open => fixed       
+04-07-04 19:50 perex          Status                   new => resolved     
+04-29-04 18:01 sitamo         Bug Monitored: sitamo                        
 07-16-04 13:03 tiwai          Status                   resolved => closed  
 ======================================================================
 
