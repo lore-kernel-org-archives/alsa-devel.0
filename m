@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000973]: Errors in headers
-Date: Fri, 11 Mar 2005 01:11:24 +0100
-Message-ID: <8dc1aefdaf68df3d54652de0f19ee913@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
+Date: Fri, 11 Mar 2005 00:50:35 +0100
+Message-ID: <1066bfe907571fd5467eb05bbdac1331@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 85B801C8
-	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 01:11:24 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 551C01C8
+	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 00:50:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,63 +23,93 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=973> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
 ======================================================================
-Reported By:                subbia
-Assigned To:                perex
+Reported By:                jbrsubscribe
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   973
-Category:                   0_compilation problem_!!!
+Issue ID:                   836
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Hoary
-Kernel Version:             2.6.10
+Status:                     feedback
+Distribution:               Suse
+Kernel Version:             2.6.8-24.10-smp
 ======================================================================
-Date Submitted:             03-08-2005 03:08 CET
-Last Modified:              03-11-2005 01:11 CET
+Date Submitted:             01-19-2005 18:19 CET
+Last Modified:              03-11-2005 00:50 CET
 ======================================================================
-Summary:                    Errors in headers
+Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
+slider control for Surround/Center/LFE/Side
 Description: 
-I've tried to make alsa driver, but errors during compiling comes out.
-
-1)on file core.h (sound_core)
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=166 error on free_workq:
-incomplete
-statemente 
-
-2)on file aio.h (kernel/include/linux)
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=151 same of above
-
-p.s.: I've bypassed the first errore 'cause i'm thinking free_workq is a
-pointer, but in the second error don't goes this solution, so.....I don't
-know
+Unable to set volume control for Surround/Center/LFE/Side due to the fact
+that the sliders for these entities do not function in alsamixer and
+gamix. The sliders cannot be manipulated. The only functional sliders are
+PCM, PC Speaker and the two (2) Capture sliders.
+In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
+appear at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-10-05 14:52 
+ 1g0R - 01-25-05 15:29 
 ----------------------------------------------------------------------
-How did you compile ALSA drivers?
-Did you pass proper configure options?
+okay, lets close this one.
+I opened another with "Intel HDA (C-Media 9880) SPDIF Out"
 
 ----------------------------------------------------------------------
- subbia - 03-11-05 01:11 
+ jdthood - 03-11-05 00:50 
 ----------------------------------------------------------------------
-I've tried with --isapnp=no and without this option. I thought it can be
-too.
+Can this be closed now?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-08-05 03:08 subbia         New Issue                                    
-03-08-05 03:08 subbia         Distribution              => Ubuntu Hoary    
-03-08-05 03:08 subbia         Kernel Version            => 2.6.10          
-03-09-05 18:40 tiwai          Note Added: 0003833                          
-03-10-05 14:49 subbia         Note Added: 0003854                          
-03-10-05 14:52 tiwai          Note Added: 0003855                          
-03-11-05 01:11 subbia         Note Added: 0003878                          
+01-19-05 18:19 jbrsubscribe   New Issue                                    
+01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
+01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
+01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
+01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-19-05 18:36 tiwai          Status                   new => resolved     
+01-19-05 18:36 tiwai          Resolution               open => not an issue
+01-19-05 18:36 tiwai          Assigned To               => tiwai           
+01-19-05 18:36 tiwai          Note Added: 0003311                          
+01-19-05 18:36 tiwai          Assigned To              tiwai =>            
+01-20-05 01:07 jbrsubscribe   Status                   resolved => feedback
+01-20-05 01:07 jbrsubscribe   Resolution               not an issue => reopened
+01-20-05 01:07 jbrsubscribe   Note Added: 0003320                          
+01-20-05 01:51 jbrsubscribe   Note Added: 0003321                          
+01-20-05 11:52 1g0R           Note Added: 0003325                          
+01-20-05 18:42 jbrsubscribe   Note Added: 0003328                          
+01-20-05 19:11 tiwai          Note Added: 0003331                          
+01-21-05 00:30 jbrsubscribe   Note Added: 0003335                          
+01-21-05 05:56 1g0R           Note Added: 0003338                          
+01-21-05 08:16 mab            Note Added: 0003339                          
+01-21-05 11:08 1g0R           Note Added: 0003340                          
+01-21-05 12:04 tiwai          Note Added: 0003343                          
+01-21-05 12:05 tiwai          Note Added: 0003344                          
+01-21-05 16:55 mab            Note Added: 0003348                          
+01-21-05 17:26 tiwai          Note Added: 0003349                          
+01-21-05 22:08 1g0R           Note Added: 0003370                          
+01-22-05 09:04 mab            Note Added: 0003373                          
+01-22-05 09:06 mab            Note Edited: 0003373                         
+01-22-05 12:33 1g0R           Note Added: 0003374                          
+01-22-05 21:30 mab            Note Added: 0003378                          
+01-22-05 21:43 mab            Note Edited: 0003378                         
+01-23-05 02:43 1g0R           Note Added: 0003385                          
+01-23-05 11:52 1g0R           Note Added: 0003387                          
+01-24-05 12:18 tiwai          Note Added: 0003391                          
+01-24-05 13:46 1g0R           Note Added: 0003392                          
+01-24-05 14:40 jbrsubscribe   Note Added: 0003393                          
+01-24-05 18:36 jbrsubscribe   Note Added: 0003394                          
+01-24-05 18:55 1g0R           Note Added: 0003395                          
+01-24-05 20:04 1g0R           Note Added: 0003396                          
+01-25-05 12:19 1g0R           Note Added: 0003398                          
+01-25-05 15:07 tiwai          Note Added: 0003399                          
+01-25-05 15:11 tiwai          Note Added: 0003400                          
+01-25-05 15:29 1g0R           Note Added: 0003406                          
+03-11-05 00:50 jdthood        Note Added: 0003877                          
 ======================================================================
 
 
