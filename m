@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000896]: hercules gamesurround 4 not supported
-Date: Wed, 9 Feb 2005 17:14:35 +0100
-Message-ID: <d80f9bb300fb37567cb28f2cf0fe683f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000888]: Mic IN is not working with kernel 2.6.10 on Asus A8V Deluxe
+Date: Wed, 9 Feb 2005 17:16:07 +0100
+Message-ID: <b591fed4f6775d19ce85f68147c9e891@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3536926C
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 17:14:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A603B26C
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 17:16:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,59 +21,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=896> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=888> 
 ======================================================================
-Reported By:                pompel55
-Assigned To:                
+Reported By:                pv2c
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   896
-Category:                   PCI - ice1724
+Issue ID:                   888
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               libranet  --debian testing
-Kernel Version:             tried 2.4.21, 26, 27 and 2.6.10
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.10
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-09-2005 13:28 CET
-Last Modified:              02-09-2005 17:14 CET
+Date Submitted:             02-06-2005 18:09 CET
+Last Modified:              02-09-2005 17:16 CET
 ======================================================================
-Summary:                    hercules gamesurround 4 not supported
+Summary:                    Mic IN is not working with kernel 2.6.10 on Asus A8V
+Deluxe
 Description: 
-Bought myself a FANTASTIC new soundcard but it does not seem to be
-supported yet.
-It's not listed yet either, there is support for hercules Game(surround)
-up to
-version III but it seems Gamesurround 4 is entirely new, a different, 24
-bit chip.
--The chip is  recognized but the module installation gives this error:
-"wrong eeprom", it seems linux thinks (autodetects it as envy24pt) this is
-an integrated VIA chip. You get sound but
-the mixer does not work and sound quality is low.
-I suppose I'll have to wait until it's properly supported.
-
-stein
+After upgrade from kernel 2.6.9 to 2.6.10 the mic in stopped to work on my
+Asus A8V Deluxe motherboard integrated soundcard. I'm using alsa kernel
+module via82xx and it seems that after adding support for revision 8237 it
+stops to work. So I obfuscated the
+#define VIA_REV_8237        0x60
+to a fake value and the mic started to work again.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-09-05 17:14 
+ pv2c - 02-09-05 13:25 
 ----------------------------------------------------------------------
-Try to contact the hardware manufacturor.
+I'm terribly sorry, for wasting Your time! Please discard this bugreport.
+The problem was only in mixer settings which weren't restored after the
+upgrade.
 
-The card will be never supported until we get detailed information.
+----------------------------------------------------------------------
+ tiwai - 02-09-05 17:16 
+----------------------------------------------------------------------
+No problem, now closing.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-09-05 13:28 pompel55       New Issue                                    
-02-09-05 13:28 pompel55       Distribution              => libranet  --debian
-testing
-02-09-05 13:28 pompel55       Kernel Version            => tried 2.4.21, 26, 27
-and 2.6.10
-02-09-05 17:14 tiwai          Note Added: 0003558                          
+02-06-05 18:09 pv2c           New Issue                                    
+02-06-05 18:09 pv2c           Distribution              => Gentoo          
+02-06-05 18:09 pv2c           Kernel Version            => 2.6.10          
+02-06-05 18:13 pv2c           Note Added: 0003526                          
+02-09-05 11:46 tiwai          Note Added: 0003541                          
+02-09-05 13:25 pv2c           Note Added: 0003552                          
+02-09-05 17:16 tiwai          Status                   new => resolved     
+02-09-05 17:16 tiwai          Resolution               open => not an issue
+02-09-05 17:16 tiwai          Assigned To               => tiwai           
+02-09-05 17:16 tiwai          Note Added: 0003559                          
 ======================================================================
 
 
