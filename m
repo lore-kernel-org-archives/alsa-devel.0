@@ -1,15 +1,14 @@
-From: "Ivica Ico Bukvic" <ico@fuse.net>
-Subject: RE: [linux-audio-user] snd-hdsp+cardbus+M6807 notebook=distortion -- FIXED!
-Date: Sun, 11 Apr 2004 21:39:43 -0400
+From: =?big5?B?Qy5MLiBUaWVuIC0gpdCp08Kn?= <cltien@cmedia.com.tw>
+Subject: RE: CMI9780 and ALSA volume control
+Date: Mon, 12 Apr 2004 11:04:55 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040412013949.NJOP1634.smtp3.fuse.net@64BitBadass>
-References: <200404120145.22679.daniel.ritz@gmx.ch>
+Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D42E@cm-msg-02.cmedia.com.tw>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200404120145.22679.daniel.ritz@gmx.ch>
+content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,298 +17,212 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: daniel.ritz@gmx.ch, 'Tim Blechmann' <TimBlechmann@gmx.net>
-Cc: 'Thomas Charbonnel' <thomas@undata.org>, ccheney@debian.org, linux-pcmcia@lists.infradead.org, linux-kernel@vger.kernel.org, 'Russell King' <rmk+lkml@arm.linux.org.uk>, alsa-devel@lists.sourceforge.net
+To: Andre Hesling <ahessling@gmx.de>, alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all! Great news! I managed to fix the issue in Linux. As I suspected it
-was the same problem like in Windows after suspend as the distortion was
-similar.
+9780 has no PCM volume control, master volume control doesn't control =
+the PCM, either. This feature is the same as other C-Media AC97 Codecs.
 
-Many thanks to all for all your help! Without you I would be still stuck on
-this one tearing my hair out :-).
+I once posted a patch that tune PCM volume in SW way (change PCM data in =
+DMA buffer), but it was not accepted.
 
-
-
-Conclusion:
-===========
-Hdsp after adjusting the controller settings works absolutely flawlessly.
-Yay!
-
------------------------------------------------------
-
-Things that are require attention in order for this fix to work (ENE CB1410
-cardbus controller):
-
-1) CRITICAL: Yenta_socket driver needs to be mended to adjust the proper
-registers for the ENE CB1410 cardbus as follows*:
-
-a) register 0xc9 on mine was 0x06 (like in Windows after resume) and should
-be 0x04 (like in Windows before resume)
-b) register 0x81 was 0x90 (again like Windows after resume) and after
-connecting the cardbus it was 0xb0, yet in both cases should be 0xd0** (like
-in Windows before resume)
-
-*NOTE: It is possible that this kind of behavior might be in part due to the
-buggy BIOS of this notebook. Arima is currently working with me in trying to
-resolve this possibly utilizing updated BIOS. Nonetheless, IMHO it would be
-nice to have this added to the yenta_socket as Arima's successfulness at
-fixing it is yet to be ascertained and this one truly seems like a
-low-impact fix for the driver.
-
-**I've noted that when I use:
-
-setpci -s a.0 0x81.b
-
-after changing the value to 0xd0 (with setpci -s a.0 0x81.b=d0) it would
-tell me that it was equal to f0, yet the "hexdump -v /proc/bus/pci/00/0a.0"
-would tell me it was d0 after all (see the log below).
-
-----------
-
-2) PREFERRED: hdsp driver needs to adjust the cardbus controller latency
-upon connection and/or resume from standby to ff (even though it will likely
-play on the lower latencies as well, this way it will be less likely to
-produce xruns and since official RME's driver for Windows does this, Linux
-IMHO likely ought to keep-up with their driver and offer same
-functionality/behavior for easier troubleshooting).
-
-The register in question is 0x0d (mine was by default in Windows at 0x20
-before connection and at 0xff after connection, while in Linux it was at
-0xa8 both before and after connecting the cardbus which suggests that the
-driver did not properly ramp-up its value to 0xff).
-
-3) FOR FURTHER INVESTIGATION: Does linux hdsp driver force the f0 value upon
-the 0x81 register or is it that in Linux one simply cannot select d0 value
-for whatever reason (specifying it would revert the value to f0, yet that
-did not directly affect the sound and judging from the suggestions of others
-that this is a switch for enabling memory burst read stuff perhaps it only
-takes two values and each of them possibly populate a range in which case it
-should be ok either way). I need to check this a bit more just to see if the
-f0 really does mess it up or not.
-
------------------------------------------------------
-
-Here's the relevant log of the activity (I am way to tired to convert the
-following into a meaningful prose so I am including the console log with
-some annotations in parentheses):
+Sincerely,
+ChenLi Tien
 
 
-<BEGIN>
-[root@localhost 00]# hexdump 
--v /proc/bus/pci/00/0a.0 
-0000000 1524 1410 0007 0210 0000 0607 a808 0002 
-0000010 f000 ffe7 00a0 0200 0200 b005 e000 ffe7 
-0000020 e000 ffe7 0000 2000 f000 203f 5000 0000 
-0000030 50fc 0000 5400 0000 54fc 0000 010b 05c0 
-0000040 161f 2032 0001 0000 0000 0000 0000 0000 
-0000050 0000 0000 0000 0000 0000 0000 0000 0000 
-0000060 0000 0000 0000 0000 0000 0000 0000 0000 
-0000070 0000 0000 0000 0000 0000 0000 0000 0000 
-0000080 9021 4044 0000 0000 0000 0000 1002 0100 
-0000090 82c0 6044 0000 0000 0000 0000 0000 0000 
-00000a0 0001 fe01 0000 00c0 0000 0000 001f 0000 
-00000b0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000c0 1000 0000 0080 0080 0600 1008 0000 0000 
-00000d0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000e0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000f0 0000 0000 0000 0000 0000 0000 0000 0000 
-0000100 
+-----Original Message-----
+From:	Andre Hesling [mailto:ahessling@gmx.de]
+Sent:	2004/4/11 [=ACP=B4=C1=A4=E9] =A4U=A4=C8 03:23
+To:	alsa-devel@lists.sourceforge.net; alsa-user@lists.sourceforge.net
+Cc:=09
+Subject:	[Alsa-devel] CMI9780 and ALSA volume control
+Hi!
 
-(compare this with a screenshot in Windows -- please note that the value
-pairs are reversed for whatever reason (endianness?); the Win32 screenshot
-can be found here:
-http://meowing.ccm.uc.edu/~ico/eMachines/SE-before_suspend.jpg ; please note
-that the numbers are almost identical)
+I've recently bought a new PC from a german manufacteur called =
+Aldi/Medion. It has the CMI9780 chip on board which is fairly new and =
+compatible to AC97.
+In my kernel 2.6.5-mm1 with ALSA 1.0.4rc2 I activated support for the =
+Intel controller (intel8x0) and it seemed to work just fine.
+I get sound output and alsamixer has all important controls activated.
+But the controls "Master" and "PCM" have no function. I can only =
+mute/unmute PCM. Master has absolutely no function.
+Fortunately the output level is rather high and in XMMS I can use the =
+software mixer of the ALSA plugin.
 
-[root@localhost Documents]# setpci -s a.0 0xc9.b 
-06 
+But it would be nice if I could control these things with alsamixer or =
+such a tool.
 
-(this ought to be 04)
+Any hints?
 
-[root@localhost Documents]# setpci -s a.0 0x81.b 
-90 
+Thank you!
 
-(this ought to be d0)
+Here is an output of aadebug:
+ALSA Audio Debug v0.0.7 - So Apr 11 19:07:27 GMT 2004
+http://alsa.opensrc.org/?aadebug
 
-[root@localhost Documents]# hdsploader 
-hdsploader - firmware loader for RME Hammerfall 
-DSP cards 
-Looking for HDSP + Multiface or Digiface cards : 
-Card 0 : VIA 8235 at 0x1000, irq 10 
-Card 1 : RME Hammerfall DSP at 0x20000000, irq 
-11 
-Upload firmware for card hw:1 
-Firmware uploaded for card hw:1 
-[root@localhost Documents]# hexdump 
--v /proc/bus/pci/00/0a.0 
-0000000 1524 1410 0007 0210 0000 0607 a808 0002 
-0000010 f000 ffe7 00a0 0200 0200 b005 e000 ffe7 
-0000020 e000 ffe7 0000 2000 f000 203f 5000 0000 
-0000030 50fc 0000 5400 0000 54fc 0000 010b 0500 
-0000040 161f 2032 0001 0000 0000 0000 0000 0000 
-0000050 0000 0000 0000 0000 0000 0000 0000 0000 
-0000060 0000 0000 0000 0000 0000 0000 0000 0000 
-0000070 0000 0000 0000 0000 0000 0000 0000 0000 
-0000080 b021 4044 0000 0000 0000 0000 1002 0100 
-0000090 82c0 6044 0000 0000 0000 0000 0000 0000 
-00000a0 0001 fe01 0000 00c0 0801 0000 001f 0000 
-00000b0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000c0 1000 0000 0080 0080 0600 1008 0000 0000 
-00000d0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000e0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000f0 0000 0000 0000 0000 0000 0000 0000 0000 
-0000100 
+Kernel ---------------------------------------------ALSA Audio Debug =
+v0.0.7 - So Apr 11 19:07:27 GMT 2004
+http://alsa.opensrc.org/?aadebug
 
-(hmmm, register 0x81 just became 0xb0 after reconnect but both values are
-wrong)
+Kernel ----------------------------------------------------
+Linux merkur 2.6.5-mm1 #2 SMP Sun Apr 11 11:50:44 GMT 2004 i686 Intel(R) =
+Pentium(R) 4 CPU 3.00GHz GenuineIntel GNU/Linux
 
-[root@localhost Documents]# setpci -s a.0 
-0xc9.b=04 
+Loaded Modules --------------------------------------------
 
-(ok, here goes nothing :-)
+Modules Conf ----------------------------------------------
+# $Header: =
+/home/cvsroot/gentoo-x86/media-sound/alsa-utils/files/alsa-modules.conf-r=
+c,v 1.1 2003/08/05 21:07:55 johnm Exp $
+alias char-major-116 snd
+alias char-major-14 soundcore
+## You need to customise this section for your specific sound card(s)
+## alias snd-card-0 snd-interwave
+## alias snd-card-1 snd-ens1371
+## alias sound-slot-0 snd-card-0
+## alias sound-slot-1 snd-card-1
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+## alias sound-service-1-0 snd-mixer-oss
+## alias sound-service-1-3 snd-pcm-oss
+## alias sound-service-1-12 snd-pcm-oss
+alias /dev/mixer snd-mixer-oss
+alias /dev/dsp snd-pcm-oss
+alias /dev/midi snd-seq-oss
+options snd cards_limit=3D1
 
-[root@localhost Documents]# setpci -s a.0 0xc9.b 
-04 
+Proc Asound -----------------------------------------------
+Advanced Linux Sound Architecture Driver Version 1.0.4rc2 (Tue Mar 30 =
+08:19:30 2004 UTC).
+Compiled on Apr  9 2004 for kernel 2.6.5-mm1 (SMP).
+0 [ICH5           ]: ICH - Intel ICH5
+                     Intel ICH5 at 0xfa801000, irq 17
+  1:       : sequencer
+  0: [0- 0]: ctl
+ 20: [0- 4]: digital audio playback
+ 27: [0- 3]: digital audio capture
+ 26: [0- 2]: digital audio capture
+ 25: [0- 1]: digital audio capture
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+ 33:       : timer
+00-00: Intel ICH : Intel ICH5 : playback 1 : capture 1
+00-01: Intel ICH - MIC ADC : Intel ICH5 - MIC ADC : capture 1
+00-02: Intel ICH - MIC2 ADC : Intel ICH5 - MIC2 ADC : capture 1
+00-03: Intel ICH - ADC2 : Intel ICH5 - ADC2 : capture 1
+00-04: Intel ICH - IEC958 : Intel ICH5 - IEC958 : playback 1
 
-(so far so good)
+Dev Snd ---------------------------------------------------
+controlC0  pcmC0D0p  pcmC0D2c  pcmC0D4p  timer
+pcmC0D0c   pcmC0D1c  pcmC0D3c  seq
 
-[root@localhost Documents]# setpci -s a.0 
-0x81.b=D0 
- 
-[root@localhost Documents]# setpci -s a.0 0x81.b 
-f0 
+CPU -------------------------------------------------------
+model name	: Intel(R) Pentium(R) 4 CPU 3.00GHz
+model name	: Intel(R) Pentium(R) 4 CPU 3.00GHz
+cpu MHz		: 2992.756
+cpu MHz		: 2992.756
 
-(oops? Let's try that again:)
+RAM -------------------------------------------------------
+MemTotal:       515672 kB
+SwapTotal:      755012 kB
 
-[root@localhost Documents]# setpci -s a.0 
-0x81.b=D0 
- 
-[root@localhost Documents]# setpci -s a.0 0x81.b 
-f0 
+Hardware --------------------------------------------------
+0000:00:00.0 Host bridge: Intel Corp. 82865G/PE/P DRAM =
+Controller/Host-Hub Interface (rev 02)
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER =
+(ICH5/ICH5R) AC'97 Audio Controller (rev 02)
+0000:02:02.0 Multimedia controller: Philips Semiconductors SAA7134 (rev =
+01)
+-------
+Linux rambo 2.6.5-mm1 #2 SMP Sun Apr 11 11:50:44 GMT 2004 i686 Intel(R) =
+Pentium(R) 4 CPU 3.00GHz GenuineIntel GNU/Linux
 
-(hmmm, let's see the hexdump)
+Loaded Modules --------------------------------------------
 
-[root@localhost Documents]# hexdump 
--v /proc/bus/pci/00/0a.0 
-0000000 1524 1410 0007 0210 0000 0607 a808 0002 
-0000010 f000 ffe7 00a0 0200 0200 b005 e000 ffe7 
-0000020 e000 ffe7 0000 2000 f000 203f 5000 0000 
-0000030 50fc 0000 5400 0000 54fc 0000 010b 0500 
-0000040 161f 2032 0001 0000 0000 0000 0000 0000 
-0000050 0000 0000 0000 0000 0000 0000 0000 0000 
-0000060 0000 0000 0000 0000 0000 0000 0000 0000 
-0000070 0000 0000 0000 0000 0000 0000 0000 0000 
-0000080 d021 4044 0000 0000 0000 0000 1002 0100 
-0000090 82c0 6044 0000 0000 0000 0000 0000 0000 
-00000a0 0001 fe01 0000 00c0 0801 0000 001f 0000 
-00000b0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000c0 1000 0000 0080 0080 0400 1008 0000 0000 
-00000d0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000e0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000f0 0000 0000 0000 0000 0000 0000 0000 0000 
-0000100 
+Modules Conf ----------------------------------------------
+# $Header: =
+/home/cvsroot/gentoo-x86/media-sound/alsa-utils/files/alsa-modules.conf-r=
+c,v 1.1 2003/08/05 21:07:55 johnm Exp $
+alias char-major-116 snd
+alias char-major-14 soundcore
+## You need to customise this section for your specific sound card(s)
+## alias snd-card-0 snd-interwave
+## alias snd-card-1 snd-ens1371
+## alias sound-slot-0 snd-card-0
+## alias sound-slot-1 snd-card-1
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+## alias sound-service-1-0 snd-mixer-oss
+## alias sound-service-1-3 snd-pcm-oss
+## alias sound-service-1-12 snd-pcm-oss
+alias /dev/mixer snd-mixer-oss
+alias /dev/dsp snd-pcm-oss
+alias /dev/midi snd-seq-oss
+options snd cards_limit=3D1
 
-(well it says here it is 0xd0 so I guess I'll take hexdump's word for it)
+Proc Asound -----------------------------------------------
+Advanced Linux Sound Architecture Driver Version 1.0.4rc2 (Tue Mar 30 =
+08:19:30 2004 UTC).
+Compiled on Apr  9 2004 for kernel 2.6.5-mm1 (SMP).
+0 [ICH5           ]: ICH - Intel ICH5
+                     Intel ICH5 at 0xfa801000, irq 17
+  1:       : sequencer
+  0: [0- 0]: ctl
+ 20: [0- 4]: digital audio playback
+ 27: [0- 3]: digital audio capture
+ 26: [0- 2]: digital audio capture
+ 25: [0- 1]: digital audio capture
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+ 33:       : timer
+00-00: Intel ICH : Intel ICH5 : playback 1 : capture 1
+00-01: Intel ICH - MIC ADC : Intel ICH5 - MIC ADC : capture 1
+00-02: Intel ICH - MIC2 ADC : Intel ICH5 - MIC2 ADC : capture 1
+00-03: Intel ICH - ADC2 : Intel ICH5 - ADC2 : capture 1
+00-04: Intel ICH - IEC958 : Intel ICH5 - IEC958 : playback 1
 
-[root@localhost Documents]# hdspconf 
- 
-HDSPConf 1.4 - Copyright (C) 2003 Thomas 
-Charbonnel <thomas@undata.org> 
-This program comes WITH ABSOLUTELY NO WARRANTY 
-HDSPConf is free software, see the file copying 
-for details 
- 
-Looking for HDSP cards : 
-Card 0 : VIA 8235 at 0x1000, irq 10 
-Card 1 : RME Hammerfall DSP + Multiface at 
-0x20000000, irq 11 
-Multiface found ! 
-1 Hammerfall DSP card found. 
+Dev Snd ---------------------------------------------------
+controlC0  pcmC0D0p  pcmC0D2c  pcmC0D4p  timer
+pcmC0D0c   pcmC0D1c  pcmC0D3c  seq
 
-[root@localhost Documents]# hexdump 
--v /proc/bus/pci/00/0a.0 
-0000000 1524 1410 0007 0210 0000 0607 a808 0002 
-0000010 f000 ffe7 00a0 0200 0200 b005 e000 ffe7 
-0000020 e000 ffe7 0000 2000 f000 203f 5000 0000 
-0000030 50fc 0000 5400 0000 54fc 0000 010b 0500 
-0000040 161f 2032 0001 0000 0000 0000 0000 0000 
-0000050 0000 0000 0000 0000 0000 0000 0000 0000 
-0000060 0000 0000 0000 0000 0000 0000 0000 0000 
-0000070 0000 0000 0000 0000 0000 0000 0000 0000 
-0000080 f021 4044 0000 0000 0000 0000 1002 0100 
-0000090 82c0 6044 0000 0000 0000 0000 0000 0000 
-00000a0 0001 fe01 0000 00c0 0801 0000 001f 0000 
-00000b0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000c0 1000 0000 0080 0080 0400 1008 0000 0000 
-00000d0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000e0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000f0 0000 0000 0000 0000 0000 0000 0000 0000 
-0000100 
+CPU -------------------------------------------------------
+model name	: Intel(R) Pentium(R) 4 CPU 3.00GHz
+model name	: Intel(R) Pentium(R) 4 CPU 3.00GHz
+cpu MHz		: 2992.756
+cpu MHz		: 2992.756
 
-(dang it! 0xf0 even in hexdump now, let's try it again:)
+RAM -------------------------------------------------------
+MemTotal:       515672 kB
+SwapTotal:      755012 kB
 
-[root@localhost Documents]# setpci -s a.0 
-0x81.b=d0 
- 
-[root@localhost Documents]# setpci -s a.0 0x81.b 
-f0 
+Hardware --------------------------------------------------
+0000:00:00.0 Host bridge: Intel Corp. 82865G/PE/P DRAM =
+Controller/Host-Hub Interface (rev 02)
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER =
+(ICH5/ICH5R) AC'97 Audio Controller (rev 02)
+0000:02:02.0 Multimedia controller: Philips Semiconductors SAA7134 (rev =
+01)
+--=20
+Regards,
+  Andre=20
 
-(DOH!)
 
-[root@localhost Documents]# hexdump 
--v /proc/bus/pci/00/0a.0 
-0000000 1524 1410 0007 0210 0000 0607 a808 0002 
-0000010 f000 ffe7 00a0 0200 0200 b005 e000 ffe7 
-0000020 e000 ffe7 0000 2000 f000 203f 5000 0000 
-0000030 50fc 0000 5400 0000 54fc 0000 010b 0500 
-0000040 161f 2032 0001 0000 0000 0000 0000 0000 
-0000050 0000 0000 0000 0000 0000 0000 0000 0000 
-0000060 0000 0000 0000 0000 0000 0000 0000 0000 
-0000070 0000 0000 0000 0000 0000 0000 0000 0000 
-0000080 d021 4044 0000 0000 0000 0000 1002 0100 
-0000090 82c0 6044 0000 0000 0000 0000 0000 0000 
-00000a0 0001 fe01 0000 00c0 0801 0000 001f 0000 
-00000b0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000c0 1000 0000 0080 0080 0400 1008 0000 0000 
-00000d0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000e0 0000 0000 0000 0000 0000 0000 0000 0000 
-00000f0 0000 0000 0000 0000 0000 0000 0000 0000 
-0000100 
+-------------------------------------------------------
+This SF.Net email is sponsored by: IBM Linux Tutorials
+Free Linux tutorial presented by Daniel Robbins, President and CEO of
+GenToo technologies. Learn everything from fundamentals to system
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id638&op=3Dick
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
-(at least hexdump is happy)
-
-[root@localhost Documents]# hdspmixer 
- 
-HDSPMixer 1.6 - Copyright (C) 2003 Thomas 
-Charbonnel <thomas@undata.org> 
-This program comes with ABSOLUTELY NO WARRANTY 
-HDSPMixer is free software, see the file COPYING 
-for details 
- 
-Looking for HDSP cards : 
-Card 0 : VIA 8235 at 0x1000, irq 10 
-Card 1 : RME Hammerfall DSP + Multiface at 
-0x20000000, irq 11 
-Multiface found ! 
-1 Hammerfall DSP card found. 
-Initializing default presets 
-
-(let's set the latency how RME likes it)
-
-[root@localhost Documents]# setpci -s a.0 0x0d.b 
-a8 
-[root@localhost Documents]# setpci -s a.0 
-0x0d.b=ff 
- 
-(at this point I played the sound using jack and jack_metro and the thing
-sounded like a beautiful...sine tone :-)
-<END>
-
-Again, thanks all for your help!
-
-Ivica Ico Bukvic, composer & multimedia sculptor
-http://meowing.ccm.uc.edu/~ico/
 
 
 
