@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000849]: aplay apparently plays mono wav files using OSS, but plays stereo wav files using ALSA
-Date: Tue, 22 Mar 2005 09:41:19 +0100
-Message-ID: <369bb3849202e89dfdf5d1d07af8cae6@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000575]: alsa mixer settings and sporatic loss of sound
+Date: Tue, 22 Mar 2005 09:43:39 +0100
+Message-ID: <7fb6387bd01bbb3625087b2d91a9d128@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5F89F28B
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 09:41:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 77E701E5
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 09:43:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,63 +23,59 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=849> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=575> 
 ======================================================================
-Reported By:                vapspwi
+Reported By:                grapnell
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   849
-Category:                   aplay/arecord
+Issue ID:                   575
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Resolution:                 not an issue
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-26-2005 20:15 CET
-Last Modified:              03-22-2005 09:41 CET
+Date Submitted:             10-09-2004 18:09 CEST
+Last Modified:              03-22-2005 09:43 CET
 ======================================================================
-Summary:                    aplay apparently plays mono wav files using OSS, but
-plays stereo wav files using ALSA
+Summary:                    alsa mixer settings and sporatic loss of sound
 Description: 
-Anytime I play a mono wav file (11, 22, or 44 kHz, 8 or 16 bit) using
-aplay, the output is routed to all 26 playback channels of my HDSP 9652
-card (observed using hdspmixer).  Based on some web research, it appears
-that this is because aplay is using OSS to play the mono wav file.  When I
-play a stereo wav file (11, 22, or 44 kHz, 8 or 16 bit) using aplay, the
-output is routed only to playback channels 1 and 2 of the HDSP 9652,
-apparently because aplay is using ALSA to play the stereo wav file.
+one thing i have noticed about alsa, is a very small event can trigger a
+major crash of alsa, such as the forced quit of a non-responding
+application that uses sound etc will cause alsa to crash, and I cannot get
+sound support to come back unless I reboot. also, the mixer settings will
+not save, I have to unmute and restore all the mixer settings manually
+everytime I reboot.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-31-05 19:01 
+ tiwai - 10-12-04 14:40 
 ----------------------------------------------------------------------
-I guess you meant aplay instead of alsamixer?
+The crash really depends on the hardware.  Please describe as precisely
+as possible which board you have, on which kernel and distro with which
+ALSA driver version, and what happens with which procedure how
+frequently.
 
-Anyway, aplay has nothing to do with OSS.  It can't.  Never ever.
-
-What is the problem?  The behavior to routing the channels depends on the
-configuration of "plug" layer.  As default, only first channels are copied
-except for mono stream.  You can change this policy in your ~/.asoundrc. 
-See the alsa-lib's reference.
+The mixer setting is FAQ.  It's a feature.
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:45 
+ jdthood - 03-20-05 13:28 
 ----------------------------------------------------------------------
-This one can be closed.
+In the absence of the additional information that would be required
+to deal with this bug report, I suggest that it be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-26-05 20:15 vapspwi        New Issue                                    
-01-26-05 20:16 vapspwi        Issue Monitored: vapspwi                     
-01-26-05 23:46 vapspwi        Issue End Monitor: vapspwi                    
-01-31-05 19:01 tiwai          Note Added: 0003455                          
-03-20-05 13:45 jdthood        Note Added: 0004088                          
-03-22-05 09:41 jdthood        Status                   new => closed       
-03-22-05 09:41 jdthood        Resolution               open => not an issue
+10-09-04 18:09 grapnell       New Issue                                    
+10-12-04 14:40 tiwai          Note Added: 0002095                          
+03-20-05 13:28 jdthood        Note Added: 0004084                          
+03-22-05 09:43 jdthood        Status                   new => closed       
+03-22-05 09:43 jdthood        Resolution               open => unable to
+duplicate
 ======================================================================
 
 
