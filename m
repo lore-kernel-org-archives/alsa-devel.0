@@ -1,14 +1,18 @@
-From: Steve Harris <S.W.Harris@ecs.soton.ac.uk>
-Subject: Re: anybody else OK with current CVS *and* SMP?
-Date: Thu, 7 Aug 2003 20:19:26 +0100
+From: Nicola Orru' <nigu@itadinanta.it>
+Subject: Re: emufxtool, formerly ld10k1
+Date: Thu, 7 Aug 2003 21:33:22 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030807191926.GO18664@ecs.soton.ac.uk>
-References: <1060280740.16467.24.camel@cmn37.stanford.edu> <200308071830.h77IUqLX028995@localhost.localdomain>
+Message-ID: <20030807213322.0cc90490.nigu@itadinanta.it>
+References: <Pine.LNX.4.44.0307302045290.9821-100000@pnote.perex-int.cz>
+	<Pine.LNX.4.44.0307302054090.9821-100000@pnote.perex-int.cz>
+	<20030730225350.3341ee6e.nigu@itadinanta.it>
+	<20030730235051.0401f7ce.nigu@itadinanta.it>
+	<s5hvftckytr.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="pgp-sha1"; boundary="=.1'DM(KfNGREWZr"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <200308071830.h77IUqLX028995@localhost.localdomain>
+In-Reply-To: <s5hvftckytr.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,18 +24,36 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 07, 2003 at 02:30:52PM -0400, Paul Davis wrote:
-> true, but JACK almost does this by itself. when run with -R, a highpri
-> SCHED_FIFO task runs every 5 (?) seconds, and requires that the engine
-> has checked in since the last time. this prevents loops within JACK
-> from stalling the entire system.
+--=.1'DM(KfNGREWZr
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
 > 
-> anyway, the fact that ctrl-alt-sysrq doesn't work either is a good
-> indication of a deeper problem than a runaway SCHED_FIFO task. i think.
+> the idea looks nice.  it's a standard way to do such a work in the
+> client/server system.
+> is the development going on now?
 
-I've had little luck with ctrl-alt-sysrq and usb keyboards.
+Still no answer from Peter Zubaj. I wonder if someone could send me his address...
+ 
+-- 
+Ciao,
+Nicola
+--------------------------------------------------------------------
+* Nicola Orru' - Via Dei Tulipani, 9 - 09034 Assemini (CA) - ITALY *
+--------------------------------------------------------------------
 
-- Steve
+--=.1'DM(KfNGREWZr
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE/MqmMUZWo8oDibtERAuPLAKCx8IwekmLCn/NLNwCzMKRryTRSNwCgxuf6
+ruPyw4CZHbK8vQE0WP9Lmxk=
+=dYo/
+-----END PGP SIGNATURE-----
+
+--=.1'DM(KfNGREWZr--
 
 
 -------------------------------------------------------
