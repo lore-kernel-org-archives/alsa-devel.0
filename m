@@ -1,8 +1,8 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: alsa-lib make error
-Date: Mon, 28 Jun 2004 01:37:30 +0900
+Subject: usb-audio Quattro
+Date: Mon, 28 Jun 2004 01:37:56 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40DEF7CA.8050109@boosthardware.com>
+Message-ID: <40DEF7E4.70700@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -18,20 +18,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I get this error with latest cvs:
+There is something very strange happening with the latest cvs code for 
+the usb-audio driver.
 
-make[4]: Nothing to be done for `install-exec-am'.
-/bin/sh ../../../mkinstalldirs /usr/share/alsa/cards/SI7018
-  /usr/bin/install -c -m 644 ./SI7018/sndoc-mixer.alisp 
-/usr/share/alsa/cards/SI7018/SI7018/sndoc-mixer.alisp
-/usr/bin/install: cannot create regular file 
-`/usr/share/alsa/cards/SI7018/SI7018/sndoc-mixer.alisp': No such file or 
-directory
-  /usr/bin/install -c -m 644 ./SI7018/sndop-mixer.alisp 
-/usr/share/alsa/cards/SI7018/SI7018/sndop-mixer.alisp
-/usr/bin/install: cannot create regular file 
-`/usr/share/alsa/cards/SI7018/SI7018/sndop-mixer.alisp': No such file or 
-directory
+I've upgraded my music machine to demudi-1.1.0 which uses gcc-3.3 and 
+installed a 2.4.26 kernel.
+
+The machine has the ohci interface.
+
+Unfortunately I encountered the following bugs:
+
+- input channels 1 and 3 are permanently maxed.
+- I cannot record stereo with two versions of arecord at the same time.
+- I cannot get access to all four channels at the same time via the 
+route plugin (q4b).
+
+Essentially this means I can only get input from one channel at a time, 
+and then only 2 or 4.
+
+It's strange because the driver appeared to work very well on my main 
+machine which has gcc-2.2, kernel-2.4.19, a uhci interface and the 
+patched driver code from last weekend.
+
+Is there any more info needed to debug the problem?
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
