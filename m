@@ -1,19 +1,17 @@
-From: Duncan Sands <duncan.sands@math.u-psud.fr>
-Subject: [PATCH] Add missing break to sound_core.c
-Date: Fri, 19 Apr 2002 09:19:44 +0200
+From: joy ping <joy@pingfm.org>
+Subject: Re: What is the current status of the alsa sound server
+ (signal polling)?
+Date: Fri, 19 Apr 2002 16:03:49 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E16ySgL-00019x-00@baldrick>
+Message-ID: <Pine.LNX.4.43.0204191600020.775-100000@localhost.localdomain>
+References: <000101c1e766$39a37a60$ac1f830a@ico>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mel-rto2.wanadoo.fr (smtp-out-2.wanadoo.fr [193.252.19.254])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA32446
-	for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2002 09:20:33 +0200
-Received: from duncan by baldrick with local (Exim 3.35 #1 (Debian))
-	id 16ySgL-00019x-00
-	for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2002 09:19:45 +0200
+Received: from audio13.medien.uni-weimar.de (audio13.medien.uni-weimar.de [141.54.172.33])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA03977
+	for <alsa-devel@alsa-project.org>; Fri, 19 Apr 2002 14:46:07 +0200
+In-Reply-To: <000101c1e766$39a37a60$ac1f830a@ico>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,23 +20,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Ivica Bukvic <ico@fuse.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch is against 2.5.8.  It is not needed for 2.4.18.
-It adds in a missing break.
+hi,
 
-All the best,
+im working on a kind of asoundrc-mini-howto, if you are interested in i
+can send you a pre-version. as i know, polling is not supported with alsa,
+and its not configurable at runtime.
 
-Duncan.
+____
+joy
 
---- linux-2.5.8.orig/sound/sound_core.c	Sun Apr 14 21:18:51 2002
-+++ linux-2.5.8/sound/sound_core.c	Fri Apr 19 09:14:39 2002
-@@ -243,6 +243,7 @@
- 		if (unit >= SOUND_STEP)
- 			goto __unknown;
- 		max_unit = unit + 1;
-+		break;
- 	    case 2:
- 		name = "midi";
- 		break;
+On Fri, 19 Apr 2002, Ivica Bukvic wrote:
+
+> Hi all! A while ago I was inquiring about the current status of the
+> .asoundrc documentation, as well as the feasibility of creating "mock"
+> devices that would allow polling of the audio i/o resources of the
+> soundcard whose driver's limitations and/or hardware limitations
+> currently do not support hardware polling.
+>
+> I am just wondering if anyone had any luck in figuring out how to do
+> that using .asoundrc and whether that is even possible at this point.
+>
+> Also, what is the current status of gstreamer in this department and
+> jack? (I tried artsd and that one simply doesn't cut it)
+>
+> Any info on this issue would be utmostly appreciated!
+>
+> Ico
+>
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
