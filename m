@@ -1,11 +1,11 @@
-From: Sacher Khoudari <alsa-devel@craesh.net>
-Subject: Need some help for a metronome
-Date: Sat, 31 Jul 2004 01:31:48 +0200
+From: Rene Rebe <rene.rebe@gmx.net>
+Subject: [PATCH] pmac 48kHz sample rate not function -> disable
+Date: Fri, 30 Jul 2004 16:56:44 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <410ADA64.6020006@craesh.net>
+Message-ID: <410A61AC.80008@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------050904000606080702020508"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,62 +15,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mailing list for ALSA developers <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+This is a multi-part message in MIME format.
+--------------050904000606080702020508
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi!
+Hi all,
 
-I need some help to get my litle metronome to work. I'm an Alsa-Newbie,
-so I'm sorry for this - probably - stupid question. I've copied some
-code from tutorials and other Alsa-programs, so probably I've forgotten
-some details. But I don't know what.
+48kHz sample rate is not functional - at least with all iBook2s I have 
+access to. The hardware just does 44.1kHz instead. I have cross checking 
+the Darwin source - but as far as I have seen it also does not support 
+higher rates then 44.1kHz. Strange is, that any bit combination written 
+does result in 44.1kHz. Maybe someone with access to the spec can 
+implement it correctly - if the hardware does support something different.
 
-The error has to be in this function, it gets called every time a "tick"
-has to be played, but it doesn't send any MIDI-events. At least,
-fluidsynth doesn't play anything (nor prints any events in verbose mode).
+Have fun,
+  René Rebe
 
-- --snip--
+--------------050904000606080702020508
+Content-Type: text/plain;
+ name="alsa-pmac3.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa-pmac3.patch"
 
-void schedule_event( guint8 i_velocity, guint i_ticks ) {
-	guint i_channel = 10;
-	guint i_note = 33;
-	guint i_duration = 1;
+--- ppc/pmac.c.orig	2004-08-01 01:09:36.820879352 +0200
++++ ppc/pmac.c	2004-07-31 17:40:45.512859128 +0200
+@@ -53,7 +53,7 @@
+ };
+ /* fixed frequency table for tumbler */
+ static int tumbler_freqs[2] = {
+-	48000, 44100
++	/*48000,*/ 44100
+ };
+ 
+ /*
+@@ -494,14 +494,14 @@
+ 	snd_pcm_runtime_t *runtime = subs->runtime;
+ 	int i, j, fflags;
+ 	static int typical_freqs[] = {
+-		48000,
++		/*48000,*/
+ 		44100,
+ 		22050,
+ 		11025,
+ 		0,
+ 	};
+ 	static int typical_freq_flags[] = {
+-		SNDRV_PCM_RATE_48000,
++		/*SNDRV_PCM_RATE_48000,*/
+ 		SNDRV_PCM_RATE_44100,
+ 		SNDRV_PCM_RATE_22050,
+ 		SNDRV_PCM_RATE_11025,
 
-	snd_seq_event_t ev;
 
-	snd_seq_ev_clear( &ev );
-	//ev.type = SND_SEQ_EVENT_USR0;
-	//ev.type = SND_SEQ_EVENT_NOTE;
-	snd_seq_ev_set_source( &ev, my_port );
-	snd_seq_ev_set_subs( &ev );
-	//snd_seq_ev_set_dest( &ev, i_dest_client, i_dest_port );
-	snd_seq_ev_set_note( &ev, i_channel, i_note, i_velocity, i_duration );
-	snd_seq_ev_schedule_tick( &ev, my_queue, 0, i_ticks );
-	printf( "channel: %d, note: %d, velocity: %d, duration: %d, i_ticks
-%d", i_channel, i_note, i_velocity, i_duration, i_ticks );
 
-	snd_seq_event_output( handle, &ev );
-	snd_seq_drain_output( handle );
-}
-
-- --snap--
-
-The printf gets called, and the values are ok. I've also tried the
-things which are commented out. Whats wrong, or missing? Can anyone help me?
-
-Thanks!
-Sacher
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFBCtpjdiWjuQmpvxoRApCaAKCtqGGsUeu3/ubPDbHR2WiHKBcr5QCg7SQY
-XtvpXQYgTP/Tzs7gttVgpHo=
-=xmct
------END PGP SIGNATURE-----
+--------------050904000606080702020508--
 
 
 -------------------------------------------------------
