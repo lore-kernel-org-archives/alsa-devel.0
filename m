@@ -1,13 +1,22 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
-Date: Sat, 19 Feb 2005 22:16:08 +0100
-Message-ID: <d1797ef10916e3bf8f98679782c3d853@bugtrack.alsa-project.org>
+From: uaca@alumni.uv.es
+Subject: intel8x0: no sound in 2.6.11 rc3 & 4 (fine with 2.6.10)]
+Date: Sat, 19 Feb 2005 22:23:23 +0100
+Message-ID: <20050219212323.GA26882@pusa.informat.uv.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EEC08209
-	for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2005 22:16:08 +0100 (MET)
+Content-Type: text/plain; charset=us-ascii
+Received: from postin.uv.es (postin.uv.es [147.156.1.90])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41683223
+	for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2005 22:23:28 +0100 (MET)
+Received: from sello.uv.es (sello.ci.uv.es [147.156.1.112])
+	by postin.uv.es (8.12.11/8.12.11) with ESMTP id j1JLNQ3I020242
+	for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2005 22:23:26 +0100
+Received: from pusa.informat.uv.es (pusa.informat.uv.es [147.156.10.98])
+	by sello.uv.es (8.12.2/8.12.2) with ESMTP id j1JLNNY4021237
+	for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2005 22:23:24 +0100
+Received: from ulisses by pusa.informat.uv.es with local (Exim 3.36 #1 (Debian))
+	id 1D2c4R-00071Q-00
+	for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2005 22:23:23 +0100
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,105 +30,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
-======================================================================
-Reported By:                christophe
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   917
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Ununtu
-Kernel Version:             2.6.11-rc3
-======================================================================
-Date Submitted:             02-17-2005 20:16 CET
-Last Modified:              02-19-2005 22:16 CET
-======================================================================
-Summary:                    intel8x0 ACPI suspend/resume trouble
-Description: 
-I have a problem with the driver for my soundcard after
-ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
-problem with prior kernels, I first tried with 2.6.8).
+Hello
 
-This is a IBM x40 laptop (23865FU) with an intel chipset.
+I forgot to send the following report to alsa-devel. I already sent it
+to lkml.
 
-The relevant lspci line is:
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
-Audio Controller (rev
-+01)
+Thanks
 
-The driver I use is snd_intel8x0.
+	Ulisses
+	
+On Sat, 2005-02-19 at 13:11 +0100, uaca@alumni.uv.es wrote:
+> Hello
+> 
+> I have read a post in lkml.org that states that the problem experienced in
+> rc3 has gone (1). That is not the case for me.
+> 
+> My audio device is
+> 
+> 0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 01)
+>         Subsystem: IBM: Unknown device 0554
+>         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+>         Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+>         Latency: 0
+>         Interrupt: pin B routed to IRQ 11
+>         Region 0: I/O ports at 1c00 [size=256]
+>         Region 1: I/O ports at 18c0 [size=64]
+>         Region 2: Memory at d0100c00 (32-bit, non-prefetchable) [size=512]
+>         Region 3: Memory at d0100800 (32-bit, non-prefetchable) [size=256]
+>         Capabilities: [50] Power Management version 2
+>                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
+>                 Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+> 
+> In 2.6.10 and in 2.6.11-rc3 & 4 the clock is set to 48khz.
+> 
+> eg:
+> 
+> intel8x0_measure_ac97_clock: measured 49502 usecs
+> intel8x0: clocking to 48000
+> 
+> It uses an Analog Devices AD1981B
+> 
+> I have put a tar file of the /proc/asound directory of 2.6.10 and 2.6.11-rc4 in
+> 
+> 	http://pusa.uv.es/~ulisses/asound-intel8x0/
+> 
+> the tar files were done while playing pcm audio, (not being eard in rc4).
+> 
+> I have found that I had to Mute __both__ "Headphone Jack Sense" and
+> "Line Jack Sense" in order to ear the audio in rc4.
+> 
+> Please let me know if you need further info or you want a tester
+> 
+> All this is on a IBM Thinkpad R51 - Type 2887 -AVG
+> 
+> (tot toc: IBM, we're buying your laptops too)
+> 
+> Thanks in advance
+> 
+> 	Ulisses			
+> 
+> (1) http://lkml.org/lkml/2005/2/18/93											
 
-The problem is that after a suspend/resume cycle the sound
-output is either off or only on one side or with statics.
 
-I tried to do:
+                Debian GNU/Linux: a dream come true
+-----------------------------------------------------------------------------
+"Computers are useless. They can only give answers."            Pablo Picasso
 
-~$ alsactl power off
-~$ alsactl power on
-
-without any change.
-
-If I suspend/resume multiple time I can get the sound output
-a little better (like on one side instead of off). But so far
-to get the correct sound back I need to reboot.
-
-Is it a known problem?
-Is there a way to force the driver to reinitialized the chipset?
-
-Thanks for alsa,
-Christophe
-
-======================================================================
-
-----------------------------------------------------------------------
- christophe - 02-19-05 22:15 
-----------------------------------------------------------------------
-I tried to power off the card before suspend but then the resume does not
-work anymore, I get an error message and need to reboot. If you think it
-can be related to the present problem, I can reproduce it and not the
-error message.
-
-----------------------------------------------------------------------
- christophe - 02-19-05 22:16 
-----------------------------------------------------------------------
-I should have precised that what I did to power it off is:
-
-alsactl power off
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-17-05 20:16 christophe     New Issue                                    
-02-17-05 20:16 christophe     Distribution              => Ununtu          
-02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
-02-17-05 20:30 tiwai          Note Added: 0003636                          
-02-17-05 21:01 christophe     Note Added: 0003639                          
-02-17-05 21:06 christophe     Note Added: 0003640                          
-02-17-05 22:38 christophe     Note Added: 0003643                          
-02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
-02-18-05 09:41 alexs81        Note Added: 0003649                          
-02-18-05 18:00 christophe     Note Added: 0003657                          
-02-18-05 20:34 alexs81        File Added: output_proc_asound_card0_codec97_0    
-               
-02-18-05 20:35 alexs81        Note Added: 0003659                          
-02-18-05 20:50 christophe     Note Added: 0003660                          
-02-18-05 21:13 alexs81        Note Added: 0003661                          
-02-18-05 21:16 christophe     Note Added: 0003662                          
-02-18-05 21:32 alexs81        Note Added: 0003663                          
-02-18-05 21:39 rlrevell       Note Added: 0003664                          
-02-19-05 02:40 christophe     Note Added: 0003668                          
-02-19-05 12:07 alexs81        Note Added: 0003669                          
-02-19-05 22:15 christophe     Note Added: 0003671                          
-02-19-05 22:16 christophe     Note Added: 0003672                          
-======================================================================
-
+"Debugging is twice as hard as writing the code in the first place.
+Therefore, if you write the code as cleverly as possible, you are,
+by definition, not smart enough to debug it." - Brian W. Kernighan
 
 
 
