@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Mon, 27 Dec 2004 23:19:24 +0100
-Message-ID: <7c6709ccbb16500706c955224710aa2f@bugtrack.alsa-project.org>
+Date: Mon, 27 Dec 2004 23:46:45 +0100
+Message-ID: <55d2a8c57d4c629fd71fb641647b1b9e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B60F8273
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 23:19:24 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1414E26D
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 23:46:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-27-2004 23:19 CET
+Last Modified:              12-27-2004 23:46 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -56,19 +56,6 @@ successful in all other regards install of Fedora FC3.
 ======================================================================
 
 ----------------------------------------------------------------------
- misnagid - 12-27-04 23:15 
-----------------------------------------------------------------------
-Dear Peter,
-
-I meant no insult to you.  I appreciate your time immemsely.  Please
-forgive me if I said anything wrong, ok?
-
-If I offered you $100, would you be able to fix problem?
-
-Thanks!
-Jerry
-
-----------------------------------------------------------------------
  misnagid - 12-27-04 23:19 
 ----------------------------------------------------------------------
 Peter,
@@ -79,6 +66,20 @@ just going to ask him/her for other "political-style" possibilities.  OK?
 
 Thanks,
 Jerry
+
+----------------------------------------------------------------------
+ pzad - 12-27-04 23:46 
+----------------------------------------------------------------------
+Sorry, I don't know how to help you. I think this is some "stupid" thing in
+FC3 alsa's configuration.
+
+My e-mail is pzad@pobox.sk or ICQ 100506554 if you want continue outside
+this bugtrack.
+
+Most of time Audigy under FC3 works in system-config-soundcard (in test)
+but not elsewhere, but your case looks special.
+
+Or we can try ssh.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -131,6 +132,7 @@ Date Modified  Username       Field                    Change
 12-27-04 22:54 pzad           Note Added: 0002981                          
 12-27-04 23:15 misnagid       Note Added: 0002982                          
 12-27-04 23:19 misnagid       Note Added: 0002983                          
+12-27-04 23:46 pzad           Note Added: 0002984                          
 ======================================================================
 
 
