@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [alsa-cvslog] CVS: alsa-kernel/pci/emu10k1 emufx.c,1.59,1.60
-Date: Mon, 8 Nov 2004 07:39:27 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411080734330.2162@pnote.perex-int.cz>
-References: <E1CNAGJ-000270-L7@sc8-pr-cvs1.sourceforge.net>
- <418E654E.5000807@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000610]: Abit AV8 entry required for programs that do not use 48k (Fix inside)
+Date: Mon, 8 Nov 2004 09:02:03 +0100
+Message-ID: <a20ece6c00d35d7d736c71a4de038faa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <418E654E.5000807@superbug.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 79BF6289
+	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2004 09:02:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,98 +18,91 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: Jaroslav Kysela <perex@users.sourceforge.net>, Alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 7 Nov 2004, James Courtier-Dutton wrote:
 
-> 2)
->  > +	if (put_user(x, &icode->code[a + 0]) ||
->  > +	    put_user(y, &icode->code[a + 1]))
->  > +		return -EFAULT;
-> 
-> Will always return -EFAULT on my system. I don't think that is what we 
-> really want.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=610> 
+======================================================================
+Reported By:                badbunny
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   610
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3 X86_64
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             10-27-2004 01:37 CEST
+Last Modified:              11-08-2004 09:02 CET
+======================================================================
+Summary:                    Abit AV8 entry required for programs that do not use
+48k (Fix inside)
+Description: 
+For programs such as Doom 3 or aplay (that use 41k channels)...This card in
+it's current state of only accepting 48k streams is not working out for
+these type programs. Adding the following to the whitelist[] in via82xx.c
+resolves this problem:
 
-Does this patch help?
+{ .vendor = 0x147b, .device = 0x1415, .action = VIA_DXS_NO_VRA }, /* Abit
+AV8 */
 
-Index: emufx.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emufx.c,v
-retrieving revision 1.61
-diff -u -r1.61 emufx.c
---- emufx.c	30 Oct 2004 07:44:20 -0000	1.61
-+++ emufx.c	8 Nov 2004 06:41:21 -0000
-@@ -468,11 +468,11 @@
- static int snd_emu10k1_write_op(emu10k1_fx8010_code_t *icode, unsigned int *ptr,
- 				u32 op, u32 r, u32 a, u32 x, u32 y)
- {
--	snd_assert(*ptr < 512, return);
-+	snd_assert(*ptr < 512, return -EINVAL);
- 	set_bit(*ptr, icode->code_valid);
- 	x = ((x & 0x3ff) << 10) | (y & 0x3ff);
- 	y = ((op & 0x0f) << 20) | ((r & 0x3ff) << 10) | (a & 0x3ff);
--	a = *ptr++ * 2;
-+	a = (*ptr)++ * 2;
- 	if (put_user(x, &icode->code[a + 0]) ||
-             put_user(y, &icode->code[a + 1]))
- 		return -EFAULT;
-@@ -485,11 +485,11 @@
- static int snd_emu10k1_audigy_write_op(emu10k1_fx8010_code_t *icode, unsigned int *ptr,
- 				       u32 op, u32 r, u32 a, u32 x, u32 y)
- {
--	snd_assert(*ptr < 1024, return);
-+	snd_assert(*ptr < 1024, return -EINVAL);
- 	set_bit(*ptr, icode->code_valid);
- 	x = ((x & 0x7ff) << 12) | (y & 0x7ff);
- 	y = ((op & 0x0f) << 24) | ((r & 0x7ff) << 12) | (a & 0x7ff);
--	a = *ptr++ * 2;
-+	a = (*ptr)++ * 2;
- 	if (put_user(x, &icode->code[a + 0]) ||
- 	    put_user(y, &icode->code[a + 1]))
- 		return -EFAULT;
-@@ -1010,7 +1010,7 @@
- 	INIT_LIST_HEAD(&emu->fx8010.gpr_ctl);
- 
- 	if ((icode = kcalloc(1, sizeof(*icode), GFP_KERNEL)) == NULL ||
--	    (icode->gpr_map = kcalloc(512 + 256 + 256, sizeof(u_int32_t), GFP_KERNEL)) == NULL ||
-+	    (icode->gpr_map = kcalloc(512 + 256 + 256 + 2 * 1024, sizeof(u_int32_t), GFP_KERNEL)) == NULL ||
- 	    (controls = kcalloc(SND_EMU10K1_GPR_CONTROLS, sizeof(*controls), GFP_KERNEL)) == NULL) {
- 		err = -ENOMEM;
- 		goto __err;
-@@ -1018,6 +1018,7 @@
- 
- 	icode->tram_data_map = icode->gpr_map + 512;
- 	icode->tram_addr_map = icode->tram_data_map + 256;
-+	icode->code = icode->tram_addr_map + 256;
- 
- 	/* clear free GPRs */
- 	for (i = 0; i < 512; i++)
-@@ -1460,7 +1461,7 @@
- 
- 	if ((icode = kcalloc(1, sizeof(*icode), GFP_KERNEL)) == NULL)
- 		return -ENOMEM;
--	if ((icode->gpr_map = kcalloc(256 + 160 + 160, sizeof(u_int32_t), GFP_KERNEL)) == NULL ||
-+	if ((icode->gpr_map = kcalloc(256 + 160 + 160 + 2 * 512, sizeof(u_int32_t), GFP_KERNEL)) == NULL ||
-             (controls = kcalloc(SND_EMU10K1_GPR_CONTROLS, sizeof(emu10k1_fx8010_control_gpr_t), GFP_KERNEL)) == NULL ||
- 	    (ipcm = kcalloc(1, sizeof(*ipcm), GFP_KERNEL)) == NULL) {
- 		err = -ENOMEM;
-@@ -1469,6 +1470,7 @@
- 
- 	icode->tram_data_map = icode->gpr_map + 256;
- 	icode->tram_addr_map = icode->tram_data_map + 160;
-+	icode->code = icode->tram_addr_map + 160;
- 	
- 	/* clear free GPRs */
- 	for (i = 0; i < 256; i++)
+I have have fully tested this. I also ran using VIA_DXS_ENABLE, but it
+causes a hiss in the sound. So this works the best. Without this users
+whould just have to know to set "dxs_support=4"...I think it's best this
+be in the driver.
 
-						Jaroslav
+Below is lspci output:
+lspci -nvs 00:11.5
+00:11.5 Class 0401: 1106:3059 (rev 60)
+        Subsystem: 147b:1415
+        Flags: medium devsel, IRQ 177
+        I/O ports at e400 [size=256]
+        Capabilities: [c0] Power Management version 2
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+lspci -vs 00:11.5
+00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+        Subsystem: ABIT Computer Corp.: Unknown device 1415
+        Flags: medium devsel, IRQ 177
+        I/O ports at e400 [size=256]
+        Capabilities: [c0] Power Management version 2
+
+======================================================================
+
+----------------------------------------------------------------------
+ badbunny - 11-08-04 03:32 
+----------------------------------------------------------------------
+Hi, 
+  Could someone just close my easy fix for the vi82xx driver and Abit AV8.
+I see noone seems to care. So could you please close it, so I don't have
+to see it anymore. Or you could hmmmmm...add the fix!!
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 11-08-04 09:02 
+----------------------------------------------------------------------
+Please post the Signed-off-by line to be used for this patch.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-27-04 01:37 badbunny       New Issue                                    
+10-27-04 01:37 badbunny       Distribution              => Fedora Core 3 X86_64
+10-27-04 01:37 badbunny       Kernel Version            => 2.6.9           
+10-27-04 03:06 badbunny       Note Added: 0002271                          
+10-27-04 04:23 badbunny       Note Added: 0002272                          
+11-02-04 21:59 badbunny       Note Added: 0002300                          
+11-08-04 03:32 badbunny       Note Added: 0002308                          
+11-08-04 09:02 Clemens LadischNote Added: 0002309                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
