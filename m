@@ -1,14 +1,12 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: alsa-0.9.3a : powermac locks machine hard
-Date: Fri, 16 May 2003 10:21:12 +0200 (CEST)
+From: Marco Canini <m.canini@libero.it>
+Subject: Problem with dmix plugin
+Date: 16 May 2003 10:32:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030516102112.pochini@shiny.it>
-References: <20030515190540.567823bd.erikd-alsa@mega-nerd.com>
+Message-ID: <1053073945.428.13.camel@jabawack.canini.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030515190540.567823bd.erikd-alsa@mega-nerd.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,21 +15,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I'm experiencing a problem with the dmix plugin:
+I've followed the instructions present on 
+http://www.alsa-project.org/alsa-doc/doc-php/asoundrc.php3
+and on
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html
 
-On 15-May-2003 Erik de Castro Lopo wrote:
-> 
-> I then removed the battery and rebooted the machine. Here is the
-> kernel Ooops message. Is there anything I can do to help debug this?
+After I call aplay -D mymix test.wav I can't hear no sound, and aplay
+hangs undefinitely.
 
-Yes, process the Oops with ksymoops. Since it uses your System.map to
-translate addresses, you are the only who can decode it.
+Is this a known issue? How can I sole the problem?
 
-
-Bye.
+-- 
+Marco Canini <m.canini@libero.it>
 
 
 
