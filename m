@@ -1,17 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd-usb-midi vs ohci
-Date: Mon, 11 Nov 2002 10:23:11 +0100 (MET)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [Fwd: Re: [PATCH] cs46xx DAC volume's mechanism
+ rewrite, minor bugfixes]
+Date: Mon, 11 Nov 2002 09:49:00 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0211111011030.20273-100000@studcom.urz.uni-halle.de>
-References: <3DCD81DA.7030004@boosthardware.com>
+Message-ID: <Pine.LNX.4.33.0211110947460.521-100000@pnote.perex-int.cz>
+References: <3DCF70BD.3020603@cucumelo.org>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mlucom8.urz.Uni-Halle.DE [141.48.10.118])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA02957
-	for <alsa-devel@alsa-project.org>; Mon, 11 Nov 2002 10:23:18 +0100
-In-reply-to: <3DCD81DA.7030004@boosthardware.com>
+In-Reply-To: <3DCF70BD.3020603@cucumelo.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,32 +17,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: alsa-devel@alsa-project.org
+To: Benny Sjostrand <gorm@cucumelo.org>
+Cc: Peter Good <psgood@petesinternet.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey wrote:
-> I'm have a machine which needs the ohci usb driver. I have 2.4.19-pre10
-> kernel for it.
->
-> When I try to load the usb-audio module I get a constant stream of
->
-> snd-usb-midi: usb_submit_urb: -22
->
-> Which doesn't stop until I remove the module.
+On Mon, 11 Nov 2002, Benny Sjostrand wrote:
 
-In the 2.5.45 kernel, the behaviour of interrupt transfers (used for
-Roland and Quattro MIDI input) changed, so snd-usb-midi was changed as
-well, but this change was incompatible with earlier kernels.
-It's now fixed on CVS.
+> >
+> >
+> >------------------------------------------------------------------------
+> >
+> >Ok, that's fixed the bass problem I had here.
+> >One thing though. Benny, do you have any idea what these values "should"
+> >be?
+> >  
+> >
+> But I still dont understand the problem. And reports are not at all 
+> consequent ...
+> 
+> >iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2
+> >  
+> >
+> I guess you need to add in .asoundrc:
+> iec958 {
+>   type hw
+>   card 0
+>   device 2
+> }
+> 
+> Then maybe someone knows what xine uses the 
+> AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2 values to,
+> do they need to interfaces to the lowlevel driver ???
 
-BTW: please test the MIDI input with "alsa-lib/tests/rawmidi -v -i hw:x,0",
-it would be nice to know if the M-Audio protocol support works at all.
-I guess the Quattro is sending a stream of Active Sensing bytes (0xfe).
+It's first 32-bits to setup the channel status block in the S/PDIF 
+stream. The main job is to tell the remote receiver, that data are 
+'non-audio' (bit 1 = 1).
 
+						Jaroslav
 
-Regards,
-Clemens
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
