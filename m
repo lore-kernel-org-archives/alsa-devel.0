@@ -1,15 +1,12 @@
-From: Joerg Mayer <jmayer@loplof.de>
-Subject: Re: Problems with VIA8233A (todays cvs)
-Date: Tue, 22 Jul 2003 22:02:31 +0200
+From: aknuds-1@broadpark.no
+Subject: Acquring poll descriptors
+Date: Wed, 23 Jul 2003 00:19:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030722200231.GR9899@thot.informatik.uni-kl.de>
-References: <20030722182649.GP9899@thot.informatik.uni-kl.de> <s5hy8yqflfu.wl@alsa2.suse.de>
+Message-ID: <1058912365.3f1db86de8730@mail.broadpark.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hy8yqflfu.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,50 +15,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 22, 2003 at 08:47:17PM +0200, Takashi Iwai wrote:
-> At Tue, 22 Jul 2003 20:26:49 +0200,
-> > kernel: ALSA ../alsa-kernel/pci/via82xx.c:687: invalid via82xx_cur_pt=
-r, using last valid pointer
-> > last message repeated 205 times
+Hi
 
-> try to add dxs_support=3D3 to snd-via82xx module option.
-> (or dxs_support=3D2 if it doesn't solve the problem.)
+Was just wondering if there is any particular reason to acquire a pcm's p=
+oll=20
+descriptor(s) (snd_pcm_poll_descriptors) before each poll, or can I simpl=
+y do it=20
+after opening the pcm and be done with it? Can the associated poll fds, o=
+r even=20
+the number of fds change after a pcm has been opened?
 
-Both options don't affect anything I would notice, but...
+Thanks
 
-> see alsa-kernel/Documentation/ALSA-Configuration.txt for details.
-
-OK, done now :)
-
-> btw, before building the alsa-driver externally, it's better to remove
-> CONFIG_SND* in your kernel configuration
-> (/usr/src/linux/include/linux/autoconf.h).
-> otherwise there might be inconsistencies.
-
-...by doing this I got rid of the messages.
-
-So the problem remains, that the sound is still not working properly, and
-still with the same effects (except the kernel messages).
-The sound in e.g. pysol plays , but at at least twice the speed it should
-and with the distortions that are associated with it. Diablo 2 in winex
-also still has the same problems.
-Another thing the dxs options don't change is the fact that I can run
-only one application using sound at a time, not several.
-All of this worked with Suse 8.1, original kernel and one of your rpm-pac=
-kages
-at people/tiwai/ (don't remember the version though).
+A
 
 
- Thanks
-     J=F6rg
---=20
-Joerg Mayer                                           <jmayer@loplof.de>
-We are stuck with technology when what we really want is just stuff that
-works. Some say that should read Microsoft instead of technology.
 
 
 -------------------------------------------------------
