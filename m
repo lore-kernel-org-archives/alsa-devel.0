@@ -1,15 +1,17 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: Avance ALS-007
-Date: Mon, 8 Jul 2002 14:02:45 +0200
+From: Robert Siemer <Robert.Siemer@gmx.de>
+Subject: miroSOUND development [was: Avance ALS-007]
+Date: Mon, 08 Jul 2002 15:11:01 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020708120245.GB487@localhost>
-References: <20020707131119.GA535@localhost> <s5h7kk6v75k.wl@alsa2.suse.de>
-Reply-To: martin-langer@gmx.de
+Message-ID: <20020708151101X.siemer@panorama.hadiko.de>
+References: <20020707131119.GA535@localhost>
+	<s5h7kk6v75k.wl@alsa2.suse.de>
+	<20020708120245.GB487@localhost>
+Reply-To: Robert Siemer <siemer@panorama.hadiko.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h7kk6v75k.wl@alsa2.suse.de>
+In-Reply-To: <20020708120245.GB487@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,43 +20,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: martin-langer@gmx.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> At Sun, 7 Jul 2002 15:11:19 +0200,
-> Martin Langer wrote:
-> > 
-> > 
-> > looks like that my old Avance ALS-007 card is still unsupported by ALSA. 
-> > 
-> > - Are there any interesting documents about the ALS007, except OSS sources?
-> 
+Hello!
 
-On Mon, Jul 08, 2002 at 05:00:19PM +0930, Jonathan Woithe wrote:
-> 
-> The only documents which I am aware of are the ones I wrote at the time I
-> did the OSS support for the ALS007 in 1998.  Avance Logic have never ever
-> gotten back to me despite numerous requests for information.  The
-> information I have is the result of tedious trial-and-error tests.
-> 
-> The documents are available on my webpage:
->   http://www.physics.adelaide.edu.au/~jwoithe/
-> 
-> Go to the  "Linux" section and look for "ALS-007".  There's two documents -
-> one is a quickstart guide for getting the card working under OSS.  You want
-> the other one. :)
-> 
+From: Martin Langer <martin-langer@gmx.de>
 
-I think we should wait until Jonathan release his driver. I don't want to 
-start writing the same driver on a second corner ... because there are more
-interesting things to do.
+> I still have another (I think unsupported) card a "miroSOUND
+> PCM12";-)
+> ... but that job looks a little bit to hard for me at the moment 
+> (strange ACI mixer ...).
 
-I still have another (I think unsupported) card a "miroSOUND PCM12";-)
-... but that job looks a little bit to hard for me at the moment 
-(strange ACI mixer ...).
+I rewrote the OSS aci driver for 2.4 some time ago and am still
+willing to write ALSA support for that cards. That's currently on
+hold, also because of the "unperfect" code base in ALSA. I'll restart
+my work in some weeks/month.
+
+The last thing I did for the miroSOUND cards is this description of
+the PCM20 card and their corresponding (in theory) drivers:
+
+http://backsla.sh/~siemer/miro/
+(unfinished but useful?)
+
+and the mentioned "driver" for the eeprom (which is currently not on
+my server)...
+
+My goal is to support multiple cards and for that the PCM20 in ISA-pnp
+mode.
+
+Further:
+You could use the OSS aci.c driver to drive the ACI (hehe :-). It's
+independent from any other sound components and is just giving
+(OSS-like) access to the mixer (for cards < PCM20; a little more
+advanced for PCM20).
 
 
-martin
+Bye,
+	Robert
 
 
 -------------------------------------------------------
