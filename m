@@ -1,15 +1,15 @@
-From: Andrew Gaydenko <a@etver.com>
-Subject: Re: ice1724, routing oss playing back to spdif
-Date: Tue, 20 Apr 2004 21:31:50 +0400
+From: Bernhard Rosenkraenzer <bero@arklinux.org>
+Subject: Re: ALI M5451 (CMI 9739): PCM always muted?
+Date: Tue, 20 Apr 2004 19:39:54 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200404202131.50981@goldspace.net>
-References: <200404180050.32837@goldspace.net> <s5hekqjq6id.wl@alsa2.suse.de>
+Message-ID: <200404201939.54966.bero@arklinux.org>
+References: <200404171945.35824.bero@arklinux.org> <s5hd663q6fs.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hekqjq6id.wl@alsa2.suse.de>
+In-Reply-To: <s5hd663q6fs.wl@alsa2.suse.de>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,26 +22,21 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tuesday 20 April 2004 12:39, Takashi Iwai wrote:
+> > Hi,
+> > On an ALI M5451 (Using a CMI 9739 - PCI ID 10b9:5451 Sub-ID 1019:0f22),
+> > snd_ali5451 loads and can adjust mixer settings (except for PCM volume,
+> > but I think that's a limitation of the hardware), but doesn't make any
+> > noise - apparently PCM is always muted (volume fixed at 0?).
+>
+> there is no PCM volume on CM9739.  it has only PCM mute switch.
+> you can mute on/off via 'M' key of alsamixer.
 
-What is the starting point to configure the driver such way?
-The aim is to use particular device (/dev/dsp, of cource :-).
+I knew that -- it doesn't make any sound even if it's unmuted though.
+Nothing useful in dmesg output either.
 
-======= On Tuesday 20 April 2004 14:38, you wrote: =======
-At Sun, 18 Apr 2004 00:50:32 +0400,
-Andrew Gaydenko wrote:
-> 
-> Hi,
-> 
-> The aim is to route oss-only-playing-back-software to spdif out.
-> Is it possible? I use ice1724 driver.
-
-it's possible through ALSA-OSS emulation library, but not through the
-kernel OSS emulation.
-
-
-Takashi
-
-
+LLaP
+bero
 
 
 -------------------------------------------------------
