@@ -1,14 +1,13 @@
-From: tom burkart <alsa@aussec.com>
-Subject: Re: Re: alsa 0.9.5 - ymfpci - Yay!
-Date: Fri, 18 Jul 2003 14:08:39 +1000 (EST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: underrun behavior
+Date: Fri, 18 Jul 2003 09:58:32 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307181336250.1312-300000@home.aussec.com>
-References: <s5hy8yxyzs0.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0307180956060.7580-100000@pnote.perex-int.cz>
+References: <200307180350.h6I3os903465@fafner.math.umass.edu>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="Multipart_Thu_Jul_17_16:49:02_2003-1"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hy8yxyzs0.wl@alsa2.suse.de>
-Content-ID: <Pine.LNX.4.44.0307181336251.1312@home.aussec.com>
+In-Reply-To: <200307180350.h6I3os903465@fafner.math.umass.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,80 +16,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Chris Raphael <raphael@math.umass.edu>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+On Thu, 17 Jul 2003, Chris Raphael wrote:
 
---Multipart_Thu_Jul_17_16:49:02_2003-1
-Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
-Content-ID: <Pine.LNX.4.44.0307181336252.1312@home.aussec.com>
+> 
+> Jaroslav,  Thanks for your reply.  I looked at the section of code you
+> pointed to and wondered if you meant I should use
+>   snd_pcm_sw_params_stop_threshold() 
+> rather than start_threshold, as you suggested.  
+> I couldn't actually get snd_pcm_sw_params_get_boundary() to work since
+> it wouldn't compile for me, but I tried various boundary values for the stop
 
-On Jul 17, Takashi Iwai wrote:
+You have use these defines before #include <alsa/asoundlib.h> to enable 
+newer API:
 
-> - unload alsa module, load oss, check the performance
-Ok, works as before.
+#define ALSA_PCM_NEW_HW_PARAMS_API
+#define ALSA_PCM_NEW_SW_PARAMS_API
 
-> - unload oss, and reload the alsa again.
-It didn't want to do it for quite a while - I eventually got to repeat
-it...  There are a lot of artifacts in the sound that are not there when
-oss is active - may leave that for another day...
+> threshold.  When doing this, I managed to eliminate the underruns.  However,
+> when my sample-writing routine is invoked by a late signal, then some strange
+> noise creeps into my output audio and never goes away.  I don't understand this
+> since I am replenishing the buffer with new audio so I would expect the noise
+> to go away as soon as it is overwritten.  
+> 
+> Maybe I should ask the question in a more open-ended way.  I have both incoming
+> and outgoing audio and the two drift apart when I get playing underruns.
+> Although it is not really the case, you could think of the outgoing audio as
+> "echoing" the incoming audio.  Why does this happen and what can I do about it?
 
-The attached patch I got from Jaroslav some time ago when he was trying to
-chase the same bug - it was still applied.
+I am sorry, but I have no idea... The playback has probably also 
+underruns, so you have to fill buffer ahead again when this 
+happens.
 
-The other diff is the differences in the ymfpci output.  The lspci output
-is identical over before (alsa), oss, after (alsa) - not supplied.
-I still have all the original files if required.
+						Jaroslav
 
-tom.
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
---Multipart_Thu_Jul_17_16:49:02_2003-1
-Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; NAME="alsa-driver-ymfpci.patch"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.44.0307181403330.1312@home.aussec.com>
-Content-Description: 
-Content-Disposition: ATTACHMENT; FILENAME="alsa-driver-ymfpci.patch"
-
-LS0tIGFsc2EtZHJpdmVyLTAuOS40L2Fsc2Eta2VybmVsL3BjaS95bWZwY2kv
-eW1mcGNpLmMub3JnCVR1ZSBNYXkgIDYgMDA6MTQ6NTkgMjAwMw0KKysrIGFs
-c2EtZHJpdmVyLTAuOS40L2Fsc2Eta2VybmVsL3BjaS95bWZwY2kveW1mcGNp
-LmMJRnJpIEp1biAxMyAwOTo0MjozNyAyMDAzDQpAQCAtMjQ1LDYgKzI0NSw4
-IEBADQogCX0NCiAJcGNpX3NldF9kcnZkYXRhKHBjaSwgY2hpcCk7DQogCWRl
-disrOw0KKwlsZWdhY3lfY3RybCA9IDB4OTA3ZjsNCisJcGNpX3dyaXRlX2Nv
-bmZpZ193b3JkKHBjaSwgUENJUl9EU1hHX0xFR0FDWSwgbGVnYWN5X2N0cmwp
-Ow0KIAlyZXR1cm4gMDsNCiB9DQogDQo=
---Multipart_Thu_Jul_17_16:49:02_2003-1
-Content-Type: TEXT/PLAIN; CHARSET=US-ASCII; NAME=differences
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.44.0307181403331.1312@home.aussec.com>
-Content-Description: 
-Content-Disposition: ATTACHMENT; FILENAME=differences
-
-LS0tIGJlZm9yZS15bWZwY2kJRnJpIEp1bCAxOCAxMzoxMjoxMSAyMDAzDQor
-KysgYWZ0ZXIteW1mcGNpCUZyaSBKdWwgMTggMTM6NTc6NDcgMjAwMw0KQEAg
-LTI0LDcgKzI0LDcgQEANCiAwMDU0OiBmZjAwZmYNCiAwMDU4OiA1NTU1MDBm
-Zg0KIDAwNWM6IDAwMDANCi0wMDYwOiAyMDgwMDANCiswMDYwOiAxYzgwMDAN
-CiAwMDY0OiAyNjgwMGYNCiAwMDY4OiA4MDAwMDAwMA0KIDAwNmM6IDAwMDAN
-CkBAIC0zMiwxNiArMzIsMTYgQEANCiAwMDc0OiAwMDAwDQogMDA3ODogMDAw
-MA0KIDAwN2M6IDAwMDANCi0wMDgwOiAzMWU3MzFlNw0KLTAwODQ6IDMxZTcz
-MWU3DQotMDA4ODogMzFlNzMxZTcNCiswMDgwOiAzZmZmM2ZmZg0KKzAwODQ6
-IDNmZmYzZmZmDQorMDA4ODogM2ZmZjNmZmYNCiAwMDhjOiAwMDAwDQogMDA5
-MDogMDAwMA0KIDAwOTQ6IDAwMDANCi0wMDk4OiAzMWU3MzFlNw0KKzAwOTg6
-IDAwMDANCiAwMDljOiAwMDAwDQogMDBhMDogMDAwMA0KLTAwYTQ6IDAwMDAN
-CiswMGE0OiAzZmZmM2ZmZg0KIDAwYTg6IDNmZmYzZmZmDQogMDBhYzogM2Zm
-ZjNmZmYNCiAwMGIwOiAwMDAwDQpAQCAtNjUsNyArNjUsNyBAQA0KIDAwZjg6
-IDAwMDANCiAwMGZjOiAwMDAwDQogMDEwMDogMDAwMA0KLTAxMDQ6IDAwMDEN
-CiswMTA0OiAwMDAwDQogMDEwODogMDAwMA0KIDAxMGM6IDAwMDANCiAwMTEw
-OiAwMDAwDQpAQCAtODYsNyArODYsNyBAQA0KIDAxNGM6IDAxMDANCiAwMTUw
-OiAwMDAwDQogMDE1NDogMDAxOA0KLTAxNTg6IDQ4MDgwMDANCi0wMTVjOiA0
-ODBiZTAwDQotMDE2MDogNDgwYmYwMA0KLTAxNjQ6IDQ4MGMwMDANCiswMTU4
-OiAzYWM4MDAwDQorMDE1YzogM2FjYmUwMA0KKzAxNjA6IDNhY2JmMDANCisw
-MTY0OiAzYWNjMDAwDQo=
---Multipart_Thu_Jul_17_16:49:02_2003-1--
 
 
 -------------------------------------------------------
