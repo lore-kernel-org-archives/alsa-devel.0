@@ -1,14 +1,12 @@
-From: =?iso-8859-1?q?H=E1ber=20J=E1nos?= <boci@coder.hu>
-Subject: Alsa + 2.6 kernel + Program freezee
-Date: Fri, 17 Oct 2003 12:55:26 +0200
+From: Mark Knecht <markknecht@comcast.net>
+Subject: A7N8X Deluxe - Alsa Support???
+Date: Sun, 19 Oct 2003 11:18:54 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200310171255.26909.boci@coder.hu>
+Message-ID: <1066587533.2642.8.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,20 +15,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+Hi,
+   Is there any Alsa support for the sound chips used on the Asus A7N8X
+Deluxe MB? I Do not see anything on the sound card matrix page.
 
-I use kernel 2.6 with Alsa (2.6 kernel internal ALSA). And some program is 
-freezee or going to zombie.
-Example KDE artsd use alsa and some program want to acces it (example 
-MozillaFirebird flash plugin) the accessing program going to zombie. (I try 
-to desable artsD because if I use mplayer and Mozilla, or I rerun mplayer too 
-fast)...
-Anybody have some idea?
+   If there is support, what works and what doesn't? IS it stable? VERY
+STABLE?I'm building this machine for my dad and don't want to mess with
+it after I set it up.
 
-Cow
+>From the Asus page:
+
+Audio RealtekR ALC650 6CH w/built in HP amplifier
+Integrated APU(Audio Processor Unit) SoundStorm?/ DolbyR Digital (AC-3)
+Encoder	
+
+Cheers,
+Mark
 
 
 
