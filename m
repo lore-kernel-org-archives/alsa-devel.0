@@ -1,10 +1,8 @@
-From: Laurent Georget <lgeorget2@club-internet.fr>
-Subject: Re: possible ALSA bug/feature (was: important recording
- broke. why?) (fwd)
-Date: Sat, 22 Mar 2003 22:43:17 +0100
+From: Manuel Jander <mjander@embedded.cl>
+Subject: Recording
+Date: Sun, 23 Mar 2003 02:08:51 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E7CD8F5.7030502@club-internet.fr>
-References: <Pine.LNX.4.44.0303211610150.20651-100000@vaino.wakkanet.fi>
+Message-ID: <3E7D4F73.4040603@embedded.cl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -17,47 +15,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I reported sometimes ago the same problem with alsa "level" and "ameter" 
-plugins:
-After 0.9rc7 , using these plugin fails ( EIO  )  , if buffer size is low.
+Hello,
 
-There is now an additional checking in pcm_wait (pcm.c line 2017 ) , 
-that came after 0.9rc7:
-if (revents & (POLLERR | POLLNVAL))
-		return -EIO;
+I'm having serious trouble implementing record support into the Aureal 
+Vortex driver.
+I get total lockups...
 
-Commenting out POLLER|  "solves" the problem .
+The obvious answer would be: the cards overwrites your kernel :) ... but 
+i double checked
+that. If that would be the case, playback wouldnt work either (i would 
+hear noise, or at least a crack).
+I'm using the same operator functions (callbacks) for recording and 
+playback with some very few
+branch code to decide between record and playback.
 
-As i am far from being a top developper, I wonder if this new checking 
-is really needed,
-and , if it is,  do you think that the error could be solved in the 
-plugin code ?
+Is there something like a typical pitfal list ? Any important difference 
+when recording
+instead of playback ? Can i use runtime->dma_addr just as when doing 
+playback for
+the DMA address programmed into the SoundCard ?
 
-Thanks
+If anyone has something to say about recording, please tell me
 
-Laurent
+Best Regards
 
-
-Kai Vehmanen wrote:
-> Hi,
-> 
-> first please read the mail to ecasound-list below. 
-> 
-> It seems that with newer ALSA versions, snd_pcm_read[in]()  sometimes
-> returns -EIO even though documentation says nothing about this. After some
-> testing this seems to not happen on direct hw-access, only with
-> the pcm_plugin. The EIO comes from snd_pcm_wait(). 
-> 
-> Is this a bug or or a feature?
-> 
-> Btw; the error does not seem to be critical. If I handle
->      the EIO the same way as EPIPE (i.e. run xrun 
->      handling code), the recording will continue fine.
-> 
+Manuel Jander
 
 
 
