@@ -1,14 +1,14 @@
-From: Gou Zhuang <gouzhuang@bigfoot.com>
-Subject: Re: Oops on resume, X crashes
-Date: Fri, 24 Oct 2003 13:45:53 +0800
+From: Steffen Sauder <steffensauder@gmx.de>
+Subject: Re: OSS emulation delays (?)
+Date: Fri, 24 Oct 2003 14:49:43 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F98BC91.3090606@bigfoot.com>
-References: <3F939367.80804@bigfoot.com>	<s5h4qy4dkx5.wl@alsa2.suse.de>	<3F94F094.80109@Sun.COM>	<s5hr816de2j.wl@alsa2.suse.de>	<3F979B68.9030006@bigfoot.com> <s5hptgn96lc.wl@alsa2.suse.de>
+Message-ID: <3F992DF7.9090002@gmx.de>
+References: <20031023124542.0868bfd8.rpav@mephle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hptgn96lc.wl@alsa2.suse.de>
+In-Reply-To: <20031023124542.0868bfd8.rpav@mephle.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,64 +17,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Gou Zhuang <gouzhuang@bigfoot.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Thu, 23 Oct 2003 17:12:08 +0800,
-> Gou Zhuang wrote:
-> 
->>I turned on OSS_DEBUG in pcm_oss.c. I did not start X this time, I only started artsd from
->>console to reproduce the oops. Below is the messages after resume, my comments are marked
->>with <<<---------
->>
->>-------------------------
->>MYDEBUG intel8x0.c:2141: Entering intel8x0_suspend()
->>MYDEBUG intel8x0.c:2149: Call snd_pcm_suspend_all() on Intel 82801CA-ICH3
->>MYDEBUG intel8x0.c:2149: Call snd_pcm_suspend_all() on Intel 82801CA-ICH3 - MIC ADC
->>MYDEBUG intel8x0.c:2152: Call snd_power_change_state(card, SNDRV_CTL_POWER_D3hot)
->>MYDEBUG intel8x0.c:2154: Return from snd_power_change_state()
->>pcm_oss: ioctl = 0x8010500c
->>pcm_oss: space: bytes = 7168, fragments = 7, fragstotal = 7, fragsize = 1024
->>pcm_oss: write: recovering from SUSPEND
->>ALSA pcm_oss.c:552: snd_pcm_oss_prepare: SNDRV_PCM_IOCTL_PREPARE failed
->>pcm_oss: write 1024 bytes (wrote -11 bytes)  <<<----------- IT SEEMS THE WRITE FAILED!
-> 
-> 
-> that's ok, because it's opened with non-block mode.
-> 
-> 
->>MYDEBUG intel8x0.c:2162: Entering intel8x0_resume()
->>MYDEBUG intel8x0.c:2167: Call pci_enable_device(chip->pci)
->>PCI: Found IRQ 11 for device 00:1f.5
->>PCI: Sharing IRQ 11 with 00:1f.6
->>MYDEBUG intel8x0.c:2169: Call pci_set_master(chip->pci)
->>PCI: Setting latency timer of device 00:1f.5 to 64
->>MYDEBUG intel8x0.c:2067: Entering snd_intel8x0_chip_init()
->>MYDEBUG ../../alsa-kernel/pci/ac97/ac97_codec.c:2148: Entering snd_ac97_resume()
->>MYDEBUG ../../alsa-kernel/pci/ac97/ac97_codec.c:2148: Entering snd_ac97_resume()
->>MYDEBUG intel8x0.c:2177: Call snd_power_change_state(card, SNDRV_CTL_POWER_D0)
-> 
-> 
-> ok, i think i found a bug.
-> please try the attached patch.
-> 
-> 
-> Takashi
+I've had similar problems with mplayer and my Terratec DMX 6fire (also 
+ice1712)
 
-I applied the patch, the oops went away :) But I still get a lot of
-"ALSA pcm_oss.c:552: snd_pcm_oss_prepare: SNDRV_PCM_IOCTL_PREPARE failed".
+>  MPlayer isn't quite so slow, but there is a decent pause
+>while seeking in movies. 
+>
+I've had this problem with mplayer and oss emulation since alsa 0.9.3 i 
+think (not quite sure). In older versions it
+worked fine, but in newer versions and the current cvs it takes about a 
+second for mplayer to skip anywhere. I didn't have this problem with any 
+other app than mplayer though.
 
-And the artsd crashed after resume with the following errmsg:
+> With the xmms ALSA driver, this is not a
+>problem.  Unfortunately mplayer and ALSA don't seem to get along with
+>my card (ice1712... maudio delta-44), but with audio disabled seek
+>times are fine.
+>  
+>
+Same problem here again, mplayer's alsa-output has been broken for me 
+since I have that card (1.5 years). Audio seems to be running fine, but 
+video plays at about one fps, and after few seconds the 
+"buggy-audio-driver" message pops up. Because mplayer is the only app 
+having problem with the alsa-driver, I always thought it was mplayer's 
+bug, but I didn't dare to post on their mailinglists :o).
 
-Sound Server fatal error:
-AudioSubSystem::handleIO: write failed
-len = 16, can_write = 24, errno = 4 (interrupted system call)
+I ended up using arts, because it works perfectly with the ice1712 
+drivers and both xmms and mplayer.
 
-Do you have any clue on this?
-
-gouzhuang
+gruss
+Steffen
 
 
 
