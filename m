@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000274]: Builtin CS4235 on intel mainboard won't work
-Date: Fri, 16 Jul 2004 12:47:43 +0200 (CEST)
+Subject: [ALSA - driver 0000273]: Terratec Aureon Universe 7.1 support.
+Date: Fri, 16 Jul 2004 12:47:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716104743.12CB926008@server.perex-int.cz>
+Message-ID: <20040716104726.372C026009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 909B9255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:47:43 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 788CF255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:47:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,65 +22,44 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000274
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000273
 ======================================================================
-Reported By:                NoKey
+Reported By:                BugBuster
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     274
-Category:                   ISA - cs4236
+Bug ID:                     273
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Slackware 9.1.0
-Kernel Version:             2.6.6 (Vanilla, all drivers built in. No module support)
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-14-2004 10:25 CEST
+Date Submitted:             05-14-2004 02:05 CEST
 Last Modified:              07-16-2004 12:47 CEST
 ======================================================================
-Summary:                    Builtin CS4235 on intel mainboard won't work
+Summary:                    Terratec Aureon Universe 7.1 support.
 Description: 
-I have (at work) an intel mainboard with a builtin 'CS4235 CODEC' which
-does not work. I'm afraid I don't know the exact mainboard version but
-that's OK, because I've created a patch that fixes this.
-The breakage was due to some stupid (see add'l info) logical device (id
-CSC010f) which is disabled.
-Patch applies to linux-2.6.6/sound/isa/cs423x:
-===========================================================
---- cs4236.c.org        2004-05-10 04:32:01.000000000 +0200
-+++ cs4236.c    2004-05-13 17:01:17.000000000 +0200
-@@ -198,6 +198,8 @@
-        { .id = "CSC0225", .devs = { { "CSC0000" }, { "CSC0010" }, {
-"CSC0003" } } },
-        /* Intel Marlin Spike Motherboard (https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000002) - CS4235 */
-        { .id = "CSC0225", .devs = { { "CSC0100" }, { "CSC0110" }, {
-"CSC0103" } } },
-+       /* Unknown Intel mainboard - CS4235 */
-+       { .id = "CSC0225", .devs = { { "CSC0100" }, { "CSC0110" } } },
-        /* Genius Sound Maker 3DJ - CS4237B */
-        { .id = "CSC0437", .devs = { { "CSC0000" }, { "CSC0010" }, {
-"CSC0003" } } },
-        /* Digital PC 5000 Onboard - CS4236B */
-
+The pci sub id was unknown. I've changed the aureon.{c,h} files to support
+it. Patch attached. 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-14-2004 12:16 CEST 
+ tiwai - 05-14-2004 13:00 CEST 
 ----------------------------------------------------------------------
-thanks, the patch is applied to cvs now.
+thanks, i applied your patch to cvs.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-14-04 10:25 NoKey          New Bug                                      
-05-14-04 10:25 NoKey          Distribution              => Slackware 9.1.0 
-05-14-04 10:25 NoKey          Kernel Version            => 2.6.6 (Vanilla, all drivers built in. No module support)
-05-14-04 12:16 tiwai          Bugnote Added: 0001108                       
-05-14-04 12:16 tiwai          Assigned To               => tiwai           
-05-14-04 12:16 tiwai          Resolution               open => fixed       
-05-14-04 12:16 tiwai          Status                   new => resolved     
+05-14-04 02:05 BugBuster      New Bug                                      
+05-14-04 02:05 BugBuster      File Added: aureon.diff                      
+05-14-04 13:00 tiwai          Bugnote Added: 0001110                       
+05-14-04 13:00 tiwai          Assigned To               => tiwai           
+05-14-04 13:00 tiwai          Resolution               open => fixed       
+05-14-04 13:00 tiwai          Status                   new => resolved     
 07-16-04 12:47 tiwai          Status                   resolved => closed  
 ======================================================================
 
