@@ -1,15 +1,16 @@
-From: Paul Davis <pbd@op.net>
+From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: Alsa Programming Examples
-Date: Sun, 09 Jun 2002 14:31:14 -0400
+Date: Mon, 10 Jun 2002 15:16:50 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200206091830.UAA05752@alsa.alsa-project.org>
-References: <Pine.LNX.4.21.0206091308190.23357-100000@mailserver.intern.bfad.de>
+Message-ID: <3D044452.8030401@boosthardware.com>
+References: <200206091830.UAA05752@alsa.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA05752
-	for <alsa-devel@alsa-project.org>; Sun, 9 Jun 2002 20:30:02 +0200
-In-Reply-To: Your message of "Sun, 09 Jun 2002 13:12:21 +0200."
-             <Pine.LNX.4.21.0206091308190.23357-100000@mailserver.intern.bfad.de>
+Received: from www7.networkshosting.com ([66.96.128.106])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id IAA14775
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jun 2002 08:12:43 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,39 +19,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: tomasz motylewski <T.Motylewski@bfad.de>
-Cc: Tim Goetze <tim@quitte.de>, Philipp Vollmer <vollmer.philipp@t-online.de>, alsa-devel@alsa-project.org
+To: Paul Davis <pbd@op.net>
+Cc: tomasz motylewski <T.Motylewski@bfad.de>, Tim Goetze <tim@quitte.de>, Philipp Vollmer <vollmer.philipp@t-online.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->There is a prominent link on
->http://www.alsa-project.org/documentation.php3#0.9doc
->
->Howto use the ALSA API - Paul Davis has also written a brief explanation. 
->http://www.op.net/~pbd/alsa-audio.html#captureex
+Paul Davis wrote:
 
-Right here, on this mailing list, and in private mail to Philipp, and
-in mail to LAD, I made it clear that the examples in my document are
-incomplete and incorrect.
+> 
+> agreed. perhaps you can fix them, or produce a version of the document
+> with them removed so that a better link can be used. If you would like
+> to pay me to rearrange my time to get the code removed and/or fixed,
+> thats fine. Otherwise, please accept the limited offering thats linked
+> to right now.
+> 
+> 
 
-The link is included because it was felt that the non-code material in
-my document was useful. 
+If people send in a fix to that file I'll add it in and put up the 
+revision on ALSA if Paul doesn't mind.
 
->While examples are the best for of developers documentation, broken examples
->are the worst form of misinformation.
 
-agreed. perhaps you can fix them, or produce a version of the document
-with them removed so that a better link can be used. If you would like
-to pay me to rearrange my time to get the code removed and/or fixed,
-thats fine. Otherwise, please accept the limited offering thats linked
-to right now.
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
->I have written about a week ago to pbd@users.sourceforge.net, no answer yet.
-
-thats not my email address, and its not listed as that on the web
-site. i get approximately 150 email messages per day connected with
-linux audio issues. i do not have time to answer them all.
-
---p
 
 _______________________________________________________________
 
