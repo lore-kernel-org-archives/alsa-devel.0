@@ -1,14 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Re: [PATCH] USB MIDI driver
-Date: Thu, 04 Jul 2002 13:52:17 +0200 (METDST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: Re: USB recording - repetitive peaks
+Date: Fri, 05 Jul 2002 01:23:18 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0207041308380.15122-100000@studcom.urz.uni-halle.de>
-References: <s5hznx7rfik.wl@alsa2.suse.de>
+Message-ID: <3D247676.8090309@boosthardware.com>
+References: <3D208C5C.36649172@ladisch.de>	<s5hhejibem0.wl@alsa2.suse.de>	<3D21B878.8090902@boosthardware.com>	<s5hy9curxdr.wl@alsa2.suse.de>	<3D21C827.2060602@boosthardware.com>	<s5hwuseruac.wl@alsa2.suse.de>	<3D21D6CA.7000308@boosthardware.com>	<s5hu1nirsni.wl@alsa2.suse.de>	<3D21DDFD.6000206@boosthardware.com>	<3D21EB37.7070008@boosthardware.com> <s5hpty5ry0y.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hznx7rfik.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,57 +21,33 @@ Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
-> i changed virmidi codes for easier use, and added
-> snd_virmidi_receive() to usbmidi.c.
-> could you check the updated driver?
 
-It is obvious that you have not been able to check it.  :-)
+ >the hang-up at capture close was at least fixed on cvs.
+ >it was due to the combination of ASYNC_UNLINK and complete callbacks.
+ >
+ >not sure whether the bug with jack is fixed, too, but i think it was 
+ >caused by the same reason.  please update the cvs tree.
 
-My snd_usbmidi_port_input() function actually does the _output_ (I named
-it 'input' because it began its life as the function to be assigend to
-port_callback.event_input -- well, that's input _to_ the usb-midi port.
-A better name for it would be snd_usbmidi_event_for_output).
+I can now record successfully using arecord without hanging the system
+but now I get an instant lock up while starting ardour. :( I have a 
+suspicion that it happens when ardour registers with jackd and asks for 
+the available input devices.  (I'm not sure about the sound quality. I 
+will see if I can generate a test tone to use instead of actual music).
 
-The call to snd_virmidi_receive() should go into snd_usbmidi_input_packet.
+The only way to get out of it is reboot using sysreq.
 
-And now it turns out that moving the rmidi pointer from the input to the
-output endpoint structure was rather stupid by me because rmidi is needed
-for input only. That change needs to be reverted, too.
+I will check some more. Please note this wasn't happening so quickly 
+yesterday.
 
-The virmidi creation in snd_usbmidi_create_endpoint_ports should look like
-the following: (warning: untested and made by hand because I don't have
-access to my Linux box right now. patch probably won't accept those line
-numbers! :-)
+I'm not sure about the sound quality it is definitely better. I will see 
+if I can generate a test tone to use instead of actual music.
 
-
-@@ at the end of snd_usbmidi_create_endpoint_ports
-	if (in)
-		umidi->in_endpoints[ep]->ports[c].seq_port = port;
-
--	if (out && *port_idx < SNDRV_MINOR_RAWMIDIS) {
-+	if (in && *port_idx < SNDRV_MINOR_RAWMIDIS) {
-		snd_rawmidi_t *rmidi;
-		snd_virmidi_dev_t *rdev;
-		err = snd_virmidi_new(umidi->card, *port_idx, &rmidi);
-@@ a few lines later
-			snd_device_free(umidi->card, rmidi);
-			return err;
-		}
--		umidi->out_endpoints[ep]->ports[out_port].rmidi = rmidi;
-+		umidi->in_endpoints[ep]->ports[c].rmidi = rmidi;
-	}
-	if (out)
-		++out_port;
-
-
-This will not create virmidi ports for output only ports, but it should
-actually work for the rest. :)
-
-I think I'll be able to submit a patch for storing rmidi independently of
-the input/output structures tomorrow.
-
-
-Clemens
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
 
 
