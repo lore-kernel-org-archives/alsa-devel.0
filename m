@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000835]: Possible race condition leading to crash in gnome-volume-control
-Date: Tue, 18 Jan 2005 22:49:07 +0100
-Message-ID: <835315e7c54ba8f999120400481817ad@bugtrack.alsa-project.org>
+From: Reimar =?iso-8859-1?Q?D=F6ffinger?= <Reimar.Doeffinger@stud.uni-karlsruhe.de>
+Subject: Re: Re: [Fwd: Re: [MPlayer-dev-eng] AV out of sync with "-ao alsa" in gmplayer, mplayer works ok]
+Date: Tue, 18 Jan 2005 21:23:09 +0100
+Message-ID: <20050118202309.GA1147@rz.uni-karlsruhe.de>
+References: <1104311474.2984.2.camel@krustophenia.net> <yw1x1xd976fz.fsf@inprovide.com> <loom.20050113T160235-955@post.gmane.org> <1105647075.3457.18.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4EF9219
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 22:49:07 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <1105647075.3457.18.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,48 +18,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+On Thu, Jan 13, 2005 at 03:11:15PM -0500, Lee Revell wrote:
+> Are there any plans to fix the ALSA output so that it doesn't reset the
+> stream with every xrun?  Since you don't use a realtime thread to handl=
+e
+> the audio there are certain to be some xruns, for example whenever usin=
+g
+> the GUI controls in any way or moving the mouse.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=835> 
-======================================================================
-Reported By:                jcspray
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   835
-Category:                   PCI - emu10k1
-Reproducibility:            sometimes
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             2.6.8
-======================================================================
-Date Submitted:             01-18-2005 22:49 CET
-Last Modified:              01-18-2005 22:49 CET
-======================================================================
-Summary:                    Possible race condition leading to crash in
-gnome-volume-control
-Description: 
-The maintainer of the gstreamer-based gnome-volume-control utility believes
-that a crash may be the result of a race condition in ALSA driver.
+xruns just should not happen. Ignoring them seems to be the very wrong
+way. Also a real-time thread should not be necessary just to avoid xruns
+when only moving the mouse IMHO.
+Maybe you can just increase the buffer size somehow? At least for
+MPlayer a big buffer should cause no problems.
 
-Please see http://bugzilla.gnome.org/show_bug.cgi?id=156921#c9
-======================================================================
+Greetings,
+Reimar D=F6ffinger
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-18-05 22:49 jcspray        New Issue                                    
-01-18-05 22:49 jcspray        Distribution              => Ubuntu          
-01-18-05 22:49 jcspray        Kernel Version            => 2.6.8           
-======================================================================
-
-
+P.S.: I wont cc further mails about this to the list, because I don't thi=
+nk this
+belongs on alsa-devel.
 
 
 -------------------------------------------------------
