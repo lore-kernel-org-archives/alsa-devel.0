@@ -1,11 +1,10 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: soundcard matrix: broken links etc.
-Date: Wed, 11 Dec 2002 14:27:53 +0900
+From: alfp <alfp@adsmr.co.za>
+Subject: asoundc for routing all cards through one device
+Date: 11 Dec 2002 10:10:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DF6CCD9.8080503@boosthardware.com>
-References: <E18LQai-0006m2-00@sc8-sf-list1.sourceforge.net> <3DF62B82.4070700@boosthardware.com> <3DF66A89.5030403@monmouth.com> <3DF6A875.90107@boosthardware.com> <3DF6B9A5.3010807@monmouth.com>
+Message-ID: <1039594233.390.3.camel@didjeridu.adsmr.co.za>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,50 +15,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "John S. Denker" <jsd@monmouth.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-John S. Denker wrote:
+It took me a while to figure this out, so I thought i'd share it.
 
-> However, the apparently non-deprecated version
->   http://www.alsa-project.org/alsa-doc/
-> contains almost as many broken links etc.
-> Here's the summary:
-> 
->  Code Occurrences  What to do
->  200     1         There are broken fragments which must be fixed.
->  301     1         You should update the link.
->  302     28        Usually nothing.
->  401     4         The link is not public. You'd better specify it.
->  403     1         The link is forbidden! This needs fixing.
->  404     57        The link is broken. Fix it NOW!
->  405     1         The server does not allow HEAD requests.
->  500     37        Either the hostname is incorrect or ...
-> 
-> Interested parties may grab the details from
->   http://www.av8n.net/~jsd/alsa/checked-links2.html
->   http://www.av8n.net/~jsd/alsa/checked-links2.html.gz
-> 
+If you stick this into you .asoundrc, it creates a virtual device
+called 'all', which will play to four cards at once.
 
-Thanks for that. If you have the inclination to send in a patch that 
-would be very appreciated. Otherwise it will have to wait for me to get 
-some more time.
+ie aplay -Dall /usr/share/sounds/phone.wav
 
+alf
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
+######## All cards as one ####################
+#### Device (pcm) definitions #############
+pcm.m0 { type hw card 0 }
+pcm.m1 { type hw card 1 }
+pcm.m2 { type hw card 2 }
+pcm.m3 { type hw card 3 }
 
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
+#### Multi-device definition ##############
+pcm.mlt {
+          type multi;
+          slaves [
+                 { pcm m0 channels 2 }
+                 { pcm m1 channels 2 }
+                 { pcm m2 channels 2 }
+                 { pcm m3 channels 2 }
+          ]
 
-Goldie, 8 Nov, 2002
-The Scotsman
+          bindings [
+                   { slave 0 channel 0 }
+                   { slave 0 channel 1 }
+                   { slave 1 channel 0 }
+                   { slave 1 channel 1 }
+                   { slave 2 channel 0 }
+                   { slave 2 channel 1 }
+	           { slave 3 channel 0 }
+                   { slave 3 channel 1 }
+          ]
+}
+
+#### Auto-generated routing ###############
+pcm.all {
+       type plug
+       slave { pcm mlt }
+       route_policy duplicate
+}
+
 
 
 
