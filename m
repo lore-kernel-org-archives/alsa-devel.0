@@ -1,15 +1,11 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - utils 0000332]: Unable to enable 'Mic as Center/LFE'
-Date: Fri, 11 Jun 2004 09:12:32 +0200
+From: =?iso8859-15?Q?Nicolas_H=FCppelsh=E4user?= <nh@emlix.com>
+Subject: snd_pcm_commit asserts
+Date: Fri, 11 Jun 2004 11:30:21 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <9d79ebd36bdcdadd0f5d96354a1d55f0@bugtrack.alsa-project.org>
+Message-ID: <E1BYiMf-0006Oc-00@mailer.emlix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8209822C
-	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2004 09:12:33 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,64 +14,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0332
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                Johan Gorter
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - utils
-Bug ID:                     332
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-11-2004 09:12 CEST
-Last Modified:              06-11-2004 09:12 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Unable to enable 'Mic as Center/LFE'
-Description:=20
-In the alsa versions I have used thus far (1.0.3 and 1.0.5) I am unable t=
-o
-enable the 'Mic as Center/LFE' option of my onboard AC '97. Alsamixer
-cannot change its value from 0 and record / mute is also disabled. I
-tracked the problem by using alsactl to store the settings. This results
-in a file where this option (nr 47 on my system) is an Integer with the
-comment that the value may be from 0 to 0. On other systems I found out
-that this is supposed to be a Boolean which can be switched on and off.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Hello!
 
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-11-04 09:12 Johan Gorter   New Bug                                    =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Using alsa 1.0.4 the following problem occurs.
+
+If in between a snd_pcm_mmap_begin and snd_pcm_mmap_commit a xrun occured
+I'm not (always) able to do a successful commit.
+
+If in XRUN state the snd_pcm_mmap_commit returns error code -32 (broken
+pipe). Getting this I do xrun recovery with bringing alsa into state
+PREPARED and repeating the snd_pcm_mmap_commit call. Some times this may
+succeed but most of the time it fails again, this time with an assertion:
+
+pcm.c:5945: snd_pcm_mmap_commit: Assertion `offset == *pcm->appl.ptr %
+pcm->buffer_size' failed.
+
+Another approach to prevent the first failing commit (the one returning
+broken pipe error) is to check immediately before calling snd_pcm_commit
+the state and ensure to be either in RUNNING state or in PREPARED state
+respectively. So if the XRUN occured after snd_pcm_mmap_begin and before
+calling snd_pcm_mmap_commit alsa is in state PREPARED when doing the
+commit.  Sometimes this works, sometimes the snd_pcm_mmap_commit call
+throws again
+
+pcm.c:5945: snd_pcm_mmap_commit: Assertion `offset == *pcm->appl.ptr %
+pcm->buffer_size ' failed.
+
+Nevertheless the data provided to snd_pcm_mmap_commit is always the same
+and corresponds to the data obtained by the mmap_begin call.
+
+The problem appears in playback and capture mode.
+
+Viele Gruesse / best regards
+	Nicolas Hueppelshaeuser
+--
+nicolas hueppelshaeuser, emlix gmbh, http://www.emlix.com,
+
+emlix - your embedded linux partner
 
 
 
