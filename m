@@ -1,12 +1,14 @@
 From: Gerhard Dirschl <gerhard.dirschl@gmx.de>
-Subject: devfs trouble in latest cvs
-Date: Fri, 9 May 2003 20:12:45 +0200
+Subject: Re: devfs trouble in latest cvs
+Date: Fri, 9 May 2003 22:20:05 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030509181245.GA1617@euh11a303.stud.uni-karlsruhe.de>
+Message-ID: <20030509202005.GA1244@euh11a303.stud.uni-karlsruhe.de>
+References: <20030509181245.GA1617@euh11a303.stud.uni-karlsruhe.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
+In-Reply-To: <20030509181245.GA1617@euh11a303.stud.uni-karlsruhe.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,44 +20,33 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- Hi!
+On Fri, May 09, 2003 at 08:12:45PM +0200, Gerhard Dirschl wrote:
+> The one in wrappers.c crashes my machine on driver unloading, the one in
+> misc.c works fine.
 
-I'm running kernel version 2.4.21-rc1 on a dual-SMP machine with devfs.
-I found some errors While tracking down a compile problem with the latest 
-cvs code.
+snd_compat_devfs_remove() in acore/wrappers.c still produces an Oops 
+May  9 22:02:54 localhost kernel: devfs_put(df1a5c20): poisoned pointer
+May  9 22:02:54 localhost kernel: Forcing Oops
+May  9 22:02:54 localhost kernel: kernel BUG at base.c:914!
+May  9 22:02:54 localhost kernel: invalid operand: 0000
+May  9 22:02:54 localhost kernel: CPU:    0
+May  9 22:02:54 localhost kernel: EIP:    0010:[<c0170564>]    Not tainted
+May  9 22:02:54 localhost kernel: EFLAGS: 00010282
+...
 
-Typo in include/adriver.h
--devfs_handle_t snd_compat_devfs_mkdir(const char *dir);
--#define devfs_mk_dir snd_compat_devfs_mkdir
-+devfs_handle_t snd_compat_devfs_mk_dir(const char *dir);
-+#define devfs_mk_dir snd_compat_devfs_mk_dir
-
-In acore/wrappers.c the placement of
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 3, 0) ... #endif /* < 2.3.0 */
-seems wrong. The following makes more sense to me.
-@@ -30,6 +30,8 @@
- #endif
+Apply this to fix it
+@@ -51,7 +51,6 @@
+        if (n < 64 && buf[0]) {
+                devfs_handle_t de = devfs_find_handle(NULL, buf, 0, 0, 0, 0);
+                devfs_unregister(de);
+-               devfs_put(de);
+        }
  }
 
-+#endif /* < 2.3.0 */
-+
- #if defined(CONFIG_DEVFS_FS)
-
- #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 4, 10)
-@@ -79,5 +81,3 @@
- }
-
- #endif
--
--#endif /* < 2.3.0 */
-
-There arte two different implementations of snd_compat_devfs_remove()
-in acore/wrappers.c and acore/misc.c
-The one in wrappers.c crashes my machine on driver unloading, the one in
-misc.c works fine.
+(or keep devfs_put(de) and replace devfs_find_handle with devfs_get_handle)
 
   ciao
-     gerhard
+    Gerhard
 
 -- 
 Gerhard Dirschl
