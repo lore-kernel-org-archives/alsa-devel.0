@@ -1,68 +1,48 @@
-From: Carlo Wood <carlo@alinoe.com>
-Subject: ViaVoice or ALSA bug?
-Date: Wed, 9 Jul 2003 17:43:41 +0200
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <20030709154341.GA7479@alinoe.com>
+From: Ryan Underwood <nemesis-lists@icequake.net>
+Subject: Re: cs4248 / thinkpad 755 / 755c , patch suggestions [PATCH]]
+Date: Wed, 9 Jul 2003 11:05:32 -0500
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20030709160532.GE1031@dbz.icequake.net>
+References: <20030708173229.GG1030@dbz.icequake.net> <s5hd6gkdimp.wl@alsa2.suse.de> <20030708195437.GL1030@dbz.icequake.net> <s5hu19vc1r5.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-user-admin@lists.sourceforge.net>
+Content-Type: text/plain; charset=iso-8859-1
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+In-Reply-To: <s5hu19vc1r5.wl@alsa2.suse.de>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: alsa-user@lists.sourceforge.net, xvoice@yahoogroups.com
 List-Id: alsa-devel@alsa-project.org
 
-Dear ALSA developers,
 
-Ok, I fixed the previous problem; now running the
-latest kernel + latest modules (and alsa 0.9.4).
+Hi,
 
-The REAL problem I have is the following:
+On Wed, Jul 09, 2003 at 02:39:58PM +0200, Takashi Iwai wrote:
+> > 
+> > You are correct, play works correctly but catting does not.  It seems,
+> > however, that many OSS drivers support cat a wav file directly to /dev/dsp,
+> > and do the detection of the format parameters internally.  I guess this is not
+> > required by the OSS specification?
+> 
+> really do _many_ oss drivers support these features?
+> i've never thought of that...
 
-Recording has always been extremely hard to impossible
-with linux - one of the applications that I REALLY
-cannot get working is the speech recognition tool of
-IBM: ViaVoice.
+Every one I've used has done so (Aureal Vortex2, CS4614, c-media, etc).
+I don't know if it's the rule but it seems like fairly common behavior
+from my experience.
 
-I downloaded the commercial sound drivers from Front4
-and with that it works perfectly.  In the past I've also
-got this to work with the OSS/Free stuff.
-
-However... with ALSA, it has never has worked; and I've tried
-a lot of things :(.
-
-I can't see this anymore being anything else but a bug
-in ALSA.  The problem however is to find WHY it doesn't
-work (and then fix it).
-
-I'd like to get some guidance with that.
-
-My setup is as follows:
-
-1) It works (recording speech with microphone) when using
-   the Front4 commercial sound drivers.
-2) With ALSA, playback works and I hear myself back over
-   the speakers when I talk into the microphone.  I even
-   can let it 'sing around' by capturing Mic (of course) and
-   turning on max. "AC97" and "Capture == Igain".  Also
-   "AC97 Capture" was set to the maximum.  In fact, I turned
-   EVERYTHING on to the maximum with alsamixer, unmuted
-   everything and captured Mic [1]... No recording.
-
-I am willing to get to the bottom of this, but I am out
-of ideas right now :/
-
-Please help.
+In any case it's really not a big deal, just that ALSA's OSS emulation
+seems to be divergent from the typical OSS driver's behavior in that
+regard.
 
 -- 
-Carlo Wood <carlo@alinoe.com>
+Ryan Underwood, <nemesis at icequake.net>, icq=10317253
 
 
 -------------------------------------------------------
