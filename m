@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000936]: AM_PATH_ALSA does not set prefix properly
-Date: Wed, 23 Feb 2005 22:39:35 +0100
-Message-ID: <e17606b7fcf7f4daf30262f32ec071da@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000937]: No sound unless using OSS driver
+Date: Thu, 24 Feb 2005 01:14:28 +0100
+Message-ID: <27eedf0c6300008646a5b00d496ef58c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 94369204
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2005 22:39:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BDBD41F8
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 01:14:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,36 +23,40 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=936> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=937> 
 ======================================================================
-Reported By:                starling
+Reported By:                ruffasdagut
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   936
-Category:                   aconnect
+Project:                    ALSA - driver
+Issue ID:                   937
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     new
+Distribution:               Fedora
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             02-23-2005 22:39 CET
-Last Modified:              02-23-2005 22:39 CET
+Date Submitted:             02-24-2005 01:14 CET
+Last Modified:              02-24-2005 01:14 CET
 ======================================================================
-Summary:                    AM_PATH_ALSA does not set prefix properly
+Summary:                    No sound unless using OSS driver
 Description: 
-When configure calls AM_PATH_ALSA, it wrongly assumes that
---with-alsa-prefix specifies the location of the library, not the prefix
-of alsa.  In addition, --with-alsa-inc-prefix does not properly modify
-CFLAGS.  The result is that every configure where alsa-lib is installed
-outside the hardcoded include/lib paths fails unconditionally.
+I have no sound from the system unless using the OSS option in gstreamer
+properties. If I do this I get sound but no control over the volume or
+mute. I dont really need all the digital parts, but just the Basic sound
+would be nice. I am going to include the ouput from the alsa debug program
+I found online. Thanks for looking into this issue.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-05 22:39 starling       New Issue                                    
-02-23-05 22:39 starling       File Added: alsa.diff                        
+02-24-05 01:14 ruffasdagut    New Issue                                    
+02-24-05 01:14 ruffasdagut    File Added: debug.log                        
+02-24-05 01:14 ruffasdagut    Distribution              => Fedora          
+02-24-05 01:14 ruffasdagut    Kernel Version            => 2.6             
 ======================================================================
 
 
