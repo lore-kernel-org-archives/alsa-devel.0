@@ -1,20 +1,12 @@
-From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: Re: Re: [alsa-cvslog] CVS: alsa-kernel/isa
- cmi8330.c,1.10,1.11
-Date: Mon, 16 Sep 2002 18:00:50 +0200
+From: Paul Davis <pbd@op.net>
+Subject: Re: Architecture Documentation
+Date: Mon, 16 Sep 2002 13:30:52 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m265x59b65.fsf@vador.mandrakesoft.com>
-References: <E17qVU2-0005tc-00@usw-pr-cvs1.sourceforge.net>
-	<m2sn0acsa8.fsf@vador.mandrakesoft.com> <s5h7khmteds.wl@alsa2.suse.de>
-	<m2it16b42n.fsf@vador.mandrakesoft.com> <s5hznuiroht.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <E17qzgM-00027H-00@usw-sf-list1.sourceforge.net>
+References: <20020916113407.A29031@atl.lmco.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from vador.mandrakesoft.com (office.mandrakesoft.com [195.68.114.34])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA15541
-	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2002 17:59:08 +0200
-In-Reply-To: <s5hznuiroht.wl@alsa2.suse.de> (Takashi Iwai's message of "Mon,
- 16 Sep 2002 16:35:42 +0200")
+In-reply-to: Your message of "Mon, 16 Sep 2002 11:34:07 EDT."
+             <20020916113407.A29031@atl.lmco.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,32 +15,13 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@users.sourceforge.net>, alsa-devel@alsa-project.org
+To: Chuck Winters <cwinters@atl.lmco.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
+>Is there any "big picture" architectural documentation on alsa?
 
-> > > cmi8330 works even without isapnp.  hence CONFIG_ISAPNP should
-> > > not be added in config.in.
-> > 
-> > for all models ?
->
-> not sure...
->
-> > i had once a cmi8330 (well something like four years ago) and at
-> > that time it would only works after playing with isapnptools.
->
-> then CONFIG_ISAPNP should not be in the dependency list.  the driver
-> wouldn't be compiled once if CONFIG_ISAPNP=n, even though you could
-> use the card with help of isapnptools.
-
-but alsa donation of isapnp to the core kernel made isapnptools
-obsoloted since.
-
-anyway, i've no problem with the original patch if some cards works
-without isapnp support.
-
+no.
 
 
 -------------------------------------------------------
