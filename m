@@ -1,13 +1,16 @@
-From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: Atomic operators in alsa driver
-Date: Tue, 10 Aug 2004 21:51:54 -0700 (PDT)
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: OSS vs ALSA war :-)
+Date: Wed, 11 Aug 2004 09:12:55 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040810215154.8910.h006.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <200408110712.i7B7CtAo003552@www4.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from www4.pobox.sk (www4.pobox.sk [212.5.216.14])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EB5E31FA
+	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2004 09:12:55 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,44 +19,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: geeceezee@free.fr
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A question to clarify which 'operators' are atomic i.e. inside spinlock.
+Maybe:
 
-As far as I can make out from Takashi's Writing an Alsa driver, Chapter 5,
-section "Operators" (am I correct?)
+1 user of 10 000 bought same soundcard as you have.
+1 of 1000 these users uses linux.
+1 of 100 these linux users is developer.
+1 of 10 these developers can fix and want fix problem in your
+soundcard driver.
 
-Atomic:
-trigger callback
-pointer callback
+Result: you must search for 1 from 10 000 000 000 (are there so many
+people on the world) :-)
 
-Non-atomic:
-open callback
-close callback
-ioctl callback
-hw_params callback
-hw_free callback
-prepare callback
-copy and silence callbacks
-ack callback
-page callback
+In real:
+If one from alsa developers doesn't have information from card
+manufacturer about internal things on card it will be very hard to
+find where problem is (and he must have card).
 
-This could be clarified explicitly in the section "Atomicity"
+You can use OSS driver, you always have choice.
+I prefer hardware, where I exactly know it is supported under linux
+(open source drivers or closed source drivers, but free on cost). If
+it is not fully suported, but basically works, I am able most of time
+add others feature I need (if informations are available from
+manufacturer).
 
-thanks
-
-Eliot
-
-
-Eliot Blennerhassett
-AudioScience Inc.
---
-Junk footer beyond this point. Read at your own risk.
-
-
--------------------------------------------------------------
-Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
+Peter Zubaj
+=0A____________________________________=0Ahttp://www.pobox.sk/ - najvacsi s=
+lovensky freemail=0A=0A=0A
 
 
 -------------------------------------------------------
