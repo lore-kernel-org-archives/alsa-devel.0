@@ -1,14 +1,15 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Troubleshoot soundcard positions
-Date: Tue, 10 Aug 2004 11:13:36 +0200 (METDST)
+Subject: Re: Installed alsa (1.0.5)into 2.6.7 kernel:says
+ nosoundcards
+Date: Tue, 10 Aug 2004 11:20:10 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0408101112230.7911-100000@studcom.urz.uni-halle.de>
-References: <BAY7-F14Orq8Dr4Guph000147fc@hotmail.com>
+Message-ID: <Pine.HPX.4.33n.0408101116120.7911-100000@studcom.urz.uni-halle.de>
+References: <20040810065628.2539.qmail@webmail35.rediffmail.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <BAY7-F14Orq8Dr4Guph000147fc@hotmail.com>
+In-reply-to: <20040810065628.2539.qmail@webmail35.rediffmail.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,26 +18,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Roger Andreassen <randreas69@hotmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Roger Andreassen wrote:
-> I have two Pinnacle PCTV Pro tuner cards and I've also the mobo cmipci
-> loaded along with the Live! Player, Slackware 10.0 running kernel 2.6.7,
-> Alsa 1-0.5 mandatory for running tweo tuners at once.
+SailajaReddy  K wrote:
+> *I have installed alsa driver,lib, utilities successfully. But I
+> couldn't see any cards in my system.  Please see below outputs:
+>    **[root@aims-pc-100 alsa]# cat /proc/asound/cards
+>       --- no soundcards ---
+>    **[root@aims-pc-100 root]# lsmod
+>       Module                        Size        Used by
+>       snd_ice1712                65316        -
 >
-> At that time my two tuners became dsp0 and dsp1, Live Player as dsp2 and the
-> C-Media sound as dsp3. What a nightmare.
-> ...
-> I've also looked into "index=" entries but the system doesn't react no
-> matter what I try.
+> What else I need to do and check to confirm that ALSA is working
+> fine for my card "ICE1712 - M Audio Delta 1010"?
 
-The following entries in /etc/modprobe.conf should work:
+In theory, it should work with the snd-ice1712 driver.
 
-options snd-emu10k1 index=0
-options snd-cmipci index=1
-options snd-bt87x index=2,3
+Is the card listed with lspci?
+
+> Is reboot needed after modifying the /etc/modules.conf file?
+
+Not if you reload the drivers manually.
+
+> I read that all mixer channels are muted by default. How exactly
+> we should adjust the soundcards volume level?.
+
+There is a special tool for your card: envy24control in the alsa-tools
+package.
 
 
 HTH
