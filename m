@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000460]: Oops on loading the es18xx module
-Date: Tue, 9 Nov 2004 16:14:17 +0100
-Message-ID: <0f086a5e73d8384ebf59683ec7717353@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000266]: I receive pages of unresolved symbols when I attempt to load the intel8x0 module.
+Date: Tue, 9 Nov 2004 16:16:07 +0100
+Message-ID: <740f781c57d2d84fb6b1189ed58a7a66@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5B9A8244
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:14:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C018F244
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:16:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,180 +24,112 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=460> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=266> 
 ======================================================================
-Reported By:                twhitehead
-Assigned To:                tiwai
+Reported By:                malkuth
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   460
-Category:                   ISA - es18xx
+Issue ID:                   266
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   crash
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian SID
-Kernel Version:             2.6.8.1 (from kernel.org)
-Resolution:                 won't fix
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2115.nptl
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-21-2004 21:48 CEST
-Last Modified:              11-09-2004 16:14 CET
+Date Submitted:             05-10-2004 05:36 CEST
+Last Modified:              11-09-2004 16:16 CET
 ======================================================================
-Summary:                    Oops on loading the es18xx module
+Summary:                    I receive pages of unresolved symbols when I attempt
+to load the intel8x0 module.
 Description: 
-Loading the es18xx module immediately (and always) results in an "Unable to
-handle kernel paging request at virtual address 00000000000000b0" message.
- The usage count then sticks at one and applications are not able to open
-the device files.
+I had version 0.9.8 and had the problem, so I downloaded and built the
+1.0.4 version. The following is the output from the load of the module.
+Starting sound driver: snd-card-intel8x0 Warning: ignoring snd_major=116,
+no such parameter in this module
+Warning: ignoring snd_cards_limit=1, no such parameter in this module
+Warning: ignoring snd_device_mode=0666, no such parameter in this module
+Warning: ignoring snd_device_gid=0, no such parameter in this module
+Warning: ignoring snd_device_uid=0, no such parameter in this module
+Module snd loaded, with warnings
+Module gameport loaded, with warnings
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_suspend_all_R43c50b57
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_ac97_mixer_Rf5b599af
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_ac97_set_rate_R1be27d60
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_new_Rd565b6d2
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_card_new_Rc2b77688
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_lib_free_pages_Re8dafa0a
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_verbose_printk_R49d4e4d1
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_hw_constraint_integer_R5eb3e8f8
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_ac97_tune_hardware_R94360210
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_ac97_resume_Re12d8194
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_period_elapsed_Re6e6b098
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_lib_preallocate_pci_pages_for_all_Rd644d0aa
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_lib_ioctl_R8482811c
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_card_register_R492d494a
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_free_pci_pages_Ra2184231
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_device_new_R371c74fc
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_set_ops_Rad3c274a
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_malloc_pci_pages_R516d0d40
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_hw_constraint_list_R74cb7c63
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_card_proc_new_Ra82b74c6
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_lib_malloc_pages_R0407e1db
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_mpu401_uart_new_Ra520c930
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_ac97_update_bits_R2f6d9192
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_card_free_Rf8b77bec
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+insmod
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o
+failed
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+insmod snd-card-intel8x0 failed
+
 ======================================================================
 
 ----------------------------------------------------------------------
- twhitehead - 09-03-04 05:29 
+ perex - 09-07-04 16:36 
 ----------------------------------------------------------------------
-I hacked in a function call tracer with the GCC profiling hooks and
-recompiled with line number debugging info.  The results is (line numbers
-are for the alsa-driver 1.0.6a and stock kernel 2.6.8.1 packages -- I
-threw the lines in just to make sure *grin*):
-
-Sep  2 19:57:09 whitehead kernel: TRACE+5 fffffffc007ce2d0
-fffffffc00694628
-Sep  2 19:57:09 whitehead kernel: TRACE+6 fffffffc007ce21c
-fffffffc007ce354
-Sep  2 19:57:09 whitehead kernel: TRACE+7 fffffffc007ce0e4
-fffffffc007ce28c
-Sep  2 19:57:09 whitehead kernel: TRACE+8 fffffffc007cdb48
-fffffffc007ce154
-Sep  2 19:57:09 whitehead kernel: TRACE+9 fffffffc0056e9a8
-fffffffc007cdbdc
-Sep  2 19:57:09 whitehead kernel: TRACE-9 fffffffc0056e9a8
-fffffffc007cdbdc
-Sep  2 19:57:09 whitehead kernel: TRACE+9 fffffffc0056e608
-fffffffc007cdc30
-Sep  2 19:57:09 whitehead kernel: TRACE+10 fffffffc0056e378
-fffffffc0056e6f4
-
-// snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
-//           snd_dma_isa_data(),
-//           64*1024,
-//           chip->dma1 > 3 || chip->dma2 > 3 ? 128*1024 : 64*1024);
- es18xx:1600 (snd_es18xx_pcm)                             ->
-pcm_memory.c:260 (snd_pcm_lib_preallocate_pages_for_all)
-//   if ((err = snd_pcm_lib_preallocate_pages(substream, type, data, size,
-max)) < 0)
- pcm_memory.c:266 (snd_pcm_lib_preallocate_pages_for_all) ->
-pcm_memory.c:238 (snd_pcm_lib_preallocate_pages)
-// return snd_pcm_lib_preallocate_pages1(substream, size, max);
- pcm_memory.c:241 (snd_pcm_lib_preallocate_pages)         ->
-pcm_memory.c:193 (snd_pcm_lib_preallocate_pages1)
-//  preallocate_pcm_pages(substream, size);
- pcm_memory.c:197 (snd_pcm_lib_preallocate_pages1)        ->
-pcm_memory.c:50 (preallocate_pcm_pages)
-// if (snd_dma_get_reserved_buf(dmab, substream->dma_buf_id) > 0) {
- pcm_memory.c:57 (preallocate_pcm_pages)                  ->
-memalloc.c:508 (snd_dma_get_reserved_buf)
- pcm_memory.c:57 (preallocate_pcm_pages)                  <-
-memalloc.c:508 (snd_dma_get_reserved_buf)
-//  if ((err = snd_dma_alloc_pages(dmab->dev.type, dmab->dev.dev,
-//            size, dmab)) < 0) {
- pcm_memory.c:66 (preallocate_pcm_pages)                  ->
-memalloc.c:397 (snd_dma_alloc_pages)
-//  dmab->area = snd_malloc_dev_pages(device, size, &dmab->addr);
- memalloc.c:415 (snd_dma_alloc_pages)                     ->
-memalloc.c:304 (snd_malloc_dev_pages)
-// res = dma_alloc_coherent(dev, PAGE_SIZE << pg, dma, gfp_flags);
- memalloc.c:315 (snd_malloc_dev_pages)                    ->
-dma-mapping.h:39 (dma_alloc_coherent)
-// BUG_ON(dev->bus != &pci_bus_type);
-*crash at* dma-mapping.h:40 (from looking at the assembler it looks like
-dev is a NULL pointer -- register s4)
-
-
-Sep  2 19:57:09 whitehead kernel: Unable to handle kernel paging request
-at virtual address 00000000000000b0
-Sep  2 19:57:09 whitehead kernel: modprobe(752): Oops 0
-Sep  2 19:57:09 whitehead kernel: pc = [<fffffffc0056e424>]  ra =
-[<fffffffc0056e3bc>]  ps = 0000    Not tainted
-Sep  2 19:57:09 whitehead kernel: v0 = 000000000000002b  t0 =
-0000000000000000  t1 = 0000000000002000
-Sep  2 19:57:09 whitehead kernel: t2 = 0000000000000001  t3 =
-000000010018ef70  t4 = 00000000001c1fff
-Sep  2 19:57:09 whitehead kernel: t5 = 0000000000000001  t6 =
-00000000fffccf71  t7 = fffffc0010840000
-Sep  2 19:57:09 whitehead kernel: s0 = 0000000000010000  s1 =
-fffffc0017fb4448  s2 = fffffffc0056e6f4
-Sep  2 19:57:09 whitehead kernel: s3 = 0000000000000003  s4 =
-0000000000000000  s5 = fffffffc007ce354
-Sep  2 19:57:09 whitehead kernel: s6 = 0000000000010000
-Sep  2 19:57:09 whitehead kernel: a0 = fffffffc0056f588  a1 =
-fffffffc0056f5b3  a2 = ffffffffffffffff
-Sep  2 19:57:09 whitehead kernel: a3 = 0000000000000001  a4 =
-0000000000000001  a5 = 000000000000000f
-Sep  2 19:57:09 whitehead kernel: t8 = 0000000000000000  t9 =
-fffffc0000411dd8  t10= 0000000000000000
-Sep  2 19:57:09 whitehead kernel: t11= 0000000000000010  pv =
-fffffc000033945c  at = 0000000000000000
-Sep  2 19:57:09 whitehead kernel: gp = fffffffc00569f08  sp =
-fffffc0010843c38
-Sep  2 19:57:09 whitehead kernel: Trace:
-Sep  2 19:57:09 whitehead kernel: [sys_init_module+496/932]
-sys_init_module+0x1f0/0x3a4
-Sep  2 19:57:09 whitehead kernel: [sys_init_module+496/932]
-sys_init_module+0x1f0/0x3a4
-Sep  2 19:57:09 whitehead kernel: [entSys+164/192] entSys+0xa4/0xc0
-Sep  2 19:57:09 whitehead kernel: 
-Sep  2 19:57:09 whitehead kernel: Code: 23bdbb00  c3e00025  48203681 
-4180300c  f43ffffd  205f2000 <a42d00b0> 484c0731 
-
->>PC;  fffffffc0056e424 <[snd_page_alloc]snd_malloc_dev_pages+ac/16c>  
-<=====
-
-Code;  fffffffc0056e40c <[snd_page_alloc]snd_malloc_dev_pages+94/16c>
-0000000000000000 <_PC>:
-Code;  fffffffc0056e40c <[snd_page_alloc]snd_malloc_dev_pages+94/16c>
-   0:   00 bb bd 23       lda  gp,-17664(gp)
-Code;  fffffffc0056e410 <[snd_page_alloc]snd_malloc_dev_pages+98/16c>
-   4:   25 00 e0 c3       br   9c <_PC+0x9c>
-Code;  fffffffc0056e414 <[snd_page_alloc]snd_malloc_dev_pages+9c/16c>
-   8:   81 36 20 48       srl  t0,0x1,t0
-Code;  fffffffc0056e418 <[snd_page_alloc]snd_malloc_dev_pages+a0/16c>
-   c:   0c 30 80 41       addl s3,0x1,s3
-Code;  fffffffc0056e41c <[snd_page_alloc]snd_malloc_dev_pages+a4/16c>
-  10:   fd ff 3f f4       bne  t0,8 <_PC+0x8>
-Code;  fffffffc0056e420 <[snd_page_alloc]snd_malloc_dev_pages+a8/16c>
-  14:   00 20 5f 20       lda  t1,8192
-Code;  fffffffc0056e424 <[snd_page_alloc]snd_malloc_dev_pages+ac/16c>  
-<=====
-  18:   b0 00 2d a4       ldq  t0,176(s4)   <=====
-Code;  fffffffc0056e428 <[snd_page_alloc]snd_malloc_dev_pages+b0/16c>
-  1c:   31 07 4c 48       sll  t1,s3,a1
-
-----------------------------------------------------------------------
- tiwai - 09-03-04 14:10 
-----------------------------------------------------------------------
-Ok, it's a bug of alpha kernel, which has been fixed for long time
-on mm tree.
-A simple solution is to remove all BUG_ON() from
-include/asm-generic/dma-mapping.h.
+Too old, please, try latest ALSA version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-21-04 21:48 twhitehead     New Issue                                    
-08-21-04 21:48 twhitehead     Distribution              => Debian SID      
-08-21-04 21:48 twhitehead     Kernel Version            => 2.6.8.1 (from
-kernel.org)
-08-21-04 21:51 twhitehead     Issue Monitored: twhitehead                    
-09-01-04 23:05 tiwai          Note Added: 0001679                          
-09-03-04 05:12 twhitehead     Note Added: 0001686                          
-09-03-04 05:29 twhitehead     Note Added: 0001687                          
-09-03-04 06:42 twhitehead     Note Edited: 0001686                         
-09-03-04 06:43 twhitehead     Note Edited: 0001686                         
-09-03-04 14:10 tiwai          Status                   new => resolved     
-09-03-04 14:10 tiwai          Resolution               open => won't fix   
-09-03-04 14:10 tiwai          Assigned To               => tiwai           
-09-03-04 14:10 tiwai          Note Added: 0001690                          
-11-09-04 16:14 tiwai          Status                   resolved => closed  
+05-10-04 05:36 malkuth        New Issue                                    
+05-10-04 05:36 malkuth        Distribution              => Fedora Core 1   
+05-10-04 05:36 malkuth        Kernel Version            => 2.4.22-1.2115.nptl
+05-10-04 05:38 malkuth        Issue Monitored: malkuth                     
+09-07-04 16:36 perex          Status                   assigned => resolved
+09-07-04 16:36 perex          Resolution               open => fixed       
+09-07-04 16:36 perex          Note Added: 0001710                          
+11-09-04 16:16 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
