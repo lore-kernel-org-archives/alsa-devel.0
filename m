@@ -1,13 +1,14 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: [PATCH] - Audigy 1 and Audigy 2 mixer - again
-Date: Wed, 5 Nov 2003 08:01:54 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Suse being bought by Novell -- will this affect
+ the development of Alsa?
+Date: Wed, 5 Nov 2003 10:38:47 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311050701.IAA20667@www3.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <Pine.LNX.4.53.0311051028400.1187@F137.suse.de>
+References: <000001c3a35b$27055c40$0f02a8c0@ICO>
 Mime-Version: 1.0
-Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97783256-1804289383-1068015714=:20664"
-Content-Transfer-Encoding: 8BIT
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <000001c3a35b$27055c40$0f02a8c0@ICO>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,224 +17,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Ivica Bukvic <ico@fuse.net>
+Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---97783256-1804289383-1068015714=:20664
-Content-Type: TEXT/plain; CHARSET=US-ASCII
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+On Wed, 5 Nov 2003, Ivica Bukvic wrote:
 
-Hi,
+> Hi all,
+>
+> Just found about this one today. I think the title says it all? Any
+> thoughts (namely Jaroslav, Takashi, and the rest of the core team)?
 
-Last evening I found way how to use Philips ADC instead of AC97 on=20
-Audigy 1.
+We will continue. We are not aware of any changes in our development
+departments now. But from the first news, it seems that Novell understands
+the requirement for the support of our open source community to make
+a good Linux OS also for desktops. So we might enjoy even more bright
+future.
 
-Attached patch is tested only on Audigy 1 player (not tested on=20
-Audigy 1 Platinium, Audigy 1 Platinium EX, Audigy 2, Audigy 2=20
-Platinium, Audigy 2 Platinium EX), but I think it should work for all=20
-Audigy 1 and Audigy 2 cards, can some one test it ???
+						Jaroslav
 
-Modification:
- - disable routing from AC97 line out to front speakers.
- - AC97 ADC is used only for Mic playback and recording
- - Philips ADC is used for other analog playback and recording=20
-(Analog Mix Playback Volume, Analog Mix Capture Volume)
- - removes unused AC97 controls (is phone used ???)
-
-Advantage:
- - better Line In, Analog CD, Aux sound quality playback and=20
-recording (I hope that Philips ADC is better than old AC97 ADC)
- - similiar mixer as used on Windows
- - simpler mixer
- - you doesn't need set capture source to be able listen or record=20
-analog sources - I think this was confusing for many users
- - fixed small bug in MIC ADC buffer recording (alias device 1 - 16=20
-bit 8000 Hz mono)
-
-TODO:
- It seems that Audigy 1 can do 24 bit/48kHz recording (and I think 24=20
-bit /48 kHz playback too) using TRAM playback and capture. Philips=20
-ADC is connected to DSP and trasmit to DSP all 24 bit and I think=20
-that Philips DAC is connected in same way.
-
-Peter Zubaj
-
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislusenstva=0ASun=
- Fire V210 server v cenach uz od 125.000,- Sk bez DPH=0ANavstivte nas na ad=
-rese http://www.somi.sk/sun/lowend_servery.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=0A
---97783256-1804289383-1068015714=:20664
-Content-Type: APPLICATION/octet-stream; name="C:\\philips_adc.diff"
-Content-Transfer-Encoding: BASE64
-
-ZGlmZiAtdSAtciBvL2Fsc2Eta2VybmVsL2luY2x1ZGUvZW11MTBrMS5oIG4v
-YWxzYS1rZXJuZWwvaW5jbHVkZS9lbXUxMGsxLmgKLS0tIG8vYWxzYS1rZXJu
-ZWwvaW5jbHVkZS9lbXUxMGsxLmgJMjAwMy0xMC0xNyAxNzozOTo1Mi4wMDAw
-MDAwMDAgKzAyMDAKKysrIG4vYWxzYS1rZXJuZWwvaW5jbHVkZS9lbXUxMGsx
-LmgJMjAwMy0xMS0wNCAyMTo0NzozMC4wMDAwMDAwMDAgKzAxMDAKQEAgLTY3
-OSw2ICs2NzksOSBAQAogI2RlZmluZSBBX0FEQ0lEWAkJMHg2MwogI2RlZmlu
-ZSBBX0FEQ0lEWF9JRFgJCTB4MTAwMDAwNjMKIAorI2RlZmluZSBBX01JQ0lE
-WCAgICAgICAgICAgICAgICAweDY0CisjZGVmaW5lIEFfTUlDSURYX0lEWAkJ
-MHgxMDAwMDA2MworCiAjZGVmaW5lIEZYSURYCQkJMHg2NQkJLyogRlggcmVj
-b3JkaW5nIGJ1ZmZlciBpbmRleCByZWdpc3RlcgkJKi8KICNkZWZpbmUgRlhJ
-RFhfTUFTSwkJMHgwMDAwZmZmZgkvKiAxNi1iaXQgdmFsdWUJCQkJCSovCiAj
-ZGVmaW5lIEZYSURYX0lEWAkJMHgxMDAwMDA2NQpAQCAtMTIwMSw4ICsxMjA0
-LDggQEAKICNkZWZpbmUgQV9FWFRJTl9PUFRfU1BESUZfUiAgICAgMHgwNSAg
-ICAvKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJpZ2h0ICovIAog
-I2RlZmluZSBBX0VYVElOX0xJTkUyX0wJCTB4MDgJLyogYXVkaWd5IGRyaXZl
-IGxpbmUyL21pYzIgLSBsZWZ0ICovCiAjZGVmaW5lIEFfRVhUSU5fTElORTJf
-UgkJMHgwOQkvKiAgICAgICAgICAgICAgICAgICAgICAgICAgIHJpZ2h0ICov
-Ci0jZGVmaW5lIEFfRVhUSU5fUkNBX1NQRElGX0wgICAgIDB4MGEgICAgLyog
-YXVkaWd5IGRyaXZlIFJDQSBTUERJRiAtIGxlZnQgKi8KLSNkZWZpbmUgQV9F
-WFRJTl9SQ0FfU1BESUZfUiAgICAgMHgwYiAgICAvKiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgcmlnaHQgKi8KKyNkZWZpbmUgQV9FWFRJTl9BRENfTAkJ
-MHgwYSAgICAvKiBQaGlsaXBzIEFEQyAtIGxlZnQgKi8KKyNkZWZpbmUgQV9F
-WFRJTl9BRENfUgkJMHgwYiAgICAvKiAgICAgICAgICAgICAgIHJpZ2h0ICov
-CiAjZGVmaW5lIEFfRVhUSU5fQVVYMl9MCQkweDBjCS8qIGF1ZGlneSBkcml2
-ZSBhdXgyIC0gbGVmdCAqLwogI2RlZmluZSBBX0VYVElOX0FVWDJfUgkJMHgw
-ZAkvKiAgICAgICAgICAgICAgICAgICAtIHJpZ2h0ICovCiAKQEAgLTEyMjcs
-NiArMTIzMCw3IEBACiAjZGVmaW5lIEFfRVhUT1VUX0FDOTdfUgkJMHgxMQkv
-KiAgICAgIHJpZ2h0ICovCiAjZGVmaW5lIEFfRVhUT1VUX0FEQ19DQVBfTAkw
-eDE2CS8qIEFEQyBjYXB0dXJlIGJ1ZmZlciBsZWZ0ICovCiAjZGVmaW5lIEFf
-RVhUT1VUX0FEQ19DQVBfUgkweDE3CS8qICAgICAgICAgICAgICAgICAgICBy
-aWdodCAqLworI2RlZmluZSBBX0VYVE9VVF9NSUNfQ0FQCTB4MTgJLyogTWlj
-IGNhcHR1cmUgYnVmZmVyICovCiAKIC8qIEF1ZGlneSBjb25zdGFudHMgKi8K
-ICNkZWZpbmUgQV9DXzAwMDAwMDAwCTB4YzAKZGlmZiAtdSAtciBvL2Fsc2Et
-a2VybmVsL3BjaS9lbXUxMGsxL2VtdTEwazFfbWFpbi5jIG4vYWxzYS1rZXJu
-ZWwvcGNpL2VtdTEwazEvZW11MTBrMV9tYWluLmMKLS0tIG8vYWxzYS1rZXJu
-ZWwvcGNpL2VtdTEwazEvZW11MTBrMV9tYWluLmMJMjAwMy0wNy0yNSAxMjoz
-OTozOC4wMDAwMDAwMDAgKzAyMDAKKysrIG4vYWxzYS1rZXJuZWwvcGNpL2Vt
-dTEwazEvZW11MTBrMV9tYWluLmMJMjAwMy0xMS0wNCAyMToyNzozOC4wMDAw
-MDAwMDAgKzAxMDAKQEAgLTI2OSw2ICsyNjksOSBAQAogCQkJICogVGhpcyBo
-YXMgdG8gYmUgZG9uZSBhZnRlciBpbml0IEFMaWNlMyBJMlNPdXQgYmV5b25k
-IDQ4S0h6LgogCQkJICogU28sIHNlcXVlbmNlIGlzIGltcG9ydGFudC4gKi8K
-IAkJCW91dGwoaW5sKGVtdS0+cG9ydCArIEFfSU9DRkcpIHwgMHgwMDQwLCBl
-bXUtPnBvcnQgKyBBX0lPQ0ZHKTsKKwkJfSBlbHNlIHsKKwkJCS8qIERpc2Fi
-bGUgcm91dGluZyBmcm9tIEFDOTcgbGluZSBvdXQgdG8gRnJvbnQgc3BlYWtl
-cnMgKi8KKwkJCW91dGwoaW5sKGVtdS0+cG9ydCArIEFfSU9DRkcpIHwgMHgw
-MDgwLCBlbXUtPnBvcnQgKyBBX0lPQ0ZHKTsKIAkJfQogCX0KIAkKZGlmZiAt
-dSAtciBvL2Fsc2Eta2VybmVsL3BjaS9lbXUxMGsxL2VtdWZ4LmMgbi9hbHNh
-LWtlcm5lbC9wY2kvZW11MTBrMS9lbXVmeC5jCi0tLSBvL2Fsc2Eta2VybmVs
-L3BjaS9lbXUxMGsxL2VtdWZ4LmMJMjAwMy0xMC0yMSAxOTo0MDoxNC4wMDAw
-MDAwMDAgKzAyMDAKKysrIG4vYWxzYS1rZXJuZWwvcGNpL2VtdTEwazEvZW11
-ZnguYwkyMDAzLTExLTA0IDIyOjIwOjEyLjAwMDAwMDAwMCArMDEwMApAQCAt
-MTMwOCwxMCArMTMwOCwxMCBAQAogCXNuZF9lbXUxMGsxX2luaXRfc3RlcmVv
-X2NvbnRyb2woJmNvbnRyb2xzW25jdGwrK10sICJNdXNpYyBQbGF5YmFjayBW
-b2x1bWUiLCBncHIsIDEwMCk7CiAJZ3ByICs9IDI7CiAKLQkvKiBXYXZlIENh
-cHR1cmUgKi8KKwkvKiBXYXZlIChQQ00pIENhcHR1cmUgKi8KIAlBX09QKGlj
-b2RlLCAmcHRyLCBpTUFDMCwgQV9HUFIoY2FwdHVyZSswKSwgQV9DXzAwMDAw
-MDAwLCBBX0dQUihncHIpLCBBX0ZYQlVTKEZYQlVTX1BDTV9MRUZUKSk7CiAJ
-QV9PUChpY29kZSwgJnB0ciwgaU1BQzAsIEFfR1BSKGNhcHR1cmUrMSksIEFf
-Q18wMDAwMDAwMCwgQV9HUFIoZ3ByKzEpLCBBX0ZYQlVTKEZYQlVTX1BDTV9S
-SUdIVCkpOwotCXNuZF9lbXUxMGsxX2luaXRfc3RlcmVvX2NvbnRyb2woJmNv
-bnRyb2xzW25jdGwrK10sICJXYXZlIENhcHR1cmUgVm9sdW1lIiwgZ3ByLCAw
-KTsKKwlzbmRfZW11MTBrMV9pbml0X3N0ZXJlb19jb250cm9sKCZjb250cm9s
-c1tuY3RsKytdLCAiUENNIENhcHR1cmUgVm9sdW1lIiwgZ3ByLCAwKTsKIAln
-cHIgKz0gMjsKIAogCS8qIE11c2ljIENhcHR1cmUgKi8KQEAgLTEzMjYsMTcg
-KzEzMjYsMjAgQEAKICNkZWZpbmUgQV9BRERfVk9MVU1FX0lOKHZhcix2b2ws
-aW5wdXQpIFwKIEFfT1AoaWNvZGUsICZwdHIsIGlNQUMwLCBBX0dQUih2YXIp
-LCBBX0dQUih2YXIpLCBBX0dQUih2b2wpLCBBX0VYVElOKGlucHV0KSkKIAot
-CS8qIEFDJzk3IFBsYXliYWNrIFZvbHVtZSAqLworCS8qIEFDJzk3IFBsYXli
-YWNrIFZvbHVtZSAtIHVzZWQgb25seSBmb3IgbWljICovCiAJQV9BRERfVk9M
-VU1FX0lOKHN0ZXJlb19taXgsIGdwciwgQV9FWFRJTl9BQzk3X0wpOwogCUFf
-QUREX1ZPTFVNRV9JTihzdGVyZW9fbWl4KzEsIGdwcisxLCBBX0VYVElOX0FD
-OTdfUik7Ci0Jc25kX2VtdTEwazFfaW5pdF9zdGVyZW9fY29udHJvbCgmY29u
-dHJvbHNbbmN0bCsrXSwgIkFDOTcgUGxheWJhY2sgVm9sdW1lIiwgZ3ByLCAx
-MDApOworCXNuZF9lbXUxMGsxX2luaXRfc3RlcmVvX2NvbnRyb2woJmNvbnRy
-b2xzW25jdGwrK10sICJBTWljIFBsYXliYWNrIFZvbHVtZSIsIGdwciwgMCk7
-CiAJZ3ByICs9IDI7Ci0JLyogQUMnOTcgQ2FwdHVyZSBWb2x1bWUgKi8KKwkv
-KiBBQyc5NyBDYXB0dXJlIFZvbHVtZSAtIHVzZWQgb25seSBmb3IgbWljICov
-CiAJQV9BRERfVk9MVU1FX0lOKGNhcHR1cmUsIGdwciwgQV9FWFRJTl9BQzk3
-X0wpOwogCUFfQUREX1ZPTFVNRV9JTihjYXB0dXJlKzEsIGdwcisxLCBBX0VY
-VElOX0FDOTdfUik7Ci0Jc25kX2VtdTEwazFfaW5pdF9zdGVyZW9fY29udHJv
-bCgmY29udHJvbHNbbmN0bCsrXSwgIkFDOTcgQ2FwdHVyZSBWb2x1bWUiLCBn
-cHIsIDEwMCk7CisJc25kX2VtdTEwazFfaW5pdF9zdGVyZW9fY29udHJvbCgm
-Y29udHJvbHNbbmN0bCsrXSwgIk1pYyBDYXB0dXJlIFZvbHVtZSIsIGdwciwg
-MCk7CiAJZ3ByICs9IDI7CiAKKwkvKiBtaWMgY2FwdHVyZSBidWZmZXIgKi8J
-CisJQV9PUChpY29kZSwgJnB0ciwgaUlOVEVSUCwgQV9FWFRPVVQoQV9FWFRP
-VVRfTUlDX0NBUCksIEFfRVhUSU4oQV9FWFRJTl9BQzk3X0wpLCAweGNkLCBB
-X0VYVElOKEFfRVhUSU5fQUM5N19SKSk7CisKIAkvKiBBdWRpZ3kgQ0QgUGxh
-eWJhY2sgVm9sdW1lICovCiAJQV9BRERfVk9MVU1FX0lOKHN0ZXJlb19taXgs
-IGdwciwgQV9FWFRJTl9TUERJRl9DRF9MKTsKIAlBX0FERF9WT0xVTUVfSU4o
-c3RlcmVvX21peCsxLCBncHIrMSwgQV9FWFRJTl9TUERJRl9DRF9SKTsKQEAg
-LTEzNzAsMTUgKzEzNzMsMTUgQEAKIAlzbmRfZW11MTBrMV9pbml0X3N0ZXJl
-b19jb250cm9sKCZjb250cm9sc1tuY3RsKytdLCAiTGluZTIgQ2FwdHVyZSBW
-b2x1bWUiLCBncHIsIDApOwogCWdwciArPSAyOwogICAgICAgICAKLQkvKiBS
-Q0EgU1BESUYgUGxheWJhY2sgVm9sdW1lICovCi0JQV9BRERfVk9MVU1FX0lO
-KHN0ZXJlb19taXgsIGdwciwgQV9FWFRJTl9SQ0FfU1BESUZfTCk7Ci0JQV9B
-RERfVk9MVU1FX0lOKHN0ZXJlb19taXgrMSwgZ3ByKzEsIEFfRVhUSU5fUkNB
-X1NQRElGX1IpOwotCXNuZF9lbXUxMGsxX2luaXRfc3RlcmVvX2NvbnRyb2wo
-JmNvbnRyb2xzW25jdGwrK10sICJJRUM5NTggQ29heGlhbCBQbGF5YmFjayBW
-b2x1bWUiLCBncHIsIDApOwotCWdwciArPSAyOwotCS8qIFJDQSBTUERJRiBD
-YXB0dXJlIFZvbHVtZSAqLwotCUFfQUREX1ZPTFVNRV9JTihjYXB0dXJlLCBn
-cHIsIEFfRVhUSU5fUkNBX1NQRElGX0wpOwotCUFfQUREX1ZPTFVNRV9JTihj
-YXB0dXJlKzEsIGdwcisxLCBBX0VYVElOX1JDQV9TUERJRl9SKTsKLQlzbmRf
-ZW11MTBrMV9pbml0X3N0ZXJlb19jb250cm9sKCZjb250cm9sc1tuY3RsKytd
-LCAiSUVDOTU4IENvYXhpYWwgQ2FwdHVyZSBWb2x1bWUiLCBncHIsIDApOwor
-CS8qIFBoaWxpcHMgQURDIFBsYXliYWNrIFZvbHVtZSAqLworCUFfQUREX1ZP
-TFVNRV9JTihzdGVyZW9fbWl4LCBncHIsIEFfRVhUSU5fQURDX0wpOworCUFf
-QUREX1ZPTFVNRV9JTihzdGVyZW9fbWl4KzEsIGdwcisxLCBBX0VYVElOX0FE
-Q19SKTsKKwlzbmRfZW11MTBrMV9pbml0X3N0ZXJlb19jb250cm9sKCZjb250
-cm9sc1tuY3RsKytdLCAiQW5hbG9nIE1peCBQbGF5YmFjayBWb2x1bWUiLCBn
-cHIsIDApOworCWdwciArPSAyOworCS8qIFBoaWxpcHMgQURDIENhcHR1cmUg
-Vm9sdW1lICovCisJQV9BRERfVk9MVU1FX0lOKGNhcHR1cmUsIGdwciwgQV9F
-WFRJTl9BRENfTCk7CisJQV9BRERfVk9MVU1FX0lOKGNhcHR1cmUrMSwgZ3By
-KzEsIEFfRVhUSU5fQURDX1IpOworCXNuZF9lbXUxMGsxX2luaXRfc3RlcmVv
-X2NvbnRyb2woJmNvbnRyb2xzW25jdGwrK10sICJBbmFsb2cgTWl4IENhcHR1
-cmUgVm9sdW1lIiwgZ3ByLCAwKTsKIAlncHIgKz0gMjsKIAogCS8qIEF1eDIg
-UGxheWJhY2sgVm9sdW1lICovCmRpZmYgLXUgLXIgby9hbHNhLWtlcm5lbC9w
-Y2kvZW11MTBrMS9lbXVtaXhlci5jIG4vYWxzYS1rZXJuZWwvcGNpL2VtdTEw
-azEvZW11bWl4ZXIuYwotLS0gby9hbHNhLWtlcm5lbC9wY2kvZW11MTBrMS9l
-bXVtaXhlci5jCTIwMDMtMTAtMTMgMTg6MzA6NDUuMDAwMDAwMDAwICswMjAw
-CisrKyBuL2Fsc2Eta2VybmVsL3BjaS9lbXUxMGsxL2VtdW1peGVyLmMJMjAw
-My0xMS0wNCAyMjowOToxNS4wMDAwMDAwMDAgKzAxMDAKQEAgLTQ3OCw2ICs0
-NzgsMjIgQEAKIAkJCXJlbW92ZV9jdGwoY2FyZCwgIk1hc3RlciBQbGF5YmFj
-ayBTd2l0Y2giKTsKIAkJCXJlbW92ZV9jdGwoY2FyZCwgIk1hc3RlciBQbGF5
-YmFjayBWb2x1bWUiKTsKIAkJCXJlbW92ZV9jdGwoY2FyZCwgIlBDTSBPdXQg
-UGF0aCAmIE11dGUiKTsKKwkJCXJlbW92ZV9jdGwoY2FyZCwgIk1vbm8gT3V0
-cHV0IFNlbGVjdCIpOworCQkJCisJCQkvKiBzZXQgbWFzdGVyIHZvbHVtZSB0
-byAwIGRCICovCisJCQlzbmRfYWM5N193cml0ZSgmYWM5NywgQUM5N19NQVNU
-RVIsIDB4MDIwMik7CisJCQkvKiBzZXQgY2FwdHVyZSBzb3VyY2UgdG8gbWlj
-ICovCisJCQlzbmRfYWM5N193cml0ZSgmYWM5NywgQUM5N19SRUNfU0VMLCAw
-eDAwMDApOworCQkJCisJCQkvKiByZW1vdmUgdW51c2V0IEFDOTcgY2FwdHVy
-ZSBjb250cm9scyAqLworCQkJcmVtb3ZlX2N0bChjYXJkLCAiQ2FwdHVyZSBT
-b3VyY2UiKTsKKwkJCXJlbW92ZV9jdGwoY2FyZCwgIkNhcHR1cmUgU3dpdGNo
-Iik7CisJCQlyZW1vdmVfY3RsKGNhcmQsICJDYXB0dXJlIFZvbHVtZSIpOwor
-CQkJcmVtb3ZlX2N0bChjYXJkLCAiTWljIFNlbGVjdCIpOworCQkJcmVtb3Zl
-X2N0bChjYXJkLCAiVmlkZW8gUGxheWJhY2sgU3dpdGNoIik7CisJCQlyZW1v
-dmVfY3RsKGNhcmQsICJWaWRlbyBQbGF5YmFjayBWb2x1bWUiKTsKKwkJCXJl
-bW92ZV9jdGwoY2FyZCwgIk1pYyBQbGF5YmFjayBTd2l0Y2giKTsKKwkJCXJl
-bW92ZV9jdGwoY2FyZCwgIk1pYyBQbGF5YmFjayBWb2x1bWUiKTsKIAkJfQog
-CX0gZWxzZSB7CiAJCWlmIChlbXUtPkFQUykKQEAgLTQ5Myw2ICs1MDksNyBA
-QAogCQlyZW5hbWVfY3RsKGNhcmQsICJXYXZlIFBsYXliYWNrIFZvbHVtZSIs
-ICJQQ00gUGxheWJhY2sgVm9sdW1lIik7CiAJCS8qIHJlbmFtZV9jdGwoY2Fy
-ZCwgIldhdmUgQ2FwdHVyZSBWb2x1bWUiLCAiUENNIENhcHR1cmUgVm9sdW1l
-Iik7ICovCiAJCXJlbmFtZV9jdGwoY2FyZCwgIldhdmUgTWFzdGVyIFBsYXli
-YWNrIFZvbHVtZSIsICJNYXN0ZXIgUGxheWJhY2sgVm9sdW1lIik7CisJCXJl
-bmFtZV9jdGwoY2FyZCwgIkFNaWMgUGxheWJhY2sgVm9sdW1lIiwgIk1pYyBQ
-bGF5YmFjayBWb2x1bWUiKTsKIAl9CiAKIAlpZiAoKGtjdGwgPSBlbXUtPmN0
-bF9zZW5kX3JvdXRpbmcgPSBzbmRfY3RsX25ldzEoJnNuZF9lbXUxMGsxX3Nl
-bmRfcm91dGluZ19jb250cm9sLCBlbXUpKSA9PSBOVUxMKQpkaWZmIC11IC1y
-IG8vYWxzYS1rZXJuZWwvcGNpL2VtdTEwazEvZW11cGNtLmMgbi9hbHNhLWtl
-cm5lbC9wY2kvZW11MTBrMS9lbXVwY20uYwotLS0gby9hbHNhLWtlcm5lbC9w
-Y2kvZW11MTBrMS9lbXVwY20uYwkyMDAzLTA4LTI5IDExOjIyOjI3LjAwMDAw
-MDAwMCArMDIwMAorKysgbi9hbHNhLWtlcm5lbC9wY2kvZW11MTBrMS9lbXVw
-Y20uYwkyMDAzLTExLTA0IDIxOjUxOjE5LjAwMDAwMDAwMCArMDEwMApAQCAt
-ODcxLDcgKzg3MSw3IEBACiAJZXBjbS0+Y2FwdHVyZV9pbnRlID0gSU5URV9N
-SUNCVUZFTkFCTEU7CiAJZXBjbS0+Y2FwdHVyZV9iYV9yZWcgPSBNSUNCQTsK
-IAllcGNtLT5jYXB0dXJlX2JzX3JlZyA9IE1JQ0JTOwotCWVwY20tPmNhcHR1
-cmVfaWR4X3JlZyA9IE1JQ0lEWDsKKwllcGNtLT5jYXB0dXJlX2lkeF9yZWcg
-PSBlbXUtPmF1ZGlneSA/IEFfTUlDSURYIDogTUlDSURYOwogCXN1YnN0cmVh
-bS0+cnVudGltZS0+cHJpdmF0ZV9kYXRhID0gZXBjbTsKIAlzdWJzdHJlYW0t
-PnJ1bnRpbWUtPnByaXZhdGVfZnJlZSA9IHNuZF9lbXUxMGsxX3BjbV9mcmVl
-X3N1YnN0cmVhbTsKIAlydW50aW1lLT5odyA9IHNuZF9lbXUxMGsxX2NhcHR1
-cmU7Cg==
-
---97783256-1804289383-1068015714=:20664--
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
