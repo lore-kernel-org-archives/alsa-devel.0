@@ -1,15 +1,14 @@
-From: Mark Knecht <markknecht@comcast.net>
-Subject: Re: sbLive! -Drive digital IOs exchanged?
-Date: Mon, 05 Jan 2004 09:07:59 -0800
+From: David Lloyd <dmlloyd@tds.net>
+Subject: Re: DMIX and capture stream
+Date: Mon, 5 Jan 2004 11:20:40 -0600 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1073322479.1905.4.camel@Wizard.knechthome.com>
-References: <200312242220.57516.e.jokisch@u-code.de>
-	 <s5h65fq2v0v.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.58.0401051113381.8705@tomservo.workpc.tds.net>
+References: <200401040507.i0457Qbv005994@dhin.linuxaudiosystems.com>
+ <Pine.LNX.4.58.0401051020560.8705@tomservo.workpc.tds.net> <s5hbrpi2vq8.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h65fq2v0v.wl@alsa2.suse.de>
+In-Reply-To: <s5hbrpi2vq8.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,41 +18,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: e.jokisch@u-code.de, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, ALSA Mailing List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2004-01-05 at 08:57, Takashi Iwai wrote:
-> At Wed, 24 Dec 2003 22:20:57 +0100,
-> Eckhard Jokisch wrote:
+On Mon, 5 Jan 2004, Takashi Iwai wrote:
+
+> At Mon, 5 Jan 2004 10:29:01 -0600 (CST),
+> David Lloyd wrote:
 > > 
-> > Hello guys,
-> > I just noticed that the controls ( or their names) of the digital inputs of 
-> > Live!-drive are changed. If I want ot get sound out of the coaxial inputs I 
-> > have to raise the optocal s "sliders" in alsamixer as well as in 
-> > alsermixergui. 
+> > On Sun, 4 Jan 2004, Paul Davis wrote:
+> > 
+> > > >I'm working on changing DMIX to allow clients to open the capture stream.  
+> > > 
+> > > i don't get it. dmix is for playback, not capture. what would be the
+> > > semantics of this?
+> > 
+> > That is exactly the problem!  DMIX is for playback.  DSNOOP is for 
+> > capture.  Where is the module that is for both?  Why, oh why, did they not 
+> > simply make ONE MODULE in the first place??
 > 
-> i don't see any changes of codes regarding this...
-> is only the capture switch swapped?
-> (to be sure, do you mean "IEC958 Optical Capture" and "IEC958 Coax
-> Capture", right?)
+> patch welcome ;)
 > 
-> 
-> Takashi
-> 
-Recently the I/O's of the Hammerfall Light also changed:
+> well, more practical answer is that capturing the playback would need 
+> copy of the playback data to the capture buffer.  meanwhile, the
+> implementation of dmix and dsnoop is basically only the multiplex
+> access of a single hardware buffer.  it's not "copying" of data.
 
-Old 
+Nonononono.  Nobody is understanding what I want!
 
-playback_1-8   -> ADAT1
-playback_9_16  -> ADAT2
-playback_17-18 -> spdif (I suppose)
+I have application A that needs to open payback and capture streams 
+because it's a two-way communications program.  Application B is a game 
+that uses playback only.  I want to use these both at the same time.
 
-Now
+Problem is both applications use OSS emulation.  They both work with aoss, 
+but the two-way program won't initialize sound when dmix is loaded because 
+it's not allowed to open capture stream.  See my problem?  I can't put two 
+different plugins in my audiorc and expect an OSS application to 
+understand it.  I am not interested in capturing the playback stream!  I 
+just want to have more than one program be able to use /dev/dsp for both 
+input and output...
 
-playback_3-10  -> ADAT1
-playback_11-18 -> ADAT2
-playback_1-2   -> spdif (I suppose)
-
+- D
 
 
 -------------------------------------------------------
