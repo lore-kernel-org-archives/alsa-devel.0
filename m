@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000560]: Error 2
-Date: Sun,  3 Oct 2004 01:47:49 +0200 (CEST)
+Subject: [ALSA - driver 0000561]: Sound disappear
+Date: Sun,  3 Oct 2004 02:22:13 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041002234749.79E284800E@server.perex-int.cz>
+Message-ID: <20041003002213.37F024800E@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C1D73276
-	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 01:47:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 06FD9241
+	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 02:23:26 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 8D7DA290C4
-	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 01:47:49 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 93C4F260DC
+	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 02:22:14 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,35 +25,73 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000560
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000561
 ======================================================================
-Reported By:                kensmith
-Assigned To:                perex
+Reported By:                ungod
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     560
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
+Bug ID:                     561
+Category:                   PCI - ice1724
+Reproducibility:            random
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             10-03-2004 01:47 CEST
-Last Modified:              10-03-2004 01:47 CEST
+Date Submitted:             10-03-2004 02:22 CEST
+Last Modified:              10-03-2004 02:22 CEST
 ======================================================================
-Summary:                    Error 2
+Summary:                    Sound disappear
 Description: 
-make reports:
+Sometimes, at completely random occasions, all sound suddently disappear.
+At rare occasions, the sound will appear again shortly after, at first at
+very low, but then again at full volume.
+It may often go days before the problem occurs, and then sometimes it
+happens all the time.
 
-make: *** [include/sndversions.h] Error 2
+I've attempted to do some researching myself, and I quickly noticed that
+by just reinitializing the WM8770 chip with a user-space program, the
+sound would reappear, but then again I noticed that the CS8415A chip is
+disabled when it happens (apparently this is the only chip besides the
+ICE1724 that you may actually read from).
+The STAC9744 is apparently also reset as the volume must be changed in the
+mixer before any sound can come from there.
+
+The few times the whole thing occour while I am not listening to music,
+I've noticed that you actually hear the click from the headphone relay, so
+I think that this whole issue is related to some improper handeling of the
+GPIO pins. If they are all switched to zero at some point, this would
+reset all chips connected to the ICE1724, however, I tried adding debug
+info every time a GPIO related function was called, but there never was
+any such debug message prior to the fault.
+
+Natually it is extremely difficult to fix such a problem when it is as
+random as it is. Actually when using the 4Front OSS drivers, I've
+sometimes experienced the same thing, however their drivers aren't
+flawless either, I imagine. In fact, when I at first got the card, I
+thought it was broken, since the ALSA drivers produced no sound (reversed
+volume control etc.) and the OSS only worked for a couple of minutes until
+all sound disappeared. At all time, the optical output was fully
+functional.
+
+Anyway, I do not expect to see the problem solved just like that, and I
+intend to continue attempting to resolve the bug myself. It would however
+be nice to know whether I am the only one at all experiencing the problem,
+as it may in fact then be a hardware problem or (though most unlikely) a
+conflict between existing hardware.
+
+The problem occur on all versions of ALSA starting from 1.0.5 (haven't
+tried anyone older than that) and including the latest CVS (synchronize
+often and compile daily as I am also working on other issues and lacking
+features of the ice1724)
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-03-04 01:47 kensmith       New Bug                                      
+10-03-04 02:22 ungod          New Bug                                      
 ======================================================================
 
 
