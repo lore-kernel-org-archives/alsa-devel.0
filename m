@@ -1,13 +1,15 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
+From: Gregoire Favre <greg@ulima.unil.ch>
 Subject: Re: SPDIF and cs46xx ?
-Date: Sun, 30 Mar 2003 21:35:48 +0200
+Date: Sun, 30 Mar 2003 20:42:58 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E874714.5020302@cucumelo.org>
-References: <14a4584ea6cb4a6894e70d84e717abc6.peter599@gotnet.net> <3E75075E.7030401@cucumelo.org> <20030329142035.GA16590@ulima.unil.ch> <3E864424.6060707@cucumelo.org> <20030330144633.GA9474@ulima.unil.ch>
+Message-ID: <20030330184258.GB9474@ulima.unil.ch>
+References: <14a4584ea6cb4a6894e70d84e717abc6.peter599@gotnet.net> <3E75075E.7030401@cucumelo.org> <20030329142035.GA16590@ulima.unil.ch> <3E864424.6060707@cucumelo.org> <20030330144633.GA9474@ulima.unil.ch> <3E874714.5020302@cucumelo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <3E874714.5020302@cucumelo.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,50 +18,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gregoire Favre <greg@ulima.unil.ch>
+To: Benny Sjostrand <gorm@cucumelo.org>
 Cc: Peter Heatwole <peter599@gotnet.net>, alsa-devel@lists.sourceforge.net, werner@suse.de
 List-Id: alsa-devel@alsa-project.org
 
->
->
->Well, I think there are two problem, the first one is the limited set of
->period-size configurations which the bitstream plugin should take care
->of, but the real reason I repost what Dr. Werner Fink wrote in the
->vdr@linuxtv.org mailing list was because he spoke exactly about a
->problem we are a lots to have with the cs46xx driver :-(
->Also found relative to DVB (AC3overDVB from Stefan Huelswitt,
->http://www.muempf.de/down/vdr-1.1.26-AC3overDVB-0.1.4.diff.gz ) which
->contains in the README.AC3overDVB:
->  
->
-About the period sizes there'e nothing we can do in the driver, as this is a
-HW limitation.
-(However it's possible to implement Scatter/Gather DMA support for the
-cs46xx driver, then maybe there's more posibilies to variate the period
-size, but that's not going to happen in a near future ...)
+On Sun, Mar 30, 2003 at 09:35:48PM +0200, Benny Sjostrand wrote:
 
->If your receiver doesn't detect the encapsulated stream (at the
->beginning of replay in general) you will hear the digital data played as
->PCM data. It's a spiky noise. Don't turn up the volume too much, or the
->speakers may be damaged. You have been warned!
->
->  
->
-I think that the problem with the current cs46xx driver could be the 
-status bits
-in the IEC958 stream that is not set correctly.  Some receivers seems to 
-ignore
-the status bits and detects the format looking into the stream instead, 
-other receivers
-may look into the status bits to detect if it's PCM audio, or digital data.
-So it's posible that AC3 DTS, etc work's OK with thoose receivers that 
-just ignores
-the content of the status bits, which I think is the case of my Harmon 
-Kardoon
-receiver.
+> About the period sizes there'e nothing we can do in the driver, as this=
+ is a
+> HW limitation.
+> (However it's possible to implement Scatter/Gather DMA support for the
+> cs46xx driver, then maybe there's more posibilies to variate the period
+> size, but that's not going to happen in a near future ...)
 
-/Benny
+OK, I hope Dr. Werner Fink could work with this limitation ;-)
 
+> I think that the problem with the current cs46xx driver could be the=20
+> status bits
+> in the IEC958 stream that is not set correctly.  Some receivers seems t=
+o=20
+> ignore
+> the status bits and detects the format looking into the stream instead,=
+=20
+> other receivers
+> may look into the status bits to detect if it's PCM audio, or digital d=
+ata.
+> So it's posible that AC3 DTS, etc work's OK with thoose receivers that=20
+> just ignores
+> the content of the status bits, which I think is the case of my Harmon=20
+> Kardoon
+> receiver.
+
+Great, even with my bad english and I was understood !!!
+Is there any hope to fix this issue?
+
+Thank you very much,
+
+	Gr=E9goire
+________________________________________________________________
+http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
 
 
 -------------------------------------------------------
