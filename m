@@ -1,12 +1,14 @@
-From: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
-Subject: assert failures in snd_pcm_mmap_commit
-Date: Tue, 04 May 2004 23:32:55 +0200
+From: Frank Barknecht <fbar@footils.org>
+Subject: Re: Creative MP3+ or Hercules Muse Pocket
+Date: Tue, 4 May 2004 23:53:46 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xvfjbj2t4.fsf@kth.se>
+Message-ID: <20040504215346.GD20897@fliwatut.scifi>
+References: <1083645143.18667.22.camel@pheuri>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <1083645143.18667.22.camel@pheuri>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,59 +20,28 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-When playing music using alsa-lib sometimes, very rarely, the player
-crashes and dumps core.  GDB gives me this stack trace:
+Hallo,
+Robin Cook hat gesagt: // Robin Cook wrote:
 
-#0  0xffffe410 in ?? ()
-#1  0x4be05684 in ?? ()
-#2  0x00000006 in ?? ()
-#3  0x00007126 in ?? ()
-#4  0x4007e859 in *__GI_raise (sig=3D6)
-    at ../nptl/sysdeps/unix/sysv/linux/raise.c:66
-#5  0x40080032 in *__GI_abort () at ../sysdeps/generic/abort.c:88
-#6  0x4007805f in *__GI___assert_fail (assertion=3D0x0, file=3D0x0, line=3D=
-0,=20
-    function=3D0x48c9c136 "snd_pcm_mmap_commit") at assert.c:83
-#7  0x48c3ef71 in snd_pcm_mmap_commit (pcm=3D0x81232f8, offset=3D3840, fram=
-es=3D480)
-    at pcm_local.h:289
-#8  0x48c5307e in snd_pcm_rate_commit_next_period (pcm=3D0x80b0e68,=20
-    appl_offset=3D6248) at pcm_rate.c:1005
-#9  0x48c53397 in snd_pcm_rate_mmap_commit (pcm=3D0x80b0e68, offset=3D6028,=
-=20
-    size=3D220) at pcm_rate.c:1194
-#10 0x48c3ef18 in snd_pcm_mmap_commit (pcm=3D0x80b0e68, offset=3D6028, fram=
-es=3D440)
-    at pcm.c:5920
-#11 0x48c5716a in snd_pcm_mmap_write_areas (pcm=3D0x80b0e68, areas=3D0x4be0=
-59b0,=20
-    offset=3D0, size=3D440) at pcm_mmap.c:120
-#12 0x48c3f373 in snd_pcm_write_areas (pcm=3D0x80b0e68, areas=3D0x4be059b0,=
-=20
-    offset=3D0, size=3D6380, func=3D0x48c57090 <snd_pcm_mmap_write_areas>)
-    at pcm.c:6094
-#13 0x48c57361 in snd_pcm_mmap_writei (pcm=3D0x80b0e68, buffer=3D0x0, size=
-=3D0)
-    at pcm_mmap.c:180
-#14 0x48c381d2 in snd_pcm_writei (pcm=3D0x7126, buffer=3D0x80fb420, size=3D=
-6500)
-    at pcm_local.h:370
-#15 0x48bfbb81 in alsa_write (ad=3D0x0, data=3D0x0, samples=3D0)
-    at ../../tcvp/src/output/drivers/alsa/alsa.c:132
-#16 0x4ae01689 in audio_play (p=3D0x80f56f0)
-    at ../../tcvp/src/output/audio/audio.c:218
-#17 0x4002b853 in start_thread (arg=3D0x0) at pthread_create.c:264
-#18 0x4012e3aa in clone () from /lib/libc.so.6
+> Trying to find out if either or both of the Creative Soundblaster MP3+
+> or the Hercules Muse Pocket usb sound cards are supported by the usb
+> driver in ALSA?
+> 
+> If so are is there anything special that needs to be done to get them
+> setup under alsa?
 
-I am using Linux 2.6.4 with ALSA driver 1.0.3 and alsa-lib 1.0.3a
-(which I see now is a little out-dated).  The sound card is a SiS7012
-in an Asus laptop.
+Normally these cards just all use the snd-usb-audio driver. If you run
+kernel 2.6 you can just "modprobe snd-usb-audio" to get sound. I never
+hear of the Hercules card, but it looks very cool with that knob,
+which might even work as an input device on Linux. This would then
+maybe require the hid/event interface of the USB system in the kernel,
+which is not part of ALSA.
 
-Could this be caused by a bug in the player?
+I'd say, if somehow possible, try to test the Muse if it works. 
 
---=20
-M=E5ns Rullg=E5rd
-mru@kth.se
+Ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
