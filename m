@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000813]: Terratec USB surround broken
-Date: Thu, 24 Feb 2005 16:33:42 +0100
-Message-ID: <b81803722ae4cb312b67f6a020a67285@bugtrack.alsa-project.org>
+Date: Thu, 24 Feb 2005 16:37:57 +0100
+Message-ID: <3c27719ab8f777eda4fab6286bd70155@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 50FC2214
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 16:33:42 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1D2CE214
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 16:37:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=813> 
 ======================================================================
@@ -34,12 +34,14 @@ Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Fedora Core 3
 Kernel Version:             2.6.10 (ALSA compiled in)
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
 Date Submitted:             01-12-2005 19:41 CET
-Last Modified:              02-24-2005 16:33 CET
+Last Modified:              02-24-2005 16:37 CET
 ======================================================================
 Summary:                    Terratec USB surround broken
 Description: 
@@ -93,6 +95,8 @@ in)
 02-23-05 22:29 ilikejam       Note Added: 0003716                          
 02-24-05 08:55 Clemens LadischNote Added: 0003719                          
 02-24-05 16:33 ilikejam       Note Added: 0003722                          
+02-24-05 16:37 Clemens LadischStatus                   assigned => resolved
+02-24-05 16:37 Clemens LadischResolution               open => not an issue
 ======================================================================
 
 
