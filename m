@@ -1,8 +1,8 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: USB quattro input quality
-Date: Fri, 07 May 2004 13:16:09 +0900
+Subject: hdspmixer vs cvs
+Date: Fri, 07 May 2004 13:56:16 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <409B0D89.6090503@boosthardware.com>
+Message-ID: <409B16F0.8070601@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -18,18 +18,26 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Just wondering if anyone has found time to look into fixing the input 
-quality of the usb quattro?
+In the latest cvs snapshot the hdspmixer app returns this error when I 
+try to use it.
 
-I'm not sure it has ever functioned perfectly for input quality.
+hdspmixer
 
-Currently I get a better sound quality from my $10 cmipci than my $400 
-usb-quattro ;-P
+HDSPMixer 1.6 - Copyright (C) 2003 Thomas Charbonnel <thomas@undata.org>
+This program comes with ABSOLUTELY NO WARRANTY
+HDSPMixer is free software, see the file COPYING for details
 
-There is a constant crackle in the audio stream.
+Looking for HDSP cards :
+Card 0 : C-Media PCI CMI8738 (model 37) at 0x9800, irq 10
+Card 1 : RME Hammerfall DSP + Multiface at 0xe9000000, irq 5
+Multiface found !
+1 Hammerfall DSP card found.
+hdspmixer: async.c:56: snd_async_handler: Assertion `siginfo->si_code == 
+SI_SIGI
+O' failed.
+Aborted
 
-This has been independantly verified by numerous users over the past few 
-months.
+
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
