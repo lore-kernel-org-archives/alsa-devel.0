@@ -1,39 +1,50 @@
-From: Zwane Mwaikambo <zwane@holomorphy.com>
-Subject: Re: Oops when removing snd-timer
-Date: Mon, 18 Nov 2002 04:07:17 -0500 (EST)
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <Pine.LNX.4.44.0211180347320.1538-100000@montezuma.mastecende.com>
-References: <20021118080208.GA4945@hatchling.taral.net>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [Alsa-user] CS4205 (snd-intel8x0) missing recording inputs
+Date: Mon, 18 Nov 2002 10:10:48 +0100 (CET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <Pine.LNX.4.33.0211180948540.738-100000@pnote.perex-int.cz>
+References: <000001c28e7d$179ce690$ab1f830a@ICO>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
-In-Reply-To: <20021118080208.GA4945@hatchling.taral.net>
-To: Taral <taral@taral.net>
-Cc: alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <000001c28e7d$179ce690$ab1f830a@ICO>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Ivica Bukvic <ico@fuse.net>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 18 Nov 2002, Taral wrote:
+On Sun, 17 Nov 2002, Ivica Bukvic wrote:
 
-> I was unloading ALSA (modular) when I got this lovely oops:
-> (linux-2.5.47)
+> This driver seems to be notorious right now with its features (or better
+> lack thereof). When using Alsa driver for the above-mentioned driver
+> found in many of the current laptops, not all inputs can be selected for
+> recording. For instance, line-in is available as an input source, but
+> mic-in surprisingly isn't.
 
-Looks like you loaded ens137x.c and then that driver got unloaded leaving 
-the callback still valid, then the core timer code decided to walk off a 
-cliff using that pointer.
+Could you send me output from 'amixer contents' ?
 
-0xc0365322 is in snd_timer_free (sound/core/timer.c:676).
-671     static int snd_timer_free(snd_timer_t *timer)
-672     {
-673             snd_assert(timer != NULL, return -ENXIO);
-674             if (timer->private_free)
-675                     timer->private_free(timer);
-676             snd_magic_kfree(timer);
-677             return 0;
-678     }
+> One more thing is that CS4205 is a full-blown dsp so while it is
 
-The problem seems to be a sort of chicken/egg case? We can't rely on 
-modules being around even with this inter dependency case.
+Are you kidding? It's a simple AC'97 codec. Please, check the manufacture 
+information before flames (www.crystal.com).
 
-	Zwane
--- 
-function.linuxpower.ca
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
+
+
+-------------------------------------------------------
+This sf.net email is sponsored by: To learn the basics of securing 
+your web site with SSL, click here to get a FREE TRIAL of a Thawte 
+Server Certificate: http://www.gothawte.com/rd524.html
