@@ -1,11 +1,10 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: Re: dmix plugin
-Date: Thu, 20 Feb 2003 23:14:35 +0100
+From: Laurent Georget <lgeorget2@club-internet.fr>
+Subject: Pb with new alsa cvs, level plugin and low buffer size
+Date: Thu, 20 Feb 2003 23:15:50 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E55534B.1DC53BFA@libero.it>
-References: <E18lvNx-0000A6-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <3E555396.1090106@club-internet.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,43 +15,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
-> 
-> >The server based approach has an added cost of an extra context switch
-> >every period (about 1500 cycles on my machine i.e.), but this is fully
-> >amortized by such an huge difference.
-> 
-> recall that (1) the context switch time is not a fixed cost but
+Hi!
 
-Mine was only a very rough approximation for trivial audio generating
-processes.
+After checking out cvs yesterday , I have now errors when running level
+plugin from Abramo Bagnara
+or ameter plugin ( which is here:
+http://perso.club-internet.fr/lgeorget/ameter.html
+) ,  when buffer size is low:
 
-> depends on the memory behaviour between switches and (2) isn't it
-> either two switches per participating client/application, or if they
-> are chained (as in JACK), N+2 switches, where N is the number of
-> clients/applications ?
+aplay -D ameter -B 5000 -v glametest.wav
 
-I don't understand why...
+...
+aplay: pcm_write:1014: write error: Input/output error
 
-Suppose that on an otherwise idle UP system we have 3 application
-generating output for current pcm_dmix.
-In this case we have something like ABCABCABCABC... etc.
 
-In pcm_mix case we use a saturate/transfer/zero thread called M and the
-we'll have something like ABCMABCMABCMABCM... etc.
 
-Do you agree?
+aplay -D level -B 5000 -v glametest.wav
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+...
+aplay: pcm_write:1014: write error: Input/output error
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+
+(No error when running aplay with a normal buffer size and level plugin
+, or with low buffer size and no level plugin)
+
+
+- In the same way, using Glame with ameter and a low buffer size fails
+(this is bad because this prevents to
+make multitracks recording)
+
+- Installing 0.9rc7 solves the problem
+
+- I use Mandrake 9 and ens1371 driver.
+
+Any idea?
+Best regards ,
+
+Laurent
+
+
+
+
+
 
 
 -------------------------------------------------------
