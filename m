@@ -1,18 +1,14 @@
-From: "Bearcat M. Sandor" <Linux@TheDragonsEdge.com>
-Subject: Beginning ALSA programming otr "Read Any Good Books Lately?
-Date: 29 Apr 2002 18:31:21 -0600
+From: Schroettner Robert <rs@ednet.at>
+Subject: problem with 8233 -- please help!
+Date: Fri, 3 May 2002 01:22:42 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1020126681.6757.1.camel@linux>
+Message-ID: <Pine.LNX.4.04.10205030102170.17955-100000@eurolx01.ednet.at>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from linux.TheDragonsEdge.com (host12.dsl1.blackfoot.net [12.32.44.12])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id CAA28738
-	for <alsa-devel@alsa-project.org>; Tue, 30 Apr 2002 02:30:30 +0200
-Received: from localhost (localhost [127.0.0.1])
-	by linux.TheDragonsEdge.com (Postfix) with ESMTP id 3FAF18ECC
-	for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2002 18:31:21 -0600 (MDT)
+Received: from mr2.ednet.cc (IDENT:qmailr@bsrv.ednet.at [213.147.167.71])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id BAA22457
+	for <alsa-devel@alsa-project.org>; Fri, 3 May 2002 01:23:04 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -24,31 +20,65 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Folks,
+Hallo !
 
-I've been using C off and on for years and have always been an
-audiophile and computer zealot.  I am slowly turning my computer into
-the center of my home theater.music system. It is my front-end
-(cd/dvdplayer) and my preamp/processor..
+I have some troubles, getting my on-board soundcard working. First, my 
+Computer (MSI KT3 Ultra-ARU, with 8233 and ALC650 Sound) locked up, on
+trying to access mixer or pcm-device. Now i have updated my kernel to
+2.4.19-pre7 (with best thanks to Vojtech Pavlik - Kernel Developer:
+known VIA bug). So i can start up alsamixer, change volume-levels and
+unmute, and hear sound from cd or line-in. But i don't hear anything when
+i try to access the pcm-device.
+
+$ aplay test.wav
+Playing WAVE 'test.wav': Signed 16 bit Little Endian, Rate 44100 Hz Stereo
+
+ALSA lib pcm_hw.c:411:(snd_pcm_hw_drain) SNDRV_PCM_IOCTL_DRAIN failed:
+Input/output error
+
+Maybe, there is a very muted click - then nothing for some time (5-10
+seconds) and then i get this error message???
+
+I tried to run 'snddevices' again - but got the same error.
+
+What else can i do?
+
+----------------------------------------------------------------------------
+
+# cat /etc/modules.conf | grep snd
+alias char-major-116 snd
+options snd snd_major=116 snd_cards_limit=1
+alias snd-card-0 snd-via8233
+options snd-via8233 snd_index=0 snd_id="Via8233" snd_enable="1" snd_ac97_clock="48000"
+alias sound-slot-0 snd-card-0
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+
+# rpm -qa | grep alsa
+alsa-driver-0.9.0rc1-1
+alsa-lib-0.9.0rc1-1
+alsa-utils-0.9.0rc1-1
+
+# cat /proc/version
+Linux version 2.4.19-pre7 (root@athlon.rs.ednet.at) (gcc version 2.96 
+20000731 (Red Hat Linux 7.1 2.96-98)) #6 Don Mai 2 21:29:00 CEST 2002
 
 
-I want to learn how to create plug-ins for programs such as XMMS, that
-allow me to do things with audio that an audophiles do now (and will do)
-with there processors. I have the following in mind:
 
-        DVD-Audio and SACD playback (once the PC drives arrive)
-        Upsampling  of 44.1 material to 24/96 and 24/192
-        Dolby Pro Logic III and Dolby ES processing
-        Creating my own music DSP modes
-        
-Are there any books that cover programming in these areas?
+Liebe Gruesse, Schroettner Robert
 
-Regards,
-
-Bearcat M. Sandor
-
-
-
+|   Schroettner Robert
+|   IT-Services
+|   Eurodata Datenverarbeitungsdienst Ges.m.b.H.
+|   Tel:  +43-1-7747076-51 +43-664-4345798    __   _
+|         +43-664-4345798                    / /  (_)__  __ ____  __ 
+|   Fax:  +43-1-7747076-12                  / /__/ / _ \/ // /\ \/ /
+|   WWW:  http://www.ednet.at              /____/_/_//_/\_,_/ /_/\_\
+|                                                    TUX for President
+|   EURODATA - WIEN - PRAG - BRUENN - BUDAPEST
 
 
 _______________________________________________________________
