@@ -1,15 +1,17 @@
-From: David Honeywell <davidh@pianodisc.com>
-Subject: Re: LADSPA plugin segfault patch
-Date: Wed, 25 Jun 2003 11:02:48 -0700
+From: "Len Moskowitz" <vze24hrw@verizon.net>
+Subject: PCMCIA In Kernel Or In ALSA Driver?
+Date: Wed, 25 Jun 2003 13:49:06 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EF9E3C8.3010400@pianodisc.com>
-References: <Pine.LNX.4.44.0306140931470.13576-100000@pnote.perex-int.cz>
-Reply-To: davidh@pianodisc.com
+Message-ID: <01d401c33b42$139c5a40$1c02a8c0@win98>
+References: <Pine.LNX.4.44.0306241956240.1838-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0306140931470.13576-100000@pnote.perex-int.cz>
+Received: from out001.verizon.net (out001pub.verizon.net [206.46.170.140])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA24150
+	for <alsa-devel@alsa-project.org>; Wed, 25 Jun 2003 19:46:50 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,48 +20,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> Using snd_dl*() function in LADSPA is broken. They do own versioning for 
-> internal functions which is not applicable to external code like LADSPA 
-> plugins. It should be fixed in CVS. Thank you for notice.
+Hi to all,
 
-I just tested the latest CVS snapshot (2003-06-25) with the LADSPA 
-plugins that were previously causing trouble.  The segfault and version 
-errors are fixed, but now there is no sound.  Is this a known issue? 
-Using alsa-lib-0.9.0rc6 still works fine with everything else the same.
+We're setting up a PDAudio-CF card.
 
-Here is my asound.conf:
+I note that the  configuration asks whether we want kernel or ALSA PCMCIA
+support: does it
+matter to the PDAudio-CF card driver?
 
-pcm.pitch
-{
-     type ladspa
-     slave.pcm "plughw:0,0"
-     path "/usr/local/lib/ladspa"
-     plugins
-     [
-        {
-           label amPitchshift
-           input
-           {
-              controls [ 1.059463 3 ]
-           }
-        }
-     ]
-}
 
-In my player, I use device.pcm_device = "plug:pitch".  Any ideas?
-
--- 
-David Honeywell
-PianoDisc Design Engineer
-(916) 567-9999 ext. 181
-www.pianodisc.com
-davidh@pianodisc.com
-(PGP Public Key Available)
+Len M.
 
 
 
