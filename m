@@ -1,11 +1,11 @@
-From: Anthony Truong <Anthony.Truong@mascorp.com>
-Subject: Support for multiple codecs
-Date: Thu, 29 May 2003 23:02:29 -0700
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: Sequencer devices also now missing from /dev/snd with ALSA CVS
+Date: Sat, 17 May 2003 13:44:24 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1054274549.10841.9.camel@huykhoi>
+Message-ID: <20030517124424.28033.qmail@web40606.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,20 +18,13 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I have a sound card (VIA 8235) with 4 codecs.  I already made all the
-necessary driver changes to support them.  The issue is how I can allow
-existing ALSA applications to take advantage of these extra codecs. How
-can the applications be assigned a particular codec for recording or
-playback, transparently, without modification to the ALSA lib, and
-therefore the applications themselves?
-Any suggestion, please?
+ 
+ 
 
-Regards,
-Anthony Dominic Truong. 
-
-
-
+__________________________________________________
+Yahoo! Plus
+For a better Internet experience
+http://www.yahoo.co.uk/btoffer
 
 
 -------------------------------------------------------
