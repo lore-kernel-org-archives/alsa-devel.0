@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000410]: Cannot listen to line-in and aux at the same time
-Date: Wed, 29 Sep 2004 02:14:33 +0200 (CEST)
+Date: Wed, 29 Sep 2004 04:33:21 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040929001433.6094446008@server.perex-int.cz>
+Message-ID: <20040929023321.C23613C04C@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CBA5F317
-	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 02:14:33 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2E771321
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 04:33:22 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,9 +20,9 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been REOPENED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000410
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000410
 ======================================================================
 Reported By:                skamp
 Assigned To:                tiwai
@@ -38,7 +38,7 @@ Distribution:               LFS 5.1.1, BLFS 5.1
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             07-27-2004 18:48 CEST
-Last Modified:              09-29-2004 02:14 CEST
+Last Modified:              09-29-2004 04:33 CEST
 ======================================================================
 Summary:                    Cannot listen to line-in and aux at the same time
 Description: 
@@ -113,6 +113,28 @@ The mixer (or driver, I don't know) is also very buggy (as you predicted);
 it took me about 15 minutes just to figure out how to hear sound coming
 from line-in at a reasonable volume.
 
+----------------------------------------------------------------------
+ ungod - 09-29-2004 04:33 CEST 
+----------------------------------------------------------------------
+Weird.
+
+As far as I know, the Sky, Space and Universe cards ought to be identical
+at that point. In the latest CVS, the aureon driver should give you mixer
+control to Line/CD/AUX/Mic/AC97 (AC97 being line/CD/AUX/Mic mixed
+together) and a Mic boost.
+In order to get both line, aux and wave sound; line, aux, ac97 and front
+should be unmuted and volumes set accordingly, and the H/W and H/W 1
+should be PCM Out.
+
+At least on my Space I can hear it all, and the line in sound is perfectly
+stereo.
+
+But I see that it is actually not possible with the current drivers, to
+record the AC97 mixed sound without also hearing it on the front channels
+(the recorded sound should however only be the AC97 sound), but I probably
+change the way at which the AC97 is muted, so that only playback sound is
+muted (currently the AC97 chip itself is muted)
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -132,6 +154,8 @@ Date Modified  Username       Field                    Change
 09-29-04 02:14 skamp          Bugnote Added: 0001963                       
 09-29-04 02:14 skamp          Resolution               fixed => reopened   
 09-29-04 02:14 skamp          Status                   resolved => feedback
+09-29-04 02:15 skamp          Bug Monitored: skamp                         
+09-29-04 04:33 ungod          Bugnote Added: 0001964                       
 ======================================================================
 
 
