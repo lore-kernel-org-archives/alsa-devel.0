@@ -1,14 +1,12 @@
-From: =?iso-8859-15?q?Z=E9bulon?= <zeb@zebulon.org.uk>
-Subject: unresolved symbols in snd.o after compiling cvs
-Date: Sat, 7 Jun 2003 12:33:13 +0100
+From: <jfm3@ouroboros-complex.org>
+Subject: bug in intel8x0 joystick/midi ?
+Date: Sat, 7 Jun 2003 10:21:36 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200306071233.13554.zeb@zebulon.org.uk>
+Message-ID: <33175.24.225.156.130.1055006496.squirrel@webmail.ouroboros-complex.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,26 +18,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-I tried the latest cvs for testing latest envy24HT patches, unfortunately, 
-even if compilation works ok :
+I have intel8x0 on my mother board. There are headers for a joystick/midi
+port I'd like to use. I look in BIOS and find joystick io=201, midi
+io=330, and midi irq=10. I put this in modules.conf:
 
-/sbin/depmod -a 2.4.21-0.19mm-mdk
-depmod: *** Unresolved symbols in 
-/lib/modules/2.4.21-0.19mm-mdk/kernel/sound/acore/snd.o
-depmod: *** Unresolved symbols in 
-/lib/modules/2.4.21-0.19mm-mdk/kernel/sound/drivers/vx/snd-vx-lib.o
-depmod: *** Unresolved symbols in 
-/lib/modules/2.4.21-0.19mm-mdk/kernel/sound/pcmcia/vx/snd-vxp440.o
-depmod: *** Unresolved symbols in 
-/lib/modules/2.4.21-0.19mm-mdk/kernel/sound/pcmcia/vx/snd-vxpocket.o
+options -k snd-intel8x0 index=0 mpu_port=330 joystick_port=201
 
-It prevents module snd-ice1724 to be loaded.
-I am sure about my kernel source and paths.
+snd-mpu401-uart gets loaded, but no midi ports appear. I notice in the
+source code to the driver three things.
 
-Any idea ?
-Thanks
-Zeb
+1) There is no support for joystick_port=201, only 200?
+
+2) There is no way to tell the driver what irq is the mpu401.
+
+3) The setup routine doesn't seem to look for joystick and midi. I don't
+see the word "joystick" or "midi" in dmesg.
+
+I'm using the bleeding edge apt index from Planet CCRMA. ALSA 0.9.4. dmesg
+is pretty boring, but I'll send it along if you want.
+
+(jfm3)
+
+
+
 
 
 -------------------------------------------------------
