@@ -1,12 +1,14 @@
-From: Bengt "Mÿffffe5nsson" <bengt_mansson@yahoo.com>
-Subject: Re: snd_seq_sync_output_queue does not work
-Date: Thu, 2 Dec 2004 13:01:46 -0800 (PST)
-Message-ID: <20041202210146.78140.qmail@web42102.mail.yahoo.com>
-References: <Pine.HPX.4.33n.0412021625200.27068-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000698]: Random beeps, ticks and clicks
+Date: Thu, 2 Dec 2004 23:27:37 +0100
+Message-ID: <03e247af27eef831b6aa29b8c62a780e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0412021625200.27068-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0F766250
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 23:27:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,87 +18,118 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thank you for your quick reply.
-I've looked at amidi and maybe that is a solution.
-It's a little bit annoying though, since receiving
-works so fine. I would prefer a symetrical solution
-that is easy to map to tha java api.
-Maybe a sleep is easiest, but I'll consider that when
-I've had some myself.
-/Bengt
 
---- Clemens Ladisch <clemens@ladisch.de> wrote:
-
-> Bengt Månsson wrote:
-> > I'm trying to make an app where I need to exchange
-> an
-> > 18k sysex. I use Rh9.
-> > I think I've worked out the receiving part, but
-> > sending will not work.
-> > I chop the big sysex into 256 byte blocks and send
-> in
-> > a sequence. This seems to work fine when I run it
-> > stepwise in the debugger, but crash when I run it
-> at
-> > full speed.
-> 
-> The sequencer isn't designed to handle big sysexs. 
-> Due to the
-> message-based architecture it's difficult to signal
-> back to the
-> sending application that the output buffer is full.
-> 
-> I'd guess some message couldn't be delivered and was
-> thrown away.
-> 
-> Try to limit the rate of messages so that you don't
-> exceed the MIDI
-> data rate.
-> 
-> > I think I've traced the problem down to the call
-> to
-> > snd_seq_sync_output_queue. I expect that call to
-> hang
-> > until the output is drained, and return a 0.
-> > What happens is that the call seems to return
-> > immediately with a 1.
-> 
-> The documentation is wrong, any nonnegative return
-> value indicates
-> success (the current implementation always returns
-> 1).
-> 
-> snd_seq_sync_output_queue waits until all events
-> have been sent.  At
-> this point, it's too late to detect events than
-> cannot be delivered at
-> the destination.
-> 
-> 
-> The documentation, if it actually existed, would
-> tell you to use the
-> rawmidi API for big chunks of sysex data.  See the
-> amidi program for
-> an example.
-> 
-> 
-> HTH
-> Clemens
-> 
-> 
-
-
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Meet the all-new My Yahoo! - Try it today! 
-http://my.yahoo.com 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=698> 
+======================================================================
+Reported By:                moonlite
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   698
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             12-02-2004 02:56 CET
+Last Modified:              12-02-2004 23:27 CET
+======================================================================
+Summary:                    Random beeps, ticks and clicks
+Description: 
+Below is what i posted to the gentoo-forums without getting without getting
+help that solved any of my problems.
  
+URL:
+http://forums.gentoo.org/viewtopic.php?t=255710&start=0&postdays=0&postorder=asc&highlight=
+---
+I have a problem with alsa and my SBLive-card and kernels newer than
+2.4.19.
+All in all it works without error-messages and the sound is pretty nice
+etc.
+But every now and then the music i listen to is interrupted for a small
+period of time (around 0.5s most of the time) and during this time i can't
+type or move the mouse and an annoying beep comes from my speakers. I am
+pretty sure that it is some sort of interruption because the few times the
+interrupts are long i am sure that the music continues from where it were
+and also, as i said above, i can't type etc during this small period.
+This seems to happen more during heavy load than under normal load but it
+still happens a lot at any given time. 
+---
+This problem happened with these kernels:
+vanilla-sources-2.4.20
+vanilla-sources-2.4.28
+gentoo-sources-2.4.20
+gentoo-sources-2.4.26-r12
+gentoo-dev-sources-2.6.9-r4
+
+(gentoo-sources are gentoo's own patchsets)
+
+Anyway. Since i posted this i've realized that the beeps (and sometimes
+also clicks/ticks) also happen more frequent during high network-load and
+not only normal load.
+Especially the clicking and ticking noise appear more frequent when
+downloading large amount of data with high transfer-rates.
+======================================================================
+
+----------------------------------------------------------------------
+ pzad - 12-02-04 17:32 
+----------------------------------------------------------------------
+Could you look, if your soundcard shares irq with something ????
+
+----------------------------------------------------------------------
+ moonlite - 12-02-04 23:27 
+----------------------------------------------------------------------
+root@starbase /home/moonlite # hdparm /dev/hda
+
+/dev/hda:
+ multcount    =  0 (off)
+ IO_support   =  1 (32-bit)
+ unmaskirq    =  1 (on)
+ using_dma    =  1 (on)
+ keepsettings =  0 (off)
+ readonly     =  0 (off)
+ readahead    = 256 (on)
+ geometry     = 65535/16/63, sectors = 117266688, start = 0
+
+root@starbase /home/moonlite # cat /proc/interrupts 
+           CPU0       
+  0:   33434343          XT-PIC  timer
+  1:       9798          XT-PIC  i8042
+  2:          0          XT-PIC  cascade
+  8:    5473400          XT-PIC  rtc
+  9:          0          XT-PIC  acpi
+ 11:     664320          XT-PIC  EMU10K1, eth0
+ 12:     287484          XT-PIC  i8042
+ 14:      64894          XT-PIC  ide0
+ 15:         31          XT-PIC  ide1
+NMI:          0 
+ERR:          1
+
+Ok. so i see that my network-card and EMU10K1 is sharing IRQ.
+Maybe that's the problem?
+
+A friend pasted this out of his /proc/interrupts and said it gave him no
+problems though:
+< TenOfTen>   9:    7387506          XT-PIC  acpi, ehci_hcd, EMU10K1, eth0
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-02-04 02:56 moonlite       New Issue                                    
+12-02-04 02:56 moonlite       Distribution              => Gentoo          
+12-02-04 02:56 moonlite       Kernel Version            => 2.6.9           
+12-02-04 17:32 pzad           Note Added: 0002687                          
+12-02-04 23:27 moonlite       Note Added: 0002699                          
+======================================================================
+
 
 
 
