@@ -1,13 +1,13 @@
-From: Guilhem Tardy <guilhem_tardy@yahoo.com>
-Subject: Re: pcm_lib.c & pcm_memory.c
-Date: Wed, 24 Jul 2002 07:27:55 -0700 (PDT)
+From: Shaju Abraham <shaju@multitech.co.in>
+Subject: Re: Calling snd_pcm_oss_write directly.
+Date: Wed, 24 Jul 2002 19:57:46 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020724142755.24288.qmail@web11504.mail.yahoo.com>
-References: <s5hlm81nrh7.wl@alsa2.suse.de>
+Message-ID: <3D3EB962.EC2C947E@multitech.co.in>
+References: <200207241129.g6OBTIbt000943@multitech.co.in>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hlm81nrh7.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,38 +16,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Paul Davis <pbd@op.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
+        I took the advice and used write()  from the other task.  It
+promptly returned with < 0 error.
+I do not know how the oss emulation in ALSA happens, so I do not know what
+exactly went wrong.
+Any more suggestions are welcome.
 
-> > OK, then I know how to solve my problem, but it would have been nice to
-> > avoid copy and silence callbacks, and just get from the substream or
-> > runtime structure the hw offset where the next period is expected to be
-> > written to.
-> 
-> sorry, i don't understand your question.
-> 
-> regardless of the existence of copy callbacks, the hw_ptr is updated
-> automatically.  it has nothing to do with the behavior of copy/silence.
-> 
-> copy and silence callbacks are called to replace on behalf of
-> copy_from/to_user().
+        Again, continuing my experiment with calling snd_pcm_oss_write
+directly,  I traced the crash to few fns called from fn snd_pcm_prepare in
+pcm_native.c   . These fns seem to be making few ioctls like
+..._IOCTL_PREPARE  and  ..._IOCTL_DRAIN. (more fns name ..ioctl than
+ioctl() call itself).   what are these fns doing and is it normal that they
+are called after snd_pcm_oss_write has already been called.
 
-Sorry if I wasn't clear. I have seen the snd_pcm_lib_read_transfer(), but
-rather than define my own capture copy function, I would have preferred to
-write directly to the place in dma_area expected by the framework. In other
-words, is the hw offset stored in any structure accessible from a substream?
-The other option (that I am pursuing now) is to write a capture_copy() function
-and manage my own hw offset in parallel.
-
-Guilhem.
+--shaju abraham
 
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Health - Feel better, live better
-http://health.yahoo.com
+
+Paul Davis wrote:
+
+> >          I am in a situation where I intend to call snd_pcm_oss_write
+> >directly.
+>
+> AFAIK, this is not a supported use of the alsa-lib API. There is no
+> guarantee that your application will continue to work in future
+> versions of alsa-lib.
+>
+> >What exactly happens is - the open and all the initial ioctl calls are
+> >done by the oss application. But the write call of the oss application
+> >is not done but it is done by some other task.
+>
+> there is still no reason to be using snd_pcm_<type>_<function> directly.
+>
+> if you insist on using the OSS API (a big error, IMHO) then you can
+> just use the OSS API in the other task.
+>
+> --p
+
 
 
 -------------------------------------------------------
