@@ -1,17 +1,13 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: alsa cvs not building on top of 2.6.10-rc2-mm3-V0.7.32_14
-Date: 09 Dec 2004 21:38:59 -0800
-Message-ID: <1102657139.4096.5.camel@cmn37.stanford.edu>
+From: Glenn Maynard <glenn@zewt.org>
+Subject: Re: Removal of assert() in alsa-lib
+Date: Fri, 10 Dec 2004 00:46:08 -0500
+Message-ID: <20041210054607.GX14919@zewt.org>
+References: <s5hzn0ym14c.wl@alsa2.suse.de> <Pine.LNX.4.58.0412011849430.2108@pnote.perex-int.cz> <s5hu0r5nbi6.wl@alsa2.suse.de> <s5h4qj429hh.wl@alsa2.suse.de> <s5hzn0n8mqd.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp2.Stanford.EDU (smtp2.Stanford.EDU [171.67.16.125])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AFD0D2F0
-	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 06:39:08 +0100 (MET)
-Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
-	by smtp2.Stanford.EDU (8.12.11/8.12.11) with ESMTP id iBA5d33J008747
-	for <alsa-devel@alsa-project.org>; Thu, 9 Dec 2004 21:39:06 -0800
+Content-Disposition: inline
+In-Reply-To: <s5hzn0n8mqd.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,35 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
-Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I can't seem to build current alsa cvs on top of
-2.6.10-rc2-mm3-V0.7.32-14...
+On Thu, Dec 09, 2004 at 05:23:06PM +0100, Takashi Iwai wrote:
+> +void snd_err_msg(const char *file, int line, const char *function, int err, const char *fmt, ...) __attribute__ ((format (printf, 5, 6)));
 
-  CC [M]  /usr/src/redhat/BUILD/alsa-driver-1.0.7/acore/hwdep.o
-  CC [M]  /usr/src/redhat/BUILD/alsa-driver-1.0.7/acore/memalloc.o
-/usr/src/redhat/BUILD/alsa-driver-1.0.7/acore/memalloc.c:53: error:
-initializer element is not constant
-/usr/src/redhat/BUILD/alsa-driver-1.0.7/acore/memalloc.c:53: error:
-(near initialization for `__param_arr_enable.num')
-make[4]: *** [/usr/src/redhat/BUILD/alsa-driver-1.0.7/acore/memalloc.o]
-Error 1
-make[3]: *** [/usr/src/redhat/BUILD/alsa-driver-1.0.7/acore] Error 2
-make[2]: *** [_module_/usr/src/redhat/BUILD/alsa-driver-1.0.7] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory
-`/lib/modules/2.6.9-1.1.rdtV0.7.32_14.rhfc2.ccrma/build'
-make: *** [compile] Error 2
-error: Bad exit status from /var/tmp/rpm-tmp.69519 (%build)
+Can this be a weak symbol, so it can be overridden by user code?
 
-I read a couple of old messages regarding this but found no solution (or
-did not search long enough :-)
- 
--- Fernando
+If my application causes errors on some version of ALSA, having diagnostic
+information going to stderr is inconvenient: I centralize all diagnostics
+for bug reporting in a single file, so I don't have to pull teeth from users
+to have them copy bits of information from other places.
 
+As long as snd_err_msg() is only called on "unexpected" errors (eg. what
+used to be assertion failures), and made a weak symbol, I can redirect it
+to my logs.
 
+I currently do this with __assert_fail() and __assert_perror_fail(), and I'd
+like to continue to be able to catch all important diagnostic output
+automatically.
+
+-- 
+Glenn Maynard
 
 
 -------------------------------------------------------
