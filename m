@@ -1,74 +1,55 @@
-From: "Stephen Warren" <SWarren@nvidia.com>
-Subject: Bug in acore/memalloc.patch in alsa-driver-1.0.7?
-Date: Fri, 19 Nov 2004 09:05:43 -0800
-Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B002A7F816@hqemmail02.nvidia.com>
+From: Jussi Laako <jussi.laako-+kynuGyeZW3HOG6cAo2yLw@public.gmane.org>
+Subject: Re: Re: [Alsa-devel] Firewire Audio Card Support
+Date: Fri, 19 Nov 2004 19:12:41 +0200
+Message-ID: <1100884361.13133.10.camel@vaarlahti.uworld>
+References: <31148074.1100630541337.JavaMail.root@scooter.psp.pas.earthlink.net>
+	<419C9D47.4090606@x-i.net> <200411181515.52218.olaf@solutionworks.de>
+	<20041118143205.GA21282@login.ecs.soton.ac.uk>
+	<419CB554.3080709@esitcom.org>
+	<Pine.LNX.4.58.0411181601440.14962@denise.shiny.it>
+	<1100809010.10150.5.camel@krustophenia.net>
+Reply-To: "The Linux Audio Developers' Mailing List"
+	<linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Return-path: <linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+In-Reply-To: <1100809010.10150.5.camel-sMXKvD5kdRZ9Itub2Jo68g@public.gmane.org>
+List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=help>
+List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Errors-To: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+To: The Linux Audio Developers' Mailing List <linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+Cc: Amaury Jacquot <sxpert-3iarmHWDzwRAfugRpC6u6w@public.gmane.org>, linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org, alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Giuliano Pochini <pochini-ROMyxSoNMFNW08phF/bjWg@public.gmane.org>, Steve Harris <S.W.Harris-jaJdc+oKuOm+cE1VCfRBVw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-I've started reading all the *.patch files in the alsa-driver-1.0.7
-package to see which patches actually change the code on 2.6.9. I found
-something odd in acore/memalloc.patch.
+On Thu, 2004-11-18 at 15:16 -0500, Lee Revell wrote:
 
-Part of the patch is this:
+> And I posted a [possibly OT] rant to that thread about how this was a
+> waste of time and how you could REALLY make a killing with open sound
+> hardware.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+I've been doing hardware design and device driver development as part of
+my day work. Designing open source hardware is possible in theory, but I
+can't see who would pay the expenses of the development. Software and
+hardware required to develop a proper hardware costs thousands of euros.
+Also each prototype manufacturing of the PCB is about 500=A4, and
+components a few hundred (because not buying >1000 each). So yeah, it
+would be possible for about 10000=A4 if not counting price for the work. =
+I
+don't have, nor willing to spend that kind of money for development of
+open piece of hardware. Someone else would of course collect the money
+from the sales of such hardware.
 
-+#if LINUX_VERSION_CODE >=3D KERNEL_VERSION(2, 6, 0)
-+#define VALID_DMA_MASK(dev)    (dev)->dma_mask
-......
-+#endif
-+
- static void *snd_dma_hack_alloc_coherent(struct device *dev, size_t
-size,
-                                         dma_addr_t *dma_handle, int
-flags)
- {
-        void *ret;
-        u64 dma_mask, coherent_dma_mask;
-=20
--       if (dev =3D=3D NULL || !dev->dma_mask)
-+       if (dev =3D=3D NULL || VALID_DMA_MASK(dev))
-                return dma_alloc_coherent(dev, size, dma_handle, flags);
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+Software is different thing, you are mostly spending just time. I've
+still put a few thousand euros of pure money to my software projects.
+It's a different thing is someone is willing to sponsor such a project.
 
-
-This changes the code from
-
--       if (dev =3D=3D NULL || !dev->dma_mask)
-
-to:
-
--       if (dev =3D=3D NULL || (dev)->dma_mask)
-
-Once the macro is expanded for kernels 2.6.0 or later.
-
-This seems to be a bug, since the test is inverted.
 
 --=20
-Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
-swarren@nvidia.com        http://www.nvidia.com/
-swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by: InterSystems CACHE
-FREE OODBMS DOWNLOAD - A multidimensional database that combines
-robust object and relational technologies, making it a perfect match
-for Java, C++,COM, XML, ODBC and JDBC. www.intersystems.com/match8
+Jussi Laako <jussi.laako-+kynuGyeZW3HOG6cAo2yLw@public.gmane.org>
