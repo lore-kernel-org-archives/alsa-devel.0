@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000880]: ALSA lib pcm_hw.c:370:(snd_pcm_hw_hw_free) SNDRV_PCM_IOCTL_HW_FREE failed: File descriptor in bad state
-Date: Sat, 5 Feb 2005 12:06:16 +0100
-Message-ID: <50a514a67a5f414cb4471e4579ba1022@bugtrack.alsa-project.org>
+From: Mario Moder <clay-man@arcor.de>
+Subject: Strange noise at the beginning or the end of playback
+Date: Sat, 5 Feb 2005 14:43:10 +0100
+Message-ID: <20050205134310.GA1802@oddfellow.dyndns.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3B6A21ED
-	for <alsa-devel@alsa-project.org>; Sat,  5 Feb 2005 12:06:17 +0100 (MET)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,71 +14,83 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=880> 
-======================================================================
-Reported By:                runtema
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   880
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             02-03-2005 09:20 CET
-Last Modified:              02-05-2005 12:06 CET
-======================================================================
-Summary:                    ALSA lib pcm_hw.c:370:(snd_pcm_hw_hw_free)
-SNDRV_PCM_IOCTL_HW_FREE failed: File descriptor in bad state
-Description: 
-When accesing ALSA lib/module pcm trough application ogle (see
-http://www.dtek.chalmers.se/groups/dvd/) it breaks down to the error given
-in the summary.
+Since I am using ALSA (I guess since 2 years) I have one and the same
+problem with my Soundblaster Live Value. Right now I'm running kernel
+2.6.10 with the included ALSA drivers. I have no asoundrc and no
+complicated setup, all modules are running, all sound is playing
+excellent, except...
 
-Details for system/version/error:
+When I play short wave files (less than 5 seconds), for example with
+"aplay", I can hear one "click" or "pop" either at the very beginning
+or the very end of the playback. No matter how often I repeat the
+aplay command, the click/pop is always there, everytime I call "aplay"
+with the same file. It is very disturbing especially at a high volume.
+Longer files are played flawlessly. Here is what I have tried to get
+it working:
 
-see http://forums.gentoo.org/viewtopic.php?p=2050504
-======================================================================
+- I played around with the --buffer-time option of aplay. Sometimes it
+	worked but then some other files were heavily distorted. No
+	solution.
 
-----------------------------------------------------------------------
- runtema - 02-05-05 11:20 
-----------------------------------------------------------------------
-OK, the cause of the problem is really the parallel running artsd, there
-seems to be a problem there with auto-suspend.
+- Tried all other options of "aplay". Changes could be heard but
+	sometimes one file plays and the other not and with other settings
+	the other way round.
 
-see new entries in the gentoo threads!
+- Used audacity to play the files. Worked perfectly but I cannot use
+	audacity to play all my files (especially when called from
+	applications on certain events). And AFAIK audacity still uses the
+	oss-emulation of ALSA.
 
-Please change Severity to 'block'!
+- Used audacity to add an additional silence (2-3 seconds) to the
+	beginning and end of the file. After saving, the files played
+	perfectly with "aplay" but adding silence to every short sound file
+	is really no solution.
 
-----------------------------------------------------------------------
- runtema - 02-05-05 12:06 
-----------------------------------------------------------------------
-Ok, after setting the message level of artsd manually lower than the
-default from Control Center, i still run into errors, which support my
-thesis, that I have a more ALSA lib connecting error:
+- Tried other players. "sox" sometimes worked, bplay mostly worked,
+	xmms (but only when using OSS emulation output) played most of files
+	perfectly. But I really need a commandline tool to play every short
+	wave file perfectly not just most of them. --> No solution
 
-> /usr/kde/3.3/bin/artsd -F 9 -S 4096 -s 10 -m artsmessage -c drkonqui -l
-1
-> ALSA lib pcm_hw.c <snip> SNDRV_PCM_IOCTL_START failed: Broken pipe
+- Made all possible sample format conversion... It is not a matter of
+	format, it is just the length (< 5 sec) of the sample which makes
+	the problem appear. No solution.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-03-05 09:20 runtema        New Issue                                    
-02-05-05 10:58 runtema        Note Added: 0003519                          
-02-05-05 11:20 runtema        Note Added: 0003520                          
-02-05-05 12:06 runtema        Note Added: 0003521                          
-======================================================================
+- Tried the emu10k1 OSS sound driver. Worked perfectly with all files
+	but I really need ALSA --> No solution
 
+- Tried Win2000. Worked perfectly but hey... That's no solution
 
+- Played around with many many bios settings, enabled/disabled ACPI,
+	PnP, etc. in BIOS, in kernel commandline... no solution
+
+- Put the card in another PCI slot with another interrupt (btw, it
+	does not share an interupt with another card). No solution.
+
+Summary:
+
+Files longer than 5 seconds: Everything works fine
+
+Files shorter than 5 seconds: One loud click/pop at the beginning or
+the end of playback
+
+Since it works with old OSS and Windows I guess it is an ALSA driver
+issue causing this behavior.
+
+Searching the docs and the mailing list archives, I only found one
+thread describing my problem but it also does not come to a solution:
+
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg10079.html
+
+Does anybody know how to solve this issue? Or any other suggestions,
+hints, tricks etc.?
+
+Mario
+ 
 
 
 -------------------------------------------------------
