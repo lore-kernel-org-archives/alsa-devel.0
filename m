@@ -1,8 +1,8 @@
-From: Tero Vallius <terva@ees2.oulu.fi>
-Subject: Pass through driver
-Date: Thu, 28 Mar 2002 10:50:43 +0200 (EET)
+From: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
+Subject: ANNOUNCE: ALSA driver for Compaq iPAQ
+Date: Thu, 28 Mar 2002 11:14:20 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.SOL.4.44.0203281041590.359-100000@tk1>
+Message-ID: <Pine.BSF.4.44.0203281110400.42547-100000@fest.stud.fee.vutbr.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,17 +16,19 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all
+Hi all,
 
-I need a dummy sound driver, that let's play and capture sounds so, that
-the sound that is being played by one application can be simultanoeusly
-captured with another application.
+first, partly usable, version of ALSA driver for Compaq iPAQ with Philips
+UDA1341TS sound chip is avaiable in ALSA CVS (alsa-driver/arm,
+alsa-driver/i2c/l3)
 
-I have tried to figure out how to modify the existing snd-card-dummy to do
-that but without success. Could someone give me a hint of what to do or at
-least where to start?
+Enjoy it!
 
-Regards
-Tero
+Bye
 
-tero.vallius@ee.oulu.fi
+--
+
+	Tomas Kasparek (sioux, xkaspa06)
+ 	 Tomas.Kasparek@[seznam.cz,volny.cz]
+	 Linux@dcse.fee.vutbr.cz
+	student UIVT FEI VUT Brno
