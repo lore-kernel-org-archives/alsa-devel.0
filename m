@@ -1,15 +1,12 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: preallocate_pages_for_all
-Date: Wed, 19 May 2004 19:58:38 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: alsa "Soundcard" support page on alsa-project.org
+Date: Thu, 20 May 2004 00:24:03 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040519195838.31280666.pochini@shiny.it>
-References: <20040515233759.0ea62c06.pochini@shiny.it>
-	<Pine.LNX.4.58.0405161553300.1776@pnote.perex-int.cz>
+Message-ID: <40ABEC93.9080309@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0405161553300.1776@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,25 +18,24 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 16 May 2004 15:55:29 +0200 (CEST)
-Jaroslav Kysela <perex@suse.cz> wrote:
+Would it be a good idea to keep this page more up to date.
+e.g.
+SB Audigy 2, but mention that it only works in 16bit 48Khz mode.
+Possible add the SB Audigy 2 ZS.
+Dell SB Live! Value.
 
-> > snd_pcm_lib_preallocate_pages_for_all() preallocates the buffers for the
-> > first 4 substreams by default. Can I change that number from the driver ? I
-> > would like to preallocate a buffer only for the first subdev, or maybe for
-> > the first, the 3rd, the 5th...
->
-> Then use snd_pcm_lib_preallocate_pages() function directly in your own loop.
+I keep getting people asking me if the Audigy 2 is supported, because it 
+is not on the list.
 
-Right. I didn't see that I could pass size = 0.
+Also enter in the list a Red line for the SB Audigy LS. (Although that 
+might change soon).
 
-
---
-Giuliano.
+Cheers
+James
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by: SourceForge.net Broadband
-Sign-up now for SourceForge Broadband and get the fastest
-6.0/768 connection for only $19.95/mo for the first 3 months!
-http://ads.osdn.com/?ad_id=2562&alloc_id=6184&op=click
+This SF.Net email is sponsored by: Oracle 10g
+Get certified on the hottest thing ever to hit the market... Oracle 10g. 
+Take an Oracle 10g class now, and we'll give you the exam FREE.
+http://ads.osdn.com/?ad_id=3149&alloc_id=8166&op=click
