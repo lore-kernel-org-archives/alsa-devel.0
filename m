@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
-Date: Thu, 3 Feb 2005 21:55:32 +0100
-Message-ID: <d7759cbd8554bf31682de041b69d6bc9@bugtrack.alsa-project.org>
+Date: Thu, 3 Feb 2005 23:21:02 +0100
+Message-ID: <7ae8153105ccbd49eedcd359b0c7cc16@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7CB64146
-	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2005 21:55:32 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ECC04165
+	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2005 23:21:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               slackware 10
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             01-29-2005 16:43 CET
-Last Modified:              02-03-2005 21:55 CET
+Last Modified:              02-03-2005 23:21 CET
 ======================================================================
 Summary:                    intel8x0m does not work on asus a3n laptop
 Description: 
@@ -65,6 +65,13 @@ this is what lspci tells me on that modem:
 the exact model of the laptop is asus z91n:
 http://usa.asus.com/products/notebook/z9series/Z9100N/z9100n_overview.htm
 
+----------------------------------------------------------------------
+ sashak - 02-03-05 23:21 
+----------------------------------------------------------------------
+I'm affraid that it is unsupported CXT codec. Problem like bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=509.
+Could you look at /proc/asound/card1/codec97#0/mc97#0-0 ?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -73,6 +80,7 @@ Date Modified  Username       Field                    Change
 01-29-05 16:43 mart           Kernel Version            => 2.6.10          
 01-29-05 16:44 mart           Issue Monitored: mart                        
 02-03-05 21:55 mart           Note Added: 0003494                          
+02-03-05 23:21 sashak         Note Added: 0003495                          
 ======================================================================
 
 
