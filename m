@@ -1,19 +1,13 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: ./snddevices
-Date: Wed, 18 Jun 2003 14:20:37 +0900
+From: "mahendra  sp" <mahendra_sp@rediffmail.com>
+Subject: About latency.c of ALSA lib 0.9.1 package
+Date: 18 Jun 2003 07:34:37 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EEFF6A5.6060102@boosthardware.com>
+Message-ID: <20030618073437.4678.qmail@webmail24.rediffmail.com>
+Reply-To: "mahendra  sp" <mahendra_sp@rediffmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="Next_1055921677---0-203.199.83.146-4676"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www2.webhosting.cx (www2.webhosting.cx [207.44.198.86])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id HAA03054
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2003 07:39:09 +0200
-Received: from boosthardware.com ([61.73.138.86])
-	(authenticated (0 bits))
-	by www2.webhosting.cx (8.11.6/8.11.6) with ESMTP id h5I5dGe22205
-	for <alsa-devel@alsa-project.org>; Wed, 18 Jun 2003 07:39:21 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,44 +16,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have a report that the manually running snddevices script is needed to 
-get 0.9.4 working.
-
-Last time I asked I got the impression that it was being automatically 
-handled and even saw the output messages after running make install.
-
-However I and others using the quattro have a bizarre problem where we 
-cannot access the alsa layer as a normal user.
-
-This is the message I get before/after running ./snddevices manually:
------
-snd_pcm_open: Permission denied (quattro1)
-Failed to initialize plugin!
-Failed to register plugin: /usr/local/lib/alsaplayer/output/libalsa_out.so
-Failed to load output plugin "alsa". Trying defaults.
-snd_pcm_open: Permission denied (quattro1)
-Failed to initialize plugin!
------
-
-Can someone let me know what is wrong or has support for the old dev 
-system been dropped now?
+ This is a multipart mime message
 
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
+--Next_1055921677---0-203.199.83.146-4676
+Content-type: text/html;
+	charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
+<P>=0Ahi,<BR>=0A<BR>=0A&nbsp;  latency .c program in ALSA-LIB -0.9.1 is wor=
+king fine for full duplex. Can any body tell how to reduce it to just full =
+duplex&nbsp; which does not measure latency.I want to make it very simple.&=
+nbsp; just to read and play. <BR>=0A&nbsp; i want help. please , as i am ne=
+w to linux&nbsp; and alsa ALSA.<BR>=0A<BR>=0A&nbsp; thanks,<BR>=0Amahendra=
+=0A</P>=0A<br><br>=0A<a href=3D"http://www.herohonda.com/karizma?rediffmail=
+" target=3D"_blank"><IMG SRC=3D"http://ads.rediff.com/RealMedia/ads/adstrea=
+m_nx.ads/www.rediffmail.com/inbox.htm@Bottom" border=3D0></a>=0A
+--Next_1055921677---0-203.199.83.146-4676
+Content-type: text/plain;
+	charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Goldie, 8 Nov, 2002
-The Scotsman
+hi,=0A=0A   latency .c program in ALSA-LIB -0.9.1 is working fine for full =
+duplex. Can any body tell how to reduce it to just full duplex  which does =
+not measure latency.I want to make it very simple.  just to read and play. =
+=0A  i want help. please , as i am new to linux  and alsa ALSA.=0A=0A  than=
+ks,=0Amahendra
+--Next_1055921677---0-203.199.83.146-4676--
 
 
 
