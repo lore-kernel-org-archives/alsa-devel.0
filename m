@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Wed, 16 Mar 2005 03:32:49 +0100
-Message-ID: <ae49d061187e3cb1db67e41f6c5a98ab@bugtrack.alsa-project.org>
+Date: Wed, 16 Mar 2005 04:06:44 +0100
+Message-ID: <802fe1bed521ba55e7a23219700f21a2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C7C4B1B2
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 03:32:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 27CE7173
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 04:06:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
 Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-16-2005 03:32 CET
+Last Modified:              03-16-2005 04:06 CET
 ======================================================================
 Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
@@ -100,13 +100,6 @@ versions.
 ======================================================================
 
 ----------------------------------------------------------------------
- fmoraes - 03-16-05 02:09 
-----------------------------------------------------------------------
-Have you tried my suggestion of commenting out the MIDI support in the
-emu10k1x.c file? That's one of the things I can think of that changed
-since 1.0.5.
-
-----------------------------------------------------------------------
  Q3Man - 03-16-05 03:32 
 ----------------------------------------------------------------------
 Just tried changing line 1277 of /alsa-kernel/pci/emu10k1/emu10k1x.c from
@@ -119,6 +112,22 @@ and recompiling/reinstalling with no change in the error. I'm not sure if
 that is what you wanted me to disable or not, but now that I know where I
 should be looking, I'll go through the file and see if there is anything
 else I could try.
+
+----------------------------------------------------------------------
+ fmoraes - 03-16-05 04:06 
+----------------------------------------------------------------------
+Try commenting out the following lines in the probe function like this:
+
+/*
+	if ((err = snd_emu10k1x_midi(chip)) < 0) {
+		snd_card_free(card);
+		return err;
+	}
+*/
+
+Also, try putting some printf() calls after each block before that one so
+that we can track where it failed. I will add a better error handling
+soon.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -143,6 +152,7 @@ Date Modified  Username       Field                    Change
 03-15-05 22:32 Q3Man          Note Added: 0003918                          
 03-16-05 02:09 fmoraes        Note Added: 0003927                          
 03-16-05 03:32 Q3Man          Note Added: 0003930                          
+03-16-05 04:06 fmoraes        Note Added: 0003931                          
 ======================================================================
 
 
