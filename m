@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: [ALSA - driver 0000059]: On au8820 left and right channels are
- swapped
-Date: Thu, 24 Mar 2005 12:03:10 +0800
-Message-ID: <42423BFE.6000007@netvigator.com>
-References: <b4fad97e0da3fd434019184fdfe66575@bugtrack.alsa-project.org>
+From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
+Subject: RE: Show currectly selected widget in proc_read for hda driver
+Date: Thu, 24 Mar 2005 13:29:54 +0800
+Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D6C3@cm-msg-02.cmedia.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <b4fad97e0da3fd434019184fdfe66575@bugtrack.alsa-project.org>
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_001_01C53032.822FE518"
+Received: from cm-msg-02.cmedia.com.tw (61-30-17-228.static.tfn.net.tw [61.30.17.228])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 43C4C2AA
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 07:06:08 +0100 (MET)
+Content-Class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,76 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-bugtrack@alsa-project.org wrote:
-> The following issue has been set as RELATED TO issue 0000949.
-> ======================================================================
-> <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=59> 
-> ======================================================================
-> Reported By:                kernel_bug
-> Assigned To:                mjander
-> ======================================================================
-> Project:                    ALSA - driver
-> Issue ID:                   59
-> Category:                   PCI - au88x0
-> Reproducibility:            random
-> Severity:                   major
-> Priority:                   normal
-> Status:                     feedback
-> Distribution:               
-> Kernel Version:             2.6.2
-> ======================================================================
-> Date Submitted:             02-13-2004 11:40 CET
-> Last Modified:              03-10-2005 21:25 CET
-> ======================================================================
-> Summary:                    On au8820 left and right channels are swapped
-> Description: 
-> In most cases, left and right channels are swapped. But in approx. 5% cases
-> all OK. Looks like the matter is somewhere in byte alignment...
-> ======================================================================
-
-> 
-> ----------------------------------------------------------------------
->  kernel_bug - 03-10-05 21:25 
-> ----------------------------------------------------------------------
-> 
->>Did anyone still get this bug or may we close it ?
-> 
-> 
-> Yes, I still get this bug. Channels are swapped just after the module is
-> loaded. First attempt to play something causes output with swapped
-> channels, all consequent attempts cause normal output.
-> 
-> "A long time ago" there was fixed another bug concerned with _random_
-> channel swap at _any_ attempt of output. Now we _always_ have swapped
-> channels, but only when you try to output something just after the module
-> is loaded.
-> 
-> I use ALSA drivers from the Linux kernel 2.6.11.
-> 
+------_=_NextPart_001_01C53032.822FE518
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 
 
-Would you add the routine vortex_dump_routes() and post the dump of the 
-active routes & mixers at the end of vortex_pcm_hw_params() when 
-channels are correct/swapped ?
+Execuse me, this one is a better implement. I don't issue the =
+GET_CONNECT for list length is 1, which is not necessary and can cause =
+problem.
 
-http://article.gmane.org/gmane.linux.alsa.devel/20490
+Please ignore previous patch.
 
-au88x0_pcm.c
-	vortex_dump_routes(chip,"at end of vortex_pcm_close()");
-	vortex_dump_routes(chip,"at end of vortex_pcm_hw_params()");
-au88x0_core.c
-         vortex_dump_routes(vortex,"at end of vortex_connect_deault()");
+Sincerely,
+ChenLi Tien
 
+-----Original Message-----
+From:	Tien,  C.L. - =A5=D0=A9=D3=C2=A7
+Sent:	2005/3/24 [=ACP=B4=C1=A5|] =A4W=A4=C8 12:17
+To:	alsa-devel@alsa-project.org
+Cc:=09
+Subject:	Show currectly selected widget in proc_read for hda driver
 
-BTW, this bug seem not RELATED TO issue 0000949.
+Summary: <Show currectly selected widget in proc_read for hda driver>
+Signed-off-by: ChenLi Tien<cltien@cmedia.com.tw>
+
+Durind debugging for cm9880 multi-channel playback, I added the * after =
+the currently selected widget, mixer widget doesn't need this but other =
+3 widget types  need it.
+
+Sincerely,
+ChenLi Tien
 
 
 
 
+------_=_NextPart_001_01C53032.822FE518
+Content-Type: text/x-patch;
+	name="hda_proc.c.patch"
+Content-Transfer-Encoding: base64
+Content-Description: hda_proc.c.patch
+Content-Disposition: attachment;
+	filename="hda_proc.c.patch"
+
+SW5kZXg6IGFsc2EtY3ZzL2Fsc2Eta2VybmVsL3BjaS9oZGEvaGRhX3Byb2MuYwo9PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+ClJDUyBmaWxlOiAvY3Zzcm9vdC9hbHNhL2Fsc2Eta2VybmVsL3BjaS9oZGEvaGRhX3Byb2MuYyx2
+CnJldHJpZXZpbmcgcmV2aXNpb24gMS4xCmRpZmYgLWEgLXUgLXIxLjEgaGRhX3Byb2MuYwotLS0g
+YWxzYS1jdnMvYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfcHJvYy5jCTIwIEphbiAyMDA1IDE1OjAy
+OjI4IC0wMDAwCTEuMQorKysgYWxzYS1jdnMvYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfcHJvYy5j
+CTI0IE1hciAyMDA1IDA1OjIwOjU3IC0wMDAwCkBAIC0yNjYsMTMgKzI2NiwxOSBAQAogCiAJCWlm
+ICh3aWRfY2FwcyAmIEFDX1dDQVBfQ09OTl9MSVNUKSB7CiAJCQloZGFfbmlkX3QgY29ubltIREFf
+TUFYX0NPTk5FQ1RJT05TXTsKLQkJCWludCBjLCBjb25uX2xlbjsKKwkJCWludCBjLCBjb25uX2xl
+biwgY3VyciA9IC0xOwogCQkJY29ubl9sZW4gPSBzbmRfaGRhX2dldF9jb25uZWN0aW9ucyhjb2Rl
+YywgbmlkLCBjb25uLAogCQkJCQkJCSAgIEhEQV9NQVhfQ09OTkVDVElPTlMpOworCQkJaWYgKGNv
+bm5fbGVuID4gMSAmJiB3aWRfdHlwZSAhPSBBQ19XSURfQVVEX01JWCkKKwkJCQljdXJyID0gc25k
+X2hkYV9jb2RlY19yZWFkKGNvZGVjLCBuaWQsIDAsCisJCQkJCUFDX1ZFUkJfR0VUX0NPTk5FQ1Rf
+U0VMLCAwKTsKIAkJCXNuZF9pcHJpbnRmKGJ1ZmZlciwgIiAgQ29ubmVjdGlvbjogJWRcbiIsIGNv
+bm5fbGVuKTsKIAkJCXNuZF9pcHJpbnRmKGJ1ZmZlciwgIiAgICAiKTsKLQkJCWZvciAoYyA9IDA7
+IGMgPCBjb25uX2xlbjsgYysrKQorCQkJZm9yIChjID0gMDsgYyA8IGNvbm5fbGVuOyBjKyspIHsK
+IAkJCQlzbmRfaXByaW50ZihidWZmZXIsICIgMHglMDJ4IiwgY29ubltjXSk7CisJCQkJaWYgKGMg
+PT0gY3VycikKKwkJCQkJc25kX2lwcmludGYoYnVmZmVyLCAiKiIpOworCQkJfQogCQkJc25kX2lw
+cmludGYoYnVmZmVyLCAiXG4iKTsKIAkJfQogCX0K
+
+------_=_NextPart_001_01C53032.822FE518--
 
 
 -------------------------------------------------------
