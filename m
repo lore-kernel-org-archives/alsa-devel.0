@@ -1,14 +1,15 @@
-From: "Kogan, Dan D" <dan.d.kogan@intel.com>
-Subject: RE: Announcing Linux driver for High-definition (aka Azalia) audio
-Date: Thu, 8 Jul 2004 10:57:40 -0700
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000365]: No audio with Asus p4p800-vm
+Date: Thu, 8 Jul 2004 20:30:44 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <B80241C0CEF2E948AEB4C7EBC775282F075EB26D@orsmsx401.amr.corp.intel.com>
+Message-ID: <c0a7ecb72b119d3bbde5e1a652942661@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 484711F9
+	for <alsa-devel@alsa-project.org>; Thu,  8 Jul 2004 20:30:45 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,79 +18,151 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Greetings all,
 
-I would like to announce the initial posting of a driver for Intel's
-High-Definition audio (formerly known as Azalia) to the ALSA community.
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0365
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                Anlar
+Assigned To:               =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     365
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo - up to date stable
+Kernel Version:             2.6.7
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             07-04-2004 20:53 CEST
+Last Modified:              07-08-2004 20:30 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    No audio with Asus p4p800-vm
+Description:=20
+I have new Asus P4P800-VM motherboard (865G) that has i8x0 (x=3D1?) (ADI1=
+980)
+builtin. Alsa does seem to initialize, the required modules load and
+something gets fed to the device but nothing comes out. I have played
+around with the mixer volumes and done other known usual stuff as well.
 
-The driver implements a limited set of features and is intended to be a
-starting point into which additional functionality can be incorporated.
-Specifically, the following are implemented:
+A googling session revealed that some people have had success with this
+motherboard but most of the people have failed. I thought that something
+on this motherboard might be non-standard and require attention.=20
 
-*	Stereo playback=20
-*	Line in stereo capture
-*	Mixer control for stereo output: master left, master right and
-mute
-*	Mixer control for line in: setting stereo record level and mute
-*	2 channel, 16 bit, 44/48 kHz native frequency,=20
-	  other frequencies through SW rate conversion=20
-	  from ALSA middle layer
-*	1 stream
+(If it is trivial, something t be added to the wikis. I doubt though sinc=
+e
+couple guys have tried already and none of them were complete newbies.)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-The design is intended to support all codecs compliant with the
-High-Definition Audio architecture.  At initialization, the driver
-enumerates the codecs in a board and then discovers the codecs' internal
-topology when playing or capturing an audio stream.  This work is still
-in progress and we plan to add more features as we progress.
+----------------------------------------------------------------------
+ Anlar - 07-06-2004 22:04 CEST=20
+----------------------------------------------------------------------
+Tried also with 2004-06-02 cvs version. Still playing mute. This sound ch=
+ip
+isn't listed as one that requires some "quirks" thingy, whatever that
+means..
 
-The following software configurations have been tested:
+Something interesting in dmesg though:
+ALSA /tmp/alsa/alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c:1922: AC'97 =
+0
+analog subsections not ready
+intel8x0_measure_ac97_clock: measured 49414 usecs
+intel8x0: clocking to 48000
 
-*	Distributions: Red Hat 9.0, Suse 9.1
-*	Kernels: 2.6.3, 2.6.4, 2.6.6, & 2.6.7
-*	ALSA: 1.0.3, 1.0.5rc1
+"not ready"?=20
 
-The driver has been tested with the following codecs:
+Did some extensive googling.. Check these out?
+http://www.mail-archive.com/freebsd-hackers@freebsd.org/msg41462.html
+http://www.mail-archive.com/freebsd-hackers@freebsd.org/msg42365.html
 
-*	Realtek ALC860-414S
-*	Realtek ALC880-414E
-*	Realtek ALC260-403
-*	Realtek ALC880
+Something of help there?
 
-Known issues relating to this drop include: =20
+----------------------------------------------------------------------
+ Anlar - 07-07-2004 17:32 CEST=20
+----------------------------------------------------------------------
+I did the
+ac97_quirk=3D 0-4
+thingy just in case.. This time while playing with mixer I heard couple
+faint cracks when I unmuted the channels. Very faint.
 
-*	Sound artifacts experienced whenever OSS emulation=20
-	based applications are used.
-*	Artifacts are also present when volume level approaches maximum.
-*	The driver does not currently restrict playback or capture to=20
-	a specific jack.  As a result, input or output may be=20
-	passing through an untraditional jack color,=20
-	i.e. capture entering through green jack and capture exiting=20
-	through pink jack.
+Tried something older, with a kernel 2.6.2 provided alsa. Still silent.
 
-Instructions for building and installing the driver are included in the
-tar ball, in the BUILD-CONFIG text file.  The readme.txt file (also in
-the tarball) provides a brief overview of the code structure.
+edited on: 07-07-04 17:32
 
-Please find the tarball at=20
-ftp://ftp.alsa-project.org/pub/tests/azx-alsa-idbo-driver-1.1.2a.tgz
-http://www.alsa-project.org/alsa/ftp/tests/azx-alsa-idbo-driver-1.1.2a.t
-gz
+----------------------------------------------------------------------
+ Anlar - 07-07-2004 22:02 CEST=20
+----------------------------------------------------------------------
+Played around with Knoppix, couldn't get working with its 2.4.26. Not eve=
+n
+on OSS, it seems to be btw failing too.=20
 
-I should point out that none of the team members are ALSA experts, so
-it's quite possible that the design and implementation of the driver do
-not take best advantage of the ALSA architecture and infrastructure.  In
-that respect, we look to the community to help us identify such
-shortcomings.
+Updated the motherboard bios to the newest version, no improvement.
 
-Best regards,
+----------------------------------------------------------------------
+ Anlar - 07-08-2004 20:30 CEST=20
+----------------------------------------------------------------------
+Managed to stole me a spdif module. They seem to be mostly universal and
+compatible amongst vendors - very simple. Guess what? I've got Hotel
+California playing in my room! Whee! Still have to use iron saw to make
+the pci back plate "low profile" to fit inside the case.
 
-Dan Kogan
-Intel Corp.
-Desktop Products Group
-Hillsboro, OR=20
+Didn't have to touch anything special. Just asked for the "default" sound
+source to be used, enabled the digital output from the mixer and voila.
+
+The analogs are still dead as stone. Been playing around with the mixer a
+lot. Any ideas?
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+07-04-04 20:53 Anlar          New Bug                                    =
+ =20
+07-04-04 20:53 Anlar          Distribution              =3D> Gentoo - up =
+to date
+stable
+07-04-04 20:53 Anlar          Kernel Version            =3D> 2.6.7       =
+   =20
+07-04-04 20:54 Anlar          Bug Monitored: Anlar                       =
+ =20
+07-06-04 22:04 Anlar          Bugnote Added: 0001387                     =
+ =20
+07-06-04 22:29 Anlar          File Added: asound.state                   =
+ =20
+07-06-04 22:58 Anlar          Bugnote Added: 0001389                     =
+ =20
+07-06-04 22:59 Anlar          Bugnote Edited: 0001389                    =
+ =20
+07-07-04 17:32 Anlar          Bugnote Edited: 0001389                    =
+ =20
+07-07-04 22:02 Anlar          Bugnote Added: 0001394                     =
+ =20
+07-08-04 20:30 Anlar          Bugnote Added: 0001395                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
 
 
 
