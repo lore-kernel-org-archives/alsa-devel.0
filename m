@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: OSS layer doesn't ignore xruns.
-Date: Tue, 15 Jul 2003 20:31:50 +0200 (CEST)
+Subject: Re: reopen with "plug:dmix" failure
+Date: Tue, 15 Jul 2003 21:15:00 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307152022090.27533-200000@pnote.perex-int.cz>
-References: <20030715120100.GA20739@alinoe.com>
+Message-ID: <Pine.LNX.4.44.0307152108390.27533-100000@pnote.perex-int.cz>
+References: <200307151409.21657.s.k.v@mail.ru>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-1463811384-383876263-1058293910=:27533"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030715120100.GA20739@alinoe.com>
+In-Reply-To: <200307151409.21657.s.k.v@mail.ru>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +16,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Carlo Wood <carlo@alinoe.com>
+To: Konstantin Stepaniuk <s.k.v@mail.ru>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+On Tue, 15 Jul 2003, Konstantin Stepaniuk wrote:
 
----1463811384-383876263-1058293910=:27533
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-
-On Tue, 15 Jul 2003, Carlo Wood wrote:
-
-> Is someone looking into my report please?
+> Dear Jaroslav Kysela.
 > 
-> I did include a compilable test case, so it shouldn't
-> be too hard to reproduce this :/
+> I wrote some example which illustrates problem described in previous message. 
+> Also I want you to make some fixes in your library which can avoid this 
+> problem. First of all I discommented lines 325-326 in file pcm_direct.c 
+> (because even after application stopped server still process and device 
+> /dev/snd/pcmC0D0p locked). After that I added one line, which unlink 
+> temporary file /tmp/alsa-dmix*.
 
-Well, in case of urgent help we have something called as SuSE 
-professional services. You can eventually buy our time, otherwise
-you will have to wait for our free timeslot (if any).
+Your fixes does not solve the real problem and causes another deadlock.
 
-I looked to the problem and it seems that the overrun state is handled 
-differently in the OSS API than ALSA implemented. It seems that the stream 
-is not stopped but rather the oldest period (fragment) is discarded.
-
-The new code (plus some optimization) is in the ALSA CVS tree. The patch 
-is attached to this e-mail.
+I have tried to solve the problem. Could you try the current CVS code?
 
 						Jaroslav
 
@@ -53,134 +43,6 @@ Linux Kernel Sound Maintainer
 ALSA Project, SuSE Labs
 
 
----1463811384-383876263-1058293910=:27533
-Content-Type: TEXT/plain; name="out.txt"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.44.0307152031500.27533@pnote.perex-int.cz>
-Content-Description: 
-Content-Disposition: attachment; filename="out.txt"
-
-SW5kZXg6IHBjbV9vc3MuYw0KPT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KUkNT
-IGZpbGU6IC9jdnNyb290L2Fsc2EvYWxzYS1rZXJuZWwvY29yZS9vc3MvcGNt
-X29zcy5jLHYNCnJldHJpZXZpbmcgcmV2aXNpb24gMS4zOQ0KcmV0cmlldmlu
-ZyByZXZpc2lvbiAxLjQxDQpkaWZmIC11IC1yMS4zOSAtcjEuNDENCi0tLSBw
-Y21fb3NzLmMJMTIgSnVsIDIwMDMgMTk6MjE6MTYgLTAwMDAJMS4zOQ0KKysr
-IHBjbV9vc3MuYwkxNSBKdWwgMjAwMyAxODoxMzozNCAtMDAwMAkxLjQxDQpA
-QCAtNDQ1LDcgKzQ0NSw3IEBADQogCX0gZWxzZSB7DQogCQlzd19wYXJhbXMt
-PnN0YXJ0X3RocmVzaG9sZCA9IHJ1bnRpbWUtPmJvdW5kYXJ5Ow0KIAl9DQot
-CWlmIChhdG9taWNfcmVhZCgmcnVudGltZS0+bW1hcF9jb3VudCkpDQorCWlm
-IChhdG9taWNfcmVhZCgmcnVudGltZS0+bW1hcF9jb3VudCkgfHwgc3Vic3Ry
-ZWFtLT5zdHJlYW0gPT0gU05EUlZfUENNX1NUUkVBTV9DQVBUVVJFKQ0KIAkJ
-c3dfcGFyYW1zLT5zdG9wX3RocmVzaG9sZCA9IHJ1bnRpbWUtPmJvdW5kYXJ5
-Ow0KIAllbHNlDQogCQlzd19wYXJhbXMtPnN0b3BfdGhyZXNob2xkID0gcnVu
-dGltZS0+YnVmZmVyX3NpemU7DQpAQCAtNTcwLDYgKzU3MCwzMSBAQA0KIAly
-ZXR1cm4gMDsNCiB9DQogDQorc3RhdGljIGludCBzbmRfcGNtX29zc19jYXB0
-dXJlX3Bvc2l0aW9uX2ZpeHVwKHNuZF9wY21fc3Vic3RyZWFtX3QgKnN1YnN0
-cmVhbSwgc25kX3BjbV9zZnJhbWVzX3QgKmRlbGF5KQ0KK3sNCisJc25kX3Bj
-bV9ydW50aW1lX3QgKnJ1bnRpbWU7DQorCXNuZF9wY21fdWZyYW1lc190IGZy
-YW1lczsNCisJaW50IGVyciA9IDA7DQorDQorCXdoaWxlICgxKSB7DQorCQll
-cnIgPSBzbmRfcGNtX2tlcm5lbF9pb2N0bChzdWJzdHJlYW0sIFNORFJWX1BD
-TV9JT0NUTF9ERUxBWSwgZGVsYXkpOw0KKwkJaWYgKGVyciA8IDApDQorCQkJ
-YnJlYWs7DQorCQlydW50aW1lID0gc3Vic3RyZWFtLT5ydW50aW1lOw0KKwkJ
-aWYgKCpkZWxheSA8PSBydW50aW1lLT5idWZmZXJfc2l6ZSkNCisJCQlicmVh
-azsNCisJCS8qIGluIGNhc2Ugb2Ygb3ZlcnJ1biwgc2tpcCB3aG9sZSBwZXJp
-b2RzIGxpa2UgT1NTL0xpbnV4IGRyaXZlciBkb2VzICovDQorCQkvKiB1bnRp
-bCBhdmFpbChkZWxheSkgPD0gYnVmZmVyX3NpemUgKi8NCisJCWZyYW1lcyA9
-ICgqZGVsYXkgLSBydW50aW1lLT5idWZmZXJfc2l6ZSkgKyBydW50aW1lLT5w
-ZXJpb2Rfc2l6ZSAtIDE7DQorCQlmcmFtZXMgLz0gcnVudGltZS0+cGVyaW9k
-X3NpemU7DQorCQlmcmFtZXMgKj0gcnVudGltZS0+cGVyaW9kX3NpemU7DQor
-CQllcnIgPSBzbmRfcGNtX2tlcm5lbF9pb2N0bChzdWJzdHJlYW0sIFNORFJW
-X1BDTV9JT0NUTF9GT1JXQVJELCAmZnJhbWVzKTsNCisJCWlmIChlcnIgPCAw
-KQ0KKwkJCWJyZWFrOw0KKwl9DQorCXJldHVybiBlcnI7DQorfQ0KKw0KIHNu
-ZF9wY21fc2ZyYW1lc190IHNuZF9wY21fb3NzX3dyaXRlMyhzbmRfcGNtX3N1
-YnN0cmVhbV90ICpzdWJzdHJlYW0sIGNvbnN0IGNoYXIgKnB0ciwgc25kX3Bj
-bV91ZnJhbWVzX3QgZnJhbWVzLCBpbnQgaW5fa2VybmVsKQ0KIHsNCiAJc25k
-X3BjbV9ydW50aW1lX3QgKnJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7
-DQpAQCAtNjA4LDYgKzYzMyw3IEBADQogc25kX3BjbV9zZnJhbWVzX3Qgc25k
-X3BjbV9vc3NfcmVhZDMoc25kX3BjbV9zdWJzdHJlYW1fdCAqc3Vic3RyZWFt
-LCBjaGFyICpwdHIsIHNuZF9wY21fdWZyYW1lc190IGZyYW1lcywgaW50IGlu
-X2tlcm5lbCkNCiB7DQogCXNuZF9wY21fcnVudGltZV90ICpydW50aW1lID0g
-c3Vic3RyZWFtLT5ydW50aW1lOw0KKwlzbmRfcGNtX3NmcmFtZXNfdCBkZWxh
-eTsNCiAJaW50IHJldDsNCiAJd2hpbGUgKDEpIHsNCiAJCWlmIChydW50aW1l
-LT5zdGF0dXMtPnN0YXRlID09IFNORFJWX1BDTV9TVEFURV9YUlVOIHx8DQpA
-QCAtNjI2LDYgKzY1Miw5IEBADQogCQkJaWYgKHJldCA8IDApDQogCQkJCWJy
-ZWFrOw0KIAkJfQ0KKwkJcmV0ID0gc25kX3BjbV9vc3NfY2FwdHVyZV9wb3Np
-dGlvbl9maXh1cChzdWJzdHJlYW0sICZkZWxheSk7DQorCQlpZiAocmV0IDwg
-MCkNCisJCQlicmVhazsNCiAJCWlmIChpbl9rZXJuZWwpIHsNCiAJCQltbV9z
-ZWdtZW50X3QgZnM7DQogCQkJZnMgPSBzbmRfZW50ZXJfdXNlcigpOw0KQEAg
-LTEzMzUsNyArMTM2NCw3IEBADQogewkNCiAJc25kX3BjbV9zdWJzdHJlYW1f
-dCAqc3Vic3RyZWFtOw0KIAlzbmRfcGNtX3J1bnRpbWVfdCAqcnVudGltZTsN
-Ci0Jc25kX3BjbV9zdGF0dXNfdCBzdGF0dXM7DQorCXNuZF9wY21fc2ZyYW1l
-c190IGRlbGF5Ow0KIAlzdHJ1Y3QgY291bnRfaW5mbyBpbmZvOw0KIAlpbnQg
-ZXJyOw0KIA0KQEAgLTEzNTMsMTQgKzEzODIsMTcgQEANCiAJCQlyZXR1cm4g
-LUVGQVVMVDsNCiAJCXJldHVybiAwOw0KIAl9DQotCW1lbXNldCgmc3RhdHVz
-LCAwLCBzaXplb2Yoc3RhdHVzKSk7DQotCWVyciA9IHNuZF9wY21fa2VybmVs
-X2lvY3RsKHN1YnN0cmVhbSwgU05EUlZfUENNX0lPQ1RMX1NUQVRVUywgJnN0
-YXR1cyk7DQorCWlmIChzdHJlYW0gPT0gU05EUlZfUENNX1NUUkVBTV9QTEFZ
-QkFDSykgew0KKwkJZXJyID0gc25kX3BjbV9rZXJuZWxfaW9jdGwoc3Vic3Ry
-ZWFtLCBTTkRSVl9QQ01fSU9DVExfREVMQVksICZkZWxheSk7DQorCX0gZWxz
-ZSB7DQorCQllcnIgPSBzbmRfcGNtX29zc19jYXB0dXJlX3Bvc2l0aW9uX2Zp
-eHVwKHN1YnN0cmVhbSwgJmRlbGF5KTsNCisJfQ0KIAlpZiAoZXJyIDwgMCkN
-CiAJCXJldHVybiBlcnI7DQogCWlmIChzdHJlYW0gPT0gU05EUlZfUENNX1NU
-UkVBTV9QTEFZQkFDSykgew0KLQkJaW5mby5ieXRlcyA9IHJ1bnRpbWUtPm9z
-cy5ieXRlcyAtIHNuZF9wY21fb3NzX2J5dGVzKHN1YnN0cmVhbSwgcnVudGlt
-ZS0+YnVmZmVyX3NpemUgLSBzdGF0dXMuYXZhaWwpOw0KKwkJaW5mby5ieXRl
-cyA9IHJ1bnRpbWUtPm9zcy5ieXRlcyAtIHNuZF9wY21fb3NzX2J5dGVzKHN1
-YnN0cmVhbSwgZGVsYXkpOw0KIAl9IGVsc2Ugew0KLQkJaW5mby5ieXRlcyA9
-IHJ1bnRpbWUtPm9zcy5ieXRlcyArIHNuZF9wY21fb3NzX2J5dGVzKHN1YnN0
-cmVhbSwgc3RhdHVzLmF2YWlsKTsNCisJCWluZm8uYnl0ZXMgPSBydW50aW1l
-LT5vc3MuYnl0ZXMgKyBzbmRfcGNtX29zc19ieXRlcyhzdWJzdHJlYW0sIGRl
-bGF5KTsNCiAJfQ0KIAlpbmZvLnB0ciA9IHNuZF9wY21fb3NzX2J5dGVzKHN1
-YnN0cmVhbSwgcnVudGltZS0+c3RhdHVzLT5od19wdHIgJSBydW50aW1lLT5i
-dWZmZXJfc2l6ZSk7DQogCWlmIChhdG9taWNfcmVhZCgmcnVudGltZS0+bW1h
-cF9jb3VudCkpIHsNCkBAIC0xMzczLDEwICsxNDA1LDcgQEANCiAJCWlmIChz
-dWJzdHJlYW0tPnN0cmVhbSA9PSBTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNL
-KQ0KIAkJCXNuZF9wY21fb3NzX3NpbXVsYXRlX2ZpbGwoc3Vic3RyZWFtKTsN
-CiAJfSBlbHNlIHsNCi0JCWlmIChzdHJlYW0gPT0gU05EUlZfUENNX1NUUkVB
-TV9QTEFZQkFDSykNCi0JCQlpbmZvLmJsb2NrcyA9IChydW50aW1lLT5idWZm
-ZXJfc2l6ZSAtIHN0YXR1cy5hdmFpbCkgLyBydW50aW1lLT5wZXJpb2Rfc2l6
-ZTsNCi0JCWVsc2UNCi0JCQlpbmZvLmJsb2NrcyA9IHN0YXR1cy5hdmFpbCAv
-IHJ1bnRpbWUtPnBlcmlvZF9zaXplOw0KKwkJaW5mby5ibG9ja3MgPSBkZWxh
-eSAvIHJ1bnRpbWUtPnBlcmlvZF9zaXplOw0KIAl9DQogCWlmIChjb3B5X3Rv
-X3VzZXIoX2luZm8sICZpbmZvLCBzaXplb2YoaW5mbykpKQ0KIAkJcmV0dXJu
-IC1FRkFVTFQ7DQpAQCAtMTM4Nyw3ICsxNDE2LDcgQEANCiB7DQogCXNuZF9w
-Y21fc3Vic3RyZWFtX3QgKnN1YnN0cmVhbTsNCiAJc25kX3BjbV9ydW50aW1l
-X3QgKnJ1bnRpbWU7DQotCXNuZF9wY21fc3RhdHVzX3Qgc3RhdHVzOw0KKwlz
-bmRfcGNtX3NmcmFtZXNfdCBhdmFpbDsNCiAJc3RydWN0IGF1ZGlvX2J1Zl9p
-bmZvIGluZm87DQogCWludCBlcnI7DQogDQpAQCAtMTQwNCw3ICsxNDMzLDYg
-QEANCiANCiAJaW5mby5mcmFnc2l6ZSA9IHJ1bnRpbWUtPm9zcy5wZXJpb2Rf
-Ynl0ZXM7DQogCWluZm8uZnJhZ3N0b3RhbCA9IHJ1bnRpbWUtPnBlcmlvZHM7
-DQotCW1lbXNldCgmc3RhdHVzLCAwLCBzaXplb2Yoc3RhdHVzKSk7DQogCWlm
-IChydW50aW1lLT5vc3MucHJlcGFyZSkgew0KIAkJaWYgKHN0cmVhbSA9PSBT
-TkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLKSB7DQogCQkJaW5mby5ieXRlcyA9
-IHJ1bnRpbWUtPm9zcy5wZXJpb2RfYnl0ZXMgKiBydW50aW1lLT5wZXJpb2Rz
-Ow0KQEAgLTE0MTQsMjAgKzE0NDIsMTggQEANCiAJCQlpbmZvLmZyYWdtZW50
-cyA9IDA7DQogCQl9DQogCX0gZWxzZSB7DQotCQllcnIgPSBzbmRfcGNtX2tl
-cm5lbF9pb2N0bChzdWJzdHJlYW0sIFNORFJWX1BDTV9JT0NUTF9TVEFUVVMs
-ICZzdGF0dXMpOw0KKwkJaWYgKHN0cmVhbSA9PSBTTkRSVl9QQ01fU1RSRUFN
-X1BMQVlCQUNLKSB7DQorCQkJZXJyID0gc25kX3BjbV9rZXJuZWxfaW9jdGwo
-c3Vic3RyZWFtLCBTTkRSVl9QQ01fSU9DVExfREVMQVksICZhdmFpbCk7DQor
-CQkJYXZhaWwgPSBydW50aW1lLT5idWZmZXJfc2l6ZSAtIGF2YWlsOw0KKwkJ
-fSBlbHNlIHsNCisJCQllcnIgPSBzbmRfcGNtX29zc19jYXB0dXJlX3Bvc2l0
-aW9uX2ZpeHVwKHN1YnN0cmVhbSwgJmF2YWlsKTsNCisJCX0NCiAJCWlmIChl
-cnIgPCAwKQ0KIAkJCXJldHVybiBlcnI7DQotCQlpbmZvLmJ5dGVzID0gc25k
-X3BjbV9vc3NfYnl0ZXMoc3Vic3RyZWFtLCBzdGF0dXMuYXZhaWwpOw0KLQkJ
-aW5mby5mcmFnbWVudHMgPSBzdGF0dXMuYXZhaWwgLyBydW50aW1lLT5wZXJp
-b2Rfc2l6ZTsNCisJCWluZm8uYnl0ZXMgPSBzbmRfcGNtX29zc19ieXRlcyhz
-dWJzdHJlYW0sIGF2YWlsKTsNCisJCWluZm8uZnJhZ21lbnRzID0gYXZhaWwg
-LyBydW50aW1lLT5wZXJpb2Rfc2l6ZTsNCiAJfQ0KIA0KLSNpZiAwDQotCS8q
-IHZlcnkgZXhwZXJpbWVudGFsIHN0dWZmIHRvIGdldCBRdWFrZTIgd29ya2lu
-ZyAqLw0KLQlydW50aW1lLT5vc3MucGVyaW9kID0gKGluZm8ucGVyaW9kcyAt
-IDEpIDw8IDE2Ow0KLQlmb3IgKHRtcCA9IGluZm8uZnJhZ3NpemU7IHRtcCA+
-IDE7IHRtcCA+Pj0gMSkNCi0JCXJ1bnRpbWUtPm9zcy5wZXJpb2QrKzsNCi0J
-cnVudGltZS0+b3NzLnN1YmRpdmlzaW9uID0gMTsJLyogZGlzYWJsZSBTVUJE
-SVZJREUgKi8NCi0jZW5kaWYNCiAjaWZkZWYgT1NTX0RFQlVHDQogCXByaW50
-aygicGNtX29zczogc3BhY2U6IGJ5dGVzID0gJWksIGZyYWdtZW50cyA9ICVp
-LCBmcmFnc3RvdGFsID0gJWksIGZyYWdzaXplID0gJWlcbiIsIGluZm8uYnl0
-ZXMsIGluZm8uZnJhZ21lbnRzLCBpbmZvLmZyYWdzdG90YWwsIGluZm8uZnJh
-Z3NpemUpOw0KICNlbmRpZg0K
----1463811384-383876263-1058293910=:27533--
 
 
 -------------------------------------------------------
