@@ -1,12 +1,12 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000389]: random buffer snd_output_t issues
-Date: Fri, 24 Sep 2004 13:34:13 +0200 (CEST)
+Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
+Date: Fri, 24 Sep 2004 13:34:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924113413.70DC4101DE@server.perex-int.cz>
+Message-ID: <20040924113454.42297101DE@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 92DE3263
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0429628C
 	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:36:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,59 +20,92 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been CLOSED
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000389
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000523
 ======================================================================
-Reported By:                Benjamin Otte
-Assigned To:                Clemens Ladisch
+Reported By:                pharm
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     389
-Category:                   general
+Project:                    ALSA - driver
+Bug ID:                     523
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
 ======================================================================
-Date Submitted:             07-15-2004 20:09 CEST
+Date Submitted:             09-22-2004 22:48 CEST
 Last Modified:              09-24-2004 13:34 CEST
 ======================================================================
-Summary:                    random buffer snd_output_t issues
+Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
 Description: 
-There are several issues with using a snd_output_t acquired from
-snd_output_buffer_open(). These cause random segfaults because of
-writing/reading invalid memory.
-The attached patch fixes those issues.
+I have a Biostar IDEQ 210V minipc. As well as 6 channel analog out (which
+appears to work, at least stereo analog out does for certain) there are
+two digital (optical) SPDIF outputs. Unfortunately I can't get anything to
+recognise these -- mplayer complains about the lack of IEC958 mixer
+entries if I try to use the hwac3 output, and if I point the 
+alsa output at any of the list of hardware outputs I get nothing from the
+digital amp -- it doesn't appear to get any signal.
 
+Assuming I'm not doing something dumb, is there anything else I should
+try? I've tried all the ac97_quirk options.
 ======================================================================
 
 ----------------------------------------------------------------------
- Benjamin Otte - 07-15-2004 20:14 CEST 
+ tiwai - 09-23-2004 18:25 CEST 
 ----------------------------------------------------------------------
-patch to fix the issues.
-These include:
-- snd_output_buffer_need might not resize the buffer to be big enough, if
-huge sizes are required.
-- calculating the needed buffer size does not take care of the terminating
-null byte vsprintf puts at the end. So in rare cases, the buffer is
-exactly one byte too small. Use vsnprintf instead to guard against these
-problems.
-- snd_output_buffer_print does not correct the size member for the number
-of bytes added.
+Could you try the attached patch?
+(Note that it's totally untested.)
+
+----------------------------------------------------------------------
+ pharm - 09-23-2004 22:09 CEST 
+----------------------------------------------------------------------
+What am I looking for? It seems to detect OK:
+/proc/asound/card0/codec97#0/ac97#0-0 contains the new ID string.
+
+but there's no sound output :( (unless I've fouled up the mixer -- will
+check again)
+
+Is there stuff I can twiddle to see what works? I'll have a spelunk
+through the patch, but I'm not familiar with the alsa internals
+unfortunately...
+
+----------------------------------------------------------------------
+ tiwai - 09-24-2004 12:03 CEST 
+----------------------------------------------------------------------
+What about th spdif output with the patch?
+(make sure to use 1.0.7rc, not 1.0.6a)
+
+----------------------------------------------------------------------
+ pharm - 09-24-2004 12:28 CEST 
+----------------------------------------------------------------------
+Ah. Think I may have applied it to 1.0.6a. Will retest!
+
+----------------------------------------------------------------------
+ pharm - 09-24-2004 13:34 CEST 
+----------------------------------------------------------------------
+Ah ha. With patch applied to 1.0.7rc1 the rear SPDIF now lights up.
+Still no sound out of analogue or digital outputs as far as I can hear
+though.
+
+cheers, Phil
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-15-04 20:09 Benjamin Otte  New Bug                                      
-07-15-04 20:09 Benjamin Otte  File Added: test-overwrite.c                    
-07-15-04 20:14 Benjamin Otte  Bugnote Added: 0001438                       
-07-15-04 20:15 Benjamin Otte  File Added: output-buffer.patch                    
-07-20-04 17:36 Clemens LadischAssigned To               => Clemens Ladisch 
-07-20-04 17:36 Clemens LadischStatus                   new => assigned     
-07-20-04 17:36 Clemens LadischResolution               open => fixed       
-07-20-04 17:36 Clemens LadischStatus                   assigned => resolved
-09-24-04 13:34 tiwai          Status                   resolved => closed  
+09-22-04 22:48 pharm          New Bug                                      
+09-22-04 22:48 pharm          Distribution              => Debian unstable 
+09-22-04 22:48 pharm          Kernel Version            => 2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
+09-23-04 18:25 tiwai          Bugnote Added: 0001829                       
+09-23-04 18:26 tiwai          File Added: cm9761-add.dif                    
+09-23-04 22:09 pharm          Bugnote Added: 0001851                       
+09-24-04 09:28 pharm          Bug Monitored: pharm                         
+09-24-04 12:03 tiwai          Bugnote Added: 0001869                       
+09-24-04 12:28 pharm          Bugnote Added: 0001877                       
+09-24-04 13:34 pharm          Bugnote Added: 0001882                       
 ======================================================================
 
 
