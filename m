@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000705]: RME96 Driver crashes
-Date: Thu, 9 Dec 2004 00:22:26 +0100
-Message-ID: <69db0df9f1a3b228822b407f6f92b424@bugtrack.alsa-project.org>
+From: Michael Collard <quadfour@iinet.net.au>
+Subject: Re: snd-ioctl32 and hard lockups
+Date: Thu, 09 Dec 2004 08:51:33 +0800
+Message-ID: <1102553493.1459.0.camel@natalie>
+References: <1102515405.28595.7.camel@natalie>
+	 <s5hy8g8akif.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 53592300
-	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2004 00:22:26 +0100 (MET)
+In-Reply-To: <s5hy8g8akif.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +18,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2004-12-08 at 16:15 +0100, Takashi Iwai wrote:
+> At Wed, 08 Dec 2004 22:16:45 +0800,
+> Michael Collard wrote:
+> > 
+> > After modprobing the snd-ioctl32 module from Alsa 1.0.7, then next
+> > attempt to play _any_ audio causes the machine to hard lock, not even
+> > the SysRq commands do anything. I've had no luck with a response form
+> > alsa-users or #alsa on freenode, hence emailing the devel list.
+> > 
+> > 1.0.7 compiled, not from kernel.
+> > Custom x86_64 2.6.8.1 kernel
+> > Vibra16 card (es1371 driver)
+> > 
+> > Alsa sound works quite OK in every other respect. Any hints on how to
+> > diagnose/fix the problem appreciated.
+> 
+> Try the CVS version.  The ioctl32 wrapper was rewritten in large
+> parts.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=705> 
-======================================================================
-Reported By:                FishB8
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   705
-Category:                   PCI - RME 96
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             12-03-2004 23:43 CET
-Last Modified:              12-09-2004 00:22 CET
-======================================================================
-Summary:                    RME96 Driver crashes
-Description: 
-Something has changed in the RME96 driver between 1.0.6 and 1.0.7 causeing
-it to crash. Whenever an audio program uses ALSA and stops playing the
-driver hangs. When trying to start JACK, it never gets started but the CPU
-hits 100%. It's impossible to kill any of the programs because any program
-dealing with processes hangs as well. The system will not totally shut
-down and has to be reset. Kernel 2.6.8 works just fine.
-======================================================================
+Thank you, the CVS version functions correctly :)
 
-----------------------------------------------------------------------
- tiwai - 12-08-04 12:08 
-----------------------------------------------------------------------
-Try the older version of JACK, too.
+Wish I'd done that before.
 
-----------------------------------------------------------------------
- FishB8 - 12-09-04 00:22 
-----------------------------------------------------------------------
-Older version is even worse: the whole system locked up. I was using
-version 0.98.1. Once again this is only in real time mode though. Non real
-time mode for 0.98.1 didn't cause any problems.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-03-04 23:43 FishB8         New Issue                                    
-12-03-04 23:43 FishB8         File Added: config                           
-12-03-04 23:43 FishB8         Distribution              => Gentoo          
-12-03-04 23:43 FishB8         Kernel Version            => 2.6.9           
-12-04-04 12:30 martin         Note Added: 0002715                          
-12-04-04 17:56 FishB8         Note Added: 0002717                          
-12-04-04 19:21 FishB8         Note Added: 0002718                          
-12-04-04 20:18 eradicator     Issue Monitored: eradicator                    
-12-07-04 18:44 tiwai          Note Added: 0002758                          
-12-07-04 23:06 FishB8         Note Added: 0002768                          
-12-08-04 12:08 tiwai          Note Added: 0002776                          
-12-09-04 00:22 FishB8         Note Added: 0002796                          
-======================================================================
+Regards
+Michael Collard
 
 
 
