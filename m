@@ -1,14 +1,23 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000725]: intel8x0, chip  CMI9761A - no volume control, sound mixer broken
-Date: Mon, 13 Dec 2004 21:45:00 +0100
-Message-ID: <387b4cfad79f7d523403818738cc9c56@bugtrack.alsa-project.org>
+From: Robbie Knutson <shczqgdqmdou@wport.com>
+Subject: You gotta love this Abnormal MPEG's of Hollywood Stars
+Date: Tue, 14 Dec 2004 02:39:41 +0200
+Message-ID: <830170347329.QTF07778@azteca.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_001_1078_77T52OU8.40KB8701"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6367328C
-	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2004 21:45:00 +0100 (MET)
+Received: from counterfeit.worldmexico.com ([199.107.184.204])
+          by bully.worldmexico.com
+          (InterMail vK.4.04.00.03 537-025-418-20030861 license 399294qv70nu0tsx0pn407i8g71y2w31)
+          with ESMTP id <20040991928679.EUUG674.bully@counterfeit.worldmexico.com>
+          for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 02:39:41 +0200
+Received: from skippy.x263.net ([199.201.233.207])
+ by counterfeit.worldmexico.com (Sun Java System Messaging Server 6.1 HotFix 0.01
+ (built Jun 24 2004)) with SMTP id <0P7F554M0E2G6B47@counterfeit.worldmexico.com> for
+ alsa-devel@alsa-project.org (ORCPT alsa-devel@alsa-project.org); Tue, 14 Dec 2004 02:39:41 +0200 (IDT)
+Received: from www.flytecrew.com (209.202.244.219)
+	by skippy.x263.net (RS ver 1.0.94vs) with SMTP id 4-99491822652	for
+ <alsa-devel@alsa-project.org>; Mon, 13 Dec 2004 17:35:41 -0700 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +27,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=725> 
-======================================================================
-Reported By:                atiounkine
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   725
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               RXART
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             12-13-2004 21:44 CET
-Last Modified:              12-13-2004 21:44 CET
-======================================================================
-Summary:                    intel8x0, chip  CMI9761A - no volume control, sound
-mixer broken
-Description: 
-Hello
- We have a problem  with sound mixer with Intel AC97 interface and 
-CMI9761A in motherboard PC-Chips 909G version 1.0 with Linux.
-  The problem is: sound mixer is not working at all,
-   the sound level by default is high.
+------_001_1078_77T52OU8.40KB8701
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 
-  The new kernel was downloaded from this address:
-http://http.us.debian.org/debian/pool/main/k/kernel-image-2.6.9-i386/
-kernel-image-2.6.9-1-686_2.6.9-2_i386.deb
 
-  Sound system is ALSA and driver used is "snd_intel8x0" .
-If you have information how resolve this problem please send me it.
+------_001_1078_77T52OU8.40KB8701
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 
-  Thank you.
-    Iouri
+Hey Grandma, <br><br>
+Scary shit - Archived MPEG's of <b>Pamela Anderson</b> <br><br>CLICK now:  <a href="http://celebrityfuckfest.biz/girls.asp?PAMELA.jpg">http://celebrityfuckfest.biz/girls.asp?PAMELA.jpg</a> <br><br>
+And Lots more like: <br>
+Religious-Like Great Shots of <b>Liv Tyler</b> <br>
+Deteriorating Paparazzi Shots of <b>Yasmin Bleeth</b> <br>
+Revolting pics of <b>Elle Macphers0n</b> <br>
+<br><br><br><br><br><br>
+To Qu1t : <a href="http://www.medzstoreonline.com/rms.html">http://www.medzstoreonline.com/rms.html</a> <br><br>
+kind regards, <br><br>
+Dan Bruno <br>
+Garbagecollector <br>
+G.A.G BioScience GmbH, 28359 Bremen, Germany <br><br>
+Phone: 257-896-7744 <br>
+Mobile: 524-151-9111 <br>
+Email: <a href=mailto:shczqgdqmdou@wport.com>shczqgdqmdou@wport.com</a> <br><br>
+your reply to this confirmation message is not needed <br><br>
+This package is a 96 decade definite product <br><br>
+NOTES: <br><br>
+The contents of this paper is for information and should not be encore kermit <br><br>
+winsome courtney frozen <br><br>
+Time: Tue, 14 Dec 2004 02:39:41 +0200
 
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-13-04 21:44 atiounkine     New Issue                                    
-12-13-04 21:44 atiounkine     Distribution              => RXART           
-12-13-04 21:44 atiounkine     Kernel Version            => 2.6.9           
-======================================================================
-
+------_001_1078_77T52OU8.40KB8701--
 
 
 
