@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000597]: Audigy 2 Value detected
-Date: Wed, 10 Nov 2004 12:50:39 +0100
-Message-ID: <6af4ea0390b077ec28cfe5c810141838@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000596]: Audigy 2 Value detected
+Date: Wed, 10 Nov 2004 12:52:27 +0100
+Message-ID: <ef0f03702bc872796da609e8506326dd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 837CE23B
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 12:50:39 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 670D623B
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 12:52:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,25 +22,28 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=597> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=596> 
 ======================================================================
 Reported By:                mohammed_imran
 Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   597
+Issue ID:                   596
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
-Kernel Version:             2.4.20-8
+Kernel Version:             
+Resolution:                 duplicate
+Duplicate:                  597
+Fixed in Version:           
 ======================================================================
-Date Submitted:             10-23-2004 08:59 CEST
-Last Modified:              11-10-2004 12:50 CET
+Date Submitted:             10-23-2004 08:58 CEST
+Last Modified:              11-10-2004 12:52 CET
 ======================================================================
 Summary:                    Audigy 2 Value detected
 Description: 
@@ -64,33 +67,22 @@ reports but it is: 1102:0008 as listed by cat /proc/pci:
       I/O at 0xc800 [0xc83f].
 
 please correct me if i am wrong.
-
-Tested on RedHat Linux 9
 ======================================================================
-
+Relationships       ID      Summary
 ----------------------------------------------------------------------
- jcdutton - 10-23-04 12:30 
-----------------------------------------------------------------------
-The file "alsa-driver-1.0.6-mod.tar.bz2" appears not the untar correctly.
-Can anybody else check it?
-It would probably be easier if it was just a "cvs diff -u" patch instead.
-
-----------------------------------------------------------------------
- tiwai - 11-10-04 12:50 
-----------------------------------------------------------------------
-Yes the file seems broken.  Tar stops in the middle of extraction.
-
-Please upload the patch instead of the whole driver tree codes...
+duplicate of        0000597 Audigy 2 Value detected
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-23-04 08:59 mohammed_imran New Issue                                    
-10-23-04 08:59 mohammed_imran File Added: alsa-driver-1.0.6-mod.tar.bz2         
+10-23-04 08:58 mohammed_imran New Issue                                    
+10-23-04 08:58 mohammed_imran File Added: alsa-driver-1.0.6-mod.tar.bz2         
           
-10-23-04 08:59 mohammed_imran Kernel Version            => 2.4.20-8        
-10-23-04 12:30 jcdutton       Note Added: 0002254                          
-11-10-04 12:50 tiwai          Note Added: 0002370                          
+11-10-04 12:52 tiwai          Relationship added       duplicate of 0000597
+11-10-04 12:52 tiwai          Duplicate ID             0 => 597            
+11-10-04 12:52 tiwai          Status                   assigned => resolved
+11-10-04 12:52 tiwai          Resolution               open => duplicate   
 ======================================================================
 
 
