@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000674]: sound modules loaded, unmuted channels, progressbar moving STILL no output
-Date: Wed, 24 Nov 2004 18:43:06 +0100
-Message-ID: <3c2b15b12472b1866c9e92a66be40166@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000667]: How to integrate turning on and off LED:s on laptops
+Date: Wed, 24 Nov 2004 18:47:47 +0100
+Message-ID: <b0c3d81c34cb28f07c451deffd984e44@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1DBE52E2
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 18:43:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA16D2E1
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 18:47:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,97 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=674> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=667> 
 ======================================================================
-Reported By:                IceRAM
+Reported By:                linus
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   674
+Issue ID:                   667
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               ArchLinux
+Distribution:               Fedora Core 3
 Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-24-2004 13:12 CET
-Last Modified:              11-24-2004 18:43 CET
+Date Submitted:             11-23-2004 15:27 CET
+Last Modified:              11-24-2004 18:47 CET
 ======================================================================
-Summary:                    sound modules loaded, unmuted channels, progressbar
-moving STILL no output
+Summary:                    How to integrate turning on and off LED:s on laptops
 Description: 
-I can't get any sound out of the integrated sound card, even though I've
-tried everything possible (I think - oh, I haven't tried Windows, yet)
+This machine, an HP Compaq NC6000 (also on other models
+such as NC8000) has a mute LED that
+turns on and off when mute is activated/deactivated.
+It is accomplished by way of the "External Amplifier"
+setting - this has been wired to a LED instead of an
+amplifier, so the "mute" function should (theoretically)
+activate/deactivate the "External Amplifier" when muting
+is selected for the device. The chip used is AD1981B.
+
+This script shows how it is done:
+
+if ( amixer sget "External Amplifier"|grep off > /dev/null )
+then
+           # Toggles the LED, no actual volume change
+           amixer set "External Amplifier" unmute > /dev/null
+           # Toggles the audio level
+           amixer set "Master" unmute > /dev/null
+else
+           amixer set "External Amplifier" mute > /dev/null
+           amixer set "Master" mute > /dev/null
+fi
+
+The question of how this is to be implemented remains. Is
+this an issue for ALSA or shall it be handled on a higher,
+user-space level? I also have a bug open in GNOME for the
+same thing, I need to decide how to finally resolve this
+and need input from the ALSA team on the best solution.
+
+(See http://bugzilla.gnome.org/show_bug.cgi?id=157748)
 ======================================================================
 
 ----------------------------------------------------------------------
- IceRAM - 11-24-04 18:39 
+ linus - 11-24-04 15:07 
 ----------------------------------------------------------------------
-Attached:
+This is the PCI info for this ICH4 controller. (I submitted this new
+info to linux' pci.ids PCI ID list too.)
 
-[root@server:/proc/asound/card0/codec97#0]# find *
-ac97#0-0
-ac97#0-0+regs
+00:1f.5 Class 0401: 8086:24c5 (rev 03)
+        Subsystem: 103c:0890
+
+00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM
+(ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 03)
+        Subsystem: Hewlett-Packard Company: Unknown device 0890
+        Flags: bus master, medium devsel, latency 0, IRQ 11
+        I/O ports at 3000 [size=256]
+        I/O ports at 3880 [size=64]
+        Memory at a0100000 (32-bit, non-prefetchable) [size=512]
+        Memory at a0180000 (32-bit, non-prefetchable) [size=256]
+        Capabilities: [50] Power Management version 2
 
 ----------------------------------------------------------------------
- IceRAM - 11-24-04 18:43 
+ Clemens Ladisch - 11-24-04 18:47 
 ----------------------------------------------------------------------
-I've noticed I keep getting this kind of messages:
-Nov 24 18:14:14 server intel8x0_measure_ac97_clock: measured 49330 usecs
-Nov 24 18:14:14 server intel8x0: clocking to 48000
-Nov 24 18:16:08 server intel8x0_measure_ac97_clock: measured 49333 usecs
-Nov 24 18:16:08 server intel8x0: clocking to 48000
-Nov 24 18:20:06 server intel8x0_measure_ac97_clock: measured 49337 usecs
-Nov 24 18:20:06 server intel8x0: clocking to 48000
-Nov 24 18:40:55 server intel8x0_measure_ac97_clock: measured 49329 usecs
-Nov 24 18:40:55 server intel8x0: clocking to 48000
-Nov 24 19:10:51 server intel8x0_measure_ac97_clock: measured 49335 usecs
-Nov 24 19:10:51 server intel8x0: clocking to 48000
-
-while trying to access the sound card... I think.
+Here is a user-space tool that I originally wrote for other purposes. Use
+it until the driver does the syncing.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 13:12 IceRAM         New Issue                                    
-11-24-04 13:12 IceRAM         File Added: asound.state                     
-11-24-04 13:12 IceRAM         Distribution              => ArchLinux       
-11-24-04 13:12 IceRAM         Kernel Version            => 2.6.9           
-11-24-04 13:13 IceRAM         File Added: .asoundrc                        
-11-24-04 13:17 IceRAM         File Added: modprobe.conf                    
-11-24-04 13:19 IceRAM         Note Added: 0002560                          
-11-24-04 13:19 IceRAM         File Added: lsmod.txt                        
-11-24-04 13:20 IceRAM         Issue Monitored: IceRAM                      
-11-24-04 15:36 IceRAM         File Added: lspci_v.txt                      
-11-24-04 15:39 IceRAM         Note Added: 0002568                          
-11-24-04 16:07 pzad           Note Added: 0002569                          
-11-24-04 16:31 IceRAM         Note Added: 0002570                          
-11-24-04 18:02 tiwai          Note Added: 0002576                          
-11-24-04 18:37 IceRAM         File Added: ac97#0-0                         
-11-24-04 18:37 IceRAM         File Added: ac97#0-0+regs                    
-11-24-04 18:39 IceRAM         Note Added: 0002578                          
-11-24-04 18:43 IceRAM         Note Added: 0002579                          
+11-23-04 15:27 linus          New Issue                                    
+11-23-04 15:27 linus          Distribution              => Fedora Core 3   
+11-23-04 15:27 linus          Kernel Version            => 2.6.9           
+11-23-04 15:41 tiwai          Note Added: 0002516                          
+11-23-04 21:28 linus          Note Added: 0002528                          
+11-24-04 12:22 tiwai          Note Added: 0002549                          
+11-24-04 13:00 IceRAM         Note Added: 0002555                          
+11-24-04 13:07 tiwai          Note Added: 0002558                          
+11-24-04 14:27 linus          Note Added: 0002562                          
+11-24-04 15:07 linus          Note Added: 0002567                          
+11-24-04 18:47 Clemens LadischFile Added: muteled.c                        
+11-24-04 18:47 Clemens LadischNote Added: 0002580                          
 ======================================================================
 
 
