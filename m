@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000454]: cvs site is down
-Date: Mon, 23 Aug 2004 21:26:41 +0200 (CEST)
+Subject: [ALSA - driver 0000418]: loading atiixp-modem and slmodemd corrupts part of atiixp driver
+Date: Mon, 23 Aug 2004 21:29:07 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040823192641.B54971102F@server.perex-int.cz>
+Message-ID: <20040823192907.B73D71102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 18B722E2
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 21:26:42 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1890E2E2
+	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 21:29:08 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,55 +22,125 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000454
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
 ======================================================================
 Reported By:                ronis
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     454
-Category:                   OTHERS
+Bug ID:                     418
+Category:                   PCI - atiixp-modem
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             08-18-2004 16:26 CEST
-Last Modified:              08-23-2004 21:26 CEST
+Date Submitted:             08-02-2004 19:43 CEST
+Last Modified:              08-23-2004 21:29 CEST
 ======================================================================
-Summary:                    cvs site is down
+Summary:                    loading atiixp-modem and slmodemd corrupts part of atiixp driver
 Description: 
-cvs -z3 update -dP now gives:
+I've managed to get both sound and modem drivers working with the CVS
+sources (and with alot of help from you guys).  If I simply load the sound
+modules
+(i.e., snd_atiixp and oss emulator), sound works as expected.  If I
+subsequently load the atiixp_modem driver, part of the sound system still
+works (e.g., the zinf mp3 player with the native alsa plugin), however
+other sound applications don't work properly--the sound is played far too
+quicky.
 
-cvs [update aborted]: unrecognized auth response from cvs.sourceforge.net:
-M PserverBackend::PserverBackend() Connect (Connection refused)
-
-It started a few days ago, and had been working properly for months
-before.
+This happens whether or not I'm actually using the modem, and persists
+even after I stop slmodemd and unload the snd_atiixp_modem module.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 08-18-2004 16:35 CEST 
+ netstar - 08-03-2004 00:44 CEST 
 ----------------------------------------------------------------------
-And what about this too:
-ftp://ftp.alsa-project.org/pub/cvsexport/
-For me this was useful, but it is not up to date too. :-(
-(last is from 2004/06/02)
+I am also having issues with the modem, although not the sound card.  Both
+drivers load fine (CVS alsa-driver, kernel and lib), sound also works
+fine, it is normally loaded as my second device hw:1, fine.  When using
+slmodemd with the modem device things seem ok until I try dialing and it
+is reported to me that there is no DIALTONE.  After disabling DIALTONE
+detection with ATX3, subsequent ATDT attempts return NO CARRIER.  
+
+When listening on the device with arecord for example and outputting to
+STDOUT, I get a constant hiss, however when I pick up a phone on the line
+it appears that the device does notice this as the constant hissing is
+interupted when either opening or closing the line elsewhere.
+
+I do not believe the modem is broken as has been suggested to me before.
+
+Attatched is an slmodem log of a dialing attempt and some system
+information including card register information whilst dialing.  I hope
+this helps.
 
 ----------------------------------------------------------------------
- ronis - 08-23-2004 21:26 CEST 
+ ronis - 08-03-2004 04:08 CEST 
 ----------------------------------------------------------------------
-The site is back.  Close this one.
+netstar, 
+
+The problem you are describing is the same one I reported in bug report
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000413.  The problem is not alsa, but slmodemd (at least in version 2.9.9). 
+You have to make a 1 line fix
+to the file modem/modem_cmdline.c (at line 240) add the following test
+before the assignment:
+
+if(strcmp(modem_dev_name,"/dev/slamr0")==0)
+     modem_dev_name = modem_alsa_dev_name;
+
+After building (with ALSA support enabled) and installing slmodemd, you
+install the driver (modprobe snd_atiixp_modem) and run
+
+slmodemd --alsa --country=YourCountry modem:1.
+If all goes well, you have a modem at /dev/ttySL0. (Note that I have the
+atiixp sound driver already installed as device 0).
+
+It works (I'm using it to send this).
+
+I've reported the bug and fix to the slmodem authors.
+
+In any event, this is not the same problem as I've reported here.
+
+----------------------------------------------------------------------
+ ronis - 08-09-2004 16:39 CEST 
+----------------------------------------------------------------------
+Reminder sent to tiwai
+
+I hate being a nag, but this problem kills sound every time I run the
+modem driver.
+
+David
+
+
+----------------------------------------------------------------------
+ tiwai - 08-19-2004 19:21 CEST 
+----------------------------------------------------------------------
+It seems there are some linked clock between audio and modem.
+Perhaps when you use the modem, only 48k is possible.
+
+----------------------------------------------------------------------
+ ronis - 08-23-2004 21:29 CEST 
+----------------------------------------------------------------------
+I've played around a bit more.  The order of loading the modules seems to
+matter, as does playing with the settings with a mixer.  If I reload
+snd-atiixp after atiixp-modem and restore the settings things sometimes
+work better, although 
+not 100% of the time.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 16:26 ronis          New Bug                                      
-08-18-04 16:35 pzad           Bugnote Added: 0001587                       
-08-23-04 21:26 ronis          Bugnote Added: 0001614                       
+08-02-04 19:43 ronis          New Bug                                      
+08-03-04 00:40 netstar        File Added: systeminfo.txt                    
+08-03-04 00:43 netstar        File Added: slmodem.log.modem                    
+08-03-04 00:44 netstar        Bugnote Added: 0001526                       
+08-03-04 04:08 ronis          Bugnote Added: 0001527                       
+08-09-04 16:39 ronis          Bugnote Added: 0001546                       
+08-19-04 19:21 tiwai          Bugnote Added: 0001595                       
+08-23-04 21:29 ronis          Bugnote Added: 0001615                       
 ======================================================================
 
 
