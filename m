@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000852]: alsa driver do not work on IBM thinkpad T42
-Date: Fri, 28 Jan 2005 05:26:32 +0100
-Message-ID: <26c8fa585c05191a42d79114e63f1838@bugtrack.alsa-project.org>
+From: Gregor =?iso-8859-1?q?M=FCckl?= <GregorMueckl@gmx.de>
+Subject: Enumerating virtual devices
+Date: Fri, 28 Jan 2005 02:09:14 +0100
+Message-ID: <200501280209.14823.GregorMueckl@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC53D21D
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 05:26:32 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,51 +17,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello!
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=852> 
-======================================================================
-Reported By:                lithium7456
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   852
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             01-28-2005 05:26 CET
-Last Modified:              01-28-2005 05:26 CET
-======================================================================
-Summary:                    alsa driver do not work on IBM thinkpad T42
-Description: 
-After the installation of slackware linux 10 ,I found that the alsa driver
-1.05(with slackware linux )do not work: when i run "alsamixer" it shows
-that "no mixer elems". So I downloaded driver 1.08 and had it installed.
-now I can run alsamixer without any error message but my computer does not
-play any sound at all(I have run alsaconf and it detected the soundcard as
-snd-intel8x0)
-What steps shall I
-take&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=65311;
-please Re to lithium7456@sohu.com
-Thank you
-======================================================================
+Is there a way to enumerate devices like "surround40", "front", "side", etc. 
+and other user-created virtual devices? I can't seem to find any function for 
+that in the documentation. Any hint would be appreciated.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-28-05 05:26 lithium7456    New Issue                                    
-======================================================================
-
-
+Regards,
+Gregor
 
 
 -------------------------------------------------------
