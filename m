@@ -1,14 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] emu10k1: fix efx_voices_mask setting for
-	SBLive
-Date: Tue, 01 Mar 2005 17:10:36 -0500
-Message-ID: <1109715036.17405.24.camel@mindpipe>
-References: <1109463592.1814.12.camel@krustophenia.net>
-	 <1109464199.1814.23.camel@krustophenia.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000955]: CN-126 - USB 5.1 Audio adapter
+Date: Wed, 2 Mar 2005 00:13:24 +0100
+Message-ID: <729f91bdf88ffde57ebaa1efdfccfa94@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1109464199.1814.23.camel@krustophenia.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4B8271E9
+	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 00:13:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,33 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
-Cc: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <James@superbug.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-02-26 at 19:29 -0500, Lee Revell wrote:
-> On Sat, 2005-02-26 at 19:19 -0500, Lee Revell wrote:
-> > Also, the "EFX Voices Mask" control is renamed to "Captured FX8010
-> > Outputs".  This is a trick to ensure the default mixer settings are
-> > loaded when users upgrade from 1.0.8.  Otherwise, the upgrade process
-> > will probably restore the old settings which results in the
-> > "multichannel" capture device only having two channels.  I could not
-> > think of a better way to get around this issue, and the alternative
-> > seems to be a slew of bug reports.  Half the testers reported this to me
-> > as a bug already.
-> > 
-> > Anyway, I think the new name is clearer anyway, because there's no
-> > reason to tell userspace the hardware stores this value as a mask, and
-> > "voices" is confusing because it implies some relation to the 64
-> > wavetable/PCM voices.
-> 
-> Sorry, wrong patch.
-> 
 
-Please apply the second chunk of the patch ASAP, it's an important bug
-fix.  The first part (renaming "EFX Voices Mask") is optional.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=955> 
+======================================================================
+Reported By:                mano1979
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   955
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Mandrake 10.1
+Kernel Version:             2.6.10.3
+======================================================================
+Date Submitted:             03-02-2005 00:13 CET
+Last Modified:              03-02-2005 00:13 CET
+======================================================================
+Summary:                    CN-126 - USB 5.1 Audio adapter
+Description: 
+I am in really need of a driver for this card. It needs to support 5.1
+surround and speaker setup....... well like the original software.
 
-Lee
+Please let me know if you're able to make it.
+
+Regards, 
+
+Armand Blaaker
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-02-05 00:13 mano1979       New Issue                                    
+03-02-05 00:13 mano1979       Distribution              => Mandrake 10.1   
+03-02-05 00:13 mano1979       Kernel Version            => 2.6.10.3        
+======================================================================
+
 
 
 
