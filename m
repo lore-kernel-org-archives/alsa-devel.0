@@ -1,18 +1,22 @@
-From: "Martijn Sipkema" <msipkema@sipkema-digital.com>
-Subject: Re: Fw: writing audiowerk driver (philips saa7146a), some questions
-Date: Fri, 31 May 2002 19:11:45 +0100
+From: Gerald Grabner <gerry@mechanik.tu-graz.ac.at>
+Subject: Re: Easy question: ppq and tempo
+Date: Fri, 31 May 2002 18:44:42 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <007b01c208ce$bcc5a5b0$0400a8c0@martijn>
-References: <001801c2088f$71693120$0400a8c0@martijn><s5hg008h829.wl@alsa2.suse.de><003201c208a3$d8e06030$0400a8c0@martijn><s5helfsh319.wl@alsa2.suse.de><000c01c208b0$a18fd720$0400a8c0@martijn> <s5h7klkh1ba.wl@alsa2.suse.de>
-Reply-To: "Martijn Sipkema" <msipkema@sipkema-digital.com>
+Message-ID: <3CF7A87A.E1D828D0@mechanik.tu-graz.ac.at>
+References: <Pine.LNX.4.21.0205241612070.761-100000@summer.quitte> <200205241435.QAA00530@alsa.alsa-project.org> <20020524173546.GA23700@idefix.fvdpol.home.nl>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from hirogen.kabelfoon.nl (hirogen.kabelfoon.nl [62.45.45.69])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA03968
-	for <alsa-devel@alsa-project.org>; Fri, 31 May 2002 19:12:52 +0200
+Received: from mailrelay.tugraz.at (mailrelay.tu-graz.ac.at [129.27.3.7])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA03648
+	for <alsa-devel@alsa-project.org>; Fri, 31 May 2002 18:45:20 +0200
+Received: from fmechgsg01.tu-graz.ac.at (fmechgsg01.tu-graz.ac.at [129.27.94.2])
+	by mailrelay.tugraz.at (8.12.3/8.12.3) with ESMTP id g4VGjaaW008231
+	for <alsa-devel@alsa-project.org>; Fri, 31 May 2002 18:45:36 +0200 (MEST)
+Received: from mechanik.tu-graz.ac.at (isdn126.tu-graz.ac.at [129.27.240.126])
+	by fmechgsg01.tu-graz.ac.at (SGI-8.9.3/8.9.3) with ESMTP id SAA52833
+	for <alsa-devel@alsa-project.org>; Fri, 31 May 2002 18:45:10 +0200 (METDST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,68 +25,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> > i don't think the audiowerk is the only card capable of varipitch,
-though
-> > most cards don't support it, but it is a nice feature and since alsa is
-> > supposed to be advanced... :)
->
-> many consumer chips support in fact, too, such as emu10k1, ymfpci,
-> cs46xx (also trident?)  sbawe and gus have pcms using synth
+Hi,
 
-so it will be added? the best would be to have a pitch range for every
-nominal sample rate as in EASI
- http://www.emagic.de/english/support/easi/index.html )
+last week I asked about the meaning of ppq - thanks a lot so far for
+all the answers! Now I have a related question, namely about tempo: If
+I set ppq to 1, then tempo should be the duration of a quarter note in
+microseconds, right?
 
+But there seems to be a factor of about 100 between this and what I
+get with my test program. Setting tempo to 100000000 makes one quarter
+last about one second. Is there something wrong with my program or
+what's my mistake?
 
-> > > alsa pcm engine invokes a timer interrupt to update the "tick", and
-> > > this tick is determined using the rate of the runtime instance.
-> > > if you change the rate value dynamically during playback, then the
-> > > tick interrupt will be wrongly scheduled, and leads to wrong detection
-> > > of under/overrun.
-> >
-> > shouldn't the driver detect under/overrun?
->
-> yes.  that's why i mentioned above.  if you don't change rate
-> value in runtime instance, then the alsa driver tries to schedule tick
-> interval as if it's not changed.  and this causes inconsistency
-> between the real-playback and tick time, eventually leading to a bogus
-> detection of under/overrun.
+Thanks again,
+       Gerald
 
-i am lost. a under/overrun could (should) be detected from the interrupt
-handler
-for the card dma channel (period interrupt), right? that would never fail.
+--
 
-> > would a soundcard with a bad dac (as in not accurate) also cause
-> > problems?
->
-> if the hardware is too inaccurate (e.g. accumulated error over more
-> than HZ), then, yes.   but i don't think this may happen.
+  snd_seq_queue_tempo_t *queue_tempo ;
+  snd_seq_get_queue_tempo (seq_handle, queue_id, queue_tempo) ;
+  int ppq = 1 ;
+  snd_seq_queue_tempo_set_ppq (queue_tempo, ppq) ;
+  unsigned int tempo = 100000000 ;
+  snd_seq_queue_tempo_set_tempo (queue_tempo, tempo) ;
+  snd_seq_set_queue_tempo (seq_handle, queue_id, queue_tempo) ;
 
-i am afraid i don't understand this and i don't now where i can find
-documentation
-on it. how do other driver writers do this? read the source? or an API
-reference?
-is there no overview on the architecture? reading driver source code is not
-the
-easiest or fastest way to understand what's going on, if it is at all
-possible to
-understand without knowledge of the specific hardware.
-
-does hardware allow to have a device specific kernel driver with an
-associated
-device specific user-space part? this would be much easier to implement for
-me
-than an alsa kernel driver i think.
-
---martijn
-
-
-
-
+  snd_seq_ev_clear(&ev);
+  snd_seq_ev_set_source(&ev, port_id);
+  snd_seq_ev_set_subs(&ev);
+  snd_seq_ev_set_noteon(&ev, 9, 60, 127) ;
+  snd_seq_tick_time_t tick = 0 ;
+  for ( int i=0 ; i<4 ; i++ ) {
+    snd_seq_ev_schedule_tick(&ev, queue_id,  0, tick);
+    snd_seq_event_output(seq_handle, &ev);
+    tick++ ;
+  }
+  snd_seq_drain_output(seq_handle);
 
 _______________________________________________________________
 
