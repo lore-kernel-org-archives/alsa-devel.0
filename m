@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000890]: no dialtone with modem & strange log "semaphore is not ready [0x1][0x701300]"
-Date: Wed, 2 Mar 2005 14:12:05 +0100
-Message-ID: <be441493771bf6e55ac6c570a66b3f5e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000955]: CN-126 - USB 5.1 Audio adapter
+Date: Wed, 2 Mar 2005 14:19:57 +0100
+Message-ID: <33c6e4d9b56307ce57e5bd23ddee1b1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC0921F3
-	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 14:12:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BA06D1F3
+	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 14:19:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,110 +23,96 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=890> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=955> 
 ======================================================================
-Reported By:                hothead
-Assigned To:                sashak
+Reported By:                mano1979
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   890
-Category:                   PCI - intel8x0m
+Issue ID:                   955
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.9
+Distribution:               Mandrake 10.1
+Kernel Version:             2.6.10.3
 ======================================================================
-Date Submitted:             02-08-2005 14:33 CET
-Last Modified:              03-02-2005 14:12 CET
+Date Submitted:             03-02-2005 00:13 CET
+Last Modified:              03-02-2005 14:19 CET
 ======================================================================
-Summary:                    no dialtone with modem & strange log "semaphore is
-not ready [0x1][0x701300]"
+Summary:                    CN-126 - USB 5.1 Audio adapter
 Description: 
-Hi,
+I am in really need of a driver for this card. It needs to support 5.1
+surround and speaker setup....... well like the original software.
 
-I want to tell you that snd-intel8x0m works with the
-ag&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=232;re modem on
-my 
-thinkpad t41p. The problem is that I can not get the dialtone working.
-Do you have any suggestion concerning this problem?
+Please let me know if you're able to make it.
 
+Regards, 
 
-# System Information
-# ***********************
-System uname: 2.6.9-thinkpad-r1 i686 Intel(R) Pentium(R) M processor
-1700MHz
-Gentoo Base System version 1.6.9
-Python:              dev-lang/python-2.3.4 [2.3.4
-(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1, Dec 30 2004,
-09:19:20)]
-distcc 2.16 i686-pc-linux-gnu (protocols 1 and 2) (default port 3632) 
-[enabled]
-dev-lang/python:     2.3.4
-sys-devel/autoconf:  2.13, 2.59-r6
-sys-devel/automake:  1.4_p6, 1.7.9-r1, 1.8.5-r3, 1.6.3, 1.9.4, 1.5
-sys-devel/binutils:  2.15.92.0.2-r1
-sys-devel/libtool:   1.5.10-r4
-virtual/os-headers:  2.6.8.1-r2
-
-
-
-# Furthermore I get curious messages from the driver:
-# *********************************************************
-ALSA
-/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:401:
-
-codec_semaphore: semaphore is not ready [0x1][0x701300]
-ALSA
-/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:415:
-
-codec_write 1: semaphore is not ready for register 0x54
-ALSA
-/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:401:
-
-codec_semaphore: semaphore is not ready [0x1][0x701300]
-ALSA
-/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:415:
-
-codec_write 1: semaphore is not ready for register 0x54
-ALSA
-/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:401:
-
-codec_semaphore: semaphore is not ready [0x1][0x701300]
-ALSA
-/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:415:
-
-codec_write 1: semaphore is not ready for register 0x54
-ALSA
-/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:401:
-
-codec_semaphore: semaphore is not ready [0x1][0x701300]
-ALSA
-/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/pci/../alsa-kernel/pci/intel8x0m.c:415:
-
-codec_write 1: semaphore is not ready for register 0x54
-
-
-It would be great if you could help me!
-
-Regards
-
-Ruben Jenster
+Armand Blaaker
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-02-05 14:12 
+ Clemens Ladisch - 03-02-05 14:14 
 ----------------------------------------------------------------------
-Have you tried to load "snd-intel8x0" and "snd-intel8x0m" modules in
-opposite order?
+This device has only one volume control for all six output channels. 
+Setting a seperate volume per speaker can only be done if it is emulated
+in software.  (ALSA has a softvol plugin, but currently it doesn't allow
+one control for each channel, either.)
+
+
+The device has two output formats: two channels and six channels.  When
+you play a stereo file, the device says "I can do this", and whatever
+happens with these two channels is up to the device.  Apparently, it
+doesn't do upmixing.
+
+To emulate upmixing in software, you can create a virtual stereo device
+named "upmix" in your ~/.asoundrc:
+
+pcm.upmix {
+    type plug
+    slave {
+        pcm "hw:0"
+        channels 6
+    }
+    ttable.0.0 1        # L -> front L
+    ttable.1.1 1        # R -> front R
+    ttable.0.2 0.5      # L -> center
+    ttable.1.2 0.5      # R -> center
+    ttable.0.3 0.5      # L -> LFE
+    ttable.1.3 0.5      # R -> LFE
+    ttable.0.4 1        # L -> surround L
+    ttable.1.5 1        # R -> surround R
+}
+
+The zero in "hw:0" is the card number, replace this with the actual card
+number (see /proc/asound/cards).
+Such a virtual device won't work with application that use the old OSS API
+(/dev/dsp*).
+
+----------------------------------------------------------------------
+ mano1979 - 03-02-05 14:19 
+----------------------------------------------------------------------
+I very gratefull for this info but i have no idea how to make an virtual
+stereo device. are you able to make an Rpm file or something like that?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-05 14:33 hothead        New Issue                                    
-02-08-05 14:33 hothead        Kernel Version            => 2.6.9           
-03-02-05 14:12 perex          Note Added: 0003772                          
+03-02-05 00:13 mano1979       New Issue                                    
+03-02-05 00:13 mano1979       Distribution              => Mandrake 10.1   
+03-02-05 00:13 mano1979       Kernel Version            => 2.6.10.3        
+03-02-05 00:14 mano1979       Issue Monitored: mano1979                    
+03-02-05 09:28 Clemens LadischNote Added: 0003762                          
+03-02-05 12:34 mano1979       Note Added: 0003763                          
+03-02-05 12:44 Clemens LadischNote Added: 0003764                          
+03-02-05 12:46 mano1979       Note Added: 0003765                          
+03-02-05 12:48 mano1979       Note Added: 0003766                          
+03-02-05 12:58 Clemens LadischNote Added: 0003767                          
+03-02-05 13:05 mano1979       Note Added: 0003769                          
+03-02-05 14:14 Clemens LadischNote Added: 0003773                          
+03-02-05 14:19 mano1979       Note Added: 0003774                          
 ======================================================================
 
 
