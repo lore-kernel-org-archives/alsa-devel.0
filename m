@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: anybody else OK with current CVS *and* SMP?
-Date: Wed, 06 Aug 2003 11:34:35 -0400
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: Is a complete Alsa restart possibly without rebooting?
+Date: Wed, 6 Aug 2003 08:44:08 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200308061534.h76FYZ6Q012618@localhost.localdomain>
-References: <s5hfzkels4n.wl@alsa2.suse.de>
+Message-ID: <NDBBLGIKBJENLAMOLFHGEEKGCOAB.mknecht@controlnet.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 06 Aug 2003 17:31:36 +0200."
-             <s5hfzkels4n.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,17 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: John Anderson <ardour@semiosix.com>, alsa-devel@lists.sourceforge.net
+To: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->with which sound card did it happen?  rme9652?
+Hi,
+   I am debugging a problem that seems to require me to reboot the machine
+after it happens as Alsa cannot recover. I am wondering whether there is any
+known way to script a complete Alsa restart, like I can do with networking
+or other drivers, so that I wouldn't have to do this reboot?
 
-yep, three different ones. and it didn't use to happen using an older
-version of ALSA CVS. i haven't narrowed the dates - the older version
-is the pre-linked-streams-spinlock stuff, so its not very helpful. 
+   I've tried /etc/init.d/alsasound stop and then start. This doesn't work.
+I've tried the stop/start with an rmmod of everything I can see in lsmod,
+but this doesn't work either.
 
-as i said, i need to try it on my trident card too.
+   I suspect that a big part of the problem is that the sound card itself is
+getting into a state that the drivers and Alsa do not have the capabilities
+to get it out of and possibly what's happening is the reboot fixes it via a
+PCI reset operation.
+
+   Can anyone recommend a method that might actually work? This is a bit
+painful because right now a simple adjustment even in alsamixer requires me
+to reboot the machine.
+
+Thanks in advance,
+Mark
+
+
 
 
 -------------------------------------------------------
