@@ -1,43 +1,41 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [Alsa-devel] alsamixer idea
-Date: Thu, 19 Aug 2004 06:01:14 -0400
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <1092909674.8432.145.camel@krustophenia.net>
+Subject: Re: alsamixer idea
+Date: Thu, 19 Aug 2004 06:04:34 -0400
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <1092909873.8432.149.camel@krustophenia.net>
 References: <1092897987.8432.98.camel@krustophenia.net>
 	 <s5h657fv4bs.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <s5h657fv4bs.wl@alsa2.suse.de>
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 On Thu, 2004-08-19 at 05:56, Takashi Iwai wrote:
-> At Thu, 19 Aug 2004 02:46:28 -0400,
-> Lee Revell wrote:
-> > 
-> > Why not just make the mixer controls horizontal?  
-> > 
-> > At the very least it could have a horizontal mode that could be toggled.
-> 
-> It sounds nice.  The only reason I didn't do this is that the
-> alsamixer code became too dirty for such a big change... :<
+> At Thu, 19 Aug 2004 02:46:28 -0400, 
+
+> Another good idea (IIRC James proposed) is to split the
+> volumes/switches between playback and capture and make them
+> switchable.
 > 
 
-Yes I was afraid of that, that's why I didn't look at the code first...
+This actually has the advantage that Windows does it this way, so novice
+users will be a lot less confused.  Peter Zubaj is right in that 99% of
+bug reports from new users involve confusion re: the mixer.  Anything we
+can do in this area is probably worthwhile.
 
 Lee
-
 
 
 
