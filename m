@@ -1,13 +1,12 @@
 From: "Tais M. Hansen" <tais.hansen@osd.dk>
 Subject: Re: Re: [Alsa-user] Upgrade problems -addendum
-Date: Fri, 24 Jan 2003 17:40:09 +0100
+Date: Fri, 24 Jan 2003 17:42:28 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301241740.13498.tais.hansen@osd.dk>
+Message-ID: <200301241742.31739.tais.hansen@osd.dk>
 References: <200301221234.33054.tais.hansen@osd.dk> <200301241512.17848.tais.hansen@osd.dk> <s5h8yxapn5i.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: Multipart/Mixed;
+  boundary="------------Boundary-00=_S2987K4J65TB7WEWEAR7"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <s5h8yxapn5i.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -22,63 +21,19 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+
+--------------Boundary-00=_S2987K4J65TB7WEWEAR7
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
 On Friday 24 January 2003 16:45, Takashi Iwai wrote:
-> > Need any specific info about the board? Chip? I saw some talks about =
-the
-> > ALC650 chip in another thread on this list and alsamixer claims I've =
-got
-> > such a chip.
-> most likely it has nothing to do with ALC650.
-> but lspci -v and lspci -n (for the chip) might be helpful for the
-> later development.
+> have fun :)
 
-$ lspci -s 00:11.5 -v
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233 AC97 A=
-udio=20
-Controller (rev 40)
-        Subsystem: Micro-star International Co Ltd: Unknown device 4720
-        Flags: medium devsel, IRQ 9
-        I/O ports at e800 [size=3D256]
-        Capabilities: [c0] Power Management version 2
-
-$ lspci -s 00:11.5 -n
-00:11.5 Class 0401: 1106:3059 (rev 40)
-
-
-> now comes the patch of the week:
-> now you'll have possibility to change the behavior of the driver via a
-> module option idx_detect.
-> idx_detect=3D0 : the default, won't work for you.
-
-And it didn't.
-
-
-> idx_detect=3D1 : like test7.  perhaps not perfect.
-
-No sound, so you're right.
-
-
-> idx_detect=3D2 : use the interrupt pointer only.  the resolution will b=
-e
->                in the size of periods.  this should work.
-
-Maybe. But it didn't. Seems to go a little too fast playing. No sound at =
-all.
-
-
-> idx_detect=3D3 : like test7 but don't evaluate the counter.
->                might be be finer than idx_detect=3D2 but might be
->                inaccurate in some cases.
-
-This one killed my system the first time. Nice blinking keyboard leds. :)
-
-Second run it runs speeds through the file. No sound at all.
-
-
-I've attached log output from all idx'es, though only tested with ogg123.
+And here're the attached files...! ;)
 
 
 - --=20
@@ -89,20 +44,167 @@ OSD
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.0 (GNU/Linux)
 
-iQIVAwUBPjFsa4IvLOJqwYc4AQL4Mw//ZCPhB71mnpTZmYxBGa0yym0j2FAfGPSy
-4H2gAry+jpe9wDEOddijFaSdx/mYj04ST/4Vl+cNbPaV1kldMdrqWrU3Fx0vfIqE
-FRC5SapuNiykdI1kMVIDotiEWU5MEhZG2UB5TwhDkSwwI3lPKfJDUsax79KCfIz/
-m/8m7j0j9K0gtmDZhmD8v2TEpiiT1mk927BpqcZVI8lI3F0Ya0ggD3rI+rB+TJXQ
-CMgZqO74TDVA2LoWPRGHVK/VPvvVEJmr2/5+TW9Y7E5zCJx1O1PsKGcXsv1P8Pw4
-gRtLwJHxFhtgn59o8L2pJI+giy27ZpX8EJ+kj917r3S/XbXE62Hr/zWQBZN5HqMF
-4YfWHukX3/+5yOkzfB257VXXYk6giHDiXyxXspw0nFbTZLwKuBNCRPxQZvrO1UQ/
-TmFfLW6qvq8bMreO6q7xC7N+AWIpCXf1LkqEPZsjVozSBMKahWBSTIIpBGQalUGS
-pBPo3gVDIKXVJT9NCUufBcmYuyImehscO2aICL1ojEsNO7zqWtkmKyGNEt3m/yA1
-yhWbHABwsY029UU7SnOQpcaps0xEtF5Nl/XjljTT7dMJwV4Nep26DNW1c+Dmt+si
-D1q7oWgmke6tqFXpXG3T/7vrWQMP50vag+Nf1whl3Zz31qkyqHFA1qlvcEyxFXuS
-zU5qKaolsfk=3D
-=3DlsXG
+iQIVAwUBPjFs9oIvLOJqwYc4AQJaSg/+P9KCNRSqPMYVpi5DI7BafqTiYXi6zGtY
+QMER59LquEljx1zLg+5WyURVEZfkJK37AM8HPpfcn3WsotfITKId8zdtbCFHPBPf
+G3bTvG9tD5WdIDaUmp/i6/tIABVZwhETBdpvrHhKv2L/mUv70QhpY55oDkRdDLVQ
+pxDhE3ILbTgMTPgYLpRSLXaTuHzO6xersRu0IYrxZY2psauFf/SIVBl7KuIpMFKm
+c97KGl0SLMtKv20QaFcu0lmiZzmB4RRd7acIGYUI3dgduixJdAlpD+evPkwIJcAT
+YEJDI7+Mj0Q6EmJHsvj43U8IBXIml9qWoZB6vR+TtugAndL/6fWwz325TxqKOg8Z
+KTaU3ac+vDIr9B/paHaBOlCPSm8ZIpQlPb5geDvQW8GTDogzfLwvbXCrZHe2i+mv
++E/KD3XK0rPT8y68iOzpL2mirsfFCKvc+oTwKQgqdeR1juyahMQsk9tMjzVKitox
+5OBjZW3RoCGGvp1Df1pmKk4Y3Igahv4L9gv6IqtlLpwSCikyR8uss+hijaXDPCzn
+nOYQFWa/Ml6uJiYBI0cGzR5CEANXci0CWYOHc69iYYG2K7YbmZXasmQ+aTRubcJq
+TzubdkRE+Wo+Lt2Ie8b/0q1hW4b8VB8TMF1jZvIYghjC4udGXnEsuej1yajvb0LD
+fuhp9XS5BPs=3D
+=3DXekl
 -----END PGP SIGNATURE-----
+
+--------------Boundary-00=_S2987K4J65TB7WEWEAR7
+Content-Type: application/x-gzip;
+  name="alsa-ogg123-test8-idx0.txt.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="alsa-ogg123-test8-idx0.txt.gz"
+
+H4sICJJoMT4AA2Fsc2Etb2dnMTIzLXRlc3Q4LWlkeDAudHh0AO3W0WvbVhQH4Pf9FfexBTeRFdtx
+BKWE7aVlg21lz0GRrzutjmVkOXH3109xSlfYQzUh47B9fjE6XM7v+NwP4Xf5OqSTML7M0jQbz8Km
+rpZlUVbhY6zXcZWFn79/m4X3sWnK9Yewypu4Lj6FpryLdaiWYRHvyyKGJMnG47NpaKowm3z37uue
+afLPntc/vr8OZ2fn+Wqbv3oqnm+K8vy+zOfpfn9WZLN0noVlXraHy8U+vA7z8/mojd82m2rbPib7
+ZBRud8tt+WdMD8+TJGlL1fJQOlSWh88ofClMk6vJbBSKarduvjoxyLwXaTvp+j5flYvwuXxT7Oqb
+TVOPwm77tLxtE55ObKpy3cTapmzKpmzKpmzq7+Tp9DILm1iX1SLEVb7ZxoULOO4FFFUd2/i7m1V5
+20aP04ss/LaO+00smrgIvz/cfG7/GLaL4cW2qWN+9/iLR+1/oFWTZ+HVOEkno3CX78MfZfN49nWY
+JFezl1l4qKt22EODerdpQl58XFcPq7j4EN+4Wm+h57gpbyFvIWKIIYYYYoghhhhiiCGGGGKIIYYY
+YoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKI
+IYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGG
+GGL+P2LGJxPTMfn5iOm1qm+L6XcDxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHE
+EEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBD
+DDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwx
+xBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQ
+QwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQ82Xg9DhierU9oZh+
+8w4hpmMyMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwx
+xBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQ
+QwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMM
+McQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHE
+ENNVzMVxxPRqe0Ix/eYdQkzHZGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYogh
+hhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYY
+YoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKI
+IYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGG
+GGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhi
+iCGGmH8rZnIcMb3anlBMv3mHENMxmRhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGG
+GGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhi
+iCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYogh
+hhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYY
+YoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKI
+IYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGmOctZnocMb3anlBMv3mHENMxmRhiiCGGGGKIIYYY
+YoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKI
+IYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGG
+GGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhi
+iCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYojpKmZ2HDG92p5QTL95hxDT
+MZkYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGG
+GGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhi
+iCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYogh
+hhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKI6Srm
+8jhierU9oZh+8w4hpmMyMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHE
+EEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBD
+DDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwx
+xBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQ
+QwwxxBBDDDHEENNVzPw4Ynq1PaGYfvMOIaZjMjHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBD
+DDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwx
+xBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQ
+QwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMM
+McQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHE
+EEMMMcQQ898Uc3UcMb3anlBMv3mHENMxmRhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhi
+iCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYogh
+hhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYY
+YoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKI
+IYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGG
+GGKIIYYYYoghhhhiiCGGGGKIIYYYYoghhhhiiCGGGGKIIYYYYoghppOYi+QoYvq1PZ2YnvMOIKZr
+MjHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcQQQwwxxBBDDDHEEEMMMcR8e+B0
+PH40s8o/3ba927yyiaENq+rw4oefrkP7/fbXX0JTV7vbVXzzkqfOnv4CFYCHsfnjBwA=
+
+--------------Boundary-00=_S2987K4J65TB7WEWEAR7
+Content-Type: application/x-gzip;
+  name="alsa-ogg123-test8-idx1.txt.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="alsa-ogg123-test8-idx1.txt.gz"
+
+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
+
+--------------Boundary-00=_S2987K4J65TB7WEWEAR7
+Content-Type: application/x-gzip;
+  name="alsa-ogg123-test8-idx2.txt.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="alsa-ogg123-test8-idx2.txt.gz"
+
+H4sICIJpMT4AA2Fsc2Etb2dnMTIzLXRlc3Q4LWlkeDIudHh0AGXOvQrDIBhG4T1X8d5A8yMxKW6h
+U0OHQq5A9EuQGhWVkN59SzuU0PUMD2eUDqxF0wvWCcYQop+NMh4Pio6swP1yFZgoZ+MWWJnJqSey
+WSnCz9C0GUWoa9E0JUf26NpiPJj9vzncpgFlWUmb5Okbq6BMtRl5ZvteKsF5LxAoGq9BVoZE+shy
+/mOtTBkrpSQXQqRA70sN1tX9ZzQVL//LDKLlAAAA
+
+--------------Boundary-00=_S2987K4J65TB7WEWEAR7
+Content-Type: application/x-gzip;
+  name="alsa-ogg123-test8-idx3.txt.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="alsa-ogg123-test8-idx3.txt.gz"
+
+H4sICONsMT4AA2Fsc2Etb2dnMTIzLXRlc3Q4LWlkeDMudHh0AE3MSwrCMBRG4XlX8W/AhD5ia2ad
+FmddwSW5ysXYhCSULt+CIM4O3+AstKEb0I62n2x7Q8rxIU4iXpw3DhbzfZ2hlKZQ6PJFnZzoXWjq
+jkM5a8xokThL9OBAqbBvlv/tGb9toFLx5lLoycicmCp79OaKKic3H616r3WQAAAA
+
+--------------Boundary-00=_S2987K4J65TB7WEWEAR7--
 
 
 
