@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000005]: alsa-driver-1.0.2: unresolved symbols in snd.o
-Date: Tue, 27 Jan 2004 22:48:37 +0100 (CET)
+Date: Tue, 27 Jan 2004 22:48:57 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040127214837.9DBEC4904C@server.perex-int.cz>
+Message-ID: <20040127214857.09AA54904C@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA19590
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 22:48:39 +0100
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA19613
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 22:49:04 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -98,6 +98,12 @@ edited on: 01-27-04 22:39
 OK, works fine for me.
 Thanks.
 
+----------------------------------------------------------------------
+ ZlatkO - 01-27-2004 22:48 CET 
+----------------------------------------------------------------------
+Works fine here after the second fix (same problem after the first one).
+Thanks! :-)
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -111,6 +117,7 @@ Date Modified  Username       Field                    Change
 01-27-04 22:37 perex          Bugnote Added: 0000008                       
 01-27-04 22:39 perex          Bugnote Edited: 0000008                      
 01-27-04 22:48 khali          Bugnote Added: 0000009                       
+01-27-04 22:48 ZlatkO         Bugnote Added: 0000010                       
 ======================================================================
 
 
