@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000793]: Feature Request SRS
-Date: Thu, 13 Jan 2005 21:14:16 +0100
-Message-ID: <4a5142e5fd4ec769cbe8ce42d13ae0a0@bugtrack.alsa-project.org>
+From: Vlad - Andrei Lazar <clusty1@gmail.com>
+Subject: Re: Audigy 2 NX USB
+Date: Thu, 13 Jan 2005 20:04:18 +0100
+Message-ID: <d27697d60501131104456027fa@mail.gmail.com>
+References: <d27697d605011308157a93b066@mail.gmail.com>
+	 <41E6C1FF.7010404@superbug.co.uk>
+Reply-To: Vlad - Andrei Lazar <clusty1@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3836F222
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 21:14:16 +0100 (MET)
+In-Reply-To: <41E6C1FF.7010404@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,57 +19,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=793> 
-======================================================================
-Reported By:                gregh
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   793
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             01-08-2005 05:16 CET
-Last Modified:              01-13-2005 21:14 CET
-======================================================================
-Summary:                    Feature Request SRS
-Description: 
-Is there a way to use SRS with alsa?
-Is this even the correct forum to post a request?
-I apologise if it's not
-======================================================================
-
-----------------------------------------------------------------------
- gregh - 01-08-05 05:17 
-----------------------------------------------------------------------
-I have set thi swith an incorrect category. It sould be request
-
-----------------------------------------------------------------------
- tiwai - 01-13-05 21:14 
-----------------------------------------------------------------------
-Any free library available for SRS?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-08-05 05:16 gregh          New Issue                                    
-01-08-05 05:16 gregh          Kernel Version            => 2.6.10          
-01-08-05 05:17 gregh          Note Added: 0003127                          
-01-13-05 21:14 tiwai          Note Added: 0003204                          
-======================================================================
+I just bought the Audigy 2 NX USB because I thought there ain;t gonna
+be any support. Now I see that my new soundcard sounds really like
+shit (tons of glitches and some funny distorsions). Please guys come
+up with some driver. I would do it myself if I would know how to make
+it :-D.
 
 
+
+
+
+On Thu, 13 Jan 2005 18:46:23 +0000, James Courtier-Dutton
+<James@superbug.co.uk> wrote:
+> Vlad - Andrei Lazar wrote:
+> > Hello,
+> >
+> > Before I asked about an Audicy ZS PCMCIA and sadlly figured out that
+> > it has no (and will never have) support for linux.
+> >
+> > Is there or will there be any support for the Audigy 2 NX USB soundcard?
+> > If not, what is the latest SB card that is supported.
+> >
+> > Best,
+> > Vlad
+> >
+> 
+> There might be Audigy ZS PCMCIA support if someone donates a card to me.
+> 
+>
 
 
 -------------------------------------------------------
