@@ -1,15 +1,16 @@
-From: Gregoire Favre <greg@ulima.unil.ch>
-Subject: Re: How to put 16bit none audio PCM data stream into a 32bit none audio S/P-DIF transport stream?
-Date: Tue, 8 Apr 2003 18:42:41 +0200
+From: John covici <covici@ccs.covici.com>
+Subject: Re: via8xxx invalid cur_ptr
+Date: Tue, 8 Apr 2003 12:49:13 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030408164241.GA4253@ulima.unil.ch>
-References: <20030408140230.GA1987@ulima.unil.ch> <E192u0x-0007pF-00@sc8-sf-list1.sourceforge.net> <s5hn0j1q97r.wl@alsa2.suse.de>
+Message-ID: <16018.64905.4784.752391@ccs.covici.com>
+References: <m3adf69tpq.fsf@ccs.covici.com>
+	<s5hfzotq6x1.wl@alsa2.suse.de>
+Reply-To: covici@ccs.covici.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hn0j1q97r.wl@alsa2.suse.de>
+In-Reply-To: <s5hfzotq6x1.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,36 +20,46 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: John Covici <covici@ccs.covici.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 08, 2003 at 05:50:48PM +0200, Takashi Iwai wrote:
+on Tuesday 04/08/2003 Takashi Iwai(tiwai@suse.de) wrote
+ > At Fri, 04 Apr 2003 10:18:41 -0500,
+ > John Covici wrote:
+ > > 
+ > > I am getting messages like the following in my logs using kernel
+ > > 2.4.20-xfs and alsa 0.9.2 release:
+ > > 
+ > > Apr  3 23:27:52 ccs kernel: ALSA ../alsa-kernel/pci/via82xx.c:675: invalid via82xx_cur_ptr, using last valid pointer
+ > > 
+ > > What does this mean and have you fixed it yet?
+ > 
+ > how often do you see this message?  which program?
 
-> i'm afraid that it's not so easy as it sounds.  it strongly depends
-> on the hardware driver implementation...
->=20
-> about AC3, 32bit spdif is likely irrelevant.  A52 (AC3) is usally
-> packed into normal 16bit frames.
->=20
-> does the click happen even if you use alsa-tool's ac3dec?
+Every couple of minutes using freeamp or speakfreely both of which
+are using the oss emulation.
+ > the playback works otherwise?
+ > 
+ > also, please tell the chip revision (or output of
+ > /proc/asound/cards).  the behavior of via82xx driver depends on the
+ > chip model.
 
-Yes and no:
+0 [via8233        ]: VIA8233 - VIA 8233
+                     VIA 8233 at 0xc000, irq 11
 
-./ac3dec -C /data/linux/dvb/from_beyond_the_edge_44k_256kbps.ac3 don't
-produce any sound at all now... except ONE big click at the beginning,
-same with -P and
-./ac3dec -R /data/linux/dvb/from_beyond_the_edge_44k_256kbps.ac3
-5.1 Mode 44.1 KHz 256 kbps Complete Main Audio Service
-Using PCM device 'iec958:AES0=3D0x0,AES1=3D0x82,AES2=3D0x0,AES3=3D0x2'
 
-Produces also the same big click and then plays quiete good (only 2.0 no
-dolby digital is sent to the receiver...).
+ > 
+ > if you're using VIA8233A (not 8233,8233C,8235), please try hw:0,1 for
+ > aplay.
+ > 
+ > 
+ > thanks,
+ > 
+ > Takashi
 
-Thank you very much,
-
-	Gr=E9goire
-________________________________________________________________
-http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
+-- 
+         John Covici
+         covici@ccs.covici.com
 
 
 -------------------------------------------------------
