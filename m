@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
-Date: Tue, 30 Nov 2004 08:56:58 +0100
-Message-ID: <49002641966ada4458178c9f8347284c@bugtrack.alsa-project.org>
+From: Mail Delivery Subsystem <MAILER-DAEMON@aol.com>
+Subject: Returned mail: User unknown
+Date: Tue, 30 Nov 2004 03:49:22 -0500 (EST)
+Message-ID: <200411300849.DAF17495@rly-xj01.mx.aol.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="DAF17495.1101804562/rly-xj01.mx.aol.com"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B81112CF
-	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2004 08:56:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,131 +15,407 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a MIME-encapsulated message
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=660> 
-======================================================================
-Reported By:                bji
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   660
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             11-21-2004 02:53 CET
-Last Modified:              11-30-2004 08:56 CET
-======================================================================
-Summary:                    No sound output  despite unmuting and maximizing all
-volume settings
-Description: 
-I get no sound output from any program I have tried (xmms, play, aplay, cat
-> /dev/audio) with no error messages or any other indication that there is
-a problem which would cause sound to not occur.
+--DAF17495.1101804562/rly-xj01.mx.aol.com
 
-I have already run alsamixer many times and tried every combination of
-muted and unmuted settings with all volumes maximized.  With no volume
-settings muted, and all volume settings at maximum level, I still get no
-sound.
+The original message was received at Tue, 30 Nov 2004 03:48:42 -0500 (EST)
+from isi-dsl-127-85.isionline-dialin.de [213.128.127.85]
 
-Everything *looks* like it's working - output in the kernel log, xmms's
-display, everything.  But I get no sound out of the built-in speaker or
-the headphone jack.
 
-I have tried the following:
+*** ATTENTION ***
 
-* Default install of Fedora Core 3; it recognized the sound card and
-installed module settings in /etc/modprobe.conf to load snd-intel8x0.  But
-I never got any sound out of this default install no matter what I tried.
+Your e-mail is being returned to you because there was a problem with its
+delivery.  The address which was undeliverable is listed in the section
+labeled: "----- The following addresses had permanent fatal errors -----".
 
-* Custom compiled the 2.6.9 kernel with no patches except the software
-suspend 2 patch.  This built the version of the ALSA drivers that come
-with 2.6.9.  Still no sound.
+The reason your mail is being returned to you is listed in the section
+labeled: "----- Transcript of Session Follows -----".
 
-* Downloaded and compiled version 1.0.7 of the ALSA drivers and installed
-them.  Still no sound.
+The line beginning with "<<<" describes the specific reason your e-mail could
+not be delivered.  The next line contains a second error message which is a
+general translation for other e-mail servers.
 
-======================================================================
+Please direct further questions regarding this message to your e-mail
+administrator.
 
-----------------------------------------------------------------------
- tiwai - 11-29-04 17:19 
-----------------------------------------------------------------------
-Could you try the patch stac9752.diff and change values in "Headphone Pin"
-and "Line-Out Pin" controls?
+--AOL Postmaster
 
-----------------------------------------------------------------------
- bji - 11-30-04 08:56 
-----------------------------------------------------------------------
-Unfortunately, the patch did not fix the problem.  I applied the patch by
-running the following commands:
 
-cd ~/alsa-driver-1.0.7/alsa-kernel
-patch -p1 < ~/stac9752a.diff
-cd ~/alsa-driver-1.0.7
-make
-make install
 
-This patched, built and installed new snd-ac97-codec.ko and
-snd-ak4531-codec.ko modiles.  However, when I modprobe -r the old versions
-and modprobe the new versions, I still received no sound from the built-in
-speaker or the headphone jack.
+   ----- The following addresses had permanent fatal errors -----
+<marocsarah@aol.com>
+<pbi@aol.com>
+<samkit@aol.com>
+<autoland@aol.com>
+<slaby@aol.com>
+<enrico-doerre@aol.com>
+<tiere@aol.com>
+<ffixybi@aol.com>
+<hskwk@aol.com>
+<xgenzo@aol.com>
+<olitjxwp@aol.com>
+<ysung@aol.com>
+<rlhddnvyhfyr@aol.com>
+<bamrerr@aol.com>
+<kdpokymimxc@aol.com>
+<rhebademiccotin@aol.com>
+<vxalkxkuaqqtze@aol.com>
+<knjzpuxcj@aol.com>
+<ssppx@aol.com>
+<kmcconnellhm@aol.com>
+<vrrvqyg@aol.com>
+<k_phelpsph@aol.com>
+<jaramillo_vw@aol.com>
+<iwdduqnyr@aol.com>
+<wzfxkx@aol.com>
+<lkw-stietzel@aol.com>
+<farida1986@aol.com>
+<rmanderbach@aol.com>
+<martin.kliehm@aol.com>
+<tierschutz-marl@aol.com>
+<payback@aol.com>
 
-I also ran alsamixer and played with the settings there, especially the
-headphone and the line out settings.  No changes to these values had any
-effect.
+   ----- Transcript of session follows -----
+... while talking to air-xj01.mail.aol.com.:
+>>> RCPT To:<wzfxkx@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <wzfxkx@aol.com>... User unknown
+>>> RCPT To:<iwdduqnyr@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <iwdduqnyr@aol.com>... User unknown
+>>> RCPT To:<jaramillo_vw@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <jaramillo_vw@aol.com>... User unknown
+>>> RCPT To:<k_phelpsph@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <k_phelpsph@aol.com>... User unknown
+>>> RCPT To:<vrrvqyg@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <vrrvqyg@aol.com>... User unknown
+>>> RCPT To:<kmcconnellhm@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <kmcconnellhm@aol.com>... User unknown
+>>> RCPT To:<ssppx@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <ssppx@aol.com>... User unknown
+>>> RCPT To:<knjzpuxcj@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <knjzpuxcj@aol.com>... User unknown
+>>> RCPT To:<vxalkxkuaqqtze@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <vxalkxkuaqqtze@aol.com>... User unknown
+>>> RCPT To:<rhebademiccotin@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <rhebademiccotin@aol.com>... User unknown
+>>> RCPT To:<kdpokymimxc@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <kdpokymimxc@aol.com>... User unknown
+>>> RCPT To:<bamrerr@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <bamrerr@aol.com>... User unknown
+>>> RCPT To:<rlhddnvyhfyr@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <rlhddnvyhfyr@aol.com>... User unknown
+>>> RCPT To:<ysung@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <ysung@aol.com>... User unknown
+>>> RCPT To:<olitjxwp@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <olitjxwp@aol.com>... User unknown
+>>> RCPT To:<xgenzo@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <xgenzo@aol.com>... User unknown
+>>> RCPT To:<hskwk@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <hskwk@aol.com>... User unknown
+>>> RCPT To:<ffixybi@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <ffixybi@aol.com>... User unknown
+>>> RCPT To:<tiere@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <tiere@aol.com>... User unknown
+>>> RCPT To:<enrico-doerre@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <enrico-doerre@aol.com>... User unknown
+>>> RCPT To:<slaby@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <slaby@aol.com>... User unknown
+>>> RCPT To:<autoland@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <autoland@aol.com>... User unknown
+>>> RCPT To:<samkit@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <samkit@aol.com>... User unknown
+>>> RCPT To:<pbi@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <pbi@aol.com>... User unknown
+>>> RCPT To:<marocsarah@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <marocsarah@aol.com>... User unknown
+... while talking to air-xj01.mail.aol.com.:
+>>> RCPT To:<payback@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <payback@aol.com>... User unknown
+>>> RCPT To:<tierschutz-marl@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <tierschutz-marl@aol.com>... User unknown
+>>> RCPT To:<martin.kliehm@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <martin.kliehm@aol.com>... User unknown
+>>> RCPT To:<rmanderbach@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <rmanderbach@aol.com>... User unknown
+>>> RCPT To:<farida1986@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <farida1986@aol.com>... User unknown
+>>> RCPT To:<lkw-stietzel@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <lkw-stietzel@aol.com>... User unknown
 
-Is there something else I can try :(
+--DAF17495.1101804562/rly-xj01.mx.aol.com
+Content-Type: message/delivery-status
 
-Thank you for taking the time to try to solve this problem, I really do
-appreciate it!
+Reporting-MTA: dns; rly-xj01.mx.aol.com
+Arrival-Date: Tue, 30 Nov 2004 03:48:42 -0500 (EST)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-21-04 02:53 bji            New Issue                                    
-11-21-04 02:53 bji            Distribution              => Fedora Core 3   
-11-21-04 02:53 bji            Kernel Version            => 2.6.9           
-11-21-04 02:55 bji            Note Added: 0002481                          
-11-21-04 02:56 bji            File Added: proc_asound.txt                    
-11-21-04 03:16 bji            Note Added: 0002483                          
-11-21-04 03:19 bji            Note Added: 0002484                          
-11-23-04 16:20 tiwai          Note Added: 0002522                          
-11-23-04 23:23 IceRAM         Note Added: 0002537                          
-11-23-04 23:24 IceRAM         File Added: asound.state                     
-11-23-04 23:25 IceRAM         File Added: modprobe.conf                    
-11-23-04 23:26 IceRAM         File Added: iceram_lsmod.txt                    
-11-23-04 23:27 IceRAM         Note Added: 0002538                          
-11-23-04 23:28 IceRAM         Note Edited: 0002537                         
-11-23-04 23:29 IceRAM         Note Edited: 0002537                         
-11-23-04 23:29 IceRAM         Issue Monitored: IceRAM                      
-11-23-04 23:45 IceRAM         Note Added: 0002539                          
-11-23-04 23:45 IceRAM         File Added: .asoundrc                        
-11-23-04 23:46 IceRAM         Note Edited: 0002538                         
-11-24-04 12:32 bji            File Added: asound.state                     
-11-24-04 12:33 bji            Note Added: 0002550                          
-11-24-04 12:40 tiwai          Note Added: 0002552                          
-11-24-04 13:15 IceRAM         Note Deleted: 0002537                        
-11-24-04 13:16 IceRAM         Note Deleted: 0002539                        
-11-24-04 13:19 IceRAM         Note Deleted: 0002538                        
-11-24-04 13:26 IceRAM         Note Added: 0002561                          
-11-24-04 14:57 tiwai          Note Added: 0002565                          
-11-25-04 07:07 bji            Note Added: 0002587                          
-11-28-04 04:24 bji            Note Added: 0002619                          
-11-28-04 06:04 bji            Note Added: 0002620                          
-11-29-04 17:19 tiwai          Note Added: 0002654                          
-11-29-04 17:19 tiwai          File Added: stac9752a.diff                    
-11-30-04 08:56 bji            Note Added: 0002661                          
-======================================================================
+Final-Recipient: RFC822; marocsarah@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
 
+Final-Recipient: RFC822; pbi@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; samkit@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; autoland@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; slaby@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; enrico-doerre@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; tiere@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; ffixybi@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; hskwk@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; xgenzo@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; olitjxwp@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; ysung@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; rlhddnvyhfyr@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; bamrerr@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; kdpokymimxc@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; rhebademiccotin@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; vxalkxkuaqqtze@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; knjzpuxcj@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; ssppx@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; kmcconnellhm@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:19 -0500 (EST)
+
+Final-Recipient: RFC822; vrrvqyg@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:18 -0500 (EST)
+
+Final-Recipient: RFC822; k_phelpsph@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:18 -0500 (EST)
+
+Final-Recipient: RFC822; jaramillo_vw@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:18 -0500 (EST)
+
+Final-Recipient: RFC822; iwdduqnyr@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:18 -0500 (EST)
+
+Final-Recipient: RFC822; wzfxkx@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:18 -0500 (EST)
+
+Final-Recipient: RFC822; lkw-stietzel@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:21 -0500 (EST)
+
+Final-Recipient: RFC822; farida1986@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:21 -0500 (EST)
+
+Final-Recipient: RFC822; rmanderbach@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:21 -0500 (EST)
+
+Final-Recipient: RFC822; martin.kliehm@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:21 -0500 (EST)
+
+Final-Recipient: RFC822; tierschutz-marl@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:21 -0500 (EST)
+
+Final-Recipient: RFC822; payback@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xj01.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Tue, 30 Nov 2004 03:49:21 -0500 (EST)
+
+--DAF17495.1101804562/rly-xj01.mx.aol.com
+Content-Type: text/rfc822-headers
+
+Received: from  qoonqifi.net (isi-dsl-127-85.isionline-dialin.de [213.128.127.85]) by rly-xj01.mx.aol.com (v103.7) with ESMTP id MAILRELAYINXJ17-4fd41ac33e21f6; Tue, 30 Nov 2004 03:48:39 -0500
+From: alsa-devel@lists.sourceforge.net
+To: private3844@aol.com
+Date: Tue, 30 Nov 2004 08:36:40 GMT
+Subject: Details
+Importance: Normal
+X-Priority: 3 (Normal)
+X-MSMail-Priority: Normal
+Message-ID: <ebfc.5d86b4bbe05cb12@aol.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=cc3de7d.ff26f0d2aace23ed944"
+Content-Transfer-Encoding: 7bit
+
+--DAF17495.1101804562/rly-xj01.mx.aol.com--
 
 
 
