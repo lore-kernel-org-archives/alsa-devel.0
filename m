@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000435]: No current support for the ICH6R & ALC880 devices
-Date: Thu, 12 Aug 2004 07:32:00 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Bluetooth headsets, and ALSA
+Date: Thu, 12 Aug 2004 09:45:38 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040812053200.6D8CC1102F@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.HPX.4.33n.0408120944540.8551-100000@studcom.urz.uni-halle.de>
+References: <20040812030758.27108.qmail@web60803.mail.yahoo.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E1094A0
-	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 07:32:00 +0200 (MEST)
+In-reply-to: <20040812030758.27108.qmail@web60803.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,51 +17,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: tsw@johana.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Tom Watson wrote:
+> Given that bluetooth headsets exist, and they do digitize sound (and reverse).
+> Has anyone gotten them to work (ALSA, or otherwise) to digitize sound into a
+> file, or to playback something (just about anything might do).
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000435
-======================================================================
-Reported By:                snaketails
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     435
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             08-12-2004 02:50 CEST
-Last Modified:              08-12-2004 07:32 CEST
-======================================================================
-Summary:                    No current support for the ICH6R & ALC880 devices
-Description: 
-As this is a new mobo, there is no driver configuration that supports this
-newer buss interface devices, so there is no sound from the mobo.
-The inability for the mobo to run SATA under Linux is not an issue here,
-as I am using the SiS SATA driver, only issue is sound
-======================================================================
+There is an experimental patch:
+http://www.dcs.gla.ac.uk/~jp/snd-bt-sco/
 
-----------------------------------------------------------------------
- pzad - 08-12-2004 07:32 CEST 
-----------------------------------------------------------------------
-I think in ALSA 1.0.6rc2 is driver for HD audio (azx module). Try it.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-12-04 02:50 snaketails     New Bug                                      
-08-12-04 02:50 snaketails     Distribution              => Gentoo          
-08-12-04 02:50 snaketails     Kernel Version            => 2.6.7           
-08-12-04 07:32 pzad           Bugnote Added: 0001551                       
-======================================================================
+HTH
+Clemens
+
+
 
 
 -------------------------------------------------------
