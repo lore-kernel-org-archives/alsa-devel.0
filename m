@@ -1,17 +1,16 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: PATCH: 2.6.10: i810 more AC97 tunings
-Date: Sun, 26 Dec 2004 23:41:38 +0000
-Message-ID: <1104104497.16487.12.camel@localhost.localdomain>
+From: Carlos Pita <carlosjosepita@yahoo.com.ar>
+Subject: emu10k1 devices
+Date: Sun, 26 Dec 2004 22:43:55 -0300
+Message-ID: <200412262243.55482.carlosjosepita@yahoo.com.ar>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1BCD62C0
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 01:45:31 +0100 (MET)
-Received: from localhost.localdomain (unknown [81.2.110.250])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 8F4E63FED5
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 01:45:30 +0100 (MET)
+Received: from smtp205.mail.sc5.yahoo.com (smtp205.mail.sc5.yahoo.com [216.136.129.95])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 8B2C62C1
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 02:37:42 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,42 +20,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: torvalds@osdl.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add some more funky AC97 knowledge to the intel8x0 driver. These come
-from Red Hat and its partners and are included in our shipping code.
+Hi!
 
-Signed-off-by: Alan Cox <alan@redhat.com>
+I'm getting the following error when initializing portaudio-v19:
 
-diff -u --new-file --recursive --exclude-from /usr/src/exclude linux.vanilla-2.6.10/sound/pci/intel8x0.c linux-2.6.10/sound/pci/intel8x0.c
---- linux.vanilla-2.6.10/sound/pci/intel8x0.c	2004-12-25 21:15:54.000000000 +0000
-+++ linux-2.6.10/sound/pci/intel8x0.c	2004-12-26 16:56:04.660850232 +0000
-@@ -1880,6 +1880,24 @@
- 		.type = AC97_TUNE_HP_ONLY
- 	},
- #endif
-+	{
-+		.vendor = 0x1028,
-+		.device = 0x012d,
-+		.name = "Dell Precision 450",	/* AD1981B*/
-+		.type = AC97_TUNE_HP_ONLY
-+	},
-+	{
-+		.vendor = 0x103c,
-+		.device = 0x3008,
-+		.name = "HP xw4200",	/* AD1981B*/
-+		.type = AC97_TUNE_HP_ONLY
-+	},
-+	{
-+		.vendor = 0x103c,
-+		.device = 0x12f1,
-+		.name = "HP xw8200",	/* AD1981B*/
-+		.type = AC97_TUNE_HP_ONLY
-+	},
- 	{ } /* terminator */
- };
- 
+  ALSA lib pcm_hw.c:1155:(snd_pcm_hw_open) open /dev/snd/pcmC0D3p failed: No such file or directory
+
+The device file is there:
+
+  crw-rw----  1 root audio 116, 24 2004-12-24 16:55 /dev/snd/pcmC0D0c
+  crw-rw----  1 root audio 116, 16 2004-12-24 16:55 /dev/snd/pcmC0D0p
+  crw-rw----  1 root audio 116, 25 2004-12-24 16:55 /dev/snd/pcmC0D1c
+  crw-rw----  1 root audio 116, 26 2004-12-24 16:55 /dev/snd/pcmC0D2c
+  ----> crw-rw----  1 root audio 116, 26 2004-12-24 16:55 /dev/snd/pcmC0D3p  <-----
+
+cat /proc/asound/devices:
+
+   ----> 19: [0- 3]: digital audio playback  <-----
+  26: [0- 2]: digital audio capture
+  25: [0- 1]: digital audio capture
+  16: [0- 0]: digital audio playback
+  24: [0- 0]: digital audio capture
+
+The device minor number is ok except for /dev/snd/pcmC0D3p, which is created
+with 26 instead of 19. This seems a bug in udev, the corresponding rule is:
+
+  KERNEL="pcm[CD0-9cp]*", NAME="snd/%k"
+
+which seems ok. The entry in sysfs is ok too:
+
+cat /sys/class/sound/pcmC0D3p/dev:
+  116:19
+
+What do you think?
+
+Thank you in advance.
+Regards,
+Carlos
 
 
 
