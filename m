@@ -1,16 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Status of Midiman Midisport 8x8 Interface Driver
-Date: Wed, 08 May 2002 10:06:25 +0200
+From: Abramo Bagnara <abramo@alsa-project.org>
+Subject: Re: another control API issue
+Date: Wed, 08 May 2002 10:04:47 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CD8DC81.16E3DAEE@ladisch.de>
-References: <B3E252A41984D411BF68009027E5CE97032BE03E@exchange-ms01.piro.net>
+Message-ID: <3CD8DC1F.709754AF@alsa-project.org>
+References: <200205080008.g4808se10498@op.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mlucom8.urz.Uni-Halle.DE [141.48.10.118] (may be forged))
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA02732
-	for <alsa-devel@alsa-project.org>; Wed, 8 May 2002 10:06:27 +0200
+Received: from smtp1.libero.it (smtp1.libero.it [193.70.192.51])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA02710
+	for <alsa-devel@alsa-project.org>; Wed, 8 May 2002 10:04:55 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,22 +19,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Joachim Backhaus <jbackhaus@pironet-ndh.com>
+To: Paul Davis <pbd@op.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Joachim Backhaus wrote:
-> what is the current status of the development
-> of the Midiman Midisport 8x8 Interface Drivers?
+Paul Davis wrote:
+> 
+> the h-dsp has some 64 bit registers. the current control API doesn't
+> offer a way of representing such values. shall i add
+> 
+>       SNDRV_CTL_ELEM_TYPE_INTEGER64
+> 
+> ?
 
-The Midisport XxX interfaces need a firmware upload to work properly.
-Firmware for the Midisport 1x1 is included with the OSS USB MIDI driver
-<http://member.nifty.ne.jp/Breeze/softwares/unix/usbmidi-e.html>.
-Firmware for the 8x8 doesn't exist (yet), but the docs contain some
-hints on how to write one.
+Just for curiosity, what they store that cannot be represented in 32
+bits?!?
 
+-- 
+Abramo Bagnara                       mailto:abramo@alsa-project.org
 
-Clemens
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
+
+ALSA project               http://www.alsa-project.org
+It sounds good!
 
 _______________________________________________________________
 
