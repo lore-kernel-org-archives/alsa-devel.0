@@ -1,12 +1,13 @@
-From: MAILER-DAEMON@alsa-project.org (Mail Delivery System)
-Subject: Undelivered Mail Returned to Sender
-Date: Wed, 22 Sep 2004 11:48:51 +0200 (MEST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000366]: driver hangs when trying to load a soundfont >8MB
+Date: Wed, 22 Sep 2004 12:05:48 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040922094851.C7B1A309@alsa.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="6EDDF194.1095846531/alsa.alsa-project.org"
+Message-ID: <20040922100548.9F8074500D@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2FDF624E
+	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 12:05:49 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,149 +19,213 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message.
 
---6EDDF194.1095846531/alsa.alsa-project.org
-Content-Description: Notification
-Content-Type: text/plain
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000366
+======================================================================
+Reported By:                deathpudding
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     366
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             07-05-2004 09:43 CEST
+Last Modified:              09-22-2004 12:05 CEST
+======================================================================
+Summary:                    driver hangs when trying to load a soundfont >8MB
+Description: 
+The alsa driver and the applications using it hang, unkillable and unable
+to be unloaded, when I try to load a soundfont larger than 8MB. This
+sometimes results in the appearance of a page fault message when shutting
+down. The shutdown is never completed because the disk cannot be
+unmounted, presumably because the alsa driver is still frozen while trying
+load the soundfont from it.
 
-This is the ALSA's E-mail Delivery System program at host alsa.alsa-project.org.
+I found a thread in the alsa-devel archives discussing this problem:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg12386.html
 
-I'm sorry to have to inform you that your message could not be
-be delivered to one or more recipients. It's attached below.
+I see that the discussed patch has been applied, but I still have this
+problem. I haven't tested with versions prior to 1.0.4 because they did
+not compile with the later library version, but I do know that it was
+working not too long ago (with kernel 2.6.x).
+======================================================================
 
-For further assistance, please send mail to <postmaster>
+----------------------------------------------------------------------
+ vlajsa - 07-10-2004 20:39 CEST 
+----------------------------------------------------------------------
+To add to this report! Sfxload don't work with alsa 1.0.5, too!
 
-If you do so, please include this problem report. You can
-delete your own text from the attached returned message.
+----------------------------------------------------------------------
+ deathpudding - 07-10-2004 21:45 CEST 
+----------------------------------------------------------------------
+I marked this as a 1.0.5a bug, but it doesn't look like it showed up in the
+report.
 
-			The ALSA's E-mail Delivery System program
+----------------------------------------------------------------------
+ pzad - 07-12-2004 13:31 CEST 
+----------------------------------------------------------------------
+I tested this with 32 MB soundfont what I have and it worked.
+If this is free soundfont can you give link to it ????
 
-<alsa-devel@lists.sourceforge.net> (expanded from
-    <alsa-devel@alsa-project.org>): host mail.sourceforge.net[66.35.250.206]
-    said: 550-SPAM: This message appears to be spam (5.5 points). 550-- 550-If
-    you believe this message was classified as spam in error, 550-please open a
-    Support Request at the URL below. 550-(Please include this message in any
-    Support Request). 550-- 550-- 550-Spam Filtering performed by
-    sourceforge.net. 550-See http://spamassassin.org/tag/ for more details.
-    550-Report problems to
-    http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-0.0
-    SF_CHICKENPOX_SLASH    BODY: Text interparsed with / 550-0.0
-    SF_CHICKENPOX_MINUS    BODY: Text interparsed with - 550-0.0
-    SF_CHICKENPOX_COLON    BODY: Text interparsed with : 550-0.0
-    SF_CHICKENPOX_APOSTROPHE BODY: Text interparsed with ' 550-0.0
-    SF_CHICKENPOX_PERIOD   BODY: Text interparsed with . 550-0.0
-    SF_CHICKENPOX_QUESTION BODY: Text interparsed with ? 550-1.7
-    HTML_IMAGE_ONLY_06     BODY: HTML: images with 400-600 bytes of words
-    550-0.0 HTML_MESSAGE           BODY: HTML included in message 550-0.2
-    HTML_50_60             BODY: Message is 50% to 60% HTML 550-1.3 PORN_4
-    URI: URL uses words/phrases which indicate porn 550-2.2
-    RCVD_IN_BL_SPAMCOP_NET RBL: Received via a relay in bl.spamcop.net
-    550-[Blocked - see <http://www.spamcop.net/bl.shtml?69.91.66.245>] 550 0.0
-    DRUGS_PAIN             Refers to a pain relief drug (in reply to end of
-    DATA command)
+----------------------------------------------------------------------
+ deathpudding - 07-12-2004 23:03 CEST 
+----------------------------------------------------------------------
+I've tried it with multiple soundfonts, but here are two examples:
 
---6EDDF194.1095846531/alsa.alsa-project.org
-Content-Description: Delivery report
-Content-Type: message/delivery-status
+http://www.hammersound.net/cgi-bin/soundlink.pl?action=view_download_page;ID=116;SoundFont_Filename_Selected=mustheory2.sfArk
+http://bennetng.kc-studio.com/bennetng_AnotherGS_v2-0.exe
 
-Reporting-MTA: dns; alsa.alsa-project.org
-X-ALSA's-E-mail-Delivery-System-Queue-ID: 6EDDF194
-X-ALSA's-E-mail-Delivery-System-Sender: rfc822; alsa-devel@alsa-project.org
-Arrival-Date: Wed, 22 Sep 2004 11:46:03 +0200 (MEST)
+Unfortunately the first requires the sfArk program, and the second is a
+self-extracting sfArk. Both should work under Wine, at least.
 
-Final-Recipient: rfc822; alsa-devel@lists.sourceforge.net
-Original-Recipient: rfc822; alsa-devel@alsa-project.org
-Action: failed
-Status: 5.0.0
-Diagnostic-Code: X-ALSA's-E-mail-Delivery-System; host
-    mail.sourceforge.net[66.35.250.206] said: 550-SPAM: This message appears to
-    be spam (5.5 points). 550-- 550-If you believe this message was classified
-    as spam in error, 550-please open a Support Request at the URL below.
-    550-(Please include this message in any Support Request). 550-- 550--
-    550-Spam Filtering performed by sourceforge.net. 550-See
-    http://spamassassin.org/tag/ for more details. 550-Report problems to
-    http://sf.net/tracker/?func=add&group_id=1&atid=200001 550-0.0
-    SF_CHICKENPOX_SLASH    BODY: Text interparsed with / 550-0.0
-    SF_CHICKENPOX_MINUS    BODY: Text interparsed with - 550-0.0
-    SF_CHICKENPOX_COLON    BODY: Text interparsed with : 550-0.0
-    SF_CHICKENPOX_APOSTROPHE BODY: Text interparsed with ' 550-0.0
-    SF_CHICKENPOX_PERIOD   BODY: Text interparsed with . 550-0.0
-    SF_CHICKENPOX_QUESTION BODY: Text interparsed with ? 550-1.7
-    HTML_IMAGE_ONLY_06     BODY: HTML: images with 400-600 bytes of words
-    550-0.0 HTML_MESSAGE           BODY: HTML included in message 550-0.2
-    HTML_50_60             BODY: Message is 50% to 60% HTML 550-1.3 PORN_4
-    URI: URL uses words/phrases which indicate porn 550-2.2
-    RCVD_IN_BL_SPAMCOP_NET RBL: Received via a relay in bl.spamcop.net
-    550-[Blocked - see <http://www.spamcop.net/bl.shtml?69.91.66.245>] 550 0.0
-    DRUGS_PAIN             Refers to a pain relief drug (in reply to end of
-    DATA command)
+edited on: 07-12-04 23:03
 
---6EDDF194.1095846531/alsa.alsa-project.org
-Content-Description: Undelivered Message
-Content-Type: message/rfc822
+----------------------------------------------------------------------
+ vlajsa - 08-03-2004 17:11 CEST 
+----------------------------------------------------------------------
+Hmm... I really don't know how I've missed this one! When playing some
+music with xmms through alsa plugin, the song continues to the end, and
+then silently driver hangs! Of course this happenes when trying to load
+soundfont while playing some song! Hope this can help!!
 
-Received: by alsa.alsa-project.org (ALSA's E-mail Delivery System)
-	id 6EDDF194; Wed, 22 Sep 2004 11:46:03 +0200 (MEST)
-Delivered-To: alsa-devel@alsa-project.org
-Received: from alsa-project.org (user-12lmgnl.cable.mindspring.com [69.91.66.245])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id F169D184
-	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 11:46:02 +0200 (MEST)
-Message-ID: <043101c4a089$9481b6b0$c47d5683@TR>
-From: "Natalie Montgomery" <alsa-devel@alsa-project.org>
-To: <alsa-devel@alsa-project.org>
-Subject: Best pain fix. Vicodin and Hydocodone
-Date: Wed, 22 Sep 2004 04:46:00 -0500
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_F53_52C2F1E3.C1131A58"
-X-Priority: 2
-X-Mailer: SMTP
+I'm sure I can find sone fonts that dont need wine to use them. If you
+want me to do that, let me know!
 
-This is a multi-part message in MIME format.
+----------------------------------------------------------------------
+ pzad - 09-07-2004 09:37 CEST 
+----------------------------------------------------------------------
+Sorry, I can not reproduce this with alsa 1.0.6a + Audigy + kernel 2.6.5.
 
-------=_NextPart_F53_52C2F1E3.C1131A58
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ deathpudding - 09-07-2004 10:31 CEST 
+----------------------------------------------------------------------
+I tried again with kernel 2.6.8.1, alsa 1.0.6a and SB Live!. This time,
+instead of alsa hanging, several of my unrelated running processes were
+killed. I at least got some debug output, which I've attached to the
+report as a text file. The file only contains the message for asfxload -
+the other killed processes had similar messages but without page faults.
 
-Vicodin and Hydocodone here with no doctor needed! Save bigtime!
+----------------------------------------------------------------------
+ vlajsa - 09-07-2004 18:25 CEST 
+----------------------------------------------------------------------
+hmm,
+somewhere on the rosegarden-user list I've heared that problem will be
+gone after kernel patching (with mm# patch from Andrew Morton, I think).
+But I didn't try this becouse of fedora_core2 kernel, which is not easyly
+patchable, and I cann't download complete kernel sources.. something's
+wrong with my provider!
 
-http://ariyanaloo.com/200/index.php?ai=7790&com=25
+deathpudding, are you able to do this test?
 
+here's the patch url:
+ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.8.1/2.6.8.1-mm4/2.6.8.1-mm4.bz2
 
-sXG4V4O752AcUq0jfiFWe'll be going out to dinner afterward, and we could go swimming.As they sent me through rollers I fell asleep, expecting never to awaken.We'll be going out to dinner afterward, and we could go swimming.567570448
+edited on: 09-07-04 18:25
 
-------=_NextPart_F53_52C2F1E3.C1131A58
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ deathpudding - 09-08-2004 01:38 CEST 
+----------------------------------------------------------------------
+I tried the -mm4 patch, but it didn't make a difference.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2712.300" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<HTML><title></title><body>
-<a href=3D"http://ariyanaloo.com/200/index.p=
-hp?ai=3D7790&com=3D25">Buy here?</a><br><br>
-<a href=3D"http://ariyanalo=
-o.com/200/index.php?ai=3D7790&com=3D25"><img src=3D"http://ariyanaloo.com=
-/0/25/25-4.jpg"></a>
-<br><br><br><br><br><br><br><br>Is your little pupp=
-y better? Is your little puppy better? Is your little puppy better? <br><=
-br><br><br><br><br><a href=3D"http://ariyanaloo.com/unsub/">no more of th=
-ese?</a></body></html>=
-</FONT></DIV></BODY></HTML>
+----------------------------------------------------------------------
+ tiwai - 09-08-2004 17:06 CEST 
+----------------------------------------------------------------------
+This should not happen on the ALSA CVS version because it now has
+__GFP_NORETRY unconditionally.  If still gets wrong, it must be a
+kernel bug.
 
-------=_NextPart_F53_52C2F1E3.C1131A58--
+----------------------------------------------------------------------
+ deathpudding - 09-09-2004 03:46 CEST 
+----------------------------------------------------------------------
+I tried 1.0.7rc1, which uses the NORETRY flag, and the soundfont loads
+without hanging/killing processes. But it doesn't load the entire
+soundfont, probably stopping when it runs out of memory. Only one
+instrument played when I played a test midi file. I don't understand why
+it thinks there isn't enough memory.
 
+----------------------------------------------------------------------
+ deathpudding - 09-09-2004 03:49 CEST 
+----------------------------------------------------------------------
+ah, it's using dma_alloc, and the txt I attached says there was only 32kb
+DMA memory free.
 
---6EDDF194.1095846531/alsa.alsa-project.org--
+----------------------------------------------------------------------
+ deathpudding - 09-09-2004 04:30 CEST 
+----------------------------------------------------------------------
+and also that there was 16MB of DMA memory total, while the soundfont is
+32MB...
+
+----------------------------------------------------------------------
+ tiwai - 09-13-2004 15:45 CEST 
+----------------------------------------------------------------------
+This should NOT happen.  snd-page-alloc has a wrapper for
+dma_alloc_coherent() to allocate the pages from __GFP_KERNEL
+as much as possible.  It means, that this hack isn't working
+on your environment.
+
+Check whether the codepath goes through dma_alloc_coherent wrapper
+in memalloc.c (e.g. adding prink's there).
+
+----------------------------------------------------------------------
+ deathpudding - 09-14-2004 02:43 CEST 
+----------------------------------------------------------------------
+The hack is indeed used. Something very strange showed up when I tested it,
+though: when I put a printk() in the beginning of
+snd_dma_hack_alloc_coherent(), the soundfont loaded completely and the
+midi file played correctly. But, when I removed the printk(), it broke as
+I described earlier. I recompiled the driver several times both ways to
+make sure it wasn't a fluke. Then I replaced the printk() with a small
+delay:
+int x = 1000000; while (x--);
+and this also worked. Judging only from this information, it seems like
+multiple calls to dma_alloc_coherent made too quickly somehow interfere
+with each other.
+
+----------------------------------------------------------------------
+ tiwai - 09-21-2004 12:41 CEST 
+----------------------------------------------------------------------
+This is really weird.  Anyway, it's beyond the scope of ALSA...
+
+----------------------------------------------------------------------
+ vlajsa - 09-22-2004 12:05 CEST 
+----------------------------------------------------------------------
+This is even wierder! Upgrading to 2.6.9-rc2 with mm1 patch solved the
+problem! At least for me!
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-05-04 09:43 deathpudding   New Bug                                      
+07-05-04 09:43 deathpudding   Kernel Version            => 2.6.7           
+07-10-04 20:39 vlajsa         Bugnote Added: 0001404                       
+07-10-04 21:45 deathpudding   Bugnote Added: 0001405                       
+07-12-04 13:31 pzad           Bugnote Added: 0001409                       
+07-12-04 23:02 deathpudding   Bugnote Added: 0001411                       
+07-12-04 23:03 deathpudding   Bugnote Edited: 0001411                      
+08-03-04 17:11 vlajsa         Bugnote Added: 0001528                       
+09-07-04 09:37 pzad           Bugnote Added: 0001703                       
+09-07-04 10:26 deathpudding   File Added: alsacrash.txt                    
+09-07-04 10:31 deathpudding   Bugnote Added: 0001705                       
+09-07-04 18:21 vlajsa         Bugnote Added: 0001724                       
+09-07-04 18:25 vlajsa         Bugnote Edited: 0001724                      
+09-08-04 01:38 deathpudding   Bugnote Added: 0001725                       
+09-08-04 17:06 tiwai          Bugnote Added: 0001732                       
+09-09-04 03:46 deathpudding   Bugnote Added: 0001740                       
+09-09-04 03:49 deathpudding   Bugnote Added: 0001741                       
+09-09-04 04:30 deathpudding   Bugnote Added: 0001742                       
+09-13-04 15:45 tiwai          Bugnote Added: 0001748                       
+09-14-04 02:43 deathpudding   Bugnote Added: 0001756                       
+09-21-04 12:41 tiwai          Bugnote Added: 0001800                       
+09-22-04 12:05 vlajsa         Bugnote Added: 0001811                       
+======================================================================
 
 
 -------------------------------------------------------
