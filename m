@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Re: [linux-audio-dev] Re: why is no-one responding are you all just a bunch of &*^%&^%^& wits???
-Date: Thu, 13 Feb 2003 07:18:40 -0500
+From: Maarten de Boer <mdeboer@iua.upf.es>
+Subject: Re: pcm_jack plugin attempt
+Date: Thu, 13 Feb 2003 13:53:17 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18jIKZ-0005oP-00@sc8-sf-list1.sourceforge.net>
-References: <s5h7kc4ms67.wl@alsa2.suse.de>
+Message-ID: <20030213135317.3ab66d5b.mdeboer@iua.upf.es>
+References: <20030212185838.15069c79.mdeboer@iua.upf.es>
+	<Pine.LNX.4.44.0302122157410.30420-100000@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 13 Feb 2003 10:44:00 +0100."
-             <s5h7kc4ms67.wl@alsa2.suse.de>
+In-Reply-To: <Pine.LNX.4.44.0302122157410.30420-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,20 +18,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-audio-dev@music.columbia.edu, ardour-dev <ardour-dev@lists.sourceforge.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->don't forget that the binary distribution may cause different kind of
->problems, too. 
->
->the binary might not run on different distributions, or even on a
->different machine with a same distribution, unless you give
->all-static-linked binary.  (note that even a binary like netscape 4.x
->cannot run properly now with the new glibc because of java.)
+> I've updated a bit your code, but I cannot test it myself, because I 
+> cannot connect to a jack port - invalid destination port name - (I'll 
+> look what's wrong tomorrow).
 
-a 100% statically linked binary will be available, but not
-recommended.
+Thanks a lot for your updates.
+
+The problem I described in my previous mail (no more calls to 
+snd_pcm_jack_mmap_commit after start) still occurs though... Any
+idea what might be the problem, or where to look?
+
+> > [snip about polls]
+> Yes, it should work, but I've added missing poll_revents callback 
+> initialization.
+
+Ok.
+
+> I've commited your code to CVS so we can share it.
+
+Great, thanks.
+
+Maarten
 
 
 -------------------------------------------------------
