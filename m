@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: dmix plugin
-Date: Thu, 20 Feb 2003 20:55:02 +0100 (CET)
+Subject: Re: unterminated conditionals: @HAVE_JACK_TRUE@
+Date: Thu, 20 Feb 2003 20:57:41 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302202045550.1266-100000@pnote.perex-int.cz>
-References: <3E551713.7E5BB141@libero.it>
+Message-ID: <Pine.LNX.4.44.0302202057290.1266-100000@pnote.perex-int.cz>
+References: <Pine.LNX.4.21.0302201956530.17762-100000@mailserver.intern.bfad.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E551713.7E5BB141@libero.it>
+In-Reply-To: <Pine.LNX.4.21.0302201956530.17762-100000@mailserver.intern.bfad.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,58 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Abramo Bagnara <abramo.bagnara@libero.it>
-Cc: Jaroslaw Sobierski <fycio@gucio.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: tomasz motylewski <T.Motylewski@bfad.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Feb 2003, Abramo Bagnara wrote:
+On Thu, 20 Feb 2003, tomasz motylewski wrote:
 
-> Now I'm able to get the same results you see.
 > 
-> However I think that we need to extract some results from this data.
+> Debian woody, current cvs:
 > 
-> I'll leave alone MMX optimizations because I want to compare apples with
-> apples.
+> ./build  prep
+> Pre-configuring alsa-driver
+> make: Nothing to be done for `all-deps'.
+> Pre-configuring alsa-lib
+> src/pcm/Makefile.am:6: JACK_PLUGIN multiply defined in condition
+> automake: src/pcm/Makefile.am: unterminated conditionals: @HAVE_JACK_TRUE@
+> src/pcm/Makefile.am:9: warning: automake does not support conditional
+> definition of JACK_PLUGIN in libpcm_la_SOURCES
 > 
-> The distributed saturation (also when it's missing the check/repeat
-> concurrency correctness part) costs more than 4 times the ticks needed
-> for a (fully correct wrt concurrency) saturate once approach for the
-> case 2048 8 32768.
+> Then after ./build config I get in alsa-lib/src/pcm/Makefile
 > 
-> CPU clock: 1460477150.884593
-> mix_areas0: 86747 0.031975%
-> mix_areas1: 259424 0.095623% (0)
-> mix_areas1_mmx: 253894 0.093585% (0)
-> mix_areas2: 132321 0.048773% (365)
-> mix_areas3: 332411 0.122526% (0)
+> @HAVE_JACK_TRUE@else !HAVE_JACK
+> @HAVE_JACK_TRUE@endif !HAVE_JACK
 > 
-> The server based approach has an added cost of an extra context switch
-> every period (about 1500 cycles on my machine i.e.), but this is fully
-> amortized by such an huge difference.
-> 
-> What's your opinion?
+> @HAVE_JACK_TRUE@all: libpcm.la
 
-Interesting is that my Intel P3 CPU has slightly different times:
-
-pnote:/home/perex/alsa/alsa-lib/test # ./code 2048 8 32768
-Scheduler set to Round Robin with priority 99...
-CPU clock: 847.292487Mhz (UP)
-
-Summary (the best times):
-mix_areas_srv : 576382 0.366206%
-mix_areas0    : 556852 0.353798%
-mix_areas1    : 867989 0.551480%
-mix_areas1_mmx: 625144 0.397187%
-mix_areas2    : 903335 0.573937%
-
-areas1/srv ratio     : 1.505927
-areas1_mmx/srv ratio : 1.084600
-
-I think that we can lose more in the client/server model. Also, note that
-we can use even futexes (if there's a hope that the possible context
-switch is acceptable) and then we can remove the cmpxchg trick and
-write-retry trick and use MMX for parallel saturation of two samples (this
-last can be used in the client/server model, too, indeed).
+Could you try to remove !HAVE_JACK string?
 
 						Jaroslav
 
