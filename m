@@ -1,45 +1,63 @@
-From: "TG Kang" <tg@egosys.net>
-Subject: looking for developer/s
-Date: Fri, 16 Jul 2004 09:58:19 +0900
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <007001c46acf$fc79ed00$174d10ac@tg>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Losing interrupts
+Date: Thu, 15 Jul 2004 23:24:30 -0400
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <1089948269.24832.36.camel@mindpipe>
+References: <1089843559.22841.8.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org-S266314AbUGPDY1@vger.kernel.org>
+In-Reply-To: <1089843559.22841.8.camel@mindpipe>
+To: linux-kernel <linux-kernel@vger.kernel.org>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, sbenno@gardena.net
 List-Id: alsa-devel@alsa-project.org
 
-SGksIGFsbC4NCkdsYWQgdG8gcG9zdCBvbiB0aGlzIE1MIGFnYWluLg0KV2UsIEVTSSwgYXJlIGN1
-cnJlbnRseSBsb29raW5nIGZvciBkZXZlbG9wZXJzIHdobyBhcmUgaW50ZXJlc3RlZCBpbiBvdXIg
-cHJvZHVjdHMgYW5kIHdpbGxpbmcgdG8gd3JpdGUgQUxTQS1HUExlZCBkcml2ZXJzIGZvciB0aGVt
-Lg0KV2UgYXJlIHJlYWR5IHRvIHN1cHBvcnQgQUxTQSBkZXZlbG9wZXJzIHdobyBoYXZlIGJlZW4g
-ZmVlbGluZyBpbmNvbnZlbmllbmNlIHRvIHNlZSBFU0kncyBwcm9kdWN0cyBvdXQgb2YgbGludXgg
-Ym91bmRhcnksIGFuZCB0aG9zZSB3aG8gaGF2ZSBiZWVuIGNvbXBsYWluaW5nIG9mIEVTSSdzIGln
-bm9yYW5jZSB0byB0aGVpciBlZmZvcnQsIHNvIGZhci4NCkFtb25nIG91ciBwcm9kdWN0cywgUHJv
-ZGlneTcuMSBhbmQgUXVhdGFGaXJlNjEwIGFyZSBvbiB0aGUgdG9wIG9mIHRoZSB3aXNoIGxpc3Qg
-Zm9yIG5vdywgYnV0IGl0IGRvZXNuJ3QgbWVhbiB3ZSBwdXQgYXNpZGUgb3RoZXIgcHJvZHVjdHMu
-DQpBbnlvbmUgd2hvIHdhbnRzIHRvIGNvbnRhY3QgdXMgaW4gdGhpcyByZWdhcmRzLCBwbGVhc2Ug
-ZG9uJ3QgaGVzaXRhdGUuDQpUaGUgY29udGFjdCBwb2ludCBpczogIHRnKCBhIHQgKWVnb3N5cy5u
-ZXQNCg0KUmVnYXJkcywNCg0KLyoNCiAqICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCiAq
-IEthbmcsIFRhZWdvbw0KICoNCiAqIFImRCBkZXB0LiAvIFNvZnR3YXJlIEVuZ2luZWVyDQogKg0K
-ICogRWdvIFN5c3RlbXMgSW5jLiAgICAgICAgICAgICAgICAgIA0KICoNCiAqIFNlb3VsLCBLb3Jl
-YS4NCiAqDQogKiB3d3cuZXNpLXByby5jb20gDQogKiB3d3cuYXVkaW90cmFrLm5ldA0KICogICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgDQogKi8NCg0K
+On Wed, 2004-07-14 at 18:19, Lee Revell wrote:
+> It seems that interrupts are being disabled for long periods, resulting
+> in the soundcard interrupt being lost.  I hacked the ALSA emu10k1 driver
+> to keep track in the interrupt handler of the number of CPU cycles
+> elapsed since the last time it ran.  I am using a period that
+> corresponds to 666 microseconds between interrupts, or ~400000 cycles on
+> my 600Mhz CPU.  As you can see the average jitter is *extremely* low -
+> 50-400 CPU cycles of per interrupt.  I hardcoded it to printk if the
+> jitter is more than 15000 (only happens every 5-10 seconds), and error
+> if it's really big.  As you can see, something is disabling interrupts
+> for a long time.  This is a completely different issue from an XRUN,
+> improving the scheduler latency will not solve this.
 
+The problem is with the video driver (Via CastleRock integrated,
+AGP4x).  By dragging a window in X more quickly than the machine can
+keep up with, I can reliably cause interrupts to be completely disabled
+for tens or hundreds of milliseconds.
 
+There was an issue several years ago where Matrox figured out they could
+get slightly better benchmark scores by not checking whether a FIFO on
+the video card was full before writing to it, which would cause the PCI
+bus to completely freeze until the FIFO had drained.  Lots of vendors
+followed suit until one of the audio software vendors figred it out and
+called them on it, at which point they fixed their drivers.  The effects
+(massive audio drouputs) and the steps to reproduce (drag a window
+around the screen) were identical.
 
--------------------------------------------------------
-This SF.Net email is sponsored by BEA Weblogic Workshop
-FREE Java Enterprise J2EE developer tools!
-Get your free copy of BEA WebLogic Workshop 8.1 today.
-http://ads.osdn.com/?ad_id=4721&alloc_id=10040&op=click
+Is it possible for the XFree86 DRI module to cause this, or would it
+have to be in the kernel?
+
+Here is the lspci output:
+
+0000:01:00.0 VGA compatible controller: VIA Technologies, Inc. VT8623 [Apollo CLE266] integrated CastleRock graphics (rev 03) (prog-if 00 [VGA])
+        Subsystem: VIA Technologies, Inc. VT8623 [Apollo CLE266] integrated CastleRock graphics
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32 (500ns min)
+        Interrupt: pin A routed to IRQ 11
+        Region 0: Memory at e4000000 (32-bit, prefetchable) [size=64M]
+        Region 1: Memory at e8000000 (32-bit, non-prefetchable) [size=16M]
+        Capabilities: [60] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [70] AGP version 2.0
+                Status: RQ=32 Iso- ArqSz=0 Cal=0 SBA+ ITACoh- GART64- HTrans- 64bit- FW- AGP3- Rate=x1,x2,x4
+                Command: RQ=1 ArqSz=0 Cal=0 SBA- AGP- GART64- 64bit- FW- Rate=<none>
+
+Lee
