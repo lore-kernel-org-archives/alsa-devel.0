@@ -1,12 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Number of subdevices on midi.
-Date: Thu, 4 Apr 2002 10:01:14 +0200 (CEST)
+Subject: Re: alsa rtctimer not compiled when having rtc as a
+ module
+Date: Thu, 4 Apr 2002 10:02:23 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0204040948190.891-100000@pnote.perex-int.cz>
-References: <3CAB5699.1927A89D@ufh.se>
+Message-ID: <Pine.LNX.4.33.0204041001510.891-100000@pnote.perex-int.cz>
+References: <20020403065236.773322f9.coding@reduz.com.ar>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <3CAB5699.1927A89D@ufh.se>
+In-Reply-To: <20020403065236.773322f9.coding@reduz.com.ar>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,51 +16,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Peter Enderborg <pme@ufh.se>
+To: Juan Linietsky <coding@reduz.com.ar>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 3 Apr 2002, Peter Enderborg wrote:
+On Wed, 3 Apr 2002, Juan Linietsky wrote:
 
-> I have tryed to get some answer from Jaroslav about subdevices on midi.
-> Im trying to write a driver for midisport 8x8/s and that have 9 midi
-> ports. On my hack to figure out the protocol I use virmidi to handle the
-> interface to alsa. But virmidi only have four subdevices per device. I
+> On Tue, 02 Apr 2002 16:15:04 +0200
+> root <root@iua.upf.es> wrote:
+> 
+> > 
+> > Hello,
+> > 
+> > I noticed that the alsa rtctimer is not compiled when you have
+> > the RTC in your kernel as a module. The problem is in 
+> > alsa-kernel/core/Makefile, where CONFIG_RTC is tested for y
+> > and not for m.
+> > 
+> > Maarten
+> > 
+> 
+> talking about this.. if alsa uses RTC, then i cant use it on other
+> programs while alsa does? are we talking /dev/rtc? (int 8)
 
-You can set up to eight virmidi devices (snd_midi_devs parameter controls
-this count). On rawmidi side, there is 16 rawmidi substreams (subdevices)
-per one virmidi device. These subdevices are used for event merging 
-(write) and coping (read). On sequencer side, there is one client and 
-one port connected to virmidi device.
-
-> need to see the driver for a midi interface that using all the 16
-> subdevices. Since I don't get answer from Jaroslav i guess he don't have
-> the time or my question is stupid. But can someone help me out? Where
-> should I look?
-
-There are two ways:
-
-1) we can add a new mode to virmidi code which suppress copying and 
-   merging and connects more sequencer ports per a sequencer client
-   to rawmidi subdevices to handle such devices
-2) without any change - simply use more than one virmidi card and connect 
-   your code to more clients:
-
-	modprobe snd-virmidi snd_index=1,2 snd_enable=1,1 snd_midi_devs=8,8
-
-	(use index values as you wish)
-
-	In this case, you should have available this routing table:
-
-	sequencer (client:port)		rawmidi (card:device:subdevice)
-	72:0				1:0:any
-	73:0				1:1:any
-	....				....
-	79:0				1:7:any
-	80:0				2:0:any
-	....				...
-	87:0				2:7:any
-
+It's right, access to RTC timer is exclusive, but you can still use ALSA 
+timer API to access RTC timer.
 
 						Jaroslav
 
