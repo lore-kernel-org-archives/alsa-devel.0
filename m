@@ -1,13 +1,11 @@
-From: Dirk Jagdmann <doj@cubic.org>
-Subject: Re: snd_pcm_writei is stuck with EPIPE
-Date: Sat, 13 Nov 2004 22:43:43 +0100
-Message-ID: <4196800F.8040103@cubic.org>
-References: <20041113181945.75832.qmail@web60410.mail.yahoo.com>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Control attribute
+Date: Sat, 13 Nov 2004 22:57:32 +0100
+Message-ID: <20041113225732.69cefe2d.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041113181945.75832.qmail@web60410.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,19 +15,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pete Zaitcev <zaitcev@yahoo.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> Use the patch file, it is complete. The audio_alsa.c is for reference
-> only, because patches are difficult to read when they get too divergent.
 
-now it's compiling :-)
+Some ctl interface elements may change without an explicit request of the
+application. I know there is the SNDRV_CTL_ELEM_ACCESS_VOLATILE attribute,
+but it matching the behaviour of some control very well. My driver has two
+controls that are somewhat related: Sample clock source switch and Digital
+mode switch. They never change if nobody touches them, but if an app changes
+the digital mode also the clock source may change. For example if dmode is
+ADAT and clock source is ADAT and the user sets dmode=S/PDIF, the driver
+must switch the clock source to something compatible with the new dmode. Is
+SNDRV_CTL_ELEM_ACCESS_VOLATILE the right flag ? I don't think so, but there
+are no other suitable flags AFAIK.
 
--- 
----> doj / cubic
-----> http://cubic.org/~doj
------> http://llg.cubic.org
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
