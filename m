@@ -1,14 +1,13 @@
-From: "random.bits" <random.bits@rogers.com>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Re: alsa driver, repeat playback of buffer contents
-Date: Tue, 15 Mar 2005 13:49:02 -0500
-Message-ID: <200503151349.02376.random.bits@rogers.com>
-References: <200503141530.20339.random.bits@rogers.com> <200503142014.37841.mark@vuenyx.com> <Pine.LNX.4.58.0503150848280.1743@pnote.perex-int.cz>
+Date: Tue, 15 Mar 2005 19:49:59 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0503151949320.21135@pnote.perex-int.cz>
+References: <200503141530.20339.random.bits@rogers.com> <200503142014.37841.mark@vuenyx.com>
+ <Pine.LNX.4.58.0503150848280.1743@pnote.perex-int.cz>
+ <200503151349.02376.random.bits@rogers.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.58.0503150848280.1743@pnote.perex-int.cz>
-Content-Disposition: inline
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <200503151349.02376.random.bits@rogers.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,43 +17,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
+To: "random.bits" <random.bits@rogers.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I started to follow up on Jaroslav's  advice. 
+On Tue, 15 Mar 2005, random.bits wrote:
 
-I am opening the "hw" pcm device using snd_pcm_open in 
-order to address the base hardware.
+> How can I get the hardware to continue to play using 
+> the data in the ring buffer?
 
-I use "snd_pcm_hw_params_get_buffer" to determine the 
-buffer size (which I presume is the hardware ring 
-buffer). If I map to this buffer and then fill it with 
-the sound exactly, then commit it, it just plays once. 
-I put my process into wait state by using sleep(1) 
-calls. 
-How can I get the hardware to continue to play using 
-the data in the ring buffer?
+Use no-xrun mode (set stop_threshold to boundary).
 
-Thanks,
-Mark
+						Jaroslav
 
-On Tuesday 15 March 2005 02:49, Jaroslav Kysela wrote:
-> On Mon, 14 Mar 2005, Mark Cannon wrote:
-> > How can I send down a short PCM stream, and have
-> > the hardware repeat it until told to stop?
->
-> You must always copy the data to right place in the
-> ring buffer unless the sound fragment has not exact
-> (or multiple) size of ring buffer.
->
-> 						Jaroslav
->
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SUSE Labs
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
