@@ -1,14 +1,14 @@
-From: Arve Knudsen <aknuds-1@broadpark.no>
-Subject: Re: Can't set 88.2/96kHz samplerate with Hammerfall
-Date: Fri, 05 Dec 2003 13:54:06 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: aoss failures under Alsa-1.0.0rc1
+Date: Fri, 05 Dec 2003 14:10:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <oprzpksgt0q1sf88@mail.broadpark.no>
-References: <200312042225.hB4MPs6F002813@oud.linuxaudiosystems.com>
+Message-ID: <Pine.HPX.4.33n.0312051406500.21103-100000@studcom.urz.uni-halle.de>
+References: <1070569707.2228.7.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200312042225.hB4MPs6F002813@oud.linuxaudiosystems.com>
+In-reply-to: <1070569707.2228.7.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,52 +17,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Mark Knecht <markknecht@comcast.net>
+Cc: Erik Inge =?ISO-8859-1?Q?Bols=F8?= <knan@mo.himolde.no>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 04 Dec 2003 17:25:53 -0500, Paul Davis=20
-<paul@linuxaudiosystems.com> wrote:
-
->> On Thu, 4 Dec 2003 06:41:56 -0800, Mark Knecht=20
->> <mknecht@controlnet.com>=3D20
->> wrote:
->>
->>>>
->>>> Whenever I try to activate double speed (88.2/96kHz) mode with my RM=
-E
->>>> Hammerfall Lite (DIGI 9636), snd_pcm_hw_params fails with a 'Device =
-or
->>>> resource busy' message. This is with the number of channels set to 1=
-0,
->>>> since the number of ADAT channels is halved. Is this a known
->>>> defect of the
->>>> Hammerfall driver?
->>>>
->>>> Thanks
->>>>
->>>> Arve Knudsen
->>>
->>> From the Hammerfall Light Alsa sound card page:
->>>
->>> Known bugs
->>>
->>> - 96kHz and 88.2kHz not accessible via PCM interface
->> Ok, thanks. I suppose I should've investigated a little better. Too=20
->> bad, =3D
->> I=3D20
->> would like to see this card working as well as under Windows.
+Mark Knecht wrote:
+> On Thu, 2003-12-04 at 05:15, Erik Inge Bols=F8 wrote:
+> > On Thu, 4 Dec 2003, Mark Knecht wrote:
+> > >pcm.playback_5_6 {
+> > >          type dshare
+> > >          slave hdsp
 >
-> to be clear: you can't get DS mode using the PCM interface but you CAN
-> (and several people have) do this, you just have to use the control
-> interface in addition.
-Ah, didn't see your mail untill now. For some reason, you wind up under=20
-spam (Opera mail client filter) :\ I suppose I should investigate this=20
-possibility.
+> > Uhmm... for _playback_, shouldn't that be "type dmix"? Or am I co=
+nfused
+> > again?
+>
+> I tried dmix instead of dshare but get the same results.
 
-Thanks
+dshare allows its clients to share separate channels, dmix allows the=
+m
+to access the same channels.
 
-Arve Knudsen
+> I don't know if this is an Alsa problem, a driver problem, or just
+> something that will never work because of my card's capabilities?
+
+An aoss problem, I think.  Are you using the latest CVS version?
+(You can update this single package independantly of the other ALSA
+packages.)
+
+
+Regards,
+Clemens
+
+
+
 
 
 -------------------------------------------------------
