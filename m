@@ -1,11 +1,13 @@
-From: "Sunil Manohar" <sunil@submitinme.com>
-Subject: alsa-project.org has been added to pr4links.com
-Date: Fri, 4 Feb 2005 15:15:25 +0000
-Message-ID: <1107509577.11124@mx67a.mysite4now.com>
-Received: from mx67a.mysite4now.com (mx67a.mysite4now.com [66.102.135.67])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B662322F
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 10:31:51 +0100 (MET)
-Received: from [61.246.225.35] by mx67a.mysite4now.com [66.102.135.67] with SmartMax MailMax for alsa-devel@alsa-project.org; Fri, 04 Feb 2005 01:32:54 -0800
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
+Date: Fri, 4 Feb 2005 10:39:06 +0100
+Message-ID: <ccdde4d11c535040c2cd3730cbffe91a@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 403C71F4
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 10:39:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,52 +17,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa Devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We are pleased to inform you that your Website  alsa-project.org has 
-been listed in our site http://www.pr4links.com
- 
-Our Website http://www.pr4links.com has a PageRank of 3 
-(Three).PageRank is crucial for a higher position in the search 
-engines. PageRank® is the MAIN factor that determines a website's 
-position in the results pages. Your link at our site will significantly 
-increase your website's pagerank and thus high position in the search 
-engines.
- 
-You can find your link at :
-http://www.pr4links.com/computer_resources/programming.html
- 
-Please let us know if your listing is under the right category. We 
-would like our link to be placed under Computer
- 
-Our Link Details:
-----------------------------------------------------------------------------------------------------------------------------
- 
-Website Title : Link building services. reciprocal link building
- 
-Website URL : http://www.pr4links.com
- 
-Website Description : Link building, Specialist in Computers, health, 
-fitness and weight loss link building. PR specific Reciprocal link 
-building. Offer free link building to computers, health and fitness 
-related sites.
- 
-Categories: Website Promotion, link building, Website Marketing or any 
-suitable category
 
-Email: sunil@submitinme.com 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
+======================================================================
+Reported By:                yure
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   881
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-03-2005 12:25 CET
+Last Modified:              02-04-2005 10:39 CET
+======================================================================
+Summary:                    Distorted sound with enabled dmix plugin
+Description: 
+After 10-20 minutes listening music with xmms or beep-media-player I hear
+distorted sound. Appear noise.
+This problem is appear when enabled dmix plugin through configuration file
+~/.asoundrc.
+======================================================================
 
-We expect our link to be added in the next 7 days at your site and 
-please inform us where we can find our link.
+----------------------------------------------------------------------
+ yure - 02-04-05 10:39 
+----------------------------------------------------------------------
+Additional information from alsamixer:
 
-Have a Great Day.
- 
-Administrator
-pr4links.com
- 
-Visit http://www.pr4links.com - Building Quality & Relevant Health & 
-Fitness  Links to enhance your Site’s Page Rank & Link Popularity                
+Card: Intel ICH5
+Chip: Analog Devices AD1980
+View: Playback
+Item: Master
+
+lspci
+00:00.0 Host bridge: Intel Corp. 82865G/PE/P DRAM Controller/Host-Hub
+Interface (rev 02)
+00:01.0 PCI bridge: Intel Corp. 82865G/PE/P PCI to AGP Controller (rev
+02)
+00:1d.0 USB Controller: Intel Corp. 82801EB/ER (ICH5/ICH5R) USB UHCI
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+(rev 02)
+00:1d.7 USB Controller: Intel Corp. 82801EB/ER (ICH5/ICH5R) USB2 EHCI
+Controller (rev 02)
+00:1e.0 PCI bridge: Intel Corp. 82801 PCI Bridge (rev c2)
+00:1f.0 ISA bridge: Intel Corp. 82801EB/ER (ICH5/ICH5R) LPC Bridge (rev
+02)
+00:1f.1 IDE interface: Intel Corp. 82801EB/ER (ICH5/ICH5R) Ultra ATA 100
+Storage Controller (rev 02)
+00:1f.3 SMBus: Intel Corp. 82801EB/ER (ICH5/ICH5R) SMBus Controller (rev
+02)
+00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER (ICH5/ICH5R)
+AC'97 Audio Controller (rev 02)
+01:00.0 VGA compatible controller: nVidia Corporation NV5M64 [RIVA TNT2
+Model 64/Model 64 Pro] (rev 15)
+02:08.0 Ethernet controller: Intel Corp. 82562EZ 10/100 Ethernet
+Controller (rev 02)
+02:09.0 Multimedia controller: Philips Semiconductors SAA7134 (rev 01)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-03-05 12:25 yure           New Issue                                    
+02-04-05 10:39 yure           Note Added: 0003497                          
+======================================================================
 
 
 
