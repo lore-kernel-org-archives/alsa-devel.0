@@ -1,13 +1,10 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] sound/core/oss/pcm_plugin.c: kill dead code
-Date: Thu, 24 Mar 2005 00:41:28 +0100
-Message-ID: <20050323234128.GF1948@stusta.de>
+From: Claudio Fontana <sick_soul@yahoo.it>
+Subject: trivial fix for typo in alsaconf.in
+Date: Thu, 24 Mar 2005 01:30:03 +0100 (CET)
+Message-ID: <20050324003003.42996.qmail@web26004.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id BD8602A7
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 00:41:34 +0100 (MET)
-Content-Disposition: inline
+Content-Type: multipart/mixed; boundary="0-1258015823-1111624203=:38999"
+Content-Transfer-Encoding: 7bit
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,44 +14,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The Coverity checker found this obviously dead code.
+--0-1258015823-1111624203=:38999
+Content-Type: text/plain; charset=iso-8859-1
+Content-Id: 
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'mnot sure which of the if (plugin == NULL) is correct - this patch 
-removes the one that couldn't be true.
+Just s/verion/version/ in alsaconf.in
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+Bye,
 
---- linux-2.6.12-rc1-mm1-full/sound/core/oss/pcm_plugin.c.old	2005-03-23 01:06:58.000000000 +0100
-+++ linux-2.6.12-rc1-mm1-full/sound/core/oss/pcm_plugin.c	2005-03-23 01:07:41.000000000 +0100
-@@ -657,22 +657,19 @@ static int snd_pcm_plug_playback_channel
- 	if (plugin == NULL) {
- 		return 0;
- 	} else {
- 		int schannels = plugin->dst_format.channels;
- 		bitset_t bs[bitset_size(schannels)];
- 		bitset_t *srcmask;
- 		bitset_t *dstmask = bs;
- 		int err;
- 		bitset_one(dstmask, schannels);
--		if (plugin == NULL) {
--			bitset_and(client_vmask, dstmask, schannels);
--			return 0;
--		}
-+
- 		while (1) {
- 			err = plugin->src_channels_mask(plugin, dstmask, &srcmask);
- 			if (err < 0)
- 				return err;
- 			dstmask = srcmask;
- 			if (plugin->prev == NULL)
- 				break;
- 			plugin = plugin->prev;
- 		}
+Claudio
 
+
+
+
+	=09
+___________________________________=20
+Nuovo Yahoo! Messenger: E' molto pi=F9 divertente: Audibles, Avatar, Webc=
+am, Giochi, Rubrica=85 Scaricalo ora!=20
+http://it.messenger.yahoo.it
+--0-1258015823-1111624203=:38999
+Content-Type: application/octet-stream; name="alsaconf.in.fix.typo.patch"
+Content-Transfer-Encoding: base64
+Content-Description: alsaconf.in.fix.typo.patch
+Content-Disposition: attachment; filename="alsaconf.in.fix.typo.patch"
+
+LS0tIGFsc2Fjb25mLmluCTIwMDUtMDMtMjQgMDE6MjU6MDEuMDAwMDAwMDAw
+ICswMTAwCisrKyBhbHNhY29uZi5pbi5uZXcJMjAwNS0wMy0yNCAwMToyNToy
+OS4wMDAwMDAwMDAgKzAxMDAKQEAgLTY1MSw3ICs2NTEsNyBAQAogCWNtcCAt
+cyAiJGFkZGNmZyIgIiRjZmdvdXQiIHx8IGNhdCAiJGFkZGNmZyIgPiAiJGNm
+Z291dCIKICAgICBlbHNlCiAJZWNobyAiJEFDQgotIyAtLS0gQUxTQUNPTkYg
+dmVyaW9uICR2ZXJzaW9uIC0tLSIgPj4gJFRNUAorIyAtLS0gQUxTQUNPTkYg
+dmVyc2lvbiAkdmVyc2lvbiAtLS0iID4+ICRUTVAKICAgICAgICAgY2F0ICIk
+YWRkY2ZnIiA+PiAiJFRNUCIKIAllY2hvICIkQUNFCiAiID4+ICRUTVAK
+
+--0-1258015823-1111624203=:38999--
 
 
 -------------------------------------------------------
