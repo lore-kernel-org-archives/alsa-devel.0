@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000469]: volume of sblive mic recording too low
-Date: Tue,  7 Sep 2004 09:40:23 +0200 (CEST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Kernel crash
+Date: Tue, 07 Sep 2004 09:55:02 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907074023.3D789D005@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <XFMail.20040907095502.pochini@shiny.it>
+References: <s5h7jr7whqj.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8B97C29D
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 09:40:23 +0200 (MEST)
+In-Reply-To: <s5h7jr7whqj.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,62 +17,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000469
-======================================================================
-Reported By:                wouter
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     469
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.8
-======================================================================
-Date Submitted:             08-28-2004 01:36 CEST
-Last Modified:              09-07-2004 09:40 CEST
-======================================================================
-Summary:                    volume of sblive mic recording too low
-Description: 
-The recordings made with the Mic input on my sblive (5.1) are substantially
-lower in volume than direct playback output. If fact, they are too low to
-be really useful in for instance video conferencing, barely reaching 1/4
-in the VU meter of the gnomemeeting voip program - with Mic boost on.
+On 06-Sep-2004 Takashi Iwai wrote:
 
-Setting "Capture" to anything but zero stops any sound from being
-captured.
+>> It successfully crashes my system after a few attempts:
+>>
+>> Linux Jay 2.6.8.1 #2 SMP Wed Aug 18 15:14:51 CEST 2004 ppc unknown
+>> booted with maxcpus=1 and without preempt.
+>> alsa-driver-1.0.6a and CVS-2004-09-05
+>> alsa-lib-1.0.4
+>> gcc 3.4.1
+>>
+>> with both the powermac (Snapper) driver and my Echoaudio driver.
+>
+> It doesn't crash on my system with SB live with the latest CVS
+> version but segfaults at line 263 because c is bogus.
+> The crash looks likely driver-specific, then.
 
-"AC97 Capture" seems to be controlling the volume of the recording, but it
-is too low even with the slider on 100%.
+No, I don't think so. I already found (one of?) the cause, but
+I forgot to mention it again, sorry. It happens because ALSA
+calls the .free() pcm callback without calling .trigger(STOP)
+and .close() first. Jaroslav posted a patch which didn't work,
+then the discussion stopped. The problem occurs only when the
+substreams are linked and the userpace app is badly broken
+like mine.
 
-People on the users mailinglist seem to indicate that "Capture" actually
-should work, which it doesn't.
-======================================================================
 
-----------------------------------------------------------------------
- pzad - 09-07-2004 09:40 CEST 
-----------------------------------------------------------------------
-What ac97 uses your sb live ???
-Check /proc/asound/card*/codec97#*/ac97#?-? file for your card.
+> Did you try a UP kernel?
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-28-04 01:36 wouter         New Bug                                      
-08-28-04 01:36 wouter         File Added: amixer.txt                       
-08-28-04 01:36 wouter         Distribution              => Debian          
-08-28-04 01:36 wouter         Kernel Version            => 2.6.8           
-09-07-04 09:40 pzad           Bugnote Added: 0001704                       
-======================================================================
+Just tried. Same thing with Echo driver, but the Pmac
+driver doen't seem to crash anymore. And about the
+PC I don't know if that kernel is MP of UP.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
