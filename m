@@ -1,10 +1,13 @@
-From: Steven Feil <sfeil@io.com>
-Subject: Best value for periods and periodsize
-Date: Wed, 9 Apr 2003 01:02:46 -0500 (CDT)
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: How to put 16bit none audio PCM data stream into
+ a 32bit none audio S/P-DIF transport stream?
+Date: Wed, 09 Apr 2003 08:59:22 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0304090059300.10725-100000@hagbard.io.com>
+Message-ID: <3E93C4CA.4080604@cucumelo.org>
+References: <20030408140230.GA1987@ulima.unil.ch> <E192u0x-0007pF-00@sc8-sf-list1.sourceforge.net> <s5hn0j1q97r.wl@alsa2.suse.de> <3E934193.6090605@cucumelo.org> <20030408205515.GB6940@ulima.unil.ch> <3E933EF6.5030601@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -14,44 +17,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'm trying to find out what are the "best" values for the parameters
-periods and periodsize, or if I can just avoid setting them all
-together and let the ALSA driver/libs handle it.  From reading the
-ALSA documentation, I can see that the parameters periods and
-periodsize have something to do with the ring buffer used beneath the
-user level. What I do not understand is, should these low level
-buffers "line up" or avoid "lining up" with user level reads.
+> A lot of audio cards can only do SPDIF non-audio data at 48khz.
+> Your sample is requesting 44.1khz which could be the problem.
+> I do not know if your audio card support 44.1khz non-audio spdif. My 
+> SB Live definitely does not. My SB Live can output standard PCM data 
+> at different SPDIF rates, but it does re-sampling in hardware. If I 
+> wish to bypass the re-sampling hardware (bypass needed otherwise the 
+> non-audio data gets mangled) in my SB Live I have to use 48khz. 
 
-I will describe an outline of my PCM reading program, so that you can
-get an idea of what would be the best parameters for periods and
-periodsize.
 
-As it turns out my program uses it's own ring buffer to hold incoming
-sounds from the PCM in a state of limbo. My ring buffer is actually a
-series of frames arranged into a ring. Each frame is treated as an
-indivisible unit. The size of the frames is determined by the variable
-Samples_Per_Frame_Per_Channel. This variable is usually a 2^x number
-(because FFT's like 2^x numbers ), with 512 or 1024 a typical
-value. Theoretically Total_Frames_Used is only limited by memory,
-however, the largest practical value would seem to be a few minutes
-worth of sound. Most testing is done with 5 to 15 seconds worth of
-sound. My program is multi-threaded, with a thread dedicated to taking
-sound from the PCM and storing it in the aforementioned ring buffer.
-Other task are handled by different threads
+non-audio SPDIF on  44.1 khz with the cs46xx driver will definitely not 
+work.
+Theoretically SPDIF HW supports 32khz 48khz and 96khz (not 44.1khz) but 
+32 khz and 96khz rates are not supported by the driver.
 
-Under these circumstances, what do you think would be the best way to
-set periods and periodsize?
+So, the SPDIF output is always 48khz, any other rate the DSP will do a 
+sample rate conversion to 48 khz, which is fine while it's audio (PCM)
+So, outputing sound with 48khz 16bit the DSP wont do any kind of 
+procesing to the samples, which is the only case where pass-through can 
+work.
 
-=======================================================================
- Steven Feil              | Gram-pa, back at the turn of the      .~.  
- Programmer/Developer     | century, why did people use an        /V\  
- sfeil@io.com             | operating system, when they were not // \\ 
-                          | allowed to see the source code?      (X_X) 
-=======================================================================
 
+>
+> A good source of 48 khz non-audio AC3 sound is playing DVDs.
+> I know xine handles SPDIF passthru of AC3 soundtracks on DVDs quite 
+> easily.
+> At least this will test if the problem is 48/44.1 khz or something else.
+
+All tests I've done with xine it always output the AC3 data on 48khz, 
+which should work fine.
+
+/Benny
 
 
 
