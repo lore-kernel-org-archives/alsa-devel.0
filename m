@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000566]: Doesn't save nor restore mixer settings (volumes set to 0)
-Date: Wed,  6 Oct 2004 11:35:15 +0200 (CEST)
+From: Jacob <zero@purdue.edu>
+Subject: Re: envy for albatron k8x800 pro II
+Date: Wed, 06 Oct 2004 04:45:41 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041006093515.30B431200A@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1097055941.12724.2.camel@localhost>
+References: <1097040538.11546.6.camel@localhost>
+	 <s5hr7ocxkhj.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 972CA2D9
-	for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2004 11:35:15 +0200 (MEST)
+In-Reply-To: <s5hr7ocxkhj.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,53 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Well when running mythfrontend the audio will periodically stop working
+and the error I get is . . .
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000566
-======================================================================
-Reported By:                pmatil
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     566
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.4.22
-======================================================================
-Date Submitted:             10-05-2004 17:36 CEST
-Last Modified:              10-06-2004 11:35 CEST
-======================================================================
-Summary:                    Doesn't save nor restore mixer settings (volumes set to 0)
-Description: 
-No error messages, init-scripts work but doesn't save nor restore mixer
-settings. At boot, volumes are 0% but not muted. After setting the mixer
-settings, doing alsactl store / alsactl restore works and actually saves
-mixer settings to the default file. Still after boot/reboot settings have
-been reset and also the file has been cleared (all volumes = 0). Card is
-Terratec DMX Xfire 1024...(cs46xx)
-======================================================================
+2004-10-06 04:42:25 Audio buffer overflow, audio data lost!
+2004-10-06 04:42:29 Audio buffer overflow, audio data lost!
 
-----------------------------------------------------------------------
- tiwai - 10-06-2004 11:35 CEST 
-----------------------------------------------------------------------
-I doubt it's a driver problem if calling alsactl manually works...
+So to do audio mixing I will have to run something like esound?  Is
+there a list of hardware that says which chipsets do hardware mixing
+because I have an abit kv8 and it does with the VIA chipset.  
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-05-04 17:36 pmatil         New Bug                                      
-10-05-04 17:36 pmatil         Distribution              => Debian GNU/Linux
-10-05-04 17:36 pmatil         Kernel Version            => 2.4.22          
-10-06-04 11:35 tiwai          Bugnote Added: 0002020                       
-======================================================================
+Thanks!
+
+
+On Wed, 2004-10-06 at 04:29, Takashi Iwai wrote:
+> At Wed, 06 Oct 2004 00:28:58 -0500,
+> Jacob wrote:
+> > 
+> > I dont see much talk about the hardware for this board.  The current
+> > configuration basically works but the hardware mixing does not
+> 
+> The chip doesn't support hardware mixing.
+> 
+> > and there are problems with the sound sometimes with mplayer and
+> > mythtv.
+> 
+> Could you elaborate the problems?
+> 
+> 
+> Takashi
+> 
+> 
+> -------------------------------------------------------
+> This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
+> Use IT products in your business? Tell us what you think of them. Give us
+> Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out more
+> http://productguide.itmanagersjournal.com/guidepromo.tmpl
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
 
 
 -------------------------------------------------------
