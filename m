@@ -1,19 +1,21 @@
-From: Justin Cormack <justin@street-vision.com>
-Subject: Re: Re: How to support multiple open in low-level
-	driver
-Date: 06 Jan 2003 13:57:35 +0000
+From: Fred Gleason <fredg@wava.com>
+Subject: Re: Re: How to support multiple open in low-level driver
+Date: Mon, 6 Jan 2003 09:09:04 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1041861462.32308.19.camel@lotte>
-References: <Pine.LNX.4.33.0301051532360.500-100000@pnote.perex-int.cz>
-	<200301051548.31168.torger@ludd.luth.se>
+Message-ID: <200301060909.04979.fredg@wava.com>
+References: <Pine.LNX.4.33.0301051600200.500-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from tench.street-vision.com ([212.18.235.100])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA32766
-	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 14:57:48 +0100
-In-Reply-To: <200301051548.31168.torger@ludd.luth.se>
+Received: from mailbag.wava.com (root@mailbag.wava.com [207.197.206.12])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA00487
+	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 15:08:28 +0100
+Received: from roonwit (nevrast.salemradiolabs.com [65.242.27.15])
+	by mailbag.wava.com (8.11.4/8.11.4) with ESMTP id h06E8J205420
+	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 09:08:19 -0500
+In-Reply-To: <Pine.LNX.4.33.0301051600200.500-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,30 +24,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Anders Torger <torger@ludd.luth.se>
-Cc: Jaroslav Kysela <perex@suse.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2003-01-05 at 14:48, Anders Torger wrote:
-> I have another question. The rme96 driver provides two sub devices, one 
-> which is the card in adat mode, and one which is the card in spdif 
-> mode. These cannot be run at the same time.
-> 
-> If I had written the driver today, I suppose I would have had only one 
-> device, which supports 2 or 8 channels. Do you agree that it would be a 
-> better design, than the two sub-devices I have now? I don't think I 
-> will change that now though, if you don't insist that I should (I think 
-> it will be quite easy to do the change).
+On Sunday 05 January 2003 10:05, Jaroslav Kysela wrote:
 
-It means that you have to define software devices for adat and spdif,
-which output always to 8 or 2 channels hw, as the general plughw device
-will sometimes open one sometimes the other depending on how many
-channels your sound source is. As they are on the same output and most
-people only have one kind of DA converter attached this may not be that
-convenient. I dont mind the current scheme.
+> Well, you're talking about PCM devices (subdevices are one level after
+> devices):
+>
+> cards -> pcm devices -> pcm subdevices
 
-Justin
+What are the differences between a "device" and a "subdevice" in general?=
+  Is=20
+this indicative of some underlying hardware architecture, or is it a pure=
+ly=20
+logical/virtual artifact?
 
+Cheers!
+
+
+|------------------------------------------------------------------------=
+-|
+|      Frederick F. Gleason, Jr.      |         Salem Radio Labs         =
+ |
+|       Voice: 1-(540)-341-2880       |      87 Lee Highway, Suite 11    =
+ |
+|        FAX: 1-(540)-341-7176        |        Warrenton, VA 20188       =
+ |
+|------------------------------------------------------------------------=
+-|
+|    The real problem with hunting elephants is carrying the decoys.     =
+ |
+|                                             -- Anonymous               =
+ |
+|------------------------------------------------------------------------=
+-|
 
 
 
