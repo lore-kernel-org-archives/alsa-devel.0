@@ -1,23 +1,15 @@
-From: Frank Barknecht <barknech@ph-cip.uni-koeln.de>
-Subject: Re: [ANNOUNCE] USB MIDI support for ALSA
-Date: Tue, 14 May 2002 12:05:42 +0200
+From: Paul Davis <pbd@op.net>
+Subject: Re: Failed to compile HDSP driver from the CVS
+Date: Tue, 14 May 2002 09:07:26 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020514120542.C4144@fliwatut.scifi>
-References: <3CE01254.901318C3@ladisch.de> <s5h3cwv85k7.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <200205141306.g4ED65T06570@post2.fast.net>
+References: <1021359094.22878.8.camel@badass-bukvic.dyndns.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp.netcologne.de (smtp.netcologne.de [194.8.194.112])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA24703
-	for <alsa-devel@alsa-project.org>; Tue, 14 May 2002 13:43:26 +0200
-Received: from fliwatut.scifi (dial-213-168-73-128.netcologne.de [213.168.73.128])
-	by smtp.netcologne.de (8.12.2/8.12.2) with ESMTP id g4EBghJt001237
-	for <alsa-devel@alsa-project.org>; Tue, 14 May 2002 13:42:46 +0200 (MEST)
-Received: (from freak@localhost)
-        by fliwatut.scifi (8.12.0.Beta5/8.12.0.Beta5/Debian 8.12.0-1) id g4EA5iuv004899
-        for alsa-devel@alsa-project.org; Tue, 14 May 2002 12:05:44 +0200
-Content-Disposition: inline
-In-Reply-To: <s5h3cwv85k7.wl@alsa2.suse.de>
+Received: from post2.fast.net (post2.fast.net [209.92.1.22])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA25840
+	for <alsa-devel@alsa-project.org>; Tue, 14 May 2002 15:06:19 +0200
+In-Reply-To: Your message of "14 May 2002 02:51:34 EDT."
+             <1021359094.22878.8.camel@badass-bukvic.dyndns.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -26,23 +18,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Ivica Bukvic <ico@fuse.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hi,
-Takashi Iwai hat gesagt: // Takashi Iwai wrote:
-> > I've written a daemon which connects the ALSA sequencer with the
-> > usbdevfs device file of a USB MIDI device. You can get it at
-> > <http://www.informatik.uni-halle.de/~ladischc/usbmidid.html>.
-> it's a very clean solution.  definitely the right way for usb midi,
-> rather than writing a driver module for each.
-Would a daemon to connect alsa to usb devices be the way for USB-audio
-as well?
+>First off, thank you very much for the awesome news Paul, I am extatic
+>to hear that HDSP driver is ready! :-)
+>
+>However, I've been trying to compile it from the CVS and no matter what
+>I try I get the same error:
 
-ciao,
--- 
- Frank Barknecht                                  _ _______footils__
+i think you failed to use the "-P" flag to the CVS update
+command. Always use this flag, otherwise when someone removes a file
+from CVS, its not removed from your local tree. 
 
+as a result, you've still got rme9652_mem.c hanging around, and the
+"fastdep" make target looks at *all* sources, not just those that are
+listed in the Makefile. you need to remove this file. there are two
+versions of it, one under alsa-kernel, one under alsa-driver.
+
+please keep in mind that you should update alsa-lib and alsa-utils as
+well, because they have been modified to support the 64 bit register
+used by the H-DSP for its RMS meters.
+
+--p
 
 _______________________________________________________________
 
