@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000988]: No errors, but no sound output
-Date: Sat, 19 Mar 2005 00:16:22 +0100
-Message-ID: <409d2620a70332f9fa4ae9d62e3a2a30@bugtrack.alsa-project.org>
+Date: Sat, 19 Mar 2005 04:07:25 +0100
+Message-ID: <e1042f26b5c329cbf9ed0aeda668212f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C513E22D
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 00:16:22 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F131E253
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 04:07:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.11-gentoo-r2
 ======================================================================
 Date Submitted:             03-14-2005 00:35 CET
-Last Modified:              03-19-2005 00:16 CET
+Last Modified:              03-19-2005 04:07 CET
 ======================================================================
 Summary:                    No errors, but no sound output
 Description: 
@@ -60,18 +60,16 @@ lsmod, lspci, and /proc output are attached in Additional Info
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-18-05 18:19 
-----------------------------------------------------------------------
-Maybe the same bug as https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963
-?
-
-Try to turn on "External Amplifier" mixer switch.
-
-----------------------------------------------------------------------
  madCoder - 03-19-05 00:16 
 ----------------------------------------------------------------------
 Ok, I'll try that from the later kernel  (will respond after a reboot).
 What is the intended purpose of the External Amplifier switch?
+
+----------------------------------------------------------------------
+ madCoder - 03-19-05 04:07 
+----------------------------------------------------------------------
+That did fix it, actually.  It's kind of strange that it wasn't necessary
+in 1.0.6, but in 1.0.8 it is.  Oh well.  Thanks for the tip.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -86,6 +84,7 @@ Date Modified  Username       Field                    Change
 03-17-05 00:08 madCoder       Note Edited: 0003973                         
 03-18-05 18:19 tiwai          Note Added: 0004002                          
 03-19-05 00:16 madCoder       Note Added: 0004008                          
+03-19-05 04:07 madCoder       Note Added: 0004009                          
 ======================================================================
 
 
