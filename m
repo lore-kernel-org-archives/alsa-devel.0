@@ -1,25 +1,9 @@
-From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Subject: [PATCH 4/5] emu10k1 SB Live: Master volume and front channels via
- fxbus 8,9
-Date: Mon, 21 Feb 2005 20:45:11 +0100
-Message-ID: <421A3A47.2050102@glocalnet.net>
+From: "David Sattler" <davidmindslip@hotmail.com>
+Subject: Strange SPDIF problems on SBLive! and HDA-Intel - No fix found yet!
+Date: Mon, 21 Feb 2005 17:05:30 -0500
+Message-ID: <BAY15-F391F76A381EF7A41EACFD2B9610@phx.gbl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060901030409000001060803"
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CF1D815A
-	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 20:45:12 +0100 (MET)
-Received: from mulder.hem.za.org (unknown [84.217.26.207])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 7C4BF57F54
-	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 20:45:12 +0100 (MET)
-Received: from skinner.hem.za.org ([192.168.0.2])
-	by mulder.hem.za.org with esmtp (Exim 4.34)
-	id 1D3JUV-0000a9-Sr
-	for alsa-devel@alsa-project.org; Mon, 21 Feb 2005 20:45:11 +0100
-Received: from localhost ([127.0.0.1])
-	by skinner.hem.za.org with esmtp (Exim 4.34)
-	id 1D3JUV-0001aW-JC
-	for alsa-devel@alsa-project.org; Mon, 21 Feb 2005 20:45:11 +0100
+Content-Type: text/plain; format=flowed
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -29,98 +13,101 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------060901030409000001060803
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	From: 	  davidmindslip@hotmail.com
+	Subject: 	SPDIF problems w/ SBLive! & hda-intel - No fix found yet...
+	Date: 	February 21, 2005 4:53:48 PM EST
+	To: 	  alsa-devel@lists.sourceforge.net
 
-front_config.patch:
+Hi all,
 
-Routes front channels via fxbus 8 and 9 instead of fxbus 0 and 1. This 
-makes the front and default outputs independent of each other.
+I know this is a question that's supposedly been fixed long ago, but I'm 
+seeing problems with 1.0.8 and with CVS (even up to today, which should have 
+an SPDIF patch for hda-intel) so I'll ask it again, hoping I don't get 
+ignored or such!
 
-Signed-Off-By: Mikael Magnusson <mikma@users.sourceforge.net>
+Problem: Feeding .wav files to SPDIF on SBLive! has various results
 
---------------060901030409000001060803
-Content-Type: text/x-patch;
- name="front_config.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="front_config.patch"
+Command:
+	aplay -D "plug:spdif" -f cd file.wav
+Result:
+	Stutter... stutter.. stutter... stutter... stutter... of the first 1/2 
+second over and over again....
 
---- alsa-lib/src/conf/cards/EMU10K1.conf	16 Feb 2005 11:47:05 -0000	1.14
-+++ alsa-lib/src/conf/cards/EMU10K1.conf	21 Feb 2005 13:34:35 -0000
-@@ -9,9 +9,29 @@
- 	@args.CARD {
- 		type string
- 	}
--	type hw
--	card $CARD
--	device 0
-+	type hooks
-+	slave.pcm {
-+		type hw
-+		card $CARD
-+		device 0
-+	}
-+	hooks.0 {
-+		type ctl_elems
-+		hook_args [
-+			{
-+				name "EMU10K1 PCM Send Volume"
-+				index { @func private_pcm_subdevice }
-+				lock true
-+				value [ 255 255 0 0 255 0 0 0 0 255 0 0 ]
-+			}
-+			{
-+				name "EMU10K1 PCM Send Routing"
-+				index { @func private_pcm_subdevice }
-+				lock true
-+				value [ 8 9 0 0 8 9 0 0 8 9 0 0 ]
-+			}
-+		]
-+	}
- }	
- 
- <confdir:pcm/rear.conf>
-@@ -31,13 +51,6 @@
- 		type ctl_elems
- 		hook_args [
- 			{
--				name "Wave Surround Playback Volume"
--				preserve true
--				# don't lock a global control
--				# lock true
--				value [ 0 0 ]
--			}
--			{
- 				name "EMU10K1 PCM Send Volume"
- 				index { @func private_pcm_subdevice }
- 				lock true
-@@ -64,18 +77,6 @@
- 		type ctl_elems
- 		hook_args [
- 			{
--				name "Wave Center Playback Volume"
--				preserve true
-- 				# lock true
--				value 0
--			}
--			{
--				name "Wave LFE Playback Volume"
--				preserve true
--				# lock true
--				value 0
--			}
--			{
- 				name "Headphone Center Playback Switch"
- 				index 1
- 				preserve true
+Command:
+	aplay -D "spdif" -f cd file.wav
+(note not plug:spdif)
+Result:
+	Hear the file sped-up to 48KHz instead at the normal 44.1KHz pitch
 
---------------060901030409000001060803--
+Note: Both commands fail the same way regardless of -f dat or -f cd
+
+Command:
+	aplay -D "hw:0,0" -f cd file.wav
+Result:
+	Same as "-D spdif" -- too fast
+
+Command:
+	aplay -D "hw:0,1" -f cd file.wav
+Result:
+	aplay: main:508: audio open error: No such file or directory
+
+Summary:
+	Nothing lets me play a wav file properly through SPDIF on the SBLive!
+
+
+Problem: Feeding AC3 or DTS to SBLive! results in amp playing static (not 
+recognizing AC3-ishness of data)
+
+Command:
+	aplay -D "plug:spdif" -f <dat|cd> <dts.file|ac3.file>
+Result:
+	With amp in DTS or Dolby Digital mode: no sound
+	With amp in Stereo PCM mode: undecoded garbage
+
+Summary:
+	Nothing lets me play a DTS or AC3 file properly through SPDIF on SBLive! 
+(note, this is a very high-end decoder)
+
+
+Problem: Nothing lets me use the SPDIF of my hda-intel (Asus P5GD1 
+motherboard)
+
+Command:
+	aplay -D "plug:spdif" whatever...
+Result:
+	ALSA lib setup.c:548:(add_elem) Cannot obtain info for CTL elem 
+(MIXER,'IEC958 Playback Default',0,0,0): No such file or directory
+	aplay: main:508: audio open error: No such file or directory
+
+Command:
+	aplay -D "hw:0,0" whatever....
+Result:
+	Front speakers... good sound
+
+Command:
+	aplay -D "hw:0,1" <0,2 0,3 etc.>
+Result:
+	aplay: main:508: audio open error: No such file or directory
+
+Also, I notice that in alsamixer I don't get anything referring to SPDIF, 
+IEC, Digital, etc.
+
+
+PLEASE (Takashi, I beg you!) I don't care which card I manage to get 
+working, but I've been through lists and trial/error and hacking for days 
+with no success. I'm *more* than happy to help debug, I've got the equipment 
+at my disposal as well as the time.
+
+ANY hints, either via list or personally at davidmindslip@hotmail.com would 
+be *greatly* appreciated!
+
+Many thanks,
+David.
+
+
 
 
 -------------------------------------------------------
