@@ -1,8 +1,8 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: cs46xx: alsa-docs note
-Date: Thu, 27 Feb 2003 02:59:15 +0900
+Subject: via82xx: alsa-docs note
+Date: Thu, 27 Feb 2003 03:01:46 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E5D0073.3020903@boosthardware.com>
+Message-ID: <3E5D010A.10405@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -15,23 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>, mail@richardstevens.de
+To: alsa-devel <alsa-devel@lists.sourceforge.net>, raimbault_stephane@yahoo.fr
 List-Id: alsa-devel@alsa-project.org
 
-Sorry I must have missed sending this here.
+I'm wondering if this is a bug that can be fixed or not.
 
-The following has been submitted as a note for the documentation of cs46xx.
+The following has been submitted as a note for the documentation of via82xx.
 
-sender: 	mail_NoSPaM_@richard_NOSPAM_stevens.de
-date:   	Friday, 03 January 2003
+sender:		raimbault_stephane@yahoo.fr
+date:		Saturday, 18 January 2003
 
-Terratec DMX XFire 1024:
 
-The DMX XFire 1024 doesn't get initialized correctly the first time
-the alsa modules are loaded. Sound is heavily distorted. Usually
-reloading the modules solves this problem. One can do that
-autmatically by loading, unloading and reloading the modules in
-the bootscripts.
+I don't use sonypi with via82xx on my VAIO Laptop
+because sonypi and via82xx try to use the same region
+and I obtained this error message :
+
+      unable to grab ports 0x1000-0x10ff
+
+My chipset is :
+00:07.5 Multimedia audio controller: VIA Technologies, Inc. VT82C686 
+AC97 Audio Controller (rev 50)
+         Subsystem: Sony Corporation: Unknown device 80f6
+         Flags: medium devsel, IRQ 5
+         I/O ports at 1000 [size=256]
+         I/O ports at 1c54 [size=4]
+         I/O ports at 1c50 [size=4]
+         Capabilities: [c0] Power Management version 2
+
 
 
 -- 
