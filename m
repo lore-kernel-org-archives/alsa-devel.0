@@ -1,15 +1,12 @@
-From: Allan Klinbail <allank@labyrinth.net.au>
-Subject: Re: why is no-one responding are you all just a bunch
-	of &*^%&^%^& wits???
-Date: 13 Feb 2003 01:20:48 +1100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: [linux-audio-dev] why is no-one responding are you all just a bunch of &*^%&^%^& wits???
+Date: Wed, 12 Feb 2003 09:32:19 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1045059654.10268.105.camel@littlewolf2.littlewolf>
-References: <Pine.LNX.4.21.0302121513510.29243-100000@mailserver.intern.bfad.de>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <E18ixrk-0003X4-00@sc8-sf-list1.sourceforge.net>
+References: <20030212135025.GB18698@ns.mine.dnsalias.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.21.0302121513510.29243-100000@mailserver.intern.bfad.de>
+In-reply-to: Your message of "Wed, 12 Feb 2003 14:50:26 +0100."
+             <20030212135025.GB18698@ns.mine.dnsalias.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,49 +15,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tomasz motylewski <T.Motylewski@bfad.de>
-Cc: Alsa-dev <alsa-devel@lists.sourceforge.net>, ardour-dev <ardour-dev@lists.sourceforge.net>
+To: vincent.touquet@pandora.be
+Cc: linux-audio-dev@music.columbia.edu, ardour-dev <ardour-dev@lists.sourceforge.net>, muse@seh.de, tiwai@suse.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Yes that is my last response the alsa developers ML. I did not expect a
-response from that post.. 
+>I think if (if) the Ardour developers are _expecting_ quality feedback
+>from normal users (not just programmers) at this stage, they should
+>provide tarballs of the stable CVS snapshots they want to be tested.
+>
+>But maybe they want to wait for 1.0 before letting endusers test it?
+>In that case, maybe you tried to use it too early in its development ?
+>I think they honestly appreciate your effort to participate, there
+>should be no doubt about that, but maybe Ardour is still changing too
+>rapidly for you to be able to track it.
 
-The message was to the ardour-dev ML which has been silent to any query
-of mine for nearly 2 weeks.. 
+this is completely correct. 
 
-To clarify alsa-dev has been pretty good.. However my problems and
-queries to this list have been minimal. I have received help from people
-on this list.. I CC'd in to the alsa list to show what has been occuring
+there is nobody on the ardour-dev mailing list with the time to
+provide hand-holding for the compile process. i want everything about
+building ardour right now to shout at you "if you can't do this, give
+up!". 
 
-BUT.. when it comes to queries responding the ardour software.. it seem
-I can't illicit a response....especially after I expressed that
-Steinberg developing versions of commercial software for Linux could
-actually be a positive thing  
+nobody in their right minds expects endusers to use CVS, let alone
+have all the auto-tools installed on their systems with the precise
+mix of versions required for this crappy but irreplaceable set of
+tools to work right.
 
-APOLOGIES to anyone on the alsa developers ML who feel this was directed
-at them . 
+when ardour is ready for end users, binaries will be available. until
+then, if you can't build it and nobody answers your questions quickly,
+take that as a sign that (1) you should wait and (2) people are busy
+working on cool new features.
 
-
-
-On Thu, 2003-02-13 at 01:15, tomasz motylewski wrote:
-> 
-> Well, the last email from you (2003-02-03) ended like:
-> 
-> > I can confirm to ALSA-DEV list that intel8x0 chip works for SiS 645DX
-> > chipset motherboard for audio and will confirm all MIDI functionality
-> > within the week. 
-> 
-> This does not look like something which needs to be resonded to. I think
-> you refer to messages on some other mailing lists, not Alsa-devel?
-> 
-> Best regards,
-> --
-> Tomasz Motylewski
-> 
-> 
-> 
-
-
+--p
 
 
 -------------------------------------------------------
