@@ -1,12 +1,14 @@
-From: David Liontooth <liontooth@cogweb.net>
-Subject: 0000773: Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004) Audigy2
- Value - SB0400 card Audigy2 Value- AUX-In and LINE-IN no sound
-Date: Sun, 02 Jan 2005 00:57:31 -0800
-Message-ID: <41D7B77B.90509@cogweb.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000775]: Truble with build of alsa 1.0.8rc1 on 2.6.10!
+Date: Sun, 2 Jan 2005 11:03:15 +0100
+Message-ID: <fc1c43637ae4753df6302958d5025d4f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 92AF52D6
+	for <alsa-devel@alsa-project.org>; Sun,  2 Jan 2005 11:03:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,50 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Just a quick note on the audigy2 value problem reported in 773,
-"auxin and linein prevent tvtime and cd player from working".
 
-On Debian amd64 (pure64) sid, running 2.6.9-ac6 and Alsa CVS
-from 19 December 2004, this is working -- that is to say, tvtime and
-other tv apps work, xmms works, even networked sound works
-fine using alsaplayer-nas. But the mixer settings are tricky.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=775> 
+======================================================================
+Reported By:                cyclon
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   775
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-02-2005 11:03 CET
+Last Modified:              01-02-2005 11:03 CET
+======================================================================
+Summary:                    Truble with build of alsa 1.0.8rc1 on 2.6.10!
+Description: 
+  LD [M]  /root/alsa-driver-1.0.8rc1/pci/nm256/snd-nm256.o
+  CC [M]  /root/alsa-driver-1.0.8rc1/pci/pcxhr/pcxhr.o
+  CC [M]  /root/alsa-driver-1.0.8rc1/pci/pcxhr/pcxhr_hwdep.o
+In file included from
+/root/alsa-driver-1.0.8rc1/pci/pcxhr/pcxhr_hwdep.c:25:
+include/linux/firmware.h:11: warning: `struct device' declared inside
+parameterlist
+include/linux/firmware.h:11: warning: its scope is only this definition or
+declaration, which is probably not what you want
+include/linux/firmware.h:15: warning: `struct device' declared inside
+parameterlist
+/root/alsa-driver-1.0.8rc1/pci/pcxhr/pcxhr_hwdep.c: In function
+`pcxhr_setup_firmware':
+/root/alsa-driver-1.0.8rc1/pci/pcxhr/pcxhr_hwdep.c:212: error:
+dereferencing pointer to incomplete type
+make[5]: *** [/root/alsa-driver-1.0.8rc1/pci/pcxhr/pcxhr_hwdep.o] Error 1
+make[4]: *** [/root/alsa-driver-1.0.8rc1/pci/pcxhr] Error 2
+make[3]: *** [/root/alsa-driver-1.0.8rc1/pci] Error 2
+make[2]: *** [_module_/root/alsa-driver-1.0.8rc1] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.10-gentoo-r1-na'
+make: *** [compile] Error 2
 
-I get sound from a TV card by plugging a short cable from the
-sound-out on the TV card to the line-in on the audigy2 value card.
 
-Alsamixergui need these components on and up for television
-and normal playback:
+======================================================================
 
-    * Master
-    * PCM (for soundcard playback -- not used by TV)
-    * Line (the first of the three Line components)
-    * Analog Mix (the first of two for playback)
-    * Analog Mix (the second of two for recording from TV)
-    * Audigy Analog Output Jack (unmute)
-    * EMU10K1 PCM (both, for playback)
-    * Front
-
-IEC958 Optical Raw must be off (muted).
-
-To turn on the recording channel, you can also use
-
-    amixer -c 0 cset numid=18 100%,100% unmute cap)
-
-I saved (alsactl store) and occasionally the card muted, when
-switching between recording and watching, or between different
-tv apps (xdtv, motv, xawtv); alsactl restore fixed it.
-
-It would be very useful if the mixer could by default be set with
-plausible values for a particular card; it took me a long time by
-nearly pure trial and error to find the channels I needed -- this
-is not very intuitive and sometimes downright peculiar.
-
-Cheers,
-Dave
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-02-05 11:03 cyclon         New Issue                                    
+======================================================================
 
 
 
