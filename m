@@ -1,16 +1,16 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000400]: Support for NVidia NForce based AC97 modems
-Date: Wed, 21 Jul 2004 16:06:09 +0200 (CEST)
+Date: Wed, 21 Jul 2004 16:09:56 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040721140609.DA56D2C003@server.perex-int.cz>
+Message-ID: <20040721140956.A4ADA2C005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 36EC119E
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2004 16:06:10 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0B35B1F0
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2004 16:09:56 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id E9E61126EF
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2004 16:06:09 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id B9170126EF
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2004 16:09:56 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,7 +23,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000400
 ======================================================================
@@ -41,17 +41,27 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             07-21-2004 16:06 CEST
-Last Modified:              07-21-2004 16:06 CEST
+Last Modified:              07-21-2004 16:09 CEST
 ======================================================================
 Summary:                    Support for NVidia NForce based AC97 modems
 Description: 
 Support for NVidia NForce based AC97 modems in 'intel8x0m' will be added.
 ======================================================================
 
+----------------------------------------------------------------------
+ sashak - 07-21-2004 16:09 CEST 
+----------------------------------------------------------------------
+Uploaded patch adds support for NVidia NForce 1,2,3 as well as for AMD8111
+based AC97 modems.
+
+Tested on NForce1 with Linux Kernel 2.6.7 .
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 07-21-04 16:06 sashak         New Bug                                      
+07-21-04 16:09 sashak         File Added: nforce.patch                     
+07-21-04 16:09 sashak         Bugnote Added: 0001462                       
 ======================================================================
 
 
