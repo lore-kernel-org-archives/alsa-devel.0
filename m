@@ -1,14 +1,12 @@
-From: Daniel Tihelka <dtihelka@kky.zcu.cz>
-Subject: Re: Build-in mixer
-Date: Sat, 11 Oct 2003 17:33:28 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Problem with buffer/period sizes.
+Date: Sat, 11 Oct 2003 17:03:13 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1065886408.3f8822c843535@webmail.zcu.cz>
-References: <3F83C9B8.9050407@kky.zcu.cz> <200310081124.h98BOGqq018813@oud> <s5hsmm49bq5.wl@alsa2.suse.de>
+Message-ID: <3F8829C1.10302@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hsmm49bq5.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,42 +15,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Cituji z e-mailu od Takashi Iwai <tiwai@suse.de>:
+I have code that looks like the following: -
 
-> 
-> it's becoming an FAQ... :)
-> 
-> pcm.!default {
-> 	type plug
-> 	slave.pcm "dmix"
-> }
-> 
-> the point is '!' prefix, which means overriding the existing
-> definition.
-> 
+err = snd_pcm_hw_params_get_buffer_size_min(params, &buffer_size_min);
+err = snd_pcm_hw_params_get_buffer_size_max(params, &buffer_size_max);
+dir=0;
+err = snd_pcm_hw_params_get_period_size_min(params, &period_size_min,&dir);
+dir=0;
+err = snd_pcm_hw_params_get_period_size_max(params, &period_size_max,&dir);
 
+<snip> some calculations happen here
 
-As I wrote some day ago, it is possible to play two or more sounds 
-simultenaously with mentioned setting. But only with 'aplay'
+err = snd_pcm_hw_params_set_buffer_size_near(audio_fd, params, 
+&buffer_size);
+dir=0;
+err = snd_pcm_hw_params_set_period_size_near(audio_fd, params, 
+&period_size, &dir);
 
-I tried to use xmms with ALSA 0.9 output plugin and Mplayer with ALSA-0.9.x 
-support and it is impossible to play any two sound streams at the same time (i 
-tried two xmms, xmms + mplayer, xmms + asound, mplayer + asound and two 
-mplayers, but only the first played and the second was stopped until the first 
-finished or breaked).
+For a snd_intel8x0 driver with INTEL ICH5 chip with
+PCI IDs of 0x8086, 0x24d5
+Displays: -
+buffer_size_min/max = 64 / 16384
+period_size_min/max = 16 / 16384
 
-Where can be problem? Is it in the way, how ALSA device is opened? Must be 
-device opened in a different way? Aad what about streams with different 
-sampling frequencies? (I don't understand ALSA interface now, but I plan to 
-learn it). 
+We then try to set: -
+buffer_size = 16384
+period_size =  2048
+And it accepts those settings, and works.
 
-Thank you very much,
+For a snd_intel8x0 driver with NVIDIA NFORCE chip with
+PCI IDs of 0x10de, 0x01b1
+Displays: -
+buffer_size_min/max = 67 / 15052
+period_size_min/max =  7 / 15053
 
-Dan
+We then try to set: -
+buffer_size = 15048
+period_size =  1881
+But, this sets a period size = buffer_size = 15048 which then fails to 
+work due to not having 2 periods or more.
 
+What is causing the NFORCE chip to suggest such strange values, and then 
+to not accept those values.
+
+Cheers
+James
 
 
 
