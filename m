@@ -1,13 +1,15 @@
-From: "David E. Storey" <dave@tamos.net>
-Subject: Re: Getting actual sample rate
-Date: 10 Jun 2003 15:45:55 -0400
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: Hammerfall DSP System Problems
+Date: Tue, 10 Jun 2003 13:02:57 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1055274355.469.113.camel@localhost>
-References: <E19Pop3-0000uG-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <NDBBLGIKBJENLAMOLFHGCECJCHAB.mknecht@controlnet.com>
+References: <20030610183131.76A8A3EFBF@vivaldi.controlnet.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ixiRxrpxb3Z3IcqrSCaY"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E19Pop3-0000uG-00@sc8-sf-list1.sourceforge.net>
+In-reply-to: <20030610183131.76A8A3EFBF@vivaldi.controlnet.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,41 +18,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: frankgaetano@collegeclub.com, Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+> >
+> >Later that evening I powered down. Upon rebooting the next morning it
+> >failed, and has failed ever since. That was last Thursday evening.
+>
+> the same thing happened to me a week ago. i have, as usual, not had
+> time to investigate further.
+>
 
---=-ixiRxrpxb3Z3IcqrSCaY
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Well, it is actually quite comforting to know that folks with far more
+experience than I sometimes see the same strange behaviors!
 
-hey, uh... is there something like this for the HDSP? I was going to
-write something, but if someone already has, I'd rather not re-invent
-the wheel... otherwise, I'll get a crackin'!
+> >
+> >This whole Alsa/HDSP thing is amazingly weird...
+>
+> at the moment, i regret that we made the move to user-space loading of
+> the "firmware" when we did. i think now that it was a mistake to do it
+> at that time. it has caused a fundamental change in the way the driver
+> sets up, but it came at a time when we weren't confident that setup
+> was working for various cases.
 
-d!
+I'm sure that it will get worked out. I think Joshua is currently having
+some good successes with the HDSP 9652, and I'm currently learning how to
+modify a Gentoo ebuild to accomplish doing a patch. I also have (after more
+pain than I wish to recount) Windows on this Gentoo box in a dual boot
+config, and have the RME firmware tools to upgrade and downgrade, so I think
+I'm almost set to be able to try this stuff out again.
 
-On Tue, 2003-06-10 at 15:35, Paul Davis wrote:
-> >Maybe we can add some rme9652 switches to rmedigicontrol!?
->=20
-> thomas (charbonnel) already has written a version of rme's digicheck
-> for the digi9652 and hdsp cards. i am not sure what its status is, but
-> i saw it running at LAD/ZKM.
+I'm sure over the next few weeks and months this will get straightened out.
+:-)
 
+Mark
 
---=-ixiRxrpxb3Z3IcqrSCaY
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQA+5jVz+5sC2muyxOMRAgwJAJ9OpvRUNXLdP43RfT3/SIZ3Zr8G+QCghUQA
-ByDUItCPeA+Ds0SJWDTPvQ4=
-=PW25
------END PGP SIGNATURE-----
-
---=-ixiRxrpxb3Z3IcqrSCaY--
 
 
 
