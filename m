@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000607]: "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >= 0.8.6
-Date: Tue, 9 Nov 2004 19:22:23 +0100
-Message-ID: <38b752f97ec13e602eed8c247730f48b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000626]: Oops on cat /dev/urandom > /dev/dsp
+Date: Tue, 9 Nov 2004 19:22:22 +0100
+Message-ID: <72686cfddeeb151c24b57345a210afb6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B24F42BA
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 19:22:23 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8DFEE2B6
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 19:22:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,123 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=607> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=626> 
 ======================================================================
-Reported By:                karsten
-Assigned To:                karsten
+Reported By:                Luke-Jr
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   607
-Category:                   USB - usb-usx2y
-Reproducibility:            sometimes
-Severity:                   feature
+Issue ID:                   626
+Category:                   PPC - powermac
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
 Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             10-26-2004 21:36 CEST
+Date Submitted:             11-03-2004 15:14 CET
 Last Modified:              11-09-2004 19:22 CET
 ======================================================================
-Summary:                    "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >=
-0.8.6
+Summary:                    Oops on cat /dev/urandom > /dev/dsp
 Description: 
-Its usb's unableness to atomically handle power of 2 period sized data
-chuncs,
-what led to: 
-This usx2y-alsa-jack driver pair uses a hardware dependant alsa-device for
-
-mmaped pcm transport.
-Advantage achieved:
-        The usb_hcd places reads/writes pcm data into dma-memory.
-        That memory is  mmaped by jack's usx2y driver.
-        Jack's usx2y driver is the first/last to read/write pcm data.
-        Read/write is a combination of power of 2 period shaping and
-        float/int conversation.
-        Compared to mainline alsa/jack we leave out power of 2 period
-shaping inside
-        snd-usb-* which needs memcpy() and additional buffers.
-        As a side effect possible unwanted pcm-data coruption resulting of
-        plain alsa's snd-usb-usx2y period shaping scheme falls away.
-        Result is sane jack operation at buffering schemes down to
-128frames,
-        2 periods.
-        plain usx2y alsa mode is able to achieve 64frames, 4periods, but
-only at the
-        cost of easier triggered i.e. aeolus xruns (128 or 256frames,
-        2periods works but is useless cause of crackling).
-
-New functionality would possibly be better integrated into mainlines at
-more 
-apropriate places.
-Target could be: jack mmaping power of 2 period sized float-pcm buffers
-and 
-letting alsa (snd-usb-lib - alsa-lib - plugin) do power of 2 period
-shaping 
-and float/int conversation.
+Oops: kernel access of bad area, sig: 11
+[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+NIP: D253BD20 LR: D253C634 SP: CE547DB0 REGS: ce547d00 TRAP: 0300    Not
+tainted
+MSR: 00009032 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
+DAR: D254203C, DSISR: 40000000
+TASK = c07c77d0[7282] 'cat' THREAD: ce546000Last syscall: 4
+GPR00: 000007FC CE547DB0 C07C77D0 CF7B7B40 CFC38980 C063C8E0 00000200
+00000B03
+GPR08: 00000001 D2541840 000007FC D2541880 CF7B7B24 1001C140 00000000
+00000000
+GPR16: 00000001 CFC38980 C063C8E0 00000000 00000000 10015080 00000001
+00000000
+GPR24: 00000000 CFC400A0 CFC38980 D253BCD8 CFC38980 CF7B7BB0 CF7B7B40
+00000B03
+NIP [d253bd20] resample_expand+0x48/0x3a8 [snd_pcm_oss]
+LR [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
+Call trace:
+ [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
+ [d2539020] snd_pcm_plug_write_transfer+0x1cc/0x2a0 [snd_pcm_oss]
+ [d2534518] snd_pcm_oss_write2+0xb4/0x12c [snd_pcm_oss]
+ [d2536c94] snd_pcm_oss_write+0x220/0x26c [snd_pcm_oss]
+ [c0058320] vfs_write+0x114/0x13c
+ [c0058424] sys_write+0x4c/0x90
+ [c00063a0] ret_from_syscall+0x0/0x44
 
 ======================================================================
 
 ----------------------------------------------------------------------
- rncbc - 10-27-04 02:26 
+ tiwai - 11-09-04 18:51 
 ----------------------------------------------------------------------
-OK. This is working fairly well, like a charm.
-
-I've uploaded my rearranged kernel patches, just for the record.
-
-For linux 2.6.9 (vanilla):
-+ linux-2.6.9-usx2y-0.8.6.patch.gz
-+ linux-2.6.9-usx2y-0.8.6-rawusb.patch.gz
-
-For linux 2.6.9-mm1 (develop):
-+ linux-2.6.9-mm1_usx2y-0.8.6.patch.gz
-+ linux-2.6.9-mm1_usx2y-0.8.6-rawusb.patch.gz
-
-Each pair of patches are to be applied with 'patch -p1' under the kernel
-source tree, and on top of the other.
-
-Common to all above is linux-2.6.9-ohci-hcd.patch.gz which is intended to
-fix an OHCI issue regarding the nrpacks=3 setting.
-
-I'm also personally maintaining some stuff for JACK, including this new
-experimental usx2y backend, which takes advantage of this new rawusb
-hwdep_pcm interface. Check this out under:
-
-    http://www.rncbc.org/usx2y/
-
-This directory includes the just uploaded kernel patches, but most
-importantly the JACK patch(es), source and RPM packages for Mandrake 10.1c
-(jackit) and SUSE 9.1Pro (jack), which includes the usx2y backend.
-
-Not surprisingly, latest qjackctl is usx2y ready ;)
-
-Take care. My US-224 never worked so happily, and where it ought to: on my
-laptop ;)
+Hmm, I remember that this function has had problems with the old gcc.
+Which gcc version are you using?
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 19:22 
+ Luke-Jr - 11-09-04 19:22 
 ----------------------------------------------------------------------
-Is the patch ready for submission?
+gcc (GCC) 3.4.1 20040803 (Gentoo Linux 3.4.1-r3, ssp-3.4-2, pie-8.7.6.5)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-26-04 21:36 karsten        New Issue                                    
-10-26-04 21:36 karsten        File Added:
-snd-usb-usx2y.patch.0.8.6+hwdep_pcm.bz2                    
-10-26-04 21:39 karsten        Note Added: 0002265                          
-10-27-04 02:01 rncbc          File Added: linux-2.6.9-ohci-hcd.patch.gz         
-          
-10-27-04 02:01 rncbc          File Added: linux-2.6.9-usx2y-0.8.6.patch.gz      
-             
-10-27-04 02:02 rncbc          File Added:
-linux-2.6.9-usx2y-0.8.6-rawusb.patch.gz                    
-10-27-04 02:02 rncbc          File Added: linux-2.6.9-mm1_usx2y-0.8.6.patch.gz  
-                 
-10-27-04 02:03 rncbc          File Added:
-linux-2.6.9-mm1_usx2y-0.8.6-rawusb.patch.gz                    
-10-27-04 02:26 rncbc          Note Added: 0002269                          
-11-09-04 19:22 tiwai          Note Added: 0002346                          
+11-03-04 15:14 Luke-Jr        New Issue                                    
+11-09-04 18:51 tiwai          Note Added: 0002334                          
+11-09-04 19:22 Luke-Jr        Note Added: 0002345                          
 ======================================================================
 
 
