@@ -1,12 +1,13 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000339]: sound quality terrible on DELL (emu10k1x)
-Date: Sun, 20 Jun 2004 04:58:20 +0200
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: emu10k1 latency / capture period
+Date: Sun, 20 Jun 2004 00:06:23 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a247c85eea5b19ab4a1d708c3f05c37e@bugtrack.alsa-project.org>
+Message-ID: <1087704381.805.20.camel@debian>
+References: <1087416890.25102.21.camel@debian>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="=-b5+Q8LcgH8MXD+7wtbtM"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1087416890.25102.21.camel@debian>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,91 +16,83 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0339
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                bench2
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     339
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               gentoo
-Kernel Version:             2.6.5
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-18-2004 17:16 CEST
-Last Modified:              06-20-2004 04:58 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    sound quality terrible on DELL (emu10k1x)
-Description:=20
-I have a DELL with their modded soundblaster card. I have installed the
-alsa-driver emu10k1*x* (no such option in category). The sound is
-terrible. It often hangs (like a cracked record), often I get the error
-message =ABcannot open /dev/dsp=BB. Sometimes only xine will play a movie
-(with sound, I mean), sometime only mplayer, sometimes neither.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--=-b5+Q8LcgH8MXD+7wtbtM
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-----------------------------------------------------------------------
- bench2 - 06-19-2004 23:43 CEST=20
-----------------------------------------------------------------------
-Just upgraded to the 2.6.7 kernel ... it still doesn't work!
+On Wed, 2004-06-16 at 16:14, Lee Revell wrote:
+> Hey,
+> 
+> I am having a problem with the emu10k1 driver where I am unable to set
+> the capture period lower than 512.  The result is that the lowest
+> achievable input to output latency is in the neighborhood of 40ms.
+> 
 
-----------------------------------------------------------------------
- fmoraes - 06-20-2004 04:58 CEST=20
-----------------------------------------------------------------------
-Please email me at fmoraes74@netzero.net and I can send you my current WI=
-P
-version which may solve some issues. Please note that Creative has not
-released the specs on the card, so it is very hard to know what is wrong
-in your computer.
+I think I may have solved this problem.  Here is a patch against
+alsa-driver-1.0.5a.
 
-I only have a 2.4 kernel but there were a few problems on the original
-version in version 1.0.5 that I found today.
+--- alsa-driver-1.0.5a/alsa-kernel/pci/emu10k1/emupcm.c.orig   
+2004-06-19 23:21:09.000000000 -0400
++++ alsa-driver-1.0.5a/alsa-kernel/pci/emu10k1/emupcm.c 2004-06-19
+23:21:12.000000000 -0400
+@@ -932,7 +932,7 @@
+        spin_unlock_irqrestore(&emu->reg_lock, flags);
+        emu->capture_efx_interrupt = snd_emu10k1_pcm_efx_interrupt;
+        emu->pcm_capture_efx_substream = substream;
+-       snd_pcm_hw_constraint_list(runtime, 0,
+SNDRV_PCM_HW_PARAM_PERIOD_SIZE, &hw_constraints_capture_period_sizes);
++       // snd_pcm_hw_constraint_list(runtime, 0,
+SNDRV_PCM_HW_PARAM_PERIOD_SIZE, &hw_constraints_capture_period_sizes);
+        return 0;
+ }
 
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-18-04 17:16 bench2         New Bug                                    =
- =20
-06-18-04 17:16 bench2         Distribution              =3D> gentoo      =
-   =20
-06-18-04 17:16 bench2         Kernel Version            =3D> 2.6.5       =
-   =20
-06-19-04 11:25 bench2         Bug Monitored: bench2                      =
- =20
-06-19-04 23:43 bench2         Bugnote Added: 0001322                     =
- =20
-06-20-04 04:58 fmoraes        Bugnote Added: 0001323                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+I do not think that the FX8010 capture device is constrained by the 
+period size limitations on the standard emu10k1 capture device.
 
+With this patch I can run JACK in capture only mode with the period size
+set as low as 128.  64 gives an error.  This is exactly the expected
+behavior: 128 frames is the lowest setting the kX ASIO driver allows.
+
+Now, there is one more issue.  For some reason, in the emu10k1 driver, 
+different numbered devices are used for FXBus capture and playback -
+capture is hw:0,2 and playback is hw:0,3.  I don't think JACK supports 
+full duplex mode if the playback and capture devices are different.  
+It seems like these should be part of the same device anyway, they refer
+to the exact same registers.
+
+There is no playback device hw:0,2, so I think you can just change the
+FX8010 playback device to this.
+
+I think if this is fixed then it will be possible to use the emu10k1 for
+low latency/multichannel recording finally.
+
+Lee
+
+--=-b5+Q8LcgH8MXD+7wtbtM
+Content-Disposition: attachment; filename=fxbus_capture_fix.patch
+Content-Type: text/x-patch; name=fxbus_capture_fix.patch
+Content-Transfer-Encoding: 7bit
+
+--- alsa-driver-1.0.3/alsa-kernel/pci/emu10k1/emu10k1_main.c	2004-06-19 17:47:17.000000000 -0400
++++ alsa-driver-1.0.3/alsa-kernel/pci/emu10k1/emu10k1_main.c.orig	2004-05-03 04:43:04.000000000 -0400
+@@ -96,10 +96,7 @@
+ 	int ch, idx, err;
+ 	unsigned int silent_page;
+ 
+-	if (emu->audigy)
+-		emu->fx8010.itram_size = (32 * 1024)/2;
+-	else
+-		emu->fx8010.itram_size = (16 * 1024)/2;
++	emu->fx8010.itram_size = (16 * 1024)/2;
+ 	emu->fx8010.etram_pages.area = NULL;
+ 	emu->fx8010.etram_pages.bytes = 0;
+ 
+
+--=-b5+Q8LcgH8MXD+7wtbtM--
 
 
 
