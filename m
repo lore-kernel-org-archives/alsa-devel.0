@@ -1,14 +1,15 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: Re: doc-page
-Date: Fri, 5 Dec 2003 18:16:04 +0100
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: aoss failures under Alsa-1.0.0rc1
+Date: Fri, 5 Dec 2003 09:56:01 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031205171604.GA19309@tuba.home>
-References: <20031204194243.4841b5a7.mista.tapas@gmx.net> <3FCF87DB.10106@boosthardware.com>
+Message-ID: <NDBBLGIKBJENLAMOLFHGKEIDECAB.mknecht@controlnet.com>
+References: <Pine.HPX.4.33n.0312051804500.8570-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3FCF87DB.10106@boosthardware.com>
+In-Reply-To: <Pine.HPX.4.33n.0312051804500.8570-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,24 +18,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+>
+> There is a change in alsa-oss.c, immediately after rc1 came out, with
+> the following log message:
+>
+> - avoid the assert in snd_pcm_drain().
+> - fixed the possible segfault at the wrong release of resources.
+> - more debug messages.
+>
+Clemens,
+   Thanks. In this case I will either make the effort to modify the Gentoo
+ebuild myself, or wait for Gentoo to catch up. They were only 2 days behind
+this time on rc1 making me think an Alsa developer must be right in the
+ebuild loop these days.
 
-Thank you very much, Patrick for the work you've done until now.
+   Thanks for all your help. Hopefully we can get this working soon.
 
-But one point I still miss is some kind of browseable Changelog. And a good
-complete changelog history is also good for detecting bugs.
-
-Well, only the users in the mailling lists can know if driver xy has changed
-(or maybe improved) since the last version or not. So normal users have to
-try out each version. And that's far away from perfect IMHO.
+Cheers,
+Mark
 
 
-just my two cents.
-
-martin
 
 
 -------------------------------------------------------
