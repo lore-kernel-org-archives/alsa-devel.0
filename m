@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000983]: alsamixer and amixer can't control "Capture Volume" and "Capture Switch" on azx, whereas gamix can
-Date: Sat, 12 Mar 2005 12:54:04 +0100
-Message-ID: <33f4eb903c1c98f3a08989a3af6210cb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000984]: No Sound
+Date: Sat, 12 Mar 2005 19:09:29 +0100
+Message-ID: <e70c4382594a9ebc8ff3cbcd37cbe667@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 81E5E153
-	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 12:54:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 84BF2199
+	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 19:09:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,33 +23,39 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=983> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=984> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                mailavj
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   983
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   984
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-12-2005 12:54 CET
-Last Modified:              03-12-2005 12:54 CET
+Date Submitted:             03-12-2005 19:09 CET
+Last Modified:              03-12-2005 19:09 CET
 ======================================================================
-Summary:                    alsamixer and amixer can't control "Capture Volume"
-and "Capture Switch" on azx, whereas gamix can
+Summary:                    No Sound
 Description: 
-This bug was reported at http://bugs.debian.org/297624 and has been
-discussed there at some length.
+my sound card is Sound MAX integrated Audio with Intel D865 GBF
+motherboard..
+i'm not getting sound output..
+kernel version is 2.6.7-2 and my alsa driver version is 1.0.6-a
+Is there any way to get sound out put on this card using this driver.. 
+please help
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 12:54 jdthood        New Issue                                    
+03-12-05 19:09 mailavj        New Issue                                    
 ======================================================================
 
 
