@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Arthur Peters <amp@singingwizard.org>
 Subject: Re: ALSA + jack + xrun = kernel crash
-Date: Sat, 17 May 2003 23:38:22 +0200 (CEST)
+Date: Sat, 17 May 2003 15:48:18 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305172336190.21997-100000@pnote.perex-int.cz>
-References: <3EC6A254.4010303@cucumelo.org>
+Message-ID: <1053204498.5412.11.camel@newbie.localnet.local>
+References: <Pine.LNX.4.44.0305171438080.21997-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3EC6A254.4010303@cucumelo.org>
+In-reply-to: <Pine.LNX.4.44.0305171438080.21997-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,72 +17,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benny Sjostrand <gorm@cucumelo.org>
-Cc: Arthur Peters <amp@singingwizard.org>, Alsa dev list <alsa-devel@lists.sourceforge.net>
+To: Alsa dev list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 17 May 2003, Benny Sjostrand wrote:
+I tried this, but I didn't get any additional output. I looked at
+include/linux/spinlock.h and it appears that the line you are refering
+to only affects UP compiles. This explains why I didn't get any output.
 
-> >
-> >
-> >Hello, I am experiencing a reletivly hard crash (SysRq works but SysRq-B
-> >prints a message saying it will reboot then doesn't). The crash happens
-> >when jackd xruns. I've been reproducing it using "jackd -d alsa" (other
-> >options don't make a difference) then "ladccad". Once the system crashs
-> >the only way to get any responce is with SysRq. Keys don't echo to the
-> >console and I can't switch VTs.
-> >
-> >Generally there is no error message or oops that I can see, even when
-> >debug=full is enable in ALSA. Early on I saw a message from jackd to the
-> >tune of "error write 512 somethings to device", but I have not been able
-> >to reproduce it. I am willing to run any tests that might help. I use
-> >journaling filesystems ;-) 
-> >
-> >My hardware is:
-> >Dual PIII 1Ghz with 512M RAM on a Tyan MB.
-> >SoundBlaster Live! Value
-> >ATI Radeon 8500 (using the closed-source ATI drivers; version 2.9.8)
-> >
-> >My software is:
-> >ALSA drivers 0.9.3a or current CVS
-> >Linux 2.4.20 (vanilla or gentoo patched)
-> >Jack 0.71.2
-> >Current Gentoo with testing packages enabled (~x86)
-> >  
-> >
-> Just want to tell that I'm experiencing almost the same problem (I got a 
-> Dual PIII 1Gz 256Mb
-> and two cs46xx soundcards)
-> After updating ALSA CVS today, jack is no longer able to start, it just 
-> locks up my machine, and
-> sometimes even the SysRQ hack dont react. (I've been several hours today 
-> fighting with this problem .....)
-> What I was able to find out from the SysRQ is that the EIP all the times 
-> seems
-> to be somewhere at: c0153804 <.text.lock.inode+135/211>, or 
-> sync_unlocked_inodes(...)
-> which dont make any sense to me. (?????????????)
+Am I doing something wrong? Anything else I could do to help?
+
+-Arthur
+
+On Sat, 2003-05-17 at 07:47, Jaroslav Kysela wrote:
+
+> Paul, could you, please, enable spinlock debug in your SMP kernel?
 > 
-> One more interesting point is that if I start the jackd without the "-R" 
-> flag jack starts for a while,
-> sometimes I'm able to even stop/kill it. But after that no program is 
-> able to start or run correctly,
-> which feels like  that something is seriously corrupted in the kernel.
+> include/linux/spinlock.h:
 > 
-> Now, for first time in my life I've downgraded ALSA to a previous CVS 
-> version, which seems
-> to work with JACK :(
+> #define DEBUG_SPINLOCKS 0       /* 0 == no debugging, 1 == maintain lock state, 2 == full debug */
+> 
+> Use full debug. I am sorry, but I have not a SMP machine around.
+> 
+> 
+> 						Jaroslav
 
-It looks like spinlock problem. Could you recompile your kernel and ALSA
-driver with spinlock debug enabled? Look for DEBUG_SPINLOCKS in
-linux/include/linux/spinlock.h and change the value 0 to 2.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+-- 
+Arthur Peters <amp@singingwizard.org>
 
 
 
