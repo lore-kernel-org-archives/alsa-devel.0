@@ -1,13 +1,16 @@
-From: Albert Jongkit Wong <awong@cs.washington.edu>
-Subject: Re: ppc usb-audio problems
-Date: Wed, 9 Oct 2002 11:08:43 -0700 (PDT)
+From: "Jack O'Quin" <joq@io.com>
+Subject: Re: Why do I get broken pipe on write to a pcm in  statePREPARED?
+Date: 09 Oct 2002 13:13:05 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021009105855.H24345-100000@fiji.cs.washington.edu>
-References: <s5hvg4b28lq.wl@alsa2.suse.de>
+Message-ID: <87ofa3mqfi.fsf@sulphur.joq.us>
+References: <Pine.HPX.4.33n.0209171615490.1084-100000@studcom.urz.uni-halle.de>
+	<200209181957.g8IJvS008300@d1o87.telia.com>
+	<200210040814.g948E9015465@d1o87.telia.com>
+	<s5hy99e4ayc.wl@alsa2.suse.de> <3D9DD810.7C3960C4@libero.it>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hvg4b28lq.wl@alsa2.suse.de>
+In-Reply-To: <3D9DD810.7C3960C4@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,61 +19,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Takashi Iwai <tiwai@suse.de>, Anders Torger <torger@ludd.luth.se>, Jaroslav Kysela <perex@suse.cz>, Tim Goetze <tim@quitte.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> do you mean that the playback position moves but no sounds come out?
-> and does oss plugin work?
+Abramo Bagnara <abramo.bagnara@libero.it> writes:
 
-With the alsa plugin, the playback position moves and I get stuff that 
-just sounds like static instead of music (the volume controls still work).  
-The oss plugin works fine.  
+> For what it worths my objections are still there.
+> 
+> I'm strongly convinced that to have poll waiting for something that
+> cannot happens is a big mistake (also as an optional behaviour).
 
-I just tried another test by doing:
+The poll is waiting on some thread to start the PCM.  It is incorrect
+to say that this "cannot happen".
 
-mpg321 -s /mnt/mp3/Mpegs/Anime/Arc\ en\ Ciel,\ Le/DIVE_T~1.MP3 | aplay -c 
-2 -t raw -r 44100 -f S16_LE -
+> That apart I'm sure that to make a change in actual behaviour between
+> rcX and 1.0 is a professional suicide. However it's _your_ professional
+> suicide so... ;-)))
 
-Which worked properly.  Is it possible that xmms, esd, mplayer, etc are
-the broken ones?
- 
+I am an advocate for high standards of compatibility.  But, this is
+not a compatibility issue.
 
+The current behavior fails in the case being discussed.  At worst, a
+program that does not work under the current implementation will fail
+differently after the change.  Some argue that the new failure symptom
+is actually easier to debug, so even this may be an improvement.
 
-> please check /proc/asound/card0/stream0 which format is supported
-> actually.
+The proposal permits appropriately programmed applications to do
+something useful.  This behavior conforms to both the letter and
+spirit of the X/Open standard, as far as I can see.
 
-I'm not sure how to read this output, so I'm pasting it below.
+So, I think the change *should* be made, even at this late stage of
+the release schedule.  (votes++)
 
-terran@Mittermeyer asound $ cat card0/stream0 
-Apple Computer, Inc. Speakers : USB Audio
-
-Playback:
-  Status: Stop
-  Interface 1
-    Altset 1
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 1 OUT (ADAPTIVE)
-    Rates: 5000 - 50000 (continous)
-  Interface 1
-    Altset 2
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 1 OUT (ADAPTIVE)
-    Rates: 5000 - 50000 (continous)
-  Interface 1
-    Altset 3
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 1 OUT (ADAPTIVE)
-    Rates: 5000 - 50000 (continous)
-
-
-
-Thanks,
-
-Albert
+Regards,
+-- 
+  Jack O'Quin
+  Austin, Texas, USA
 
 
 
