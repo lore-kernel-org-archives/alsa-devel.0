@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000544]: Sound freezes (but can be restarted OK) after kernel locked for a long time
-Date: Sat,  9 Oct 2004 20:13:00 +0200 (CEST)
+From: Oliver Freyd <Oliver.Freyd@gmx.de>
+Subject: Re: trident (Hoontech 4d Wave NX) dropouts with small buffersize.
+Date: Sat, 9 Oct 2004 20:41:35 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041009181300.5CC2F3E010@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20041009184135.GA1612@gmx.de>
+References: <20041005201351.GA25577@gmx.de> <s5hacuyu1b1.wl@alsa2.suse.de> <20041008071505.GA3394@gmx.de> <s5hacux5fl5.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B168D291
-	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 20:13:00 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5hacux5fl5.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,85 +17,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Oct 08, 2004 at 06:39:50PM +0200, Takashi Iwai wrote:
+ 
+> Hmm, how about the bigger period & buffer sizes?  Try both periods=2
+> and other cases.
+> 
+> The trident driver handles differently when period_size =
+> buffer_size/2.  If period_size != buffer_size/2, it allocates an extra
+> voice for the interrupt source.  So, if the bug occurs only with
+> periods = 2, it narrows the buggy part.
+> 
+Hello,
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000544
-======================================================================
-Reported By:                sasa
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Bug ID:                     544
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             09-26-2004 10:44 CEST
-Last Modified:              10-09-2004 20:13 CEST
-======================================================================
-Summary:                    Sound freezes (but can be restarted OK) after kernel locked for a long time
-Description: 
-When doing an intensive task that locks the kernel (such as fixating
-CD-ROM, initializing Lucent modem chipset) when even the mouse pointer
-stops moving for half a second or so, sound from xmms stops playing until
-I press stop and play again.
-Interesting thing is that this only happens when MMAP is on. When I turn
-it off, the sound freezes for a second and after that continues.
-======================================================================
+I've tried that, I think your idea is right. 
+The bug occurs when period_size = buffer_size/2 , also for bigger periods
+like 2048 or 4096. Then you can hear that some buffers are repeated,
+the soundcard plays them again. If you decrease period_size (even only by 1)
+it works nicely. If you increase, you get buffer underruns (aplay detects
+them). 
 
-----------------------------------------------------------------------
- sasa - 09-26-2004 10:58 CEST 
-----------------------------------------------------------------------
-Sorry, mistake - it occurs when MMAP is ON.
-Additional info:
-Also I should note that I am using NVidia NForce chipset (Asus A7N8X-E D.
-motherboard) and I am using
-acpi=noirq pci=noacpi
-in order to boot my system. And there is sometimes a lost interrupt 11
-(used by IDE and soundcard as well but the lost interrupt is thown during
-IDE initilization so it is probably caused by IDE).
+So it seems you have an idea of where the bug could be :-)
 
-----------------------------------------------------------------------
- lee - 09-26-2004 12:03 CEST 
-----------------------------------------------------------------------
-Sounds like an XMMS bug.  Does the same thing happen with aplay?
+If you tell me what else I could do to narrow down the problem,
+I'm happy to help you!
 
-----------------------------------------------------------------------
- sasa - 09-26-2004 12:25 CEST 
-----------------------------------------------------------------------
-I cannot reproduce it with aplay. You are probably right, it is a XMMS
-bug.
-Thanks.
+  best regards,
 
-----------------------------------------------------------------------
- jtimonen - 10-09-2004 20:02 CEST 
-----------------------------------------------------------------------
-I can confirm this bug exists also with nforce2 chipset + xmms-1.2.10-r6
-(gentoo). No other applications suffer from this.
+    Oliver
 
-----------------------------------------------------------------------
- lee - 10-09-2004 20:13 CEST 
-----------------------------------------------------------------------
-Please close this.  It's an XMMS bug, probably related to how XMMS does
-xrun recovery.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-26-04 10:44 sasa           New Bug                                      
-09-26-04 10:58 sasa           Bugnote Added: 0001916                       
-09-26-04 10:59 sasa           Bug Monitored: sasa                          
-09-26-04 12:03 lee            Bugnote Added: 0001918                       
-09-26-04 12:25 sasa           Bugnote Added: 0001919                       
-10-09-04 20:02 jtimonen       Bugnote Added: 0002062                       
-10-09-04 20:13 lee            Bugnote Added: 0002063                       
-======================================================================
 
 
 -------------------------------------------------------
