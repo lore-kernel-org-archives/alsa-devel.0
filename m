@@ -1,15 +1,15 @@
-From: Patrick Dumais <pat@dumaisnet.ca>
-Subject: Re: emu10k1 effect processor
-Date: Sun, 26 Sep 2004 22:35:25 -0400 (EDT)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
+Date: Sun, 26 Sep 2004 23:00:27 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0409262229110.3847@pat.dumaisnet.ca>
-References: <Pine.LNX.4.58.0409262037130.2760@pat.dumaisnet.ca>
- <1096251382.7203.74.camel@krustophenia.net>
-Reply-To: pat@dumaisnet.ca
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200409270300.i8R30Ro1016070@localhost.localdomain>
+References: <41574105.8090804@pg.gda.pl>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1096251382.7203.74.camel@krustophenia.net>
+Received: from out008.verizon.net (out008pub.verizon.net [206.46.170.108])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4A1C2D4
+	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 05:00:36 +0200 (MEST)
+In-reply-to: Your message of "Mon, 27 Sep 2004 00:21:57 +0200."
+             <41574105.8090804@pg.gda.pl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,66 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: =?UTF-8?B?QWRhbSBUbGHFgmth?= <atlka@pg.gda.pl>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+>First of all in OSS GETOPTR call returns hw_ptr and number of bytes 
+>processed by device so xrun detection is not a problem! The number of 
+>bytes value wraps after about an hour but this is not the case.
 
-I see.
+no, thats not the type of wrapping that matters. suppose the h/w
+buffer is 4096 frames in size. suppose that a rogue PCI driver or
+device prevents receipt of an interrupt for an entire buffer's worth
+of time, maybe even longer. looking at the value of the h/w ptr by
+itself doesn't tell you anything about whether there is an xrun. you
+have to constantly monitor the *expected* time of the next interrupt
+along with the *expected* position of the h/w ptr in order to
+establish if there was an xrun or not (at least for the class of xruns
+caused by this kind of delay).
 
-So the only way to use emu10k1 effects is to load them with a loader only.
+>Comparing previous values with the obtained one xrun detection is easy.
+>You can even use a GETODELAY call if you don't want to calculate it.
+>So your arguments about OSS are just not true.
 
-I had in mind that I could do something like this:
-snd_loadEmu10k1Effect("./vibrato.bin");
-snd_setEffectParam("vibrato",PARAM_VIBRATO_FREQ,20); // to set the
-frequency of the vibrato effect to 20hz
+user-space is not in a position to determine this, because the
+interrupt handler is the only place where the value of the h/w ptr can
+be reliably determined (even though on many cards, there are other
+ways and times as well).
 
-anyway, something similar.
+>OK but we could simply emulate this in a kernel driver with continous 
+>memory buffer and copying from it to real hw device period by period.
+>We could modify data which is not sent to the hw device. Latency could 
+>be as small as 1-1.5 of period size. With small enough periods it could 
+>be a quite nice solution. It should be in kernel to obtain proper 
+>scheduling and memory locking. An app using this approach may be a 
+>normal app because it could modify data with a few samples after current
+>playing position (minimal delay is one period) and write big chunks of data.
 
-I want to be able to at least control the effect within my app.
-I currently have an effect processor in my soft-sampler but I wanna let
-the hardware take care of it, but I don't wanna lose control over it.
+ALSA and the entire kernel development team have spent the last 5
+years moving things *out* of kernel space. forget ALSA - you will have
+a very, very hard time explaining to the kernel crew why this is
+actually a good idea.
 
-Patrick Dumais
-****************************
-http://www.dumaisnet.ca:242/
+moreover, you are completely forgetting that the non-hw PCM devices
+that i've mentioned where this "contiguous buffer" doesn't necessarily
+exist are *in user space*. the kernel knows nothing about them.
 
-On Sun, 26 Sep 2004, Lee Revell wrote:
+>Also old or proprietary closed source apps will never work correctly 
+>using this approach under big system load or when switching big apps
+>- rescheduling and swapping effects will broke sound stream processing 
+>and will make cracling and noises.
 
-> Date: Sun, 26 Sep 2004 22:16:23 -0400
-> From: Lee Revell <rlrevell@joe-job.com>
-> To: alsa@dumaisnet.ca
-> Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
-> Subject: Re: [Alsa-devel] emu10k1 effect processor
->
-> On Sun, 2004-09-26 at 20:46, Patrick Dumais wrote:
-> > Hi,
-> >
-> > Could any one point me out where I could find information on how to
-> > control the integrated effect processor on the Live card with an alsa
-> > programming interface? and possibily how to make my own modules? I know
-> > there is an assembler for that, I found a couple of links. I just want to
-> > know if someone has a specific link to recommend.
-> >
-> > But I am mostly looking for specification of how to use emu10k1 effect
-> > within my alsa application
-> >
->
-> Check out Peter Zubaj's ld10k1, http://ld10k1.sf.net.  It now has a GUI,
-> qlo10k1, and a C library interface to the emu10k1 DSP.  It is still
-> under development and is not as advanced as the kX DSP, yet.
->
-> The other emu10k1 utilities are for the OSS driver, ld10k1 is the one
-> you should use.  They might have some features that aren't yet in
-> ld10k1, this project could always use more developers.  Currently the
-> Windows emu10k1 hacker community is much bigger than Linux, due to the
-> kX drivers being better than the ALSA driver.  I am one of the people
-> working on this.
->
-> Lee
->
->
->
+this is entirely orthogonal.
+
+>> if you decide you don't want this "overwrite data previously written"
+>> functionality, then there is nothing in the existing ALSA API that
+>> will cause you any problems. if you believe that the kernel will never
+>> screw up scheduling, ignore snd_pcm_avail() and go with your
+>> assumptions. if you don't care about xrun detection, ignore
+>> snd_pcm_forward() and it should work fine.
+>I need this functionality and xrun detection too. This is a multiuser, 
+>multitasking system so I can't assume that schedulling is always
+>on time. Generally nobody can assume this.
+
+but you haven't offered any information about what you propose to do
+with the fact that scheduling may go wrong or that an xrun may
+happen. the information that ALSA provides appears completely useless
+to you. it seems to me that all you want to know is the delta between
+the hw ptr and the appl ptr, plus the ability to write "behind" the
+appl ptr.
 
 
 -------------------------------------------------------
