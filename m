@@ -1,15 +1,17 @@
-From: "Tuna Mason" <relegated@harp-screen.com>
-Subject: MlCR0S0FT 0fflce 2OO7 + AD0BE PR0 79$ & M0RE 0n_saIe
-	at SaqibS0ft
-Date: Wed, 28 Feb 2007 01:44:20 -0800
-Message-ID: <000001c75b1c$90ce4e80$0100007f@localhost>
+From: "Adan Montgomery" <hszveracity@WALLA.COM>
+Subject: was go batavia
+Date: Mon, 1 Jan 2001 02:37:39 +0900
+Message-ID: <001301c0739c$3a232c90$0015d2ec@MODEM>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1793502916=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from localhost (cpe-76-169-249-101.socal.res.rr.com [76.169.249.101])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E73A13AA
-	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 10:44:40 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [212.20.107.50])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 333AA2AC
+	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 10:49:58 +0100 (MET)
+Received: from WALLA.COM (unknown [203.142.187.125])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	A556999ABA
+	for <alsa-devel@alsa-project.org>; Wed, 28 Feb 2007 10:49:56 +0100 (MET)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,87 +21,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-OEM software - throw packing case, leave CD, use electronic manuals.
-Pay for software only and save 75-90%!
+--===============1793502916==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0010_01C0739C.3A232C90"
 
-Find incredible discounts! See our special offers!
-            TODAY TOP 1O ITEMS
+------=_NextPart_000_0010_01C0739C.3A232C90
+Content-Type: text/plain;
+        charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
 
- $49 Windows XP Pro w/SP2
- $79 MS Office Enterprise 2007
- $79 Adobe Acrobat 8 Pro
- $79 Microsoft Windows Vista Business
- $99 Macromedia Studio 8
- $59 Adobe Premiere 2.0
- $59 Corel Grafix Suite X3
- $59 Adobe Illustrator CS2
-$129 Autodesk Autocad 2007
-$149 Adobe Creative Suite 2
-and 1000s more under $49.
-http://ah.supersoftfeb.eu/?48357kPOqG52604oTDyt46948vTZlD14211qQYED39802TbxJu
-----
-           Mac Specials:
-Adobe Acrobat PR0 7             $69
-Adobe After Effects             $49
-Adobe Creative Suite 2 Premium $149
-Ableton Live 5.0.1              $49
-Adobe Photoshop CS              $49
-http://ah.supersoftfeb.eu/?20098xmzpj51024PbsSc37158ECIbO22217VhEhr24970iTsfd
-----
-See more by this manufacturers:
-Microsoft...Mac...Adobe...Borland...Macromedia
-http://ah.supersoftfeb.eu/?38924ZvuRx59291fIwyy22604JTDYU76146EAnBY14022dNzfl
-----
-Microsoft Windows Vista Ultimate
-Retail price:  $399.00
-Proposition:  $79.95
-Your benefit:  $319.05 (80%)
-Availability: Can be downloaded instantly.
-http://ah.supersoftfeb.eu/2480.php?33228FqVeA65379CldEV45677dWmeI93646DUzBU76407QkAwR
-Best choice for home and professional. (91674 reviews)
-----
-Microsoft Office 2007 Enterprise Edition
-Regular price:  $899.00
-Our offer:  $79.95
-You save:  $819.95 (89%)
-Availability: Pay and download instantly.
-http://ah.supersoftfeb.eu/2442.php?52407xbOhI48317lrmZt72157CoPFl96199YOGNZ52006dzuTv
-Sales Rank: #1 (453517 reviews)
-----
-Adobe Acrobat 8.0 Professional
-Market price:  $449.00
-We propose:  $79.95
-Your profit:  $369.05 (80%)
-Availability: Available for instant download.
-http://ah.supersoftfeb.eu/2441.php?21213qPjMY61824rcZxf98688Mtgnw96148zGxpt18202LeIes
-Top-ranked item. (65936 reviews)
-project mailing list <freebsd-fsFreeBSD>
-21:#11 0xf01932a1 in exception:calltrap ()
-passwords, iteration counts, or seeds; it takes either a secret
-whether to forward or block packets based on a set of rules. The
-is often to reset the client, because the NFS situation cannot be
-accounts, people are pretty happy with it.  We will therefore continuedaemon can get authorization to the Kerberos database:
-	You can control from which remote hosts a local LPD accepts
-giftopnm | ppmtopgm | pgmtopbm | pbmtolj -resolution 300 \
-for printouts in this capability.  You can override this value when
-The following example is for a Boca Board with an interrupt of 3,
-were removed by the modem before transmission by the sending modem.[If it extracts to a directory other than ${DISTNAME}...]
-On a single printer, LPD allows both an output filter and text or
-Since we are the sending host, FreeBSD knows to use the loopback
-some time are sometimes used.
-SCSI-2 QIC tape unit, a SCSI-1 helical scan tape unit and 2 SCSI-1
-hostname myclient.mydomain		      FIFO timer has expired (stale data), or
-simple text filter. Put the following text into that file with your
-37:Reading in symbols for ../../i386/isa/pcvt/pcvt_drv.c...done.
-The names of these subdirectories are specified by the variable
-of the sources being ported, but merely those differences required for
-line install using FTP or a CDROM install.  The installation programthis will be FFS if you boot from a hard drive, or NFS if you areare unable to connect to you. Perhaps the most useful command for
+
+
+BULLISH REPORT..
+
+Campaign for: GDKIPrice: $0.125 5 Day Target price: $0.95Market: =
+hellish!
+
+
+
+This sym is gaining momentum!
+
+
+alsa-devel, take a look at the hottest news!!!
+
+------=_NextPart_000_0010_01C0739C.3A232C90
+Content-Type: text/html;
+        charset="windows-1251"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3D=
+windows-1251">
+<META content=3D"MSHTML 6.00.3790.1409" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<BR><BR><BR>
+<DIV align=3Dcenter><FONT face=3DArial color=3D#003300 size=3D3D4><FONT =
+size=3D2><STRONG>BULLISH REPORT..</STRONG></FONT></DIV>
+<BR>
+<DIV align=3Dcenter><FONT face=3DArial color=3D#FF0066 size=3D3>Campaign =
+for: <b>GDKI</b><br>Price: $0.125 <br>5 Day Target price: =
+$0.95<br>Market: hellish!</FONT></DIV>
+<BR>
+<DIV align=3Dcenter><FONT face=3DArial color=3D#FF0066 size=3D4>This sym =
+is gaining momentum!</FONT></DIV>
+<BR>
+<DIV align=3Dcenter><FONT face=3DArial color=3D#000033 size=3D=
+4>alsa-devel, take a look at the hottest news!!!</FONT></DIV>
+<BR><BR>
+</BODY></HTML>
+
+------=_NextPart_000_0010_01C0739C.3A232C90--
+
+
+--===============1793502916==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 -------------------------------------------------------------------------
 Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys-and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
+--===============1793502916==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1793502916==--
