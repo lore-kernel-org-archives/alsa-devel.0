@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: support for PCI_DEVICE_ID_INTEL_ICH6_15
-Date: Sat, 20 Nov 2004 12:48:21 -0500
-Message-ID: <1100972902.6879.24.camel@krustophenia.net>
+Date: Sat, 20 Nov 2004 13:31:48 -0500
+Message-ID: <1100975509.6879.31.camel@krustophenia.net>
 References: <419F7E9F.6040807@ens-lyon.fr>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -22,21 +22,26 @@ Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 On Sat, 2004-11-20 at 18:27 +0100, Brice Goglin wrote:
-> lspci -n says that the PCI id is "8086:2668".
-> include/linux/pci_ids.h says this is PCI_DEVICE_ID_INTEL_ICH6_15.
-> The intel8x0.c alsa driver code seems to handle several ICH chips,
-> but we didn't get this one to work.
+> Hi,
 > 
-> Anyway, I didn't find this PCI id in intel8x0.c. I just found 
-> PCI_DEVICE_ID_INTEL_ICH6_3 (whose id is 266e instead of 2668 here).
+> We have a machine here whose lspci shows this soundcard :
+> 
+> 0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High 
+> Definition Audio Controller (rev 03)
 
-Well that could be a typo.  Did you try just adding this PCI id to
-intel8x0.c?
+Sorry I missed the 'HD Audio' part.  I think you want the 'azx' driver:
 
-Otherwise this is probably a new device.  But Intel is Linux friendly so
-even if your card is not supported it can be.
+http://sourceforge.net/mailarchive/message.php?msg_id=8912810
+
+AFAIK Intel posted this driver and it was committed to CVS but we have
+no user feedback yet.  So it should be considered experimental, though
+it should work.  It would be good to know how it works...
+
+If this is the case "ICH 6 Family" is misleading, as this needs a
+completely different driver.
 
 Lee
+
 
 
 
