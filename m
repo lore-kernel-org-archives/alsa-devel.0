@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000546]: 5.1 surround sound output on NForce2 is broken through native output
-Date: Tue, 28 Sep 2004 16:01:09 +0200 (CEST)
+Subject: [ALSA - driver 0000540]: alsa driver will no longer function
+Date: Tue, 28 Sep 2004 16:04:01 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040928140109.1B6B039006@server.perex-int.cz>
+Message-ID: <20040928140401.DE19539006@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 71FB730A
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 16:01:09 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4849530A
+	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 16:04:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,52 +22,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000546
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000540
 ======================================================================
-Reported By:                AdamW
+Reported By:                wolftech
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     546
+Bug ID:                     540
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Mandrakelinux Cooker
-Kernel Version:             2.6.8.1 (10mdk revision)
+Distribution:               Fedora Core
+Kernel Version:             2.6.5-1.3
 ======================================================================
-Date Submitted:             09-26-2004 20:23 CEST
-Last Modified:              09-28-2004 16:01 CEST
+Date Submitted:             09-25-2004 15:03 CEST
+Last Modified:              09-28-2004 16:04 CEST
 ======================================================================
-Summary:                    5.1 surround sound output on NForce2 is broken through native output
+Summary:                    alsa driver will no longer function
 Description: 
-Despite much fiddling with levels, it seems to be impossible to get 5.1
-sound to play correctly through NForce2's onboard sound with native ALSA
-output and the snd-intel8x0 driver. I have a test file which plays a sound
-through each speaker of a 5.1 setup in turn and using native ALSA output
-through mplayer -channels 6, totem, aplay or any other app mangles it;
-depending on the mixer setting I can get some of the sounds through some
-of the speakers but never all the sounds and never anywhere near the right
-speakers. However, if I use OSS output instead of native ALSA output, it
-works perfectly; the speaker identification file plays exactly correct and
-my 5.1 movies sound great. Having it working through native output would
-obviously be better, though.
+Alsa-1.2.10
+
+lsmod 
+
+snd_mixer_oss          13824  0
+snd_intel8x0           26280  0
+snd_ac97_codec         50436  1 snd_intel8x0
+snd_pcm                68872  1 snd_intel8x0
+snd_timer              17156  1 snd_pcm
+snd_page_alloc          7940  2 snd_intel8x0,snd_pcm
+gameport                3328  1 snd_intel8x0
+snd_mpu401_uart         4864  1 snd_intel8x0
+snd_rawmidi            17184  1 snd_mpu401_uart
+snd_seq_device          6152  1 snd_rawmidi
+snd                    38372  8
+snd_mixer_oss,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
+soundcore               6112  1 snd
+
+
+
+How reproducible:
+in XMMS, select Alsa driver, attempt to play an mp3/cd, get:
+
+Please check that the sound card is configured properly and You have the
+correct output plugin selected and no other program is blocking the
+soundcard.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- djtm - 09-28-2004 16:01 CEST 
+ djtm - 09-28-2004 16:04 CEST 
 ----------------------------------------------------------------------
-Please elaborate, I could on my Nforce2 system player native alsa 5.1
-surround with mplayer. Which ALSA version? (cat /proc/asound/version)
+Try renaming the .asoundrc to .asoundrc.old .
+If that helps and no other application is running, the config file is
+bad.
+
+also try "killall artsd" a couple times before starting/running xmms. 
+make sure to kill all sound daemons before starting playback.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-04 20:23 AdamW          New Bug                                      
-09-26-04 20:23 AdamW          Distribution              => Mandrakelinux Cooker
-09-26-04 20:23 AdamW          Kernel Version            => 2.6.8.1 (10mdk revision)
-09-28-04 16:01 djtm           Bugnote Added: 0001946                       
+09-25-04 15:03 wolftech       New Bug                                      
+09-25-04 15:03 wolftech       Distribution              => Fedora Core     
+09-25-04 15:03 wolftech       Kernel Version            => 2.6.5-1.3       
+09-28-04 16:04 djtm           Bugnote Added: 0001947                       
 ======================================================================
 
 
