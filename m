@@ -1,12 +1,12 @@
-From: Anthony Truong <Anthony.Truong@mascorp.com>
-Subject: VT1712 (ENVY 24) -Consumer mode of playback and capture.
-Date: Mon, 21 Jul 2003 02:23:17 -0700
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Minor bug(s) in hdsp.c (RME HDSP driver)
+Date: Mon, 21 Jul 2003 20:27:20 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1058779397.2315.5.camel@huykhoi>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Message-ID: <E19ekuS-0007lL-00@sc8-sf-list1.sourceforge.net>
+References: <1058825453.3f1c64ed6de45@scorpio.lunarpages.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Mon, 21 Jul 2003 15:10:53 PDT."
+             <1058825453.3f1c64ed6de45@scorpio.lunarpages.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,21 +15,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@robdye.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-If you are interested in exchanging info. about this audio controller,
-please let me know.
-As you know, the ALSA driver is completely broken for consumer mode
-playback and capture.  Nothing works!
-I manage to have capture working.  However playback is still very
-elusive.
+>Quoting Paul Davis <paul@linuxaudiosystems.com>:
+>
+>> >I also think that the behaviour of hdsp_set_rate() should change. If the 
+>> >card is set to AutoSync, and there is no input signal, hdsp_set_rate() 
+>> >will fail on line 888. In this case, I think the proper behaviour would 
+>> >be to set the card in Master mode with the given rate.
+>> 
+>> seems sensible.
+>> 
+>
+>I disagree.  If the card is set to AutoSync and there is no input
 
-Regards,
-Anthony Dominic Truong.
+on 2nd thoughts, so do i. more concisely, if the sync source is
+AutoSync, then any call to hdsp_set_rate(0 should fail, independently
+of whether there is a sync-able input signal or not.
 
-
-
+--p
 
 
 -------------------------------------------------------
