@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: playing underruns
-Date: Thu, 13 Feb 2003 14:10:54 -0500
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: playing underruns
+Date: Thu, 13 Feb 2003 11:26:44 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18jOlQ-0004jy-00@sc8-sf-list1.sourceforge.net>
-References: <200302131907.h1DJ78H07915@fafner.math.umass.edu>
+Message-ID: <NDBBLGIKBJENLAMOLFHGOEKNBGAB.mknecht@controlnet.com>
+References: <E18jOlQ-0004jy-00@sc8-sf-list1.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 13 Feb 2003 14:07:08 EST."
-             <200302131907.h1DJ78H07915@fafner.math.umass.edu>
+In-Reply-To: <E18jOlQ-0004jy-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,6 +21,21 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Chris Raphael <raphael@math.umass.edu>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
+
+Also check out the Planet for more info on this. Fernando has some
+suggestions for Redhat there.
+
+Cheers,
+Mark
+
+-----Original Message-----
+From: alsa-devel-admin@lists.sourceforge.net
+[mailto:alsa-devel-admin@lists.sourceforge.net]On Behalf Of Paul Davis
+Sent: Thursday, February 13, 2003 11:11 AM
+To: Chris Raphael
+Cc: alsa-devel@lists.sourceforge.net
+Subject: Re: [Alsa-devel] playing underruns
+
 
 >/sbin/hdparm /dev/hda2
 >
@@ -36,7 +54,7 @@ List-Id: alsa-devel@alsa-project.org
 >
 >with similar results for the other hda's.  I don't know if this
 >is the question you were asking, though, since this doesn't seem
->to have much info.  
+>to have much info.
 
 yep, this doesn't look too good, though its not a complete
 disaster. please read this:
@@ -47,12 +65,26 @@ keep in mind that some distributions (RH included, i think) have fixed
 this issue somewhat, though they may not have gone far enough for low
 latency audio.
 
->I don't have the low latency patch.  
+>I don't have the low latency patch.
 
 you will probably need it. the standard kernel in RH7 is not up to the
-task. 
+task.
 
 --p
+
+
+-------------------------------------------------------
+This SF.NET email is sponsored by: FREE  SSL Guide from Thawte
+are you planning your Web Server Security? Click here to get a FREE
+Thawte SSL guide and find the answers to all your  SSL security issues.
+http://ads.sourceforge.net/cgi-bin/redirect.pl?thaw0026en
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+
+
 
 
 -------------------------------------------------------
