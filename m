@@ -1,13 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] alsamixer
-Date: Wed, 28 May 2003 11:05:18 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Changing BIOS IRQs and I/O addresses
+Date: Wed, 28 May 2003 12:49:49 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305281104260.12323-100000@pnote.perex-int.cz>
-References: <20030528012634.3430.h004.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <Pine.HPX.4.33n.0305281245410.8615-100000@studcom.urz.uni-halle.de>
+References: <20030528100042.GA7426@ee.unsw.edu.au>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030528012634.3430.h004.c012.wm@mail.icqmail.com.criticalpath.net>
+Received: from mailgate.uni-halle.de (mlucom8.urz.Uni-Halle.DE [141.48.10.118])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA16286
+	for <alsa-devel@alsa-project.org>; Wed, 28 May 2003 13:01:52 +0200
+In-reply-to: <20030528100042.GA7426@ee.unsw.edu.au>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,47 +20,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eliot Blennerhassett <bigblen@icqmail.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Matt Flax <flatmax@pgb.unsw.edu.au>
+Cc: core sound <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 28 May 2003, Eliot Blennerhassett wrote:
+Matt Flax wrote:
+> Unfortunatly the IRQ is set up by the BIOS to be 0.
+> This bios does not let the user alter the IRQs.
 
-> On 28 May 2003 at 9:25, Jaroslav Kysela wrote:
-> 
-> > On Tue, 27 May 2003, Eliot Blennerhassett wrote:
-> > 
-> > > this patch enables alsamixer to adjust controls correctly where the min
-> value is
-> > > negative (non-zero?)
-> > > 
-> > > I have tested with my controls that have ranges of -100,0 and -10,22 and it
-> > > seems to work OK.
-> > 
-> > It seems that only removal of condition 'if volume >= 0' is sufficient.
-> Jaroslav,
-> 
-> I think the other change is necessary too.
-> 
-> Mixer conv returns a value between min and max.  Input vol1 is the percentage
-> step.  In existing code returned vol1 is assumed to be that step converted into
-> the units of the control.  When min is non-zero this is not true.\
-> For example mixer_conv(2,0,100,-100,0) returns -98
-> Subtracting min==-100 gives the correct result of (-98 -(-100))=+2
-> I suspect that every control except mine has min==0
->  
->        vol1 = mixer_conv(vol1, 0, 100, min, max);
-> +    vol1 -= min; // convert value to a delta in units of the volume control.
->       if (vol1 <= 0)
+Usually, the BIOS has an option "PnP OS" or maybe "ACPI OS" to specify
+whether the resources are to be allocated by the BIOS or by the OS.
 
-Yes, you're right. Fixed in CVS.
+If your BIOS doesn't support this, you have to configure the Linux kernel
+to allocate the resources. I don't know if or how this is possible.
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+HTH
+Clemens
+
 
 
 
