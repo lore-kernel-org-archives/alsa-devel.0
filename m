@@ -1,13 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000555]: ATI IXP 150 - Does Not work majority of the time.
-Date: Fri,  1 Oct 2004 19:17:12 +0200 (CEST)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Spam on Alsa-devel.
+Date: Fri, 01 Oct 2004 13:19:46 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041001171712.64AD22D0C1@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1096651186.24868.31.camel@krustophenia.net>
+References: <2004WQdvQh10NQC1Jjv.wm2ZaVFIdjIkUzUSUFunRfL.qmail@webeMutxHWGhe8JTZRleXYrN5VpdkWuXOykxaPyV.mail.yahoo.com>
+	 <415C45D9.401@icem.com>
+	 <Pine.LNX.4.58.0410010800330.2073@pnote.perex-int.cz>
+	 <415D1623.4060301@superbug.co.uk>
+	 <Pine.LNX.4.58.0410011035300.2073@pnote.perex-int.cz>
+	 <20041001181228.7c9e28a6@mango.fruits.de>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BAF0024B
-	for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2004 19:17:12 +0200 (MEST)
+In-Reply-To: <20041001181228.7c9e28a6@mango.fruits.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,65 +22,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Florian Schmidt <mista.tapas@gmx.net>
+Cc: Jaroslav Kysela <perex@suse.cz>, James Courtier-Dutton <James@superbug.co.uk>, Carsten Koch <Carsten.Koch@icem.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2004-10-01 at 12:12, Florian Schmidt wrote:
+> On Fri, 1 Oct 2004 10:37:04 +0200 (CEST)
+> Jaroslav Kysela <perex@suse.cz> wrote:
+> 
+> > On Fri, 1 Oct 2004, James Courtier-Dutton wrote:
+> > 
+> > > So, any post by a non-member will have to be authorised, the the 
+> > > authorisation will be quiet.
+> > > In this way, you can filter out all SPAM manually, so that it does
+> > > not get posted to the list.
+> > > If mail is from the kernel mailing list, accept it, if it is from a 
+> > > non-member, manually reject it, saying only members can submit
+> > > messages.
+> > 
+> > I don't have a power to filter messages every day.. Any volunteer?
+> 
+> couldn't this be automated? every message having lkml somewhere in its
+> headers comes through? everything else from non members not.
+> 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000555
-======================================================================
-Reported By:                bremedios
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     555
-Category:                   PCI - atiixp
-Reproducibility:            sometimes
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8.1
-======================================================================
-Date Submitted:             09-30-2004 20:53 CEST
-Last Modified:              10-01-2004 19:17 CEST
-======================================================================
-Summary:                    ATI IXP 150 - Does Not work majority of the time.
-Description: 
-Majority of the time (approx 70%) the board boots and reports timeout
-errors.  In these cases the sound driver fails to load, thus trying to use
-any sound applications results in failure.
+No, because the message could have come from any of the kernel
+developers.  All this would do is allow any spam to the list to go
+through as long as LKML was cc:ed.  In theory this has a HUGE hole, in
+practice, maybe it could work well.
 
-Trying to unload and reload the modules when it fails does not seem to
-help.
+I still think it's worth a spam here and there to not have to subscribe
+to a list to post to it.  It works for LKML, they do get spammed but
+only one or two a day.  If the one or two spams a day are REALLY
+intolerable then we should report the problem to sourceforge.
 
-Shutting down and Starting up seems to eventually fix the problem.
+Lee
 
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 10-01-2004 17:03 CEST 
-----------------------------------------------------------------------
-What happens if you start with pci=noacpi or acpi=off?
-
-----------------------------------------------------------------------
- bremedios - 10-01-2004 19:17 CEST 
-----------------------------------------------------------------------
-pci=noacpi has the result of getting the ATI IXP 150 to work.
-
-I guess this is actually an ACPI bug then right?
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-30-04 20:53 bremedios      New Bug                                      
-09-30-04 20:53 bremedios      File Added: messages                         
-09-30-04 20:53 bremedios      Distribution              => Fedora Core 2   
-09-30-04 20:53 bremedios      Kernel Version            => 2.6.8.1         
-10-01-04 17:03 tiwai          Bugnote Added: 0002000                       
-10-01-04 19:17 bremedios      Bugnote Added: 0002005                       
-======================================================================
 
 
 -------------------------------------------------------
