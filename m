@@ -1,16 +1,14 @@
-From: Joe Hsu <nagual.hsu@gmail.com>
-Subject: Re: about bt878/879
-Date: Thu, 31 Mar 2005 07:08:16 +0800
-Message-ID: <7fe2059905033015081a7cac09@mail.gmail.com>
-References: <200503301056.j2UAuRHo012810@www4.pobox.sk>
-	 <7fe2059905033006087479f171@mail.gmail.com>
-	 <424AE25D.7070000@pobox.sk>
-Reply-To: Joe Hsu <nagual.hsu@gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001026]: The "Gamesurround" Fortissimo III _Not_ The Fortissimo III.
+Date: Thu, 31 Mar 2005 06:42:26 +0200
+Message-ID: <0947722f291e95ea23b0c1439f9fc282@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <424AE25D.7070000@pobox.sk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC0E31FB
+	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 06:42:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,55 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzad@pobox.sk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for your reply....I have tried inserted some samples. And the
-buffer underrun
-for playback is gone. However, the sound quality is not right, ie.
-having some noise.
- I think I may do something wrong. For example, I capture 64 frames
-once at a time
-and check 'snd_pcm_avail_update', and then decide to insert one extra frames.
-This extra frame is an average of 32th and 33th frame. The numbers of
-extra frames
-are not fixed every time and the biggest num is 8.  And the number of
-frames I capture
-is raging from 64 to 256.(ie., 64, 128, 192, 256)
 
-Should I measure HZs both in AC97 and Bt878 at first to get an overview
-for up/down sampling?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1026> 
+======================================================================
+Reported By:                tony
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1026
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               SuSE Linux 9.2
+Kernel Version:             2.6.8
+======================================================================
+Date Submitted:             03-31-2005 06:42 CEST
+Last Modified:              03-31-2005 06:42 CEST
+======================================================================
+Summary:                    The "Gamesurround" Fortissimo III _Not_ The
+Fortissimo III.
+Description: 
+Hi, 
+   Over Two Years Ago I Bought A Hercules (Guillimot) Gamesurround
+Fortissimo III
+PCI Sound Card. It Was Like A Limited Edition Thing, I Don't Think Alot
+Were Produced Or Sold, Anyway I Have Four Linux Installations Running On
+The Same Computer With Two Of XP. Ubuntu, Slackware, Mandrake And SuSE,
+They Are All No More Than One Year Old Distributions, Possibly Newer. All
+Use The alsa For Sound.
+Here's What Happens The Sound Functions Fine However After Less Than Sixty
+Seconds The Sound Cuts Out And Feed Back Is Produced. I Mean Really Loud
+Buzzing! ! This Cannot Be Healthy For The Card. All Of The Installed
+Systems Apart From XP. Do This.
+alsa recognises the sound chip as cs46xx. It is a Crystal Sound Fusion
+Chip But a Unique Config? I Know This Card Not To Be The Same As 
+The Similar Fortissimo II Or Fortissimo III But It Does Output 7.1
+Surround.
 
-On Wed, 30 Mar 2005 19:31:09 +0200, Peter Zubaj <pzad@pobox.sk> wrote:
-> Yes, they can. But 8000 Hz on bt878 or AC97 is not exactly 8000 HZ. It
-> can be for example 8010 Hz for AC97 and 7990 for bt878. Only high end
-> sound card can be synchronized together. For your case, you should
-> handle this situation for example by discarding or inserting some samples.
-> 
-> Peter Zubaj
-> 
-> Joe Hsu wrote:
-> 
-> >Well.....I believe the AC97 alsa driver can operate at 8000 HZ in
-> >software level.
-> >
-> >
-> >On Wed, 30 Mar 2005 12:56:27 +0200, Peter Zubaj <pzad@pobox.sk> wrote:
-> >
-> >
-> >>Hi,
-> >>
-> >>Just blind shot: Maybe diffrence in crystal frequence. 8000 Hz on
-> >>bt878 is not 8000 Hz on AC97.
-> >>
-> >>Peter Zubaj
-> >>
-> 
+Any Info Needed I Can Get And Can Also Test Anything To Try And Get A
+Realistic Sound Throughput.
+
+MayBe A Seperate Driver for This Unique Card Is In Order?
+
+If So, contact Me By E-mail If I Can Assist?
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-31-05 06:42 tony           New Issue                                    
+03-31-05 06:42 tony           Distribution              => SuSE Linux 9.2  
+03-31-05 06:42 tony           Kernel Version            => 2.6.8           
+======================================================================
 
 
--- 
-The sun is shinny but the ice is slippery.
 
 
 -------------------------------------------------------
