@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000819]: Patch to make Dummy driver a loopback device
-Date: Wed, 19 Jan 2005 17:11:58 +0100
-Message-ID: <f75ca786392f5a6bebaee07a81dd04a7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
+Date: Wed, 19 Jan 2005 17:14:35 +0100
+Message-ID: <ef9a32cde7e575f0f5e675d8fb34950d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 546AD26D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 17:11:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 339EB26D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 17:14:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,116 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=819> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
 ======================================================================
-Reported By:                tschneider
-Assigned To:                
+Reported By:                footcow
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   819
-Category:                   GENERIC - dummy
+Issue ID:                   666
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.10
+Status:                     resolved
+Distribution:               Debian
+Kernel Version:             2.6.9
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-15-2005 02:26 CET
-Last Modified:              01-19-2005 17:11 CET
+Date Submitted:             11-23-2004 01:31 CET
+Last Modified:              01-19-2005 17:14 CET
 ======================================================================
-Summary:                    Patch to make Dummy driver a loopback device
+Summary:                    Simply no sound ... no line ... no mixer
 Description: 
-This patch updates the Dummy ALSA device to be a loopback device.  (i.e.
-the sound played to the device is available on the capture output)  This
-patch is against the dummy driver in the 2.6.10 linux kernel.
+I have compiled the last release : 1.0.7 stable.
+But I do not have any sound, no line ... no mixer ... :(
+
+I have an AsusTek P5GD2 motherboard with lspci -v :
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+        Subsystem: Asustek Computer, Inc.: Unknown device 813d
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70]
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
+
+
+The snd_azx module is well loaded :
+lsmod : 
+snd_azx                30920  1
+snd_pcm                95112  1 snd_azx
+snd_timer              25476  1 snd_pcm
+snd                    54500  5 snd_azx,snd_pcm,snd_timer
+snd_page_alloc         10120  1 snd_pcm
+
+If I run alsamixer I get this :
+$ alsamixer
+No mixer elems found
+
+If I run alsamixergui, I get 3 columns:
+Line is emplty and can't change
+Same for Mic
+I can only move values for a third column called Capt.
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000789 With AZX Sound card
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 17:11 
+ footcow - 01-15-05 00:21 
 ----------------------------------------------------------------------
-Thanks for the patch.  First, please provide a bit more detailed
-description of the patch, and signed-off-by line, as described in News
-page.
+Perfect sound is back with version 1.8.0 ;o)
+You can close the bug report for me.
 
-The internal buffer should be card specific and shouldn't be a static
-array of such a big size.  Use vmalloc() and allocate/free it dynamically
-for each card instance.
-
-But, I think it'd be better to copy directly from the playback buffer to
-the capture buffer without an intermediate buffer.
+----------------------------------------------------------------------
+ tiwai - 01-19-05 17:14 
+----------------------------------------------------------------------
+OK, go to Fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-15-05 02:26 tschneider     New Issue                                    
-01-15-05 02:26 tschneider     File Added: loopback-alsa-dummy.v7.patch          
-         
-01-15-05 02:26 tschneider     Kernel Version            => 2.6.10          
-01-19-05 17:11 tiwai          Note Added: 0003300                          
+11-23-04 01:31 footcow        New Issue                                    
+11-23-04 01:31 footcow        Distribution              => Debian          
+11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
+11-23-04 21:49 footcow        Note Added: 0002530                          
+12-08-04 19:54 tiwai          Note Added: 0002791                          
+12-08-04 23:56 footcow        Note Added: 0002795                          
+12-09-04 11:27 tiwai          Note Added: 0002799                          
+12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
+12-09-04 11:34 tiwai          Note Added: 0002800                          
+12-09-04 12:11 tiwai          Note Added: 0002801                          
+12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
+  
+12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
+12-10-04 22:08 footcow        Note Added: 0002808                          
+12-10-04 22:08 footcow        File Added: alsamix.png                      
+12-11-04 17:40 tiwai          Note Added: 0002811                          
+12-12-04 00:58 footcow        Note Added: 0002813                          
+12-12-04 00:59 footcow        File Added: alsamix2.png                     
+12-16-04 18:32 tiwai          Note Added: 0002836                          
+12-16-04 21:06 footcow        Note Added: 0002841                          
+01-07-05 00:44 footcow        Note Added: 0003099                          
+01-07-05 18:04 tiwai          Note Added: 0003107                          
+01-07-05 18:04 tiwai          File Added: azx-debug.diff                    
+01-08-05 01:22 footcow        Note Added: 0003125                          
+01-11-05 16:14 tiwai          Note Added: 0003152                          
+01-11-05 16:15 tiwai          File Added: azx-cmedia-pcm-fix.diff               
+    
+01-11-05 16:16 tiwai          Relationship added       has duplicate 0000789
+01-15-05 00:21 footcow        Note Added: 0003211                          
+01-19-05 17:14 tiwai          Status                   new => resolved     
+01-19-05 17:14 tiwai          Resolution               open => fixed       
+01-19-05 17:14 tiwai          Assigned To               => tiwai           
+01-19-05 17:14 tiwai          Note Added: 0003301                          
 ======================================================================
 
 
