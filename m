@@ -1,14 +1,11 @@
-From: Ryan Underwood <nemesis-lists@icequake.net>
-Subject: Re: SGI/HAL2 architecture detection
-Date: Fri, 3 Oct 2003 17:10:42 -0500
+From: Daniel MacDonald <danboid@yahoo.co.uk>
+Subject: BUG REPORT: NFORCE2/Soundstorm recording broke
+Date: Sat, 4 Oct 2003 02:52:39 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031003221042.GB28811@dbz.icequake.net>
-References: <20031003212654.GA28811@dbz.icequake.net>
+Message-ID: <20031004095239.3516.qmail@web86304.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20031003212654.GA28811@dbz.icequake.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,35 +17,54 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+My setup is:
 
-Ok, I fixed this, and then discover that a Makefile is not generated in
-/hal2 directory, so the build dies at that point.  What should I use for
-a Makefile template for this directory?  Has anyone built this successfully?
+ALSA driver 0.9.7a, 0.9.7 lib
+Linux kernel 2.4.21
+RedHat 9
+ASUS A7N8X Deluxe/ NFORCE2 chipset with Soundstorm
+onboard sound
 
-Ryan
+Playback of both PCM and MIDI sound works fine but the
+problem is that recording doesn't work under ALSA.
+When I type 'arecord -l' I get this:
 
-On Fri, Oct 03, 2003 at 04:26:54PM -0500, Ryan Underwood wrote:
-> 
-> In latest kernels, the file /usr/src/linux/include/asm/sgi/sgihpc.h
-> has become /usr/src/linux/include/asm/sgi/hpc3.h.  Both files need to
-> be checked in configure.in now to determine SGI architecture.
-> 
-> -- 
-> Ryan Underwood, <nemesis at icequake.net>, icq=10317253
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
+**** List of CAPTURE Hardware Devices ****
+card 0: nForce2 [NVidia nForce2], device 0: Intel ICH
+[NVidia nForce2]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
--- 
-Ryan Underwood, <nemesis at icequake.net>, icq=10317253
+but the when I issue 'arecord -t wav -f cd -d 6
+test.wav' I just get a silent test.wav file. I've
+tried recording under Audacity too and that produces
+similiar results, unless I use the OSS kernel driver
+and then I can record in 16-bit, 44.1khz stereo but
+not mono and no full-duplex either.
+
+The funny thing is that full duplex recording under
+ALSA did actually work under Audacity with my same
+hardware setup- this was when I was running Mandrake
+9.1 and an earlier ALSA version (0.9.2 or
+thereabouts), so I know it is possible.
+
+I've reported this bug to this list before but either
+it just got ignored or there are no ALSA developers
+who own a NFORCE2 board. If this isn't the right place
+to report such bugs I would appreciate if someone
+forwarded this to the right address or told me where
+to send it.
+
+Thanks,
+
+dan
+
+http://www.transelement.co.uk
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Shopping - with improved product search
+http://shopping.yahoo.com
 
 
 -------------------------------------------------------
