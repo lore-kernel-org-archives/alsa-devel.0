@@ -1,16 +1,15 @@
-From: Carlos Pita <carlosjosepita@yahoo.com.ar>
-Subject: oss raw midi emulation
-Date: Sun, 28 Nov 2004 12:14:24 -0300
-Message-ID: <200411281214.24321.carlosjosepita@yahoo.com.ar>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: oss raw midi emulation
+Date: Sun, 28 Nov 2004 16:22:53 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0411281622150.11615@pnote.perex-int.cz>
+References: <200411281214.24321.carlosjosepita@yahoo.com.ar>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp206.mail.sc5.yahoo.com (smtp206.mail.sc5.yahoo.com [216.136.129.96])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 53C021E7
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 16:10:33 +0100 (MET)
-Content-Disposition: inline
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A14126E
+	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 16:21:13 +0100 (MET)
+In-Reply-To: <200411281214.24321.carlosjosepita@yahoo.com.ar>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,46 +19,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Carlos Pita <carlosjosepita@yahoo.com.ar>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+On Sun, 28 Nov 2004, Carlos Pita wrote:
 
-What should be /dev/midi??   ?
-Symlimks to /dev/snd/midiC?D?  ?
-Or devices with the correct major/minor numbers specified by the oss manual ?
+> which suggests that /dev/midi?? shouldn't be symlinked as I'm
+> doing with /dev/midi10.
 
-I'm asking because I need to use snd-virmidi in order to connect pd (which has no support
-for alsa midi yet) with muse or vkeybd. So I'm doing:
+No, debian or snddevices script in the driver package does right job.
 
-> modprobe snd-virmidi
-> cat /proc/asound/devices
-  [...]
-  43: [1- 3]: raw midi
-  42: [1- 2]: raw midi
-  41: [1- 1]: raw midi
-  40: [1- 0]: raw midi
-> ln -s /dev/snd/midiC1D0 /dev/midi10
-> pd -midiindev 11
-(with -midiindev N,  pd will open /dev/midiM with M=N-1, just a quirk)
-Then I aconnect muse or vkeybd to alsa client VirMIDI 1-0.
+						Jaroslav
 
-It works fine, but is this the right way to do it? For me it was
-a matter of trial and error.
-
-Also, debian sarge predefines the following four devices:
-
-crw-rw----  1 root audio 14,  2 2004-10-26 21:40 /dev/midi00
-crw-rw----  1 root audio 14, 18 2004-10-26 21:40 /dev/midi01
-crw-rw----  1 root audio 14, 34 2004-10-26 21:40 /dev/midi02
-crw-rw----  1 root audio 14, 50 2004-10-26 21:40 /dev/midi03
-
-which suggests that /dev/midi?? shouldn't be symlinked as I'm
-doing with /dev/midi10.
-
-Thank you.
-Regards,
-Carlos
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
