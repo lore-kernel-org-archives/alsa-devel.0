@@ -1,13 +1,10 @@
-From: Konstantin Stepaniuk <s.k.v@mail.ru>
-Subject: reopen with "plug:dmix" failure
-Date: Thu, 10 Jul 2003 12:39:57 +0400
+From: Carlo Wood <carlo@alinoe.com>
+Subject: Where is the real developers list?
+Date: Thu, 10 Jul 2003 14:03:33 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307101239.57649.s.k.v@mail.ru>
-Reply-To: s.k.v@mail.ru
+Message-ID: <20030710120333.GA15534@alinoe.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -21,21 +18,13 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-My application should play some tracks simultaneously and work in a common 
-system in which sound card is not supplying hardware mixing. Tracks may have 
-different bitrate and channels count. So I'm opening alsa handle for the each 
-track by calling function snd_pcm_open( &pcm, "plug:dmix", 
-SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK );
+I only see questions on this list,
+and nobody who answers them.
 
-After closing last alsa handle (snd_pcm_close) and trying to open the new one, 
-it's failed with error:
+Where are the developers?  Is ALSA still maintained?
 
-ALSA lib pcm_hw.c:1055snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Device 
-or resource busy
-ALSA lib pcm_dmix.c:948snd_pcm_dmix_open) unable to open slave
-
-How can I solve this problem?
-
+-- 
+Carlo Wood <carlo@alinoe.com>
 
 
 -------------------------------------------------------
