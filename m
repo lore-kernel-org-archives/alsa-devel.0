@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000652]: Compilation fails (alsa-driver/drivers/serialmidi.c)
-Date: Mon, 29 Nov 2004 20:03:59 +0100
-Message-ID: <37c2d5a4ad05490767997c6adc3627c3@bugtrack.alsa-project.org>
+Date: Mon, 29 Nov 2004 20:28:57 +0100
+Message-ID: <3c64d0a6c5f46fcfbefb7fd2dd521e79@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB4EF2BB
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 20:03:59 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B1E571C9
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 20:28:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=652> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Debian Unstable
 Kernel Version:             2.6.10-rc2
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             11-18-2004 08:51 CET
-Last Modified:              11-29-2004 20:03 CET
+Last Modified:              11-29-2004 20:28 CET
 ======================================================================
 Summary:                    Compilation fails (alsa-driver/drivers/serialmidi.c)
 Description: 
@@ -73,6 +75,11 @@ I tried it with gcc 3.2.3 (Debian), 3.3.5 (Debian 1:3.3.5-2) and
 Happens on gentoo, also, using kernel version 2.6.10-rc2. I get exactly the
 same error message from the alsa-driver package (1.0.7).
 
+----------------------------------------------------------------------
+ tiwai - 11-29-04 20:28 
+----------------------------------------------------------------------
+Already fixed on CVS.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -80,6 +87,9 @@ Date Modified  Username       Field                    Change
 11-18-04 08:51 visit0r        Distribution              => Debian Unstable 
 11-18-04 08:51 visit0r        Kernel Version            => 2.6.10-rc2      
 11-29-04 20:03 rwfranz        Note Added: 0002659                          
+11-29-04 20:28 tiwai          Status                   assigned => resolved
+11-29-04 20:28 tiwai          Resolution               open => fixed       
+11-29-04 20:28 tiwai          Note Added: 0002660                          
 ======================================================================
 
 
