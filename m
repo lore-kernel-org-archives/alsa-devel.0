@@ -1,16 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000483]: alsa-libs samplerate-conversion causes assertion frames <= snd_pcm_mmap_avail
-Date: Mon,  6 Sep 2004 11:39:07 +0200 (CEST)
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: [PATCH] Audigy DSP support
+Date: Mon, 6 Sep 2004 13:39:56 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040906093907.E00A63A008@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200409061139.i86BdtKZ017082@www6.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
+Mime-Version: 1.0
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 480C726B
-	for <alsa-devel@alsa-project.org>; Mon,  6 Sep 2004 11:39:08 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 014D12025A
-	for <alsa-devel@alsa-project.org>; Mon,  6 Sep 2004 11:39:08 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,76 +16,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000483
-======================================================================
-Reported By:                jwrdegoede
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Bug ID:                     483
-Category:                   ordinary pcm
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             09-06-2004 11:39 CEST
-Last Modified:              09-06-2004 11:39 CEST
-======================================================================
-Summary:                    alsa-libs samplerate-conversion causes assertion frames <= snd_pcm_mmap_avail
-Description: 
-When running xmame (x.mame.net) with alsa selected for sound output on my
-es1688. I get the following error:
-pcm.c:5957: snd_pcm_mmap_commit: Assertion frames <=
-snd_pcm_mmap_avail(pcm)' failed.
+What about this ???
 
-I checked the source for the alsa driver (I'm one of the xmame developers)
-and the number of frames it is passing to snd_pcm_writei is always smaller
-then or equal to the value
-returned by:
-err = snd_pcm_status(priv->pcm_handle, status);
-/* check err */
-frames = snd_pcm_status_get_avail(status);
+http://sourceforge.net/mailarchive/message.php?msg_id=3D9347355
 
-After some more testing I noticed that alsa returns 22050 as the actual
-acquired samplerate, but I know from the oss days that my card can only do
-22095 not 22050. So I thought this error might be caused by the
-alsa-lib-samplerate conversion code, which appearantly is default enabled
-(Fedora feature?)
+I you don't want this, then please, fix include/sound/emu10k1.h (in
+alsa-lib) at least.
 
-To test my hypothesis I tried creating an almost empty .asoundrc:
-pcm.!default {
-type hw
-card 0
-}
+struct emu10k1_ctl_elem_id {
+ =09unsigned int pad;=09=09/* don't use */
+ =09enum emu10k1_ctl_elem_iface iface;/* interface identifier */
+ =09unsigned int device;=09=09/* device/client number */
+ =09unsigned int subdevice;=09=09/* subdevice (substream) number */
+ =09unsigned char name[44];=09=09/* ASCII name of item */=20
+ =09unsigned int index;=09=09/* index of item */
+};=20
 
-ctl.!default {
-type hw
-card 0
-}
+should be
 
-And now alsa-lib returns 22095 as the acquired samplerate and everything
-works fine! So IMHO this problem is clearly somewhere in alsa-libs
-samplerate conversion.
+typedef struct {
+ =09unsigned int pad;=09=09/* don't use */
+ =09enum emu10k1_ctl_elem_iface iface;/* interface identifier */
+ =09unsigned int device;=09=09/* device/client number */
+ =09unsigned int subdevice;=09=09/* subdevice (substream) number */
+ =09unsigned char name[44];=09=09/* ASCII name of item */=20
+ =09unsigned int index;=09=09/* index of item */
+} emu10k1_ctl_elem_id_t;=20
 
-I've searched the internet for this assertion and I believe this bug has
-bitten more people and applications and needs fixing ASAP. (note I'm not
-saying this because I need it fixed, since the .asoundrc workaround works
-fine for me, but I'm saying this in the general interest)
+Without this is this herader unusable.
 
-======================================================================
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-06-04 11:39 jwrdegoede     New Bug                                      
-======================================================================
+Peter Zubaj=0A____________________________________=0Ahttp://www.pobox.sk/ -=
+ spolahliva a bezpecna prevadzka=0A=0A=0A
 
 
 -------------------------------------------------------
