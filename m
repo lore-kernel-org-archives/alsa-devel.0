@@ -1,13 +1,14 @@
-From: Joshua Kwan <joshk@triplehelix.org>
-Subject: Re: [PATCH] Fix ALSA resume
-Date: Sun, 05 Dec 2004 02:06:29 -0800
-Message-ID: <41B2DDA5.20208@triplehelix.org>
-References: <1102195391.1560.65.camel@tux.rsn.bth.se>	<20041204172855.350100d0.akpm@osdl.org>	<41B282F0.3020704@triplehelix.org> <20041204235155.3b8ad3fc.akpm@osdl.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0000708]: Fix CVS envy24control crash on midi 00 control
+Date: Sun, 5 Dec 2004 12:36:42 +0100
+Message-ID: <2aa4721e75c15b92770578dab2536013@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041204235155.3b8ad3fc.akpm@osdl.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F20B2353
+	for <alsa-devel@alsa-project.org>; Sun,  5 Dec 2004 12:36:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,21 +18,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrew Morton <akpm@osdl.org>
-Cc: gandalf@wlug.westbo.se, torvalds@osdl.org, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Andrew Morton wrote:
-> OK, suspend was failing, yes?
 
-Yes.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=708> 
+======================================================================
+Reported By:                shadow
+Assigned To:                
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   708
+Category:                   envy24control
+Reproducibility:            sometimes
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             12-05-2004 12:36 CET
+Last Modified:              12-05-2004 12:36 CET
+======================================================================
+Summary:                    Fix CVS envy24control crash on midi 00 control
+Description: 
+envy24control adds midi support, but if it receives data from a controller
+with ID '0' it will crash.
+======================================================================
 
-> Can you please test Martin's patch?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-05-04 12:36 shadow         New Issue                                    
+12-05-04 12:36 shadow         File Added:
+cvs_alsa_20041205-envy24control.midi00crash.patch                    
+======================================================================
 
-Works for me.
 
--- 
-Joshua Kwan
 
 
 -------------------------------------------------------
