@@ -1,40 +1,71 @@
-From: Perry Gilfillan <perrye@linuxmail.org>
-Subject: Any work on ALSA versions of tvmixer and tvaudio?
-Date: Mon, 23 Feb 2004 21:57:28 -0600
-Sender: video4linux-list-admin@redhat.com
-Message-ID: <403ACBA8.4050500@linuxmail.org>
-Reply-To: video4linux-list@redhat.com
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] fix amixer load error messages
+Date: Tue, 24 Feb 2004 10:12:07 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <Pine.HPX.4.33n.0402241009050.6462-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <video4linux-list-admin@redhat.com>
-Errors-To: video4linux-list-admin@redhat.com
-List-Help: <mailto:video4linux-list-request@redhat.com?subject=help>
-List-Post: <mailto:video4linux-list@redhat.com>
-List-Subscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
-	<mailto:video4linux-list-request@redhat.com?subject=subscribe>
-List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
-	<mailto:video4linux-list-request@redhat.com?subject=unsubscribe>
-List-Archive: <https://www.redhat.com/mailman/private/video4linux-list/>
-To: alsa-list <alsa-devel@lists.sourceforge.net>, v4l <video4linux-list@redhat.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-has any one done any work to develop ALSA versions of the tvmixer and 
-tvaudio mixer drivers?
-
-Thanks,
-
-Perry
--- 
------
-V3TV: http://gilfillan.org:8000/v3tv/
-VPX3224: http://gilfillan.org:8000/vpx3224/
+fix error messages for snd_mixer_load
 
 
+BTW: yesterday's change to alsa-lib's asequencer.h hasn't been
+committed yet
 
---
-video4linux-list mailing list
-Unsubscribe mailto:video4linux-list-request@redhat.com?subject=unsubscribe
-https://www.redhat.com/mailman/listinfo/video4linux-list
+
+Index: alsa-utils/amixer/amixer.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-utils/amixer/amixer.c,v
+retrieving revision 1.79
+diff -u -r1.79 amixer.c
+--- alsa-utils/amixer/amixer.c	21 Feb 2004 18:44:18 -0000	1.79
++++ alsa-utils/amixer/amixer.c	24 Feb 2004 08:56:13 -0000
+@@ -774,7 +774,7 @@
+ 	}
+ 	err = snd_mixer_load(handle);
+ 	if (err < 0) {
+-		error("Mixer load error: %s", card, snd_strerror(err));
++		error("Mixer %s load error: %s", card, snd_strerror(err));
+ 		snd_mixer_close(handle);
+ 		return err;
+ 	}
+@@ -1145,7 +1145,7 @@
+ 	}
+ 	err = snd_mixer_load(handle);
+ 	if (err < 0) {
+-		error("Mixer load error: %s", card, snd_strerror(err));
++		error("Mixer %s load error: %s", card, snd_strerror(err));
+ 		snd_mixer_close(handle);
+ 		return err;
+ 	}
+@@ -1427,7 +1427,7 @@
+ 	snd_mixer_set_callback(handle, mixer_event);
+ 	err = snd_mixer_load(handle);
+ 	if (err < 0) {
+-		error("Mixer load error: %s", card, snd_strerror(err));
++		error("Mixer %s load error: %s", card, snd_strerror(err));
+ 		snd_mixer_close(handle);
+ 		return err;
+ 	}
+
+
+
+
+-------------------------------------------------------
+SF.Net is sponsored by: Speed Start Your Linux Apps Now.
+Build and deploy apps & Web services for Linux with
+a free DVD software kit from IBM. Click Now!
+http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
