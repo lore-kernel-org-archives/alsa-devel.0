@@ -1,14 +1,14 @@
-From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: Re: [linux-audio-dev] Re: ALSA homepage redesign
-Date: Thu, 18 Apr 2002 21:32:07 +0200
+From: Josh Green <jgreen@users.sourceforge.net>
+Subject: Re: [linux-audio-dev] ALSA homepage redesign
+Date: 18 Apr 2002 13:30:55 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m24ri8n6q0.fsf@vador.mandrakesoft.com>
-References: <Pine.LNX.4.20.0204181449380.9938-100000@flik.wava.loc>
+Message-ID: <1019161863.1608.101.camel@lively.localdomain>
+References: <20020418060011.EEE042757@sitemail.everyone.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.20.0204181449380.9938-100000@flik.wava.loc> (Fred
- Gleason's message of "Thu, 18 Apr 2002 14:52:00 -0400 (EDT)")
+In-Reply-To: <20020418060011.EEE042757@sitemail.everyone.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,26 +17,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Fred Gleason <fredg@wava.com>
-Cc: linux-audio-dev@music.columbia.edu, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Fred Gleason <fredg@wava.com> writes:
+On Wed, 2002-04-17 at 23:00, Patrick Shirkey wrote:
+> I have now migrated the new ALSA homepage. It was redesigned to be more user friendly.
+> 
+> http://www.alsa-project.org
+> 
 
-> > Is it perhaps time for an alsa-0.9.rc1 many people will be
-> > frightened off by the beta designation, and certainly mislead into
-> > thinking that 0.5 is the "safer" option.
->
-> My understanding is that SuSE 8.0 is shipping with 0.9.0beta12.  That's
-> starting to sound pretty stable to me.
+Looking good, and its nice to know someone is working on it.
+I noticed that the documentation doesn't have the Doxygen generated API
+reference for ALSA lib though. In fact I can no longer find it on the
+web site. I like many of the other suggestions about taking down the
+older docs to lesson the confusion factor as well.
 
-in mandrake, we've just switched to 0.9.x too (a couple of weeks ago).
+> I will now add new links to the native applications page.
+> 
+> So far I have:
+> 
+> jack 
+> Ardour
+> TiMidity
+> Glame
+> PD
+> Rosengarden
+> MusE
+> 
+> 
+> Are these correct and are there any others?
+> 
 
-libalsa, arts, alsaplayer, mplayer, xine, have been recompiled for
-0.9.x
+If you are counting ALSA sequencer support than the Smurf Sound Font
+Editor could be added. Perhaps there should be a designation of what
+kind of support the program provides (sequencer and/or PCM), maybe..
+iiwusynth could also be added.
 
-there's still, libsdl, wine, ... to be ported to 0.9.x
-
--- 
-"il a ete brule au 28e degre" (the naheulbeuk witch)
-"c curieux, gcc fonctionne" (gwenole)
+Cheers!
+	Josh Green
