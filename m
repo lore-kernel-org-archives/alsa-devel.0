@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: emu10k1 bug and patch (0.9.0rc7)
-Date: Fri, 14 Feb 2003 13:51:21 +0100 (CET)
+From: Orm Finnendahl <finnendahl@folkwang-hochschule.de>
+Subject: Re: hdsp/firmware problem
+Date: Fri, 14 Feb 2003 14:18:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302141349500.1222-100000@pnote.perex-int.cz>
-References: <s5hptpvjjzo.wl@alsa2.suse.de>
+Message-ID: <20030214131848.GA1586@finnendahl.de>
+References: <20030214120658.GE1169@finnendahl.de> <E18jfEO-0007rb-00@sc8-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hptpvjjzo.wl@alsa2.suse.de>
+Content-Disposition: inline
+In-Reply-To: <E18jfEO-0007rb-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,64 +17,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Arnaud de Bossoreille de Ribou <arnaud.debossoreille@via.ecp.fr>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "bozo@via.ecp.fr" <bozo@via.ecp.fr>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 14 Feb 2003, Takashi Iwai wrote:
+Hi,
 
-> At Thu, 13 Feb 2003 21:30:17 +0100 (CET),
-> Jaroslav wrote:
-> > 
-> > On Mon, 10 Feb 2003, Arnaud de Bossoreille de Ribou wrote:
-> > 
-> > > So the bug looks like a signedness problem since sw_ready is unsigned
-> > > and there is a while(sw_ready > 0), which explain the constant delay,
-> > > next in the "snd_emu10k1_fx8010_playback_transfer" function.
-> > > 
-> > > So the emu10k1.patch file attached fixes the problem and seems not to
-> > > introduce new ones.
-> > 
-> > Please, could you try this patch, if it also fixes your problem? Thanks.
-> 
-> i don't think the patch fixes the original problem.
-> if there are only two periods, the diff will be either period_size or
-> -period_size, i.e. (buffer_size/2) or -(buffer_size/2).
-> 
-> assume the buffer size = 200
-> 	appl_ptr
-> 
-> 	0
-> 
-> 	100	diff = 100 - 0 = 100
-> 
-> 	0	diff = 0 - 100 = -100
-> 
-> 	100
-> 
-> 
-> >  	if (diff) {
-> >  		if (diff < -(snd_pcm_sframes_t) (runtime->boundary / 2))
-> >  			diff += runtime->boundary;
-> > -		pcm->sw_ready += diff;
-> > +		frames += diff;
-> >  	}
-> 
-> and since boundary = buffer_size as default, the above condition will
-> be not satisfied (i.e. diff is equal with -(runtime->boundary/2) and
-> it is never smaller).
+the driver/interface works. The guy in Rotterdam tried the line
+outputs on the front (I realized that this might have been the reason
+5 minutes after I posted my previous mail).
 
-The boundary is close to LONG_MAX and 'buffer_size * N = boundary'
-condition is always true. We have enough space to detect the proper
-rewind/boundary crosses. Isn't it?
+Since the hdsp code reports firmware load failure there still might be
+something wrong, but the Multiface plays sound as it should :-).
 
-						Jaroslav
+--
+Orm
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
+Am Freitag, den 14. Februar 2003 um 07:46:09 Uhr (-0500) schrieb Paul Davis:
+> >the hdsp driver still seems to have problems with the new pci
+> >card. It's a little complicated for me to give exact information as
+> >the machine is in Rotterdam and I'm in Berlin. I got The following
+> >email from the sysadmin of the machine:
+> 
+> i have an hdsp-9652 here that i haven't installed yet. it sounds as if
+> need to do so and test it out, because i think it has the new firmware
+> on it. RME sent me one because to develop a firmware flasher is not
+> safe on the pure hdsp - a mistake will fry the h/w. apparently the
+> hdsp-9652 is resistant to such mistakes.
+> 
+> however, i can't do it today, that's for sure. i will ask RME though
+> and see if they know of anything that i/we should know.
+> 
+> --p
+> 
+> 
+> -------------------------------------------------------
+> This SF.NET email is sponsored by: FREE  SSL Guide from Thawte
+> are you planning your Web Server Security? Click here to get a FREE
+> Thawte SSL guide and find the answers to all your  SSL security issues.
+> http://ads.sourceforge.net/cgi-bin/redirect.pl?thaw0026en
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 -------------------------------------------------------
