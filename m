@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000583]: xruns when playing audio or video files
-Date: Sat, 16 Oct 2004 11:39:04 +0200 (CEST)
+From: =?Windows-1251?B?0fPt5PPq7uLgIMvl7eA=?= <hagan@erln.gepas.de>
+Subject: Greeting!
+Date: Sat, 16 Oct 2004 10:15:16 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041016093904.39D851B009@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <E1CIlob-0004Ko-AT@sc8-sf-mx1.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: multipart/related;
+ boundary="----------7CC7470B1B3D94478EA030920E"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9867426D
-	for <alsa-devel@alsa-project.org>; Sat, 16 Oct 2004 11:39:04 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,212 +15,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------------7CC7470B1B3D94478EA030920E
+Content-Type: text/html; charset=Windows-1251
+Content-Transfer-Encoding: 8bit
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000583
-======================================================================
-Reported By:                KAtiOS
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     583
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.9_rc4
-======================================================================
-Date Submitted:             10-15-2004 16:27 CEST
-Last Modified:              10-16-2004 11:39 CEST
-======================================================================
-Summary:                    xruns when playing audio or video files
-Description: 
-I get xruns when playing files.
-I tested with lots of 2.6 kernels, up to 2.6.9_rc4 with the same results.
-It seems that mplayer with sdl output works fine, but xruns with alsa.
-Using acpi=off or pci=noacpi helps in mplayer but not in vdr (with
-softdevice plugin - using alsa).
+<html>
+<body bgcolor="#FFFFE8">
+<table width="650" border="0" align="center" bgcolor="#FFFFFF">
+  <tr>
+    <td>
+      <div align="center"> 
+        <p><font size="2"><i><font color="#0000FF"><b>email</b></font></i></font><b><i><font face="Verdana, Arial, Helvetica, sans-serif"> 
+          &nbsp; </font></i></b><font size="5" face="Verdana, Arial, Helvetica, sans-serif"><font size="7"><b><font size="5" color="#E30D32"><i><font face="Times New Roman, Times, serif">реклама</font></i></font></b></font></font></p>
+        <p><font size="6">доставим</font> <font size="5">Вашу</font> <font size="4">рекламу 
+          </font><font size="2"><i><br>
+          <font color="#0000FF"><b>по email</b></font></i></font> адресам <b><font size="4">более 
+          600 000 фирм Москвы</font></b><br>
+          и более 7 млн <font size="2"><i><font color="#0000FF"><b>email</b></font></i></font> 
+          России!<br>
+          <font size="1">(а так же и другие варианты) </font></p>
+        <p>&nbsp;<img src="cid:zegzrosq_lzfqktly_bkquisjc"></p>
+      </div>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
 
 
+------------7CC7470B1B3D94478EA030920E
+Content-Type: image/jpeg; name="huiywppx.jpg"
+Content-Transfer-Encoding: base64
+Content-ID: <zegzrosq_lzfqktly_bkquisjc>
 
-======================================================================
+/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgFBgcGBQgHBgcJCAgJDBMMDAsLDBgREg4THBgd
+HRsYGxofIywlHyEqIRobJjQnKi4vMTIxHiU2OjYwOiwwMTD/2wBDAQgJCQwKDBcMDBcwIBsg
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDD/wgAR
+CAAPAHEDASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAAAwQAAgUBBv/EABQBAQAAAAAA
+AAAAAAAAAAAAAAD/2gAMAwEAAhADEAAAAfYLGsJgf4ErcgkDRCaeS6mccqEE2q4OSQ//xAAc
+EAADAQADAQEAAAAAAAAAAAACAwQBABMUERD/2gAIAQEAAQUCtYQLc1nb6WN33GW9hZZWblBr
+6NPbjLfnBp1lglQNdbdTPO9r8kabPytJEDUGZujE1NkI1dO7YxHYyuf0cbIRK8yuwIAU9SNA
+jhVqfI35Ko0hz//EABQRAQAAAAAAAAAAAAAAAAAAADD/2gAIAQMBAT8BD//EABQRAQAAAAAA
+AAAAAAAAAAAAADD/2gAIAQIBAT8BD//EACsQAAIBAwIFAwMFAAAAAAAAAAECAwAREhMhIjFB
+UWEQUpFxgbEjocHR8P/aAAgBAQAGPwJVj2eRsAe1GKHG6JkS45/61KICi3iEvH1v0pGBWKJ4
+1fJoi2583rTLcLpkvi3P8ijIsiBVHIx3ufmhENJZBGHa/InxSMCsUTxK+TRFtz56egjVf0ir
+cXci390kbSRuLFmshFh800ii5FShHiYrazgG3xUgkxJjfHJeR9FaPd42zA71qRSaTMmLXW9R
+xrphUFuJMj9q0UkCQ44Fcd7fWtQiyomK+b8/wKjJbhQ5Y9z0oDg29yZH7dq0UkCQ44Fcd7fW
+tTTTP3Y71HJGzgRqVClye1SOWyaQ/t0FMkaJDlbdV7VK2uBLIAMgmwA8XrBmQqOWCY/yfT//
+xAAjEAEAAgICAgEFAQAAAAAAAAABESEAMUFRYYFxEJGx0fCh/9oACAEBAAE/IUkhYU8lfQOS
+xgZxdQKSNr/zDmr1vQISNW+TES0huyRACK33m3CPMQD+Oc3H+Z8AQd0ZICtldCLUSbvZhS0Q
+uyRCEK33nyw78gc1hjxpjDJI7oLnt/DlEq08E2+t+sessdX2MpkPPJgM4ERKR0r3Hr6Q7lrr
+qk+Rc1eBauzmkl7MAqB0xIAktPpwi6mx4KlVVpw7ZJbIV/HOH0Yj7jx+shTElKIfJbenDbyb
+HgqVVWnPx5uMb3rCFkgr8mta+Oss5SuoH4P3kg4JEWpJ7xbQs8g+y25yByIKQ7mZPp//2gAM
+AwEAAgADAAAAEKPBJFKPPP/EABQRAQAAAAAAAAAAAAAAAAAAADD/2gAIAQMBAT8QD//EABQR
+AQAAAAAAAAAAAAAAAAAAADD/2gAIAQIBAT8QD//EAB4QAQEBAAMAAwEBAAAAAAAAAAERIQAx
+QRBRYYGR/9oACAEBAAE/ECRJWBZDcVcHFC5zfOUWgoImroMnGkBoAK8AfYnRvCshyqytwchT
+pIQ/oANC1PXUr+Cq4xGlIE7e9xTE4flUigtTBg3hd+LVZXwORa1Fe85Y4833MyarajIFRLHA
+uq0NiBNPp5DW1oiAUNQKg1INeFn4ULu7ABnby3ikYxbuRARTK6t+CgWQBA0mCOLgpc44AMQU
+rCEVvdOnhriFVIEBB2+GZvVEyzCiQTGoSm82yuIcAPAALq/SK7YatZkTXSVk1rJte7cc5pAG
+6+GZvVlyyiiUqNQlOK+Hnkfh/DvrOTILE+UHADwRq7HOp0nwIBXB/qrLOIHGz0LgAAnT4p7z
+fia2hlFQfaUknDotRl30Rpue234//9k=
 
-----------------------------------------------------------------------
- lee - 10-15-2004 18:43 CEST 
-----------------------------------------------------------------------
-This is a kernel issue, not an ALSA bug.  If you want xrun-free operation
-you HAVE to use a kernel patched for low latency.  Please close this bug.
 
-----------------------------------------------------------------------
- KAtiOS - 10-15-2004 18:51 CEST 
-----------------------------------------------------------------------
-Since when a low latency [so.. patched] kernel is needed to listen to music
-and play video correctly?
-Given that the processor isn't particulary weak and that's the only task
-of the system, it shouldn't be hard to keep pace.
 
-----------------------------------------------------------------------
- lee - 10-15-2004 19:02 CEST 
-----------------------------------------------------------------------
-OK, you are right, you should not need to patch the kernel to avoid massive
-xruns with regular AV playback.  The reason I say it's a kernel issue is
-that disabling ACPI seems to fix the problem.
+------------7CC7470B1B3D94478EA030920E--
 
-Do you get fewer xruns if you disable xrun debugging?  This can cause a
-cascade effect where a single xrun triggers hundreds of them due to printk
-overhrad.
-
-Also, does it work OK with a 2.4 kernel?
-
-----------------------------------------------------------------------
- KAtiOS - 10-15-2004 19:12 CEST 
-----------------------------------------------------------------------
-Disabling ACPI seems to help with mplayer, but mplayer causes troubles only
-a few times in the duration of a music, whereas VDR got several xruns a
-second, whether ACPI is disabled or not. 
-I tried with xrun debugging desactived but VDR acts the same (visibly at
-least).
-
-I haven't used a 2.4 in months, would it helped it I tried with one?
-
-----------------------------------------------------------------------
- KAtiOS - 10-15-2004 19:24 CEST 
-----------------------------------------------------------------------
-Also note that I tried in the past with and without preempt without making
-a major difference that I can still think of.
-(preemp activated right now btw)
-
-----------------------------------------------------------------------
- lee - 10-15-2004 19:29 CEST 
-----------------------------------------------------------------------
-I get the occasional xrun with mplayer even with the latest 2.6 low latency
-kernels.  I figure it's a bug in mplayer's ALSA support.  VDR I don't
-know.  Do other users of that program report the same issue?
-
-There are many, many apps out there with buggy ALSA support but good OSS
-support.  Try a known good app like aplay or alsaplayer.
-
-----------------------------------------------------------------------
- KAtiOS - 10-15-2004 20:28 CEST 
-----------------------------------------------------------------------
-Humm.. yes but since mplayer seems to be working ok with audio files, I
-don't think alsaplayer will help.
-I just tested, I have xrun with a video played with mplayer (acpi off)
-Any video player I could test?
-
-----------------------------------------------------------------------
- lee - 10-15-2004 22:17 CEST 
-----------------------------------------------------------------------
-If audio plays back OK but AV playback causes xruns, then this cannot be an
-ALSA issue.  Mplayer's ALSA support is known to be buggy.  I am not sure
-there is a video player with known good ALSA support.  You might want to
-ask on the alsa-user list.
-
-----------------------------------------------------------------------
- KAtiOS - 10-15-2004 23:49 CEST 
-----------------------------------------------------------------------
-Tested again with mplayer, I still get xruns with audio files, but less
-often than with acpi on. Alsaplayer seems to be working ok (yet)
-
-But what's the point of using Alsa if no third party software is able to
-use it correctly?
-
-Btw I've used mplayer and alsa on other computers and never got any xruns.
-The only difference I can see is hardware, and so hardware driver (here
-atiixp alsa driver)
-
-----------------------------------------------------------------------
- lee - 10-16-2004 01:11 CEST 
-----------------------------------------------------------------------
-There is lots of third party software that does use the ALSA API correctly.
- But mplayer is simply an incorrect design.  It's single-threaded, and
-updates everything - GUI, sound, video - in one thread.  So when you move
-the mouse to the bottom of the screen to bring up the control panel, you
-get skips in the output.  
-
-I tried it here and just switching windows causes a 400 ms xrun.
-
-Please close this bug.
-
-----------------------------------------------------------------------
- lee - 10-16-2004 01:18 CEST 
-----------------------------------------------------------------------
-More info:
-
-This is _definitely_ a bug in Mplayer.  It's trivial to reproduce.  I
-tested here with several different video files and producing _any_ load on
-the system - switching windows for example - will produce massive xruns.
-
-Using OSS emulation (mplayer -ao oss) works fine.  So this is not an ALSA
-problem.
-
-Please ask the Mplayer developers to fix their program.  Their buggy ALSA
-support is making ALSA look bad.
-
-----------------------------------------------------------------------
- lee - 10-16-2004 06:05 CEST 
-----------------------------------------------------------------------
-OK, I tried xine (on my Debian system this was accessible via the totem gui
-frontend), and it works perfectly.  Supports ALSA, plays the same files as
-mplayer, with no xruns.  Can you try xine to verify that mplayer is the
-problem?
-
-----------------------------------------------------------------------
- KAtiOS - 10-16-2004 10:08 CEST 
-----------------------------------------------------------------------
-I'll try ASAP with xine. But please consider that I never had a single xrun
-(with alsa of course) with mplayer on other computers.
-Here i get some, more with acpi.
-So there is a ACPI problem, plus according to you a mplayer problem, and I
-get you're also saying that vdr-softdevice is guilty (but lots a xruns a
-second is quite a bug that can't be hidden long if it's with any alsa
-system..-remember that this soft doesn't give a choice of the sound
-system).
-Also I get xrun with mplayer without using the computer; and having load
-(compiling or burncpu-ing) doesn't make the xruns worse (even had the
-feeling that it got the things better at times)
-
-----------------------------------------------------------------------
- KAtiOS - 10-16-2004 11:39 CEST 
-----------------------------------------------------------------------
-Ok, tested with xine, it seems to be working, except with HDTV files but I
-supposed it's normal given the load.
-So, even if almost every alsa apps causes xruns on some hardware only, as
-long as it's their use of alsa which is bad, that's not a problem.
-How alsa can be so hard to implement correctly so that experienced
-programmers can't make their software usable on every platform?
-
-[Question : if I can test another sound card on the same computer, could I
-conclude something with the result with mplayer/vdr-softdevice before
-definitely closing this bug?]
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-15-04 16:27 KAtiOS         New Bug                                      
-10-15-04 16:27 KAtiOS         Distribution              => Gentoo Linux    
-10-15-04 16:27 KAtiOS         Kernel Version            => 2.6.9_rc4       
-10-15-04 18:43 lee            Bugnote Added: 0002168                       
-10-15-04 18:51 KAtiOS         Bugnote Added: 0002169                       
-10-15-04 19:02 lee            Bugnote Added: 0002170                       
-10-15-04 19:12 KAtiOS         Bugnote Added: 0002171                       
-10-15-04 19:24 KAtiOS         Bugnote Added: 0002172                       
-10-15-04 19:29 lee            Bugnote Added: 0002173                       
-10-15-04 20:28 KAtiOS         Bugnote Added: 0002174                       
-10-15-04 22:17 lee            Bugnote Added: 0002175                       
-10-15-04 23:49 KAtiOS         Bugnote Added: 0002176                       
-10-16-04 01:11 lee            Bugnote Added: 0002180                       
-10-16-04 01:18 lee            Bugnote Added: 0002181                       
-10-16-04 06:05 lee            Bugnote Added: 0002183                       
-10-16-04 10:08 KAtiOS         Bugnote Added: 0002185                       
-10-16-04 11:39 KAtiOS         Bugnote Added: 0002186                       
-======================================================================
 
 
 -------------------------------------------------------
