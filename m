@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: midi byte stream decoder
-Date: Thu, 5 Dec 2002 19:01:32 +0100 (CET)
+From: "John S. Denker" <jsd@monmouth.com>
+Subject: Re: sb16 gets wedged when doing overlapped i/o (full
+ duplex)
+Date: Thu, 05 Dec 2002 13:33:35 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0212051901160.505-100000@pnote.perex-int.cz>
-References: <Pine.LNX.4.44.0212051621100.22092-100000@rhubarb.custard.org>
+Message-ID: <3DEF9BFF.2050200@monmouth.com>
+References: <Pine.LNX.4.05.10212051455590.3576-100000@pulsar.kss-loka.si>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0212051621100.22092-100000@rhubarb.custard.org>
+In-Reply-To: <Pine.LNX.4.05.10212051455590.3576-100000@pulsar.kss-loka.si>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,31 +18,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ian <deviant@custard.org>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Uros Bizjak <uros@kss-loka.si>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 5 Dec 2002, ian wrote:
+Uros Bizjak wrote:
 
-> Hi,
-> I've been using the midi byte stream encoder/decoder to convert
-> snd_seq_event_t's to and from midi byte streams. I discovered that the
-> decoder is not handling sysex events properly - a valid sysex event gets
-> decoded to junk. Looking at lines 440 onwards of seq_midi_event.c (in the
-> rc6 library source), the code is writing the event to dev->buf, the
-> decoder buffer, and doesn't touch buf, the argument to the decode
-> function, which is where the user is supposed to get the returned byte
-> stream from.
-> I'm assuming that the code should be copying to buf, not dev->buf?
+>   From the error message you posted about this bug, it looks that driver
+> is trying to call prepare() operator on a substream that is still
+> in SNDRV_PCM_STATE_RUNNING state. Perhaps Jaroslav could tell us if this
+> can happen if hardware pointers are not updated anymore (because sb16 DMA
+> engine gets stucked somehow). Do you get an XRUN message in
+> /var/log/messages?
 
-Yep, obvious type. Fixed. Thank you.
+Excellent question!
 
-						Jaroslav
+1) No xrun messages in /var/log/messages, but....
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+2) My program intentionally causes an overrun on input once
+every 0.5 seconds.  It catches this condition, and recovers
+by calling snd_pcm_prepare().  It does not print a message
+about this (unless super-specially requested).
+
+I realize that other programs may cause far fewer overruns,
+which may (or may not :-) explain why others don't suffer
+quite so badly from this bug.  Even so, it remains a bug.
+An overrun shouldn't take down the whole system.
+
+3) As previously indicated, if I load the system, I can cause
+a few audible underruns on output.  But doing this has no
+discernible effect on the incidence of the bug in question.
 
 
 
