@@ -1,10 +1,11 @@
-From: <postmaster@torontohomeoffice.com>
-Subject: WARNING: YOU MAY HAVE A VIRUS
-Date: Mon, 27 Dec 2004 23:32:47 -0500
-Message-ID: <200412272332.AA1430388856@torontohomeoffice.com>
-Reply-To: <postmaster@torontohomeoffice.com>
+From: "Daniel L. Finch" <dfinchrl@stahlwerk-bous.de>
+Subject: (no subject)
+Date: Tue, 28 Dec 2004 08:31:44 +0000
+Message-ID: <825201c4ecb7$6b5c6d0b$0604d120@stampekaasgaard.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,35 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Our Network Virus software on our corporate mail server has reported that you sent
-an email to [Unknown Var], containing the  W32/Netsky.P@mm in the
-document_rogable.zip attachment.  
-The subject of the email was "Re: Error in document".  
-The email containing the virus has been quarantined to prevent furtherdamage.
-
-You should run a virus scanning software on your system regularly 
-to prevent future instances.
-
- 
-
-Headers Follow:
-
-Received: from wsibusinesssolutions.com [203.80.236.62] by icmail.torontohomeoffice.com with ESMTP
-  (SMTPD32-8.05) id A1EA50AF0064; Mon, 27 Dec 2004 23:32:42 -0500
-From: alsa-devel@lists.sourceforge.net
-To: rogable@wsibusinesssolutions.com
-Subject: Re: Error in document
-Date: Tue, 28 Dec 2004 11:31:31 -0800
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 3
-X-MSMail-Priority: Normal
-Message-Id: <200412272332327.SM02704@wsibusinesssolutions.com>
-
+<html>
+<b>Treat yourself to this perfect opportunity.</b><br>
+Wear out a real gold watch without the paranoia of damage or loss.<p></b>=
+<br>
+<b>Replicated R <-olexes and C a->rtier and other brands that look
+and feel the same:<br></b> No one will ever know they are not the genuine=
+ thing.
+<br>They look so real no one will know the difference.. 110% Refund guara=
+ntee!<p>
+<a href=3D"http://lfthosdarwzjki.teitt.com/r/gagabob/jxncjrdipltq">Learn =
+more here.</a>
+<br><p><br><p><br><p><br><p><br><p><p>
+<a href=3D"http://iwzdjbbkwwzj.teitt.com/z.php">cancel me</a>
+</html>
 
 
 
