@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000256]: Support for SB Audigy LS?
-Date: Sun, 3 Apr 2005 13:15:51 +0200
-Message-ID: <d92641184373c5325926d86a8152f80c@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001034]: (potential) problems introduced with the " improved stream linking and plugin code cleanups" patch by perex
+Date: Sun, 3 Apr 2005 17:42:39 +0200
+Message-ID: <70810c7c02f6438ebd5c2b607a827422@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5BD9A1F8
-	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 13:15:51 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7181E1DD
+	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 17:42:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,56 +22,89 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=256> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1034> 
 ======================================================================
-Reported By:                tpog
+Reported By:                modax
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   256
-Category:                   PCI - emu10k1
-Reproducibility:            N/A
-Severity:                   feature
+Project:                    ALSA - lib
+Issue ID:                   1034
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 not fixable
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             05-06-2004 14:47 CEST
-Last Modified:              04-03-2005 13:15 CEST
+Date Submitted:             04-03-2005 17:42 CEST
+Last Modified:              04-03-2005 17:42 CEST
 ======================================================================
-Summary:                    Support for SB Audigy LS?
+Summary:                    (potential) problems introduced with the " improved
+stream linking and plugin code cleanups" patch by perex
 Description: 
-I appreciate that the Audigy LS runs a different chip to the rest of the
-Audigy series, are there any plans to try and support and is there
-anything I can do to help? 
+I'm not an alsa developer so I hadn't known anything about alsa internals
+up until I started debugging alsa-lib to fix an annoying bug I was having
+with alsa 1.0.9rc1 and above. I'm not sure whether my patch/suggestions
+are 100% correct or the best way fix to those bugs.
+
+The initial problem I'm refering to is described in bug#1009 note
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0004275. I narrowed my
+search of the regression down to the big patch,
+which was submitted to alsa-lib CVS on 2005-01-20 by perex. The patch
+cleans up plugin code. Unfortunately, some things have been overlooked by
+the author. Firstly, I'll start with my problem and a fix for it.
+
+As I described in note
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0004275, I had problems
+with -Dsurround51 on my
+NFORCE board. The root of the problem was a combination of two plugins -
+route and hooks - used in surround51 configuration. Later I learned, that
+removing one of them helped, but they both wouldn't work. The portion of
+code which is to blame for the regression can be seen in
+hooks-channel-info-fix.patch (attached). Just compare the original
+pcm_hooks.c:snd_pcm_hooks_channel_info() (before "2005-01-20" patch) and
+pcm_generic.c:snd_pcm_generic_channel_info(), which was supposed to
+replace it. They are completely different functions. Other plugins which
+are likely to suffer from the same bug are:
+  * pcm_file.c
+  * pcm_plug.c
+
+However, most other plugins used
+pcm_plugin.c:snd_pcm_plugin_channel_info() before the "2005-01-20" patch.
+It shares the same code with snd_pcm_generic_channel_info(). So this issue
+raises a few question:
+  * Is snd_pcm_generic_channel() as it is now valid? At least pcm_hooks
+and likely pcm_file and pcm_plug don't work with it.
+  * If it's valid, there is a necessity to create another generic
+function, which clones the code previously provided by
+snd_pcm_{hooks,file,plug}_channel_info() functions.
+
+The attached patch solves the problem for me, but it is not an universal
+solution. The patch should be applied against CVS as of 2005-01-21 or
+later.
+
+And now here it comes some other remarks regarding the "2005-01-20"
+patch.
+  * I guess, snd_pcm_plugin_fast_ops.status = snd_pcm_generic_status in
+pcm_plugin.c is incorrect because it makes snd_pcm_plugin_status()
+reduntant and these functions don't share the same code.
+  * Plugins which haven't been "cleaned up" by the "2005-01-20" patch
+include:
+    - pcm_meter.c
+    - pcm_null.c
+    - pcm_share.c
+    - pcm_shm.c
+    The latter two seem to be kinda different beasts whereas the first two
+shouldn't be too difficult to "_generic_"'ize.
 ======================================================================
-
-----------------------------------------------------------------------
- perex - 05-06-04 19:49 
-----------------------------------------------------------------------
-We have no documentation from Creative, so the only slow way is to do the
-reverse-engineering of the Open Sound System driver.
-
-----------------------------------------------------------------------
- jcdutton - 04-03-05 13:15 
-----------------------------------------------------------------------
-The Audigy LS is supported with the ALSA snd-ca0106 driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-04 14:47 tpog           New Issue                                    
-05-06-04 14:47 tpog           Kernel Version            =>                 
-05-06-04 19:49 perex          Note Added: 0001063                          
-04-03-05 11:50 jdthood        Status                   new => acknowledged 
-04-03-05 11:50 jdthood        Resolution               open => not fixable 
-04-03-05 13:15 jcdutton       Status                   acknowledged => closed
-04-03-05 13:15 jcdutton       Note Added: 0004306                          
+04-03-05 17:42 modax          New Issue                                    
+04-03-05 17:42 modax          File Added: hooks-channel-info-fix.diff           
+        
 ======================================================================
 
 
