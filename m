@@ -1,125 +1,98 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Tascam US-224 progress report (was: USB224_usbsnoop1.log captured
- on WinXP)
-Date: Sat, 3 Apr 2004 02:24:16 +0100 (WEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32789.192.168.1.5.1080955456.squirrel@www.rncbc.org>
-References: <200404021434.26528.annabellesgarden@yahoo.de>
+From: "Ivica Ico Bukvic" <ico@fuse.net>
+Subject: RE: [linux-audio-user] snd-hdsp+cardbus=distortion -- the sagacontinues (cardbus driver=culprit?) MORE UPDATE
+Date: Fri, 2 Apr 2004 23:17:29 -0500
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <20040403041732.FAYW17964.smtp2.fuse.net@64BitBadass>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;boundary="----=_20040403022416_13406"
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200404021434.26528.annabellesgarden@yahoo.de>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+In-Reply-To: 
+To: 'Russell King' <rmk+lkml@arm.linux.org.uk>
+Cc: 'A list for linux audio users' <linux-audio-user@music.columbia.edu>, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-pcmcia@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_20040403022416_13406
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Hi all,
 
-I have news, and they're good this time.
+I've tinkered even further with the stuff and I do have my lspci and other
+logs (will post them shortly). I've tried now runnning card with the
+external Word Clock -- the results are the same (distortion persists).
 
-After some juggling and persistance around compiling and patching the
-snd-usb-usx2y module, I've finally got that dreaded INPUT MONITOR LED come
-to light and, as Karsten rightly predicted, playback has shown its ugly
-head on my Tascam US-224. Hip, hip, hurray!
+At this point what I know for a fact:
 
-Like a miracle, the MUTE and SELECT LED lights of the mixer strips 1-4 are
-lightning up too. Again, Karsten tips are quite cirurgical :)
+1) Soundcard is distorted no matter what app/framework (i.e. direct Alsa
+access vs. Jack) I use in Linux
+2) Likely culprit is either PCMCIA cardbus driver or the audio driver itself
+3) External Word clock does not fix the issue
+4) Changing sample rate does not fix the issue
+5) Apparently sound has gaps that are comparable in size to the sound data
+buffers (apparently 32 points)
+6) I've updated BIOS and that did not fix it (yet the DSDT table is still
+trashed on my notebook but that should not affect the operability of the
+PCMCIA card -- see next point)
+7) Tried using the card without ACPI and APIC and the IRQ was 11 together
+with the cardbus as well as with ACPI (patched 2.6.3 kernel) and APIC,
+having IRQ 17 for both the cardbus and the soundcard. Both sounded the same
+(distorted). Using only APIC without ACPI fails to allocate proper IRQ to
+cardbus (IRQ 0) resulting in failed modprobing of the soundcard.
+8) In Win32, the card works fine on the same hardware and using the same IRQ
+17 like in Linux, however, upon suspending/hibernating and resuming, the
+soundcard produces a similar but different kind of distortion than in Linux
+except when using 32000Hz sampling rate (???).
+9) The color of the distortion changes in Linux when changing sampling rates
+of the card on-the-fly (Will post the link to the sound shortly). The sound
+plays slower and slower in Win32 when the distortion is present and higher
+sampling rates are being used
+10) RME has officially ok-ed my cardbus ENE CB1410 for use in Win32 since
+they tested it in their labs and it worked ok (so all they talked about its
+problems before is not true any more)
+11) The throughput is not the issue since I stressed the card in Win32 and
+it worked ok (16 outputs at 44100Hz sampling rate at 3ms latency is flawless
+using Directx and Cool Edit Pro/Adobe Audacity, as well as 8 outputs at
+96000Hz at 6ms latency using ASIO in Max/MSP).
+12) Even after resuming in Win32 DirectX and MME drivers still work ok, it's
+only that ASIO drivers crap-out.
+13) At least one more person reported similar behavior as mine on RME-audio
+news server
+14) At least one more person has the same problem in Linux like me
+15) Once I resume from hibernate/standby in Win32, successive disconnects
+eventually result in weird stuff, even a BSOD.
 
-However, I don't get the SOLO, REC, NULL, nor all other transport LEDs to
-lit. But that's yet another step, I think the next.
+Here is the additional info regarding my notebook:
 
-We're getting near and I'm quite happier now.
+Boot log using ACPI&APIC on 2.6.3 patched kernel that fixes IRQ
+misallocation and freezes when inserting PCMCIA card:
+http://meowing.ccm.uc.edu/~ico/eMachines/boot-with-acpi&apic.log
 
-Karsten Wiese wrote:
->
-> So please try the following patch:
->>>>
-> --- alsa-driver/usb/usx2y/usbusx2yaudio.c	30 Mar 2004 08:27:16 -0000	1.9
-> +++ alsa-driver/usb/usx2y/usbusx2yaudio.c	2 Apr 2004 11:55:21 -0000
-> @@ -1245,7 +1245,7 @@
->  	    					     snd_dma_continuous_data(GFP_KERNEL),
->  						     usX2Y_capt_substream->endpoints * 64*1024,
->  						     usX2Y_capt_substream->endpoints * 128*1024)) ||
-> -	    (usX2Y(card)->chip.dev->descriptor.idProduct == USB_ID_US428 &&
-> +	    (usX2Y(card)->chip.dev->descriptor.idProduct != USB_ID_US122 &&
->  	     0 > (err = usX2Y_rate_set(usX2Y_stream, 44100)))) {	// Lets us428
-> recognize output-volume settings, disturbs us122.
->  		snd_usX2Y_audio_stream_free(usX2Y_stream);
->  		return err;
-> <<<
->
-> if the us428 doesn't get the "usX2Y_rate_set(usX2Y_stream, 44100)" at
-> startup, it later behaves ignorant to light & volume setting. like
-> us224 behaves now.
->
+Boot log without using ACPI&APIC on the same kernel:
+http://meowing.ccm.uc.edu/~ico/eMachines/boot-without-acpi&apic.log
 
-That was it. Although I only got it working after one last
-alsa-driver-1.0.3 rebuild and when set --with-debug=full on ./configure.
-Kind of strange. My literal patch applied to stock alsa-driver-1.0.3 is on
-attachment. It is just the same of Karsten's supplied above, just for
-reference.
+Detailed view of the "distorted" sound that reveals 32-points of sound
+followed by 32-points of silence:
+http://meowing.ccm.uc.edu/~ico/eMachines/Distortion.jpg
 
-> If we get the INPUT MONITOR Led enlightened, the Volume settings should
-> also work with respect to direct monitoring at least. US224 Master Fader
-> seams to b where US428's Fader5 is. That needs adjustment in
-> s428control.
->
-> The data sent to set us224 internal mixers is filtered out with
-> 	grep -n "00: 0[0123456789] .. .. .. ..$" USB224_usbsnoop1.log
-> it gives i. e.:
-> 	11721:    00000000: 00 00 25 00 25
-> 	11732:    00000000: 01 00 25 00 25
-> 	11743:    00000000: 02 00 25 00 25
-> 	11754:    00000000: 03 00 25 00 25
-> 	11831:    00000000: 04 00 42 00 42
->
-> look at struct usX2Y_volume and its methods. it should fit the us224.
-> But lets get that Leds enlighted first :-)
->
-
-The master fader works, at least while on playback. I don't seem to get
-fader strips 1-4 to have any audible effect. But now's too early to judge
-my experiments.
-
-Other issues are now just emerging... rest assured ;)
-
-Thanks a lot Karsten, your help and advice is priceless.
-
-CU
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
-------=_20040403022416_13406
-Content-Type: application/x-gzip; name="alsa-driver-1.0.3p2.patch.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="alsa-driver-1.0.3p2.patch.gz"
-
-H4sICKMFbkAAA2Fsc2EtZHJpdmVyLTEuMC4zcDIucGF0Y2gAlVJtb9MwEP7c/IpjH6Z2qVPHyUYX
-1KqjKwixVVWzIhAgK43dYpEmke2Ut/HfuSQFDcE+9BRHl9zd89w9PqE2GyCiWsw1JJlJiNBqLzXx
-PeoFJR1UZo3nK/tWe42TVEIVXvqfbPZ4tkMIOQ6/wygNCfWJfwn+MAqDiA09+tvArd+O67rH9XFA
-xScA6kfsIjq/9ILAp/RpyEJERc+ZTID4LKR9PwC3dc5hMnGgA2gUxtCVWsMITC54me54pta81DLJ
-siJNrORlspWmixEyNhb/78z7eH69fMMX01se3y1nV7d8erW4Wy1nHz1TrdukPhK0Vpm37B1Pk9Ly
-P1EylrkoC5VbA2dwEZ75lIXHlPhs2NbAyxcL/nq2nM9uej24v3dIM1e3geimiRY9Mk4/qdITck/G
-QppUq9IW2lNioQtRpRZGI1jFz/mra76KQzaE01PHPR7lyQMUn7EapdX4ocjtZLrW1Ujb4vODYhCG
-eGE9NPjRGQzgRuKolak70jIttrn6LqGobFlZsi+yaicBMazKt6YPQhlb6XVdgOReLWV9oS1Bsy8H
-Gr7RUv5F3HtWZ2uJ9Tlgm/XnTzz/Dl+vBwpgXBdzUKNmZTReyefuySNsufwSQRtb82Z5QeXKRhCv
-ptNZHHsf8hNswEW+QwcUsZHe+QXQn+hhzQMAAA==
-------=_20040403022416_13406--
+Simple lspci output:
+http://meowing.ccm.uc.edu/~ico/eMachines/lspci-simple.log
 
 
+Complex lspci output (lspci -vvv)
+http://meowing.ccm.uc.edu/~ico/eMachines/lspi-complex.log
 
--------------------------------------------------------
-This SF.Net email is sponsored by: IBM Linux Tutorials
-Free Linux tutorial presented by Daniel Robbins, President and CEO of
-GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+Recorded sound with the aforementioned distortion (towards the end of it,
+namely last second I actually change the sampling rate on-the-fly using
+hdspconf)(WARNING: the sound is normalized at 50% but was recorded clipping,
+so there is some artifacts just from the clipping, but they are simply an
+addon on top of what is already wrong):
+http://meowing.ccm.uc.edu/~ico/eMachines/test.wav (1.7MB)
+
+TODO:
+1) Log the Jack -R output (likely to be ridden with xrun's)
+2) You tell me :-)
+
+Any help is greatly appreciated!
+
+Best wishes,
+
+Ivica Ico Bukvic, composer & multimedia sculptor
+http://meowing.ccm.uc.edu/~ico/
