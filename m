@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000637]: Laptop volume control & mute buttons don't work
-Date: Tue, 9 Nov 2004 16:57:23 +0100
-Message-ID: <44478227fbc3727caaa10833e5e25081@bugtrack.alsa-project.org>
+Date: Tue, 9 Nov 2004 17:49:55 +0100
+Message-ID: <e4437ad73d592a71a4fc23de70c68ca2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 750051EF
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:57:23 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 369561EE
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 17:49:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9-rc2-mm4-VP-S7-noACPI-UMP
 ======================================================================
 Date Submitted:             11-08-2004 18:50 CET
-Last Modified:              11-09-2004 16:57 CET
+Last Modified:              11-09-2004 17:49 CET
 ======================================================================
 Summary:                    Laptop volume control & mute buttons don't work
 Description: 
@@ -49,25 +49,6 @@ volume, as well as a mute button. Under Linux these buttons do nothing.
 The mute button is always lit even when sound is coming out. The volume
 control buttons do not adjust volume.
 ======================================================================
-
-----------------------------------------------------------------------
- Mark Knecht - 11-09-04 16:13 
-----------------------------------------------------------------------
-This was not filed as a bug. It was filed as a feature request. Please do
-not be so dismissive. What did you spend? Maybe 3 seconds and then blew it
-off?
-
-Under Windows the buttons control volume. Pushing the buttons raises or
-lowers volume in the applications. you can see the volume controls go up
-and down. 
-
-Why should Linux *not* work this way? I am requesting that Alsa consider
-how to be more user friendly. I am not filing a bug report. 
-
-If they are already handled under ACPI (which I do not use on my laptop as
-it causes kernel timing problems) then please simply state that Alsa
-already handles this. However, I do not beleive that these specific
-buttons are handled by ACPI, but that's just my guess.
 
 ----------------------------------------------------------------------
  tiwai - 11-09-04 16:57 
@@ -83,6 +64,11 @@ space program such as the window manager (or desktop system).
 Windows works because it grabs the ACPI event and processes it properly. 
 Linux could handle this but the current system doesn't care it.
 
+----------------------------------------------------------------------
+ Mark Knecht - 11-09-04 17:49 
+----------------------------------------------------------------------
+There's no point discussing this. Bye.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -97,6 +83,7 @@ Date Modified  Username       Field                    Change
 11-09-04 16:13 Mark Knecht    Resolution               not an issue => reopened
 11-09-04 16:13 Mark Knecht    Note Added: 0002326                          
 11-09-04 16:57 tiwai          Note Added: 0002328                          
+11-09-04 17:49 Mark Knecht    Note Added: 0002329                          
 ======================================================================
 
 
