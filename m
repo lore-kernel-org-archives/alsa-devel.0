@@ -1,15 +1,15 @@
 From: "Mark Knecht" <mknecht@controlnet.com>
 Subject: RE: How do I make -D hw:0,1 default?
-Date: Tue, 3 Jun 2003 11:34:14 -0700
+Date: Tue, 3 Jun 2003 11:36:42 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGOEBBCGAB.mknecht@controlnet.com>
-References: <NDBBLGIKBJENLAMOLFHGEEAJCGAB.mknecht@controlnet.com>
+Message-ID: <NDBBLGIKBJENLAMOLFHGCEBCCGAB.mknecht@controlnet.com>
+References: <Pine.LNX.4.44.0306032028280.1174-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <NDBBLGIKBJENLAMOLFHGEEAJCGAB.mknecht@controlnet.com>
+In-Reply-To: <Pine.LNX.4.44.0306032028280.1174-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,50 +18,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> .asoundrc from Alsa site:
+> > .asoundrc from Alsa site:
+> >
+> >         pcm.via82xx {
+> >            type hw
+> >            card 0
+> >         }
+> >
+> >         ctl.via82xx {
+> >            type hw
+> >            card 0
+> >         }
+> >
+> > Maybe I need to include the ',1' interface somehow? How would I do that?
 >
->         pcm.via82xx {
->            type hw
->            card 0
->         }
+> Add 'device 1' to {} section.
 >
->         ctl.via82xx {
->            type hw
->            card 0
->         }
->
-> Maybe I need to include the ',1' interface somehow? How would I do that?
->
-> Thanks,
-> Mark
+> 						Jaroslav
 
-Would this be correct?
-(Info taken from
-http://alsa.opensrc.org/index.php?page=.asoundrc
-)
+Thanks Jaroslav!
 
-         pcm.via82xx {
-            type hw
-            card 0
-            device 0
-            subdevice 1
-         }
+Will this make device 1 default for all applications that require sound but
+do not ask for anything specific in terms of interfaces?
 
-         ctl.via82xx {
-            type hw
-            card 0
-            device 0
-            subdevice 1
-         }
+Also, please ignore the email I just sent to alsa-devel 10 seconds before
+your answer arrived at my desk.
 
-Or do I need to give it a different name and call it specifically for every
-application that needs sound? This is the part I cannot seem to find info
-on....
-
-Thanks,
+Cheers,
 Mark
 
 
