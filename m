@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000561]: Sound disappear
-Date: Sun,  3 Oct 2004 02:22:13 +0200 (CEST)
+Date: Sun,  3 Oct 2004 02:23:38 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041003002213.37F024800E@server.perex-int.cz>
+Message-ID: <20041003002338.30EE74800E@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 06FD9241
-	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 02:23:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 63EA1241
+	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 02:23:38 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 93C4F260DC
-	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 02:22:14 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 34E98260DC
+	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 02:23:38 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,7 +23,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000561
 ======================================================================
@@ -41,7 +41,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             10-03-2004 02:22 CEST
-Last Modified:              10-03-2004 02:22 CEST
+Last Modified:              10-03-2004 02:23 CEST
 ======================================================================
 Summary:                    Sound disappear
 Description: 
@@ -88,10 +88,21 @@ often and compile daily as I am also working on other issues and lacking
 features of the ice1724)
 ======================================================================
 
+----------------------------------------------------------------------
+ ungod - 10-03-2004 02:23 CEST 
+----------------------------------------------------------------------
+Oh, completly forgot to mention.
+
+The card is a Terratec Aureon 7.1 Space (PCB rev. 1.4)
+
+And I haven't tried the Windows drivers (no Windows installed) so I can't
+say if they're better
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 10-03-04 02:22 ungod          New Bug                                      
+10-03-04 02:23 ungod          Bugnote Added: 0002008                       
 ======================================================================
 
 
