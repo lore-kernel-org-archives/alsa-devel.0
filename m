@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Wed, 24 Nov 2004 14:29:51 +0100
-Message-ID: <f6dcdbb4a03e7809a0596af7cc4800d8@bugtrack.alsa-project.org>
+Date: Wed, 24 Nov 2004 14:52:57 +0100
+Message-ID: <6f42debe64deb21c4d2f97de0482ac5d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6C4F623D
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 14:29:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6EA442DB
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 14:52:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian/unstable
 Kernel Version:             linux-2.6.4+
 ======================================================================
 Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-24-2004 14:29 CET
+Last Modified:              11-24-2004 14:52 CET
 ======================================================================
 Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
@@ -60,17 +60,16 @@ So I suspect a problem in the ioctl32 wrapper.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-24-04 13:09 
-----------------------------------------------------------------------
-Ah ok, then we'll just need to provide a wrapper of copy_in_user() for
-older kernels.
-
-----------------------------------------------------------------------
  eradicator - 11-24-04 14:29 
 ----------------------------------------------------------------------
 ok... I'll try again once you get that wrapper written... 2.6.10-rc2 is
 locking up  for me on boot (but it's not snd-ioctl32's fault as it's not
 loaded...) so I can't test there for you...
+
+----------------------------------------------------------------------
+ tiwai - 11-24-04 14:52 
+----------------------------------------------------------------------
+The new patch is togher with a hack.  Please give a try.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -118,6 +117,7 @@ Date Modified  Username       Field                    Change
 11-24-04 13:01 tiwai          Note Added: 0002557                          
 11-24-04 13:09 tiwai          Note Added: 0002559                          
 11-24-04 14:29 eradicator     Note Added: 0002563                          
+11-24-04 14:52 tiwai          Note Added: 0002564                          
 ======================================================================
 
 
