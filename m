@@ -2,7 +2,7 @@ From: "David Hartveld" <dhartveld@hotmail.com>
 Subject: [snd-via82xx] AC'97 codec invalid on VIA VT8233/A/8235
 Date: Mon, 19 Jan 2004 20:53:54 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <BAY2-F118XkFtXjMASs00018f72@hotmail.com>
+Message-ID: <BAY2-F110rbmLUKhvK30002cd94@hotmail.com>
 Reply-To: david@hartveld.net
 Mime-Version: 1.0
 Content-Type: text/plain; format=flowed
