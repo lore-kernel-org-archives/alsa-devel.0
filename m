@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: snd-usb-audio in ALSA 0.9.0rc5
-Date: Fri, 15 Nov 2002 15:37:43 +0100 (CET)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: read time information
+Date: Fri, 15 Nov 2002 10:03:19 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0211151537140.1607-100000@pnote.perex-int.cz>
-References: <200211142223.21891.plcl@telefonica.net>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <E18Chwc-0003K5-00@sc8-sf-list1.sourceforge.net>
+References: <001201c28c91$cc64f470$461d8481@profi>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200211142223.21891.plcl@telefonica.net>
+In-reply-to: Your message of "Fri, 15 Nov 2002 11:28:53 +0100."
+             <001201c28c91$cc64f470$461d8481@profi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,51 +15,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Cc: Clemens Ladisch <clemens@ladisch.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: men@ife.ee.ethz.ch
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 14 Nov 2002, Pedro Lopez-Cabanillas wrote:
+>For synchronization purpose I need the current time of my sound card
+>(information on the sample that is currently played out might be
+>sufficient / ADAT-Synch timecode) I did anticipate that the functions 
 
-> On Thursday 14 November 2002 10:09, Jaroslav Kysela wrote:
-> > Have you tried to create the virtual MIDI device (snd-virmidi.o) ? You can
-> > connect any sequencer port to a rawmidi device (and first two rawmidi
-> > devices are mapped to the OSS space as well). Note that virmidi module can
-> > occupy up to 8 card slots (in your environment with 3 real soundcards, you
-> > can create up to 10 oss rawmidi devices).
-> 
-> Thanks! this works! I didn't gave virmidi a shot before, but i think it is a 
-> good solution: i can use both ports of my USB devices with OSS programs.
-> 
-> BTW, there is a little problem with this module:
-> 
-> # modinfo snd-virmidi
-> filename:    /lib/modules/2.4.19/kernel/sound/drivers/snd-virmidi.o
-> description: "Dummy soundcard for virtual rawmidi devices"
-> author:      "Takashi Iwai <tiwai@suse.de>"
-> parm:        index int array (min = 1, max = 8), description "Index value for 
-> virmidi soundcard."
-> parm:        id string array (min = 1, max = 8), description "ID string for 
-> virmidi soundcard."
-> parm:        enable int array (min = 1, max = 8), description "Enable this 
-> soundcard."
-> parm:        midi_devs_Rb3ae63d0 int array (min = 1, max = 8), description 
-> "MIDI devices # (1-8)"
-> 
-> "midi_devs" is a versioned symbol belonging to OSS Free 
-> (linux/drivers/sound/dev_table.h) and i compiled my kernel with versioned 
-> symbols and OSS/free drivers.
-> Some releases ago this param was named "snd_midi_devs". Can we rename it 
-> again? Are there more clashes?
+the code to read the ADAT sync timecode is written, but is not
+"exported" to a usable part of the ALSA API. it will likely show up as
+a readable PCM "control".
 
-I think that '#undef midi_devs' should be sufficient. Added to CVS.
+>snd_pcm_hwsynch(...)
 
-						Jaroslav
+never heard of that function. you learn something new every day :)
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+>snd_pcm_delay(...)
+>
+>must be used to get the current sample positions of the DAC/ADC. But
+>these functions do not seem to work on my system (alsa-0.9.0rc5 and an
+>RME9652 sound card). Besides that I want to read the ADAT-Synch timecode
+>instead of the buffer relative sample offset.
+
+they are two completely different things. one is not a substitute for
+the other.
+
+>Therefore I was looking for another solution to get the time. I tried to
+>use the ALSA timer interface
+>(http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2timer_8c-example.
+>html#example_test_timer). But unfortunately I am getting a "timer time
+>out!", which means that 
+>
+>snd_timer_poll_descriptors(...)
+>
+>did fail. Is the timer interface implemented for the By the RME9652? By
+>the way I do not understand how the sample number to the read time do
+>correlate with each other.
+
+the "timer" interface is part of the core of the ALSA drivers, its not
+specific to any particular driver. i have no idea how to use it
+however, and its not documented anywhere except for a few messages in
+the archives of this list and/or alsa-user.
+
+but first you need to define what it is that you are trying to
+do. bringing the ADAT sync timecode into the picture greatly confuses
+things because this has nothing to do with the other functions you are
+describing. ADAT sync time can move backwards, can speed up, slow down
+etc. 
+
+>I would appreciate any help with this because if I cannot solve this
+>problem, I have to move to Windows ASIO (what a pitty!) ASIO provides
+>the functions
+>
+>ASIOGetSamplePosition(...)
+>bufferSwitchTimeInfo(...) 
+>
+>which do exactly what I need.
+
+and what is it that you need? what are you trying to do?
+
+--p
 
 
 
