@@ -1,12 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000270]: Audigy 2 ZS side surround channels not supported
-Date: Thu, 10 Jun 2004 22:48:08 +0200
+From: =?iso-8859-1?q?Carlos=20Pita?= <cpitaar@yahoo.com.ar>
+Subject: Re: hw/plughw strange behaviour
+Date: Thu, 10 Jun 2004 14:16:35 -0300 (ART)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <ed6ae67a8c798ea72d1b4170e33b0888@bugtrack.alsa-project.org>
+Message-ID: <20040610171635.95104.qmail@web50406.mail.yahoo.com>
+References: <Pine.HPX.4.33n.0406101857110.3148-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0406101857110.3148-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,161 +17,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug=
-_id=3D0000270
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                wraiden
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     270
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               LFS
-Kernel Version:             2.6.5
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             05-11-2004 11:14 CEST
-Last Modified:              06-10-2004 22:48 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Audigy 2 ZS side surround channels not suppor=
-ted
-Description:=20
-There is no Support for the side surround channels on SB Audigy 2 ZS (
-Platinum Pro ) in Alsa.
+> >    snd_pcm_hw_params_set_access(handle, hwparams,
+> SND_PCM_ACCESS_RW_INTERLEAVED);
+> >    snd_pcm_hw_params_set_format(handle, hwparams,
+> SND_PCM_FORMAT_S16_LE);
+> >    snd_pcm_hw_params_set_rate_near(handle,
+> hwparams, &rate, &dir);
+> >    snd_pcm_hw_params_set_channels(handle,
+> hwparams, numchannels);
+> >    snd_pcm_hw_params_set_periods(handle, hwparams,
+> numperiods, 0);
+> >    snd_pcm_hw_params_set_buffer_size_near(handle,
+> hwparams, &buffersize);
+> 
+> Does any of these calls return an error?
+> 
 
-I'll try to get it work and test everything you give me to test.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+No, I have stripped out error checking code for
+brevity purposes; but none of the
+snd_pc_hw_params_set_XXX invokations return an error,
+just snd_pc_hw_params do it, as I described in my
+previous post.
 
-----------------------------------------------------------------------
- pzad - 05-11-2004 14:41 CEST=20
-----------------------------------------------------------------------
-First you must find where are these outputs connected.
+Regards,
+Carlos
 
-in file alsa-driver/alsa-kernel/pci/emu10k1/emufx.c
-is row with
-A_PUT_STEREO_OUTPUT(A_EXTOUT_AFRONT_L, A_EXTOUT_AFRONT_R, playback +
-SND_EMU10K1_PLAYBACK_CHANNELS);=20
-
-append after it this row
-A_PUT_STEREO_OUTPUT(0x0c, 0x0d, playback + SND_EMU10K1_PLAYBACK_CHANNELS)=
-;
-
-
-compile, instal, play something. If they are working, let me know.
-If not then try change=20
-0x0c to 0x12 and 0x0d to 0x13
-if stil not working try these too
-0x12,0x13
-0x14,0x15
-0x19,0x1a
-0x1b,0x1c
-0x1d,0x1e
-
-----------------------------------------------------------------------
- wraiden - 05-21-2004 16:21 CEST=20
-----------------------------------------------------------------------
-side L ans R channels are working.
-patch used for testing is attached.
-is 6.1 and 7.1 Surround support in alsa planed?
-
-----------------------------------------------------------------------
- pzad - 05-24-2004 09:21 CEST=20
-----------------------------------------------------------------------
-I can create volume control (+ controls for mirroring stereo -> 7.1) for
-these speakers, and devices something like rearside, and surround71. I
-think under linux not many apps uses 7.1 speaker configuration.
-
-----------------------------------------------------------------------
- wraiden - 05-24-2004 16:18 CEST=20
-----------------------------------------------------------------------
-Nice :)
-
-let me know when it's done and i'll test it.
-
-7.1 related:
-- dts and dolby codecs have support up to 7.1 ( and more ).
-- sooner or later an decoder will support that.
-- support for this speaker configuration would be a benefit for alsa.
-
-----------------------------------------------------------------------
- pzad - 05-31-2004 08:38 CEST=20
-----------------------------------------------------------------------
-Could you test attached patch audigy2zs_driver.diff ???
-Mirroring should work.
-There are two new controls:
-PCM Side Playback Volume - this is not working for now.
-Side Playback Volume - this controls mirroring to side speakers.
-
-This is not final version.
-TODO:
-- Audigy 2 ZS detection
-- alsa lib part
-
-----------------------------------------------------------------------
- bryanhundven - 06-10-2004 22:48 CEST=20
-----------------------------------------------------------------------
-I tried audigy2zs_driver.diff with alsa-driver-1.0.5a.
-Seems to work, but as noted above PCM Side doesn't seem to work.
-
-If you would like me to test anything specific other than xmms...
-...Just Ask. :-D
-
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-05-11-04 11:14 wraiden        New Bug                                    =
- =20
-05-11-04 11:14 wraiden        Distribution              =3D> LFS         =
-   =20
-05-11-04 11:14 wraiden        Kernel Version            =3D> 2.6.5       =
-   =20
-05-11-04 14:41 pzad           Bugnote Added: 0001084                     =
- =20
-05-21-04 16:15 wraiden        File Added: wraiden-alsa-emu10k1-side.patch=
-      =20
-           =20
-05-21-04 16:21 wraiden        Bugnote Added: 0001166                     =
- =20
-05-24-04 09:21 pzad           Bugnote Added: 0001181                     =
- =20
-05-24-04 16:18 wraiden        Bugnote Added: 0001188                     =
- =20
-05-31-04 08:32 pzad           File Added: audigy2zs_driver.diff          =
-      =20
- =20
-05-31-04 08:38 pzad           Bugnote Added: 0001281                     =
- =20
-06-10-04 22:48 bryanhundven   Bugnote Added: 0001298                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
+------------
+Los mejores usados y las más tentadoras 
+ofertas de 0km están en Yahoo! Autos.
+Comprá o vendé tu auto en
+http://autos.yahoo.com.ar
 
 
 -------------------------------------------------------
