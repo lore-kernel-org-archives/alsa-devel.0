@@ -1,15 +1,15 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: Trivial hdsp.c patch to support rev 50 cards
-Date: Wed, 30 Jul 2003 14:18:56 -0700
+From: Dan Mills <dmills@spamblock.demon.co.uk>
+Subject: Could someone have a look at a my driver code please.
+Date: Wed, 30 Jul 2003 22:52:09 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGKENFCNAB.mknecht@controlnet.com>
-References: <20030730191002.M68372@vertice.ca>
+Message-ID: <03073022520900.00991@spamblock>
+References: <200307302036.h6UKaJ6p001930@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030730191002.M68372@vertice.ca>
+In-Reply-To: <200307302036.h6UKaJ6p001930@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,33 +18,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dan Nyborg <nyborg@www.vertice.ca>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
-> however, when i try to play something with alsaplayer or aplay, my system
-> freezes after 2 sec to 2 min of playback... sometimes i can get through a
-> whole file, sometimes only partial, but an eventual lock-up is
-> inevitable. i
-> have not tried sending anything other than stereo, 44100kHz, 16bit files.
+Hi all,
+I have written a  *very*  crude driver for the waveterminal 192L (mostly 
+my guesswork as to how the thing is hooked up). It is based on the ice1724 
+code but is really an engineering prototype (worked for the first time 20 
+minutes ago) and not ready for prime time.
+ 
+In particular it ignores the eeprom except for a check that its contents 
+match that of the one on my card. It works for output pair 1, and may work 
+for the others but that is uncertain at this point. It probably also has 
+locking issues at present. 
 
-Dan,
-   I'm using a 'similar' driver from Thomas, but not the identical driver,
-and with the HDSP 9652, not the MultiFace. Using aplay and MONO wave files
-I'm fine. Using anything in stereo results in all sorts of problems,
-including hard locks or at the minimum no further sound. Only a reboot fixes
-this for me.
+Would someone be willing to take a look and give some pointers as to how 
+to make this thing into a fully correct alsa driver? 
 
-   Could you try a mono file and see what results you get?
+Undocumented hardware and a driver architecture with which you are not 
+familiar make development fun!
 
-   alsaplayer sometimes works for me. For about 30 seconds I'll get sound,
-and then the sound stops and doesn't work until a reboot.
+My code will go up on the web once I have shaken a few more bugs out
+(The mixer does nothing very useful at present & I am fairly sure that
+playing with the GPIO pins some will get the phantom power and mic pre 
+working.....). 
 
-- Mark
-
-
-
-
+Regards, Dan.
 
 
 -------------------------------------------------------
