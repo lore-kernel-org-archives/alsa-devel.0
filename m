@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000958]: noisy output on low sample rate files when using dmix
-Date: Sun, 13 Mar 2005 09:43:25 +0100
-Message-ID: <efe3069ee3f71ea17b1653fbc07b90e1@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] emu10k1: various (mostly trivial) small
+ cleanups
+Date: Sun, 13 Mar 2005 09:44:16 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0503130943050.1755@pnote.perex-int.cz>
+References: <1110661456.7723.13.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 186571BD
-	for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2005 09:43:26 +0100 (MET)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <1110661456.7723.13.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,65 +16,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 12 Mar 2005, Lee Revell wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=958> 
-======================================================================
-Reported By:                mtraum
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   958
-Category:                   mixer
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             03-02-2005 21:23 CET
-Last Modified:              03-13-2005 09:43 CET
-======================================================================
-Summary:                    noisy output on low sample rate files when using
-dmix
-Description: 
-When using dmix, I get noise when playing files with low sample rates. The
-level of noise increases the lower the sample rate is. This noise does not
-exist when playing files without dmix, and I'm playing them with 'aplay'.
+> These patches fix a few minor issues with the emu10k1 driver that would
+> be good to get fixed before the ALSA 1.0.9 release.  All are 100% safe
+> to apply, they do not change the functionality at all.
 
+Applied.
 
-Files sampled at 44100 have no noticeable noise (at least for me), so I'm
-assumming there's a problem with the resampling algorithm.
+> remove-voice-alloc-printk.patch: silence the "BUG (or not enough
+> voices)" message.  This does not in fact represent a bug; it's a normal
+> ocurrence when the wavetable synth is in use.
 
-Just to be sure, I generated some test tones with sgen
-(http://www.comp.leeds.ac.uk/jj/linux/siggen.html). You can clearly hear
-the noise on these samles, which I am attaching.
-======================================================================
+Note that it might be useful to add some "alloc fail" statistics
+(available via the procfs) for debugging.
 
-----------------------------------------------------------------------
- hamel_g - 03-02-05 22:08 
-----------------------------------------------------------------------
-I confirm.
-If you use the same sampling rate that the sample, the noise disappears.
+						Jaroslav
 
-----------------------------------------------------------------------
- Rottwang - 03-13-05 09:43 
-----------------------------------------------------------------------
-I can confirm this too
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-02-05 21:23 mtraum         New Issue                                    
-03-02-05 21:23 mtraum         File Added: testtones.tar.gz                    
-03-02-05 22:08 hamel_g        Note Added: 0003781                          
-03-13-05 09:43 Rottwang       Note Added: 0003901                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
