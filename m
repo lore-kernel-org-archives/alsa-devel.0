@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Can't you make a program that can switch the order of the sound cards?
-Date: Mon, 18 Oct 2004 15:32:22 -0400
+From: Glenn Maynard <glenn@zewt.org>
+Subject: Re: Q: Periodsize for capture, SBLive
+Date: Mon, 18 Oct 2004 15:52:50 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410181932.i9IJWNDk006373@localhost.localdomain>
-References: <1098126887.23262.6.camel@localhost.localdomain>
+Message-ID: <20041018195249.GH9692@zewt.org>
+References: <20041018133613.GA14810@stud.ntnu.no> <200410181342.i9IDgC44003811@localhost.localdomain> <20041018142229.GA26466@stud.ntnu.no>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Mon, 18 Oct 2004 21:14:47 +0200."
-             <1098126887.23262.6.camel@localhost.localdomain>
+Content-Disposition: inline
+In-Reply-To: <20041018142229.GA26466@stud.ntnu.no>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,35 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Kristof Vansant <de_lupus@pandora.be>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Can't you make a program that can switch the order of the sound cards?
->So that if you have 2 sound cards you just can say I want to use the
->second one as primary output. This would solve for me, that my bttv is
->detected before my sound card. Giving me no sound :S
->And this should be realtime. So no need for reboot.
+On Mon, Oct 18, 2004 at 04:22:29PM +0200, alsa-devel-admin@lists.sourceforge.net wrote:
+> On Mon, Oct 18, 2004 at 09:42:11AM -0400, Paul Davis wrote:
+> > >I open the sound card (a SoundBlaster Live) for capture, and
+> > >request a period size (using set_period_size_near()) of 8 frames,
+> > >but what I get is a period size of 384 frames.
+> > 
+> > the SBlive can't go below 64 at best. 
+> 
+> OK.  Any idea why I get 384?
 
-put this in your ~/.asoundrc:
+This message appears to be missing a From: header.  (That's strange,
+since most MUAs will forcibly add one.  You might want to check your
+mailer.
 
-pcm.!default {
-    type      plughw	     
-    slave.pcm "plughw:1"
-}
-
-i believe that should do what you want for almost all correctly
-written ALSA apps.
-
-alternatively, all ALSA driver modules accept an "index" option to
-specify which slot they should use. thus using index=1 for the one you
-want second and index=0 for the one you want first should also do the
-trick. this is not a non-reboot option if you do not use modules.
-
---p
-
-
-	
+-- 
+Glenn Maynard
 
 
 -------------------------------------------------------
