@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000770]: HDSP submix
-Date: Wed, 26 Jan 2005 19:00:10 +0100
-Message-ID: <6a0b7f53c2ab76447deb23dcc519b623@bugtrack.alsa-project.org>
+From: "Axel Braun" <Axel.Braun@gmx.de>
+Subject: No sound on ASRock-board with AC97 controller
+Date: Thu, 27 Jan 2005 10:56:14 +0100 (MET)
+Message-ID: <16945.1106819774@www50.gmx.net>
+References: <7701.1106654063@www7.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2102D1A3
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2005 19:00:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +16,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-user@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+One more on my question below:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=770> 
-======================================================================
-Reported By:                kme
-Assigned To:                charbonnel
-======================================================================
-Project:                    ALSA - tools
-Issue ID:                   770
-Category:                   hdsp progs
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             12-31-2004 18:52 CET
-Last Modified:              01-26-2005 19:00 CET
-======================================================================
-Summary:                    HDSP submix
-Description: 
-Is it possible to make "submix" view available to any output, perhaps the
-last selected?  The curent default behaviour seems to show AN1+2 (on the
-multiface) only.  It would be nice, for example, to see all levels to
-Analog (headphones) or to the various digital outs as desired.
-======================================================================
+It seems that the chipset is a C-Media cmaudio cmi9761:
 
-----------------------------------------------------------------------
- charbonnel - 01-26-05 19:00 
-----------------------------------------------------------------------
-It should already by possible. Clicking on the AN1+2 text field should open
-the output selection dialog.
+http://www.cmedia.com.tw/download/OS_e-cmi9761_index.htm
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-31-04 18:52 kme            New Issue                                    
-01-26-05 19:00 charbonnel     Note Added: 0003417                          
-======================================================================
+Is there any option I can set to get alsa closer to that chipset?
+The documentation on the via82xxx seems not to be up to date, as there are
+some option offered by SuSE, which are not documented
+here:
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=VIA&card=.&chip=VIA82C686%2C+VIA8233%2C+VIA8233A%2C+VIA8235&module=via82xx#opt
+
+Thanks
+Axel
+
+-----
+Hi,
+I have a new PC with an ASRock K7VT4A+ Mainboard, it claims to have an
+AC97controller on board:
+
+0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
+        Subsystem: ASRock Incorporation: Unknown device 9761
+        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin C routed to IRQ 3
+        Region 0: I/O ports at e000
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
 
+lsmod | grep snd
+snd_pcm_oss            57896  0
+snd_mixer_oss          19200  1 snd_pcm_oss
+snd_via82xx            26276  1
+snd_ac97_codec         69728  1 snd_via82xx
+snd_pcm                96776  3 snd_pcm_oss,snd_via82xx,snd_ac97_codec
+snd_timer              24708  1 snd_pcm
+snd_mpu401_uart         7552  1 snd_via82xx
+snd_rawmidi            24356  1 snd_mpu401_uart
+snd_seq_device          8716  1 snd_rawmidi
+snd                    60164
+
+11
+snd_pcm_oss,snd_mixer_oss,snd_via82xx,snd_ac97_codec,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
+snd_page_alloc         10248  2 snd_via82xx,snd_pcm
+gameport                4608  1 snd_via82xx
+soundcore               9056  1 snd
+
+I've installed SuSE 9.2 and Alsa 1.0.8, alsaconf works fine, alsamixer has
+volume on nearly full power, but no sound is available.
+
+Can somebody give me a hint what to do?
+Thanks
+Axel
+
+PS: Under knoppix 3.7 sound works, but it is not using alsa,,,,,
+
+
+-- 
+Sparen beginnt mit GMX DSL: http://www.gmx.net/de/go/dsl
 
 
 -------------------------------------------------------
