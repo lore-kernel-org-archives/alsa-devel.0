@@ -1,14 +1,14 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Re: Lockup with ALSA CVS on 2.4.19 SMP, 1 GB
-Date: Sun, 22 Sep 2002 17:10:43 +0100 (BST)
+From: Josh Huber <huber+keyword+alsa.9c0e1c@alum.wpi.edu>
+Subject: Re: snd-powermac in CVS busted?
+Date: Sun, 22 Sep 2002 13:07:29 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020922161043.57962.qmail@web40606.mail.yahoo.com>
-References: <s5hn0qgsyox.wl@alsa2.suse.de>
+Message-ID: <87d6r66jhq.fsf@mail.paradoxical.net>
+References: <87it11icm2.fsf@mail.paradoxical.net> <s5hr8fpouks.wl@alsa2.suse.de>
+ <87k7lg2ykf.fsf@mail.paradoxical.net>
+Reply-To: Josh Huber <huber+dated+1033144972.b0fc92@alum.wpi.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hn0qgsyox.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,54 +17,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- --- Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 16 Sep 2002 22:58:34 +0100 (BST),
-> is yours the vanilla kernel?
+Josh Huber <huber+keyword+alsa.9c0e1c@alum.wpi.edu> writes:
 
-Yes, I compiled it myself using vanilla source.
-(2.4.19, SMP, HighMem, SB Live!)
+> Takashi Iwai <tiwai@suse.de> writes:
+>
+>> could you change 'Mic Boost' once to another value?
+>> i got reports that this affects even on the pcm playback...
+>
+> Okay, thanks.  I'll try this tonight after I get home from work!
 
-> i still don't figure out which part of the last
-> change of pci_alloc_consistent hack affects it.
-> it's nothing bug calling pci_alloc_consistent() with
-> a proper dma_mask.
+It works after tweaking the Mic Boot settings, but there are some
+issues unfortunately :(
 
-I have since rebooted the machine and reinstalled the
-very latest ALSA CVS drivers *without* applying your
-patch, and everything is currently working. However, I
-have currently got only about 30% of my 1GB RAM in
-use:
+Things are close though!
 
-$ free -t
-             total       used       free     shared   
-buffers     cached
-Mem:       1033544     311820     721724          0   
-  16340     156860
--/+ buffers/cache:     138620     894924
-Swap:       498004          0     498004
-Total:     1531548     311820    1219728
+1) The OSS emulation interface seems to be working very well -- xmms
+   functions perfectly with it using the OSS output plugin.
+2) alsaplayer generates static unless you turn the volume slider
+   almost to 0, and even then the audio contains static during the
+   loud parts of the music.
+3) the xmms alsa output plugin always generates static
+4) terminatorX does NOT generate static, and the audio sounds great...
 
-It is possible that the lock-up only occurs when the
-RAM is so heavily used that Linux has difficulty
-finding a DMA-able buffer. I know that the old
-snd_pci_hack_alloc_consistent() function failed
-gracefully in this case because I witnessed just such
-a failure (and posted it to this list). So maybe my
-box is doomed to lock-up again in a few days? I will
-be extra vigilant!
+I suspect there are some endian issues, eh? :)  I wonder why the oss
+emulation layer works fine though.
 
-Chris
+As a review, I'm running the CVS versions of all the libraries and
+tools now as well as the drivers:
+
+Module                  Size  Used by    Not tainted
+snd-pcm-oss            45972   1
+snd-mixer-oss          12960   0 [snd-pcm-oss]
+snd-usb-midi            8208   0 (unused)
+snd-seq-virmidi         3808   0 [snd-usb-midi]
+snd-seq-midi-event      3888   0 [snd-usb-midi snd-seq-virmidi]
+snd-seq                45560   1 [snd-usb-midi snd-seq-virmidi
+snd-seq-midi-event]
+snd-rawmidi            16048   0 [snd-seq-virmidi]
+snd-seq-device          5012   0 [snd-usb-midi snd-seq snd-rawmidi]
+snd-powermac           35508   2
+snd-pcm                69296   0 [snd-pcm-oss snd-powermac]
+snd-timer              12960   0 [snd-seq snd-pcm]
+snd                    31452   1 [snd-pcm-oss snd-mixer-oss
+snd-usb-midi snd-seq-virmidi snd-seq-midi-event snd-seq snd-rawmidi
+snd-seq-device snd-powermac snd-pcm snd-timer]
+soundcore               4616   3 [snd]
+orinoco_cs              5336   1
+orinoco                33408   0 [orinoco_cs]
+hermes                  9632   0 [orinoco_cs orinoco]
+i2c-core               14568   0 [snd-powermac]
+
+All the fun applictions use the ALSA interface, which is what I really
+want to start using.
+-- 
+Josh Huber
 
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
