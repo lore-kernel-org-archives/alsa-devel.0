@@ -1,14 +1,15 @@
-From: Matthias Saou <matthias@rpmforge.net>
-Subject: Re: smix plugin
-Date: Tue, 1 Oct 2002 01:16:52 +0200
+From: Michal Seta <mis@creazone.com>
+Subject: Re: powermac build fails
+Date: Mon, 30 Sep 2002 22:52:02 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021001011652.4ec6917a.matthias@rpmforge.net>
-References: <3D98D9B4.9070603@claudia.daemon.sh>
+Message-ID: <20020930225202.421488e7.mis@creazone.com>
+References: <20020924231609.GC3369@debian> <s5h7khanx6p.wl@alsa2.suse.de>
+ <20020930183705.GA14193@debian>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D98D9B4.9070603@claudia.daemon.sh>
+In-reply-to: <20020930183705.GA14193@debian>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,23 +21,51 @@ List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Once upon a time, Pete wrote :
+On Mon, 30 Sep 2002 11:37:05 -0700
+brett-alsa@kavi.com wrote:
 
-> As it stands, every time anyone asks about 'software multi-open' they 
-> are directed either to the 'share' plugin which clearly does not work in 
-> this capacity, or told that you have once got the smix plugin to work, 
-> and that it is all anyone knows.
+> Are either of these documented somewhere? 
 
-Other suggestions (do they come back often?) : Use esound or artsd through
-the OSS emulation layer. That works for me when I need it although it
-doesn't make it very useful to have ASLA in order to do this! :-)
+from the 'INSTALL' file, which should get downloaded from CVS (inside alsa-lib directory, which should be the first one to compile and install):
 
-Matthias
+<snip stuff>
+Compilation from CVS sources
+----------------------------
 
+You need also GNU packages automake and libtool installed in your system
+to compile CVS sources of alsa-lib package.
+
+For compilation you can use these commands:
+
+        libtoolize --force --copy --automake
+        aclocal
+        autoheader
+        automake --foreign --copy --add-missing
+        autoconf
+        ./configure
+        make
+
+The included cvscompile script does this job for you.
+
+Note: Some automake packages have missing aclocal program. Use newer version
+      in the case.
+
+
+<snip some more>
+
+
+HTH.
 -- 
-Clean custom Red Hat Linux rpm packages : http://freshrpms.net/
-Red Hat Linux release 7.3 (Valhalla) running Linux kernel 2.4.18-10
-Load : 0.07 0.21 0.24, AC on-line, battery charging: 100% (1:47)
+./MiS
+
+Michal Seta		http://creazone.eworldmusic.com/doc/mis
+CreaZone		http://www.creazone.com
+No One Receiving	http://www.noonereceiving.32k.org
+
+upcoming release:
+NOR - "The Release of the Wandering-Eyed Girl"
+	http://www.grainofsound.com
+
 
 
 -------------------------------------------------------
