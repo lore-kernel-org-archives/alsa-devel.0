@@ -1,12 +1,11 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: usb-audio Quattro
-Date: Wed, 30 Jun 2004 23:08:55 +0900
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000337]: "alsactl restore" always fails
+Date: Wed, 30 Jun 2004 16:29:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40E2C977.40401@boosthardware.com>
-References: <Pine.HPX.4.33n.0406280917270.22724-100000@studcom.urz.uni-halle.de>
+Message-ID: <6e0a17a7a2e352b3309d1bfb61435f3b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,48 +15,124 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Patrick Shirkey wrote:
->  
-> ... and are there any differences to the streamX files on that
-> machine?
-> 
 
-They are all the same. There is a bug that has been introduced in the 
-last two weeks. I installed the cvs from June 15 and patched the files 
-by hand and the driver works fine.
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0337
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                kuulasma
+Assigned To:                tiwai
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     337
+Category:                   PCI - nm256
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian sarge
+Kernel Version:             Linux 2.6.6-1-686
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-16-2004 22:04 CEST
+Last Modified:              06-30-2004 16:29 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    "alsactl restore" always fails
+Description:=20
+Dell Latitude CPt with an NM256ZX fails always to restore previously save=
+d
+state. Command "alsactl store" succesfully stores current state but
+"alsactl restore" always fails to restore previous state. The OSS driver
+works fine.
 
-Except for a small problem with the plughw interface on the route 
-interface so we can use all four channels at once... More about that later.
+Example:
+----------------------------------------------------------
+# alsactl restore
+alsactl: set_control:966: Cannot write control '2:0:0:CD Playback
+Switch:0' : Invalid argument
+----------------------------------------------------------
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-BTW. arecord cannot do big endian format on my PC. Is that something 
-that can be easily fixed?
+----------------------------------------------------------------------
+ tiwai - 06-22-2004 18:51 CEST=20
+----------------------------------------------------------------------
+Can you toggle CD mute on alsamixer, or like 'amixer set CD mute'?
 
+----------------------------------------------------------------------
+ kuulasma - 06-22-2004 21:35 CEST=20
+----------------------------------------------------------------------
+I tried to toggle CD mute but new setting are not stored. If I try to mut=
+e
+CD or change volyme, new settings are ignored. alsamixer doesn't save CD
+volyme and mute state. Other controls work just like I expect them to
+work. Once I open alsamixer CD settings are as follows: volyme 100 and
+unmuted.
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org/LAU/guide/ - The Linux Audio Users guide
-Http://www.djcj.org/gigs/ - Gigs guide Korea
-Http://www.nana7.net - Bar Nana - Itaewon, Seoul, Sth Corea
-========================================
+If I edit /var/lib/alsa/asound.state file manually and remove sections
+control.14 and control.15, I can issue command 'alsactl restore'
+succesfully (without error message). But once I store settings ('alsactl
+store'), illegal control.14 and control.15 are stored in asound.state
+file.=20
 
+Just in case you need following information:
 
-Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
+# lsmod | grep snd
+snd_nm256              69188  1=20
+snd_ac97_codec         65188  1 snd_nm256
+snd_pcm_oss            54436  0=20
+snd_mixer_oss          20096  2 snd_pcm_oss
+snd_pcm                98148  2 snd_nm256,snd_pcm_oss
+snd_page_alloc         11460  1 snd_pcm
+snd_timer              25380  1 snd_pcm
+snd                    54692  6
+snd_nm256,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore              10336  2 snd
 
-United Press International
-Rockets on donkeys hit major Baghdad sites
+----------------------------------------------------------------------
+ tiwai - 06-30-2004 16:29 CEST=20
+----------------------------------------------------------------------
+The attached patch will allow the access to the CD mute/volume.
+Please give a try.
 
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-16-04 22:04 kuulasma       New Bug                                    =
+ =20
+06-16-04 22:04 kuulasma       Distribution              =3D> Debian sarge=
+   =20
+06-16-04 22:04 kuulasma       Kernel Version            =3D> Linux 2.6.6-=
+1-686
+06-17-04 14:12 kuulasma       Bug Monitored: kuulasma                    =
+ =20
+06-22-04 18:51 tiwai          Bugnote Added: 0001333                     =
+ =20
+06-22-04 21:35 kuulasma       Bugnote Added: 0001334                     =
+ =20
+06-30-04 16:29 tiwai          Bugnote Added: 0001355                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
 
 
 
