@@ -1,12 +1,12 @@
-From: Boris Shingarov <shingarov@ca.istop.com>
-Subject: AC3 passthrough on Audigy
-Date: Thu, 28 Aug 2003 22:21:39 -0400
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Sync between MIDI and audio
+Date: Thu, 28 Aug 2003 21:27:32 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F4EB8B3.9020506@ca.istop.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <200308290127.h7T1RWfg019789@oud>
+References: <3F4EA2E4.2010902@pianodisc.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Thu, 28 Aug 2003 17:48:36 PDT."
+             <3F4EA2E4.2010902@pianodisc.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,17 +15,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: derosier@pianodisc.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Peter,
+>The problem: the MIDI and audio start synced up, but after a while they 
+>start to drift further and further apart.  I've checked my stuff 
+>exaustively to make sure that it's not the fault of my program, so I'm 
+>figuring it is caused by me not setting up something properly in alsa to 
+>make the two streams synced up.
 
-This is very interesting.  You mean this patch will enable passthrough
-without the need for ld10k1, right?  I will give it a try and let you
-know what my results are.
+you either have to force the sequencer queue to use the PCM device as
+a clock, or you have to use the RTC as the clock for both (which will
+cause audio glitches every so often since it drifts w.r.t. the audio
+clock). you can't expect this to "just work" - you've created a system
+with two clocks (the sequencer queue and the PCM device), and such
+systems will never stay in sync.
 
-Boris
+this is a very tricky area of linux audio/MIDI programming, and my
+personal advice would be to use kernel 2.5/2.6 or the backport of the
+hi-res timers code. you can then get usec-accurate scheduling of
+events (in SCHED_FIFO tasks, anyway) and forget the ALSA
+queue. hopefully, the ALSA sequencer will at some point take advantage
+of the new timers. even so, its still not a simple thing to do.
 
+--p
 
 
 -------------------------------------------------------
