@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000639]: Poor Audio Output
-Date: Wed, 10 Nov 2004 05:02:28 +0100
-Message-ID: <69f22cb92ecc18a1c93e490be4dc5920@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000392]: feature requests
+Date: Wed, 10 Nov 2004 05:08:27 +0100
+Message-ID: <ccaa3f44ee7ad10092e21a32f2687bf9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B8EF82CB
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 05:02:28 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 13FDA2D1
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 05:08:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=639> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=392> 
 ======================================================================
-Reported By:                gnif
-Assigned To:                tiwai
+Reported By:                gblack
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   639
-Category:                   PCI - es1968
+Issue ID:                   392
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             Debian Kernel Image 2.6.7-1-686
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             11-10-2004 05:02 CET
-Last Modified:              11-10-2004 05:02 CET
+Date Submitted:             07-16-2004 09:07 CEST
+Last Modified:              11-10-2004 05:08 CET
 ======================================================================
-Summary:                    Poor Audio Output
+Summary:                    feature requests
 Description: 
-Card: ESS ES1978 (Maestro 2E)
-Chip: SigmaTel STAC9721/23
+I'm not sure if this is the right place to post this, but there are several
+features that my integrated audio has that don't seem to be supported by
+the alsa driver. My sound chip is the Sigmatel STAC9758 running under an
+intel chipset.
 
-During playback from any PCM source there is very poor audio output, I had
-assumed that this was just intefearence from the HDD and other devices in
-the laptop until I came across this: 
+1. When headphones are plugged into the headphone jack, the built in
+speakers don't turn off, which they do under that other OS.
 
-http://h20000.www2.hp.com/bizsupport/TechSupport/Document.jsp?locale=en_US&taskId=110&prodSeriesId=96235&prodTypeId=321957&objectID=PSD_PH020226_CW02
+2. I've done some research into being able to play several sounds
+simultaneously, and found that this can either be done in hardware on the
+soundcard, or in software. On my desktop (also gentoo), which has a
+soundblaster, I didn't need to configure anything special to get mixing,
+and on my laptop I did. From that, I think that there isn't support for
+hardware mixing in the intel8x0 driver, and I would like to request that
+it be added, please.
 
-This makes me beleave that it is a problem with the driver as Compaq had
-the same issue, I have tested this under windows and I have had no
-crackling in the audio, so I am certain that it is the driver.
+3. I don't know if this should be done through alsa or not, but the output
+jacks on my laptop are supposed to be configurable to provide different
+functions, ie 5 channel surround, or stereo, mic, and headphones, etc. If
+this can be done through alsa or another program, please let me know.
 
-PS: I have used alsaconf to configure the sound, this worked out of the
-box.
+I'd like to try to help fix these problems, but I don't know much about
+sound cards, and even less about kernel drivers. If you could suggest a
+good starting point, that would also be appreciated.
+
+A discussion about getting the sound to work, as well as other issues with
+this laptop, can be found at:
+http://www.linuxquestions.org/questions/history/145832
+
+Thanks!
 ======================================================================
+
+----------------------------------------------------------------------
+ gnif - 11-10-04 05:08 
+----------------------------------------------------------------------
+ummmm, duh, you cant add mixing support to a chip in your pc, research your
+problem before posting that kind of crap. The soundblaster does hardware
+mixing, software mixing has to be configured by you, it is not for the
+driver to handle. Alsa has plenty of support for software mixing, you need
+to go and read the documentation.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-10-04 05:02 gnif           New Issue                                    
-11-10-04 05:02 gnif           Kernel Version            => Debian Kernel Image
-2.6.7-1-686
+07-16-04 09:07 gblack         New Issue                                    
+07-16-04 09:07 gblack         Distribution              => Gentoo          
+07-16-04 09:07 gblack         Kernel Version            => 2.4.25          
+11-10-04 05:08 gnif           Note Added: 0002357                          
 ======================================================================
 
 
