@@ -1,17 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: changed snd_pcm_close() behaviour
-Date: Wed, 26 Jun 2002 20:18:04 +0200 (CEST)
+From: Abramo Bagnara <abramo@alsa-project.org>
+Subject: Re: changed snd_pcm_close() behaviour
+Date: Wed, 26 Jun 2002 20:29:49 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0206262012350.795-100000@pnote.perex-int.cz>
+Message-ID: <3D1A081D.C1D86EE9@alsa-project.org>
+References: <Pine.LNX.4.33.0206262012350.795-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA17454
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2002 20:19:04 +0200
-Received: from pnote.perex-int.cz (n203.ols.wavesec.net [209.151.19.203])
-	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA02515
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2002 20:18:58 +0200
+Received: from smtp2.libero.it (smtp2.libero.it [193.70.192.52])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA17653
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jun 2002 20:30:24 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,29 +19,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Jaroslav Kysela wrote:
+> 
+> Hi all,
+> 
+>         after discussion with Takashi and others on this list, the
+> behaviour of snd_pcm_close() function has been changed in this way:
+> 
+> The stream is stoped and all samples (if any) are droped. It means, that
+> if the user space code wants to flush samples to output, the
+> snd_pcm_drain() function must be called before the snd_pcm_close() call.
+> 
+>         I hope that this change doesn't cause any problems in any
+> application. Anyway, please, report all problems.
 
-	after discussion with Takashi and others on this list, the 
-behaviour of snd_pcm_close() function has been changed in this way:
+Please don't forget to fix alsa-oss.
 
-The stream is stoped and all samples (if any) are droped. It means, that
-if the user space code wants to flush samples to output, the
-snd_pcm_drain() function must be called before the snd_pcm_close() call.
+-- 
+Abramo Bagnara                       mailto:abramo@alsa-project.org
 
-	I hope that this change doesn't cause any problems in any 
-application. Anyway, please, report all problems.
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
-
+ALSA project               http://www.alsa-project.org
+It sounds good!
 
 
 -------------------------------------------------------
