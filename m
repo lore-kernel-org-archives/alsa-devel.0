@@ -1,13 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Problems reading the hardware config of the card.
-Date: Sat, 12 Oct 2002 12:37:56 +0200 (CEST)
+From: Tim Goetze <tim@quitte.de>
+Subject: current cvs inconsistent
+Date: Sat, 12 Oct 2002 13:31:08 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210121237230.1975-100000@pnote.perex-int.cz>
-References: <3DA7EB53.6020400@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.21.0210121323510.694-100000@summer.quitte>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DA7EB53.6020400@superbug.demon.co.uk>
+Received: from post.webmailer.de (natpost.webmailer.de [192.67.198.65])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA30611
+	for <alsa-devel@alsa-project.org>; Sat, 12 Oct 2002 13:32:34 +0200
+Received: from localhost (A4838.pppool.de [213.6.72.56])
+	by post.webmailer.de (8.9.3/8.8.7) with ESMTP id NAA18744
+	for <alsa-devel@alsa-project.org>; Sat, 12 Oct 2002 13:31:57 +0200 (MET DST)
+Received: from localhost ([127.0.0.1] ident=tim)
+	by localhost with esmtp (Exim 3.35 #1 (Debian))
+	id 180KU8-00031l-00
+	for <alsa-devel@alsa-project.org>; Sat, 12 Oct 2002 13:31:08 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,44 +24,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 12 Oct 2002, James Courtier-Dutton wrote:
+it seems snd_pcm_hw_params_clear() is declared but never defined 
+in current cvs.
 
-> 
-> During setup of the sound card, I adjust the HW params and then save 
-> them to the card during the open() stage.
-> 
-> Is there any alsa api call that can retrieve hw settings later. For 
-> example something like: -
-> snd_pcm_get_buffersize()
-> snd_pcm_get_periodsize()
-> 
-> Another problem is that snd_pcm_can_pause()/snd_pcm_can_resume() can 
-> only be enquired about at device opening time, while one has the 
-> hw_params that one used to configure the card. I would like to be able 
-> to enquire about snd_pcm_can_pause() at the moment the user presses 
-> pause in the GUI, but at the moment, I have to remember the setting at 
-> snd_pcm_open() and setup time.
-> It would make for a neater application if one could quiry the hw_params 
-> at any time after them being opened, thus saving the application from 
-> having to keep a duplicate of all the settings.
-> 
-> This can all be done perfectly easily with sw_params, just not hw_params.
-> 
-> Maybe I have just missed something, but I don't think I have.
+oss mixer and playback pcm work fine with the latest kernel modules
+however.
 
-Ok, snd_pcm_hw_params_current() function is ready for your usage in CVS.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+tim
 
 
 
