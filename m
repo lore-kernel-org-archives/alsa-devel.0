@@ -1,88 +1,47 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000422]: snd-atiixp-modem driver: No CARRIER/DIALTONE.
-Date: Fri, 27 Aug 2004 19:42:05 +0200 (CEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827174205.64FA92C008@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 98C251E5
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 19:42:05 +0200 (MEST)
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+From: Lee Revell <rlrevell-2FmhHzymoG5BDgjK7y7TUQ@public.gmane.org>
+Subject: Re: Firewire Breakout-Boxes
+Date: Fri, 27 Aug 2004 14:18:29 -0400
+Sender: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Message-ID: <1093630709.837.42.camel@krustophenia.net>
+References: <Pine.LNX.4.44.0408271050420.3162-100000@sasami.anime.net>
+Reply-To: "The Linux Audio Developers' Mailing List"
+	<linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+In-Reply-To: <Pine.LNX.4.44.0408271050420.3162-100000-XlhkJ1vUGd+swHjBqO1tUg@public.gmane.org>
+List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=help>
+List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=subscribe>
+Errors-To: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+To: The Linux Audio Developers' Mailing List <linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+Cc: alsa-devel <alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>, clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2004-08-27 at 13:51, Dan Hollis wrote:
+> On Fri, 27 Aug 2004, Lee Revell wrote:
+> > On Fri, 2004-08-27 at 08:15, Clemens Ladisch wrote:
+> > > Messages from non-subscribers are routed to /dev/null because there
+> > > isn't a moderator.
+> > Is this really necessary in this day and age?
+> 
+> Yes, it is.
+> 
+> > The spam problem is solved, it has been for a while now.  man 
+> > spamassassin.
+> 
+> greylisting is more effective than SA
+> 
 
-The following bug has been ASSIGNED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
-======================================================================
-Reported By:                netstar
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     422
-Category:                   PCI - atiixp-modem
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             08-04-2004 01:13 CEST
-Last Modified:              08-27-2004 19:42 CEST
-======================================================================
-Summary:                    snd-atiixp-modem driver: No CARRIER/DIALTONE.
-Description: 
-I am having issues with the modem, although not the sound card. Both
-drivers load fine (CVS alsa-driver, kernel and lib), sound also works
-fine, it is normally loaded as my second device "hw:1", fine, although the
-problem is persistant with any combination of the two devices. When using
-slmodemd with the "modem" device things seem ok until I try dialing and it
-is reported to me that there is no DIALTONE. After disabling DIALTONE
-detection with ATX3, subsequent ATDT attempts return NO CARRIER.  My
-slmodemd was already fixed with a patch sasha sent me some time back.
+I don't understand.  You seem to be saying there is more than one
+solution that effectively stops all spam.  Both of these can be used at
+the mailserver level, even if you are unfortunate enough to be using
+sendmail.  Why do we need to /dev/null messages from nonsubscribers
+then?
 
-When listening on the device with arecord for example and outputting to
-STDOUT, I get a constant hiss, however when I pick up a phone on the line
-it appears that the device does notice this as the constant hissing is
-interupted when either opening or closing the line elsewhere.
-
-I do not believe the modem is broken as has been suggested to me before.
-
-Attatched is an slmodem log of a dialing attempt and some system
-information including card register information whilst dialing. I hope
-this helps.
-
-slmodemd usage:
-
-./slmodemd --alsa modem or modem:0 or modem:1 --country=UK  
-
- Depending on the card configurations tested.
-======================================================================
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-04-04 01:13 netstar        New Bug                                      
-08-04-04 01:14 netstar        File Added: systeminfo.txt                    
-08-04-04 01:16 netstar        File Added: slmodem.log.modem                    
-08-04-04 01:17 netstar        File Added: slmodem-2.9.9-fix.patch                    
-08-27-04 19:41 tiwai          Assigned To              tiwai =>            
-08-27-04 19:42 tiwai          Assigned To               => sashak          
-======================================================================
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by BEA Weblogic Workshop
-FREE Java Enterprise J2EE developer tools!
-Get your free copy of BEA WebLogic Workshop 8.1 today.
-http://ads.osdn.com/?ad_id=5047&alloc_id=10808&op=click
+Lee
