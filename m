@@ -1,14 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: setting ppq problems
-Date: Mon, 01 Mar 2004 14:02:10 +0100 (MET)
+From: Maggio <voloterreno@tin.it>
+Subject: DXS broken with some cards in 1.0.X in module snd-via82xx?
+Date: Mon, 01 Mar 2004 15:00:41 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0403011354100.5532-100000@studcom.urz.uni-halle.de>
-References: <20040229230605.KRLK21160.tomts22-srv.bellnexxia.net@sympatico.ca>
+Message-ID: <40434209.6020903@tin.it>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20040229230605.KRLK21160.tomts22-srv.bellnexxia.net@sympatico.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,37 +15,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: jacqueslen@sympatico.ca
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-jacqueslen@sympatico.ca wrote:
-> I'm trying to set my ppq on my queue, so I do this:
->
->     snd_seq_queue_tempo_t *qt;
->     snd_seq_queue_tempo_alloca(&qt);
->     snd_seq_queue_tempo_set_ppq(qt, ppq);
->     return snd_seq_set_queue_tempo(seq, id, qt);
+Hi ,
 
-> that returns -22, what does that mean?
+I was just wondering if the DXS support in 1.0.X has broken the 
+DXS_SUPPORT=1 with some cards .
 
-snd_strerror(-22) = "Invalid argument"
+I have an Abit KV7 Motherboard , and I use snd-via82xx for sound .
 
-A snd_seq_queue_tempo_t container contains various parameters, so you
-should set all fields to valid values (or get the current values first
-with snd_seq_get_queue_tempo).
+I use this module from the version "0.9.8" , and I've never had any 
+problems in enabling "dxs_support=1" with the 0.9.X series of the 
+drivers , yesterday , by trying 1.0.2c and today the 1.0.3 versions of 
+the kernel modules , I've noticed that ALSA doesn't work anymore with 
+DXS_SUPPORT=1 , because the sound is garbled  , and I can only use DXS 
+with DXS_SUPPORT=4 .
 
-> Also, where can I found out what the members of
-> snd_seq_queue_tempo_t are, I can't seem to find it anywhere!
+What's up?
 
-The snd_seq_get/set_queue_tempo_xxx functions are listed on this page:
-http://www.alsa-project.org/alsa-doc/alsa-lib/group___seq_queue.html
+Thanks
 
-
-HTH
-Clemens
-
-
+Marcello
 
 
 -------------------------------------------------------
