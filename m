@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000511]: [PATCH] 15_alsamixer_doc_keycase
-Date: Thu, 23 Sep 2004 19:49:19 +0200 (CEST)
+Subject: [ALSA - utils 0000514]: [PATCH] 15_amixer_doc_bug271556
+Date: Thu, 23 Sep 2004 19:52:00 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040923174919.F2DA54500F@server.perex-int.cz>
+Message-ID: <20040923175200.42A304500F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 292F7300
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:51:13 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 83E15300
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:52:00 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 470B225AA0
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:52:00 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,50 +25,41 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000511
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000514
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Bug ID:                     511
-Category:                   alsamixer
+Bug ID:                     514
+Category:                   amixer
 Reproducibility:            always
 Severity:                   text
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-21-2004 19:43 CEST
-Last Modified:              09-23-2004 19:49 CEST
+Date Submitted:             09-21-2004 19:48 CEST
+Last Modified:              09-23-2004 19:52 CEST
 ======================================================================
-Summary:                    [PATCH] 15_alsamixer_doc_keycase
+Summary:                    [PATCH] 15_amixer_doc_bug271556
 Description: 
-Patch for alsamixer.1 to make it mention that commands given in upper case
-can also be entered in lower case
+Patch for amixer.1 which makes fixes its use of formatting
+codes.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-22-2004 18:13 CEST 
+ jdthood - 09-23-2004 19:52 CEST 
 ----------------------------------------------------------------------
-Could you provide a summary line and a signed-off-by line for each patch?
-
-thanks.
-
-----------------------------------------------------------------------
- jdthood - 09-23-2004 19:49 CEST 
-----------------------------------------------------------------------
-Summary: mention that commands given to alsamixer in upper case can also be
-entered in lower case
+Summary: fixes its use of formatting codes in amixer.1
 
 Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 19:43 jdthood        New Bug                                      
-09-21-04 19:43 jdthood        File Added: 15_alsamixer_doc_keycase.dpatch                    
-09-22-04 18:13 tiwai          Bugnote Added: 0001814                       
-09-23-04 19:49 jdthood        Bugnote Added: 0001837                       
+09-21-04 19:48 jdthood        New Bug                                      
+09-21-04 19:48 jdthood        File Added: 15_amixer_doc_bug271556.dpatch                    
+09-23-04 19:52 jdthood        Bugnote Added: 0001842                       
 ======================================================================
 
 
