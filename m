@@ -1,11 +1,10 @@
-From: "Paul E. Erkkila" <pee@erkkila.org>
-Subject: possibly bug, sb audigy 2.5.61 and ac3 passthrough
-Date: Sun, 16 Feb 2003 23:39:42 +0000
+From: Allan Klinbail <allank@labyrinth.net.au>
+Subject: can't compile CVS after fresh system install
+Date: 17 Feb 2003 15:22:07 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E50213E.4080109@erkkila.org>
-Reply-To: pee@erkkila.org
+Message-ID: <1045455722.13170.13.camel@littlewolf2.littlewolf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,66 +15,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-Greetings,
+Hi 
 
-   I'm trying to get ac3 passthrough working on my media pc.  However
-when i try and open /dev/snd/pcmC0D3p i receive a no such device error.
-I noticed a few not really resolved answers in the archives so i figured
-I'd post again. The devices exist in /dev/snd and /proc/asound/dev and
-playback and recording function correctly now (even sound via the
-optical connection to the receiver). I've read through all the online
-help i could find and am still stumped =/
+To try and resolve some of my autogen/automake issues  I re-installed my
+system to start afresh... 
 
-It looks like it's comming from the -ENODEV return in emufx.c,
-but i don't know enough about alsa internals to figure it out yet.
+Just before I did though I downloaded CVS to test the new mtpav driver..
+the installation went fine.. BUt now I'm having trouble.. 
 
-setup is  an sb audigy, connecting via the external optical connector
-  to a denon dolby/dts/*  receiver.
+The driver itself seemed to compile and install properly but something
+seems to have gone missing.. neither jack nor alsa-lib will compile at
+this point 
 
-As part of trying to figure this out, i used mplayer with the oss
-api isntead of alsa9,  (mplayer -aid 128 -ao oss:iec958:AES0=0x87 -ac hwac3 -fs -dvd 1)
-this produces an incredibly LOUD clicking/screaching noise from the
-receiver.
+alsa-lib configures okay but then ... (this happens on make)  
 
+  ibs/libpcm.al rawmidi/.libs/librawmidi.al timer/.libs/libtimer.al
+hwdep/.libs/libhwdep.al seq/.libs/libseq.al instr/.libs/libinstr.al
+compat/.libs/libcompat.al -lm -ldl -lpthread          
+-Wl,--version-script=Versions -Wl,-soname -Wl,libasound.so.2 -o
+.libs/libasound.so.2.0.0
+gcc: pcm/.libs/libpcm.al: No such file or directory
+gcc: pcm/.libs/libpcm.al: No such file or directory
+make[2]: *** [libasound.la] Error 1
+make[2]: Leaving directory `/usr/local/audio/cvs/alsa/alsa-lib/src'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/usr/local/audio/cvs/alsa/alsa-lib/src'
+make: *** [all-recursive] Error 1
 
-root # cat /dev/snd/pcmC0D3p
-cat: /dev/snd/pcmC0D3p: No such device
+Jack (both CVS and release 0.34) complain that I don't have ALSA 0.9.X
+on the system.)
 
-boobtoob root # ac3dec -C
-Using PCM device 'iec958:AES0=0x2,AES1=0x82,AES2=0x0,AES3=0x2'
-ALSA lib pcm_hw.c:866:(snd_pcm_hw_open) open /dev/snd/pcmC0D3p failed: No such device
-snd_pcm_open: No such device
-Output open failed
-
-It certainly seems like something should be on minor 19..
-
-root# more /proc/asound/devices
-   0: [0- 0]: ctl
-   4: [0- 0]: hardware dependent
-   9: [0- 1]: raw midi
-   8: [0- 0]: raw midi
-  19: [0- 3]: digital audio playback
-  26: [0- 2]: digital audio capture
-  25: [0- 1]: digital audio capture
-  16: [0- 0]: digital audio playback
-  24: [0- 0]: digital audio capture
-  33:       : timer
-
-modprobe stuff:
-options snd cards_limit=1
-options snd-card-0 extin=0x3fff extout=0x1fff
-options snd-emu10k1 extin=0x3fff extout=0x1fff
+I am running a freshly insalled Mandrake 9.0 with linux-2.4.20 (real
+time and capabilities patches implemented). I have removed all packaged
+versions of alsa from the system. 
 
 
-any help would be appreciated,
+cheers
 
-thanks,
+Allan Klinbail 
 
--pee
+
+
+
+
+
 
 
 
