@@ -1,16 +1,14 @@
-From: Maarten de Boer <mdeboer@iua.upf.es>
-Subject: Re: pcm_jack plugin attempt
-Date: Thu, 13 Feb 2003 17:12:11 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH]: Bug: ALSA Sequencer or MTPAV - easy to
+ reproduce
+Date: Thu, 13 Feb 2003 17:27:25 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030213171211.673728b8.mdeboer@iua.upf.es>
-References: <20030212185838.15069c79.mdeboer@iua.upf.es>
-	<Pine.LNX.4.44.0302122157410.30420-100000@pnote.perex-int.cz>
-	<20030213135317.3ab66d5b.mdeboer@iua.upf.es>
+Message-ID: <Pine.LNX.4.44.0302131725440.1315-100000@pnote.perex-int.cz>
+References: <s5hadh0mtc9.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030213135317.3ab66d5b.mdeboer@iua.upf.es>
+In-Reply-To: <s5hadh0mtc9.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,28 +17,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: perex@suse.cz
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Ryan Pavlik <rpav@nwlink.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I wrote:
+On Thu, 13 Feb 2003, Takashi Iwai wrote:
 
+> Hi,
+> 
+> At Wed, 12 Feb 2003 14:35:29 -0800,
+> Ryan Pavlik wrote:
+> > 
+> > On Wed, 12 Feb 2003 21:41:50 +0100 (CET)
+> > Jaroslav Kysela <perex@suse.cz> wrote:
+> > 
+> > <snip> 
+> > > It seems that mtpav don't remeber the old status byte for each
+> > > channels. If it's true, then we need to take care about the expansion
+> > > in the mtpav driver, because the sequencer MIDI driver removes
+> > > duplicated status bytes to opmitize throughput.
+> > <snip>
+> > 
+> > OK, I've attached a patch that emulated running status in the mtpav
+> > driver, so there shouldn't be any need to change stuff elsewhere.
+> > 
+> > Thanks for your pointer, I've been wanting to fix this problem for a
+> > very long time. :-)
+> 
+> thanks for the patch.
+> i applied it to cvs with a little improvement (returning immediately
+> if snd_rawmidi_transmit() gets null).
+> 
+> also, i found a bug regarding magic-alloc/free in the driver (at
+> last!).  fixed on cvs, too.
 
-> The problem I described in my previous mail (no more calls to 
-> snd_pcm_jack_mmap_commit after start) still occurs though... Any
-> idea what might be the problem, or where to look?
+Unfortunately, the patch is not perfect. I think that we need to buffer
+the whole MIDI message and send it after completion, because it's
+possible, that you'll get only partial MIDI message from the rawmidi API 
+or at buffer overrun / full.
 
-Okay, I fixed this. It was a missing
+						Jaroslav
 
-	pcm->poll_events = POLLIN;
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-(after pcm->poll_fd = fd[1] , in snd_pcm_jack_open)
-
-Can you fix this in CVS?
-
-Playback now works nicely, including the polling. Going to add capture now.
-
-Maarten
 
 
 -------------------------------------------------------
