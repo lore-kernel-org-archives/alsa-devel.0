@@ -1,12 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] iecset makefile fix
-Date: Tue, 28 Oct 2003 17:28:49 +0100 (MET)
+From: Ryan Pavlik <rpav@mephle.com>
+Subject: Re: Simple alsa sequencer question
+Date: Tue, 28 Oct 2003 08:29:38 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0310281727270.8214-100000@studcom.urz.uni-halle.de>
+Message-ID: <20031028082938.30161d71.rpav@mephle.com>
+References: <20031027165933.2307acfe.rpav@mephle.com>
+	<Pine.HPX.4.33n.0310281019210.6436-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/mixed;
+ boundary="Multipart=_Tue__28_Oct_2003_08_29_38_-0800_ko=9.PW03Vrbeb_K"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0310281019210.6436-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,28 +21,123 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-fix wrong SOURCES in Makefile.am
+--Multipart=_Tue__28_Oct_2003_08_29_38_-0800_ko=9.PW03Vrbeb_K
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Tue, 28 Oct 2003 10:23:40 +0100 (MET)
+Clemens Ladisch <clemens@ladisch.de> wrote:
 
-Index: alsa-utils/iecset/Makefile.am
-===================================================================
-RCS file: /cvsroot/alsa/alsa-utils/iecset/Makefile.am,v
-retrieving revision 1.1
-diff -u -r1.1 Makefile.am
---- alsa-utils/iecset/Makefile.am	23 Oct 2003 16:54:33 -0000	1.1
-+++ alsa-utils/iecset/Makefile.am	28 Oct 2003 16:26:28 -0000
-@@ -4,6 +4,7 @@
- # CFLAGS += -g -Wall
+> Ryan Pavlik wrote:
+> > Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > > Ryan Pavlik wrote:
+> > > > Shouldn't I get numbers in ev->time.time.tv_*?  I'm just getting
+> > > > zeros... what did I miss? ;)
+> > >
+> > > (snip)
+> >
+> > OK, I've attached some code to show what I'm doing exactly.
+> 
+> The event timestamps are set yo the current time of the queue. Your
+> queue isn't running, so its current time is zero.
+> 
+> Call snd_seq_start_queue(seq, queue, NULL) (and snd_seq_drain_output).
 
- bin_PROGRAMS = iecset
--amixer_SOURCES = iecset.c iecbits.c
-+iecset_SOURCES = iecset.c
-+EXTRA_iecset_SOURCES = iecbits.c
- man_MANS = iecset.1
- EXTRA_DIST = iecset.1
+Hmm, nope... I've tried this in various combinations along with
+tempo-setting and position-setting events sent to the queue, with no
+avail.  I'm still getting 0 0.
 
+I've attached the new code.
 
+thanks,
+
+-- 
+Ryan Pavlik <rpav@mephle.com>
+
+"Maybe it's the unfocused, blind, murderous rage." - 8BT
+
+--Multipart=_Tue__28_Oct_2003_08_29_38_-0800_ko=9.PW03Vrbeb_K
+Content-Type: application/octet-stream;
+ name="test.c"
+Content-Disposition: attachment;
+ filename="test.c"
+Content-Transfer-Encoding: base64
+
+I2luY2x1ZGUgPGFsc2EvYXNvdW5kbGliLmg+CgojZGVmaW5lIENMSUVOVCA3MgojZGVmaW5lIFBP
+UlQgICAgMAoKdm9pZCBzdWJzY3JpYmVfdG8oc25kX3NlcV90ICpzZXEsIGludCBwb3J0LCBpbnQg
+Y2xpZW50LCBpbnQgY19wb3J0KTsKdm9pZCBzdGFydF9xdWV1ZShzbmRfc2VxX3QgKnNlcSwgaW50
+IGNsaWVudCwgaW50IHBvcnQsIGludCBxKTsKdm9pZCBzZXRfcXVldWVfdGVtcG8oc25kX3NlcV90
+ICpzZXEsIGludCBjbGllbnQsIGludCBwb3J0LCBpbnQgcSwKICAgICAgICAgICAgICAgICAgICAg
+dW5zaWduZWQgaW50IHRlbXBvKTsKdm9pZCBzZXRfcXVldWVfcG9zaXRpb24oc25kX3NlcV90ICpz
+ZXEsIGludCBjbGllbnQsIGludCBwb3J0LCBpbnQgcSwKICAgICAgICAgICAgICAgICAgICAgICAg
+dW5zaWduZWQgaW50IHBvc2l0aW9uKTsKCmludCBtYWluKCkgewogICAgc25kX3NlcV90ICAgICAg
+ICpzZXE7CiAgICBpbnQgICAgICAgICAgICAgIHBvcnQsIHBfdGltZXI7CiAgICBzbmRfc2VxX2V2
+ZW50X3QgKmV2OwoKICAgIC8qIE9wZW4gdGhlIHNlcXVlbmNlciAqLwogICAgc25kX3NlcV9vcGVu
+KCZzZXEsICJkZWZhdWx0IiwgU05EX1NFUV9PUEVOX0lOUFVULCAwKTsKICAgIHNuZF9zZXFfc2V0
+X2NsaWVudF9uYW1lKHNlcSwgInRlc3QiKTsKCiAgICAvKiBPdXIgcG9ydCAqLwogICAgcG9ydCA9
+IHNuZF9zZXFfY3JlYXRlX3NpbXBsZV9wb3J0KHNlcSwgInRlc3QgcG9ydCIsCiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgU05EX1NFUV9QT1JUX0NBUF9XUklURXxTTkRfU0VR
+X1BPUlRfQ0FQX1NVQlNfV1JJVEUsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgU05EX1NFUV9QT1JUX1RZUEVfQVBQTElDQVRJT04pOwoKCiAgICAvKiBUaG91Z2h0IHRoaXMg
+bWlnaHQgYmUgc29tZXRoaW5nLi4uIGJ1dCBpdCdzIG5vdCAqLwogICAgLy9zbmRfc2VxX2Nvbm5l
+Y3RfdG8oc2VxLCBwb3J0LCBTTkRfU0VRX0NMSUVOVF9TWVNURU0sIFNORF9TRVFfUE9SVF9TWVNU
+RU1fVElNRVIpOwogICAgLy9zdWJzY3JpYmVfdG8oc2VxLCBwb3J0LCBTTkRfU0VRX0NMSUVOVF9T
+WVNURU0sIFNORF9TRVFfUE9SVF9TWVNURU1fVElNRVIpOwoKICAgIHN1YnNjcmliZV90byhzZXEs
+IHBvcnQsIENMSUVOVCwgUE9SVCk7CgogICAgZm9yKDs7KSB7CiAgICAgICAgc25kX3NlcV9ldmVu
+dF9pbnB1dChzZXEsICZldik7CiAgICAgICAgcHJpbnRmKCJUeXBlOiAlZCBUaW1lOiAlZCAlZFxu
+IiwgZXYtPnR5cGUsIGV2LT50aW1lLnRpbWUudHZfc2VjLAogICAgICAgICAgICAgICBldi0+dGlt
+ZS50aW1lLnR2X25zZWMpOwogICAgICAgIC8qIFRoaXMgcHJpbnRzIDAgMCAuLi4gd2hhdCBkbyBJ
+IGRvIHRvIHJlY2VpdmUgdGltZT8gKi8KICAgIH0KfQoKdm9pZCBzdWJzY3JpYmVfdG8oc25kX3Nl
+cV90ICpzZXEsIGludCBwb3J0LCBpbnQgY2xpZW50LCBpbnQgY19wb3J0KSB7CiAgICBzbmRfc2Vx
+X2FkZHJfdCBzZW5kZXIsIGRlc3Q7CiAgICBzbmRfc2VxX3BvcnRfc3Vic2NyaWJlX3QgKnN1YnM7
+CiAgICBpbnQgaWQsIHF1ZXVlOwogICAgc25kX3NlcV9ldmVudF90IGV2OwoKICAgIGlkICAgICAg
+ICAgICAgPSBzbmRfc2VxX2NsaWVudF9pZChzZXEpOwogICAgc2VuZGVyLmNsaWVudCA9IGNsaWVu
+dDsKICAgIHNlbmRlci5wb3J0ICAgPSBjX3BvcnQ7CiAgICBkZXN0LmNsaWVudCAgID0gaWQ7CiAg
+ICBkZXN0LnBvcnQgICAgID0gcG9ydDsKICAgIHF1ZXVlICAgICAgICAgPSBzbmRfc2VxX2FsbG9j
+X3F1ZXVlKHNlcSk7CgogICAgc25kX3NlcV9wb3J0X3N1YnNjcmliZV9hbGxvY2EoJnN1YnMpOwog
+ICAgc25kX3NlcV9wb3J0X3N1YnNjcmliZV9zZXRfc2VuZGVyKHN1YnMsICZzZW5kZXIpOwogICAg
+c25kX3NlcV9wb3J0X3N1YnNjcmliZV9zZXRfZGVzdChzdWJzLCAmZGVzdCk7CiAgICBzbmRfc2Vx
+X3BvcnRfc3Vic2NyaWJlX3NldF9xdWV1ZShzdWJzLCBxdWV1ZSk7CiAgICBzbmRfc2VxX3BvcnRf
+c3Vic2NyaWJlX3NldF90aW1lX3VwZGF0ZShzdWJzLCAxKTsKICAgIHNuZF9zZXFfcG9ydF9zdWJz
+Y3JpYmVfc2V0X3RpbWVfcmVhbChzdWJzLCAxKTsKICAgIHNuZF9zZXFfc3Vic2NyaWJlX3BvcnQo
+c2VxLCBzdWJzKTsKCiAgICAvKiBVbmNvbW1lbnRpbmcgdGhlc2Ugc2VlbXMgdG8gaGF2ZSBubyB2
+aXNpYmxlIGVmZmVjdCBlaXRoZXIgKi8KICAgIC8vc2V0X3F1ZXVlX3RlbXBvKHNlcSwgaWQsIHBv
+cnQsIHF1ZXVlLCAxMDAwMCk7CiAgICAvL3NldF9xdWV1ZV9wb3NpdGlvbihzZXEsIGlkLCBwb3J0
+LCBxdWV1ZSwgNSk7CiAgICAvL3N0YXJ0X3F1ZXVlKHNlcSwgaWQsIHBvcnQsIHF1ZXVlKTsKICAg
+IAogICAgc25kX3NlcV9zdGFydF9xdWV1ZShzZXEsIHF1ZXVlLCBOVUxMKTsKICAgIHNuZF9zZXFf
+ZHJhaW5fb3V0cHV0KHNlcSk7Cn0KCnZvaWQgc3RhcnRfcXVldWUoc25kX3NlcV90ICpzZXEsIGlu
+dCBjbGllbnQsIGludCBwb3J0LCBpbnQgcSkgewogICAgc25kX3NlcV9ldmVudF90IGV2OwogICAg
+c25kX3NlcV9ldl9jbGVhcigmZXYpOwogICAgZXYudHlwZSA9IFNORF9TRVFfRVZFTlRfU1RBUlQ7
+CiAgICBldi5kZXN0LmNsaWVudCA9IFNORF9TRVFfQ0xJRU5UX1NZU1RFTTsKICAgIGV2LmRlc3Qu
+cG9ydCA9IFNORF9TRVFfUE9SVF9TWVNURU1fVElNRVI7CiAgICBldi5zb3VyY2UuY2xpZW50ID0g
+Y2xpZW50OwogICAgZXYuc291cmNlLnBvcnQgPSBwb3J0OwogICAgZXYucXVldWUgPSBTTkRfU0VR
+X1FVRVVFX0RJUkVDVDsgLy8gbm8gc2NoZWR1bGluZwogICAgZXYuZGF0YS5xdWV1ZS5xdWV1ZSA9
+IHE7CS8vIGFmZmVjdGVkIHF1ZXVlIGlkCiAgICBzbmRfc2VxX2V2ZW50X291dHB1dChzZXEsICZl
+dik7ICAgIAp9CgoKdm9pZCBzZXRfcXVldWVfdGVtcG8oc25kX3NlcV90ICpzZXEsIGludCBjbGll
+bnQsIGludCBwb3J0LCBpbnQgcSwKICAgICAgICAgICAgICAgICAgICAgdW5zaWduZWQgaW50IHRl
+bXBvKSB7CiAgICBzbmRfc2VxX2V2ZW50X3QgZXY7CiAgICBzbmRfc2VxX2V2X2NsZWFyKCZldik7
+CiAgICBldi50eXBlID0gU05EX1NFUV9FVkVOVF9URU1QTzsKICAgIGV2LmRlc3QuY2xpZW50ID0g
+U05EX1NFUV9DTElFTlRfU1lTVEVNOwogICAgZXYuZGVzdC5wb3J0ID0gU05EX1NFUV9QT1JUX1NZ
+U1RFTV9USU1FUjsKICAgIGV2LnNvdXJjZS5jbGllbnQgPSBjbGllbnQ7CiAgICBldi5zb3VyY2Uu
+cG9ydCA9IHBvcnQ7CiAgICBldi5xdWV1ZSA9IFNORF9TRVFfUVVFVUVfRElSRUNUOyAvLyBubyBz
+Y2hlZHVsaW5nCiAgICBldi5kYXRhLnF1ZXVlLnF1ZXVlID0gcTsJLy8gYWZmZWN0ZWQgcXVldWUg
+aWQKICAgIGV2LmRhdGEucXVldWUucGFyYW0udmFsdWUgPSB0ZW1wbzsJLy8gbmV3IHRlbXBvIGlu
+IG1pY3Jvc2VjLgogICAgc25kX3NlcV9ldmVudF9vdXRwdXQoc2VxLCAmZXYpOyAgICAKfQoKdm9p
+ZCBzZXRfcXVldWVfcG9zaXRpb24oc25kX3NlcV90ICpzZXEsIGludCBjbGllbnQsIGludCBwb3J0
+LCBpbnQgcSwKICAgICAgICAgICAgICAgICAgICAgICAgdW5zaWduZWQgaW50IHBvc2l0aW9uKSB7
+CiAgICBzbmRfc2VxX2V2ZW50X3QgZXY7CiAgICBzbmRfc2VxX2V2X2NsZWFyKCZldik7CiAgICBl
+di50eXBlID0gU05EX1NFUV9FVkVOVF9URU1QTzsKICAgIGV2LmRlc3QuY2xpZW50ID0gU05EX1NF
+UV9DTElFTlRfU1lTVEVNOwogICAgZXYuZGVzdC5wb3J0ID0gU05EX1NFUV9QT1JUX1NZU1RFTV9U
+SU1FUjsKICAgIGV2LnNvdXJjZS5jbGllbnQgPSBjbGllbnQ7CiAgICBldi5zb3VyY2UucG9ydCA9
+IHBvcnQ7CiAgICBldi5xdWV1ZSA9IFNORF9TRVFfUVVFVUVfRElSRUNUOyAvLyBubyBzY2hlZHVs
+aW5nCiAgICBldi5kYXRhLnF1ZXVlLnF1ZXVlID0gcTsJLy8gYWZmZWN0ZWQgcXVldWUgaWQKICAg
+IGV2LmRhdGEucXVldWUucGFyYW0ucG9zaXRpb24gPSBwb3NpdGlvbjsJLy8gbmV3IHRlbXBvIGlu
+IG1pY3Jvc2VjLgogICAgc25kX3NlcV9ldmVudF9vdXRwdXQoc2VxLCAmZXYpOyAgICAKfQo=
+
+--Multipart=_Tue__28_Oct_2003_08_29_38_-0800_ko=9.PW03Vrbeb_K--
 
 
 -------------------------------------------------------
