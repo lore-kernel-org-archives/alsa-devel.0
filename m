@@ -1,91 +1,89 @@
-From: Edwin Boersma <edwin@orangeport.net>
-Subject: Re: S/PDIF locked? I have no more output!
-Date: Wed, 4 Jun 2003 20:13:15 +0300
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <200306042013.15840.edwin@orangeport.net>
-References: <5.1.1.6.0.20030527161834.00ac2d90@naxos>
+From: Mark Knecht <markknecht@attbi.com>
+Subject: Re: Re: Alsa-devel digest, Vol 1 #1207 - 14 msgs
+Date: 04 Jun 2003 12:45:27 -0700
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <1054755927.10453.12.camel@Wizard.knechthome.com>
+References: <E19NYdu-0004A9-00@sc8-sf-list2.sourceforge.net>
+	 <200306041124.16908.n8gray@caltech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <5.1.1.6.0.20030527161834.00ac2d90@naxos>
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200306041124.16908.n8gray@caltech.edu>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Nathaniel Gray <n8gray@caltech.edu>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 31 May 2003 16:04, Edwin Boersma wrote:
-I managed to get my output back, after trying several combinations of=20
-settings. I don't really know what I did actually...
+On Wed, 2003-06-04 at 11:24, Nathaniel Gray wrote:
+> On Wednesday 04 June 2003 06:48 am, 
+> alsa-devel-request@lists.sourceforge.net wrote:
+> > Florian,
+> >    Yes. Thanks. This is something Jaroslav pointed out later in the
+> > morning. With this strategy I got at least a simple alsa application
+> > to play sounds cleanly, so this was helpful.
+> >
+> >    Can you shed any light on getting a game like frozen-bubble to use
+> > Alsa? When I try to start this app it lock up with error messages
+> > about resources being busy.
+> 
+> That means that some other program is using the soundcard (only one 
+> program at a time can use it).  If you're running KDE then ARTS is a 
+> likely suspect and you can try running "artsdsp frozenbubble".  
+> Otherwise you can try "fuser /dev/dsp" or "fuser /dev/snd/pcmC0D1p" to 
+> find out the PID of the process that's using it.
+> 
+> Someday the dmix plugin might be usable in which case this problem will 
+> go away.
 
-Who can tell me how I can have CD output and XMMS output at the same time=
- on=20
-different channels? The nformation from Midiman is very little...
+Nathanial,
+   Hi. Thanks for the ideas. While I know it's not practical for you to
+have gone back and reread all the the traffic on this over the last week
+or two, I think this answer, while technically correct, possibly doesn't
+apply in this case:
+
+1) As I've reported, I'm running fluxbox which has no specific sound
+support, servers, etc., to the best of my knowledge. There is certainly
+nothing obvious when looking at processes. I've used Alsa under both
+Gnome and KDE, so I am familiar with these potential problems. 
+
+2) The single application answer would apply to other Alsa apps, like
+aplay also. However, I can run aplay multiple times before I run
+frozen-bubble, and I can run it immediately after killing frozen-bubble
+after the hand. If some other application was using Alsa, and blocking
+frozen-bubble, then I would expect it to block ALL other Alsa apps, and
+not just frozen-bubble.
 
 
-Edwin
+> 
+> >    Am I correct in guessing that an app like frozen-bubble is using
+> > the OSS portion of Alsa? Is there some setup that I can do to point
+> > OSS sound requests to this default device?
+> 
+> That's pretty much automatic.  There's nothing you need to do.
 
-> Hello,
->
-> I installed envy24control on SuSE Linux 8.1 for my Midiman Delta 410 so=
-und
-> card. The card was installed successfully by alsaconf and it played mus=
-ic.
-> In envy24control, I clicked "S/PDIF In" under "Master Clock" in "Hardwa=
-re
-> Settings". The sound output stoppped immediately and in the "Actual Rat=
-e"
-> box, the value changed from "44100" to "S/PDIF". Because I don't have a=
-ny
-> digital interfaces, and I wanted to have my music back, I clicked "4410=
-0"
-> again. Nothing happened though, the music is gone and if I close
-> envy24control and start it again, the S/PDIF is again selected. I have
-> tried every setting to get back to where I started, but without success=
-=2E
-> Then I tried to reinstall my sound card. This went fine, until the play=
-ing
-> of the test sound. Apparently, the sound card is in use, because the
-> program still waits for the test sound to be played.
->
-> Who can tell me how I can reset the whole configuration and why this ha=
-s
-> happened?
->
-> Edwin Boersma
->
-> ******************************
-> Odos Agiou Polykarpou
-> 84 300 Chora, NAXOS
-> Greece
-> T: +30/2285029088
-> O: +30/2285029093
-> M: +30/6942250095
-> E: edwin@orangeport.net
-> W: http://www.cyclades-info.com
-> ICQ: 7383148
-> ******************************
->
->
->
-> -------------------------------------------------------
-> This SF.net email is sponsored by: eBay
-> Get office equipment for less on eBay!
-> http://adfarm.mediaplex.com/ad/ck/711-11697-6916-5
-> _______________________________________________
-> Alsa-user mailing list
-> Alsa-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-user
+Probably true, but I was told that using aplay would be automatic also,
+and it wasn't. I've had to associate a pcm.!default entity to get it to
+work, so something is not quite right. I continue to wonder if something
+similar is effecting the OSS part of this machine.
 
---=20
-Edwin Boersma
+I will have to look into the fuser idea. It sounds interesting.
+Currently I have a different sound card loaded and this problem does not
+appear. I'll have to load up the Via driver and try this out.
+
+None the less, thanks for your insights. I will continue to look for the
+answer, but this is software and I am blind.
+
+With best regards,
+Mark
+
 
 
 -------------------------------------------------------
