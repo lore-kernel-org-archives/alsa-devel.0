@@ -1,13 +1,15 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: USB audio kernel panic
-Date: Sat, 08 May 2004 17:04:56 +0900
+From: =?ISO-8859-1?Q?Erik_Inge_Bols=F8?= <knan@mo.himolde.no>
+Subject: Re: hdspmixer vs cvs
+Date: Sat, 8 May 2004 10:13:14 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <409C94A8.6010703@boosthardware.com>
-References: <409B0D89.6090503@boosthardware.com> <20040507140321.28777db8@laptop> <409C687E.8010702@boosthardware.com>
+Message-ID: <Pine.LNX.4.56-Maildir.0405081011410.9133@yme.midgardsormen.net>
+References: <409B16F0.8070601@boosthardware.com>
+ <Pine.LNX.4.58.0405070943430.1783@pnote.perex-int.cz> <409C6EFD.8030609@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <409C6EFD.8030609@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,38 +18,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Using the latest usb-audio code from cvs I get a kernel panic when 
-loading the drivers. After that I cannot unload the modules and have to 
-reboot if I want to try again.
+On Sat, 8 May 2004, Patrick Shirkey wrote:
+>Great. The reason I'm using a snapshot is because I cannot login to the
+>cvs repository as anonymous. It times out.
 
-This doesn't happen with the hdsp driver or cmipci driver which I also use.
+Login/checkout from cvs.sourceforge.net instead of cvs.alsa-project.org as
+a workaround. Worked For Me (TM) a few days ago.
 
-I'm running kernel-2.2.21 with gcc-2.95.4
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org/LAU/guide/ - The Linux Audio Users guide
-Http://www.djcj.org/gigs/ - Gigs guide Korea
-Http://www.nana7.net - Bar Nana - Itaewon, Seoul, Sth Corea
-========================================
-
-
-Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
-
+--
+Erik I. Bolsø | email: <knan at mo.himolde.no>
+The UNIX philosophy basically involves giving you enough rope to
+hang yourself.  And then a couple of feet more, just to be sure.
 
 
 -------------------------------------------------------
