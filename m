@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000334]: EMU10K1, capturing audio is impossible
-Date: Mon, 14 Jun 2004 08:19:35 +0200
+Subject: [ALSA - driver 0000264]: Can not set recording source & twick line in volume
+Date: Mon, 14 Jun 2004 08:38:05 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <b8d2787212600f55e386f0f35b82934c@bugtrack.alsa-project.org>
+Message-ID: <161193abc21b920088843008d7db3727@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -24,76 +24,86 @@ A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug=
-_id=3D0000334
+_id=3D0000264
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                netslayer
+Reported By:                teras
 Assigned To:               =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     334
+Bug ID:                     264
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.7rc love-sources
+Distribution:               Debian unstable
+Kernel Version:             2.6.2
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-13-2004 23:30 CEST
-Last Modified:              06-14-2004 08:19 CEST
+Date Submitted:             05-08-2004 21:28 CEST
+Last Modified:              06-14-2004 08:38 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    EMU10K1, capturing audio is impossible
+Summary:                    Can not set recording source & twick line in =
+volume
 Description:=20
-I have an Audigy (EMU10K2 -- on EMU10K1 drivers). It has worked perfectly
-in 0.9.8, and in 1.0.x I can playback audio fine, but capturing seems
-impossible.
+This problem is strange, because it does not appear in stock kernel 2.6.2
+but it started to appear in later kernels, 2.6.3 up to 2.6.5 (and also in
+alsa driver 1.0.4).
 
-In 0.9.8 I was able to select a capture source in alsamixer by selecting
-it with the space bar. The source had "---" areas above it that meant it
-had the capture ability. In 1.0.x that whole functionality is gone, and I
-see no more way to capture audio.=20
+I am using both my PCI SB Audigy card and my on-board Intel AC'97
+controller, with the modules snd-emu10k1 and snd-intel8x0. The onboard
+card is wired to the line in of the SB card. WIth kernel 2.6.2 everything
+works fine. I can hear the sound of the intel card through the SB card an=
+d
+also increase/decrease the line in volume of the SB card.
 
-I have all my sources up to 100%, and when I plug in an audio to source
-into LINE IN on the Audigy, I hear nor can record anything. If I unmute
-LINE IN in alsamixer, then I hear pass through audio, which I don't want.
-I want to be able to record it, but not hear it through a pass through.=20
+On later kernels, as well as alsa 1.0.4 I can not longer see the selectio=
+n
+of the "record source" for the SB, in ANY mixer. Moreover the default
+input is the microphone (which is something I don't want to. The selectio=
+n
+of the "recording source" for the intel card does appear.
 
-I know several people with this problem, and I myself have a few of these
-cards dedicated to MythTV PVR boxes, and this problem makes it impossible
-to upgrade ALSA... It's been 6 months since I tried this, and since nobod=
-y
-reported it, I thought I would.=20
+Also the volume slider for the microphone does not work. No matter what I
+do, the volume remain constant. Of course I can controll it with other
+means, but this is not the point.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- netslayer - 06-14-2004 01:38 CEST=20
+ teras - 06-13-2004 13:11 CEST=20
 ----------------------------------------------------------------------
-Just to clarify, I figured out that recording audio off of LINE IN does
-work. However, there is no way of recording audio with LINE muted, so as
-not to hear the pass through. I want to be able to record, just like in
-0.9.8 from the LINE IN, without having to actually listen to the pass
-through audio when it is unmuted.
+Just for reference, this is the lspci for this card:
+
+0000:02:04.0 Multimedia audio controller: Creative Labs SB Audigy (rev
+03)
+
+or (in -n mode)
+0000:02:04.0 Class 0401: 1102:0004 (rev 03)
 
 ----------------------------------------------------------------------
- pzad - 06-14-2004 08:19 CEST=20
+ pzad - 06-14-2004 08:38 CEST=20
 ----------------------------------------------------------------------
-ALSA 0.9.8 uses as ADC AC97, ALSA 1.0.x uses philips ADC (windows drivers
-uses philips ADC too and works similiar to alsa 1.0.x).
-If you want capture Line In:
--unmute and set Line In volume
--unmute and set volume for Analog Mix Capture Volume
--mute (set volume to 0) for Analog Mix Playback Volume, if don't waqnt to
-listen line in while recording.
+And for what you need to set capture source ????
+You only need to set capture volume.
+
+If you want capture from analog sources (Line In, CD, Aux) set Analog Mix
+Capture Volume
+If you dont want hear Line In while capture set Analog Mix Playback Volum=
+e
+to 0
+
+There are 2 Mic controls
+Mic Playback Volume - controls playback volume
+Mic Capture Volume - controls capture volume
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -101,15 +111,17 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-13-04 23:30 netslayer      New Bug                                    =
+05-08-04 21:28 teras          New Bug                                    =
  =20
-06-13-04 23:30 netslayer      Distribution              =3D> Gentoo      =
+05-08-04 21:28 teras          Distribution              =3D> Debian unsta=
+ble=20
+05-08-04 21:28 teras          Kernel Version            =3D> 2.6.2       =
    =20
-06-13-04 23:30 netslayer      Kernel Version            =3D> 2.6.7rc love=
--sources
-06-14-04 01:38 netslayer      Bugnote Added: 0001305                     =
+05-09-04 12:40 teras          Bug Monitored: teras                       =
  =20
-06-14-04 08:19 pzad           Bugnote Added: 0001306                     =
+06-13-04 13:11 teras          Bugnote Added: 0001304                     =
+ =20
+06-14-04 08:38 pzad           Bugnote Added: 0001307                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
