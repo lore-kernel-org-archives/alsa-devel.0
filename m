@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000520]: [PATCH] 91_debian_alsaconf_noclear
-Date: Wed, 22 Sep 2004 22:37:27 +0200 (CEST)
+Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
+Date: Wed, 22 Sep 2004 22:48:52 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040922203727.00B734500F@server.perex-int.cz>
+Message-ID: <20040922204852.3A7C44E011@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C3CB282
-	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 22:37:28 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A0A731D
+	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 22:48:52 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 4E48A26A76
+	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 22:48:52 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,57 +23,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000520
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000523
 ======================================================================
-Reported By:                jdthood
+Reported By:                pharm
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Bug ID:                     520
-Category:                   alsaconf
+Project:                    ALSA - driver
+Bug ID:                     523
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
 ======================================================================
-Date Submitted:             09-21-2004 20:03 CEST
-Last Modified:              09-22-2004 22:37 CEST
+Date Submitted:             09-22-2004 22:48 CEST
+Last Modified:              09-22-2004 22:48 CEST
 ======================================================================
-Summary:                    [PATCH] 91_debian_alsaconf_noclear
+Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
 Description: 
-This is a patch for alsaconf which makes it not clear the
-screen, but print a newline instead.  The advantage is that
-error messages are not cleared.
+I have a Biostar IDEQ 210V minipc. As well as 6 channel analog out (which
+appears to work, at least stereo analog out does for certain) there are
+two digital (optical) SPDIF outputs. Unfortunately I can't get anything to
+recognise these -- mplayer complains about the lack of IEC958 mixer
+entries if I try to use the hwac3 output, and if I point the 
+alsa output at any of the list of hardware outputs I get nothing from the
+digital amp -- it doesn't appear to get any signal.
+
+Assuming I'm not doing something dumb, is there anything else I should
+try? I've tried all the ac97_quirk options.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-22-2004 18:24 CEST 
-----------------------------------------------------------------------
-Why overwrite clear() even if no error state?
-
-----------------------------------------------------------------------
- jdthood - 09-22-2004 22:37 CEST 
-----------------------------------------------------------------------
-> Why overwrite clear() even if no error state?
-
-
-Error messages can be printed without alsaconf knowing about it.
-It is safest simply to refrain from clearing the screen.  Also
-easiest; and the program looks fine without its doing all those
-clears.
-
-If you would like to refine the patch to add more screen clears
-when you are sure that there was no error, then be my guest.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 20:03 jdthood        New Bug                                      
-09-21-04 20:03 jdthood        File Added: 91_debian_alsaconf_noclear.dpatch                    
-09-22-04 18:24 tiwai          Bugnote Added: 0001816                       
-09-22-04 22:37 jdthood        Bugnote Added: 0001820                       
+09-22-04 22:48 pharm          New Bug                                      
+09-22-04 22:48 pharm          Distribution              => Debian unstable 
+09-22-04 22:48 pharm          Kernel Version            => 2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
 ======================================================================
 
 
