@@ -1,14 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: [PATCH] Full duplex dmix,dsnoop
-Date: Thu, 25 Mar 2004 21:11:40 +0000
+From: Glenn Maynard <g_sf@zewt.org>
+Subject: Re: problems using select() on alsa pcm.
+Date: Thu, 25 Mar 2004 16:44:24 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40634B0C.9080000@superbug.demon.co.uk>
-References: <406334F2.4020101@superbug.demon.co.uk> <Pine.LNX.4.58.0403252039320.1864@pnote.perex-int.cz>
+Message-ID: <20040325214423.GB13484@zewt.org>
+References: <200403250408.i2P48qDC021625@dhin.linuxaudiosystems.com> <003301c41253$919b5c00$161b14ac@boromir> <s5h65ct58md.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0403252039320.1864@pnote.perex-int.cz>
+Content-Disposition: inline
+In-Reply-To: <s5h65ct58md.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,50 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Thu, 25 Mar 2004, James Courtier-Dutton wrote:
+On Thu, Mar 25, 2004 at 03:00:58PM +0100, Takashi Iwai wrote:
+> > Why is select deprecated?
 > 
-> 
->>bash-2.05b# arecord -fcd -Dplug:duplex | aplay -Dplug:duplex
->>Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
->>Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
->>arecord: pcm.c:5920: snd_pcm_mmap_commit: Assertion `frames <= 
->>snd_pcm_mmap_avail(pcm)' failed.
->>Aborted by signal Aborted...
->>
->>This last example with -fcd, outputs one period, maybe two then exits 
->>with the above error.
-> 
-> 
-> Do you use latest CVS code? I've fixed this problem with the rate 
-> (resampling) plugin.
-> 
-> 						Jaroslav
-> 
+> because select is just a wrapper of poll in fact (on linux)?
 
-I think so, cat /usr/include/alsa/version.h
+So?  There are a few other operating systems out there, and select() is
+very portable.
 
+(select isn't deprecated; it's simply not Linus's API to deprecate. :)
 
-
-/*
-  *  version.h
-  */
-
-#define SND_LIB_MAJOR           1 /**< major number of library version */
-#define SND_LIB_MINOR           0 /**< minor number of library version */
-#define SND_LIB_SUBMINOR        3 /**< subminor number of library version */
-#define SND_LIB_EXTRAVER        1000000 /**< extra version number, used 
-mainly for betas */
-/** library version */
-#define SND_LIB_VERSION         ((SND_LIB_MAJOR<<16)|\
-                                  (SND_LIB_MINOR<<8)|\
-                                   SND_LIB_SUBMINOR)
-/** library version (string) */
-#define SND_LIB_VERSION_STR     "1.0.3b"
+-- 
+Glenn Maynard
 
 
 -------------------------------------------------------
