@@ -1,12 +1,14 @@
-From: "Liszewski, Matthew (MED)" <Matthew.Liszewski@med.ge.com>
-Subject: Yamaha Mobile Audio Chip Driver
-Date: Wed, 9 Jul 2003 15:05:14 -0500
+From: Ryan Underwood <nemesis-lists@icequake.net>
+Subject: Re: cs4248 / thinkpad 755 / 755c , patch suggestions [PATCH]]
+Date: Wed, 9 Jul 2003 16:04:51 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <B1243F436404D511A5CF009027E705DA12DAC514@uswaumsx09medge.med.ge.com>
+Message-ID: <20030709210451.GH1031@dbz.icequake.net>
+References: <20030709160532.GE1031@dbz.icequake.net> <Pine.LNX.4.44.0307091824050.16335-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0307091824050.16335-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,20 +17,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I am trying to write an ALSA device driver for a Yamaha mobile audio
-chip.  I was thinking that I could take an existing ALSA driver written
-for a Yamaha pci sound card and modify it based upon code and
-documentation provided from Yamaha.  Does anyone have any suggestions or
-experience in writing ALSA drivers for mobile audio chips or Yamaha
-chips in general?
+Hi Jaroslav,
 
-Thanks,
-Matt
+On Wed, Jul 09, 2003 at 06:28:05PM +0200, Jaroslav Kysela wrote:
+ 
+> Show me a wav header parser code in these drivers. I guess that you are 
+> a bit confused. The standard parameters are 8000Hz, mono, 8-bit unsigned 
+> (/dev/dsp) or 8000Hz, mono, 16-bit unsigned (/dev/dsp16) or 8000Hz, 
+> mono, muLaw (/dev/audio) as far as I work with sound drivers since 1994.
+
+You are correct that I was either confused, or always used 8kHz sound
+files all the time.  I unloaded ALSA and loaded up the old OSS driver to
+prove you wrong, and only found out that I was wrong instead. :)
+
+Sorry for the confusion,
+
+-- 
+Ryan Underwood, <nemesis at icequake.net>, icq=10317253
 
 
 -------------------------------------------------------
