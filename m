@@ -1,18 +1,12 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: Occasional metallic sound when recording (cs46xx)
-Date: Wed, 5 Nov 2003 16:49:23 +0100
+From: Johan Bilien <jobi@via.ecp.fr>
+Subject: ALSA crash on linux 2.6.0-test9 and USB audio
+Date: Thu, 6 Nov 2003 15:14:29 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031105164923.79ba96e2.mista.tapas@gmx.net>
-References: <200310221739.h9MHd0m1024945@oud.linuxaudiosystems.com>
-	<3F981FF3.4040902@gmx.at>
-	<87oew7g4m9.fsf@canaima.chapus.net>
-	<s5h7k2u93l7.wl@alsa2.suse.de>
-	<87brrqrgy6.fsf@canaima.chapus.net>
+Message-ID: <20031106141429.GA19456@via.ecp.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <87brrqrgy6.fsf@canaima.chapus.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -24,27 +18,98 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 05 Nov 2003 10:08:33 -0500
-peloy@chapus.net (Eloy A. Paris) wrote:
+Hi,
 
-> Hi Takashi,
-> 
-> This is from a thread about two weeks old. Didn't respond before
-> because was trying the suggestion you provided (see below.)
-> 
-> Takashi Iwai <tiwai@suse.de> writes:
-> 
-> > then it sounds like the specific problem for cs46xx driver.
+since I moved from test3 to test9 (test8 would not recognize my usb
+headset), I am experiencing a hang in ALSA playback almost everytime I
+use my USB headset (Plantronics). In the syslog, I get something like:
 
+Nov  6 15:00:09 naboo kernel: Debug: sleeping function called from
+invalid context at kernel/sched.c:1736
+Nov  6 15:00:09 naboo kernel: in_atomic():1, irqs_disabled():1
+Nov  6 15:00:09 naboo kernel: Call Trace:
+Nov  6 15:00:09 naboo kernel:  [__might_sleep+172/224]
+__might_sleep+0xac/0xe0
+Nov  6 15:00:09 naboo kernel:  [wait_for_completion+32/240]
+wait_for_completion+0x20/0xf0
+Nov  6 15:00:09 naboo kernel:  [_end+147956939/1070252488]
+hcd_unlink_urb+0x163/0x260 [usbcore]
+Nov  6 15:00:09 naboo kernel:  [_end+148363464/1070252488]
+snd_complete_urb+0x0/0xd0 [snd_usb_audio]
+Nov  6 15:00:09 naboo kernel:  [_end+147959157/1070252488]
+usb_unlink_urb+0x3d/0x40 [usbcore]
+Nov  6 15:00:09 naboo kernel:  [_end+148364069/1070252488]
+deactivate_urbs+0xad/0xb0 [snd_usb_audio]
+Nov  6 15:00:09 naboo kernel:  [_end+148364682/1070252488]
+snd_usb_pcm_trigger+0x52/0x60 [snd_usb_audio]
+Nov  6 15:00:09 naboo kernel:  [_end+148280253/1070252488]
+snd_pcm_do_stop+0x25/0x30 [snd_pcm]
+Nov  6 15:00:09 naboo kernel:  [_end+148279473/1070252488]
+snd_pcm_action_single+0x39/0x70 [snd_pcm]
+Nov  6 15:00:09 naboo kernel:  [_end+148279640/1070252488]
+snd_pcm_action+0x70/0x80 [snd_pcm]
+Nov  6 15:00:10 naboo kernel:  [_end+148280423/1070252488]
+snd_pcm_stop+0x1f/0x30 [snd_pcm]
+Nov  6 15:00:10 naboo kernel:  [_end+148300253/1070252488]
+snd_pcm_update_hw_ptr+0x145/0x1e0 [snd_pcm]
+Nov  6 15:00:10 naboo kernel:  [schedule_timeout+109/192]
+schedule_timeout+0x6d/0xc0
+Nov  6 15:00:10 naboo kernel:  [sock_poll+41/64] sock_poll+0x29/0x40
+Nov  6 15:00:10 naboo kernel:  [_end+148292138/1070252488]
+snd_pcm_delay+0x52/0x170 [snd_pcm]
+Nov  6 15:00:10 naboo kernel:  [_end+148293276/1070252488]
+snd_pcm_playback_ioctl1+0x64/0x4d0 [snd_pcm]
+Nov  6 15:00:10 naboo kernel:  [sys_poll+642/720] sys_poll+0x282/0x2d0
+Nov  6 15:00:10 naboo kernel:  [sys_ioctl+256/672] sys_ioctl+0x100/0x2a0
+Nov  6 15:00:10 naboo kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+Nov  6 15:00:10 naboo kernel:
+Nov  6 15:00:10 naboo kernel: bad: scheduling while atomic!
+Nov  6 15:00:10 naboo kernel: Call Trace:
+Nov  6 15:00:10 naboo kernel:  [schedule+1445/1456] schedule+0x5a5/0x5b0
+Nov  6 15:00:10 naboo kernel:  [common_interrupt+24/32]
+common_interrupt+0x18/0x20
+Nov  6 15:00:10 naboo kernel:  [wait_for_completion+152/240]
+wait_for_completion+0x98/0xf0
+Nov  6 15:00:10 naboo kernel:  [default_wake_function+0/48]
+default_wake_function+0x0/0x30
+Nov  6 15:00:10 naboo kernel:  [default_wake_function+0/48]
+default_wake_function+0x0/0x30
+Nov  6 15:00:10 naboo kernel:  [_end+147956939/1070252488]
+hcd_unlink_urb+0x163/0x260 [usbcore]
+Nov  6 15:00:10 naboo kernel:  [_end+148363464/1070252488]
+snd_complete_urb+0x0/0xd0 [snd_usb_audio]
+Nov  6 15:00:10 naboo kernel:  [_end+147959157/1070252488]
+usb_unlink_urb+0x3d/0x40 [usbcore]
+Nov  6 15:00:10 naboo kernel:  [_end+148364069/1070252488]
+deactivate_urbs+0xad/0xb0 [snd_usb_audio]
+Nov  6 15:00:10 naboo kernel:  [_end+148364682/1070252488]
+snd_usb_pcm_trigger+0x52/0x60 [snd_usb_audio]
+Nov  6 15:00:10 naboo kernel:  [_end+148280253/1070252488]
+snd_pcm_do_stop+0x25/0x30 [snd_pcm]
+Nov  6 15:00:10 naboo kernel:  [_end+148279473/1070252488]
+snd_pcm_action_single+0x39/0x70 [snd_pcm]
+Nov  6 15:00:10 naboo kernel:  [_end+148279640/1070252488]
+snd_pcm_action+0x70/0x80 [snd_pcm]
+Nov  6 15:00:10 naboo kernel:  [_end+148280423/1070252488]
+snd_pcm_stop+0x1f/0x30 [snd_pcm]
+Nov  6 15:00:10 naboo kernel:  [_end+148300253/1070252488]
+snd_pcm_update_hw_ptr+0x145/0x1e0 [snd_pcm]
+Nov  6 15:00:10 naboo kernel:  [schedule_timeout+109/192]
+schedule_timeout+0x6d/0xc0
+Nov  6 15:00:10 naboo kernel:  [sock_poll+41/64] sock_poll+0x29/0x40
+Nov  6 15:00:10 naboo kernel:  [_end+148292138/1070252488]
+snd_pcm_delay+0x52/0x170 [snd_pcm]
+Nov  6 15:00:10 naboo kernel:  [_end+148293276/1070252488]
+snd_pcm_playback_ioctl1+0x64/0x4d0 [snd_pcm]
+Nov  6 15:00:10 naboo kernel:  [sys_poll+642/720] sys_poll+0x282/0x2d0
+Nov  6 15:00:10 naboo kernel:  [sys_ioctl+256/672] sys_ioctl+0x100/0x2a0
+Nov  6 15:00:10 naboo kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
 
-i don't know if i answered back then but i have the same problem with my
-terratec dmx xfire 1024 [cs46xx]. Occasionally the sound is metallic and
-distorted and a bit quiter than normal. Turning the Capture on the ADC
-device Off and On again usualy remedies the situation.
+and so on. I am using the snd-usb-audio module, with XMMS ALSA output.
+Let me know what other details may help you.
 
-If it is any help i can try making a recording of the sound..
-
-FLorian Schmidt
+-- 
+Johan
 
 
 -------------------------------------------------------
