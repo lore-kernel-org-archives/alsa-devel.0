@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000250]: SPDIF not functional
-Date: Fri, 16 Jul 2004 12:57:29 +0200 (CEST)
+Subject: [ALSA - lib 0000161]: EVERY time a sound is played a kernel message is generated - Unexpected hw_pointer value etc.
+Date: Fri, 16 Jul 2004 13:03:02 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716105729.444B226008@server.perex-int.cz>
+Message-ID: <20040716110302.F00F326008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7AD19244
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:57:29 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 71FD3255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 13:03:03 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,74 +22,71 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000250
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000161
 ======================================================================
-Reported By:                mergl
+Reported By:                andywebsdale
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     250
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Bug ID:                     161
+Category:                   general
 Reproducibility:            always
-Severity:                   major
+Severity:                   trivial
 Priority:                   normal
 Status:                     closed
-Distribution:               fedora core2
-Kernel Version:             2.6.5-1.327
 ======================================================================
-Date Submitted:             05-02-2004 08:45 CEST
-Last Modified:              07-16-2004 12:57 CEST
+Date Submitted:             03-28-2004 00:07 CET
+Last Modified:              07-16-2004 13:03 CEST
 ======================================================================
-Summary:                    SPDIF not functional
+Summary:                    EVERY time a sound is played a kernel message is generated - Unexpected hw_pointer value etc.
 Description: 
-configuration problem: in order to use the SPDIF output
-the configuration file  /usr/share/alsa/cards/NFORCE.conf
-has to be changed:
-
-from
-        slave.pcm {
-                type hw
-                card $CARD
-                device 1
-        }
-                                                                          
-     
-into
-                                                                          
-     
-                                                                          
-             slave.pcm {
-                type hw
-                card $CARD
-                device 2
-        }
-  
-
-reason:  
-
-[mergl@shuttle backup]$ cat /proc/asound/pcm
-00-00: Intel ICH : NVidia nForce3 : playback 1 : capture 1
-00-01: Intel ICH - MIC ADC : NVidia nForce3 - MIC ADC : capture 1
-00-02: Intel ICH - IEC958 : NVidia nForce3 - IEC958 : playback 1
-
+EVERY time a sound is played (on a cm8738 card) a kernel message is
+generated - 
+"ALSA sound/core/pcm_lib.c:195: Unexpected hw_pointer value [1] (stream =
+0, delta: -4, max jitter = 5512): wrong interrupt acknowledge?" It doesn't
+affect sound quality, I know BUT it does happen a lot & probably
+represents 50%+ of non-boot kernel messages logged 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-02-2004 11:52 CEST 
+ tiwai - 03-28-2004 17:34 CEST 
 ----------------------------------------------------------------------
-already fixed in the newer version.
+the message is suppressed as default in 1.0.4.
+
+----------------------------------------------------------------------
+ andywebsdale - 04-01-2004 22:05 CEST 
+----------------------------------------------------------------------
+I am running alsa-lib version 1.0.4 & a message is still appearing.However
+I am using the 2.6.4 kernel - will this disappear with 2.6.5?
+Sorry If I've reopened this in error as I've just checked & I see that my
+driver is 1.0.2, tho' my alsa-lib is 1.0.4- you should probably disregard
+this mistaken reopening by me.
+
+edited on: 04-01-04 22:05
+
+----------------------------------------------------------------------
+ tiwai - 04-13-2004 19:23 CEST 
+----------------------------------------------------------------------
+yes, you have to update ALSA kernel drivers, not only library.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-02-04 08:45 mergl          New Bug                                      
-05-02-04 08:45 mergl          Distribution              => fedora core2    
-05-02-04 08:45 mergl          Kernel Version            => 2.6.5-1.327     
-05-02-04 11:52 tiwai          Bugnote Added: 0001003                       
-05-02-04 11:52 tiwai          Assigned To               => tiwai           
-05-02-04 11:52 tiwai          Resolution               open => fixed       
-05-02-04 11:52 tiwai          Status                   new => resolved     
-07-16-04 12:57 tiwai          Status                   resolved => closed  
+03-28-04 00:07 andywebsdale   New Bug                                      
+03-28-04 00:57 andywebsdale   Bug Monitored: andywebsdale                    
+03-28-04 17:34 tiwai          Bugnote Added: 0000712                       
+03-28-04 17:34 tiwai          Assigned To               => tiwai           
+03-28-04 17:34 tiwai          Resolution               open => fixed       
+03-28-04 17:34 tiwai          Status                   new => resolved     
+04-01-04 15:47 andywebsdale   Status                   resolved => feedback
+04-01-04 15:47 andywebsdale   Bugnote Added: 0000731                       
+04-01-04 15:47 andywebsdale   Resolution               fixed => reopened   
+04-01-04 22:05 andywebsdale   Bugnote Edited: 0000731                      
+04-13-04 19:23 tiwai          Bugnote Added: 0000789                       
+04-13-04 19:23 tiwai          Resolution               reopened => fixed   
+04-13-04 19:23 tiwai          Status                   feedback => resolved
+07-13-04 16:13 wacsob         Bug Monitored: wacsob                        
+07-16-04 13:03 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
