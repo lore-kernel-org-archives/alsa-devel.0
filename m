@@ -1,14 +1,12 @@
-From: Jeff Muizelaar <muizelaar@rogers.com>
-Subject: Re: Mono to stereo ?
-Date: Fri, 28 Mar 2003 12:15:52 -0500
+From: "Pete Barnard" <petebarnard@tiscali.co.uk>
+Subject: unsubscribing
+Date: Fri, 28 Mar 2003 19:29:19 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E848348.6070708@rogers.com>
-References: <E18yVi8-0003Mx-00@sc8-sf-list1.sourceforge.net>	<3E83BE0E.4070406@embedded.cl>	<s5h65q3olkj.wl@alsa2.suse.de>	<3E847670.8070006@rogers.com> <s5hd6kbjvaq.wl@alsa2.suse.de>
+Message-ID: <003701c2f560$5523a4a0$0100a8c0@Pblaptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0034_01C2F560.544C3060"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hd6kbjvaq.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,60 +15,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Manuel Jander <mjander@embedded.cl>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+This is a multi-part message in MIME format.
 
->At Fri, 28 Mar 2003 11:21:04 -0500,
->Jeff Muizelaar wrote:
->  
->
->>Takashi Iwai wrote:
->>
->>    
->>
->>>At Thu, 27 Mar 2003 23:14:22 -0400,
->>>Manuel Jander wrote:
->>> 
->>>
->>>      
->>>
->>>>...but, if you are doing mono playback, your sound driver has to setup
->>>>your soundcard to playback on both channels the same mono channel. The 
->>>>Vortex
->>>>driver (still not in the main branch) for example splits the mono signal 
->>>>on its internal
->>>>
-                     ^^ By this Manuel means the mixer internal to the 
-card not internal to the driver.
+------=_NextPart_000_0034_01C2F560.544C3060
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
->>>>mixer into 2 identical signals which are feed one into each CODEC channels.
->>>>   
->>>>
->>>>        
->>>>
->>>no, please don't do that.
->>>in the ALSA, instead of the lowlevel driver, alsa-lib (and
->>>oss-emulation module) will do this job.
->>>
->>>      
->>>
->>In this case the card (not driver) is spliting the mono signal and 
->>sending it to both right and left channels of the codec. Thus 
->>channels_min should still be 1 because the card does actually support a 
->>single channel
->>    
->>
->
->hmm, which driver do you mean?  from the above context, i read that
->the driver needs to split the signals by itself...
->  
->
-The vortex driver. Yeah rereading it, i understand how you interpreted it.
+Does anybody know how I go about either unsubscribing to alsa-devel or =
+making it so that every single message isn't e-mailed directly to me?  =20
 
--Jeff
+Regards,
+
+Pete
+
+------=_NextPart_000_0034_01C2F560.544C3060
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Does anybody know how I go about either =
+
+unsubscribing to alsa-devel or making it so that every single message =
+isn't=20
+e-mailed directly to me?&nbsp;&nbsp; </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Regards,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Pete</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0034_01C2F560.544C3060--
 
 
 
