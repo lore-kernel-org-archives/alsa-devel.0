@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000571]: Doesn't store mixer settings
-Date: Tue, 12 Oct 2004 14:44:03 +0200 (CEST)
+Subject: [ALSA - driver 0000566]: Doesn't save nor restore mixer settings (volumes set to 0)
+Date: Tue, 12 Oct 2004 14:49:16 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041012124403.1D85118009@server.perex-int.cz>
+Message-ID: <20041012124916.3B97118009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5AB582D9
-	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2004 14:44:03 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 708442D9
+	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2004 14:49:16 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,48 +20,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000571
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000566
 ======================================================================
 Reported By:                pmatil
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Bug ID:                     571
-Category:                   alsactl
+Project:                    ALSA - driver
+Bug ID:                     566
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.4.22
+Resolution:                 duplicate
+Duplicate:                  571
 ======================================================================
-Date Submitted:             10-07-2004 18:27 CEST
-Last Modified:              10-12-2004 14:44 CEST
+Date Submitted:             10-05-2004 17:36 CEST
+Last Modified:              10-12-2004 14:49 CEST
 ======================================================================
-Summary:                    Doesn't store mixer settings
+Summary:                    Doesn't save nor restore mixer settings (volumes set to 0)
 Description: 
-No errors are produced by the initscripts, however it seems that it doesn't
-save mixer settings. After boot, asound.state is 'zeroed' eg. all sliders
-are down, but unmuted. Running manually alsactl store, asound.state gets
-all the right values, but after next boot / reboot, asound.state is
-'zeroed' again. Asound.state lies in /var/lib/alsa/asound.state
+No error messages, init-scripts work but doesn't save nor restore mixer
+settings. At boot, volumes are 0% but not muted. After setting the mixer
+settings, doing alsactl store / alsactl restore works and actually saves
+mixer settings to the default file. Still after boot/reboot settings have
+been reset and also the file has been cleared (all volumes = 0). Card is
+Terratec DMX Xfire 1024...(cs46xx)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-12-2004 14:44 CEST 
+ tiwai - 10-06-2004 11:35 CEST 
 ----------------------------------------------------------------------
-Is alsactl patched?  It's usually in /etc/asound.state.
+I doubt it's a driver problem if calling alsactl manually works...
 
-asound.state is saved when alsasound init service is stopped, too.
-This means that the status of sound differs at this stage from
-what you have now.  Possibly, the window system (e.g. KDE) modifies
-and restores the sound status by itself.
+----------------------------------------------------------------------
+ pmatil - 10-07-2004 17:46 CEST 
+----------------------------------------------------------------------
+OK, so I should put this note into what category? The initscript somehow
+resets the file that the mixer settings are in...
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-07-04 18:27 pmatil         New Bug                                      
-10-12-04 14:44 tiwai          Bugnote Added: 0002096                       
+10-05-04 17:36 pmatil         New Bug                                      
+10-05-04 17:36 pmatil         Distribution              => Debian GNU/Linux
+10-05-04 17:36 pmatil         Kernel Version            => 2.4.22          
+10-06-04 11:35 tiwai          Bugnote Added: 0002020                       
+10-07-04 17:46 pmatil         Bugnote Added: 0002034                       
+10-12-04 14:49 tiwai          duplicate_id             0 => 571            
+10-12-04 14:49 tiwai          Assigned To               => tiwai           
+10-12-04 14:49 tiwai          Resolution               open => duplicate   
+10-12-04 14:49 tiwai          Status                   new => resolved     
 ======================================================================
 
 
