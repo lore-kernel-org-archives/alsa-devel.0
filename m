@@ -1,12 +1,23 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Using specific code for midi/gameport instead of
- generic one.
-Date: Mon, 7 Feb 2005 16:40:07 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0502071626560.3379-100000@studcom.urz.uni-halle.de>
-References: <42075CEC.6080101@free.fr>
+From: Frank Barknecht <fbar@footils.org>
+Subject: Re: [ALSA - driver 0000813]: Terratec USB surround broken
+Date: Mon, 7 Feb 2005 16:41:24 +0100
+Message-ID: <20050207154124.GC4291@fliwatut.scifi>
+References: <a83cd635c149cacbdf9253e99879deca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <42075CEC.6080101@free.fr>
+Content-Type: text/plain; charset=us-ascii
+Received: from 217-114-212-9.kunde.vdserver.de (213-146-165-197.kunde.vdserver.de [213.146.165.197])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 08D0B16E
+	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2005 16:41:26 +0100 (MET)
+Received: from xdsl-84-44-148-163.netcologne.de ([84.44.148.163] helo=fliwatut.scifi)
+	by 217-114-212-9.kunde.vdserver.de with asmtp (TLS-1.0:RSA_ARCFOUR_SHA:16)
+	(Exim 4.34)
+	id 1CyB0u-0000mQ-QJ
+	for alsa-devel@alsa-project.org; Mon, 07 Feb 2005 16:41:25 +0100
+Received: from freak by fliwatut.scifi with local (Exim 4.34)
+	id 1CyB0u-0002AP-JY
+	for alsa-devel@alsa-project.org; Mon, 07 Feb 2005 16:41:24 +0100
+Content-Disposition: inline
+In-Reply-To: <a83cd635c149cacbdf9253e99879deca@bugtrack.alsa-project.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,42 +27,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: matthieu castet <castet.matthieu@free.fr>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-matthieu castet wrote:
-> Anyway, we should check if the midi device is found by pnp for these
-> chips. If it is the case, what happen if mpu401 module is load before
-> the via module ?
+Hallo,
+bugtrack@alsa-project.org hat gesagt: // bugtrack@alsa-project.org wrote:
 
-The I/O ports and the interrupt would already have been taken by the
-mpu401 module.  However, the MPU-401 interrupt is usually assumed to
-be an unsharable ISA interrupt, so this would prevent the AC'97
-controller driver from being loaded.
+> A NOTE has been added to this issue.
+> ======================================================================
+> <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=813> 
+> ======================================================================
+> Reported By:                ilikejam
+> Assigned To:                Clemens Ladisch
+> ======================================================================
+> Project:                    ALSA - driver
+> Issue ID:                   813
+> Category:                   USB - usb-audio
+> Reproducibility:            always
+> Severity:                   minor
+> Priority:                   normal
+> Status:                     assigned
+> Distribution:               Fedora Core 3
+> Kernel Version:             2.6.10 (ALSA compiled in)
+> ======================================================================
+> Date Submitted:             01-12-2005 19:41 CET
+> Last Modified:              02-07-2005 10:40 CET
+> ======================================================================
+> Summary:                    Terratec USB surround broken
+> Description: 
+> I'm using a Terratec USB 5.1 card. The 6 channels test correctly using
+> './speaker-test -c6', but any attempt to use 5.1 channel in Xine, or using
+> 'aplay -Dsurround51 file.wav' results in errors e.g.
+> ----------------------------------------------------------------------
+>  Clemens Ladisch - 02-07-05 10:40 
+> ----------------------------------------------------------------------
+> The contents of the stream0 file indicate that your device doesn't support
+> any other sample rate than 48 kHz.  So, when recording from a digital
+> 44.1kHz source, the data still gets labeled as "48kHz".
 
-Are there really any VT686 boards that have PnP information for the
-MPU-401?
+If it helps: I have the same card, it is 48kHz only in hardware. The
+newer models (slightly smaller, mini-jacks) however support 44.1, too.
 
-> Clemens Ladisch wrote:
-> > There is no reason for the gameport code, except that it would work
-> > even if PnP happens to be disabled.
-> >
-> ns558 work even if the PnP is disable : it will try to see if there is
-> something on the following ports [1]. And 0x200 is the port harcoded in
-> the via driver, so it should detect it.
-
-Then there is indeed no reason.
-
-> But perhaps VIA_FUNC_ENABLE_GAME will be missing...
-
-In that case, the user has disabled the gameport in the BIOS setup.
-
-
-
-Best regards,
-Clemens
-
+Ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
+             
+             _ __latest track: fqdn _ http://footils.org/cms/show/38
 
 
 -------------------------------------------------------
