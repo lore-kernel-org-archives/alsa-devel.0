@@ -1,8 +1,10 @@
-From: Chris Raphael <raphael@math.umass.edu>
-Subject: underrun behavior
-Date: Thu, 17 Jul 2003 15:17:00 -0400
+From: "Thomas Charbonnel" <thomas@undata.org>
+Subject: Small hdsp maintenance patch
+Date: Thu, 17 Jul 2003 22:13:42 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307171917.h6HJH0T01638@fafner.math.umass.edu>
+Message-ID: <1826.62.39.219.34.1058472822.squirrel@www.undata.org>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_20030717221342_91020"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,35 +17,63 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_20030717221342_91020
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+
+Hi,
+
+The attached patch :
+
+* fixes a typo in the number of channels for hdsp 9652 cards
+* fixes problems on hdsp9652 where the driver reported the firmware had to
+be loaded
+* adds an explicit warning about the fact that hardware metering is not
+supported yet for hdsp 9652 cards
+
+Thomas
 
 
 
-Thanks to the many people who have helped with my earlier questions.
+------=_20030717221342_91020
+Content-Type: text/plain; name="hdsp_cleanup.patch"
+Content-Disposition: attachment; filename="hdsp_cleanup.patch"
 
-I am working on an application that simultaneously collects and plays
-sound.  About 4 out of 5 times the program runs fine, but occasionally
-I have a problem with the input audio and output audio drifting apart.  
-This seems to happen when I get playing underruns, although not all
-underruns seem to affect the synchronization.  It isn't possible for
-me to completely avoid underruns, because my application can only
-compute the output audio about 20 ms before it is actually played.
+--- hdsp.c.old	2003-07-12 17:39:07.000000000 +0200
++++ hdsp.c	2003-07-17 21:44:38.000000000 +0200
+@@ -76,8 +76,8 @@
+ #define DIGIFACE_DS_CHANNELS     14
+ #define MULTIFACE_SS_CHANNELS    18
+ #define MULTIFACE_DS_CHANNELS    14
+-#define H9652_DS_CHANNELS        26
+-#define H9652_SS_CHANNELS        14
++#define H9652_SS_CHANNELS        26
++#define H9652_DS_CHANNELS        14
+ 
+ /* Write registers. These are defined as byte-offsets from the iobase value.
+  */
+@@ -643,6 +643,7 @@
+ 
+ static inline int hdsp_check_for_firmware (hdsp_t *hdsp)
+ {
++	if (hdsp->io_type == H9652) return 0;
+ 	if ((hdsp_read (hdsp, HDSP_statusRegister) & HDSP_DllError) != 0) {
+ 		snd_printk("firmware not present.\n");
+ 		hdsp->state &= ~HDSP_FirmwareLoaded;
+@@ -3798,6 +3799,10 @@
+ 	
+ 	switch (cmd) {
+ 	case SNDRV_HDSP_IOCTL_GET_PEAK_RMS:
++		if (hdsp->io_type == H9652) {
++		    snd_printk("hardware metering isn't supported yet for hdsp9652 cards\n");
++		    return -EINVAL;
++		}
+ 		if (!(hdsp->state & HDSP_FirmwareLoaded)) {
+ 			snd_printk("firmware needs to be uploaded to the card.\n");	
+ 			return -EINVAL;
 
-What I would like is for the audio driver to plays sample from the ring buffer in
-a circular manner, *whether or not there is an underrun*.  That is,
-if there is an underrun, I would like the driver to continue writing
-samples in a circular fashion, even though some of them are garbage.
-In the event of an underrun, I don't care what is played before
-my application supplies the driver with audio data.  But when the
-driver gets the audio I would like it to put it in the appropriate
-place in the ring buffer even though some garbage samples are *substituted*
-for my audio data.
 
-Put another way,  I would like the driver to ignore underruns and simply
-allow the start and end pointers to cross over one another.
-
-Is this possible (or clear)?
-
-Chris
+------=_20030717221342_91020--
 
 
 
