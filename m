@@ -1,20 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: emu10k1 multichannel support & 2.6.11.rc4 - bug?
-Date: Wed, 16 Feb 2005 18:37:21 -0500
-Message-ID: <1108597041.3481.1.camel@krustophenia.net>
-References: <1108514291.3772.19.camel@krustophenia.net>
-	 <42129C4F.4060507@machinehasnoagenda.com>
-	 <1108515965.14789.1.camel@krustophenia.net>
-	 <4212D49F.40404@machinehasnoagenda.com>
-	 <1108530906.26851.2.camel@krustophenia.net>
-	 <4212F6EF.1040306@machinehasnoagenda.com>
-	 <421347C7.9080506@machinehasnoagenda.com>
-	 <1108574835.28955.2.camel@krustophenia.net>
-	 <4213DA03.8000100@machinehasnoagenda.com>
+From: "Randy.Dunlap" <rddunlap@osdl.org>
+Subject: [PATCH] virmidi: use unsigned 1-bit fields
+Date: Wed, 16 Feb 2005 15:55:07 -0800
+Message-ID: <20050216155507.7e85092f.rddunlap@osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <4213DA03.8000100@machinehasnoagenda.com>
+Received: from smtp.osdl.org (fire.osdl.org [65.172.181.4])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6175C25D
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 00:55:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,27 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Shayne O'Connor <forums@machinehasnoagenda.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: perex@suse.cz, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-02-17 at 10:40 +1100, Shayne O'Connor wrote:
-> it must have been something to do with this, cos i just booted into the
-> newer kernel (2.6.11.rc4), started jack, and got 16 inputs :)
-> 
+Can't have a boolean and a sign bit in 1 bit.
 
-Great!  I am testing ALSA CVS now, hopefully it's synced up.
+Fix (14) boolean/bitfield sparse warning:
+include/sound/seq_virmidi.h:41:16: warning: dubious one-bit signed bitfield
 
-> btw - congratulations on your invaluable work and thanx for helping out
-> a somewhat imbecilic tester like me ... is the email you use for these
-> lists the one to use for paypal? as soon as i've got some moolah to
-> spare, i'd like to donate a little thankyou.
+Signed-off-by: Randy Dunlap <rddunlap@osdl.org>
 
-Yes, it's the same email address.  This is very much appreciated, and
-I'll make sure to give you credit next time I post a patch.
+diffstat:=
+ include/sound/seq_virmidi.h |    2 +-
+ 1 files changed, 1 insertion(+), 1 deletion(-)
 
-Lee
+diff -Naurp ./include/sound/seq_virmidi.h~sound_virmidi_bool ./include/sound/seq_virmidi.h
+--- ./include/sound/seq_virmidi.h~sound_virmidi_bool	2004-12-24 13:35:29.000000000 -0800
++++ ./include/sound/seq_virmidi.h	2005-02-15 19:41:09.086122328 -0800
+@@ -38,7 +38,7 @@ typedef struct _snd_virmidi {
+ 	int seq_mode;
+ 	int client;
+ 	int port;
+-	int trigger: 1;
++	unsigned int trigger: 1;
+ 	snd_midi_event_t *parser;
+ 	snd_seq_event_t event;
+ 	snd_virmidi_dev_t *rdev;
 
+
+---
 
 
 -------------------------------------------------------
