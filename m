@@ -1,21 +1,16 @@
-From: Fred Gleason <fredg@wava.com>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Re: How to support multiple open in low-level driver
-Date: Mon, 6 Jan 2003 09:09:04 -0500
+Date: Mon, 6 Jan 2003 15:26:36 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301060909.04979.fredg@wava.com>
-References: <Pine.LNX.4.33.0301051600200.500-100000@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.33.0301061519390.551-100000@pnote.perex-int.cz>
+References: <200301060909.04979.fredg@wava.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailbag.wava.com (root@mailbag.wava.com [207.197.206.12])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA00487
-	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 15:08:28 +0100
-Received: from roonwit (nevrast.salemradiolabs.com [65.242.27.15])
-	by mailbag.wava.com (8.11.4/8.11.4) with ESMTP id h06E8J205420
-	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 09:08:19 -0500
-In-Reply-To: <Pine.LNX.4.33.0301051600200.500-100000@pnote.perex-int.cz>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA00822
+	for <alsa-devel@alsa-project.org>; Mon, 6 Jan 2003 15:28:31 +0100
+In-Reply-To: <200301060909.04979.fredg@wava.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -24,41 +19,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Fred Gleason <fredg@wava.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 05 January 2003 10:05, Jaroslav Kysela wrote:
+On Mon, 6 Jan 2003, Fred Gleason wrote:
 
-> Well, you're talking about PCM devices (subdevices are one level after
-> devices):
->
-> cards -> pcm devices -> pcm subdevices
+> On Sunday 05 January 2003 10:05, Jaroslav Kysela wrote:
+> 
+> > Well, you're talking about PCM devices (subdevices are one level after
+> > devices):
+> >
+> > cards -> pcm devices -> pcm subdevices
+> 
+> What are the differences between a "device" and a "subdevice" in general?  Is 
+> this indicative of some underlying hardware architecture, or is it a purely 
+> logical/virtual artifact?
 
-What are the differences between a "device" and a "subdevice" in general?=
-  Is=20
-this indicative of some underlying hardware architecture, or is it a pure=
-ly=20
-logical/virtual artifact?
+We use subdevices mainly for hardware which can mix several streams 
+together. It's quite impractical to have 32 devices with exactly same 
+capabilities. The subdevices can be opened without a specific address, so 
+the first free subdevice is opened. Also, we temporary use subdevices for 
+hardware with alot of streams (I/O connectors) - for example MIDI. There 
+are several limits given by used minor numbers (8 PCM devices per card, 8 
+MIDI devices per card etc.).
 
-Cheers!
+						Jaroslav
 
-
-|------------------------------------------------------------------------=
--|
-|      Frederick F. Gleason, Jr.      |         Salem Radio Labs         =
- |
-|       Voice: 1-(540)-341-2880       |      87 Lee Highway, Suite 11    =
- |
-|        FAX: 1-(540)-341-7176        |        Warrenton, VA 20188       =
- |
-|------------------------------------------------------------------------=
--|
-|    The real problem with hunting elephants is carrying the decoys.     =
- |
-|                                             -- Anonymous               =
- |
-|------------------------------------------------------------------------=
--|
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
