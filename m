@@ -1,15 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: matrix is complete again
-Date: Wed, 24 Nov 2004 17:14:20 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0411241712230.4564-100000@studcom.urz.uni-halle.de>
-References: <Pine.LNX.4.58.0411241625260.32557@denise.shiny.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000675]: snd_output_buffer segfault
+Date: Wed, 24 Nov 2004 17:32:38 +0100
+Message-ID: <9df4cc7505f9b7fa463087be910dbe37@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8C0F22E3
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 17:14:21 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.58.0411241625260.32557@denise.shiny.it>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 465151A4
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 17:32:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,20 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Giuliano Pochini wrote:
-> I don't know if it's difficult to do, but is it possible to use an
-> off-site xml file ?
->
-> Otherwise we can't test the file before sending it to you.
 
-Or just put the stuff into the ALSA CVS.
+The following issue has been ASSIGNED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=675> 
+======================================================================
+Reported By:                schottstaedt
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   675
+Category:                   general
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             11-24-2004 15:00 CET
+Last Modified:              11-24-2004 17:32 CET
+======================================================================
+Summary:                    snd_output_buffer segfault
+Description: 
+In Alsa 1.0.6 (and 1.0.7 I think), snd_output_buffer_puts in
+alsa-lib/src/output.c can write to memory it does not own,
+causing segfaults in various unrelated later mallocs.  The
+offending line is 280:
 
+  result = vsnprintf(buffer->buf + buffer->size, size, format, args);
 
-Clemens
+which should be:
+
+  result = vsnprintf(buffer->buf + buffer->size, result, format, args);
+
+There might not actually be "size" bytes available beyond
+buffer->buf+buffer->size --
+the preceding snd_output_buffer_need call only guaranteed "result" bytes.
+
+Another similar bug reported by valgrind is in line 303:
+
+	memcpy(buffer->buf + buffer->size, str, size);
+
+where you actually have "err" bytes available, not "size".
+
+And by the way, I really don't like this bug tracking
+crap -- you should make it easy to report a bug.
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-24-04 15:00 schottstaedt   New Issue                                    
+11-24-04 17:32 Clemens LadischStatus                   new => assigned     
+11-24-04 17:32 Clemens LadischAssigned To               => Clemens Ladisch 
+======================================================================
+
 
 
 
