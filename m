@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
-Date: Wed, 12 Jan 2005 15:57:38 +0100
-Message-ID: <481e020e75468238994aa6aee479666d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000791]: snd-ioctl32 is failing on x86_64 (no crashes, just errors)
+Date: Wed, 12 Jan 2005 15:17:19 +0100
+Message-ID: <90ee5c48359d95009b5275672f89c558@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B1C2B329
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:57:38 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3534131A
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:17:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,82 +22,85 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=791> 
 ======================================================================
-Reported By:                mr-k
-Assigned To:                
+Reported By:                chutzimir
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   761
+Issue ID:                   791
 Category:                   OTHERS
-Reproducibility:            random
-Severity:                   crash
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Gentoo
 Kernel Version:             2.6.10
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-30-2004 13:13 CET
-Last Modified:              01-12-2005 15:57 CET
+Date Submitted:             01-07-2005 02:28 CET
+Last Modified:              01-12-2005 15:17 CET
 ======================================================================
-Summary:                    Driver and all sound aplications hangs
+Summary:                    snd-ioctl32 is failing on x86_64 (no crashes, just
+errors)
 Description: 
-I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
-alsa
-from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
-problems.
+Running a 32-bit version of any application on my 64-bit 2.6.10 kernel
+fails with:
 
-Sometimes (up to couple times a day) driver crash and all processes using
-sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
-the
-module by rmmod (it hangs also). When i try to shutdown the system, it
-stops
-when it try to remove the module. ps hangs when it try to get
-informations
-about other hung processes, also when i try to do it manualy (by
-/proc/pid/),
-it hangs. Everything else is working good. 
-There are no messages from the kernel in /var/log/messages and
-/var/log/dmesg or reported to the console. 
+$ amixer -c 0
+amixer: Mixer hw:0 load error: Invalid argument
 
+for example. I have snd-ioctl32 loaded properly (lsmod shows it).
 
+Kernel is vanilla 2.6.10 and I just tried it with version 1.0.8rc2 of
+alsa-driver. Also, alsa-lib and alsa-utils version 1.0.8rc2 are
+installed in my 64-bit environment, and also in the 32-bit chroot env
+where I am trying to run amixer from. The distro is Gentoo, and I also
+have their alsa-headers-1.0.8_rc2 installed in the 32-bit chroot.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-12-05 15:14 
+ chutzimir - 01-10-05 20:38 
 ----------------------------------------------------------------------
-It looks like the open semaphore.
+Thanks go to Takashi san for the following fix:
 
-How does "driver crash" in the original message happens?  What do you mean
-exactly?
+Index: alsa-kernel/core/ioctl32/ioctl32.c
+===================================================================
+RCS file: /suse/tiwai/cvs/alsa/alsa-kernel/core/ioctl32/ioctl32.c,v
+retrieving revision 1.30
+diff -u -r1.30 ioctl32.c
+--- alsa-kernel/core/ioctl32/ioctl32.c  15 Dec 2004 15:26:24 -0000     
+1.30
++++ alsa-kernel/core/ioctl32/ioctl32.c  10 Jan 2005 13:36:49 -0000
+@@ -238,7 +238,7 @@
+                struct sndrv_aes_iec958 iec958;
+         } value;
+         unsigned char reserved[128];
+-};
++} __attribute__((packed));
+ 
+ 
+ /* hmm, it's so hard to retrieve the value type from the control id.. */
 
 ----------------------------------------------------------------------
- mr-k - 01-12-05 15:57 
+ tiwai - 01-12-05 15:17 
 ----------------------------------------------------------------------
-Well.. i didn't find any regularity. During usual work with computer sound
-stops working (xmms stops playing song or aplay just hang; sometimes even
-direfox hangs). Then i cant close or kill them, can't remove alsa modules
-from kernel and even can't shutdown my system. I really want to help you
-finding solution so tell me what should i do after crash? (i can record
-what is going on to avi file or do enything you need)
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-30-04 13:13 mr-k           New Issue                                    
-12-30-04 13:13 mr-k           Distribution              => Gentoo          
-12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
-12-30-04 13:15 mr-k           File Added: alsa-report                      
-12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
-12-30-04 15:09 tiwai          Note Added: 0003022                          
-01-01-05 22:21 mr-k           Note Added: 0003038                          
-01-07-05 22:41 mr-k           Note Added: 0003123                          
-01-11-05 22:11 mr-k           Note Added: 0003158                          
-01-11-05 22:12 mr-k           File Added: alsa.log                         
-01-12-05 15:14 tiwai          Note Added: 0003170                          
-01-12-05 15:57 mr-k           Note Added: 0003173                          
+01-07-05 02:28 chutzimir      New Issue                                    
+01-07-05 02:28 chutzimir      Distribution              => Gentoo          
+01-07-05 02:28 chutzimir      Kernel Version            => 2.6.10          
+01-10-05 20:38 chutzimir      Note Added: 0003138                          
+01-12-05 15:17 tiwai          Status                   new => resolved     
+01-12-05 15:17 tiwai          Resolution               open => fixed       
+01-12-05 15:17 tiwai          Assigned To               => tiwai           
+01-12-05 15:17 tiwai          Note Added: 0003172                          
 ======================================================================
 
 
