@@ -1,14 +1,16 @@
-From: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
-Subject: Re: Apologies. (test)
-Date: Thu, 19 Aug 2004 16:57:03 +1200
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [ALSA - driver 0000454]: cvs site is down
+Date: Thu, 19 Aug 2004 01:33:52 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408191657.03788.linux@blennerhassett.gen.nz>
+Message-ID: <1092893631.8432.90.camel@krustophenia.net>
+References: <20040818143544.58F5B1102F@server.perex-int.cz>
+	 <s5hsmakv6dq.wl@alsa2.suse.de>  <1092855379.8432.39.camel@krustophenia.net>
+	 <1092889578.8432.70.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <1092889578.8432.70.camel@krustophenia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,16 +19,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks to Lee and Paul for your kind offers.
+On Thu, 2004-08-19 at 00:26, Lee Revell wrote:
+> On Wed, 2004-08-18 at 14:56, Lee Revell wrote:
+> Speaking as an ISP veteran, I am not sure I buy the line about a
+> hardware problem.  That would have been fixed by now.  Seems more likely
+> the machine got compromised.
+> 
 
-I seem to have been able to subscribe from my normal email account..
-If this message makes it to the list, then my ISP is on better terms with 
-sourceforge than a year ago.
+The hardware-problem explanation becomes even more implausible when you
+consider sf.net is on the west coast, they don't even have to have parts
+overnighted, they can drive and pick it up.
 
-- Eliot
+Lee 
+
 
 
 -------------------------------------------------------
