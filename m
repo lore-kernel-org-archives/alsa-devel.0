@@ -1,14 +1,15 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: The best-supported Pro Audio device?
-Date: Thu, 28 Aug 2003 15:44:10 +0200 (CEST)
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: RME Hammerfall HDSP 9652
+Date: Thu, 28 Aug 2003 06:46:23 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030828154410.pochini@shiny.it>
-References: <Pine.LNX.4.44.0308281357350.1958-100000@pnote.perex-int.cz>
+Message-ID: <NDBBLGIKBJENLAMOLFHGGEBPDBAB.mknecht@controlnet.com>
+References: <200308281204.h7SC4YeW005393@oud>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0308281357350.1958-100000@pnote.perex-int.cz>
+In-Reply-To: <200308281204.h7SC4YeW005393@oud>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,38 +18,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Paul Davis <paul@linuxaudiosystems.com>Paul Davis <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "ametts2@mindspring.com" <ametts2@mindspring.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-On 28-Aug-2003 Jaroslav Kysela wrote:
->> >>--*-- What is the best-supported *Pro Audio* device in terms of solid ALSA dri
->> >>ver support?  Not interested in Sound Blasters and chips on the motherboard --
->> >> something along the lines of the Echo, M-Audio, or RME products.  But the ALS
->> >>A drivers need to be stable -- and need to fully support the capabilities of h
->> >>e respective device (i.e., on-board DSP, MIDI, or whatever).
->> >
->> > the echo drivers are extremely new, and largely untested at this
->> > point. they may even be incomplete.
->>
->> The Echo driver is complete and tested on most supported cards. All
->> features are supported but MIDI and CARDBUS are untested. The driver
->> is based on the Windos driver code and that part is stable. The ALSA
+> >> Mark Knecht is currently using this code with success, but the card
+> >> behaved strangely with rev. 104 (0x68) firmware. He had to
+> downgrade it to
+> >> rev. 101 (0x65) for the card to work properly.
+> >>
+> >> [and Mark concured he had to downgrade the firmware]
+> >
+> >We have not made any changes to the firmware thus far.  Unsure if its
+> >required or not.
 >
-> Only small note: until someone rewrite the code using the Linux coding
-> style and GPL licence, it will not be included to the ALSA main tree,
-> thus it will not be maintaned by us.
+> if you can load the driver and the "firmware" (aka "configuration
+> data", done by hdsploader), then you don't need to worry about
+> this, AFAIK.
+> however, use lspci -vv to get full version info on the system you
+> have - the "rev" number indicates the firmware you have.
+>
 
-It's very unlikely it will follow the coding style because the generic
-driver is written by Echoaudio and it's C++ (yuck). It's free software
-but not GPL (quite certainly next revision will be released under GPL).
-The part written by me is GPL'd from the beginning and the style is not
-difficult to fix.
+Does hdsploader have anything to do with the HDSP 9652? I thought that was
+only for the Digiface/Multiface cards. I'm not using it (I believe) unless
+it's happening in the background somewhere.
+
+For clarity - I can load the Alsa driver for the HDSP 9652 when my card has
+the rev. 104 firmware in it. It's just that the card doesn't work properly.
+The driver does find the card & load. After downgrading my firmware in
+Windows to Rev 101 I can load the driver and my card works. All that is
+required (apparently) to load the driver is a match in the PCI ID numbers
+and reading out of the firmware revision.
+
+I have attempted (last weekend) to upgrade my firmware back up to rev. 104
+and tried the Alsa drivers, but they did not work.
+
+- Mark
 
 
-Bye.
-    Giuliano.
 
 
 -------------------------------------------------------
