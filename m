@@ -1,14 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: ring buffer pointer accuracy.
-Date: Mon, 14 Jul 2003 17:57:54 +0200 (CEST)
+From: "P. Christeas" <p_christ@hol.gr>
+Subject: Reproducible deadlock w. alsa/maestro3 when sleeping (ACPI,) 2.6.0-test1
+Date: Mon, 14 Jul 2003 19:17:22 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030714175754.pochini@shiny.it>
-References: <3F12C37F.4020402@superbug.demon.co.uk>
+Message-ID: <200307141917.22813.p_christ@hol.gr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F12C37F.4020402@superbug.demon.co.uk>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,45 +17,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: lkml <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I have been experiencing some fully reproducible deadlock when waking from=
+=20
+sleep, using artsd over ALSA.
+The scenario is:
+I use ALSA, with the maestro3 device and everything else compiled as module=
+s.
+=46rom userspace, I launch artsd, which uses its native ALSA support to con=
+nect=20
+to /dev/pcmXXXXX .
+I only have a custom script, which sleeps the machine by a 'echo 1>=20
+/proc/acpi/sleep' . It does NOT stop alsa .
+When the machine weaks, it has a deadlock. The suspended 'artsd' process wa=
+its=20
+for the /dev/pcmXXXX to become available (presumably; I can see 'D' on the=
+=20
+'ps' line), while the maestro3 module waits for the 'artsd' process to free=
+ =20
+/dev/pcmXXX .
+I have tried to kill (w. 15, 9 etc.) the artsd process, rmmod the=20
+'snd_maestro3' module (w. '-f' or '-l' options to rmmod). Nothing would=20
+happen. In the worst case (after the rmmod), the whole module mechanism wou=
+ld=20
+lock as well ('lsmod' would hang ).
+I could not find any relevant message for this case. However, on a subseque=
+nt=20
+sleep, the system refuses to sleep because it cannot suspend 'artsd'.
 
-On 14-Jul-2003 James Courtier-Dutton wrote:
->>>Worst case accuracy is about one period AFAIK. It depends on the sound chip
->>>because the low level driver reads the DMA pointer (or something) from some
->>>hardware register or it can know the DMA pointer when it receives an interrupt
->>>at the end of a period.
->>
->>
->> yes.  if the accuracy is in period size, at least it should work
->> somehow.  e.g. the time-slider of a player might not move so smooth
->> but it must not be critical.
->>
->>
-> I would like some idea of how accurate the snd_pcm_delay() result is
-> likely to be. If I am trying to syncronise video to audio, and I notice
-> a difference between audio and video, I need to know how accurate I can
-> make it.
-
-I suppose you need a precision of 42ms (the duration of a cinema frame).
-You can read the position at intervals <= 42ms. If the value you read is
-different then the previous one, you know that value is up to date.
-You know exactly when you started to play the sound. If you do your own
-timing and you take into account the period time, you only need to read
-position 3-4 times every 10s or so to check if you are losing sync.
-Even if you have a really bad soundcard, it's unlikely the sample clock
-skews more than 1%.
-
-> If some cards only update "delay" once per period, but others update it
-> all the time, I would like the application to know about it, so it can
-> decide how accurately it can actually get audio and video in sync.
-
-You can use shorter periods if your cards allows it.
-
-
-Bye.
+ps. My scripts (including module-init-tools) are definitely messy. However,=
+=20
+since 'artsd' or any ALSA client works in userspace and can be launched at=
+=20
+any time, I believe this problem leads to serious trouble for the system.
 
 
 
