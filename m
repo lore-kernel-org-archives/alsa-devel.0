@@ -1,14 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: Upgrade driver to 1.0.6, memory allocation?
-Date: Thu, 19 Aug 2004 09:49:52 +0200 (CEST)
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: Is there plans to support SiS7019?
+Date: Thu, 19 Aug 2004 09:51:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20040819094952.pochini@shiny.it>
-References: <505401c48598$4a891ec0$72cb010a@mail2world.com>
+Message-ID: <200408190751.i7J7pHoW021832@www3.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <505401c48598$4a891ec0$72cb010a@mail2world.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,49 +16,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eliot Blennerhassett <bigblen@icqmail.com>
-Cc: linux@blennerhassett.gen.nz, alsa-devel@lists.sourceforge.net
+To: vrihad@softhome.net
+Cc: alsa-devel@lists.sourceforge.net, clemens@ladisch.de, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
+I think, there is no reason to try correct these unresolved symbols,
+because result will by same as Takashi Iwai way.
 
-On 19-Aug-2004 Eliot Blennerhassett wrote:
+For me looks like 7019 is diffrent from 7018. :-(
 
-> with the upgrade to 1.0.6, my alsa driver broke. (asihpi)
-> Now I'm trying to put it together again, and could do with some tips...
-> Mostly it still contained lots of easy to fix snd_magic_cast() but
-> Can anybody confirm that the following update is the 'correct' thing to
-> do?
-> 
-> (My) old code:
-> call snd_malloc_pages_fallback in the open callback.
-> 
-> New code:
-> call snd_pcm_lib_malloc_pages() in the hw_params callback
-> 
-> and call snd_pcm_lib_preallocate_pages_for_all() in the sound card pcm
-> init function (in my case snd_card_asihpi_pcm()
-> ================================
-> By default according to pcm_memory.c, only a maximum of 4 substreams are
-> allowed.
-
-By default it preallocates memory for the first 4
-substreams only. _malloc_pages() will allocate memory on
-demand for the other substreams. You can do your own
-preallocation routine if you think this default is not good.
-If you want to "prepare" the substrem for use with
-snd_pcm_lib_malloc_pages() without actually allocating
-memory call _preallocate_pages() with size==0.
-You can change the size of preallocated memory from
-userspace via /proc interface.
-
-Btw I would move the check for (substream->number < 4)
-from snd_pcm_lib_preallocate_pages1() to
-snd_pcm_lib_preallocate_pages_for_all() in order to allow
-the driver to preallocate memory for any ss it wishes.
+Peter Zubaj
 
 
---
-Giuliano.
+=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
+bte radost svojmu telefonu=0A
 
 
 -------------------------------------------------------
