@@ -1,14 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Problem with Avermedia 771
-Date: Mon, 25 Oct 2004 11:36:13 +0200 (METDST)
+From: "John wr" <john_wr@hotmail.com>
+Subject: Upgrading Mandrake 10.0
+Date: Mon, 25 Oct 2004 20:04:07 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0410251049550.7768-100000@studcom.urz.uni-halle.de>
-References: <s5hd5zcgtj3.wl@alsa2.suse.de>
+Message-ID: <BAY17-F7cf3ednHM3SO0000e06e@hotmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <s5hd5zcgtj3.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,41 +14,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gerd Knorr <kraxel@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, Holger Waechtler <holger@qanu.de>, dvb list <linux-dvb@linuxtv.org>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Gerd Knorr wrote:
-> > Takashi Iwai wrote:
-> > > That's the reason why I suggested the second way in my earlier post:
-> > >
-> > > We prepare two pci_id tables, one for the whitelist and another for
-> > > the default ids.  Only the former is exported.
-> > >
-> > > When the module option is given, the latter id is registered while
-> > > usually the fomer is used.
-> >
-> > Yep, that should make the correct ID list visible to hotplug ...
->
-> Ok, how about the attached patch?
+Hello.
 
-Committed now.
+I am a relatively new Linux user and I really need some pointers upgrading 
+Mandrake 10.0 to use the of ALSA drivers/lib/utils 1.0.6a or later.  I have 
+tried them all.  I need support from my Terratec Aureon 7.1 (ice1724) card.
 
+I am running 2.6.3-7mdk kernel, and obviously got the matching kernel source 
+package from Mandrake CD.  Alsa seems to compile fine, but can't modprobe 
+snd-ice1724.
 
-Gerd Knorr wrote:
-> Clemens Ladisch wrote:
-> > A centralized card list looks more advantageous now ...
->
-> Hmm, along these lines maybe?
->
-> [...]
-> const struct bt878_entry* bt878_db_lookup(struct pci_dev *pci);
+-------------------------------------------------------------------------------------------------
+[root@LinuxPC alsa-utils-1.0.7rc2]# modprobe snd-ice1724
 
-Yes, this would be fine.
+WARNING: Error inserting snd-mpu401-uart 
+(/lib/modules/2.6.3-7mdk/kernel/sound/drivers/mpu401/snd-mpu401-uart.ko.gz): 
+Unknown symbol in module, or unknown parameter (see dmesg)
+WARNING: Error inserting snd-ac97-codec 
+(/lib/modules/2.6.3-7mdk/kernel/sound/pci/ac97/snd-ac97-codec.ko.gz): 
+Unknown symbol in module, or unknown parameter (see dmesg)
+WARNING: Error inserting snd-mpu401-uart 
+(/lib/modules/2.6.3-7mdk/kernel/sound/drivers/mpu401/snd-mpu401-uart.ko.gz): 
+Unknown symbol in module, or unknown parameter (see dmesg)
+WARNING: Error inserting snd-ac97-codec 
+(/lib/modules/2.6.3-7mdk/kernel/sound/pci/ac97/snd-ac97-codec.ko.gz): 
+Unknown symbol in module, or unknown parameter (see dmesg)
+FATAL: Error inserting snd-ice1724 
+(/lib/modules/2.6.3-7mdk/kernel/sound/pci/ice1712/snd-ice1724.ko): Unknown 
+symbol in module, or unknown parameter (see dmesg)
+FATAL: Error running install command for snd-ice1724
+-----------------------------------------------------------------------------------------------------------------------
 
+dmesg reporsts lots of "Unknown symbol" and "disagrees about version".  eg:
 
-Clemens
+---------------------------------------------------------------------------------------------------------------------
+[root@LinuxPC alsa-utils-1.0.7rc2]# dmesg
+
+snd-mpu401-uart: Unknown symbol snd_rawmidi_receive
+snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_transmit_ack
+snd-mpu401-uart: Unknown symbol snd_rawmidi_transmit_ack
+snd-mpu401-uart: Unknown symbol snd_kcalloc
+snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_transmit_peek
+snd-mpu401-uart: Unknown symbol snd_rawmidi_transmit_peek
+snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_new
+snd-mpu401-uart: Unknown symbol snd_rawmidi_new
+snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_set_ops
+snd-mpu401-uart: Unknown symbol snd_rawmidi_set_ops
+snd-mpu401-uart: disagrees about version of symbol snd_device_free
+snd-mpu401-uart: Unknown symbol snd_device_free
+snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_receive
+snd-mpu401-uart: Unknown symbol snd_rawmidi_receive
+snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_transmit_ack
+snd-mpu401-uart: Unknown symbol snd_rawmidi_transmit_ack
+snd-mpu401-uart: Unknown symbol snd_kcalloc
+snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_transmit_peek
+snd-mpu401-uart: Unknown symbol snd_rawmidi_transmit_peek
+snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_new
+snd-mpu401-uart: Unknown symbol snd_rawmidi_new
+snd-mpu401-uart: disagrees about version of symbol snd_rawmidi_set_ops
+snd-mpu401-uart: Unknown symbol snd_rawmidi_set_ops
+snd-mpu401-uart: disagrees about version of symbol snd_device_free
+snd-mpu401-uart: Unknown symbol snd_device_free
+---------------------------------------------------------------------------------------------------------------------
+
+I am hopeful that someone has come across this before.
+
+regards,
+John.
+
 
 
 
