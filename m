@@ -1,47 +1,72 @@
-From: Ivan Gyurdiev <ivg2@cornell.edu>
-Subject: Re: Linux 2.6.0-test6
-Date: Sun, 28 Sep 2003 12:42:48 -0400
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <3F770F88.7050904@cornell.edu>
-References: <Pine.LNX.4.44.0309271822450.6141-100000@home.osdl.org>
+From: Shawn Smout <olorin_the_great@yahoo.com>
+Subject: Alsa-driver gawk/POSIX bug
+Date: Sun, 28 Sep 2003 12:55:34 -0700 (PDT)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20030928195534.95497.qmail@web40911.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.44.0309271822450.6141-100000@home.osdl.org>
-To: alsa-devel@lists.sourceforge.net, Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This release broke ALSA for me. OSS emulation continued to work for 
-xmms, but not for wine. The via_82xx driver told me to try 
-dxs_support=1, so I did and it works again.
+I have discovered a bug in
+alsa-driver-0.9.7/utils/convert_isapnp_ids line 84. 
+Ordinarilly in GNU gawk, the line
 
-This is an ALC650-based:
+if (match($0, "{.*}"))
 
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. 
-VT8233/A/8235 AC97 Audio Controller (rev 50)
+works fine.  However, if the environment
+POSIXLY_CORRECT is set (it is on my system, since I
+like things to be standards-compliant, although it
+probably is not on most Linux systems), gawk has an
+error on this line and compiling the drivers fails. 
+It gives this error message when making alsa-drivers:
 
-(I'm sorry if this is a second post to LKML - mailer problems)
+awk:
+/usr/src/alsa-driver-0.9.7/utils/convert_isapnp_ids:89:
+(FILENAME=- FNR=27056) fatal: Invalid preceding
+regular expression: /{.*}/
 
-> Jaroslav Kysela:
->   o ALSA CVS updates
->     - clean up the usage of the size variable and removes size1.
->     - define AD198x bits.
->     - add descriptions for whole-frag and no-silence commands.
->     - use dxs_support=3 (48k fixed) as default, since there are so many problems
->       with dxs_support=0.
->     - add the support for stereo mute switches on AD198x.
->     - initialize tumbler/snapper audio via gpio before i2c initialization.
->     - add check of DXS supports (so far, empty).
->     - add detection of revision of ALC650 chip
->     - get_page() fix
->     - fix the SPDIF bit on aureon boards.
->     - set 48k only for the sample rate of SPDIF on nForce.
->     - kill of not-required version.h inclusion
->     - Remove duplicated include
->     - fix buffer overlap on FX8010 PCM.
->     - Fix hwdep hotplug problem
->     - Use try_module_get() and module_put() to block the toplevel module
->     - Fix returned error code in the release() callback
->     etc
-> 
+I don't know much about awk; I have used some regexes
+though, and since I hadn't yet figured out why I was
+getting this error message, I tried simply removing
+the {}.  The driver compiled correctly and works
+correctly.
+
+This problem is not, as far as I can tell, listed in
+gawk's documentation as something that changes when
+gawk runs in POSIX compatibilty mode.  However, I
+tried compiling the unmodified source without
+POSIXLY_CORRECT set, which worked.  I then immediately
+did 'make clean ; setenv POSIXLY_CORRECT ; make' (csh)
+and the problem occurred again, so I am quite certain
+the bug is entirely because of POSIXLY_CORRECT being
+set.
+
+On a side note, since gawk doesn't even document this
+discrepancy between POSIX and normal modes (though it
+does have a long list of differences from POSIX, which
+doesn't include this one), I also intend to file a
+gawk bug, so that we can actually know when gawk is
+going to break instead of spending a half hour trying
+to get drivers to compile when the problem is just a
+single environment variable.
+
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Shopping - with improved product search
+http://shopping.yahoo.com
+
+
+-------------------------------------------------------
+This sf.net email is sponsored by:ThinkGeek
+Welcome to geek heaven.
+http://thinkgeek.com/sf
