@@ -1,14 +1,13 @@
-From: Tim Hollingsworth <tim@hollingsworth.com.au>
-Subject: Re: period size
-Date: Tue, 6 Apr 2004 22:47:49 +0800
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: alsa driver
+Date: Tue, 6 Apr 2004 16:58:17 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5FF97BB0-87D9-11D8-B350-000A95AB8A40@hollingsworth.com.au>
-References: <Pine.HPX.4.33n.0403301505490.25443-100000@studcom.urz.uni-halle.de> <EB5AA0AA-8258-11D8-88CD-000A95AB8A40@hollingsworth.com.au> <Pine.LNX.4.58.0403301729380.1835@pnote.perex-int.cz> <A521B1A8-838A-11D8-89F0-000A95AB8A40@hollingsworth.com.au> <Pine.LNX.4.58.0404011051250.1843@pnote.perex-int.cz> <8436B8CE-84A1-11D8-B350-000A95AB8A40@hollingsworth.com.au> <Pine.LNX.4.58.0404031040250.2140@pnote.perex-int.cz>
-Mime-Version: 1.0 (Apple Message framework v613)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <Pine.LNX.4.58.0404061657590.29768@pnote.perex-int.cz>
+References: <20040406144439.70088.qmail@web25106.mail.ukl.yahoo.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0404031040250.2140@pnote.perex-int.cz>
+In-Reply-To: <20040406144439.70088.qmail@web25106.mail.ukl.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,42 +16,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
+Cc: ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 6 Apr 2004, Brian Furey wrote:
 
-On 03/04/2004, at 4:41 PM, Jaroslav Kysela wrote:
+> Hi all,
+>    i'm running the alsa-driver-1.0.0. Im using it with
+> the OpenH323 application. Packets are transmitted or
+> received in 32 millisecond intervals or multiples of
+> 32 millisecond intervals.
+> For example using the G711 codec, packets are
+> transmitted every 32 milliseconds. For the GSM-06.10
+> codec, packets are transmitted at alternate intervals
+> of 64 milliseconds or 96 milliseconds.
+> Why is this?
 
-> On Fri, 2 Apr 2004, Tim Hollingsworth wrote:
->
->> Thanks for your help so far Jaroslav.
->>
->> I have taken another look at my project and now it's behaving
->> differently!  It still won't go down to a period size of 128.
->>
->> I have downloaded the example sine wave generator.  It works with the
->> default settings, which give a period size of 4410.  If I change the
->> period time using the command line, it will successfully go down to
->> 441/10000us.  Any further and I get this error:
->>
->> ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params:
->> params->avail_min problem for start_threshold
->> Unable to set sw params for playback: Invalid argument
->> Setting of swparams failed: Invalid argument
->
-> Fixed in CVS.
+Busy system?
 
-OK cool that error has gone now.  Back to newbie period size problems 
-(*groan*).  The target system has a VIA VT8233 sound chip.  I tried the 
-sine generator on another system which has a soundblaster live, and it 
-will indeed take very low period sizes.  As you said.
+						Jaroslav
 
-Can I configure the VIA chip to take the period size I want, or is it a 
-hardware limitation?  Which settings do I mess with?
-
-TIA
-Tim
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
