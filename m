@@ -1,8 +1,8 @@
 From: Bauke Jan Douma <bjdouma@xs4all.nl>
-Subject: How
-Date: Wed, 3 Mar 2004 14:07:56 +0100
+Subject: How do I redirect sound from 1st soundacrd to 2nd soundcard?
+Date: Wed, 3 Mar 2004 14:18:30 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040303130756.GA22701@xs4all.nl>
+Message-ID: <20040303131830.GA23448@xs4all.nl>
 Reply-To: bjdouma@xs4all.nl
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -16,8 +16,15 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: do@xs4all.nl, I@xs4all.nl, redirect@xs4all.nl, Light Sound Netherlands <sound@xs4all.nl>, JAN_STRAVER <to@xs4all.nl>, 2nd@xs4all.nl, soundcard@xs4all.nl, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
+
+[Sorry about those earlier mails; something went wrong with
+permissions on my mail-editor; the editor failed, but mail
+was still sent out to some bogus (and some not so bogus)
+addresses]
+
+
 
 Hi,
 
