@@ -1,14 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: alsa cvs access?
-Date: Wed, 18 Aug 2004 09:35:01 +0200 (METDST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0000451]: Corruption in /etc/asound.state causes alsa to hang when restoring mixer levels during reboot.
+Date: Wed, 18 Aug 2004 10:00:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0408180931410.22867-100000@studcom.urz.uni-halle.de>
-References: <1092772604.23511.363.camel@cmn37.stanford.edu>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Message-ID: <20040818080012.4352D1102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1092772604.23511.363.camel@cmn37.stanford.edu>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9CD04279
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 10:00:12 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 5503C18D28
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 10:00:12 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,29 +19,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fernando Pablo Lopez-Lezcano wrote:
-> I seem to be having problems connecting with the cvs server over the
-> past few days:
->
-> # cvs -d ':pserver:anonymous@cvs.alsa-project.org:/cvsroot/alsa' login
-> Logging in to :pserver:anonymous@cvs.alsa-project.org:2401/cvsroot/alsa
-> CVS password:
-> cvs [login aborted]: unrecognized auth response from
-> cvs.alsa-project.org: M PserverBackend::PserverBackend() Connect
-> (Connection refused)
 
-cvs.alsa-project.org is an alias for cvs.sourceforget.net, which is
-down:
-<http://sourceforge.net/docman/display_doc.php?docid=2352&group_id=1>
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000451
+======================================================================
+Reported By:                cuardin
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Bug ID:                     451
+Category:                   alsactl
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             08-18-2004 10:00 CEST
+Last Modified:              08-18-2004 10:00 CEST
+======================================================================
+Summary:                    Corruption in /etc/asound.state causes alsa to hang when restoring mixer levels during reboot.
+Description: 
+If the file /etc/asound.state is corrupted, for example due to a
+file-system corruption after a hard-reboot, the boot process will halt
+when attempting to restore the mixer settings. Pressing Ctrl-C will resume
+the boot process. 
 
+Upon shutdown, the process will halt when attempting to store mixer
+settings requiring a hard reboot.
 
-Clemens
+A work-around is to delete the offending file. 
+======================================================================
 
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-18-04 10:00 cuardin        New Bug                                      
+08-18-04 10:00 cuardin        File Added: asound.state                     
+======================================================================
 
 
 -------------------------------------------------------
