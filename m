@@ -1,26 +1,78 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [Alsa-devel] Re: intel 8x0 went silent in 2.6.11
-Date: Thu, 03 Mar 2005 13:52:06 -0500
-Message-ID: <1109875926.2908.26.camel@mindpipe>
-References: <4227085C.7060104@drzeus.cx>
-	 <29495f1d05030309455a990c5b@mail.gmail.com>
-	 <Pine.LNX.4.62.0503031342270.19015@krusty.vfxcomputing.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000960]: IBM T42p - 82801DB (ICH4) Not working properly
+Date: Thu, 3 Mar 2005 21:15:27 +0100
+Message-ID: <43480e73479d283af5cd59c601c083fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.62.0503031342270.19015@krusty.vfxcomputing.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Canter <marcus@vfxcomputing.com>
-Cc: Nish Aravamudan <nish.aravamudan@gmail.com>, Pierre Ossman <drzeus-list@drzeus.cx>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D87301A1
+	for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2005 21:15:27 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-03-03 at 13:46 -0500, Mark Canter wrote:
-> The same issue exists on a T42p (ICH4).  Doesn't that kind of defeat the 
-> purpose?  The thought of having to disable the headphone jack and reenable 
-> it each time is trivial considering you can go with the fact that sound 
-> did not require the sound system touched under <= 2.6.10.
 
-You don't have to disable and re-enable it each time, if your system is
-configured correctly then your mixer settings will be saved.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=960> 
+======================================================================
+Reported By:                marcusvfx
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   960
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware-Current
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             03-03-2005 21:15 CET
+Last Modified:              03-03-2005 21:15 CET
+======================================================================
+Summary:                    IBM T42p - 82801DB (ICH4) Not working properly
+Description: 
+As in reference to the kernel discussion about the 8x0 driver, the above
+does not work when playing through the port replicator jack.  To get sound
+to work through the speakers, the "headphone jack sense" must be turned
+off.  If that is the case, the internal speakers on the T42p do work and
+so will the headphones, but the port replicator output jack will not.  In
+fact, there is no fix that I have uncovered under the 2.6.11 kernel to get
+the port replicator output jack to work.
 
-Lee
+The alsa-cvs (as of 3 March) driver was compiled into the 2.6.11 kernel
+but it did not resolve the issue above.
+
+This was not the case in previous kernels and it was introduced somewhere
+after the 2.6.10-2.6.11 releases.  With 2.6.10 and earlier kernels, the
+headphone jack on the laptop, internal speakers, and port replicator
+output jack will work with the 'headphone jack sense' set to on.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-03-05 21:15 marcusvfx      New Issue                                    
+03-03-05 21:15 marcusvfx      Distribution              => Slackware-Current
+03-03-05 21:15 marcusvfx      Kernel Version            => 2.6.11          
+======================================================================
+
+
+
+
+-------------------------------------------------------
+SF email is sponsored by - The IT Product Guide
+Read honest & candid reviews on hundreds of IT Products from real users.
+Discover which products truly live up to the hype. Start reading now.
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
