@@ -1,15 +1,14 @@
-From: Siegfried Kettlitz <alsa@siegfried-kettlitz.de>
-Subject: Re: Terratec Phase 28
-Date: Wed, 21 Jul 2004 01:48:09 +0200
+From: fmoraes@nc.rr.com
+Subject: emu10k1 emumpu401.c again
+Date: Tue, 20 Jul 2004 19:59:53 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200407210148.09832.alsa@siegfried-kettlitz.de>
-References: <766ad7df0407181154624ed11b@mail.gmail.com>
+Message-ID: <23bc05323b53fb.23b53fb23bc053@southeast.rr.com>
+Reply-To: fmoraes@nc.rr.com
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <766ad7df0407181154624ed11b@mail.gmail.com>
+Content-language: en
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +21,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Am Sonntag, 18. Juli 2004 20:54 schrieb Marco:
-> Hi,
-> Will the Terratec Phase 28 card be supported in future releases of Alsa?
-> The chip is a VIA VT1724 [Envy24HT], which is currently supported, but
-> that card itself is not on the list of those with that chip that are
-> supported, and it's obviously not recognized by the driver.
-> It has 2 analogic input cannel and 8 output (both with 192khz/24 bit
-> support - tested on Windows), 1 digital in and 1 out, 1 midi in and 1
-> out.
-> I think it's no very different from the Aureon 7.1 (which is
-> supported) and therefore there's need for only a few informations to
-> make it work.
-> Is anyone working on it?
->
+Ok, I've got MIDI working on the emu10k1x now (tested input with a real keyboard), so I am getting ready to submit my patch, but I'd like to make the code more common, given that the AudigyLS driver will probably work the same way.
 
-Doesen't seem so.
+So, instead of changing the existing code too much, what about adding some #ifdef's in the existing emumpu401.c code to:
+- not include any files (so that the emu10k1x/audigyls drivers can have their includes and structures)
+- have an #ifdef to disable the audigy 2 MIDI ports code
 
-My dirty solution for the Phase88 was:
+This should minimize all changes to that module and allow for code reuse.
 
-Read the soundcard-ID=20
-=2D--
-# cat /proc/asound/card1/ice1712
-TerraTec EWS88MT at 0xa400, irq 10
+If the owner of the file disagrees, I will just submit my patch as is, with the code inlined (no changes other than change which structure is used as I define which interrupts are used for TX/RX) and what the PTR register is.
 
-EEPROM:
-  Subvendor        : 0x3b155111
-  ...
-=2D--
+Please let me know, so that I can submit all my current changes tomorrow.
 
-Then write the ID instead of the one of EWS88MT_NEW into the module. Recomp=
-ile=20
-modules. Reboot. And... it works (not all perfectly but it works).
+Francisco
 
-=2D-- ews.h
-//#define ICE1712_SUBDEVICE_EWS88MT_NEW 0x3b152511
-#define ICE1712_SUBDEVICE_EWS88MT_NEW =A0 0x3b155111
-=2D-
-
-> Can I help somehow?
-
-Invest some time and find a better solution.
 
 
 -------------------------------------------------------
