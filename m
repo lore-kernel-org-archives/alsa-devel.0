@@ -1,11 +1,12 @@
-From: Peter Enderborg <pme@ufh.se>
-Subject: Re: Rawmidi bug or missed feature?
-Date: Fri, 01 Mar 2002 23:18:18 +0100
-Message-ID: <3C7FFE29.698B64E1@ufh.se>
-References: <200203012131.QAA26852@renoir.op.net>
+From: Kevin Cody Jr <kevinc@wuff.dhs.org>
+Subject: Re: Alsa-devel digest, Vol 1 #405 - 1 msg
+Date: 01 Mar 2002 19:37:19 -0500
+Message-ID: <1015029439.7732.1.camel@samoyed.wuff.dhs.org>
+References: <E16gwRJ-0000dA-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature";
+	boundary="=-1FDGRACIz/28etLCjws5"
+In-Reply-To: <E16gwRJ-0000dA-00@usw-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,36 +15,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
 
-> >Yes! And the device that is using running status is alsa rawmidi device.
->
-> What makes you think that? AFAIK, the raw MIDI device code does no
-> parsing of MIDI data at all ...
-
-Parsing? It sends raw midi on a stream. That stream is _from_ alsa seq. It is
-doing
-the bandwith optimize by it self. I do the parsing.
-
->
->
-> >It's not the roland device since I
-> >get them correct to the user_code.  And how do I force the rawmidi device
-> >to stop sending running status,
-> >and that is the original question!
->
-> I would have thought that if its not the Roland that is doing it, then
-> its the sequencer.
->
-> --p
-
---
-foo!
+--=-1FDGRACIz/28etLCjws5
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
 
+Aren't email scanners supposed act /before/ spreading the payload??!!
+
+On Fri, 2002-03-01 at 18:27, alsa-devel-request@lists.sourceforge.net
+wrote:
+> Send Alsa-devel mailing list submissions to
+> 	alsa-devel@lists.sourceforge.net
+>=20
+> To subscribe or unsubscribe via the World Wide Web, visit
+> 	https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> or, via email, send a message with subject or body 'help' to
+> 	alsa-devel-request@lists.sourceforge.net
+>=20
+> You can reach the person managing the list at
+> 	alsa-devel-admin@lists.sourceforge.net
+>=20
+> When replying, please edit your Subject line so it is more specific
+> than "Re: Contents of Alsa-devel digest..."
+>=20
+>=20
+> Today's Topics:
+>=20
+>    1. Antigen found HTML/MimeExploit.IFRAME (CA(InoculateIT)) virus (Anti=
+gen@alsa.alsa-project.org)
+>=20
+> --__--__--
+>=20
+> Message: 1
+> From: Antigen@alsa.alsa-project.org
+> To: alsa-devel@alsa-project.org
+> Date: 1 Mar 2002 23:45:17 +0100
+> Subject: [Alsa-devel] Antigen found HTML/MimeExploit.IFRAME (CA(Inoculate=
+IT)) virus
+>=20
+> Antigen for Exchange found Unknown infected with HTML/MimeExploit.IFRAME =
+(CA(InoculateIT)) virus.
+> The file is currently Removed.  The message, "[Alsa-devel] (no subject)",=
+ was
+> sent from batmanyrobin  and was discovered in SMTP Messages\Inbound
+> located at INDRA/ARROYO/MADIMC2.
+>=20
+>=20
+>=20
+>=20
+>=20
+> --__--__--
+>=20
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>=20
+>=20
+> End of Alsa-devel Digest
+
+
+
+--=-1FDGRACIz/28etLCjws5
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA8gB6/gda1QwctyUARAgrSAJ9pd5f4tD6+ys9Mtgn+H0agBDckGwCgqmax
+vKLHuF25G1sGW2ZqC8nx0+0=
+=JOAq
+-----END PGP SIGNATURE-----
+
+--=-1FDGRACIz/28etLCjws5--
 
 
 _______________________________________________
