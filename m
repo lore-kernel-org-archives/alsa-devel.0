@@ -1,16 +1,12 @@
-From: Ryan Pavlik <rpav@nwlink.com>
-Subject: Re: [PATCH]: Bug: ALSA Sequencer or MTPAV - easy to
- reproduce
-Date: Thu, 13 Feb 2003 10:57:33 -0800
+From: Chris Raphael <raphael@math.umass.edu>
+Subject: Re: playing underruns
+Date: Thu, 13 Feb 2003 14:07:08 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030213105733.4917ac89.rpav@nwlink.com>
-References: <s5hadh0mtc9.wl@alsa2.suse.de>
-	<Pine.LNX.4.44.0302131725440.1315-100000@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <200302131907.h1DJ78H07915@fafner.math.umass.edu>
+References: <200302131435.h1DEZWn21451@thales.math.umass.edu>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0302131725440.1315-100000@pnote.perex-int.cz>
+In-reply-to: <200302131435.h1DEZWn21451@thales.math.umass.edu> (message from
+	Paul Davis on Thu, 13 Feb 2003 09:35:12 -0500)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,44 +15,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
+To: paul@linuxaudiosystems.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 13 Feb 2003 17:27:25 +0100 (CET)
-Jaroslav Kysela <perex@suse.cz> wrote:
 
-<snip> 
-> Unfortunately, the patch is not perfect. I think that we need to
-> buffer the whole MIDI message and send it after completion, because
-> it's possible, that you'll get only partial MIDI message from the
-> rawmidi API or at buffer overrun / full.
-<snip> 
+Paul,  Again thanks very much.  From: 
 
-Actually I have thought of this off and on, and figured that it
-would probably be a Bad Thing:
+/sbin/hdparm /dev/hda2
 
-   1)  It'd be painful to implement.  The mtpav driver would need a
-       full understanding of MIDI, which means reimplementing things
-       that are already there at higher levels.
+I get:
 
-         - You need to know the length of each message
-         - You can't rely on finding the next status & 0x80, because
-           it might not arrive right away
-         - Buffering large Sysex dumps would suck ;)
-         - "Other" messages you don't understand might not get through
+/dev/hda2:
+ multcount	= 16 (on)
+ I/O support	= 0 (default 16-bit)
+ unmaskirq	= 0 (off)
+ using_dma	= 1 (on)
+ keepsettings	= 0 (off)
+ nowerr		= 0 (off)
+ readonly	= 0 (off)
+ readahead	= 8 (on)
+ geometry	= 4864/255/73, sectors = 36869175, start = 4225095
 
-   2)  More importantly: buffering would increase latency, which is
-       always the reason I don't sit down and start coding.
+with similar results for the other hda's.  I don't know if this
+is the question you were asking, though, since this doesn't seem
+to have much info.  
 
-It's true that it would be nice to be able to send partial messages,
-though, but most things use the ALSA sequencer API anyway.
+I don't have the low latency patch.  
 
+I will take a look at jackit.sf.net.  However, I am close to having 
+the sound I/0 working the way I need it to, so I am a little reluctant
+to start all over.  :)
 
--- 
-Ryan Pavlik <rpav@users.sf.net>
-
-"Oh for the love of evil, not this again." - 8BT
+Chris
 
 
 -------------------------------------------------------
