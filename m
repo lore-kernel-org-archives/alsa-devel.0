@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
-Date: Mon, 28 Feb 2005 15:22:03 +0100
-Message-ID: <01fd72f56e5837f8f775de9bd70c5479@bugtrack.alsa-project.org>
+Date: Mon, 28 Feb 2005 15:26:02 +0100
+Message-ID: <a3218fbc2e5b46baebba105943b41193@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B742A226
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 15:22:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BFAE6226
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 15:26:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -37,7 +37,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             02-03-2005 12:25 CET
-Last Modified:              02-28-2005 15:22 CET
+Last Modified:              02-28-2005 15:26 CET
 ======================================================================
 Summary:                    Distorted sound with enabled dmix plugin
 Description: 
@@ -46,11 +46,6 @@ distorted sound. Appear noise.
 This problem is appear when enabled dmix plugin through configuration file
 ~/.asoundrc.
 ======================================================================
-
-----------------------------------------------------------------------
- tvignaud - 02-28-05 15:00 
-----------------------------------------------------------------------
-i got a similar report from an xmms user on intel i865 with an HT cpu
 
 ----------------------------------------------------------------------
  yure - 02-28-05 15:22 
@@ -70,6 +65,15 @@ underrun!!! (at least 0.004 ms long)
 underrun!!! (at least 0.007 ms long)
 
 While I perform all tests I started archive operation.
+
+----------------------------------------------------------------------
+ warly - 02-28-05 15:26 
+----------------------------------------------------------------------
+I have a similar problem using alsa (1.0.8) with xmms (1.2.10) and
+xmms-alsa.
+
+The files are ogg vorbis, and the problem does not appear if I use ogg123
+-d alsa09
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -92,6 +96,7 @@ Date Modified  Username       Field                    Change
 02-25-05 10:36 yure           Note Added: 0003732                          
 02-28-05 15:00 tvignaud       Note Added: 0003744                          
 02-28-05 15:22 yure           Note Added: 0003745                          
+02-28-05 15:26 warly          Note Added: 0003746                          
 ======================================================================
 
 
