@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000793]: Feature Request SRS
-Date: Tue, 22 Feb 2005 09:49:09 +0100
-Message-ID: <f095372f58797047fd0e6ab636c752f1@bugtrack.alsa-project.org>
+Date: Tue, 22 Feb 2005 09:49:31 +0100
+Message-ID: <ca7afd89896e7c253714551f8da2aeed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 12715174
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:49:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F53B174
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:49:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -32,7 +32,7 @@ Project:                    ALSA - lib
 Issue ID:                   793
 Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
 ======================================================================
@@ -67,6 +67,7 @@ Date Modified  Username       Field                    Change
 lib
 02-22-05 09:49 perex          Category                 0_compilation problem_!!!
 => pcm - digital audio
+02-22-05 09:49 perex          Severity                 minor => feature    
 ======================================================================
 
 
