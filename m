@@ -1,15 +1,17 @@
-From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Subject: Re: MIDI+USB - one way?
-Date: Sun, 4 Aug 2002 14:07:53 +0200
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: newest versions of cs46xx driver => Terratec Xfire
+ recording problem
+Date: Sun, 04 Aug 2002 18:30:06 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200208041407.53685.plcl@telefonica.net>
-References: <20020802001554.48f2f13a.mis@creazone.com> <200208030128.53390.plcl@telefonica.net> <20020803002119.GD1372@tuba.home>
+Message-ID: <3D4D568E.1010404@cucumelo.org>
+References: <19320.1028456242@www15.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020803002119.GD1372@tuba.home>
+Received: from cucumelo.org (as1-4-7.bn.g.bonet.se [194.236.61.89])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA11154
+	for <alsa-devel@alsa-project.org>; Sun, 4 Aug 2002 19:20:01 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,21 +20,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: martin-langer@gmx.de
-Cc: alsa-devel@lists.sourceforge.net
+To: Friedrich.Ewaldt@gmx.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-El Sáb 03 Ago 2002 02:21, Martin Langer escribió:
-> Do we need an usb-midi device matrix? Up to now we have not much devices,
-> but the list is growing and alsa midi documents are rare. Perhaps we should
-> change this situation and start with a small midi-matrix or a general
-> usb-matrix.
+>
+>
+>But now I've got some trouble recording from the soundcard input:
+>Trying to record (or using a realtime audio application
+>input->process->output), I cannot select the input source any more. Alsamixer shows the capture
+>flag at the correct position (e.g. CD or Mic), but hw:0,0 always records the
+>output from PCM only.
+>I always record (or hear) silence until I produce some PCM output (e.g.
+>aplay or a BEEP in a shell). This PCM output gets looped back and I get a
+>non-ending loud feedback noise (sounds just like acoustic feedback noise).
+>
+In fact that I've not tested thoose part yet, so it's that they broken 
+as consequence with
+all other changes done.
 
-In fact, we have already a general usb device matrix, see:
-http://www.qbik.ch/usb/devices/showdevcat.php?id=7
+>
+>This input problem occurs with the following 2 driver versions:
+>
+>1.
+>alsa-driver-0.9.0rc2-bs20020731.tar.gz +
+>alsa-driver-0.9.0rc2-bs20020731.diff +
+>additional patch in mail from 1.aug.2002
+>
+>2.
+>cvs snapshot 2002-08-02 
+>(I compiled the alsa-driver tree only using "cvscompile" and then "make
+>install-modules")
+>
+>
+>The problem seems to be related to the pcm multi support as I can use the
+>alsa-driver-0.9.0rc2-bs20020723.tar.gz driver version without this problem.
+>
+There where many hard && critical changes done between thoose two 
+releases, it has
+probably become broken.
 
-Regards,
-Pedro
+I will investigate the "recording" part, i believe the problem is 
+(hopefully)  easy fixed.
+
+/Benny
 
 
 
