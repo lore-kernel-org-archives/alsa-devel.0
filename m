@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
-Date: Wed, 16 Mar 2005 14:49:38 +0100
-Message-ID: <cc48cd684c94d4dd22f354faacce8504@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
+Date: Wed, 16 Mar 2005 14:53:35 +0100
+Message-ID: <55d7ac5455aab67d21d954b9383f1bdd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C4426211
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 14:49:38 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5A194211
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 14:53:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,81 +23,188 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=846> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=875> 
 ======================================================================
-Reported By:                Envel
-Assigned To:                
+Reported By:                Jean-Louis Crouzet
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   846
-Category:                   PCI - intel8x0
+Issue ID:                   875
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
-Kernel Version:             2.6.8.1
+Kernel Version:             # uname -a<br />
+Linux hp900 2.6.8jlcv34 view.php?id=1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 ======================================================================
-Date Submitted:             01-24-2005 13:44 CET
-Last Modified:              03-16-2005 14:49 CET
+Date Submitted:             02-01-2005 16:17 CET
+Last Modified:              03-16-2005 14:53 CET
 ======================================================================
-Summary:                    Can't hear sound from one of the surround speaker,
-while other is working (speakers are functional).
+Summary:                    Can't get nm256 up & running
 Description: 
-With options "Line-In as surround" and "Duplicate front" the right surround
-speaker is not working, while others are functional. After uninstalling
-ALSA 1.0.8 and installing againg ALSA 1.0.7 with the same mixer
-configuration the error is not occures. SoundCard: nForce2 Audio Codec,
-Driver: snd-intel8x0, 4 speakers.
-p.s. sorry for my English.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000902 Some channels not working
+I trying since ages to get this nm256 up & running with ALSA, w/o any
+sucess.
+
+PC Omnibook 900 (not a 900B)
+
+# uname -a
+Linux hp900 2.6.8jlcv34 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+
+
+#lspci  -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-04.0  Texas Instruments PCI1225
+      +-04.1  Texas Instruments PCI1225
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      \-07.3  Intel Corp. 82371AB/EB/MB PIIX4 A	
+	
+# modinfo snd_nm256
+filename:      
+/lib/modules/2.6.8jlcv32/kernel/sound/pci/nm256/snd-nm256.ko
+author:         Takashi Iwai <tiwai@suse.de>
+description:    NeoMagic NM256AV/ZX
+license:        GPL
+vermagic:       2.6.8jlcv32 PENTIUMII gcc-3.3
+depends:        snd-pcm,snd,snd-ac97-codec
+alias:          pci:v000010C8d00008005sv*sd*bc*sc*i*
+alias:          pci:v000010C8d00008006sv*sd*bc*sc*i*
+alias:          pci:v000010C8d00008016sv*sd*bc*sc*i*
+parm:           vaio_hack:Enable workaround for Sony VAIO notebooks.
+parm:           use_cache:Enable the cache for coefficient table access.
+parm:           buffer_top:Set the top address of audio buffer for
+NeoMagic 256AV/ZX soundcard.
+parm:           force_ac97:Force to use AC97 codec for NeoMagic 256AV/ZX
+soundcard.
+parm:           capture_bufsize:ADC frame size in kB for NeoMagic 256AV/ZX
+soundcard.
+parm:           playback_bufsize:DAC frame size in kB for NeoMagic
+256AV/ZX soundcard.
+parm:           enable:Enable this soundcard.
+parm:           id:ID string for NeoMagic 256AV/ZX soundcard.
+parm:           index:Index value for NeoMagic 256AV/ZX soundcard.
+
+# alsaconf
+Unloading sound driver modules...done.
+Building card database..
+
+
+Running update-modules...
+Loading driver...
+FATAL: Error running install command for snd_nm256
+Setting default volumes...
+Saving the mixer setup used for this in /var/lib/alsa/asound.state.
+/usr/sbin/alsactl: save_state:1061: No soundcards found...
+
+===============================================================================
+
+ Now ALSA is ready to use.
+ For adjustment of volumes, use your favorite mixer.
+
+ Have a lot of fun!
+
+
+???????????????????????????,,
 ======================================================================
 
 ----------------------------------------------------------------------
- slammer - 03-10-05 23:28 
+ tiwai - 03-16-05 12:27 
 ----------------------------------------------------------------------
-Yeah. Me too should get life... such things just eat me and digest with
-bones. Anyhow I know it's none of my competence but, since this was fixed,
-people would really use at least rc version soon.
+force_ac97 won't work anyway.
+
+Now you wrote it doesn't work -- you mean lock up?
 
 ----------------------------------------------------------------------
- tiwai - 03-16-05 14:49 
+ Jean-Louis Crouzet - 03-16-05 14:53 
 ----------------------------------------------------------------------
-Yes, now 1.0.9rc1 was out.  So, please give it a try.
+Hi Tiwai,
+
+all my appologizes for being unclear in my last note. I meant I succeed to
+remove the force_ac97 from my module option. But even then, the module is
+never correctly loaded therefore any playing with alsaconf always end the
+same.
+
+# lsmod
+Module                  Size  Used by
+serial_cs               5276  1
+apm                    12972  2
+uhci_hcd               24016  0
+usbcore                76964  3 uhci_hcd
+intel_agp              13888  1
+snd_nm256              62568  0
+snd_ac97_codec         57220  1 snd_nm256
+snd_pcm_oss            49448  0
+snd_mixer_oss          15648  1 snd_pcm_oss
+snd_pcm                73448  2 snd_nm256,snd_pcm_oss
+snd_page_alloc          6088  1 snd_pcm
+snd_timer              16836  1 snd_pcm
+snd                    40612  6
+snd_nm256,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore               3648  1 snd
+xirc2ps_cs             12784  1
+genrtc                  5524  0
+ext3                   93256  1
+jbd                    39032  1 ext3
+mbcache                 3716  1 ext3
+piix                    8800  1
+unix                   16276  32
+
+#alsaconf -L logalsa
+Unloading ALSA sound driver modules: snd-nm256 snd-ac97-codec snd-pcm-oss
+snd-mixer-oss snd-pcm snd-page-alloc snd-timer.
+Building card database...
+
+
+Running update-modules...
+Loading driver...
+Setting up ALSA...done.
+Setting default volumes...
+Saving the mixer setup used for this in /var/lib/alsa/asound.state.
+/usr/sbin/alsactl: save_state:1194: No soundcards found...
+
+
+===============================================================================
+
+ Now ALSA is ready to use.
+ For adjustment of volumes, use your favorite mixer.
+
+ Have a lot of fun!
+
+Hoping this is clearer? As far as I can understand the situation, the
+problem is first located in this nm256 module or any associated file.
+Obviously no one will ever have a loock into those jurassic ages for basic
+operation. This is why I definitely appreciate your permanent effort.
+Tkx,
+
+JL
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-24-05 13:44 Envel          New Issue                                    
-01-24-05 13:44 Envel          Kernel Version            => 2.6.8.1         
-01-25-05 15:18 tiwai          Note Added: 0003402                          
-01-28-05 08:17 ivantheviking  Issue Monitored: ivantheviking                    
-01-28-05 08:19 ivantheviking  File Added: asound.state                     
-01-28-05 08:20 ivantheviking  File Added: ac97#0-0                         
-01-28-05 08:21 ivantheviking  File Added: ac97#0-0+regs                    
-01-28-05 08:30 ivantheviking  Note Added: 0003424                          
-01-29-05 17:13 ivantheviking  Note Added: 0003438                          
-03-01-05 00:03 stephenv       Issue Monitored: stephenv                    
-03-01-05 00:06 stephenv       Note Added: 0003752                          
-03-02-05 01:19 ivantheviking  Note Edited: 0003438                         
-03-04-05 22:53 slammer        Note Added: 0003802                          
-03-04-05 22:55 slammer        Issue Monitored: slammer                     
-03-07-05 00:12 stephenv       File Added: svs.tar                          
-03-08-05 18:43 jor            Issue Monitored: jor                         
-03-08-05 19:03 jor            Note Added: 0003816                          
-03-09-05 18:43 tiwai          Note Added: 0003834                          
-03-09-05 18:43 tiwai          Note Added: 0003835                          
-03-09-05 19:24 jor            Note Added: 0003845                          
-03-10-05 03:27 stephenv       Note Added: 0003847                          
-03-10-05 11:55 slammer        Note Added: 0003848                          
-03-10-05 13:17 slammer        Note Added: 0003850                          
-03-10-05 14:36 tiwai          Relationship added       has duplicate 0000902
-03-10-05 18:03 stephenv       Note Added: 0003869                          
-03-10-05 23:28 slammer        Note Added: 0003875                          
-03-16-05 14:49 tiwai          Note Added: 0003959                          
+02-01-05 16:17 Jean-Louis CrouzetNew Issue                                    
+02-01-05 16:17 Jean-Louis CrouzetKernel Version            => # uname -a
+Linux hp900 2.6.8jlcv34 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+02-02-05 11:18 tiwai          Note Added: 0003483                          
+02-02-05 12:40 Jean-Louis CrouzetNote Added: 0003485                          
+02-02-05 12:46 tiwai          Note Added: 0003486                          
+02-02-05 13:05 Jean-Louis CrouzetNote Added: 0003487                          
+02-09-05 12:09 tiwai          Note Added: 0003547                          
+02-10-05 09:54 Jean-Louis CrouzetNote Added: 0003563                          
+02-14-05 19:46 tiwai          Note Added: 0003605                          
+02-15-05 10:08 Jean-Louis CrouzetNote Added: 0003617                          
+02-15-05 10:32 Jean-Louis CrouzetNote Added: 0003618                          
+03-16-05 08:50 Jean-Louis CrouzetNote Added: 0003934                          
+03-16-05 11:26 Jean-Louis CrouzetNote Added: 0003937                          
+03-16-05 12:27 tiwai          Note Added: 0003940                          
+03-16-05 14:53 Jean-Louis CrouzetNote Added: 0003960                          
 ======================================================================
 
 
