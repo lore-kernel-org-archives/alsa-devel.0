@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000571]: Doesn't store mixer settings
-Date: Fri, 15 Oct 2004 13:51:26 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Userspace ALSA Soundcard
+Date: Fri, 15 Oct 2004 13:59:36 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041015115126.4FA5439006@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <416FC9B8.6020308@superbug.co.uk>
+References: <MEMPHISWYTZiAXCKe570000000d@Memphis.stud.so.fhnw.ch>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A93042EE
-	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 13:51:26 +0200 (MEST)
+In-Reply-To: <MEMPHISWYTZiAXCKe570000000d@Memphis.stud.so.fhnw.ch>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,106 +17,123 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Roger Villars <roger.villars@fhso.ch>
+Cc: 'Takashi Iwai' <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Roger,
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000571
-======================================================================
-Reported By:                pmatil
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Bug ID:                     571
-Category:                   alsactl
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             10-07-2004 18:27 CEST
-Last Modified:              10-15-2004 13:51 CEST
-======================================================================
-Summary:                    Doesn't store mixer settings
-Description: 
-No errors are produced by the initscripts, however it seems that it doesn't
-save mixer settings. After boot, asound.state is 'zeroed' eg. all sliders
-are down, but unmuted. Running manually alsactl store, asound.state gets
-all the right values, but after next boot / reboot, asound.state is
-'zeroed' again. Asound.state lies in /var/lib/alsa/asound.state
-======================================================================
+pcm_jack lets alsa-lib talk to the jackd daemon.
+So, you implement your own bluez daemon, and then implement a plugin for 
+alsa-lib that talks to it.
 
-----------------------------------------------------------------------
- tiwai - 10-12-2004 14:44 CEST 
-----------------------------------------------------------------------
-Is alsactl patched?  It's usually in /etc/asound.state.
+You just need to think of the problem slighly differently.
+If you look at any standard alsa application, it does:
+open()
+set_params()
+read_write_samples()
+close()
 
-asound.state is saved when alsasound init service is stopped, too.
-This means that the status of sound differs at this stage from
-what you have now.  Possibly, the window system (e.g. KDE) modifies
-and restores the sound status by itself.
+With an alsa-lib plugin, at the open() step, it could talk to the bluez 
+daemon, and see if the bluez connections are up, and if so, allow the 
+open, otherwise, fail the open() call.
 
-----------------------------------------------------------------------
- pmatil - 10-13-2004 12:30 CEST 
-----------------------------------------------------------------------
-It's possible. System is Debian so maybe it's patched. It doesn't matter
-whether I start X (KDE) or not, sound levels aren't saved by the init
-script. I don't know where alsa thinks it saved the volume levels, because
-I don't know much of init scripting and it gives no error. So maybe this
-is mainly a Debian problem...
+The current ALSA API does not allow for more complicated audio devices. 
+You have to use extra other apis to implement what you want.
+e.g. A headset with volume up/down buttons. The buttons arrive via the 
+kernel input/events api, and the sound goes via ALSA.
 
-----------------------------------------------------------------------
- tiwai - 10-13-2004 12:53 CEST 
-----------------------------------------------------------------------
-Check the init script you use.  The alsasound script provided from the
-original alsa-driver package uses /etc/asound.state, and call with -f
-option.
+For an application to use a bluetooth headset, the application will 
+first have to talk to the bluetooth api to set up the bluetooth specific 
+connections, and then once bluetooth is set up, it would open an ALSA 
+device in order to send sound to the device.
 
-----------------------------------------------------------------------
- pmatil - 10-14-2004 13:25 CEST 
-----------------------------------------------------------------------
-OK, update: I noticed that after updating alsa-packages from apt, the
-init.script actually does save the volumes, and restore them
-(/var/lib/alsa/asound.state), but after starting KDE, volumes are zeroed
-(amixer). Asound.state at this point contains the saved settings. So: KDE
-resets the volumes at its startup but doesn't modify asound.state. Sorry I
-haven't noticed this earlier... Now I have to find out how to prevent it
-from resetting the volumes or find a way to run 'alsactl restore' after
-KDE startup...
 
-----------------------------------------------------------------------
- tiwai - 10-14-2004 15:14 CEST 
-----------------------------------------------------------------------
-Ok, then it's likely a problem of KDE thing.  I guess it's kmix.
-What happens if you exclude kmix from start up apps?
 
-----------------------------------------------------------------------
- pmatil - 10-14-2004 16:26 CEST 
-----------------------------------------------------------------------
-Kmix doesn't start automatically... So it's something else.
+Roger Villars wrote:
+> Thanks for your answer!
+> 
+> I looked at pcm_jack a bit closer and it seems to be
+> some sort of plugin for ALSA. Actually, this is not exactly
+> what I need. I thought about something like this:
+> 
+> int main(......)
+> {
+> 	create a new soundcard
+> 	connect to the headset using blueZ
+> 	while(true) {
+> 		get the audio stream from blueZ
+> 		give the audio stream to the soundcard
+> 		same thing, other direction
+> 	}
+> 	remove the soundcard
+> }
+> 
+> (programming could be so easy ;-) )
+> 
+> That's why I mentioned the deamon. With this, I can use the headset
+> with the program running in the background without the need to change 
+> any kernel stuff. But it seems to me that ALSA is not made for this. 
+> So it would be very complicated, don't you think?
+> 
+> Roger 
+> 
+> -----Original Message-----
+> From: alsa-devel-admin@lists.sourceforge.net
+> [mailto:alsa-devel-admin@lists.sourceforge.net] On Behalf Of Takashi Iwai
+> Sent: Thursday, October 14, 2004 5:36 PM
+> To: Roger Villars
+> Cc: alsa-devel@lists.sourceforge.net
+> Subject: Re: [Alsa-devel] Userspace ALSA Soundcard
+> 
+> At Thu, 14 Oct 2004 09:32:52 +0200,
+> Roger Villars wrote:
+> 
+>>
+>>Hello
+>>
+>>I'm new to the ALSA Framework and I'm trying to program a "virtual" 
+>>soundcard for a Bluetooth Headset that is running completely in 
+>>userspace. No kernel modules or something.
+>>
+>>You should only start a deamon program and then every ALSA beware 
+>>program can "see" a new Soundcard.
+> 
+> 
+> Even the daemon wouldn't needed, I guess.
+> Well, the mixer might be problematic in some cases.
+> 
+> 
+>>First Question: Do you think this is possible?
+> 
+> 
+> Yes.
+> 
+> 
+>>Second Question: How?
+> 
+> 
+> A good question :)  There is no real documentation for this.
+> As you wrote below, jack_pcm.c is the best example to rerfer to.
+> 
+> 
+>>I heard that there is a file called pcm_jack.c in ALSA that is doing 
+>>exactly what I need. But as I'm new to ALSA I don't know how and where 
+>>in the code it is doing it.
+>>
+>>Would be nice if somebody can give me some Know-how. 
+> 
+> 
+> Basically, you need to write dozen of callbacks for each pcm operation.  The
+> most cryptical part is the PCM configuration.
+> The PCM layer calls hw_params, hw_refine, and sw_params callbacks for
+> querying and setting up the proper configuration.
+> 
+> 
+> Takashi
+> 
+> 
 
-----------------------------------------------------------------------
- pmatil - 10-15-2004 13:51 CEST 
-----------------------------------------------------------------------
-Mkay, after compiling with cs46xx_new_dsp, everything works. Volumes are
-saved and restored and KDE doesn't overwrite them. I don't know was it
-because of cs46xx_new_dsp or the fact that I unchecked the box "save
-volumes" in kmix.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-07-04 18:27 pmatil         New Bug                                      
-10-12-04 14:44 tiwai          Bugnote Added: 0002096                       
-10-13-04 12:30 pmatil         Bugnote Added: 0002120                       
-10-13-04 12:53 tiwai          Bugnote Added: 0002121                       
-10-14-04 13:25 pmatil         Bugnote Added: 0002144                       
-10-14-04 15:14 tiwai          Bugnote Added: 0002149                       
-10-14-04 16:26 pmatil         Bugnote Added: 0002154                       
-10-15-04 13:51 pmatil         Bugnote Added: 0002166                       
-======================================================================
 
 
 -------------------------------------------------------
