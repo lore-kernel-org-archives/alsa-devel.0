@@ -1,13 +1,15 @@
-From: Jesse Chappell <jesse@essej.net>
+From: "Thomas Charbonnel" <thomas@undata.org>
 Subject: Re: hdsp cardbus coldboot bug workaround
-Date: Sun, 03 Aug 2003 20:52:01 -0400
+Date: Mon, 4 Aug 2003 07:06:32 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <90bc1390e02860d700dc0b3ffab2eb74@essej.net>
+Message-ID: <39847.81.51.162.83.1059973592.squirrel@www.undata.org>
 References: <32812.80.11.13.118.1059826005.squirrel@www.undata.org>
+        <90bc1390e02860d700dc0b3ffab2eb74@essej.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <32812.80.11.13.118.1059826005.squirrel@www.undata.org>
+In-Reply-To: <90bc1390e02860d700dc0b3ffab2eb74@essej.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,30 +18,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: jesse@essej.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thomas Charbonnel wrote on Sat, 02-Aug-2003:
+> I have never had the cold boot problem and I use the conditions
+> you mention above.  My hardware is an IBM ThinkPad A31, with a
+> rev 0xb HDSP cardbus, acpi *not* enabled (not compiled in and
+> a noacpi kernel cmdline), with AC power.
+>
+> Hmmm, your solution might help people that do have the problem,
+> though.
+>
+> jlc
+>
+>
 
- > It has already been reported on this list that the hdsp cardbus card is
- > not detected correctly at boot time after a cold boot. When this happens
- > here's what dmesg says about it:
- > cs: cb_alloc(bus 3): vendor 0xffff, device 0xffff
- > PCI: device 03:00.0 has unknown header type 7f, ignoring.
- > 
- > This problem is reproducible every time for if those conditions are met:
- > * non acpi-enabled kernel
- > * boot on AC power
+Thanks for the report. I use 0xa, so that can be a clue, plus my
+cardbus-to-pci bridge is only supported by linux since kernels > 2.4.19.
 
-I have never had the cold boot problem and I use the conditions
-you mention above.  My hardware is an IBM ThinkPad A31, with a
-rev 0xb HDSP cardbus, acpi *not* enabled (not compiled in and
-a noacpi kernel cmdline), with AC power.
+Thomas
 
-Hmmm, your solution might help people that do have the problem,
-though.
 
-jlc
+
 
 
 -------------------------------------------------------
