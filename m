@@ -1,13 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
-Date: Sat, 12 Mar 2005 23:11:03 +0100
-Message-ID: <074d471706ea7b8599fce7728edfdda2@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Audigy 2 SPDIF rates.
+Date: Sat, 12 Mar 2005 22:24:00 +0000
+Message-ID: <42336C00.5080105@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 919571C3
-	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 23:11:03 +0100 (MET)
+Received: from anchor-post-36.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9BCC9190
+	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 23:24:01 +0100 (MET)
+Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
+	by anchor-post-36.mail.demon.net with esmtp (Exim 4.42)
+	id 1DAF1c-000AU6-MM
+	for alsa-devel@alsa-project.org; Sat, 12 Mar 2005 22:24:01 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,124 +21,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+I have found some more rates that the Audigy 2 SPDIF can run at:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
-======================================================================
-Reported By:                1g0R
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   848
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.8-ac8
-======================================================================
-Date Submitted:             01-25-2005 15:28 CET
-Last Modified:              03-12-2005 23:11 CET
-======================================================================
-Summary:                    Intel HDA (C-Media 9880) SPDIF Out
-Description: 
-When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
-output signal on SPDIF (Coax).
-I try:
-aplay -D hw:0,1 (<--digital out) else.wav
-the command run normally, but no output on spdif out.the same with xmms
-(with ALSA, on hw:0,1).
+Using the register 0x76 A_SPDIF_RATE.
+00 => 48000
+20 => 192000
+40 => 96000
+80 => 44100
+No other rates are possible.
 
-======================================================================
+To detect the rate, loop the SPDIF output into an input and look at 
+register 0x61 GPSRCS
 
-----------------------------------------------------------------------
- 1g0R - 02-22-05 19:05 
-----------------------------------------------------------------------
-Hi,
+Detected rate = ( ( GPSRCS & 0xFFFFF ) * 48000 ) / 0x40000
+or
+Detected rate = ( ( GPSRCS & 0xFFFFF ) * 48000 ) / 262144
 
-I tried out, but no success.
-I need to use Coaxial out, because i havent got optical cables.
-Is the latest cvs working with coaxial spdif out?
-I look the #codec, and i found this:
-Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x01452070: SPDIF Out at Ext Rear
-    Conn = Optical, Color = Grey
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x07
-Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
-  Pincap 0x0830: IN OUT
-  Pin Default 0x01c50000: SPDIF In at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
+The GPSRCS register is only valid if 0x51 != 0xffffffff
+0x51 is GPSCS which is the SPDIF status register. containing details 
+about non-audio bits etc.
+
+Likewise, 0x50 and 0x60 for the CD SPDIF input.
+
+So, the header file should be changed from:
+#define A_SPDIF_SAMPLERATE      0x76            /* Set the sample rate 
+of SPDIF output          */
+#define A_SPDIF_RATE_MASK       0x000000c0
+#define A_SPDIF_48000           0x00000000
+#define A_SPDIF_44100           0x00000080
+#define A_SPDIF_96000           0x00000040
+
+To:
+#define A_SPDIF_SAMPLERATE      0x76            /* Set the sample rate 
+of SPDIF output          */
+#define A_SPDIF_RATE_MASK       0x000000e0
+#define A_SPDIF_48000           0x00000000
+#define A_SPDIF_44100           0x00000080
+#define A_SPDIF_96000           0x00000040
+#define A_SPDIF_192000          0x00000020
 
 
-is this ok?
-then i try aplay:
-Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x01452070: SPDIF Out at Ext Rear
-    Conn = Optical, Color = Grey
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x07
-Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
-  Pincap 0x0830: IN OUT
-  Pin Default 0x01c50000: SPDIF In at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
-
-but i cant hear any sound from receiver.
-
-Thanks the help.
-Best regards
-1g0R (G)
-
-----------------------------------------------------------------------
- 1g0R - 03-12-05 23:11 
-----------------------------------------------------------------------
-Hi Tiwai,
-
-I tried the CVS version of alsa-driver,lib,utils, but no success.
-I set the iecset, and alsamixer, but no sound from digital out.
-Any solution?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-25-05 15:28 1g0R           New Issue                                    
-01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
-01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
-01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
-01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
-01-28-05 02:56 nc             Issue Monitored: nc                          
-01-28-05 03:07 nc             Note Added: 0003423                          
-01-28-05 19:01 1g0R           Note Added: 0003434                          
-02-04-05 15:02 tiwai          Note Added: 0003507                          
-02-04-05 19:36 1g0R           Note Added: 0003514                          
-02-04-05 19:41 tiwai          Note Added: 0003515                          
-02-05-05 06:06 mab            Issue Monitored: mab                         
-02-05-05 08:46 1g0R           Note Added: 0003518                          
-02-14-05 22:27 1g0R           Note Added: 0003612                          
-02-14-05 22:28 1g0R           Note Added: 0003613                          
-02-18-05 18:55 tiwai          Note Added: 0003658                          
-02-19-05 19:51 1g0R           Note Added: 0003670                          
-02-21-05 19:57 1g0R           Note Added: 0003683                          
-02-22-05 14:29 tiwai          Note Added: 0003699                          
-02-22-05 19:05 1g0R           Note Added: 0003709                          
-03-12-05 23:11 1g0R           Note Added: 0003900                          
-======================================================================
-
-
+James
 
 
 -------------------------------------------------------
