@@ -1,16 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000455]: segfault when trying to connect dmix->plug
-Date: Sun, 22 Aug 2004 17:58:43 +0200 (CEST)
+From: Andrew Gaydenko <a@etver.com>
+Subject: alsa + midi == system hangs
+Date: Mon, 23 Aug 2004 01:08:44 +0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040822155843.578F91102F@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200408230108.44078@goldspace.net>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="koi8-r"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CDA192DC
-	for <alsa-devel@alsa-project.org>; Sun, 22 Aug 2004 17:58:43 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 6DAD2D6ED
-	for <alsa-devel@alsa-project.org>; Sun, 22 Aug 2004 17:58:43 +0200 (MEST)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,88 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000455
-======================================================================
-Reported By:                stsp
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Bug ID:                     455
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             08-18-2004 20:20 CEST
-Last Modified:              08-22-2004 17:58 CEST
-======================================================================
-Summary:                    segfault when trying to connect dmix->plug
-Description: 
-Hi.
+I have tried to get an answer from the alsa users mailng list without success.
+My last hope is here.
 
-With the attached configuration I get
-segmentation fault:
----
-$ ogg123 mise02-ulicka.ogg
-ALSA lib pcm_dmix.c:873:(snd_pcm_dmix_open) dmix plugin can be only
-connected to hw plugin
-Segmentation fault
----
+The problem is very simple: while trying to start any midi-related
+application (rosegarden, qsynth, fluid itself, MuseScore-from-CVS, ...),
+a system hangs absolutely. It seems like:
 
-Here is the problematic place:
----
-Program received signal SIGSEGV, Segmentation fault.
-[Switching to Thread 1078196992 (LWP 30505)]
-snd_pcm_plug_open (pcmp=0xbffff7c0, name=0x43653b13 "default",
-    sformat=1131543104, schannels=1131543104, srate=1131543104,
-    route_policy=1131543104, ttable=0x4371fa40, tt_ssize=1131543104,
-    tt_cused=1131543104, tt_sused=1131543104, slave=0x428c6fdc,
-    close_slave=1131543104) at pcm_plug.c:1034
-1034            pcm->fast_ops = slave->fast_ops;
-(gdb) p pcm->fast_ops
-$1 = (snd_pcm_fast_ops_t *) 0x0
----
-So it is trying to assign to NULL.
-======================================================================
+- the problem doesn't depend on driver: my friend has another card
+  with the same problem exactly,
+- the problem doesn't depend on particular kernel version: 2.6.5, 2.6.7,
+  2.6.8.1, 2.6.8.1-ck4 and voluntary preemption patch P5 for 2.6.8.1 were
+  tried (kernel alsa driver was disabled).
 
-----------------------------------------------------------------------
- stsp - 08-19-2004 10:21 CEST 
-----------------------------------------------------------------------
-> $1 = (snd_pcm_fast_ops_t *) 0x0
-> So it is trying to assign to NULL.
-OK, never mind, of course that assignment is valid.
-Nothing wrong with the slave->fast_fops either.
-But it segfaults here only when some memory debugger
-is used (njamd, efence), otherwise it segfaults much
-later. Might be some memory corruption.
-Attached are backtraces at a crash points: log1 - with
-memory debugger; log2 - without. Both looks pretty
-useless...
+Other alsa related parts/apps work well: playing back to analogue/spdif out,
+capturing from analog in, qamixer with own xml file, jack-enabled apps,
+and so on.
 
-----------------------------------------------------------------------
- stsp - 08-22-2004 17:58 CEST 
-----------------------------------------------------------------------
-This was trivial to resolve, patch attached.
-Btw, any plans to make dmix to be attachable to other plugins?
+The problem takes place with both 1.0.5a and 1.0.6a versions. I use ice1724
+driver for Aureon Space.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-18-04 20:20 stsp           New Bug                                      
-08-18-04 20:20 stsp           File Added: asound.conf                      
-08-19-04 10:21 stsp           Bugnote Added: 0001589                       
-08-19-04 10:22 stsp           File Added: logs.tar.gz                      
-08-19-04 10:23 stsp           Bug Monitored: stsp                          
-08-22-04 17:56 stsp           File Added: pcm_dmix.c.diff                    
-08-22-04 17:58 stsp           Bugnote Added: 0001609                       
-======================================================================
+All worked at those old days with kernel 2.4.x and alsa 1.0.4.
+
+Must I supply any additional info?
+
+Thanks in advance,
+Andrew
 
 
 -------------------------------------------------------
