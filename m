@@ -1,15 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: dmix bugs. sounds very broken up.
-Date: Thu, 4 Sep 2003 11:46:37 +0200 (CEST)
+From: Marco Canini <m.canini@libero.it>
+Subject: Re: Support for realtek alc 655
+Date: 04 Sep 2003 14:43:05 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0309041141580.4568@pnote.perex-int.cz>
-References: <Pine.LNX.4.44.0309010807230.14319-100000@pnote.perex-int.cz>
- <3F53D15B.3090507@superbug.demon.co.uk> <Pine.LNX.4.53.0309021232410.29300@pnote.perex-int.cz>
- <3F548405.80902@superbug.demon.co.uk>
+Message-ID: <1062679384.1189.7.camel@jabawack.canini.org>
+References: <1062413496.526.4.camel@jabawack.canini.org>
+	 <3F532F72.208@superbug.demon.co.uk>
+	 <1062440613.538.3.camel@jabawack.canini.org>
+	 <3F539466.3090000@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F548405.80902@superbug.demon.co.uk>
+In-Reply-To: <3F539466.3090000@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,104 +21,71 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2 Sep 2003, James Courtier-Dutton wrote:
-
-> Jaroslav Kysela wrote:
-> > On Tue, 2 Sep 2003, James Courtier-Dutton wrote:
-> >
-> >
-> >>Jaroslav Kysela wrote:
+On Mon, 2003-09-01 at 20:48, James Courtier-Dutton wrote:
+> Marco Canini wrote:
+> > On Mon, 2003-09-01 at 13:37, James Courtier-Dutton wrote:
+> > 
+> >>Marco Canini wrote:
 > >>
-> >>>On Mon, 1 Sep 2003, James Courtier-Dutton wrote:
+> >>>hi,
 > >>>
+> >>>i'm moving to buy a new mother board: gigabyte 8knxp.
+> >>>it has integrated an audio ac97 codec chipset by realtek: alc655
+> >>>i searched in the sound cards matrix and i couldn't find it so i surfed
+> >>>the web for any kind of support for it in linux but i found nothing.
+> >>>from what i see in the ac97 support code the alc650 is supported but no mention to alc655.
+> >>>is this chipset supported by alsa?
 > >>>
-> >>>
-> >>>>I have found two problems with using the dmix alsa device name.
-> >>>>1) snd_pcm_hw_params_can_pause (params)  causes alsa-lib to assert!
-> >>>>
-> >>>>2) Sound is broken up.
-> >>>>a) It can only function with 2 periods, why is that? Having 8 periods
-> >>>>might be better, although "front" works fine with 2 periods, but "dmix"
-> >>>>with 2 periods fails.
+> >>>thanks
 > >>
-> >>See attachment dmix-fail.c
-> >>compile with
-> >>gcc -g -DDEBUG -lasound a.c
+> >>We have the specs for the chip, so supporting it should not be too much 
+> >>of a problem. See the nice PDF files from realtek web site :-) .
 > >>
-> >>Shows problem (1) and (2)
-> >
-> >
-> > (1)
-> >
-> > The count of used periods is probably 2.73 for 64kB buffer, my setup is:
-> >
-> > buffer_size  : 16384
-> > period_size  : 6000
-> >
-> > If you want another setup, you must write your own configuration to
-> > ~/.asoundrc.
-> >
-> > (2)
-> >
-> > Problem with uninitialized pcm->info value is fixed in CVS.
-> >
-> >
-> >>>>b) Of the 2 periods, it sounds like sound is only being played from one
-> >>>>of the periods, with silence for the other period.
-> >>>>
+> >>If you get the motherboard, I could work with you to get it working.
+> >>It looks very similar to the alc650, which is already supported, so the 
+> >>work involved whould not be too much. I an fairly sure that all that 
+> >>would need doing is to add recognition for the chip in ac97_codec.c and 
+> >>then program it exactly the same as the alc650. Some of the extra 
+> >>functions of the alc655 might not be supported, but you will get 5.1 
+> >>channel sound output and be able to record. You just might not be able 
+> >>to select all the different combinations of sound in/out jacks.
 > >>
-> >>I don't have a small compilable example for this yet. The problem
-> >>application is the latest xine cvs. (xine.sf.net)
-> >
-> >
-> > Note that it might be caused that your code is broken. Please, use the
-> > correct transfer unit (period_size) and not the period count which might
-> > be a real not integer value, thus buffer_size / period_size !=
-> > integer(period_count).
-> >
-> > 						Jaroslav
-> >
-> > -----
-> > Jaroslav Kysela <perex@suse.cz>
-> > Linux Kernel Sound Maintainer
-> > ALSA Project, SuSE Labs
-> >
-> >
-> The aim of my code is to try for a buffer that is about 1 second long or
-> less, and has hopefully 8 periods.
-> I had always assumed that the period_count had to be an integer.
-> If it is in fact possible to to have the period_count a non-interger on
-> all sound cards, then I will change my code.
+> >>Cheers
+> >>James
+> >>
+> > 
+> > Hi,
+> > 
+> > it would be cool. just another question before i go to buy: does the
+> > ac97 code support hw multiplexing aka multiple playing for the alc650
+> > dsp?
+> > 
+> > thanks
+> > 
+> The alc650/alc655 do not support hw multiplexing and can only be opened 
+> once.
+> 
+There exist some ac97 codecs capable of hw multiplexing?
+What are them?
 
-Most cards does not have such constraint, so yes, this fact should be
-handled. The dmix plugin comes with these "strange" defaults mainly for
-the application developers to debug their "broken" code which does not
-conform fully the ALSA semantics.
+thanks
+> 
+> 
+> 
+> -------------------------------------------------------
+> This sf.net email is sponsored by:ThinkGeek
+> Welcome to geek heaven.
+> http://thinkgeek.com/sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+-- 
+Marco Canini <m.canini@libero.it>
 
-> The problem with trying the period_size approach was: -
-> set_buffer_time_near(1 second)
-> size = get_buffer_size()  (e.g. this gets set to 16384)
-> set_period_size_near(size/8, dir=0)  (e.g. try to set period_size to
-> 2048) <- Failed on some cards/devices that did not like 8 periods.
->
-> I thought that set_period_size_near with a dir=0, should have resulted
-> in a setting of 6000 for "dmix", but it in-fact failed, and I did not
-> want to go round a loop trying different period sizes until one worked.
->
-> Does this point to a bug in the set_period_size_near function then?
-
-Maybe. I used your test code and set_period_size_near() works as expected
-with the trident driver. Which cards are failing?
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
