@@ -1,73 +1,159 @@
-From: "Ivica Ico Bukvic" <ico-rDkNP/OoUoU@public.gmane.org>
-Subject: RE: Quick question regarding raw midi access
-	viaalsa sequencer
-Date: Fri, 18 Mar 2005 15:14:41 -0500
-Message-ID: <20050318200939.XOXR20940.gx5.fuse.net@64BitBadass>
-References: <200503181550.j2IFoWvj011640@localhost.localdomain>
-Reply-To: "The Linux Audio Developers' Mailing List"
-	<linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
+Date: Fri, 18 Mar 2005 21:17:21 +0100
+Message-ID: <a54828c45f2a201f5056bee05c79b37b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="windows-1250"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <200503181550.j2IFoWvj011640-bi+AKbBUZKY6gyzm1THtWbp2dZbC/Bob@public.gmane.org>
-List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev>
-List-Post: <mailto:linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
-List-Help: <mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=help>
-List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=subscribe>
-Sender: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-Errors-To: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
-To: 'The Linux Audio Developers' Mailing List' <linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
-Cc: alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F0B9D247
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 21:17:21 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Paul,
 
-I look into that particular file.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
+======================================================================
+Reported By:                Q3Man
+Assigned To:                fmoraes
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   752
+Category:                   PCI - emu10k1x
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r9
+======================================================================
+Date Submitted:             12-28-2004 05:12 CET
+Last Modified:              03-18-2005 21:17 CET
+======================================================================
+Summary:                    ALSA > 1.0.5a does not load, failed with error -16
+Description: 
+I'm having some problems with alsa since 1.0.6a. Previously I just had the
+later versions masked, but now various kde packages require the latest
+alsa, so I'm having to tackle it now. ALSA seems to start normally,
+however I get this error in dmesg: 
+EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
 
-Best wishes,
+I also get this error when running alsamixer: 
+alsamixer: function snd_ctl_open failed for default: No such device 
 
-Ivica Ico Bukvic, composer & multimedia sculptor
-http://meowing.ccm.uc.edu/~ico/
- 
+And similar ones in other alsa programs. 
 
-> -----Original Message-----
-> From: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org [mailto:linux-audio-dev-
-> bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org] On Behalf Of Paul Davis
-> Sent: Friday, March 18, 2005 10:51 AM
-> To: The Linux Audio Developers' Mailing List
-> Cc: alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
-> Subject: Re: [linux-audio-dev] Quick question regarding raw midi access
-> viaalsa sequencer
-> 
-> >I did a bit of hacking on my app trying to make it alsa sequencer
-> compatible
-> >but did not want to do too much changing in terms of how it deals with
-> raw
-> >MIDI data. From looking at the API reference it seems that I have 2
-> choices:
-> 
-> libmidi++ in the ardour source tree has what you need. at least as a
-> model. ardour writes raw MIDI, never uses the sequencer API. libmidi++
-> provides "port" objects which support that, regardless of whether they
-> correspond to a raw MIDI port, a FIFO (literally), CoreMIDI or ALSA
-> sequencer.
-> 
-> see alsasequencer_midiport.cc for details.
-> 
-> --p
-> 
-> --
-> No virus found in this incoming message.
-> Checked by AVG Anti-Virus.
-> Version: 7.0.308 / Virus Database: 266.7.3 - Release Date: 3/15/2005
-> 
+Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
+code and it seems that the error is vaguely interrupt related, but I could
+not find the code that produces error -16. I've swapped interrupts around
+and disabled non-essential devices (usb, serial, parallel ports, removed
+network cards and sound cards - although that last one proved slightly
+less than helpful :) I've changed from having my bios manage irq's to
+having the OS handle them with zero success. 
 
--- 
-No virus found in this outgoing message.
-Checked by AVG Anti-Virus.
-Version: 7.0.308 / Virus Database: 266.7.3 - Release Date: 3/15/2005
- 
+I've looked around for that error code in google for the last few weeks -
+since the release of 1.0.6a with limited success. Nothing relevant to my
+situation. 
+
+Important configs and error messages:
+$ lspci -v |grep audio -A4
+0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
+EMU10k1X
+        Subsystem: Creative Labs: Unknown device 1003
+        Flags: bus master, medium devsel, latency 32, IRQ 12
+        I/O ports at d000
+        Capabilities: [dc] Power Management version 2
+(It is an actual EMU10k1X and not the Dell bastardized version)
+
+$ /etc/init.d/alsasound start; dmesg |tail -n1
+ * Loading ALSA drivers...
+ * Using ALSA OSS emulation
+ * Loading: snd-mixer-oss
+ * Loading: snd-pcm-oss
+ * Loading: snd-seq-oss
+ * Running card-dependent scripts
+ * Restoring Mixer Levels                                                
+[ ok ]
+EMU10K1X: probe of 0000:00:09.0 failed with error -16
+
+$ uname -a
+Linux tobin1 2.6.9-gentoo-r9
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
+2004 i686 AMD
+Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
+
+If anyone needs any other config information, please let me know. Again,
+it works perfectly fine in 1.0.5a, the problems only appear in later
+versions.
+
+======================================================================
+
+----------------------------------------------------------------------
+ Q3Man - 03-18-05 03:41 
+----------------------------------------------------------------------
+Ok, did some more checking. The line that is returning an error is:
+
+        if ((err = snd_ctl_add(card, kctl)))
+                return err;
+
+in the snd_emu10k1x_mixer function. I'm going to try and find what file
+that function is located in and go from there.
+
+----------------------------------------------------------------------
+ fmoraes - 03-18-05 21:17 
+----------------------------------------------------------------------
+Which of the three calls is failing? First, second or third?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-28-04 05:12 Q3Man          New Issue                                    
+12-28-04 05:12 Q3Man          File Added: einfo                            
+12-28-04 05:12 Q3Man          Distribution              => Gentoo          
+12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
+12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
+01-03-05 12:10 tiwai          Note Added: 0003054                          
+01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
+01-03-05 17:30 Q3Man          Note Added: 0003071                          
+01-16-05 14:54 fmoraes        Note Added: 0003216                          
+01-18-05 00:44 Q3Man          Note Added: 0003240                          
+01-20-05 02:23 Q3Man          Note Added: 0003322                          
+01-20-05 19:12 tiwai          Note Added: 0003332                          
+01-21-05 05:11 Q3Man          Note Added: 0003337                          
+01-21-05 11:14 tiwai          Note Added: 0003341                          
+01-22-05 23:24 fmoraes        Note Added: 0003382                          
+03-09-05 02:57 fmoraes        Note Added: 0003821                          
+03-15-05 17:34 Q3Man          Note Added: 0003916                          
+03-15-05 22:32 Q3Man          Note Added: 0003918                          
+03-16-05 02:09 fmoraes        Note Added: 0003927                          
+03-16-05 03:32 Q3Man          Note Added: 0003930                          
+03-16-05 04:06 fmoraes        Note Added: 0003931                          
+03-16-05 04:53 Q3Man          Note Added: 0003932                          
+03-16-05 05:19 Q3Man          Note Added: 0003933                          
+03-17-05 01:45 fmoraes        Note Added: 0003976                          
+03-17-05 03:20 Q3Man          Note Added: 0003977                          
+03-18-05 02:07 fmoraes        Note Added: 0003988                          
+03-18-05 02:43 Q3Man          Note Added: 0003989                          
+03-18-05 03:41 Q3Man          Note Added: 0003990                          
+03-18-05 21:17 fmoraes        Note Added: 0004005                          
+======================================================================
+
+
+
+
+-------------------------------------------------------
+SF email is sponsored by - The IT Product Guide
+Read honest & candid reviews on hundreds of IT Products from real users.
+Discover which products truly live up to the hype. Start reading now.
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
