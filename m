@@ -1,14 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Please add snd-ice1712 problem to "Known bugs"	page
-Date: Wed, 10 Sep 2003 22:37:46 +0100
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Re: M-Audio Revolution 7.1 card hangups
+Date: Wed, 10 Sep 2003 14:37:16 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F5F99AA.5040506@superbug.demon.co.uk>
-References: <200309101206.h8AC6xW9005709@oud> <7616-64105@sneakemail.com>
+Message-ID: <20030910213716.35773.qmail@web21512.mail.yahoo.com>
+References: <E19xB9b-00044R-00@sc8-sf-list2.sourceforge.net>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <7616-64105@sneakemail.com>
+In-Reply-To: <E19xB9b-00044R-00@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,42 +17,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sam <4l8uie002@sneakemail.com>
-Cc: Alsa-devel@lists.sourceforge.net
+To: alsa development <alsa-devel@lists.sourceforge.net>
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Sam wrote:
-> On Wed, 2003-09-10 at 05:06, Paul Davis wrote:
-> 
->>although it makes me happy to see you feeling this way, i felt
->>compelled to add that i'm not necessarily sure that the linux way *is*
->>better. its more flexible, that's true. but the two different
->>standards for "input maximum signal level" are just that - standards -
->>and the fader to control this makes it much harder to switch between
->>the two levels that all of my equipment uses.
-> 
-> 
-> This is a good point.  Maybe my sound problem is only my poor skill at
-> setting the output signal level appropriately.
-> 
-> Chances are M-Audio put some thought into the +4dBu,
-> Consumer, and -10dbV presets.  Does anyone know how we could map these
-> to the corresponding 7 bit values?  I could probably patch envy24control
-> to add analog signal presets so we could have the best of both features.
-> 
-> Sam
-> 
-I think this highlights a particular problem with the current alsa mixer.
-It might have a value from 0 to 100%. Percent of what?
-I think that this should all be changed to signed values, with a max and 
-a min setting. With a value of 0 being equivalent to no-gain, 
-no-attenuation. Each alsa-driver would then convert this signed value 
-into a value actually written to the hardware register via a lookup table.
+I got the patch, and I WILL apply it.  Thanks for the prompt response.
+I haven't tried the card on Windows (may happen today), but I was
+wondering if there is some reference to what is in the EEPROM that is
+on the board.  Maybe I can solve the problem.  I've got a note to the
+M-Audio people as well.
 
-Cheers
-James
+Thanks again,
+....tom
 
 
+Takashi Iwai Wrote:
+
+
+At Wed, 10 Sep 2003 10:30:25 -0700 (PDT),
+Tom Watson wrote:
+> 
+> I just got one of these, and after converting my audio to 32 bits
+> (necessary for the card) I got SOME sound out of it.
+> 
+> I have a couple of problems:
+> 1) While the peak meters indicate that something IS there, try as I
+> might, I can't get audio out of the card from anywhere but the first 
+2
+> channels.  All the mixer controls in 'alsamixer' are up, and the two
+> that control the first 2 channels DO work, but NO audio from the 
+other
+> channels.  The program I'm using DID work on another audio card with
+> more than two channels.  The problem seems to be some dumb
+> configuration thing.  Do I need to light this card up on a Windoze
+> machine to set the EEPROM or something??
+
+most likely a bug in the accessing to ak4355 codec.
+
+> 2) I use 'alsamixer'.  Works fine.  One problem:  When I set the
+> conversion rate to the SPDIF clock (it has another name IEC...) IT
+> LOCKS AND STAYS THERE.  No amount of diddling in 'alsamixer' yields
+> anything.  To get around this I revert back to an older setting (it 
+is
+> a long process) saved with 'alsactl' after a reboot.  While I have
+> learned my lesson (DON'T DO THAT!), the behavior is not too good.
+
+ok, that's easy.  please apply the patch attached.
+
+
+> Note:  The card is 'fresh', and hasn't been in a Windows environment
+> (if that means anything).
+
+could you check whether the surround works on windows?
+
+
+Takashi
+
+
+
+=====
+-- 
+Tom Watson
+tsw@johana.com
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
 
 
 -------------------------------------------------------
