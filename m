@@ -1,17 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: future ALSA development
-Date: Sun, 22 Jun 2003 21:10:31 +0200 (CEST)
+From: Eduard Hasenleithner <ehasenle@spamcop.net>
+Subject: Terratec DMX 6fire audio input
+Date: 22 Jun 2003 22:52:34 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306222010030.1838-100000@pnote.perex-int.cz>
+Message-ID: <1056315154.4468.11.camel@boundary.priv>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="=-ELbyGmGH5rxyN7duCAIb"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (UNKNOWN@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA28852
-	for <alsa-devel@alsa-project.org>; Sun, 22 Jun 2003 21:11:01 +0200
-Received: from pnote.perex-int.cz (pnote.perex-int.cz [192.168.100.88])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id B9DC6BF
-	for <alsa-devel@alsa-project.org>; Sun, 22 Jun 2003 21:10:53 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,45 +14,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
 
-	here are my next goals for the ALSA library development (short 
-term). I invite all developers to comment these directions.
+--=-ELbyGmGH5rxyN7duCAIb
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-* create ordinary pcm & mixer interfaces
-  - proposed headers are in current CVS
-    - alsa-lib/include/pcm_ordinary.h
-    - alsa-lib/include/mixer_ordinary.h
-  - intended applications are
-    - simple playback & recorders
-    - DVD players
-    - VoIP (and other audio conferencing) applications
-    - very simple mixer applications
-* investigate a lisp integration to the current configuration syntax
-  - we need to describe the relations between high level abstract
-    layer (ordinary mixer) and current universal controls (very lowlevel);
-    it seems that the simple configuration is not able to describe
-    these (in most cases) very complicated paths
-  - note that describing of these relations might be used also for
-    another mixer interfaces (simple mixer for example)
-  - I don't rely on lisp, but what another interpreter with function
-    definition has only 22kB binary (slisp-1.2 - i686)?
-* initiate a development of a graphical tool which will manage
-  the alsa configuration files (~/.asoundrc)
-  - we need a rapid development tool; I slowly became a fan of python and
-    Qt has rich number of widgets; python + PyQt seems to me a good idea
-  - using python requires to write a GPLed ALSA 0.9 -> python wrapper
+Hello developers.
 
-						Jaroslav
+Here is a patch which enables to do audio input on this particular card
+even when not doing a soft reboot from windows. The problem with the
+current driver is that the PCA9554 is set to input mode for all IO pins
+after a cold reset. In order to set the pins to output mode register 3
+of this chip has to be set.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+As I don't know if there are any pins used as input I have set register
+3 to 0x80, so the MSB is input. Hopefully my patch won't do any damage!
+Maybe someone can check the content of this register after a warm reboot
+from windows. I have a linux only machine.
 
+Keep on the good work.
+
+bye,
+Eduard.
+
+PS: Sorry if this email arrives twice, it didn't seem to come through
+the first time.
+
+--=-ELbyGmGH5rxyN7duCAIb
+Content-Disposition: attachment; filename=adrv-0.9.4-6fire.patch
+Content-Type: text/plain; name=adrv-0.9.4-6fire.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+--- alsa/alsa-driver-0.9.4/sound/pci/ice1712/ews.c	2003-04-30 13:43:01.000000000 +0200
++++ alsa-driver-0.9.4/sound/pci/ice1712/ews.c	2003-06-22 13:13:55.000000000 +0200
+@@ -389,6 +389,12 @@
+  * initialize the chip
+  */
+ 
++#define PCF9554_REG_INPUT	0
++#define PCF9554_REG_OUTPUT	1
++#define PCF9554_REG_POLARITY	2
++#define PCF9554_REG_CONFIG	3
++static int snd_ice1712_6fire_write_pca(ice1712_t *ice, unsigned char reg, unsigned char data);
++
+ static int __devinit snd_ice1712_ews_init(ice1712_t *ice)
+ {
+ 	int err;
+@@ -425,6 +431,7 @@
+ 			snd_printk("PCF9554 initialization failed\n");
+ 			return err;
+ 		}
++		snd_ice1712_6fire_write_pca(ice, PCF9554_REG_CONFIG, 0x80);
+ 		break;
+ 	case ICE1712_SUBDEVICE_EWS88MT:
+ 	case ICE1712_SUBDEVICE_EWS88MT_NEW:
+@@ -750,11 +757,6 @@
+  * DMX 6Fire specific controls
+  */
+ 
+-#define PCF9554_REG_INPUT	0
+-#define PCF9554_REG_OUTPUT	1
+-#define PCF9554_REG_POLARITY	2
+-#define PCF9554_REG_CONFIG	3
+-
+ static int snd_ice1712_6fire_read_pca(ice1712_t *ice, unsigned char reg)
+ {
+ 	unsigned char byte;
+
+--=-ELbyGmGH5rxyN7duCAIb--
 
 
 
