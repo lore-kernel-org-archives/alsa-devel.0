@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000675]: snd_output_buffer segfault
-Date: Wed, 24 Nov 2004 17:35:49 +0100
-Message-ID: <a44b3d876d34a9a5b1f687da8397e43b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000589]: ICH5 S/PDIF audio drops out occasionally
+Date: Wed, 24 Nov 2004 16:33:44 +0100
+Message-ID: <d757db4ea0d7630d1029c04ec8c56013@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 33A242E3
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 17:35:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D263A2D3
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 16:33:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,83 +22,132 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=675> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=589> 
 ======================================================================
-Reported By:                schottstaedt
-Assigned To:                Clemens Ladisch
+Reported By:                squarooticus
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   675
-Category:                   general
+Project:                    ALSA - driver
+Issue ID:                   589
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian Unstable (sid)
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             11-24-2004 15:00 CET
-Last Modified:              11-24-2004 17:35 CET
+Date Submitted:             10-21-2004 02:42 CEST
+Last Modified:              11-24-2004 16:33 CET
 ======================================================================
-Summary:                    snd_output_buffer segfault
+Summary:                    ICH5 S/PDIF audio drops out occasionally
 Description: 
-In Alsa 1.0.6 (and 1.0.7 I think), snd_output_buffer_puts in
-alsa-lib/src/output.c can write to memory it does not own,
-causing segfaults in various unrelated later mallocs.  The
-offending line is 280:
+I'm using the on-board audio of my Abit IC7-MAX3 ("Intel Corp. 82801EB/ER
+(ICH5/ICH5R) AC'97 Audio Controller (rev 02)") with ALSA driver
+snd_intel8x0 for my home theater setup.  In every application I've tried,
+which includes mythtv, xine, and ogg123, through both native alsa and OSS
+emulation, the audio output from the S/PDIF port drops out for a second
+every so often---maybe once a minute, or every few minutes; it's not
+periodic.
 
-  result = vsnprintf(buffer->buf + buffer->size, size, format, args);
+I don't know whether analog output also drops out, since I don't have
+analog output hooked up or enabled.
 
-which should be:
+This is with the CVS build as of October 19.  My asound.conf is:
 
-  result = vsnprintf(buffer->buf + buffer->size, result, format, args);
+pcm.krose-dmix {
+  type dmix
+  ipc_key 3516
+  ipc_key_add_uid yes
+  slave {
+        pcm "hw:0,4"
+        period_time 0
+        period_size 4096
+        #buffer_size 16384
+        buffer_size 131072
+        period_time 84000
+        buffer_time 340000
+        rate 48000
+        channels 2
+  }
+  bindings.0 0
+  bindings.1 1
+}
 
-There might not actually be "size" bytes available beyond
-buffer->buf+buffer->size --
-the preceding snd_output_buffer_need call only guaranteed "result" bytes.
+pcm.dsp0 {
+  type plug
+  slave.pcm "krose-dmix"
+}
 
-Another similar bug reported by valgrind is in line 303:
+ctl.mixer0 {
+ type hw
+ card 0
+}
 
-	memcpy(buffer->buf + buffer->size, str, size);
+pcm.!default {
+ type plug
+ slave.pcm "krose-dmix"
+}
 
-where you actually have "err" bytes available, not "size".
+I can't find any options to compile in debug logging: I'm not really sure
+what the cause of the drop out is, e.g., buffer underrun, PCI contention,
+etc.  I'm happy to spend time to try to debug this, but I need a starting
+point.
 
-And by the way, I really don't like this bug tracking
-crap -- you should make it easy to report a bug.
+Of course, it'd also be great to know if anyone has ever seen this kind of
+behavior before.  I don't believe the SPD/IF port is turning itself off
+because the receiver doesn't blip, which normally it would if the input
+were to disappear temporarily.
 
+The CPU is a 3.2G P4 with hyperthreading turned on.  I never see the CPU
+usage go above 50%.
+
+Interestingly, I see similar behavior on my dual Opteron machine with an
+AMD-8111 audio controller using the same driver (snd_intel8x0).  I never
+had this problem with the emu10k1 driver when I was using SB Lives, but I
+have run into PCI slot limitations in my HTPC, so I have to use mobo
+audio.
+
+Suggestions?
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 11-24-04 17:35 
+ tiwai - 11-18-04 17:51 
 ----------------------------------------------------------------------
-The snd_output_buffer_need() function should have guaranteed that at least
-'size' bytes are available.
+You can turn on the xrun-detection by writing to a proc file,
 
-Now fixed in CVS with the patch below:
+   # echo 2 > /proc/asound/card0/pcm4p/xrun_debug
 
---- alsa-lib/src/output.c	20 Jul 2004 15:36:08 -0000	1.21
-+++ alsa-lib/src/output.c	24 Nov 2004 16:31:56 -0000	1.22
-@@ -258,7 +258,7 @@
- 		alloc = 256;
- 	else
- 		alloc = buffer->alloc;
--	while (alloc < size)
-+	while (alloc < buffer->size + size)
- 		alloc *= 2;
- 	buf = realloc(buffer->buf, alloc);
- 	if (!buf)
+where the directory corresponds to the PCM device to check.
+Then you can know at least wheter detectable xrun happened.
+
+----------------------------------------------------------------------
+ squarooticus - 11-24-04 16:33 
+----------------------------------------------------------------------
+So, when I do this, I don't actually see xruns in dmesg or
+/var/log/messages for the behavior I'm referring to in this bug.  (I see
+them at other times, but that's a different issue.)  So either my hardware
+is screwed up and is occasionally dropping the toslink signal, or there's
+some kind of reset going on in the driver or firmware that's not being
+reported.  Is there anything I can do short of replacing my motherboard?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 15:00 schottstaedt   New Issue                                    
-11-24-04 17:32 Clemens LadischStatus                   new => assigned     
-11-24-04 17:32 Clemens LadischAssigned To               => Clemens Ladisch 
-11-24-04 17:35 Clemens LadischStatus                   assigned => resolved
-11-24-04 17:35 Clemens LadischResolution               open => fixed       
-11-24-04 17:35 Clemens LadischNote Added: 0002572                          
+10-21-04 02:42 squarooticus   New Issue                                    
+10-21-04 02:42 squarooticus   Distribution              => Debian Unstable (sid)
+10-21-04 02:42 squarooticus   Kernel Version            => 2.6.7           
+10-21-04 23:40 squarooticus   Issue Monitored: squarooticus                    
+10-27-04 16:54 squarooticus   Note Added: 0002275                          
+11-10-04 12:26 tiwai          Note Added: 0002367                          
+11-12-04 06:23 squarooticus   Note Added: 0002392                          
+11-15-04 20:24 squarooticus   Note Added: 0002419                          
+11-16-04 02:50 squarooticus   Note Added: 0002423                          
+11-16-04 05:14 squarooticus   Note Added: 0002424                          
+11-18-04 17:51 tiwai          Note Added: 0002452                          
+11-24-04 16:33 squarooticus   Note Added: 0002571                          
 ======================================================================
 
 
