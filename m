@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000583]: xruns when playing audio or video files
-Date: Fri, 15 Oct 2004 19:02:39 +0200 (CEST)
+Date: Fri, 15 Oct 2004 19:12:44 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041015170239.CE3853B007@server.perex-int.cz>
+Message-ID: <20041015171244.ACED83B007@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 196DF30C
-	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 19:02:40 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 13C921B6
+	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 19:12:45 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.6.9_rc4
 ======================================================================
 Date Submitted:             10-15-2004 16:27 CEST
-Last Modified:              10-15-2004 19:02 CEST
+Last Modified:              10-15-2004 19:12 CEST
 ======================================================================
 Summary:                    xruns when playing audio or video files
 Description: 
@@ -79,6 +79,17 @@ overhrad.
 
 Also, does it work OK with a 2.4 kernel?
 
+----------------------------------------------------------------------
+ KAtiOS - 10-15-2004 19:12 CEST 
+----------------------------------------------------------------------
+Disabling ACPI seems to help with mplayer, but mplayer causes troubles only
+a few times in the duration of a music, whereas VDR got several xruns a
+second, whether ACPI is disabled or not. 
+I tried with xrun debugging desactived but VDR acts the same (visibly at
+least).
+
+I haven't used a 2.4 in months, would it helped it I tried with one?
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -88,6 +99,7 @@ Date Modified  Username       Field                    Change
 10-15-04 18:43 lee            Bugnote Added: 0002168                       
 10-15-04 18:51 KAtiOS         Bugnote Added: 0002169                       
 10-15-04 19:02 lee            Bugnote Added: 0002170                       
+10-15-04 19:12 KAtiOS         Bugnote Added: 0002171                       
 ======================================================================
 
 
