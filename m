@@ -1,12 +1,10 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [PATCH] Fixes AC3 output on Audigy2 sound cards.
-Date: Mon, 21 Mar 2005 21:26:29 +0000
-Message-ID: <423F3C05.3010100@superbug.co.uk>
-References: <423C312E.7010503@superbug.co.uk> <s5hacow4w4b.wl@alsa2.suse.de>
+From: peter plessas <plessas@mur.at>
+Subject: [Fwd: Re: hdsploader on ppc]
+Date: Mon, 21 Mar 2005 23:16:35 +0100
+Message-ID: <423F47C3.40704@mur.at>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------040009010201070407070009"
-In-Reply-To: <s5hacow4w4b.wl@alsa2.suse.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,87 +14,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040009010201070407070009
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi Takashi, Chis, dear list!
 
-Takashi Iwai wrote:
-> At Sat, 19 Mar 2005 14:03:26 +0000,
-> James Courtier-Dutton wrote:
-> 
->>Hi,
->>
->>This patch adds a DSP patch to fix an spdif_bug on some Audigy2 cards.
->>It also does detailed identification of the capabilities of the sound 
->>card so that the patch is only applied to the sound cards that really 
->>need it.
->>
->>Signed off: James Courtier-Dutton
-> 
-> 
-> The patch seems to have both this change and the addition of
-> capabilities selection.  Could you split into two patches?
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
-Patch must be applied after the "[PATCH] Add framework for better audigy 
-sound card capabilities selection." one.
+Thanks for the information, i did an upgrade to a 2.6.11-5 kernel, and
+got alsa-drivers and -tools from the alsa-snapshots page, version
+1.0.9rc1. I of course enabled the hotplug-fw-loader in the kernel.
+
+after one reboot, the card worked, even when going to computer suspend
+mode(!) and at re-inserting the card.
+But after i had one computer crash (i was unplugging the powersupply off
+the mutiface, the hotplug_fw loader is unable to load the card at
+boot-time, giving:
+--------------------------------------------------------------------
+Linux Kernel Card Services
+   options:  [pci] [cardbus] [pm]
+Yenta: CardBus bridge found at 0001:10:1a.0 [0000:0000]
+Yenta: Enabling burst memory read transactions
+Yenta: Using CSCINT to route CSC interrupts to PCI
+Yenta: Routing CardBus interrupts to PCI
+Yenta TI: socket 0001:10:1a.0, mfunc 0x00000002, devctl 0x60
+Yenta: ISA IRQ mask 0x0000, PCI irq 58
+Socket status: 30000069
+PCI: Enabling device 0001:11:00.0 (0080 -> 0082)
+ieee1394: Initialized config rom entry `ip1394'
+ALSA
+/usr/local/src/alsa-driver-1.0.9rc1/alsa-kernel/pci/rme9652/hdsp.c:775:
+Hammerfall-DSP: wait for FIFO status <= 0 failed after 30 iterations
+ALSA
+/usr/local/src/alsa-driver-1.0.9rc1/alsa-kernel/pci/rme9652/hdsp.c:656:
+Hammerfall-DSP: loading firmware
+ALSA
+/usr/local/src/alsa-driver-1.0.9rc1/alsa-kernel/pci/rme9652/hdsp.c:694:
+Hammerfall-DSP: finished firmware loading
+ALSA
+/usr/local/src/alsa-driver-1.0.9rc1/alsa-kernel/pci/rme9652/hdsp.c:775:
+Hammerfall-DSP: wait for FIFO status <= 127 failed after 5000 iterations
+ALSA
+/usr/local/src/alsa-driver-1.0.9rc1/alsa-kernel/pci/rme9652/hdsp.c:4852:
+Hammerfall-DSP: Error setting default values
+ALSA
+/usr/local/src/alsa-driver-1.0.9rc1/alsa-kernel/pci/rme9652/hdsp.c:4948:
+Hammerfall-DSP: error creating alsa devices
+ALSA
+/usr/local/src/alsa-driver-1.0.9rc1/alsa-kernel/pci/rme9652/hdsp.c:5059:
+Hammerfall-DSP: couldn't get firmware from userspace. try using hdsploader
+ALSA
+/usr/local/src/alsa-driver-1.0.9rc1/alsa-kernel/pci/rme9652/hdsp.c:5066:
+Hammerfall-DSP: card initialization pending : waiting for firmware
+RME Hammerfall DSP: probe of 0001:11:00.0 failed with error -16
+-------------------------------------------------------------------
+
+lspci sees the card, manually running hdsploader gives:
+
+user@gonzo:/usr/local/src$ hdsploader
+hdsploader - firmware loader for RME Hammerfall DSP cards
+Looking for HDSP + Multiface or Digiface cards :
+Card 0 : PowerMac Screamer Rev 0
+
+(not seeing the card)
+
+i am fairly stuck here, any help would be appreciated!
+
+thanks!
+
+Peter
 
 
-Signoff: James Courtier-Dutton
-
-This patch adds a DSP patch to fix an spdif_bug on some Audigy2 cards.
-
-
---------------040009010201070407070009
-Content-Type: text/plain;
- name="ac3-fix.diff.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ac3-fix.diff.txt"
-
-Index: alsa-driver/alsa-kernel/pci/emu10k1/emufx.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emufx.c,v
-retrieving revision 1.69
-diff -u -r1.69 emufx.c
---- alsa-driver/alsa-kernel/pci/emu10k1/emufx.c	17 Feb 2005 14:51:52 -0000	1.69
-+++ alsa-driver/alsa-kernel/pci/emu10k1/emufx.c	21 Mar 2005 21:23:37 -0000
-@@ -1339,6 +1339,7 @@
- 	/* A_PUT_STEREO_OUTPUT(A_EXTOUT_FRONT_L, A_EXTOUT_FRONT_R, playback + SND_EMU10K1_PLAYBACK_CHANNELS); */
- 
- 	/* IEC958 Optical Raw Playback Switch */ 
-+	gpr_map[gpr++] = 0;
- 	gpr_map[gpr++] = 0x1008;
- 	gpr_map[gpr++] = 0xffff0000;
- 	for (z = 0; z < 2; z++) {
-@@ -1349,7 +1350,14 @@
- 		A_SWITCH(icode, &ptr, tmp + 0, tmp + 2, gpr + z);
- 		A_SWITCH_NEG(icode, &ptr, tmp + 1, gpr + z);
- 		A_SWITCH(icode, &ptr, tmp + 1, playback + SND_EMU10K1_PLAYBACK_CHANNELS + z, tmp + 1);
--		A_OP(icode, &ptr, iACC3, A_EXTOUT(A_EXTOUT_FRONT_L + z), A_GPR(tmp + 0), A_GPR(tmp + 1), A_C_00000000);
-+		if ((z==1) && (emu->card_capabilities->spdif_bug)) {
-+			/* Due to a SPDIF output bug on some Audigy cards, this code delays the Right channel by 1 sample */
-+			snd_printk("Installing spdif_bug patch: %s\n", emu->card_capabilities->name);
-+			A_OP(icode, &ptr, iACC3, A_EXTOUT(A_EXTOUT_FRONT_L + z), A_GPR(gpr - 3), A_C_00000000, A_C_00000000);
-+			A_OP(icode, &ptr, iACC3, A_GPR(gpr - 3), A_GPR(tmp + 0), A_GPR(tmp + 1), A_C_00000000);
-+		} else {
-+			A_OP(icode, &ptr, iACC3, A_EXTOUT(A_EXTOUT_FRONT_L + z), A_GPR(tmp + 0), A_GPR(tmp + 1), A_C_00000000);
-+		}
- 	}
- 	snd_emu10k1_init_stereo_onoff_control(controls + nctl++, "IEC958 Optical Raw Playback Switch", gpr, 0);
- 	gpr += 2;
-
---------------040009010201070407070009--
 
 
 -------------------------------------------------------
