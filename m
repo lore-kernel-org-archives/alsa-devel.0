@@ -1,13 +1,12 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: [PATCH] cs46xx some few corrections
-Date: Wed, 11 Dec 2002 22:50:05 +0100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: HDSP 9652 - a couple of small (?) issues
+Date: Wed, 11 Dec 2002 17:00:26 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DF7B30D.7000408@cucumelo.org>
-References: <3DF5A135.4090008@cucumelo.org> <3DF5E870.4040806@gmx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <E18MErg-0003G8-00@sc8-sf-list1.sourceforge.net>
+References: <1039637351.1652.1.camel@Godzilla>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "11 Dec 2002 12:09:09 PST."
+             <1039637351.1652.1.camel@Godzilla>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,49 +15,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Friedrich Ewaldt <friedrich.ewaldt@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Mark Knecht <markknecht@attbi.com>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>, PlanetCCRMA <planetccrma@ccrma.stanford.edu>
 List-Id: alsa-devel@alsa-project.org
 
-> Many thanks for this new patch! Now the xrun problems I reported are 
-> gone (great!), the SPDIF volume slider works correctly and SPDIF input 
-> basically works again.
-> There seems to remain one problem with SPDIF input that wasn't there 
-> with rc6: With rc6, SPDIF input got out of sync sometimes. 
-> Muting+unmuting SPDIF input solved this problem. With the newest 
-> driver+last 2 patches, the SPDIF input sound is very distorted. After 
-> loading the alsa driver it sounds very 'robotic' (don't know how to 
-> describe it :-)) and high frequency components are missing. After 
-> muting+unmuting SPDIF input approx. 10 times SPDIF input gets into 
-> another state and there are many high frequency distortions. These 
-> distortions (not this pure high freq tone, I don't get this anymore) 
-> remain whenever I switch on SPDIF input. I didn't manage to get 
-> undistorted SPDIF input (which was possible with rc6). 
-> Dis-/reconnetcting the SPDIF input cable didn't help either.
-> Another issue regarding SPDIF: Digital input works sometimes when I 
-> reboot, sometimes it doesn't (restarting alsa doesn't help then) and I 
-> have to reboot once again (I don't see a pattern why it does/-not work 
-> sometimes). SPDIF input always works when I do a soft reboot from 
-> win98, i.e. the card seems to be initialized by the win driver somehow 
-> (would some /proc/asound dumps help solving this problem?). Do you 
-> have similar problems with your card? Maybe that's terratec xfire 
-> specific. Anyone out there with a xfire who can report about SPDIF 
-> input with this card?
+>   I notice I get a message "IO box is a DigiFace" in dmesg. Is the
+>mixer in DigiFace working, or is there some possibility that there's a
+>clue there?
 
-The SPDIF input problems are known (at least to me) and not specific to 
-the xfire card. The main problem is that I dont have enough of technical 
-info about to implement the SPDIF input part. The only answer I got from 
-a developer at Cirrus regarding the SPDIF input part was something like: 
-"yeahh, the SPDIF input needs some special treatments but in this moment 
-I dont remember exactly what" now several months has passed and I have 
-not heard a single word from Cirrus (got no responses to my mails at all 
-anymore ...)
+the mixer is disabled by the firmware on the 9652 because the
+registers used to access it are different than on the hdsp. so yes,
+the hdsp mixer works, but i am still waiting for all the information i
+need from RME. they sent me some stuff this morning, but not how to
+re-enable the mixer.
 
-So, so i am afraid that it wont be better than that for the moment ...
+that message, btw, is the kind of thing i want to eliminate with a
+"better" patch than just the revnumber one.
 
-/Benny
-
-
+--p
 
 
 -------------------------------------------------------
