@@ -1,15 +1,14 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: Re: [PATCH]snd-usb-usx2y 0.8.7: Use macro usb_maxpacket() for portability
-Date: Thu, 9 Dec 2004 13:06:23 +0100
-Message-ID: <200412091306.23970.annabellesgarden@yahoo.de>
-References: <200412021319.20027.annabellesgarden@yahoo.de> <200412072301.52065.annabellesgarden@yahoo.de> <s5hoeh4a8nh.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000717]: MIDI input does not generate interrupts
+Date: Thu, 9 Dec 2004 14:52:51 +0100
+Message-ID: <a4ddb03ed242e3c376983d8e181eca5e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hoeh4a8nh.wl@alsa2.suse.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A915222E
+	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2004 14:52:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,43 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rui Nuno Capela <rncbc@rncbc.org>
-Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am Mittwoch 08 Dezember 2004 20:32 schrieb Takashi Iwai:
-> At Tue, 7 Dec 2004 23:01:51 +0100,
-> Karsten Wiese wrote:
-> > 
-> > >>>>
-> > Summary: hwdep interface for pcm data.
-> > 
-> > Implements "rawusb" pcm data transfer through hwdep interface:
-> > The usb_hc moves pcm data from/into memory via DMA.
-> > That memory is mmaped by jack's usx2y driver.
-> > Jack's usx2y driver is the first/last executable code to read/write pcm data.
-> > Read/write is a combination of power of 2 period shaping and float/int conversation.
-> > Compared to standard alsa/jack we leave out power of 2 period shaping
-> > inside snd-usb-usx2y which needs memcpy() and additional buffers.
-> > As a side effect possible unwanted pcm-data coruption resulting of
-> > standard alsa's snd-usb-usx2y period shaping scheme falls away.
-> > Result is sane jack operation at buffering schemes down to 128frames, 2 periods.
-> > Also changed Kconfig file, so snd-usb-usx2y is only available for X86, PPC or ALPHA platforms,
-> > as on others DMA-memory isn't mmapable.
-> > 
-> > Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
-> > <<<<
-> 
-> Thanks, applied to the CVS tree now.
-> Please check later whether it works for you...
 
-May I ask you to check CVS's version?
-Keep in mind that jackd is now called like:
-$ jackd -dusx2y -dhw:1,2
-You might also change qjackctl to always append ",2" to the hw device in the usx2y case.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=717> 
+======================================================================
+Reported By:                pelzi
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   717
+Category:                   PCI - es1938
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             2.4.27
+======================================================================
+Date Submitted:             12-09-2004 14:52 CET
+Last Modified:              12-09-2004 14:52 CET
+======================================================================
+Summary:                    MIDI input does not generate interrupts
+Description: 
+No high level midi events are generated, though raw midi events are
+received. I.e. amidi -d produces results, but the corresponding
+arecordmidi does not.
+The possible cause, as suggested on the alsa-user mailing list, is that no
+interrupts are generated on incoming midi events. In generel, the
+soundcard does generate interrupts tough, e.g. on audio channel events.
 
-thanks,
-Karsten
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-09-04 14:52 pelzi          New Issue                                    
+12-09-04 14:52 pelzi          Distribution              => Debian Sarge    
+12-09-04 14:52 pelzi          Kernel Version            => 2.4.27          
+======================================================================
+
+
 
 
 -------------------------------------------------------
