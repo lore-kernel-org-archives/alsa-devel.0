@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
-Date: Tue, 11 Jan 2005 22:11:52 +0100
-Message-ID: <3a165413428c449d7c103a472f006642@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
+Date: Tue, 11 Jan 2005 23:20:41 +0100
+Message-ID: <df9add5f79ceb68831b9ee109de55f53@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 90A0A2CD
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 22:11:52 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC6A12BF
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 23:20:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,161 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
 ======================================================================
-Reported By:                mr-k
-Assigned To:                
+Reported By:                misnagid
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   761
-Category:                   OTHERS
-Reproducibility:            random
-Severity:                   crash
+Issue ID:                   749
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10
+Status:                     assigned
+Distribution:               Fedora FC3
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             12-30-2004 13:13 CET
-Last Modified:              01-11-2005 22:11 CET
+Date Submitted:             12-26-2004 15:37 CET
+Last Modified:              01-11-2005 23:20 CET
 ======================================================================
-Summary:                    Driver and all sound aplications hangs
+Summary:                    Buzz from ALSA setup
 Description: 
-I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
-alsa
-from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
-problems.
-
-Sometimes (up to couple times a day) driver crash and all processes using
-sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
-the
-module by rmmod (it hangs also). When i try to shutdown the system, it
-stops
-when it try to remove the module. ps hangs when it try to get
-informations
-about other hung processes, also when i try to do it manualy (by
-/proc/pid/),
-it hangs. Everything else is working good. 
-There are no messages from the kernel in /var/log/messages and
-/var/log/dmesg or reported to the console. 
-
+I get an almost constant buzz from speakers when I've tried to use ALSA. 
+Have followed your directions from the online web page directions to the
+letter.  Still buzz.
+Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
+Have tried everything I've seen about this problem.
+OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
+driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
+successful in all other regards install of Fedora FC3.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- mr-k - 01-07-05 22:41 
+ misnagid - 01-11-05 11:24 
 ----------------------------------------------------------------------
-I have 1.0.8rc1 and the same problem. I was thinking that now everytjing is
-good but after 2 or 3 days of testing i have the same symptoms. Now, I'm
-makeing kernel with sysrq. Maybe it's not an alsa problem ?
+Added new bug ID 0000806 concerning M-Audio Revolution 7.1 also not working
+under Fedora FC3.  The Creative Audugy 2 would not work so I thought I'd
+try new card.  Still no go.  Red Hat Fedora has never responded to ticket
+submitted to them.  Red Hat Fedora Bugzilla.
+Bug 143971 has been added to the database
+Was assigned, no response.
 
 ----------------------------------------------------------------------
- mr-k - 01-11-05 22:11 
+ misnagid - 01-11-05 23:20 
 ----------------------------------------------------------------------
-Here is dmesg after SysRq:Showstate after alsa hang. If there's anything
-else I should report, please tell me.
+Peter,
+You've been exceptionally kind and considerate to me!  I did as you
+suggested and reported this bug to the Alsa mailing list you suggested. 
+In reply, I received the following critique from Lee Revell.
+
+On Tue, 2005-01-11 at 05:54 -0500, JerryN wrote:
+> Hi,
+> 
+> Please see:
+> 
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749
+> 
+> and:
+> 
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=806
+> 
+> 
+> I have tried to use ALSA under Fedora FC3 with 2 very different sound
+> cards.  Both sound cards work fine with Suse 9.2, RHEL 3.0, RHEL Beta
+> 4.x, Debian weekly Sarge, latest LIVE Mepis, Mandrake 10.1, you name
+it!
+> 
+
+Then it's not an ALSA bug, it's a Fedora bug.  I am not sure why you
+keep filing ALSA bug reports.
+
+> The MB is the Asus A7N8X-E Deluxe.  Latest Bios. Onboard Audio
+disabled.
+> All Alsa instructions including unmuting sound fully followed!
+> 
+> Have tried both Creative Labs Audigy 2 and M-Audio Revolution 7.1.
+> Latest ALSA drivers, etc.
+> 
+> 
+> These bug descriptions are totally extremely complete!!
+> 
+> Nobody's been able to assist at ALSA though theyve tried hard.
+> 
+
+See above.  ALSA is not the problem, FC3 must be doing something weird.
+Have you tried FC2?  If FC2 works then you can narrow the problem down a
+bit.
+
+> Red Har Fedora does not reply to my bug reports though it was assigned;
+> never any replies from them.
+
+How long ago did you file these bug reports?  You can't expect an
+immediate response...
+
+Lee
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-30-04 13:13 mr-k           New Issue                                    
-12-30-04 13:13 mr-k           Distribution              => Gentoo          
-12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
-12-30-04 13:15 mr-k           File Added: alsa-report                      
-12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
-12-30-04 15:09 tiwai          Note Added: 0003022                          
-01-01-05 22:21 mr-k           Note Added: 0003038                          
-01-07-05 22:41 mr-k           Note Added: 0003123                          
-01-11-05 22:11 mr-k           Note Added: 0003158                          
+12-26-04 15:37 misnagid       New Issue                                    
+12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
+12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
+12-26-04 15:58 pzad           Note Added: 0002935                          
+12-26-04 16:31 misnagid       Note Added: 0002936                          
+12-26-04 16:44 misnagid       Note Added: 0002937                          
+12-26-04 16:56 pzad           Note Added: 0002938                          
+12-26-04 17:47 misnagid       Note Added: 0002939                          
+12-26-04 18:07 misnagid       Note Added: 0002940                          
+12-26-04 18:17 misnagid       Note Added: 0002942                          
+12-26-04 18:38 misnagid       Note Added: 0002943                          
+12-26-04 19:27 pzad           Note Added: 0002944                          
+12-26-04 19:44 misnagid       File Added: test.state                       
+12-26-04 19:44 misnagid       Note Added: 0002945                          
+12-26-04 20:02 misnagid       Note Added: 0002946                          
+12-26-04 20:09 misnagid       Note Added: 0002947                          
+12-26-04 20:22 pzad           File Added: newtest.state                    
+12-26-04 20:27 pzad           Note Added: 0002948                          
+12-26-04 20:32 pzad           Note Added: 0002949                          
+12-26-04 20:59 misnagid       Note Added: 0002950                          
+12-26-04 21:11 misnagid       Note Added: 0002951                          
+12-26-04 21:19 pzad           Note Added: 0002952                          
+12-26-04 21:22 pzad           Note Added: 0002953                          
+12-26-04 21:43 misnagid       Note Added: 0002954                          
+12-26-04 21:47 pzad           Note Added: 0002955                          
+12-26-04 22:18 misnagid       Note Added: 0002956                          
+12-26-04 23:46 misnagid       Note Added: 0002957                          
+12-27-04 10:46 pzad           Note Added: 0002958                          
+12-27-04 16:33 misnagid       Note Added: 0002964                          
+12-27-04 16:34 misnagid       File Added: test2.state                      
+12-27-04 16:38 misnagid       Note Added: 0002965                          
+12-27-04 16:45 pzad           Note Added: 0002966                          
+12-27-04 16:58 misnagid       Note Added: 0002967                          
+12-27-04 16:58 misnagid       File Added: test3.state                      
+12-27-04 17:42 misnagid       Note Added: 0002968                          
+12-27-04 17:57 misnagid       Note Added: 0002969                          
+12-27-04 18:16 pzad           Note Added: 0002970                          
+12-27-04 18:43 misnagid       Note Added: 0002971                          
+12-27-04 19:27 misnagid       Note Added: 0002972                          
+12-27-04 21:09 misnagid       Note Added: 0002975                          
+12-27-04 21:31 pzad           Note Added: 0002976                          
+12-27-04 21:47 misnagid       Note Added: 0002977                          
+12-27-04 21:49 misnagid       Note Added: 0002978                          
+12-27-04 22:00 pzad           Note Added: 0002979                          
+12-27-04 22:29 misnagid       Note Added: 0002980                          
+12-27-04 22:54 pzad           Note Added: 0002981                          
+12-27-04 23:15 misnagid       Note Added: 0002982                          
+12-27-04 23:19 misnagid       Note Added: 0002983                          
+12-27-04 23:46 pzad           Note Added: 0002984                          
+12-27-04 23:48 misnagid       Note Added: 0002985                          
+12-28-04 21:13 rlrevell       Note Added: 0002987                          
+01-03-05 00:36 misnagid       Note Added: 0003049                          
+01-03-05 15:10 pzad           Note Added: 0003064                          
+01-09-05 00:27 misnagid       Note Added: 0003132                          
+01-11-05 10:36 pzad           Note Added: 0003141                          
+01-11-05 11:24 misnagid       Note Added: 0003142                          
+01-11-05 23:20 misnagid       Note Added: 0003159                          
 ======================================================================
 
 
