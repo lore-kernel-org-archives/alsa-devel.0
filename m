@@ -1,59 +1,26 @@
-From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: Re: [PATCH] let 2.5.51 build
-Date: Wed, 11 Dec 2002 16:51:23 +0100
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m2k7iga70k.fsf@vador.mandrakesoft.com>
-References: <m2k7igc29i.fsf@vador.mandrakesoft.com>
-	<s5hlm2w7e8f.wl@alsa2.suse.de>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: Re: [2.4]ALi M5451 sound hangs on init; workaround
+Date: 11 Dec 2002 16:35:50 +0000
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <1039624550.18087.58.camel@irongate.swansea.linux.org.uk>
+References: <200212110715.20617.fedor@apache.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hlm2w7e8f.wl@alsa2.suse.de> (Takashi Iwai's message of "Wed,
- 11 Dec 2002 16:43:44 +0100")
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+In-Reply-To: <200212110715.20617.fedor@apache.org>
+To: Fedor Karpelevitch <fedor@apache.org>
+Cc: lkml <linux-kernel@vger.kernel.org>, Vicente Aguilar <bisente@bisente.com>, alsa-devel@lists.sourceforge.net, Debian-Laptops <debian-laptop@lists.debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
-
-> > this patch enable 2.5.51 kernel to build without sequencer support :
+On Wed, 2002-12-11 at 15:15, Fedor Karpelevitch wrote:
+> (currently 2.4.20-ac1 + hirofumi patch). I traced it down to the line 
+> where it hangs - that is drivers/sound/trident.c:3379 which says:
+> pci_write_config_byte(pci_dev, 0xB8, ~temp);
 > 
-> hmm, applying this is surely harmless but i still don't figure out
-> why this fixes the bug.  synth/emux/Makefile is:
-> 
-> snd-emux-synth-objs := emux.o emux_synth.o emux_seq.o emux_nrpn.o \
-> 		       emux_effect.o emux_proc.o soundfont.o
-> ifeq ($(CONFIG_SND_SEQUENCER_OSS),y)
->   snd-emux-synth-objs += emux_oss.o
-> endif
-> 
-> # Toplevel Module Dependency
-> ifeq ($(subst m,y,$(CONFIG_SND_SEQUENCER)),y)
->   obj-$(CONFIG_SND_SBAWE) += snd-emux-synth.o
->   obj-$(CONFIG_SND_EMU10K1) += snd-emux-synth.o
-> endif
-> 
-> and if $CONFIG_SND_SEQUENCER is n, snd-emux-synth.o will be never
-> compiled nor built-in...
+> removing this line fixes the problem for me.
+> I am not sure what would be the proper fix
 
-hummmm. must be some sort of "too late in the night to compile a
-kernel" workaround for a broken make rule (was not able to build
-emux/built-in.o if i remember right)
-
-so you can just discard this patch
-
-
-
--------------------------------------------------------
-This sf.net email is sponsored by:
-With Great Power, Comes Great Responsibility 
-Learn to use your power at OSDN's High Performance Computing Channel
-http://hpc.devchannel.org/
+Thats a big clue. ATI haven't released docs for the Radeon IGP so
+support is minimal and very much 'done the hard way'. I do have ALi docs
+however which may help.
