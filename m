@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000798]: Make alsaconf optinal able to create an asound.conf
-Date: Wed, 19 Jan 2005 16:48:29 +0100
-Message-ID: <fbc628e14b78fdb9fb6284ccd0b434bf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000435]: No current support for the ICH6R & ALC880 devices
+Date: Wed, 19 Jan 2005 16:50:07 +0100
+Message-ID: <2be7ccf205f8408576733bacc2f4a4dc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 77E2A26D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:48:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7CF0F26D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:50:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=798> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=435> 
 ======================================================================
-Reported By:                christeck
+Reported By:                snaketails
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   798
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   435
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Distribution:               Gentoo
+Kernel Version:             2.6.7
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-09-2005 22:05 CET
-Last Modified:              01-19-2005 16:48 CET
+Date Submitted:             08-12-2004 02:50 CEST
+Last Modified:              01-19-2005 16:50 CET
 ======================================================================
-Summary:                    Make alsaconf optinal able to create an asound.conf
+Summary:                    No current support for the ICH6R & ALC880 devices
 Description: 
-An asound.conf is difficult to create manually due to its difficult to
-understand syntax. Would be great if alsaconf could optional create it, so
-the user can
-
-* Define in which order the cards appear (e.g., internal AC97, Modem,
-USB-Audio and an USB MIDI card)
-
-* Define some dmix devices
-
-* Else? Not familiar enough with dmix, I do not use it :)
+As this is a new mobo, there is no driver configuration that supports this
+newer buss interface devices, so there is no sound from the mobo.
+The inability for the mobo to run SATA under Linux is not an issue here,
+as I am using the SiS SATA driver, only issue is sound
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-19-05 15:29 
+ jdthood - 12-12-04 14:02 
 ----------------------------------------------------------------------
-A nice idea, but it would be better to write a separate program
-to generate asound.conf.  alsaconf writes configuration files for
-the ALSA drivers whereas asound.conf is a configuration file for the
-ALSA library.
+"Crackling sound" also reported at http://bugs.debian.org/281546
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 16:48 
+ tiwai - 12-15-04 16:12 
 ----------------------------------------------------------------------
-Agreed.  Both issues described are above the scope of alsaconf.
-
-dmix will be default in alsa-lib without any special configuration for
-most of mobo drivers in the next version (I hope).
-
-The order of card is not the problem of asound.conf but rather index
-module option.  Since alsaconf supports only a single card, this is also 
-out or its target.  The hack to move modem to the secondary card (by
-James) will be added in the next rext version, too.
+Fixed in the latest CVS version of azx driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-09-05 22:05 christeck      New Issue                                    
-01-19-05 15:29 jdthood        Note Added: 0003287                          
-01-19-05 16:48 tiwai          Note Added: 0003293                          
+08-12-04 02:50 snaketails     New Issue                                    
+08-12-04 02:50 snaketails     Distribution              => Gentoo          
+08-12-04 02:50 snaketails     Kernel Version            => 2.6.7           
+08-12-04 07:32 pzad           Note Added: 0001551                          
+08-13-04 02:03 snaketails     Note Added: 0001560                          
+08-16-04 06:01 snaketails     Note Added: 0001569                          
+08-18-04 04:28 snaketails     Note Added: 0001575                          
+08-18-04 11:53 tiwai          Note Added: 0001576                          
+08-23-04 06:33 snaketails     Note Added: 0001610                          
+12-12-04 14:02 jdthood        Note Added: 0002815                          
+12-15-04 16:12 tiwai          Status                   new => resolved     
+12-15-04 16:12 tiwai          Resolution               open => fixed       
+12-15-04 16:12 tiwai          Assigned To               => tiwai           
+12-15-04 16:12 tiwai          Note Added: 0002826                          
+12-15-04 16:12 tiwai          Assigned To              tiwai =>            
+01-19-05 16:50 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
