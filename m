@@ -1,9 +1,8 @@
-From: Laurent Georget <lgeorget2@club-internet.fr>
-Subject: Re: level plugin not loaded with current cvs
-Date: Mon, 27 Jan 2003 22:13:08 +0100
+From: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
+Subject: building a mixer
+Date: Tue, 28 Jan 2003 00:45:55 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E35A0E4.5040605@club-internet.fr>
-References: <3E327281.5070004@club-internet.fr> <s5hptqiopid.wl@alsa2.suse.de>
+Message-ID: <3E35C4B3.5000004@student.kuleuven.ac.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,39 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Hi,
-> 
-> At Sat, 25 Jan 2003 12:18:25 +0100,
-> Laurent Georget wrote:
-> 
+Hi all,
 
->>[l@localhost l]$ arecord -D ameter -v sound.wav
->>ALSA lib dlmisc.c:107:(snd_dlsym_verify) unable to verify version for
->>symbol _snd_pcm_scope_ameter_open
->>ALSA lib pcm_meter.c:742:(snd_pcm_meter_add_scope_conf) symbol
->>_snd_pcm_scope_ameter_open is not defined inside /usr/local/lib/libameter.so
->>arecord: main:462: audio open error: No such device or address
->>
+is it possible to support multiple mixers in one card?
+I have the following situation:
+The card consists of a Maestro2E PCI controller with AC97 codec. On the 
+expansion port of the maestro is a SAM9707 device. I'd like separate 
+mixers for the AC97 and the SAM, because the control names can be very 
+confusing otherwise (i.e. Master volume of Codec does not change Master 
+volume of any SAM output).
+The card is routed pretty strange: the 2channel codec output is 
+re-sampled and this digital signal is fed into the SAM device for 
+further processing. From it can be output to 2 stereo pairs of outputs 
+(ie 4 mono). But there are also 6 other mono inputs that are routed 
+directly to the SAM device, and can be HW monitored on the SAM's outputs.
 
-> 
-> it's due to the check of snd_dlsym().
-> now pcm_meter.c uses the normal dlsym(), so it should work again on cvs.
-> please give a try.
-> 
-> 
-> ciao,
-> 
-> Takashi
+To make things even more complex: the digital stereo signal is 
+multiplexed with an SPDIF input and two other mono inputs. You can 
+choose which one you want (only one).
 
-Ok now, thanks!
+I'd like the codec mixer separate from the other controls, as this 
+reflects internal structure best. Apart from that, the codec controls 
+are rarely used, because I always use the SAM channels which are better 
+quality.
 
-Laurent
+Thanks,
 
+Pieter
 
 
 
