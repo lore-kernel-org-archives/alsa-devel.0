@@ -1,12 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: au88x0 - arecord, aoss
-Date: Wed, 30 Mar 2005 10:07:32 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0503301006160.1757@pnote.perex-int.cz>
-References: <424988D4.2070805@netvigator.com> <1112170290.3207.15.camel@localhost>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Re: au88x0_synth
+Date: Wed, 30 Mar 2005 10:09:04 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0503301007400.20197-100000@studcom.urz.uni-halle.de>
+References: <424A5D7D.2070400@netvigator.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1112170290.3207.15.camel@localhost>
+In-Reply-To: <424A5D7D.2070400@netvigator.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,30 +16,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mjander@users.sourceforge.net
-Cc: Raymond <rayau@netvigator.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Raymond <rayau@netvigator.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 30 Mar 2005, Manuel Jander wrote:
+Raymond wrote:
+> What will be needed for a proper "MIDI" wavetable implementation ?
 
-> Yes, you just get the same stuff recorded from different PCM's. In
-> theory, if ALSA would support it, we could record from the codec, and
-> other sources  like SPDIF, serial interfaces, etc. at the same time, but
-> ALSA currently lacks a generic mechanism to route individual PCM's, I
-> mean, some how to tell the PCM, "use that specific source".
-> By the way, the same applies for playback, with different audio outputs,
-> where we currently just use different PCM's, in order to implicitly tell
-> ALSA what audio output we want.
+Have a look at the OPL4 driver, it's the simplest wavetable driver.
+However, it doesn't support downloading instruments.
 
-It's not true. Look to /usr/share/alsa/cards configuration files.
-The alsa-lib can setup some controls to set the wanted behaviour.
 
-						Jaroslav
+HTH
+Clemens
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
