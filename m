@@ -1,17 +1,13 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: alsa timer slippage
-Date: 14 Dec 2003 17:14:02 -0800
+From: Manuel Jander <manuel.jander@mat.utfsm.cl>
+Subject: OpenAL - ALSA interface proposal. I request for comments...
+Date: Sun, 14 Dec 2003 22:33:27 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1071450839.4688.18.camel@cmn19.stanford.edu>
-References: <200312141335.00239.cannam@all-day-breakfast.com>
-	 <1071410558.10990.3.camel@eviltwin>
-	 <200312141434.59757.cannam@all-day-breakfast.com>
-	 <200312141448.21384.cannam@all-day-breakfast.com>
+Message-ID: <1071455606.17638.45.camel@localhost>
+Reply-To: manuel.jander@mat.utfsm.cl
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200312141448.21384.cannam@all-day-breakfast.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,29 +16,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chris Cannam <cannam@all-day-breakfast.com>
-Cc: Jan Depner <eviltwin69@cableone.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2003-12-14 at 06:48, Chris Cannam wrote:
-> On Sunday 14 Dec 2003 2:34 pm, Chris Cannam wrote:
-> > On Sunday 14 Dec 2003 2:02 pm, Jan Depner wrote:
-> > > If I'm not mistaken the timing for your audio is coming from your
-> > > sound card not your system clock.
-> >
-> > [...]
-> > I mentally ruled out a hardware problem quite early on because I
-> > wasn't seeing this problem when using a low-latency kernel on the
-> > same hardware -- but maybe I just hadn't done enough testing with
-> > the low-latency kernel.  I'll give it another shot.
-> 
-> No, definitely no such problem visible when using the CCRMA kernel.
+Hi,
 
-Or maybe it is just 10 times smaller. The Planet CCRMA kernel is
-compiled with HZ=1000 (instead of the normal HZ=100). 
+Since there is almost nothing else to do to support the Aureal Vortex 
+3D processor on Linux, just as i announced some time ago i started
+designing a OpenAL interface for ALSA. The design is meant to be
+applicable to other hardware too.
 
--- Fernando
+I made a preliminary description, from what i have done so far, because
+i want to allow other more experienced people to comment and give input
+to this.
 
+I posted it in plain text. I hope that is compatible enough.
+http://galadriel.mat.utfsm.cl/~mjander/aureal/alsa/OpenAL-ALSA.txt
+
+Well, please give it a read, and tell what do you think about. Thank you
+very much.
+
+Best Regards
+-- 
+Manuel Jander
+mjander(at)users(dot)sourceforge(dot)net
+-- 
+Manuel Jander
+mjander(at)users(dot)sourceforge(dot)net
 
 
 
