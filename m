@@ -1,11 +1,14 @@
-From: John Covici <covici@ccs.covici.com>
-Subject: 2.5.24 rmmod of sndtimer causes system crash
-Date: Tue, 25 Jun 2002 14:16:17 -0400
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: setting period size for Terratec Xfire (=CS46xx)
+ => only 512 possible?
+Date: Tue, 25 Jun 2002 20:31:05 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m3wusnz0jy.fsf@ccs.covici.com>
+Message-ID: <Pine.LNX.4.33.0206252030280.580-100000@pnote.perex-int.cz>
+References: <20570.1025024803@www35.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20570.1025024803@www35.gmx.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,24 +17,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "Friedrich.Ewaldt@gmx.de" <Friedrich.Ewaldt@gmx.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I am using kernel 2.5.24 and when I try to shutdown the alsa drivers
-I get unable to handle kernel paging exception ... 
+On Tue, 25 Jun 2002, Friedrich.Ewaldt@gmx.de wrote:
 
-Upon further investigation, the problem is that sndtimer cannot be
-deleted the rmmod of this module causes the problem.  I am using the
-via8233 sound card if that makes any difference.
+> Hi all,
+> 
+> I'm using a Terratex DMX Xfire soundcard (based on the Cirrus CS4624) on my
+> Mandrake 8.1 PC. 
+> I've written a small real-time program using the ALSA-API (capturing from
+> the input of the card, processing the samples in some way and playing them
+> through the output of the soundcard). (The CPU load caused by this program is
+> about 1%.)
+> 
+> I've written the following to set the period size of the capture device (and
+> the same for the playback device as well):
+> 
+> 	chunk_size = snd_pcm_hw_params_set_period_size_near(handle, hwparams,
+> chunk_size_w, 0);
+> 	if (chunk_size < 0){
+> 		fprintf(stderr, "error setting period size: %s\n", snd_strerror(err));
+> 	  return -1;
+> 	}
+> 
+> As the program causes broken pipe errors sometimes, I tried to increase the
+> period size.
+> But using my soundcard I always get a period size of 512. I've tried several
+> device definitions like hw:0,0 and plughw:0,0, but no success. I've used a
+> buffer size of 1024 or 16384 in my experiments.
+> Using another PC using a Ensoniq AudioPCI ES1371 soundcard I can set the
+> period size to e.g. 1024 without any problems or changes to my source code.
+> 
+> Is this a problem regarding the CS46xx driver or do I have to change my
+> program code?
 
-If I build the alsa in the kernel, it works, but always calls the
-card card0 is there anywhere I can specify something different so I
-can keep my same asound.state file?
+We have only limited firmware for CS46xx chips with fixed period size 
+(2048 bytes).
 
+						Jaroslav
 
--- 
-         John Covici
-         covici@ccs.covici.com
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
+
 
 
 -------------------------------------------------------
