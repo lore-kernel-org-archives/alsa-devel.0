@@ -1,12 +1,12 @@
-From: Nicola Orru' <no@energit.it>
-Subject: Midi reverb on Emu10k1
-Date: Mon, 24 Jun 2002 20:38:00 +0200
+From: Paul Davis <pbd@op.net>
+Subject: Re: HDSP start problem
+Date: Mon, 24 Jun 2002 17:02:08 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020624203800.10134b19.no@energit.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <200206242100.g5OL0gf21906@post2.fast.net>
+References: <3D17542B.FCCC63EB@telia.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: Your message of "Mon, 24 Jun 2002 19:17:31 +0200."
+             <3D17542B.FCCC63EB@telia.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,37 +15,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Marcus Andersson <054185595@telia.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello, people out there!
+>Starting sound driver: snd-hdsp PCI: Found IRQ 10 for device 00:0d.0
+>PCI: Sharing IRQ 10 with 00:07.2
+>PCI: Sharing IRQ 10 with 00:07.3
+>ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:452: wait for FIFO status <= 0
+>failed 
+>after 100 iterations
+>looks like a multiface
+>done
+>
+>When this happens, the card will not work. I must reboot and hope it
+>doesn't happen again.
 
-I'm Yet-Another-Programmer-Keyboard player.
-I would like to work on MIDI chorus/reverb implementations on the emu10k1 driver in a way 
-I can experience as much fun as original Creative driver provide on Windogs.
+sounds like a definite bug. apparently, there is some condition that
+leads to the h/w not being ready quickly enough but we ignore it.
 
-Where should I start from? How much work is needed to complete the sub-project?
-Where can I find documentation about that?
+there are other problems right now. myself and a few others have no
+playback whatsoever, even with the old version (1.1) of the driver.
 
-Currently, I am trying to learn more about DSP architectures and 
-digital filter programming on several online books, but, 
-as I have little patience, I would like to "beat the metal" as
-soon as possible.
+work continues.
 
-Any hints, pointers to TFM, will be sooo happily accepted.
-
-Thanks a lot,
-
-Nicola Orru'
-------------------------------------------------------------------------
-ENERGIT
-Via Efisio Melis, 26
-09134 Cagliari - Italia
-Tel. +39 070 7521     Fax +39 070 7521 51
-www.energit.it
-
-Energia  Telefonia  Servizi Internet  Sistemi di Gestione per le Aziende
-------------------------------------------------------------------------
+--p
 
 
 -------------------------------------------------------
