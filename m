@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Half Speed on rc6 ?
-Date: Mon, 25 Nov 2002 13:02:53 +0100 (CET)
+Subject: Re: Envy24HT
+Date: Mon, 25 Nov 2002 13:06:03 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0211251302260.517-100000@pnote.perex-int.cz>
-References: <3DE1D319.5040308@tele-ip.com>
+Message-ID: <Pine.LNX.4.33.0211251302570.517-100000@pnote.perex-int.cz>
+References: <5.1.0.14.0.20021124201637.01e62910@pop3.demon.co.uk>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DE1D319.5040308@tele-ip.com>
+In-Reply-To: <5.1.0.14.0.20021124201637.01e62910@pop3.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,39 +16,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Bruce Paterson <bruce@tele-ip.com>
-Cc: alsa development <alsa-devel@lists.sourceforge.net>
+To: James Stafford <alsa@jjdstaff.demon.co.uk>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 25 Nov 2002, Bruce Paterson wrote:
+On Sun, 24 Nov 2002, James Stafford wrote:
 
-> Bruce Paterson wrote:
-> > Thanks for your reply Daniel.
-> > 
-> > Daniel Haus wrote:
-> > 
-> >>> Behaviour:
-> >>> The output sound is perfect for about 2 minutes. After that every now 
-> >>> and then I get "distortion" in the audio. No xruns or errors are 
-> >>> reported in the software. It sounds like only part of the output 
-> >>> buffer is correct (the general gist is right, but there's crap and 
-> >>> warbles there as well).
-> >>
-> >>
-> >>
-> >> this might not be caused by your app, this could be an alsa-problem.
-> >> i did not do any more testing, but about 24 hours ago i upgraded to
-> >> 0.9.0-rc6 and had no problems since then, but that might not mean
-> >> anything ...
+> Has anyone started work on a driver for the VIA VT1724 (alias Envy24HT)?
 > 
-> I have now tried 0.9.0rc6 and something VERY weird has happened. 
-> Suddenly the sample rate appears to have halved. A previous 600Hz tone
-> now is 300Hz and everything takes twices the time to output.
-> Surely this is a bug that has crept in.
+> The company I work for are planning to release a PC104+ card based on
+> this chipset (paired with the VT1616) in the very near future so I have
+> access to one of the evaluation kits from VIA.
 > 
-> Has anyone else at all used rc6 on the EWS88 and had it work ok ?
+> If noone else is working on a driver, I may be able to persuade my boss
+> to allow me to work on it. However, my knowledge of the architecture of
+> this chip and audio hardware in general is currently quite limited.
 
-This problem is fixed in CVS. Try the latest CVS snapshot or wait for rc7.
+It's possible to add the support to the ICE1712 driver for this new chip,
+but it's difficult without hardware.
 
 						Jaroslav
 
