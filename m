@@ -1,11 +1,11 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: volume always 0 ?!?
-Date: 23 Mar 2003 23:54:13 +0000
+From: =?ISO-8859-1?Q?S=F8ren?= Wedel Nielsen <swn@herlevkollegiet.dk>
+Subject: envy24control and gtk2
+Date: 24 Mar 2003 00:30:43 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1048463664.4150.46.camel@Jay>
+Message-ID: <1048462242.1151.40.camel@v304.herlevkollegiet.dk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,60 +15,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-setvolume control callback always get uc->value.integer.value[x]==0. Any
-ideas ?
+I have upgraded the envy24control program to use gtk2.
+To make the layout work I have changed it from fixed to hbox/vbox, but I
+have tried not to change the structure og the gui-file envy24control.c.
+It will also work with gtk1.
 
+http://www.heko.dk/~swn/envy24control/envy24control-hboxvbox-230303.patch
 
-Bye.
+To get it to use gtk2 I have changed the build configuration files.
 
-
-
----------------------------------------------------------
-[Giu@Jay Giu]$ amixer 
-Simple mixer control 'PCM',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback -32768 - 1536
-  Front Left: Playback 0 [96%]
-  Front Right: Playback 0 [96%]
+http://www.heko.dk/~swn/envy24control/envy24control-gtk2-230303.patch
 
 
-
-
-static int Echo_volume_info(snd_kcontrol_t *kcontrol,
-snd_ctl_elem_info_t *uinfo) {
-  uinfo->type=SNDRV_CTL_ELEM_TYPE_INTEGER;
-  uinfo->count=2;
-  uinfo->value.integer.min=ECHOGAIN_MINOUT;
-  uinfo->value.integer.max=ECHOGAIN_MAXOUT;
-  return(0);
-}
-
-static int Echo_setvolume(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t
-*ucontrol) {
-struct EchoChip *chip;
-
-  printk("setvol %ld %ld\n",
-         ucontrol->value.integer.value[0],
-         ucontrol->value.integer.value[1]);
-}
-
-
-static snd_kcontrol_new_t pcmout_volume_control __devinitdata = {
-  .name="PCM Playback Volume",
-  .index=0,
-  .iface=SNDRV_CTL_ELEM_IFACE_MIXER,
-  .access=SNDRV_CTL_ELEM_ACCESS_READWRITE,
-  .info=Echo_volume_info,
-  .get=Echo_setvolume,
-  .put=Echo_getvolume,
-};
-
-
+S=C3=B8ren Wedel Nielsen
 
 
 
