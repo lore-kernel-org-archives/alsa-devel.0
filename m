@@ -1,7 +1,7 @@
 From: "Luuk van Dijk" <lvd@mndmttr.nl>
-Subject: =?utf-8?Q?=22soft=22?= spdiff support
-Date: Mon, 15 Nov 2004 17:21:13 +0100
-Message-ID: <courier.4198D779.00011623@outpost.mndmttr.nl>
+Subject: libalsa w/o pthreads?
+Date: Mon, 15 Nov 2004 17:24:18 +0100
+Message-ID: <courier.4198D832.00011691@outpost.mndmttr.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; format=flowed; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -24,16 +24,12 @@ I am currently writing a driver for the ADI 1836 on the (ongoing)
 blackfin/uclinux port (blackfin.uclinux.org) and I have some questions (that 
 I'll post in separate mails, so that they may be separate threads) 
 
-With this particular hardware configuration, I have access to a 'raw' 
-sp/diff datastream through a PCM channel.  is there a generic sp/diff 
-encaps/decaps layer in the ALSA driver?  Are there maybe other (eg userland) 
-software implementations of this? 
+on this platform pthreads don't work (yet). is it possible to compile/use 
+alsa-lib without them? 
 
-otherwise: is it hard to write/can anyone send me a pointer to a public 
-version of the spec? 
+thanks,
+ Luuk 
 
-Thanks,
-  Luuk
 
 
 -------------------------------------------------------
