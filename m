@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000621]: Audigy input
-Date: Tue, 2 Nov 2004 09:31:12 +0100
-Message-ID: <f6cf46b1797b0e401044c1032a0b168e@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: RE: Fw: Re: Echo Audio Indigo Generic Driver
+Date: Tue, 02 Nov 2004 09:35:51 +0100 (CET)
+Message-ID: <XFMail.20041102093551.pochini@shiny.it>
+References: <20041101212127.M93673@stickist.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8BC93216
-	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2004 09:31:12 +0100 (MET)
+In-Reply-To: <20041101212127.M93673@stickist.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,66 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Yon Mercury <swirlee@stickist.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=621> 
-======================================================================
-Reported By:                KoxtaRF
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   621
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             10-31-2004 15:14 CET
-Last Modified:              11-02-2004 09:31 CET
-======================================================================
-Summary:                    Audigy input
-Description: 
-I get exactly the same issue as the guy who posted this message:
+On 01-Nov-2004 Yon Mercury wrote:
+> Dear ALSA-listers:
+>
+> This from Echo Audio, in response to my inquiry about an Indigo IO driver:
+>
+> I hope we can get a good low-end low latency laptop solution soon-- those
+> RME boards are expensive!
 
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg13087.html
-
-I cannot select any input source to be captured in alsamixer . Moreover,
-many of the output sliders cannot be muted by pressing M (like Master or
-PCM).
-======================================================================
-
-----------------------------------------------------------------------
- KoxtaRF - 10-31-04 15:16 
-----------------------------------------------------------------------
-I forgot to give you my system specs...
-
-Linux Gentoo (current)
-Alsa 1.0.6
-kernel 2.6.9 (using included alsa-driver)
-
-----------------------------------------------------------------------
- pzad - 11-02-04 09:31 
-----------------------------------------------------------------------
-Did you read answer on his mail ???
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg13088.html
-
-Master or PCM can not be muted, because they don't have mute switch.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-31-04 15:14 KoxtaRF        New Issue                                    
-10-31-04 15:15 KoxtaRF        Issue Monitored: KoxtaRF                     
-10-31-04 15:16 KoxtaRF        Note Added: 0002293                          
-11-02-04 09:31 pzad           Note Added: 0002295                          
-======================================================================
+I'm the one who developed the ALSA driver. Echoaudio told me
+that dev infos required for Indigo support will be released
+soon. But there is another problem: those infos are not enough.
+My driver already supports all other PCMCIA cards, but none
+of the people who tried it was able to make it work. The
+problem lies in the CARDBUS bridge and reading the archives of
+this ML I found that some people had troubles with RME cards,
+too. An Echoaudio developer confirmed that he had to tweak the
+registers of the bridge of one laptop to make it work. The
+problem is complicated by the fact that there are several tens
+of bridge chips around (read: different laptop --> different
+fix) and all I get from the DSP is "init OK" or "init failed".
+I have no idea of what the problem is. Suggestions are welcome.
 
 
+--
+Giuliano.
 
 
 -------------------------------------------------------
