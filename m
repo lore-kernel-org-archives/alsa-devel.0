@@ -1,12 +1,11 @@
-From: Justin Cormack <justin@street-vision.com>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: arecord to support >2GB files?
-Date: 27 Aug 2003 12:07:46 +0100
+Date: Wed, 27 Aug 2003 13:12:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1061982466.30543.64.camel@lotte.street-vision.com>
+Message-ID: <Pine.LNX.4.44.0308271307320.1958-100000@pnote.perex-int.cz>
 References: <Pine.OSF.4.56.0308271045210.398158@kosh.hut.fi>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <Pine.OSF.4.56.0308271045210.398158@kosh.hut.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,10 +17,11 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Tommi Sakari Uimonen <tuimonen@cc.hut.fi>
-Cc: alsa list <alsa-devel@lists.sourceforge.net>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2003-08-27 at 09:15, Tommi Sakari Uimonen wrote:
+On Wed, 27 Aug 2003, Tommi Sakari Uimonen wrote:
+
 > I'm planning to use arecord for serious harddisk recording, but it can't
 > write files bigger than 2BG. After browsing through kernel mailing lists
 > about LFS I concluded that the problem is arecord, not the underlying
@@ -29,15 +29,14 @@ On Wed, 2003-08-27 at 09:15, Tommi Sakari Uimonen wrote:
 > 
 > I looked at the code, but didn't have any idea what to change.
 
-You can almost certainly just add
--D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
-to the CFLAGS in the Makefile. (it would be good if this was default on
-32bit platforms).
+I've tried to change the aplay code in CVS. Could you give a try?
 
-Or just make it output to stdout and then redirect it to a file.
+						Jaroslav
 
-Justin
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
