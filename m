@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Sun, 21 Nov 2004 03:05:32 +0100
-Message-ID: <da17f570d07e11bbb3fcb1409ba5e99c@bugtrack.alsa-project.org>
+From: Frank J. Hall <ching@artdhtml.com>
+Subject: =?iso-8859-1?B?QWxsIGRydWdzIC0gTE9XIHByaWNlIQ==?=
+Date: Sun, 21 Nov 2004 07:14:59 +0000
+Message-ID: <0a2e01c4cf99$fefea1ba$9fea0bef@artdhtml.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+    type="multipart/alternative";
+    boundary="----=_NextPart_000_0000_DDE2D0CC.0F75E9D1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C5F72236
-	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 03:05:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,162 +16,144 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
-======================================================================
-Reported By:                bons78
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   167
-Category:                   SPARC - cs4231
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               debian/unstable
-Kernel Version:             linux-2.6.4+
-======================================================================
-Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-21-2004 03:05 CET
-======================================================================
-Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
-Description: 
-alsamixer crashes system hard when snd-ioctl32 is loaded.
-System still responds to some sysrq commands (sync remount boot show) -
-sysrq (term killall) has no effect.
-There's no chance to do any other keyboard input. No logs, no traps, no
-oops. Machine still responds to ping,(even port 22 stays open) but login
-via ssh is not possible. 
+------=_NextPart_000_0000_DDE2D0CC.0F75E9D1
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_001_0001_851C81F6.B1DC9964"
 
-alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
-does not crash the system then.
-So I suspect a problem in the ioctl32 wrapper.
+
+------=_NextPart_001_0001_851C81F6.B1DC9964
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 
 
 
-======================================================================
+------=_NextPart_001_0001_851C81F6.B1DC9964
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 
-----------------------------------------------------------------------
- sjoerd - 11-20-04 16:36 
-----------------------------------------------------------------------
-With this patch i can get sound out of my U5 :).. Although the quality
-isn't very good, some kind of background noise in alsaplayer. A friend of
-mine told me that he also had that when using alsa's oss emulation, so
-that's probably the driver not the emulation layer..
+<body>
+<html>
+<CENTER>
+<TABLE cellSpacing=0 cellPadding=0 width=600 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD>
+      <P>
 
-I've not put #ifdef sparc everywhere like eradicator does.. Using user
-pointers directly from get_fs() == KERNEL_DS is wrong everywhere. It just
-happens to work on some architectures
+<a href="http://www.macromed.info"><img src="cid:xcvgavja_jlqkztgf_fqrqftbf" border=0></a><br><br>
 
-Also the function  _snd_ioctl32_ctl_elem_value now always returns -EINVAL
-when indirect data is used. I couldn't find out how that works..
+To be taken out, go here: <a href="http://www.macromed.ws/uns.htm">http://www.macromed.ws/uns.htm</a>
 
-----------------------------------------------------------------------
- eradicator - 11-21-04 03:05 
-----------------------------------------------------------------------
-Just a few comments sjoerd's patch...
 
-The first hunk will result in a kfree(NULL):
 
-+  if (image == NULL) {
-+    err = -ENOMEM;
-+    goto __dsp_image_out;
-...
-+
-+__dsp_image_out:
-+  kfree(image);
+</P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
 
----
 
-For the added #includes:
-@@ -24,11 +24,13 @@
- #include <linux/init.h>
- #include <linux/time.h>
- #include <linux/slab.h>
-+#include <linux/syscalls.h>
- #include <linux/fs.h>
- #include <sound/core.h>
- #include <sound/control.h>
- #include <asm/uaccess.h>
- #include "ioctl32.h"
-+#include <sound/control.h>
+------=_NextPart_001_0001_851C81F6.B1DC9964--
 
-sound/control.h is included a few lines up, so no need to duplicate... and
-the syscalls.h I am assuming is for this change here:
+------=_NextPart_000_0000_DDE2D0CC.0F75E9D1
+Content-Type: image/gif; name="cxcuqfns.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <xcvgavja_jlqkztgf_fqrqftbf>
 
--       err = file->f_op->ioctl(file->f_dentry->d_inode, file, native_ctl,
-(unsi
-gned long)&data);
-+  err = sys_ioctl(fd, native_ctl, (unsigned long) &data);
+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
 
-why was that made?
 
----
-This change:
 
--       if (data->indirect) /* FIXME: this is not correct for long arrays
-*/
--               data->value.integer.value_ptr =
-compat_ptr(data32->value.integer
-.value_ptr);
-+       if (data->indirect) { /* FIXME: this is not correct for long
-arrays */
-+    /* FIXME Broken because in get_fs() == KERNEL_DS all __user pointers
-should
-+     * be in kernel space */
-+    err = -EINVAL;
-+    goto __end;
-+  }
-...
-+  kfree(indirect);
-
-will cause -EINVAL to be returned when a workaround is possible... it also
-kfree()s something that was never allocated...
-
----
-
-Also, I argue that it is best to leave in the #if defined(__sparc__) ...
-#else ... #endif because the code works on other architectures (even
-though it is of bad form) in a more optimized way... perhaps a better
-option would be #if defiled(__x86_64__) || defined (__ppc64__) ... (I
-think those are the right symbols for those archs)... does anyone know if
-it works on mips?
-
-I'll get a "next itteration" of my patch which incorporates the changes to
-pcm32.c and the test for data.count > 0 which I missed (hopefully when I
-get home in about 4 hours)... but please comment on my comments above so I
-know what direction I should take on those issues.
-
-Thanks,
-Jeremy
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-30-04 00:02 bons78         New Issue                                    
-03-30-04 00:02 bons78         Distribution              => debian/unstable 
-03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
-04-13-04 19:41 tiwai          Note Added: 0000795                          
-07-04-04 22:32 weeve          Note Added: 0001381                          
-07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
-11-19-04 05:45 weeve          Note Added: 0002474                          
-11-19-04 05:46 weeve          Issue Monitored: weeve                       
-11-19-04 05:55 rlrevell       Note Added: 0002475                          
-11-20-04 10:23 eradicator     Note Added: 0002478                          
-11-20-04 11:14 eradicator     Note Added: 0002479                          
-11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
- 
-11-20-04 16:36 sjoerd         Note Added: 0002480                          
-11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
-11-21-04 03:05 eradicator     Note Added: 0002482                          
-======================================================================
-
+------=_NextPart_000_0000_DDE2D0CC.0F75E9D1--
 
 
 
