@@ -1,12 +1,14 @@
-From: Heikki Pernu <hpernu@cc.hut.fi>
-Subject: Sonorus STUDI/O drivers
-Date: Fri, 30 Apr 2004 14:47:38 +0300
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: snd_pcm_plugin_read: buffer format
+Date: Fri, 30 Apr 2004 17:13:57 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40923CDA.5010207@cc.hut.fi>
+Message-ID: <Pine.HPX.4.33n.0404301712550.17110-100000@studcom.urz.uni-halle.de>
+References: <117iDCqod2960S16.1083255269@uwdvg016.cms.usa.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <117iDCqod2960S16.1083255269@uwdvg016.cms.usa.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,25 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Nikhil Deo <nikhil_deo@usa.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Nikhil Deo wrote:
+> When I read some captured data into a buffer by calling snd_pcm_plugin_read,
+> how can I separate the left and right channels from that data?
 
-Some ALSA drivers for the card mentioned on the subject line have been 
-found.
+In the most common case (interleaved stereo data), you have
+alternating sample values for left and right.
 
-They are at
-  http://www.icsi.berkeley.edu/ftp/global/pub/real/dpwe/studio-pieces.tgz
 
-The package includes driver sources and programming information.
-
-The driver, however, propably needs to be redone as it for
-ALSA version 0.4.4 and it is unsure what the license might be(Sonorus
-refuses to say anything about the matter)
-
-It is a good starting point though.
-
-Anyone interested?
+HTH
+Clemens
 
 
 
