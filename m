@@ -1,10 +1,12 @@
-From: Jignesh Patel <jigneshpatel202000@yahoo.com>
-Subject: ALSA Test suite
-Date: Sun, 14 Mar 2004 01:51:15 -0800 (PST)
+From: Lars Heineken <Lars.Heineken@gmx.de>
+Subject: Update: Additional info: Opening dev/dsp takes very
+ long
+Date: Sun, 14 Mar 2004 16:42:25 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040314095115.73922.qmail@web61103.mail.yahoo.com>
+Message-ID: <40547D61.9050008@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-245112578-1079257875=:71266"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,43 +19,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---0-245112578-1079257875=:71266
-Content-Type: text/plain; charset=us-ascii
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Hi All,
- 
-Is anybody working on ALSA testsuite?
- 
-__or_ just testing it through available alsa-utils is enough. 
- 
-I like to develop some tests, which will test ALSA Driver on my x86 machine and then really want to move it to ARM target, <<again here the driver will be different as expacted>>. 
- 
-I will explore possible state model of device in my mind for testing, once I get some inputs.
- 
-Regards,
-Jignesh
+- - I have tried to use a non preemptive kernel and as a suprise to me,
+the problem is still there.
 
+- - After googeling around, I found this post to [linux-audio-dev]:
+http://eca.cx/lad/2003/11/0081.html.
+What's strinking is, that he uses a 2496 card, too. Maybe this is
+related to the ice1712 driver ?
 
-Do you Yahoo!?
-Yahoo! Mail - More reliable, more storage, less spam
---0-245112578-1079257875=:71266
-Content-Type: text/html; charset=us-ascii
+Could someone tell me how to enabled debug output on the alsa-driver and
+the OSS emulation, so I can try to track the problem ?
 
-<DIV>
-<DIV>Hi All,</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Is anybody working on ALSA testsuite?</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>__or_ just testing it through available alsa-utils is enough. </DIV>
-<DIV>&nbsp;</DIV>
-<DIV>I like to develop some tests, which will test ALSA Driver on my x86 machine and then really want to move it to ARM target, &lt;&lt;again here the driver will be different as expacted&gt;&gt;. </DIV>
-<DIV>&nbsp;</DIV>
-<DIV>I will explore possible state model of device in my mind for testing, once&nbsp;I get some inputs.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Regards,</DIV>
-<DIV>Jignesh</DIV></DIV><p><font face=arial size=-1>Do you Yahoo!?<br>
-<a href="http://us.rd.yahoo.com/mailtag_us/*http://mail.yahoo.com" target="_blank"><b>Yahoo! Mail</a></b> - More reliable, more storage, less spam
---0-245112578-1079257875=:71266--
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFAVH1hrp9JEomxNXERAsOzAKCAVLois3gaYmXBMY0k5l0rTYHG7gCcCUjs
+8iB6DWOtgWN1DHHxrAloBuM=
+=1/Lw
+-----END PGP SIGNATURE-----
+
 
 
 -------------------------------------------------------
