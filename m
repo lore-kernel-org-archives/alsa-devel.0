@@ -1,11 +1,15 @@
-From: Sezen G. <Dubois@yahoo.com>
-Subject: slm   ...  Fri, 24 Dec 2004 04:08:44 +0200
-Date: Fri, 24 Dec 2004 00:07:44 -0200
-Message-ID: <42410.8133338906$1103854210@news.gmane.org>
-Mime-Version: 1.0 (produced by ptolemaictowboat 6.0)
-Content-Type: multipart/alternative;
-	boundary="--02994073007985802264"
+From: "Carol Sanchez" <carol.sanchez_78@infotelecom.es>
+Subject: Order Rolex or other Swiss watches online
+Date: Fri, 24 Dec 2004 11:00:47 +0700
+Message-ID: <c04c01c4e96d$0e161397$015fe872@jblaw.dk>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from jblaw.dk (adsl-66-142-12-220.dsl.amrltx.swbell.net [66.142.12.220])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 94D68274
+	for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2004 05:02:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,24 +19,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-----02994073007985802264
-Content-Type: text/html;
-	charset="iso-5205-4"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: wildlife bugging willoughby
+Heya,
 
-<html><a href=3Dhttp://www.effectivemarketing.biz/amerikadayasam/><h2 alig=
-n=3D"center"><font color=3D"#FF0000">Amerikada =C7al&#305;&#351;ma ve Ya&#=
-351;ama F&#305;rsat&#305;<br></font>Bu Kez Ge=E7 Kalmay&#305;n!</h2><h2 al=
-ign=3D"center">Amerika bu sene  <br>55.000 Ki&#351;iye <font color=3D"#008=
-000"><br>Ye&#351;il Kart</font> ile  <br>hayat boyu oturma izni ve =E7al&#=
-305;&#351;ma izni verecek!<br><br><font color=3D"#FF0000">AMERIKA FIRSATI =
-&#304;=C7&#304;N TIKLAYIN</html>
+Do you want a rolex watch?
 
-----02994073007985802264--
+In our online store you can buy replicas of Rolex watches. They look
+and feel exactly like the real thing.
+
+- We have 20+ different brands in our selection
+- Free shipping if you order 5 or more
+- Save up to 40% compared to the cost of other replicas
+- Standard Features:
+ - Screw-in crown
+ - Unidirectional turning bezel where appropriate
+ - All the appropriate rolex logos, on crown and dial
+ - Heavy weight
+
+Visit us: http://mecei.com/rep/rolex/
+
+Best regards,
+Hilton Jones
+
+
+No thanks: http://www.mecei.com/z.php
+
 
 
 -------------------------------------------------------
