@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000951]: Fix bugs with early IRQs mishandling, missing silence fill, and wrong timing calculations
-Date: Fri, 4 Mar 2005 03:34:36 +0100
-Message-ID: <4bc05866ffcb1c78092bdf6aa37ca4c2@bugtrack.alsa-project.org>
+Date: Thu, 3 Mar 2005 15:52:02 +0100
+Message-ID: <02e6c6de9f72493dd3ebc0be762e33d2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CD71D20D
-	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2005 03:34:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 44B05B6
+	for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2005 15:52:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             2.4.22
 ======================================================================
 Date Submitted:             02-28-2005 21:26 CET
-Last Modified:              03-04-2005 03:34 CET
+Last Modified:              03-03-2005 15:52 CET
 ======================================================================
 Summary:                    Fix bugs with early IRQs mishandling, missing
 silence fill, and wrong timing calculations
@@ -176,66 +176,18 @@ related to          0000946 Early playback DMA IRQ with CMI8738MC6 ...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-03-05 20:30 
+ charles_levert - 03-03-05 15:34 
 ----------------------------------------------------------------------
-* Xrun debugging was dropped. Why?
-
-This is kind of a hack anyway.  There are much, much cleaner ways to debug
-this now.  Just my $0.02.
+Please use "rate-sleep-ticks.0b03x.patch" instead.
 
 ----------------------------------------------------------------------
- charles_levert - 03-04-05 03:34 
+ perex - 03-03-05 15:52 
 ----------------------------------------------------------------------
-> The snd_pcm_tick_set() function accepts
-> ticks not microseconds.
-
-Ah, good!  We might be zeroing-in on the problem.  I.e.,
-does what the implemention match the design intentions?
-Please look at what snd_pcm_system_tick_set() actually
-does, regardless of the name of its "ticks" argument.
-Ignoring the rounding part of the division, it does
-(mathematically, in real numbers not integers):
-
-  mod_timer_ticks  :=  "ticks" / (1000000 / HZ)
-                       = ("ticks" / 1000000) * HZ
-
-It really seems to me that
-
-  -- The alsa_ticks unit are no longer involved at this
-     point.
-
-  -- The input "ticks" argument really is treated by this
-     function as microseconds.
-
-  -- There is a first (mathematical) conversion from
-     microseconds to seconds (the /1000000 part).
-
-  -- There is a second (mathematical) conversion from
-     seconds to kernel_timer units (its own ticks, the
-     *HZ part).
-
-Note that the only two other calls to snd_pcm_tick_set(),
-which are in file pcm_native.c, set the "ticks" argument
-to zero so no difference is felt from their point of view.
-
-In the event that a combined solution to what's
-covered in both "hz-int-div.0b03.patch" and
-"rate-sleep-ticks.0b03x.patch" modifies things so that
-snd_pcm_tick_set() really takes its "ticks" argument in
-alsa_ticks units (adding a first [mathematical] conversion
-from alsa_ticks units to microseconds), please verify
-the following.  (The "rate-sleep-ticks.0b03x.patch"
-would no longer be necessary as it stands then.)
-There is effectively a division by runtime->tick_time
-at the end of snd_pcm_tick_prepare(); for that matter,
-there is still a division by runtime->rate.  Since those
-values were initially obtained from the user, were they
-ever validated to be non-zero at any point?  What would
-be the consequences of a division by zero there?  I know
-that setting these values to zero is non-sensical from an
-usefulness point-of-view, but is an attack on the system
-from a local user possible there?  I prefer asking and
-being told I'm wrong than not asking but having been right.
+Note that appl_ptr-boundary.0b03.patch is only cosmetic change and it does
+not fix anything, because the previous code does wrapping the transferred
+chunk to continuous memory area, thus wrapping to 0 is correct. But your
+code looks better, thus I applied this patch and  hz-int-div.0b03.patch to
+CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -264,9 +216,6 @@ Date Modified  Username       Field                    Change
          
 03-03-05 15:34 charles_levert Note Added: 0003788                          
 03-03-05 15:52 perex          Note Added: 0003789                          
-03-03-05 16:05 perex          Note Added: 0003790                          
-03-03-05 20:30 rlrevell       Note Added: 0003792                          
-03-04-05 03:34 charles_levert Note Added: 0003795                          
 ======================================================================
 
 
