@@ -1,12 +1,14 @@
-From: Carl-Daniel Hailfinger <c-d.hailfinger.kernel.2004@gmx.net>
-Subject: es1968 locks up on rmmod
-Date: Mon, 26 Jan 2004 18:12:02 +0100
+From: Tim Blechmann <TimBlechmann@gmx.net>
+Subject: Re: [PATCH] possible fix for misbehaving hdsp
+Date: Mon, 26 Jan 2004 19:43:03 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40154A62.7080403@gmx.net>
+Message-ID: <20040126194303.12d60d84.TimBlechmann@gmx.net>
+References: <40151C22.6020005@undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <40151C22.6020005@undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,41 +17,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: alsa-devel@lists.sourceforge.net, Paul Davis <paul@linuxaudiosystems.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+> Could people experiencing problems with their hdsp (namely Tim and
+> Paul) try the attached patch ?
+i tried the patch you sent me ... no success ... i tried to play a
+soundfile with aplay using different period-sizes ...
+the file always had the same distortions ...
+btw, the patch just changed the default pci latency ... i did that a few
+weeks ago manually, using every setup i could think of ... it doesn't
+seem to be related to this...
 
-I have a Toshiba 4100XCDT laptop with an ES1968 chip. lspci follows:
+i'm still confused of the third line (dmesg):
 
-00:0c.0 Multimedia audio controller: ESS Technology ES1978 Maestro 2E (rev 10)
-    Subsystem: Toshiba America Info Systems ES1978 Maestro-2E Audiodrive
-    Flags: bus master, medium devsel, latency 64, IRQ 11
-    I/O ports at fc00 [size=256]
-    Capabilities: <available only to root>
+cs: cb_alloc(bus 7): vendor 0x10ee, device 0x3fc5
+PCI: Enabling device 07:00.0 (0080 -> 0082)
+ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:663: Hammerfall-DSP: no
+Digiface or Multiface connected! 
+ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:5052: card initialization
+pending : waiting for firmware
 
-When the init scripts try to unload snd_es1968 on shutdown, my machine
-freezes instantly.
-
-Distribution is SUSE 9.0 Professional. Kernel is kernel-default-26-2.6.1-4
-from ftp.suse.com/pub/people/kraxel which is basically 2.6.2-rc1.
-
-I assume the lockup happens because interrupts are not disabled for the
-device.
-
-Debug traces are not available since SysRq-T and SysRq-P do not work. The
-nmi watchdog does not work on my hardware. The only SysRq keys that work
-are "O" and "B" to switch the machine off/reboot it.
-
-Right now, I can disable the rmmod, but that's not a solution for long.
-
-Please take a look at the module unloading function and fix it if possible.
+alsa doesn't seem to realize that the multiface is connected ... is this
+ok?
 
 
-Regards,
-Carl-Daniel
+and:
+ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:807: wait for FIFO status <= 0
+failed after 30 iterations
+ALSA../../alsa-kernel/pci/rme9652/hdsp.c:4711: initializing firmware
+upload ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:678: loading firmware
+ALSA../../alsa-kernel/pci/rme9652/hdsp.c:716: finished firmware loading
+
+when running hdsploader i usually get the first message ...
+
+btw, paul, is the patch working on your setup?
+
+cheers...
+
+ Tim                          mailto:TimBlechmann@gmx.de
+                              ICQ: 96771783
+--
+The only people for me are the mad ones, the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn,
+burn, like fabulous yellow roman candles exploding like spiders across
+the stars and in the middle you see the blue centerlight pop and
+everybody goes "Awww!"
+                                                          Jack Kerouac
+
+
+
 -- 
-http://www.hailfinger.org/
+ Tim                          mailto:TimBlechmann@gmx.de
+                              ICQ: 96771783
+--
+The only people for me are the mad ones, the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn,
+burn, like fabulous yellow roman candles exploding like spiders across
+the stars and in the middle you see the blue centerlight pop and
+everybody goes "Awww!"
+                                                          Jack Kerouac
 
 
 
