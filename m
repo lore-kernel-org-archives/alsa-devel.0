@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000910]: Interest in support for Sound Blaster Live! 24-Bit
-Date: Tue, 15 Feb 2005 23:40:24 +0100
-Message-ID: <9e81bb76f2cc8863390820e6904b55c7@bugtrack.alsa-project.org>
+Date: Tue, 15 Feb 2005 23:42:44 +0100
+Message-ID: <8c6f93c19527a3ac8e74eacfce8cbb71@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C3D65211
-	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2005 23:40:24 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DDF1B274
+	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2005 23:42:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=910> 
 ======================================================================
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-15-2005 23:40 CET
-Last Modified:              02-15-2005 23:40 CET
+Last Modified:              02-15-2005 23:42 CET
 ======================================================================
 Summary:                    Interest in support for Sound Blaster Live! 24-Bit
 Description: 
@@ -49,10 +49,16 @@ If not, could ALSA add it? I think it has the same chipset as the Audigy
 Series or the original Live! 5.1 cards.
 ======================================================================
 
+----------------------------------------------------------------------
+ sHINOBI - 02-15-05 23:42 
+----------------------------------------------------------------------
+Yes, its supported with ca0106 driver.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-15-05 23:40 pointmanx      New Issue                                    
+02-15-05 23:42 sHINOBI        Note Added: 0003621                          
 ======================================================================
 
 
