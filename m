@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000526]: Kernel crash during the module snd-azx load
-Date: Thu, 23 Sep 2004 19:33:35 +0200 (CEST)
+Subject: [ALSA - utils 0000517]: [PATCH] 50_aconnect_betwen
+Date: Thu, 23 Sep 2004 19:50:33 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040923173335.E72694500F@server.perex-int.cz>
+Message-ID: <20040923175033.A83944500F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4B31E2B5
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:33:36 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 678D4354
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:51:13 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 094C4271C1
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:33:36 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id B2CA4264E5
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:50:33 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,40 +23,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000526
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000517
 ======================================================================
-Reported By:                Grazy
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     526
-Category:                   PCI - azx
+Project:                    ALSA - utils
+Bug ID:                     517
+Category:                   aconnect
 Reproducibility:            always
-Severity:                   crash
+Severity:                   text
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             09-23-2004 19:33 CEST
-Last Modified:              09-23-2004 19:33 CEST
+Date Submitted:             09-21-2004 19:54 CEST
+Last Modified:              09-23-2004 19:50 CEST
 ======================================================================
-Summary:                    Kernel crash during the module snd-azx load
+Summary:                    [PATCH] 50_aconnect_betwen
 Description: 
-The kernel crash during the load of the snd-azx.
-It is the recursive funtion set_mic_rp_wid_connection wich never end.
-
+Patch for aconnect.c to make it print the word 'between'
+with two 'e's.
 ======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 09-23-2004 19:50 CEST 
+----------------------------------------------------------------------
+Summary: Add a missing letter 'e'
+
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-04 19:33 Grazy          New Bug                                      
-09-23-04 19:33 Grazy          File Added: patch_azx_discover.gz                    
-09-23-04 19:33 Grazy          Distribution              => Debian          
-09-23-04 19:33 Grazy          Kernel Version            => 2.6.8           
+09-21-04 19:54 jdthood        New Bug                                      
+09-21-04 19:54 jdthood        File Added: 50_aconnect_betwen.dpatch                    
+09-23-04 19:50 jdthood        Bugnote Added: 0001840                       
 ======================================================================
 
 
