@@ -1,22 +1,14 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: [linux-audio-user] Re: [linux-audio-dev] Re: [Alsa-devel]
- Firewire Audio Card Support
-Date: Fri, 19 Nov 2004 00:52:48 +0100
-Message-ID: <20041119005248.6127aacf@mango.fruits.de>
-References: <31148074.1100630541337.JavaMail.root@scooter.psp.pas.earthlink.net>
-	<419C9D47.4090606@x-i.net>
-	<200411181515.52218.olaf@solutionworks.de>
-	<20041118143205.GA21282@login.ecs.soton.ac.uk>
-	<419CB554.3080709@esitcom.org>
-	<Pine.LNX.4.58.0411181601440.14962@denise.shiny.it>
-	<1100809010.10150.5.camel@krustophenia.net>
-	<1100818169.3464.6.camel@eviltwin>
-	<5bdc1c8b04111814545ab84738@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000651]: via82xxx No Sound Kernel 2.6.10-rc2
+Date: Fri, 19 Nov 2004 01:20:51 +0100
+Message-ID: <a14d6f74d94dc324cec2b56359ca9468@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <5bdc1c8b04111814545ab84738@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD44627D
+	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2004 01:20:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,48 +18,83 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: markknecht@gmail.com, A list for linux audio users <linux-audio-user@music.columbia.edu>, Amaury Jacquot <sxpert@esitcom.org>, alsa-devel <alsa-devel@lists.sourceforge.net>, Giuliano Pochini <pochini@denise.shiny.it>, The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>, Steve Harris <s.w.harris@ecs.soton.ac.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 18 Nov 2004 14:54:27 -0800
-Mark Knecht <markknecht@gmail.com> wrote:
 
-> I've had this sort of project on my mind for a year or two. (Since my
-> first run in with the HDSP 9652 under Linux in early 2003.) I am,
-> unlike I think many people here, a hardware designer by trade. Mostly
-> chips, but my engineers had done boards for our chips.
-> 
-> Coincedentally I was laid off yesterday and am sitting at home
-> thinking about what to do with myself during my current delimma...
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=651> 
+======================================================================
+Reported By:                glen
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   651
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware 10.0 + Dropline Gnome 2.8.0
+Kernel Version:             2.6.10-rc2
+======================================================================
+Date Submitted:             11-17-2004 19:03 CET
+Last Modified:              11-19-2004 01:20 CET
+======================================================================
+Summary:                    via82xxx No Sound Kernel 2.6.10-rc2
+Description: 
+Upgraded to kernel 2.6.10-rc2 from 2.6.10-rc1 with identical config.  No
+compile problems.  No boot up problems.  No sound.
+======================================================================
 
-Hi,
+----------------------------------------------------------------------
+ tiwai - 11-18-04 19:48 
+----------------------------------------------------------------------
+What is the exact symptom?  Is the playback DMA working?
 
-maybe you can tell us then how much the components for such a simple pcm
-only soundcard would cost? What's nessecary? And i mean really simple. Just
-a single full duplex stereo pcm device. No mixer (who needs a mixer? Real
-men have their mixer sitting in a rack :))
+More info required, too, for example, the mixer configuration
+(/etc/asound.state) and codec information (/proc/asound/card0/codec97#0/*
+files).
 
-- 2 AD's and 2 DA's 
-- a dsp (is it really nessecary?)
-- some memory for the buffers
-- a pci board
-- pci logic (raising irq's, doing the transfers)
-- some "glue"
+----------------------------------------------------------------------
+ glen - 11-19-04 01:20 
+----------------------------------------------------------------------
+I'm not sure how to check if the playback DMA is working.  I can see with
+procinfo that IRQs are piling up.  I use headphones and during a "normal"
+bootup I can hear  some pops as the sound card is initialized.  Booting
+this kernel results in dead silence, it's so quiet that the first time I
+booted this kernel I checked that the  headphone was still connected -
+it's just dead.
+I've tried compiling soundcore as a modules and as part of the kernel and
+found that when compiled as a module, that udevd is not making all of the
+required /dev devices (/dev/dsp was missing and esd couldn't start which
+hangs startx).  I've started checking my rc.d scripts and udev config to
+see if these are the problem (yet these work OK for 2.6.10-rc1).
+I realize that it quite possible that ALSA is working fine, but something
+else in the new kernel is buggering it up.  I already tried the
+pci=routeirq kernel parameter after noticing the new message in the kernel
+bootup to try that if irqs don't get initialized correctly.  It made no
+apparent difference.
 
-i may be naive though as i really have no idea about the hw side of things.
-Especially it gets tricky when allowing all kinds of different sample
-rates/buffer sizes, etc. And of course i suppose the price is heavily
-dependent on the quality of the components. But what would be lower and
-upper bounds for the components alone? And what kind of work is nessecary
-(how many manhours)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-17-04 19:03 glen           New Issue                                    
+11-17-04 19:03 glen           File Added: config-2.6.10-rc2                    
+11-17-04 19:03 glen           Distribution              => Slackware 10.0 +
+Dropline Gnome 2.8.0
+11-17-04 19:03 glen           Kernel Version            => 2.6.10-rc2      
+11-17-04 19:05 glen           Note Added: 0002439                          
+11-17-04 19:06 glen           File Added: lspci.txt                        
+11-18-04 19:48 tiwai          Note Added: 0002466                          
+11-19-04 01:04 glen           File Added: asound.state                     
+11-19-04 01:04 glen           File Added: ac97#0-0                         
+11-19-04 01:04 glen           File Added: ac97#0-0+regs                    
+11-19-04 01:20 glen           Note Added: 0002473                          
+======================================================================
 
-- to design the thing
 
-- to build the thing
-
-?
-
-Florian Schmidt
 
 
 -------------------------------------------------------
