@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: problems using select() on alsa pcm.
-Date: Thu, 25 Mar 2004 16:38:37 +0100 (CET)
+From: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
+Subject: RE: Current Hardware Parameter Settings
+Date: Thu, 25 Mar 2004 16:20:09 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403251637400.3867@pnote.perex-int.cz>
-References: <200403250408.i2P48qDC021625@dhin.linuxaudiosystems.com>
- <Pine.LNX.4.58.0403251037200.1807@pnote.perex-int.cz> <4062F71E.50802@superbug.demon.co.uk>
+Message-ID: <20040325162009.54160.qmail@web25101.mail.ukl.yahoo.com>
+References: <XFMail.20040325122452.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative; boundary="0-1751077038-1080231609=:53453"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4062F71E.50802@superbug.demon.co.uk>
+In-Reply-To: <XFMail.20040325122452.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,60 +17,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 25 Mar 2004, James Courtier-Dutton wrote:
+--0-1751077038-1080231609=:53453
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
-> Jaroslav Kysela wrote:
-> > On Wed, 24 Mar 2004, Paul Davis wrote:
-> > 
-> > 
-> >>>open pcm, and get a handle.
-> >>>
-> >>>snd_pcm_poll_descriptors(handle, &pfd, err);
-> >>>
-> >>>Get a poll file scriptor in pfd.
-> >>>
-> >>>select(nfds, rfds, wfds, efds, tvp);
-> >>>
-> >>>Is it possible to use this call with alsa ?
-> >>
-> >>select is generally deprecated in linux (linus says so!). but you can
-> >>use the same pfds in select as in poll (select is implemented in the
-> >>kernel using the poll code). the problem is interpreting the results
-> >>you get back (as noted recently for the dmix plugin).
-> > 
-> > 
-> > Nope, the application must give results back to pfd array and call
-> > snd_pcm_poll_descriptors_revents() function. In this way, everything
-> > will work as expected.
-> > 
-> > 						Jaroslav
-> So which of the following is needed: -
-> 
-> snd_pcm_poll_descriptors(handle, &pfd, err);
-> select(nfds, rfds, wfds, efds, tvp);
-> snd_pcm_poll_descriptors_revents()  <- decode the results of the select.
+Thanks Giuliano,
+ 
+How can I get a dump of the current hardware configuration space?I have the ALSA driver 1.0.0 installed on my Redhat 9 Machine.
+ 
+Brian.
+Giuliano Pochini <pochini@shiny.it> wrote:
 
-This one. The *revents() function mangles the returned ->revents back to 
-the useful meaning for applications.
+On 24-Mar-2004 Brian Furey wrote:
+> Hi all,
+> im using the ALSA driver 1.0.0 on two linux machines that connect a
+> voice-over-ip session. I need to know the minimum fragment size that
+> the alsa driver can take from the soundcard and place in the
+> sending/receiving buffer. Does it depend on the speed that the
+> soundcard is operating at?
 
-> or
-> snd_pcm_poll_descriptors(handle, &pfd, err);
-> snd_pcm_poll_descriptors_revents()  <- rearrange the pfd so that select 
-> works as expected.
-> select(nfds, rfds, wfds, efds, tvp);
+It may depend on any thing. Set buffer size and period
+size with one of these and use the value they return:
 
-That's wrong.
+snd_pcm_hw_params_set_buffer_size_near()
+snd_pcm_hw_params_set_period_size_near()
+snd_pcm_hw_params_set_buffer_time_near()
+snd_pcm_hw_params_set_period_time_near()
 
-						Jaroslav
+Look here for more infos:
+http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___h_w___params.html
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+
+--
+Giuliano.
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: IBM Linux Tutorials
+Free Linux tutorial presented by Daniel Robbins, President and CEO of
+GenToo technologies. Learn everything from fundamentals to system
+administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+		
+---------------------------------
+  Yahoo! Messenger - Communicate instantly..."Ping" your friends today! Download Messenger Now
+--0-1751077038-1080231609=:53453
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+
+<DIV>
+<DIV>Thanks Giuliano,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>How can I get a dump of the current hardware configuration space?I have the ALSA driver 1.0.0 installed on my Redhat 9 Machine.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Brian.<BR><B><I>Giuliano Pochini &lt;pochini@shiny.it&gt;</I></B> wrote:</DIV>
+<BLOCKQUOTE class=replbq style="PADDING-LEFT: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: #1010ff 2px solid"><BR>On 24-Mar-2004 Brian Furey wrote:<BR>&gt; Hi all,<BR>&gt; im using the ALSA driver 1.0.0 on two linux machines that connect a<BR>&gt; voice-over-ip session. I need to know the minimum fragment size that<BR>&gt; the alsa driver can take from the soundcard and place in the<BR>&gt; sending/receiving buffer. Does it depend on the speed that the<BR>&gt; soundcard is operating at?<BR><BR>It may depend on any thing. Set buffer size and period<BR>size with one of these and use the value they return:<BR><BR>snd_pcm_hw_params_set_buffer_size_near()<BR>snd_pcm_hw_params_set_period_size_near()<BR>snd_pcm_hw_params_set_buffer_time_near()<BR>snd_pcm_hw_params_set_period_time_near()<BR><BR>Look here for more
+ infos:<BR>http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___h_w___params.html<BR><BR><BR>--<BR>Giuliano.<BR><BR><BR>-------------------------------------------------------<BR>This SF.Net email is sponsored by: IBM Linux Tutorials<BR>Free Linux tutorial presented by Daniel Robbins, President and CEO of<BR>GenToo technologies. Learn everything from fundamentals to system<BR>administration.http://ads.osdn.com/?ad_id=1470&amp;alloc_id=3638&amp;op=click<BR>_______________________________________________<BR>Alsa-devel mailing list<BR>Alsa-devel@lists.sourceforge.net<BR>https://lists.sourceforge.net/lists/listinfo/alsa-devel</BLOCKQUOTE></DIV><p>
+		<hr size=1><font face="Arial" size="2"> <a href="http://uk.rd.yahoo.com/mail/tagline_messenger/*http://uk.messenger.yahoo.com"><b> 
+Yahoo! Messenger</b></a> - Communicate instantly..."Ping" your friends 
+today! <a href="http://uk.rd.yahoo.com/mail/tagline_messenger/*http://uk.messenger.yahoo.com/download/index.html"><strong>Download Messenger Now</strong></a></font>
+--0-1751077038-1080231609=:53453--
 
 
 -------------------------------------------------------
