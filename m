@@ -1,14 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: alsa driver, repeat playback of buffer
-	contents
-Date: Mon, 14 Mar 2005 19:20:19 -0500
-Message-ID: <1110846019.15588.28.camel@mindpipe>
-References: <200503141530.20339.random.bits@rogers.com>
-	 <1110836720.15088.3.camel@mindpipe>   <yw1xu0ndj2du.fsf@ford.inprovide.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000972]: No sound after install...
+Date: Tue, 15 Mar 2005 01:21:09 +0100
+Message-ID: <08098f7cf22108941182a7e6ad5a589e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <yw1xu0ndj2du.fsf@ford.inprovide.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1D9A71BA
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 01:21:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,38 +17,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?ISO-8859-1?Q?M=E5ns_Rullg=E5rd?= <mru@inprovide.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2005-03-14 at 23:20 +0100, M=E5ns Rullg=E5rd wrote:
-> Lee Revell <rlrevell@joe-job.com> writes:
->=20
-> > On Mon, 2005-03-14 at 15:30 -0500, random.bits wrote:
-> >> I have been reading up on the alsa driver. I would like=20
-> >> to have the alsa driver play a small pcm sound bite=20
-> >> over and over without have to re-write it to the=20
-> >> device.
-> >>=20
-> >> By small, I mean 1.9K in length. I have followed the=20
-> >> examples enough to get it to play the sound bite once,=20
-> >> but I cannot figure out how to get it to play it=20
-> >> multiple times without having to make another call to=20
-> >> snd_pcm_writei() again.
-> >
-> > Why in the heck are you using write() instead of mmap()?
->=20
-> snd_pcm_writei() often uses mmap() behind the scenes.
->=20
 
-Right, but AFAICT mmap() should not call write() behind the scenes
-(unless you use the plug layer?).  So if you want to be sure to avoid
-unnecessary copying you should just use mmap() directly.
+The following issue has been CLOSED
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=972> 
+======================================================================
+Reported By:                rbechard1
+Assigned To:                fmoraes
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   972
+Category:                   PCI - emu10k1x
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     closed
+Distribution:               
+Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
+======================================================================
+Date Submitted:             03-08-2005 02:00 CET
+Last Modified:              03-15-2005 01:21 CET
+======================================================================
+Summary:                    No sound after install...
+Description: 
+After following all of the install instructions included with the
+documentation there is no sound from the sound card. The settings in
+DiskDrake indicate that the sound card is using the correct driver and
+alsaconf reconfigured it several times to no effect. I also check the
+mixer outputs and nothing is muted.
+======================================================================
 
-Or am I wrong?  Anyway, the JACK ALSA driver always uses mmap() for
-example.
+----------------------------------------------------------------------
+ rlrevell - 03-14-05 22:50 
+----------------------------------------------------------------------
+"I 'strongly" suggest that your webmaster should put the RPM packages on
+your website for the various distributions, it would save your support
+people alot of time!!!!!!!!!!!!!!!!!"
 
-Lee
+Incorrect.  Do you have any idea how much work it would be to make binary
+packages for every distro?  There would be no time left for actual
+development.
+
+It is your distro's responsibility to provide reasonably up to date and
+easily accessible ALSA binary packages.  If they are not doing it, you
+need to get a better distro.
+
+----------------------------------------------------------------------
+ fmoraes - 03-15-05 01:21 
+----------------------------------------------------------------------
+User installed binary packages from Distro instead of compiling and the
+problem was solved.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-08-05 02:00 rbechard1      New Issue                                    
+03-08-05 02:01 rbechard1      Issue Monitored: rbechard1                    
+03-08-05 09:54 rbechard1      Note Added: 0003813                          
+03-09-05 02:11 fmoraes        Note Added: 0003820                          
+03-09-05 03:14 rbechard1      Note Added: 0003824                          
+03-14-05 21:45 rbechard1      Note Added: 0003908                          
+03-14-05 21:46 rbechard1      Issue End Monitor: rbechard1                    
+03-14-05 22:50 rlrevell       Note Added: 0003909                          
+03-15-05 01:21 fmoraes        Status                   assigned => closed  
+03-15-05 01:21 fmoraes        Note Added: 0003911                          
+======================================================================
+
 
 
 
@@ -57,4 +95,4 @@ Lee
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
