@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: MIDI input broken with ECS P4S5A/DX+ motherboard and generic
- MPU-401 driver. (Output works fine, though.)
-Date: Wed, 29 Jan 2003 11:17:09 +0100 (CET)
+From: Thierry Vignaud <tvignaud@mandrakesoft.com>
+Subject: [PATCH] typos in configure build system
+Date: Wed, 29 Jan 2003 12:38:20 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0301291115150.1402-100000@pnote.perex-int.cz>
-References: <20030128203917.GA485@znex>
+Message-ID: <m265s8i3tf.fsf@vador.mandrakesoft.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/x-patch
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030128203917.GA485@znex>
+Content-Disposition: attachment; filename=alsa-driver-configure.diff
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,36 +15,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark J Roberts <mjr@znex.org>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 28 Jan 2003, Mark J Roberts wrote:
-
-> [ An evil list-moderator bot ate the first version of this. ]
-> 
-> I'm running kernel 2.5.49, built with the generic MPU-401 MIDI
-> driver, and booted with the "snd-mpu401=1,-1,,0x300,10" option,
-> which corresponds to IO port 0x300 and IRQ 10.
-> 
-> I've configured my BIOS to enable the on-board MIDI interface, and
-> set it to port 0x300 and IRQ 10.
-> 
-> I see zero interrupts in /proc/interrupts:
-> 
->  10:          0          XT-PIC  MPU401 UART
-> 
-> So, any ideas?
-
-You've pointed to the reason: hardware does not generate input interrupts.
-Try to disable the IRQ (snd-mpu401=1,,,0x300,-1).
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Index: configure.in
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/configure.in,v
+retrieving revision 1.137
+diff -u -w -p -r1.137 configure.in
+--- configure.in	29 Jan 2003 10:39:19 -0000	1.137
++++ configure.in	29 Jan 2003 11:40:46 -0000
+@@ -817,10 +817,10 @@ AC_SUBST(CONFIG_USB)
+ 
+ dnl PCMCIA stuff
+ AC_ARG_WITH(pcmcia,
+-  [  --with-pcmcai=kernel,external   support kernel PCMCIA driver or external PCMCIA driver],
++  [  --with-pcmcia=kernel,external   support kernel PCMCIA driver or external PCMCIA driver],
+   pcmcia="$withval", pcmcia="kernel")
+ AC_ARG_WITH(pcmcia_root,
+-  [  --with-pcmcai-root=dir  specify the root directory of external PCMCIA source-tree],
++  [  --with-pcmcia-root=dir  specify the root directory of external PCMCIA source-tree],
+   pcmciaroot="$withval", pcmciaroot="")
+ EXTRA_INCLUDES=""
+ if test "$pcmcia" = "kernel"; then
 
 
 
