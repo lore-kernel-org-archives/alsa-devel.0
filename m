@@ -1,66 +1,94 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: [PATCH] usx2y messages
-Date: Sat, 27 Dec 2003 14:41:43 +0100
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031227134143.GA5810@tuba.home>
+From: Martin Schlemmer <azarah@nosferatu.za.org>
+Subject: Re: OSS sound emulation broken between 2.6.0-test2 and test3
+Date: Sat, 27 Dec 2003 16:33:11 +0200
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <1072535590.12308.250.camel@nosferatu.lan>
+References: <1080000.1072475704@[10.10.2.4]>
+	 <1072479167.21020.59.camel@nosferatu.lan>  <1480000.1072479655@[10.10.2.4]>
+	 <1072480660.21020.64.camel@nosferatu.lan>  <1640000.1072481061@[10.10.2.4]>
+	 <1072482611.21020.71.camel@nosferatu.lan>  <2060000.1072483186@[10.10.2.4]>
+	 <1072500516.12203.2.camel@duergar>  <8240000.1072511437@[10.10.2.4]>
+	 <1072523478.12308.52.camel@nosferatu.lan>
+	 <1072525450.3794.8.camel@wires.home.biz>
+	 <1072527874.12308.100.camel@nosferatu.lan>
+	 <1072530488.2906.1.camel@wires.home.biz>
+Reply-To: azarah@nosferatu.za.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-dn4FlXbteVKNVArPTiyt"
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+In-Reply-To: <1072530488.2906.1.camel@wires.home.biz>
+To: Edward Tandi <ed@efix.biz>
+Cc: "Martin J. Bligh" <mbligh@aracnet.com>, perex@suse.cz, alsa-devel@lists.sourceforge.net, Linux Kernel Mailing Lists <linux-kernel@vger.kernel.org>, Rob Love <rml@ximian.com>, Andrew Morton <akpm@osdl.org>, Stan Bubrouski <stan@ccs.neu.edu>
 List-Id: alsa-devel@alsa-project.org
 
 
-rename some messages from old us428 names to usX2Y ones.
+--=-dn4FlXbteVKNVArPTiyt
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, 2003-12-27 at 15:08, Edward Tandi wrote:
+> On Sat, 2003-12-27 at 12:24, Martin Schlemmer wrote:
+> > On Sat, 2003-12-27 at 13:44, Edward Tandi wrote:
+> > > On Sat, 2003-12-27 at 11:11, Martin Schlemmer wrote:
+> > > > On Sat, 2003-12-27 at 09:50, Martin J. Bligh wrote:
+> > > > > Something appears to have broken OSS sound emulation between=20
+> > > > > test2 and test3. Best I can tell (despite the appearance of the B=
+K logs),=20
+> > > > > that included ALSA updates 0.9.5 and 0.9.6. Hopefully someone who
+> > > > > understands the sound architecture better than I can fix this?
+> > > > >=20
+> > > >=20
+> > > > I wont say I understand it, but a quick look seems the major change=
+ is
+> > > > the addition of the 'whole-frag' and 'no-silence' opts.  You might =
+try
+> > > > the following to revert what 'no-silence' change at least does:
+> > > >=20
+> > > > --
+> > > >  # echo 'xmms 0 0 no-silence' > /proc/asound/card0/pcm0p/oss
+> > > >  # echo 'xmms 0 0 whole-frag' > /proc/asound/card0/pcm0p/oss
+> > > > --
+> > >=20
+> > > Thanks, that fixes it for me. I too have been seeing terrible problem=
+s
+> > > with XMMS since the early 2.6 pre- kernels.
+> > >=20
+> > > Because it only happens in XMMS I thought it was one of those
+> > > application bugs brought out by scheduler changes. I now use Zinf BTW
+> > > -It's better for large music collections (although not as stable or
+> > > flash).
+> > >=20
+> >=20
+> > Can you check which one actually fixes it ?
+>=20
+> Yes, its the 'whole-frag' line.
+>=20
+
+Well, I can't say I can see why. In snd_pcm_oss_write1 where the change
+for whole-frag was, I cannot see a race or such.  The only possible
+causes I can see, is that:
+1) xmms's scheduling gets screwed due to the short writes
+2) some drivers may have issues with getting short writes all the time.
+
+Only problem with 2), is that Zinf works fine for you, so I guess the
+only thing to assume is that either Zinf do not use OSS, but ALSA
+interface, or that 1) is indeed the correct answer.  What version of
+XMMS do you use btw?
 
 
-Index: alsa-driver/usb/usx2y/usX2Yhwdep.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/usb/usx2y/usX2Yhwdep.c,v
-retrieving revision 1.1
-diff -u -r1.1 usX2Yhwdep.c
---- alsa-driver/usb/usx2y/usX2Yhwdep.c	25 Nov 2003 11:21:49 -0000	1.1
-+++ alsa-driver/usb/usx2y/usX2Yhwdep.c	27 Dec 2003 13:29:30 -0000
-@@ -247,7 +247,7 @@
- 
- 	do {
- 		if ((err = snd_usX2Y_create_usbmidi(card)) < 0) {
--			snd_printk("snd_us428_create_alsa_devices: snd_us428_create_usbmidi error %i \n", err);
-+			snd_printk("snd_usX2Y_create_alsa_devices: snd_usX2Y_create_usbmidi error %i \n", err);
- 			break;
- 		}
- 		if ((err = snd_usX2Y_audio_create(card)) < 0) 
-@@ -304,15 +304,15 @@
- 	if (!err  &&  1 == dsp->index)
- 		do {
- 			if ((err = snd_usX2Y_AsyncSeq04_init((usX2Ydev_t*)hw->private_data))) {
--				snd_printk("snd_us428_AsyncSeq04_init error \n");
-+				snd_printk("snd_usX2Y_AsyncSeq04_init error \n");
- 				break;
- 			}
- 			if ((err = snd_usX2Y_In04_init((usX2Ydev_t*)hw->private_data))) {
--				snd_printk("snd_us428_In04_init error \n");
-+				snd_printk("snd_usX2Y_In04_init error \n");
- 				break;
- 			}
- 			if ((err = snd_usX2Y_create_alsa_devices(hw->card))) {
--				snd_printk("snd_us428_create_alsa_devices error %i \n", err);
-+				snd_printk("snd_usX2Y_create_alsa_devices error %i \n", err);
- 				snd_card_free(hw->card);
- 				break;
- 			}
+--=20
+Martin Schlemmer
 
+--=-dn4FlXbteVKNVArPTiyt
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
--------------------------------------------------------
-This SF.net email is sponsored by: IBM Linux Tutorials.
-Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
-Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQA/7ZgmqburzKaJYLYRAtxAAJ9JcBeiDOE8mrwaX6TPvTLUQ89O7gCfcJ2W
+eQ8YbjDpOw1GLxHdjY9w8Ew=
+=2HfR
+-----END PGP SIGNATURE-----
+
+--=-dn4FlXbteVKNVArPTiyt--
