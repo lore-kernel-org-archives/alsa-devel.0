@@ -1,12 +1,16 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: usb midi devices.
-Date: Sun, 14 Dec 2003 18:32:58 +0900
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [Alsa-user] support for audigy ls soundcard
+Date: Sun, 14 Dec 2003 10:53:19 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FDC2E4A.2050105@boosthardware.com>
+Message-ID: <Pine.LNX.4.58.0312141052180.10970@pnote.perex-int.cz>
+References: <200312131632.07454.dvornheder@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA21918
+	for <alsa-devel@alsa-project.org>; Sun, 14 Dec 2003 10:56:44 +0100
+In-Reply-To: <200312131632.07454.dvornheder@t-online.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,32 +19,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Dirk Vornheder <DVornheder@t-online.de>
+Cc: alsa-user@lists.sourceforge.net, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Could someone send me a list of all the usbmidi devices that require 
-firmware to be inserted. I am redesigning the docs for these cards.
+On Sat, 13 Dec 2003, Dirk Vornheder wrote:
 
+> Hi !
+> 
+> Is the creative soundcard Audigy LS supported by the alsa driver ?
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
+No. This chip is different from emu10k1 (Live) and emu10k2 (Audigy) and we 
+have no information about it. Ask Creative for help (documentation).
 
+						Jaroslav
 
-  Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
