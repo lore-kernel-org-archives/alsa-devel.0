@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
-Date: Wed, 8 Dec 2004 17:02:34 +0100
-Message-ID: <d4e1d898ac3791dffd807a23e907e516@bugtrack.alsa-project.org>
+From: Kirill Smelkov <kirr@mns.spb.ru>
+Subject: [patch] alsa-lib pcm-doc typo fixes
+Date: Wed, 8 Dec 2004 19:31:28 +0300
+Message-ID: <200412081930.50484.kirr@mns.spb.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_gxytBo6vc4VzD5H"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6EBF4AA
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 17:02:34 +0100 (MET)
+Received: from mail.mns.spb.ru (mns.spb.ru [195.131.16.6])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3A5E23C2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 17:32:46 +0100 (MET)
+Received: from [192.168.0.127] (helo=tugrik.volcano)
+	by mail.mns.spb.ru with esmtp id 1Cc4k8-00066y-HV
+	for <alsa-devel@alsa-project.org>; Wed, 08 Dec 2004 19:32:44 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,99 +25,89 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
-======================================================================
-Reported By:                brentcfisher
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   671
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.8.1
-======================================================================
-Date Submitted:             11-24-2004 06:36 CET
-Last Modified:              12-08-2004 17:02 CET
-======================================================================
-Summary:                    ALSA sound cuts out w/ message: ALSA
-sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
-Description: 
-Particularily noticeable when watching a DVD via xine using AC3 Pass
-Through.  Sound will cut out momentarily (usually for no more than a
-second).  The skip is always accompanied by multiples of this message in
-the /var/log/messages file:
+--Boundary-00=_gxytBo6vc4VzD5H
+Content-Type: text/plain;
+  charset="koi8-r"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
+While reading alsa-lib pcm documentation i've descovered a few typos and =
+an=20
+ambiguity in snd_pcm_wait description.
 
-These messages appear in the log file once or twice a minute although the
-sound only noticable cuts out every few minutes .  Very annoying on an
-HTPC.
-======================================================================
+trivial patch attached.
 
-----------------------------------------------------------------------
- tiwai - 12-08-04 16:35 
-----------------------------------------------------------------------
-Oops, sorry, I forgot to attach the second patch...
+--=20
+    =EB=C9=D2=C9=CC=CC =F3=CD=C5=CC=CB=CF=D7
 
-----------------------------------------------------------------------
- brentcfisher - 12-08-04 17:02 
-----------------------------------------------------------------------
-Debug produced using via-pointer-fix2 patch:
 
-Dec  8 09:03:16 samwise fail: idx = 0/16, lastpos = 0x1000
-(idx=0,size=0x1000,count=0x0), bufsize2 = 0x8000, offsize = 0x0, size =
-0x1000, count = 0xfe0
-Dec  8 09:03:16 samwise fail: idx = 0/16, lastpos = 0x1000
-(idx=0,size=0x1000,count=0xfe0), bufsize2 = 0x8000, offsize = 0x0, size =
-0x1000, count = 0xfe0
-Dec  8 09:03:16 samwise fail: idx = 0/16, lastpos = 0x1000
-(idx=0,size=0x1000,count=0xfe0), bufsize2 = 0x8000, offsize = 0x0, size =
-0x1000, count = 0xfe0
-Dec  8 09:03:16 samwise fail: idx = 0/16, lastpos = 0x1000
-(idx=0,size=0x1000,count=0xfe0), bufsize2 = 0x8000, offsize = 0x0, size =
-0x1000, count = 0xfc0
-Dec  8 09:03:16 samwise fail: idx = 0/16, lastpos = 0x1000
-(idx=0,size=0x1000,count=0xfc0), bufsize2 = 0x8000, offsize = 0x0, size =
-0x1000, count = 0xfc0
 
--Brent
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-24-04 06:36 brentcfisher   New Issue                                    
-11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
-11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
-11-24-04 06:47 brentcfisher   Note Added: 0002541                          
-11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
-11-24-04 23:50 squarooticus   Note Added: 0002584                          
-11-25-04 01:59 brentcfisher   Note Added: 0002585                          
-11-25-04 06:45 squarooticus   Note Added: 0002586                          
-12-02-04 19:34 tiwai          Note Added: 0002694                          
-12-06-04 02:24 brentcfisher   Note Added: 0002725                          
-12-07-04 18:24 tiwai          Note Added: 0002753                          
-12-07-04 18:24 tiwai          File Added: via-pointer-fix.diff                  
+--Boundary-00=_gxytBo6vc4VzD5H
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="alsa-lib-pcm-doc-tweaks.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="alsa-lib-pcm-doc-tweaks.patch"
+
+Index: alsa-lib/src/pcm/pcm.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm.c,v
+retrieving revision 1.290
+diff -u -r1.290 pcm.c
+--- alsa-lib/src/pcm/pcm.c	12 Nov 2004 20:27:31 -0000	1.290
++++ alsa-lib/src/pcm/pcm.c	8 Dec 2004 16:20:52 -0000
+@@ -171,7 +171,7 @@
+ \par SND_PCM_STATE_XRUN
+ The PCM device reached overrun (capture) or underrun (playback).
+ You can use the -EPIPE return code from I/O functions
+-(#snd_pcm_writei(), #snd_pcm_writen(), #snd_pcm_readi(), #snd_pcm_readi())
++(#snd_pcm_writei(), #snd_pcm_writen(), #snd_pcm_readi(), #snd_pcm_readn())
+ to determine this state without checking
+ the actual state via #snd_pcm_state() call. You can recover from
+ this state with #snd_pcm_prepare(),
+@@ -231,7 +231,7 @@
+ #SND_PCM_ACCESS_RW_NONINTERLEAVED access method) at input. There are these
+ functions for interleaved transfers: #snd_pcm_writei()
+ #snd_pcm_readi(). For non-interleaved transfers, there are
+-these functions: #snd_pcm_writen(0 and #snd_pcm_readn().
++these functions: #snd_pcm_writen() and #snd_pcm_readn().
  
-12-08-04 05:03 brentcfisher   Note Added: 0002774                          
-12-08-04 12:13 tiwai          Note Added: 0002779                          
-12-08-04 16:33 brentcfisher   Note Added: 0002786                          
-12-08-04 16:35 tiwai          Note Added: 0002787                          
-12-08-04 16:36 tiwai          File Added: via-pointer-fix2.diff                 
-  
-12-08-04 17:02 brentcfisher   Note Added: 0002789                          
-======================================================================
+ \subsection alsa_mmap_rw Direct Read / Write transfer (via mmap'ed areas)
+ 
+@@ -402,7 +402,7 @@
+ 
+ \section pcm_action Managing the stream state
+ 
+-These functions directly and indirectly affecting the stream state:
++The following functions directly and indirectly affect the stream state:
+ 
+ \par snd_pcm_hw_params
+ The #snd_pcm_hw_params() function brings the stream state
+@@ -472,9 +472,11 @@
+ The default device is equal to plug plugin with hw plugin as slave. The defaults are
+ used:
+ 
++\code
+ defaults.pcm.card 0
+ defaults.pcm.device 0
+ defaults.pcm.subdevice -1
++\endcode
+ 
+ These defaults can be freely overwritten in local configuration files.
+ 
+@@ -2067,7 +2069,8 @@
+ /**
+  * \brief Wait for a PCM to become ready
+  * \param pcm PCM handle
+- * \param timeout maximum time in milliseconds to wait
++ * \param timeout maximum time in milliseconds to wait,
++ *        a negative value means infinity
+  * \return a positive value on success otherwise a negative error code
+  *         (-EPIPE for the xrun and -ESTRPIPE for the suspended status,
+  *          others for general errors) 
 
+--Boundary-00=_gxytBo6vc4VzD5H--
 
 
 
