@@ -1,12 +1,13 @@
-From: knuarv@nith.no
-Subject: Re: Need help with RME Hammerfall Lite (DIGI 9636) and Alsa 0.9.2
-Date: Sun,  6 Apr 2003 11:23:10 +0200
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: How to detect whether OSS mixer is emulated by ALSA
+Date: Sun, 6 Apr 2003 14:05:25 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1049620990.3e8ff1fe89555@webmail.nith.no>
+Message-ID: <Pine.LNX.4.44.0304061403380.2574-100000@pnote.perex-int.cz>
+References: <200304051821.19599.c.esken@cityweb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200304051821.19599.c.esken@cityweb.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,20 +16,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Christian Esken <c.esken@cityweb.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> not sure what to say. i routinely use aplay in this to play stereo wav
-> files through a 9652, an HDSP and an HDSP-9652.
-This is not only happening in aplay, it also happens with the pcm test program 
-(written by yourself I think?). When I change to 2 channels, no sound. Perhaps 
-there's something I've done wrong, but I can't see what it should be.
- 
-> they are just parts of the buffers you deliver to the driver. which
-> parts depends on whether you are using interleaved or non-interleaved
-> access.
-Ok.
-I'll have another look at Jack, although I'd like to simply make Alsa work.
+On Sat, 5 Apr 2003, Christian Esken wrote:
+
+> Hi,
+> 
+> my mixer (kmix) supports OSS and ALSA at the same time. This is good for a 
+> mixed-mode environment (e.g. if there is a TV card w/o ALSA support).
+> 
+> Unfortunately this means that kmix finds some mixers twice.
+> - One time the real thing (ALSA)
+> - One time the OSS-emulation
+> 
+> This will confuse users.
+> 
+> Is there any way to find out those OSS mixers which are just emulated?
+> I browsed http://www.alsa-project.org/~iwai/OSS-Emulation.html and other 
+> documentation but found nothing . I also tried to build the docs below 
+> alsa-doc/lib, but failed (Yes, I have openjade installed). 
+
+ALSA emulation layer always report the version of OSS mixer (OSS_GETVERSION) as:
+
+#define SNDRV_OSS_VERSION         ((3<<16)|(8<<8)|(1<<4)|(0))      /* 3.8.1a */
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
