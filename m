@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000361]: Latest alsa-driver from CVS will not compile on Linux 2.4 (perhaps RH EL specific)
-Date: Fri, 24 Sep 2004 13:38:26 +0200 (CEST)
+Subject: [ALSA - driver 0000445]: 1.0.6 breaks redhat alsasound script
+Date: Fri, 24 Sep 2004 13:40:58 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924113826.F417E101DE@server.perex-int.cz>
+Message-ID: <20040924114058.9BB9A101DF@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 32CB6288
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:38:27 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D8BEF288
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:40:58 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,55 +22,71 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000361
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000445
 ======================================================================
-Reported By:                elklein
+Reported By:                deathpudding
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     361
-Category:                   0_compilation problem_!!!
+Bug ID:                     445
+Category:                   CORE - sequencer
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Red Hat Enterprise Linux
-Kernel Version:             2.4.21-15.0.2
+Distribution:               redhat
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-02-2004 16:53 CEST
-Last Modified:              09-24-2004 13:38 CEST
+Date Submitted:             08-15-2004 19:25 CEST
+Last Modified:              09-24-2004 13:40 CEST
 ======================================================================
-Summary:                    Latest alsa-driver from CVS will not compile on Linux 2.4 (perhaps RH EL specific)
+Summary:                    1.0.6 breaks redhat alsasound script
 Description: 
-I believe this bug was introduced on June 22nd in
-alsa-devel/acore/pcm_native.patch
+I compiled the driver with sequencer support. The alsasound script uses the
+content of /proc/asound/seq/drivers to know which sequencer drivers to
+load. But, since installing the 1.0.6 driver, the seq/drivers file repeats
+the list of drivers infinitely, for example:
 
-With the latest code, I get a compile error at line 3175 of pcm_native.c.
-The problem is that io_remap_page_range has too few arguments for my OS
-version (it works with the 2.6 version in the code), however I am using
-Red Hat's latest 2.4.21-15.0.2 kernel.
+snd-emu10k1-synth,loaded,requested,1
+snd-seq-midi,loaded,requested,1
+snd-seq-oss,loaded,requested,1
+snd-emu10k1-synth,loaded,requested,1
+snd-seq-midi,loaded,requested,1
+snd-seq-oss,loaded,requested,1
+...
+
+and therefore the alsasound script gets stuck in an infinite loop,
+printing out this:
+
+FATAL: Module snd_emu10k1_synth already in kernel.
+FATAL: Module snd_seq_midi already in kernel.
+FATAL: Module snd_emu10k1_synth already in kernel.
+FATAL: Module snd_seq_midi already in kernel.
+...
 ======================================================================
 
 ----------------------------------------------------------------------
- elklein - 07-02-2004 16:54 CEST 
+ c0ff - 08-15-2004 23:13 CEST 
 ----------------------------------------------------------------------
-I feel like an idiot. I just noticed that this bug had already been
-reported a bit ago. The first bug is:
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000358
+It's a bug in alsa /proc read function (core/info.c). 2.6.8-rc4 kernel does
+not have this bug, but alsa-driver-1.0.5a has.
 
-My appologies.
+----------------------------------------------------------------------
+ perex - 08-16-2004 12:06 CEST 
+----------------------------------------------------------------------
+Fixed in 1.0.6a.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-02-04 16:53 elklein        New Bug                                      
-07-02-04 16:53 elklein        Distribution              => Red Hat Enterprise Linux
-07-02-04 16:53 elklein        Kernel Version            => 2.4.21-15.0.2   
-07-02-04 16:54 elklein        Bugnote Added: 0001375                       
-07-04-04 12:54 perex          duplicate_id             0 => 358            
-07-04-04 12:54 perex          Resolution               open => duplicate   
-07-04-04 12:54 perex          Status                   assigned => resolved
-09-24-04 13:38 tiwai          Status                   resolved => closed  
+08-15-04 19:25 deathpudding   New Bug                                      
+08-15-04 19:25 deathpudding   Distribution              => redhat          
+08-15-04 23:13 c0ff           Bugnote Added: 0001568                       
+08-16-04 12:06 perex          Bugnote Added: 0001570                       
+08-16-04 12:06 perex          Assigned To               => perex           
+08-16-04 12:06 perex          Resolution               open => fixed       
+08-16-04 12:06 perex          Status                   new => resolved     
+09-24-04 13:40 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
