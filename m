@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
-Date: Mon, 14 Feb 2005 19:46:41 +0100
-Message-ID: <2821709b7f1de09384f53404c7936820@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000886]: alsactl store = crash
+Date: Mon, 14 Feb 2005 19:48:29 +0100
+Message-ID: <98bedff12202e4b4b198fa6eeb27c2b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AA563248
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:46:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 56BEC248
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:48:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,143 +23,120 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=875> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=886> 
 ======================================================================
-Reported By:                Jean-Louis Crouzet
-Assigned To:                tiwai
+Reported By:                udasoft
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   875
-Category:                   PCI - nm256
+Issue ID:                   886
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   block
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             # uname -a<br />
-Linux hp900 2.6.8jlcv34 view.php?id=1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-01-2005 16:17 CET
-Last Modified:              02-14-2005 19:46 CET
+Date Submitted:             02-06-2005 16:01 CET
+Last Modified:              02-14-2005 19:48 CET
 ======================================================================
-Summary:                    Can't get nm256 up & running
+Summary:                    alsactl store = crash
 Description: 
-I trying since ages to get this nm256 up & running with ALSA, w/o any
-sucess.
+I have a Intel D915PBL Motherboard with High Definition Audio Controller
+(ICH6 Family).
 
-PC Omnibook 900 (not a 900B)
+When I save the state of mixer with alsactl, receive this error:
 
-# uname -a
-Linux hp900 2.6.8jlcv34 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
-Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
-
-
-#lspci  -tv
--[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
-      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
-      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
-Audio]
-      +-04.0  Texas Instruments PCI1225
-      +-04.1  Texas Instruments PCI1225
-      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
-      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
-      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
-      \-07.3  Intel Corp. 82371AB/EB/MB PIIX4 A	
-	
-# modinfo snd_nm256
-filename:      
-/lib/modules/2.6.8jlcv32/kernel/sound/pci/nm256/snd-nm256.ko
-author:         Takashi Iwai <tiwai@suse.de>
-description:    NeoMagic NM256AV/ZX
-license:        GPL
-vermagic:       2.6.8jlcv32 PENTIUMII gcc-3.3
-depends:        snd-pcm,snd,snd-ac97-codec
-alias:          pci:v000010C8d00008005sv*sd*bc*sc*i*
-alias:          pci:v000010C8d00008006sv*sd*bc*sc*i*
-alias:          pci:v000010C8d00008016sv*sd*bc*sc*i*
-parm:           vaio_hack:Enable workaround for Sony VAIO notebooks.
-parm:           use_cache:Enable the cache for coefficient table access.
-parm:           buffer_top:Set the top address of audio buffer for
-NeoMagic 256AV/ZX soundcard.
-parm:           force_ac97:Force to use AC97 codec for NeoMagic 256AV/ZX
-soundcard.
-parm:           capture_bufsize:ADC frame size in kB for NeoMagic 256AV/ZX
-soundcard.
-parm:           playback_bufsize:DAC frame size in kB for NeoMagic
-256AV/ZX soundcard.
-parm:           enable:Enable this soundcard.
-parm:           id:ID string for NeoMagic 256AV/ZX soundcard.
-parm:           index:Index value for NeoMagic 256AV/ZX soundcard.
-
-# alsaconf
-Unloading sound driver modules...done.
-Building card database..
-
-
-Running update-modules...
-Loading driver...
-FATAL: Error running install command for snd_nm256
-Setting default volumes...
-Saving the mixer setup used for this in /var/lib/alsa/asound.state.
-/usr/sbin/alsactl: save_state:1061: No soundcards found...
-
-===============================================================================
-
- Now ALSA is ready to use.
- For adjustment of volumes, use your favorite mixer.
-
- Have a lot of fun!
-
-
-???????????????????????????,,
+udasoftware root # alsactl  store
+Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+PREEMPT SMP
+Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
+snd_seq_midi_event snd_seq snd_seq_device snd_azx snd_hda_codec snd_pcm
+snd_timer snd snd_page_alloc nvidia
+CPU:    0
+EIP:    0060:[<00000000>]    Tainted: P      VLI
+EFLAGS: 00010282   (2.6.10-gentoo-r6)
+EIP is at 0x0
+eax: f2264580   ebx: f705a400   ecx: 00000023   edx: ee59fe4c
+esi: f2264580   edi: ffffffe7   ebp: f705a54c   esp: ee59fe30
+ds: 007b   es: 007b   ss: 0068
+Process alsactl (pid: 16709, threadinfo=ee59f000 task=c191f020)
+Stack: f8b2efca f2264580 ee59fe4c 00000110 f2264600 00000000 f2264664
+00000022
+       00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+              00000000 00000000 00000000 00000000 00000000 00000000
+00000000 00000000
+              Call Trace:
+               [<f8b2efca>] snd_ctl_elem_info+0x7a/0x190 [snd]
+                [<f8b2fffa>] snd_ctl_ioctl+0x25a/0x390 [snd]
+                 [<c016f8ba>] sys_ioctl+0xca/0x230
+                  [<c01031af>] syscall_call+0x7/0xb
+                  Code:  Bad EIP value.
+                   Segmentation fault
 ======================================================================
 
 ----------------------------------------------------------------------
- Jean-Louis Crouzet - 02-10-05 09:54 
+ udasoft - 02-09-05 19:35 
 ----------------------------------------------------------------------
-Hi Tiwai,
+I have tried with the CVS but the result is the same :(
 
-here you go :
-# alsaconf -L logfile -p cs4232
-Usage: /etc/init.d/alsa {start [CARD]|stop [CARD]|restart
-[CARD]|force-unload|force-reload|suspend|resume}
-FAILED
+The only difference I have occurred is in the stack address:
 
-hp900:~# cat logfile
-Starting alsaconf: Thu Feb 10 09:56:17 CET 2005
-cs4232 port=0x530 cport=0x538 dma1=1 dma2=0 irq=5
-cs4232 port=0x534 cport=0x538 dma1=1 dma2=0 irq=5
-cs4232 port=0x530 cport=0x210 dma1=1 dma2=0 irq=5
-cs4232 port=0x534 cport=0x210 dma1=1 dma2=0 irq=5
-cs4232 port=0x530 cport=0xf00 dma1=1 dma2=0 irq=5
-cs4232 port=0x534 cport=0xf00 dma1=1 dma2=0 irq=5
+udasoftware root # alsactl store
+Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+PREEMPT SMP
+Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
+snd_seq_midi_event snd_
+seq snd_seq_device snd_azx snd_hda_codec snd_pcm snd_timer snd
+snd_page_alloc nv
+idia
+CPU:    0
+EIP:    0060:[<00000000>]    Tainted: P      VLI
+EFLAGS: 00010282   (2.6.10-gentoo-r6)
+EIP is at 0x0
+eax: e2a19980   ebx: ebb3c800   ecx: 00000023   edx: e5ddae4c
+esi: e2a19980   edi: ffffffe7   ebp: ebb3c94c   esp: e5ddae30
+ds: 007b   es: 007b   ss: 0068
+Process alsactl (pid: 25836, threadinfo=e5dda000 task=e1553520)
+Stack: f8b2f02a e2a19980 e5ddae4c 00000110 e2a19a00 00000000 e2a19a64
+00000022
+       00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+              00000000 00000000 00000000 00000000 00000000 00000000
+00000000 000
+00000
+              Call Trace:
+               [<f8b2f02a>] snd_ctl_elem_info+0x7a/0x190 [snd]
+                [<f8b3001a>] snd_ctl_ioctl+0x25a/0x390 [snd]
+                 [<c016f8ba>] sys_ioctl+0xca/0x230
+                  [<c01031af>] syscall_call+0x7/0xb
+                  Code:  Bad EIP value.
+                   Segmentation fault
+***
+ I don't understand if  the problem is caused from my error or, otherwise,
+from the driver.
 
-are we (you) progressing ;-) ?
-
-Cheers,
-JL
+ I have tried to install alsa-driver from emerge (emerge alsa-drivers) but
+alsaconf didn't found my integrated soundcard (like 1.0.8rc2 and cvs
+version).
 
 ----------------------------------------------------------------------
- tiwai - 02-14-05 19:46 
+ tiwai - 02-14-05 19:48 
 ----------------------------------------------------------------------
-isapnp=0 seems missing.  Check "/sbin/modinfo snd-cs4232" whether isapnp
-module option exists.  If yes, try the module option
-snd-cs4232 port=0x530 cport=0x538 dma1=1 dma2=0 irq=5 isapnp=0
+Can't reproduce here.  Try to build alsa-drivers with --with-debug=full
+option.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-05 16:17 Jean-Louis CrouzetNew Issue                                    
-02-01-05 16:17 Jean-Louis CrouzetKernel Version            => # uname -a
-Linux hp900 2.6.8jlcv34 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
-Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
-02-02-05 11:18 tiwai          Note Added: 0003483                          
-02-02-05 12:40 Jean-Louis CrouzetNote Added: 0003485                          
-02-02-05 12:46 tiwai          Note Added: 0003486                          
-02-02-05 13:05 Jean-Louis CrouzetNote Added: 0003487                          
-02-09-05 12:09 tiwai          Note Added: 0003547                          
-02-10-05 09:54 Jean-Louis CrouzetNote Added: 0003563                          
-02-14-05 19:46 tiwai          Note Added: 0003605                          
+02-06-05 16:01 udasoft        New Issue                                    
+02-06-05 16:01 udasoft        Distribution              => Gentoo          
+02-06-05 16:01 udasoft        Kernel Version            => 2.6.10          
+02-09-05 11:54 tiwai          Note Added: 0003544                          
+02-09-05 19:35 udasoft        Note Added: 0003562                          
+02-14-05 19:48 tiwai          Note Added: 0003606                          
 ======================================================================
 
 
