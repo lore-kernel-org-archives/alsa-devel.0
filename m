@@ -1,13 +1,17 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: Lowest latency: JACK, or ALSA directly?
-Date: Fri, 12 Nov 2004 16:28:12 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411121619090.30201@denise.shiny.it>
-References: <200411111534.iABFY8UK012314@localhost.localdomain>
- <200411121547.05145.gilles.degottex@net2000.ch>
+From: Linus Torvalds <torvalds@osdl.org>
+Subject: Re: The ALSA Situation
+Date: Fri, 12 Nov 2004 07:50:58 -0800 (PST)
+Message-ID: <Pine.LNX.4.58.0411120741300.2301@ppc970.osdl.org>
+References: <200411102113.iAALDLUN001061@localhost.localdomain>
+ <Pine.LNX.4.58.0411101426260.2301@ppc970.osdl.org>
+ <Pine.LNX.4.58.0411110714280.2179@pnote.perex-int.cz>
+ <Pine.LNX.4.58.0411102241240.2301@ppc970.osdl.org> <s5his8cfiot.wl@alsa2.suse.de>
+ <Pine.LNX.4.58.0411110855380.2301@ppc970.osdl.org> <s5hhdnwfgbz.wl@alsa2.suse.de>
+ <Pine.LNX.4.58.0411111021520.2301@ppc970.osdl.org> <s5hekizfo0n.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200411121547.05145.gilles.degottex@net2000.ch>
+In-Reply-To: <s5hekizfo0n.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,36 +21,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gilles Degottex <gilles.degottex@net2000.ch>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On Fri, 12 Nov 2004, Gilles Degottex wrote:
-
-> On Thursday 11 November 2004 16:34, Paul Davis wrote:
-> > it doesn't *add* any latency at all. what it might conceivably do is
-> > to prevent a given application from reaching the lowest possible
-> > latency, because of the extra context switching involved in JACK. so
-> > far, however, this doesn't appear to be the case - people have JACK
-> > running at the same latency settings as they could get with ALSA. so
-> > the effect is marginal if its measurable at all.
+On Fri, 12 Nov 2004, Takashi Iwai wrote:
 >
-> no latency ?? so why qjackctl show latency information ? (around 50ms for me)
+> But, solving the concurrent access in another way in the *driver
+> level* (the intermediate buffer or the soft-mixing) doesn't sound good
+> to me.  It brings more complexity than the simple -EBUSY strategy.
 
-No, reread the sentence above: "it doesn't *add* any latency at all".
-Since the latency is the length of the buffer, as long as the overhead
-introduced by Jack is "small", it doesn't add latency. By "small" i mean
-that is does not cause underruns, which depends on the buffer size. For
-example if your system can handle buffers down to 1ms long, with Jack that
-time is longer is eg. 2ms. But there is not difference in latency using a
-2ms long buffer with Jack and the same with alsa-lib, because it's always
-2ms.
+I won't argue against that. I don't actually mind EBUSY myself. At least
+it's a pretty obvious error condition, and together with some (alternate)  
+mixing interface - whether user or kernel mode - I don't think there is
+anything fundamentally wrong with just saying "I'm busy, I can't take you
+right now".
 
+My arguments have really been against blocking. And to some degree an 
+argument against people thinking it's _good_ to set individual parameters. 
 
---
-Giuliano.
+		Linus
 
 
 -------------------------------------------------------
