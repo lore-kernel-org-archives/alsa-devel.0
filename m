@@ -1,12 +1,12 @@
 From: Paul Davis <pbd@op.net>
-Subject: Re: libasound and libpthread
-Date: Mon, 29 Jul 2002 08:05:21 -0400
+Subject: Re: ALSA docs
+Date: Mon, 29 Jul 2002 08:08:11 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17Z9Fw-00028n-00@usw-sf-list1.sourceforge.net>
-References: <3D44F782.3070007@emt.iis.fhg.de>
+Message-ID: <E17Z9If-0003MS-00@usw-sf-list1.sourceforge.net>
+References: <3D44C6DE.6030704@boosthardware.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Mon, 29 Jul 2002 10:06:26 +0200."
-             <3D44F782.3070007@emt.iis.fhg.de>
+In-Reply-To: Your message of "Mon, 29 Jul 2002 13:38:54 +0900."
+             <3D44C6DE.6030704@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,19 +15,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Thomas Roeder <rdr@emt.iis.fhg.de>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->I am working with Alsa 0.9.0beta12 version and I am also using posix 
->threads (libpthread) in my project. In the release version of the 
->program I link both libraries (libpthread, libasound) dynamically and 
->everything works well. In the debug version however, I have to do static 
->linking of the libpthread for proper debugging.
+>> i would personally work from a complete set of snd-* modules, and use
+>> modinfo(1) + perl to get the information
+>
+>Isn't that what happens in the INSTALL file anyway?
 
-why? i use pthreads a great deal, and i have never had to do this.
+it doesn't look like it. there are several cards missing there, and it
+looks hand-written rather then fetched from the source.
 
-and no, libasound does not use pthreads or any other form of threads.
+>> and put that into the temp
+>> file that is inserted into the template, or if possible, put it
+>> straight into the template.
+>> 
+>
+>IIRC doing the above would need access to a set of modules online. Seems 
+>unneccesary when the INSTALL file is already available.
+>
+>But I'm willing to be told otherwise if it makes the info more reliable.
+
+it would be much more reliable if you got the options from the modules
+themselves. even just running grep for MOD_PARM etc. would be better
+than using the INSTALL file.
 
 --p
 
