@@ -1,15 +1,12 @@
-From: Tarragon Allen <lists@n12turbo.com>
-Subject: Re: ALSA + jack + xrun = kernel crash
-Date: Thu, 22 May 2003 09:50:59 +1000
+From: "Eliot Blennerhassett" <bigblen@icqmail.com>
+Subject: [OT] New Zealanders using Xtra ISP?
+Date: Wed, 21 May 2003 16:59:43 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305220950.59394.lists@n12turbo.com>
-References: <s5hk7ckvbap.wl@alsa2.suse.de> <3ECBCF5B.2020807@esat.kuleuven.ac.be> <3ECC06D7.1030202@student.kuleuven.ac.be>
+Message-ID: <20030521165943.6760.h005.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3ECC06D7.1030202@student.kuleuven.ac.be>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -22,47 +19,24 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 22 May 2003 09:08, Pieter Palmers wrote:
-> Pieter Palmers wrote:
-> >> ok.
-> >>
-> >> meanwhile, i committed my fixes (without the self_group change) to cvs
-> >> now.  i hope this is the last fix for this problem...
-> >
-> > So did I, but alas...
-> >
-> > installed the new CVS version.
-> >
-> > this time I tried using alsaplayer -d jack.
-> >
-> > apart from not getting any sound, all seemed to work for a while. I
-> > then Ctrl-C 'd jack and restarted it. Result: instant lockup.
-> > I do have the impression that it takes longer for the lockup to occur.
-> >
-> > I'll try again with spiralsynthmodular, and I'll try to figure out if
-> > the restarting of Jack has something to do with this.
-> >
-> > Pieter
->
-> and so I tried spiralsynthmodular...
-> it still hangs the system, but now it runs a little longer than
-> yesterday (a minute instead of some seconds).
-> and the restarting of jack doesn't affect it, i.e. this time it crashed
-> on the first jack session.
->
-> I'm sorry that I can't provide you with any more info... if you have
-> some suggestions on gathering more usefull info, please let me know.
->
-> Pieter
+Hi all,
 
-Just a longshot, and forgive me if it's already been raised : you aren't using 
-ext3 by any chance? There are issues with kernel 2.4.20, ext3 which can cause 
-lockups when being used to hard disk recording : this has been shown up while 
-using Ardour. I don't know if it relates, but thought it might help.
+is anyone on this list using Xtra (an ISP) POP/SMTP servers and successfully
+posting to this list?
 
-t
--- 
-GPG: http://n12turbo.com/tarragon/public.key
+It doesn't work for me, and I am trying to determine if it is only me, or the
+whole ISP that is the problem.
+
+thanks
+
+Eliot Blennerhassett
+AudioScience Inc.
+--
+Junk footer beyond this point. Read at your own risk.
+
+
+-------------------------------------------------------------
+Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
 
 
 -------------------------------------------------------
