@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: emu10k1 bug and patch (0.9.0rc7)
-Date: Thu, 13 Feb 2003 20:57:40 +0100 (CET)
+From: Chris Raphael <raphael@math.umass.edu>
+Subject: Re: playing underruns
+Date: Thu, 13 Feb 2003 15:13:07 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302132056020.1315-100000@pnote.perex-int.cz>
-References: <s5hptpwl75w.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200302132013.h1DKD7n08538@fafner.math.umass.edu>
+References: <200302131911.h1DJBBn08117@thales.math.umass.edu>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hptpwl75w.wl@alsa2.suse.de>
+In-reply-to: <200302131911.h1DJBBn08117@thales.math.umass.edu> (message from
+	Paul Davis on Thu, 13 Feb 2003 14:10:54 -0500)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,67 +15,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Arnaud de Bossoreille de Ribou <arnaud.debossoreille@via.ecp.fr>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: paul@linuxaudiosystems.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 13 Feb 2003, Takashi Iwai wrote:
 
-> At Mon, 10 Feb 2003 18:21:12 +0100,
-> Arnaud de Bossoreille de Ribou wrote:
-> > 
-> > Hi, I discovered a bug in the emu10k1 driver which I'll explain here:
-> > 
-> > I was developing an application which uses the timestamps given in the
-> > status of the device to send S/PDIF data to it. This app worked pretty
-> > well except that sometimes I heard sound discontinuities and then a
-> > constant time delay between the sound and the video.
-> > 
-> > I finally found where was the problem, my results is based on the
-> > emu10k1-debug.patch file attached. The "frame" argument is equal to 0
-> > when the app gets the status of the device. With this patch applied I
-> > saw some output on the console exactly at the same time the bug occured.
-> > Adding a "else" after the "if" to prevent sw_ready from being updated
-> > fixed the problem and the output looked like
-> > 
-> > ----------------
-> > plop 0 -1536 A B
-> > plop 0 1536 B A
-> > ----------------
-> > 
-> > where B == A - 1536 (1536 is the period_size). These two lines were
-> > repeated a few times during playback.
-> > 
-> > So the bug looks like a signedness problem since sw_ready is unsigned
-> > and there is a while(sw_ready > 0), which explain the constant delay,
-> > next in the "snd_emu10k1_fx8010_playback_transfer" function.
-> 
-> this is because of the incorrect check of boundary-wrap.
-> the comparison below must be <= instead of <.
-> (or, it can be simply "diff < 0".)
-> if there only two periods, the original code cannot detect the
-> boundary-wrap.
-> 
-> 	if (diff) {
-> ==>		if (diff < -(snd_pcm_sframes_t) (runtime->boundary / 2))
-> 			diff += runtime->boundary;
-> 		pcm->sw_ready += diff;
-> 	}
-> 
-> sw_ready should be unsigned safely.
-> please try the change above with the unsigned sw_ready.
+Paul,  Okay I looked at the page you pointed me to with info about
+hdparm.  before I changed any of the controller settings I 
+got 21.12 MB/sec for "Timing buffered disk reads" which seems to be 
+pretty good according to the
+author of the web page.  After changing the settings (I/O support
+32 bit, unmaskirq = on, transfer mode to UltraDMA) no change.
+I think my program is not adversely affected by any disk access
+since I always check to see  when my program's callbacks are
+actually delivered.  They seem to be accurate enough and almost
+never more that .02 secs later than requested.  My sense is that
+I am writing my samples on time (as far as I can measure) and the
+problem happens somewhere in the chain of events *after*
+my program writes audio samples.  Do you think the lowlatency patch
+might help there?  Or any other ideas?
 
-Not really. Note that the application can move the appl_ptr backward 
-(using snd_pcm_rewind()). The problem is that pcm->appl_ptr is updated
-wrongly, thus calling function with frames == 0 twice or more causes 
-different results. I'm working on a proper fix.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Chris
 
 
 
