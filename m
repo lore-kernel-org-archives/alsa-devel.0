@@ -1,8 +1,8 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: Experimental USB audio support
-Date: Thu, 30 May 2002 14:15:55 +0900
+Date: Thu, 30 May 2002 14:49:49 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CF5B58B.59E5A233@boosthardware.com>
+Message-ID: <3CF5BD7D.A852184D@boosthardware.com>
 References: <s5hy9e2hk02.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -20,62 +20,48 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-As you can tell I'm very excited about this.
 
-Here's some preliminary stuff.
+At this point I cannot access any of the channels using amixer. This
+card has 4 channels I/O but the devices in /proc/asound suggest that
+only 3 are being accessed.
 
-#dmesg
-----
-usb.c: registered new driver audio
-hub.c: USB new device connect on bus1/1, assigned device number 3
-ALSA usbaudio.c:1134: 3:1:1 : AS_GENERAL descriptor not found
-ALSA usbaudio.c:1134: 3:2:1 : AS_GENERAL descriptor not found
-devfs: devfs_register(): device already registered: "unknown"
-ALSA usbaudio.c:1191: 3:4:1 : frame size 3 doesn't match ALSA 24bit
-sample format
-ALSA usbaudio.c:1134: 3:4:2 : AS_GENERAL descriptor not found
-ALSA usbaudio.c:1191: 3:4:3 : frame size 3 doesn't match ALSA 24bit
-sample format
-ALSA usbaudio.c:1191: 3:5:1 : frame size 3 doesn't match ALSA 24bit
-sample format
-ALSA usbaudio.c:1134: 3:5:2 : AS_GENERAL descriptor not found
-ALSA usbaudio.c:1191: 3:5:3 : frame size 3 doesn't match ALSA 24bit
-sample format
-devfs: devfs_register(): device already registered: "unknown"
-ALSA usbaudio.c:1191: 3:7:1 : frame size 3 doesn't match ALSA 24bit
-sample format
-ALSA usbaudio.c:1134: 3:7:2 : AS_GENERAL descriptor not found
-ALSA usbaudio.c:1191: 3:7:3 : frame size 3 doesn't match ALSA 24bit
-sample format
-ALSA usbaudio.c:1191: 3:8:1 : frame size 3 doesn't match ALSA 24bit
-sample format
-ALSA usbaudio.c:1134: 3:8:2 : AS_GENERAL descriptor not found
-ALSA usbaudio.c:1191: 3:8:3 : frame size 3 doesn't match ALSA 24bit
-sample format
-devfs: devfs_register(): device already registered: "unknown"
-----
- more /proc/asound/cards 
-0 [card0          ]: CMI8738 - C-Media PCI CMI8738
-                     C-Media PCI CMI8738 (model 37) at 0xa400, irq 5
-1 [card1          ]: ICH - Intel 82801BA-ICH2
-                     Intel 82801BA-ICH2 at 0xdc00, irq 3
-2 [card2          ]: USB-Audio - USB Audio Driver
-                     M Audio USB AudioSport Quattro (tm)
-3 [card3          ]: USB-Audio - USB Audio Driver
-                     M Audio USB AudioSport Quattro (tm)
-4 [card4          ]: USB-Audio - USB Audio Driver
-                     M Audio USB AudioSport Quattro (tm)
-----
-# lsusb -p /proc/asound/card2/ -vv
-# lsusb -p /proc/asound/card3/ -vv
-# lsusb -p /proc/asound/card4/ -vv
-# lsusb -p /proc/asound/card4/ -vv -t
-cannot open /proc/asound/card4//devices, No such file or directory (2)
-----
+Also the only file that shows up in the dirs for card2 card3 and car4 is
+'id'  which just says card2 card3 or card4.
 
-I cannot get more out of lsusb than that. I assume it is somethign to do
-with the fact the /proc/bus/usb has no entries. I will look into fixing
-that unless the device is not supposed to register there.
+Here's the relevant output from lsusb
+
+----
+# lsusb -t                     
+Bus#  2
+`-Dev#   1 Vendor 0x0000 Product 0x0000
+Bus#  1
+`-Dev#   1 Vendor 0x0000 Product 0x0000
+  |-Dev#   4 Vendor 0x0763 Product 0x2001
+  `-Dev#   2 Vendor 0x09da Product 0x0006
+
+----
+# lsusb -vv -d 0x0763:0x2001
+
+Bus 001 Device 004: ID 0763:2001 Midiman 
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.00
+  bDeviceClass            0 Interface
+  bDeviceSubClass         0 
+  bDeviceProtocol         0 
+  bMaxPacketSize0         8
+  idVendor           0x0763 Midiman
+  idProduct          0x2001 
+  bcdDevice            1.01
+  iManufacturer           1 M Audio
+  iProduct                2 USB AudioSport Quattro (tm)
+  iSerial                 0 
+  bNumConfigurations      1
+cannot get config descriptor 0, Connection timed out (110)
+  Language IDs: (length=4)
+     0409 English(US)
+----
 
 
 -- 
