@@ -1,13 +1,11 @@
-From: mru@kth.se (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
-Subject: Re: When I use xmms with OSS plugin sound is normal with the ALSA
- plugin sound skips sometimes
-Date: Wed, 11 Feb 2004 22:11:40 +0100
+From: Michael Corlett <ad@corlett.plus.com>
+Subject: ISA pnp & kernel 2.6
+Date: Wed, 11 Feb 2004 21:57:35 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xr7x1wcc3.fsf@kth.se>
-References: <1076521331.2782.5.camel@D5E03F95.kabel.telenet.be>
+Message-ID: <402AA54F.3050705@gremlin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,19 +18,56 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Kristof vansant <de_lupus@pandora.be> writes:
 
-> When I use xmms with OSS plugin sound is normal but with the ALSA plugin
-> sound skips sometimes.
->
-> Is this a xmms problem? Or makes OSS emulation the sound stable?
+I have an ISA pnp card (opti931) which stopped working when I
+installed kernel 2.6 and the problem is as follows:
 
-It's an xmms problem.  Read the code and you'll see why.  It can skip
-with OSS output too.
+The kernel function that sets and activates the card is
+isapnp_set_resources (in drivers/pnp/isapnp/core.c) and for
+each resource, it is checking that the correct flag is set
+before writing to the port (i.e. IORESOURCE_IO, IORESOURCE_IRQ,
+IORESOURCE_DMA, IORESOURCE_MEM) however, these flags are never
+being set because the driver code is just using
+pnp_init_resource_table followed by pnp_resource_change for each
+setting and so the configuration is never written to the card.
+(I believe that the equivalent code in 2.4 just checked for
+flags != 0).
 
--- 
-Måns Rullgård
-mru@kth.se
+As I see it, there are four options:
+
+1) Manually set the flags in the driver code (this is what I have
+    done temporarily to get the card working).
+
+
+2) Change the test in isapnp_set_resources to
+
+    ((flags & IORESOURCE_xx) | (~flags & IORESOURCE_AUTO))
+
+    as anything that has been auto-allocated should have the
+    appropriate flag set.
+
+
+3) Change pnp_resource_change to clear IORESOURCE_UNSET and change
+    the test in isapnp_set_resources to
+
+    (~flags & IORESOURCE_UNSET)
+
+
+4) In the driver, use something else apart from pnp_resource_change
+    (i.e. is there now a preferred method for filling in the
+    settings).
+
+
+I prefer 3) or else 2) but are there any reasons not to do this?
+Any advice welcome.
+
+
+Michael.
+
+
+
+
+
 
 
 
