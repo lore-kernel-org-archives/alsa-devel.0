@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000572]: spdif hw entry fails to work in multi
-Date: Fri,  8 Oct 2004 12:29:13 +0200 (CEST)
+Subject: [ALSA - driver 0000408]: Volume control is chaotic
+Date: Fri,  8 Oct 2004 12:24:08 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041008102913.DE34D2A001@server.perex-int.cz>
+Message-ID: <20041008102408.198952A003@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5186324F
-	for <alsa-devel@alsa-project.org>; Fri,  8 Oct 2004 12:29:14 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 79DF422D
+	for <alsa-devel@alsa-project.org>; Fri,  8 Oct 2004 12:24:08 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,144 +22,230 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000572
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000408
 ======================================================================
-Reported By:                ramendik
-Assigned To:                
+Reported By:                skamp
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     572
-Category:                   PCI - intel8x0
+Bug ID:                     408
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               RH-based
-Kernel Version:             2.6.8.1, with alsa 1.0.7rc1 plus patches from bug 0000505
+Status:                     assigned
+Distribution:               LFS 5.1.1, BLFS 5.1
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             10-08-2004 02:27 CEST
-Last Modified:              10-08-2004 12:29 CEST
+Date Submitted:             07-27-2004 18:40 CEST
+Last Modified:              10-08-2004 12:24 CEST
 ======================================================================
-Summary:                    spdif hw entry fails to work in multi
+Summary:                    Volume control is chaotic
 Description: 
-After bug 0000505 was fixed, hw:0,0 only plays to analog devices, and
-hw:0,4 to spdif. As one needs output in both, I tried to use .asoundrc ,
-and therefore needed to use the "multi" pcm type in order to unite these
-two (and then route). This is what I put in .asoundrc
+Volume control doesn't work properly, with alsa-mixer as well as with
+gnome-volume-control. As I figured out that line-out volume was controled
+with DAC and DAC1 (how intuitive), I noticed that while sliding the
+controls up and down increased and decreased the volume as expected,
+modifying the master volume control afterwards made the volume jump to a
+much lower level than expected: increasing or decreasing the master volume
+even just a little bit makes the overall volume drop, even though it is
+not mirrored by the controls.
 
-pcm.whole {
-    type multi
-    slaves.a.pcm "hw:0,0"
-    slaves.a.channels 2
-    slaves.b.pcm "hw:0,4"
-    slaves.b.channels 2
-    bindings.0.slave a
-    bindings.0.channel 0
-    bindings.1.slave a
-    bindings.1.channel 1
-    bindings.2.slave b
-    bindings.2.channel 0
-    bindings.3.slave b
-    bindings.3.channel 1
-}
-
-pcm.rt {
-    type route
-    slave.pcm "whole"
-    ttable.0.0 1
-    ttable.1.1 1
-    ttable.0.2 1
-    ttable.1.3 1
-}
-
-The ttable may be wrong - I could not find a sane description anywhere -
-but I tried many variants, and besides, playing to "whole" bypasses this.
-
-So here's what I get when playing to "rt" OR to "whole" via alsaplayer :
-
-$ alsaplayer -d whole test.wav 
-error on set_channels (2)
-Unavailable hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 64
-CHANNELS: 4
-RATE: 44100
-PERIOD_TIME: (181 371520)
-PERIOD_SIZE: [8 16384]
-PERIOD_BYTES: [64 131072]
-PERIODS: [1 1024]
-BUFFER_TIME: (181 371520)
-BUFFER_SIZE: [8 16384]
-BUFFER_BYTES: [64 131072]
-TICK_TIME: 1000
-error on set_channels (2)
-Unavailable hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 64
-CHANNELS: 4
-RATE: 44100
-PERIOD_TIME: (181 371520)
-PERIOD_SIZE: [8 16384]
-PERIOD_BYTES: [64 131072]
-PERIODS: [1 1024]
-BUFFER_TIME: (181 371520)
-BUFFER_SIZE: [8 16384]
-BUFFER_BYTES: [64 131072]
-TICK_TIME: 1000
-failed to configure output device...trying OSS
-
-then alsaplayer hangs until interrupted.
-
-When I comment out everything related to slave b, "whole" seems to work
-(without spdif output, of course). So this seems like a bug in the spdif
-device.
+Thus, setting DAC and DAC1 to 100% while Master was set to 82% resulted in
+a quite high volume, but modifying the master volume to 84% or 80%
+resulted in the drop. Setting master volume to 60% made the sound very
+low, and setting it to 40% made it almost inaudible, until I changed DAC
+and DAC1 by 2%.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-08-2004 12:13 CEST 
+ skamp - 08-17-2004 04:33 CEST 
 ----------------------------------------------------------------------
-Use this:
-
-pcm.rt {
-    type route
-    slave.pcm whole
-    slave.channels 4
-    ttable.0.0 1
-    ttable.1.1 1
-    ttable.0.2 1
-    ttable.1.3 1
-}
-
-and run with -d rt .
+Fixed with alsa-* 1.0.6, although the Master control is weird: you only get
+full sound when you set Master to 0. Increasing Master decreases overall
+volume very fast. This control is basically unusable.
 
 ----------------------------------------------------------------------
- ramendik - 10-08-2004 12:29 CEST 
+ tiwai - 08-18-2004 13:47 CEST 
 ----------------------------------------------------------------------
-Thanks. This has worked.
+Could you try the attached patch?
 
-A definite must for the FAQ, and a link to this should be present in the
-soundcard matrix for i865 - which at this point is not even available. 
-But I'll refile this as a documentation bug. Please close this one.
+----------------------------------------------------------------------
+ skamp - 08-18-2004 15:20 CEST 
+----------------------------------------------------------------------
+patching file pci/ice1712/aureon.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001 FAILED at 273.
+Hunk https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000002 FAILED at 305.
+2 out of 2 hunks FAILED -- saving rejects to file
+pci/ice1712/aureon.c.rej
 
-Actually, the absence of a *decent* documentation of the route type is
-another documentation bug. And, as a professional tech writer I'm
-qualified to fix this. I'll write to alsa-devel to offer my services.
+I installed version 1.0.6 when it got out.
+
+----------------------------------------------------------------------
+ tiwai - 08-18-2004 15:32 CEST 
+----------------------------------------------------------------------
+It's a patch to alsa-kernel tree (in alsa-driver).  You'll likely
+need to pass an appropriate -p option.
+
+----------------------------------------------------------------------
+ skamp - 08-18-2004 15:36 CEST 
+----------------------------------------------------------------------
+Oops, I issued patch -Np1 instead of patch -Np0. My bad.
+The patch solves the issue, but Master still has to be set to 100%, so the
+overall volume is way too low for that value. If I set Front to the
+maximum as well, the volume is still quite bearable, and the sound to
+noise ratio is very *low*. I know this card could blow my ears away, and
+I'm far from being deaf ;-)
+
+edited on: 08-18-04 15:36
+
+----------------------------------------------------------------------
+ tiwai - 08-18-2004 15:41 CEST 
+----------------------------------------------------------------------
+The problem of sensitivty is that the volume is defined in a wide
+range.  In the second patch I changed the master volume to -64dB
+from -128dB, but it's still fairly big.  If you choose 50%, it means
+-32dB.  (Moreover, surround volumes are up to -101dB.)
+
+This problem will be solved when we introduce the dB control.
+For kernel OSS emulation, the problem will remain, though...
+
+Anyway, I'll apply the patch then.  Thanks for testing.
+
+----------------------------------------------------------------------
+ ungod - 10-06-2004 22:10 CEST 
+----------------------------------------------------------------------
+I noticed somewhat the same thing with the Aureon 7.1 Space (Naturally as
+they're quite identical). I supposed that the reason why the sound behaves
+as it does is that the volume control is linear although sound amplitude
+behaves logarithm.
+Personally I've found other problems with the volume control. There is no
+PCM volume control, the master volume only operates on digital sound etc.
+So I've made a patch (for the CVS) which does a few changes in this
+section (uploaded as aureon-volfix4.diff). It may need some changes here
+and there though (no mute for LFE/Center):
+
+Summary: Misc. volume fixes
+
+ - Added mono mute function to Front/Rear/Side
+ - Master volume is artificially made in software
+ - Added PCM volume control (basically what was the master volume)
+ - Front/Read/Side/LFE/Center is now logarithmic (and computed as <volume>
+* <master volume> / <maximum volume>)
+
+Signed-off-by: Peter Christensen <peter@developers.dk>
+
+----------------------------------------------------------------------
+ ungod - 10-07-2004 09:52 CEST 
+----------------------------------------------------------------------
+Did a few changes, so that the mutes actually operated on the analogue
+sound too. aureon-volfix4.1.diff relaces aureon-volfix4.diff
+
+Summary: Misc. volume fixes
+
+ - Added mute function to Master/Front/Rear/Side/LFE/CEnter
+ - Master volume is artificially made in software
+ - Added PCM volume control (basically what was the master volume)
+ - Front/Read/Side/LFE/Center is now logarithmic (and computed as <volume>
+* <master volume> / <maximum volume>)
+
+Signed-off-by: Peter Christensen <peter@developers.dk>
+
+----------------------------------------------------------------------
+ tiwai - 10-07-2004 14:43 CEST 
+----------------------------------------------------------------------
+Thanks for the patch.  It looks almost fine.
+
+I changed the patch as attached (4.2.diff).
+
+- fold and simplified too long lines
+- small optimization for dac loop
+- removed debug printk
+- fixed a typo (% 1).
+
+I'll apply it after you confirm that it works.
+
+----------------------------------------------------------------------
+ ungod - 10-07-2004 18:03 CEST 
+----------------------------------------------------------------------
+Well, I'm not perfect (especially not at certain times of the day). I'm not
+supprised that I overlooked one of the debug messages and the silly %1.
+Anyway it all work properly on my Space, and I am convinced that it also
+works on the Sky and Universe, but that is up to skamp to figure out.
+
+----------------------------------------------------------------------
+ skamp - 10-07-2004 21:26 CEST 
+----------------------------------------------------------------------
+Volume seems to work fine now (I've tested it for about 20 minutes),
+although I didn't test 5.1 output (I don't have a 5.1 system). PCM output
+with headphone amp. on is great, but only if you mute line-in. Otherwise,
+you can clearly hear static. BTW, switching headphone amp. on and off
+produces a distinct "click" coming from the soundcard (I mean I can hear
+*without* the headphones plugged in): is it *actually* turning a physical
+switch on and off ??
+
+One small bug: I get the following message when calling alsactl restore:
+/usr/sbin/alsactl: set_control:757: missing control.30.value
+"Control 30" is the capture switch. The /etc/asound.state file in fact
+misses a "value" line for this control.
+
+Otherwise, volume control seems to work fine now.
+
+----------------------------------------------------------------------
+ ungod - 10-08-2004 04:01 CEST 
+----------------------------------------------------------------------
+The click you hear is perfectly normal and is caused by the relay which
+drives the headphone amp. You can see it on the card as a large white
+box.
+
+I believe the problem with mixer restoration is that the mixer now have
+more mixer controls than previous, so the first time you attempt to
+restore the mixer settings, it will do so based on the number of mixer
+controls in the previous driver. I believe that calling "alsactl store"
+should do the trick.
+
+----------------------------------------------------------------------
+ skamp - 10-08-2004 09:31 CEST 
+----------------------------------------------------------------------
+Since I was testing it, I obviously loaded/unloaded the modules several
+times, thus called alsactl store / restore as well. It doesn't solve the
+problem.
+
+----------------------------------------------------------------------
+ tiwai - 10-08-2004 12:24 CEST 
+----------------------------------------------------------------------
+Oh, capture switch is wrongly implemented.  It shouldn't work :)
+Peter, was it intentional to replace wm_adc_mute_* callbacks?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-08-04 02:27 ramendik       New Bug                                      
-10-08-04 02:27 ramendik       Distribution              => RH-based        
-10-08-04 02:27 ramendik       Kernel Version            => 2.6.8.1, with alsa 1.0.7rc1 plus patches from bug 0000505
-10-08-04 02:31 ramendik       Bug Monitored: ramendik                      
-10-08-04 12:13 tiwai          Bugnote Added: 0002045                       
-10-08-04 12:29 ramendik       Bugnote Added: 0002048                       
+07-27-04 18:40 skamp          New Bug                                      
+07-27-04 18:40 skamp          File Added: aadebug                          
+07-27-04 18:40 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
+07-27-04 18:40 skamp          Kernel Version            => 2.4.26          
+07-27-04 18:52 skamp          Bug Monitored: skamp                         
+08-17-04 04:33 skamp          Bugnote Added: 0001571                       
+08-18-04 13:47 tiwai          Assigned To               => tiwai           
+08-18-04 13:47 tiwai          Status                   new => assigned     
+08-18-04 13:47 tiwai          Bugnote Added: 0001578                       
+08-18-04 13:48 tiwai          File Added: aureon-volfix3.dif                    
+08-18-04 15:20 skamp          Bugnote Added: 0001579                       
+08-18-04 15:32 tiwai          Bugnote Added: 0001580                       
+08-18-04 15:34 skamp          Bugnote Added: 0001581                       
+08-18-04 15:36 skamp          Bugnote Edited: 0001581                      
+08-18-04 15:41 tiwai          Bugnote Added: 0001583                       
+10-06-04 22:10 ungod          Bugnote Added: 0002026                       
+10-06-04 22:10 ungod          File Added: aureon-volfix4.diff                    
+10-07-04 09:50 ungod          File Added: aureon-volfix4.1.diff                    
+10-07-04 09:52 ungod          Bugnote Added: 0002028                       
+10-07-04 14:43 tiwai          Bugnote Added: 0002032                       
+10-07-04 14:44 tiwai          File Added: aureon-volfix4.2.diff                    
+10-07-04 18:03 ungod          Bugnote Added: 0002035                       
+10-07-04 21:26 skamp          Bugnote Added: 0002039                       
+10-08-04 04:01 ungod          Bugnote Added: 0002042                       
+10-08-04 09:31 skamp          Bugnote Added: 0002044                       
+10-08-04 12:24 tiwai          Bugnote Added: 0002047                       
 ======================================================================
 
 
