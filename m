@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: =?iso-8859-1?Q?[ALSA_-_driver_0000855]:_Analog_Input_doesn=B4t_work?=
-Date: Fri, 11 Mar 2005 00:48:10 +0100
-Message-ID: <5e90355a8137d69cf81d585060c2a777@bugtrack.alsa-project.org>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Lots of BUG alerts with latest CVS and Audigy2
+Date: Fri, 11 Mar 2005 00:10:56 +0000 (GMT)
+Message-ID: <20050311001056.21034.qmail@web52903.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 983991C8
-	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 00:48:10 +0100 (MET)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,62 +14,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=855> 
-======================================================================
-Reported By:                Tom
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   855
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3 + Alsa 1.0.8
-Kernel Version:             2.6.9 and 2.6.10 (from Fedora)
-======================================================================
-Date Submitted:             01-28-2005 13:21 CET
-Last Modified:              03-11-2005 00:48 CET
-======================================================================
-Summary:                    Analog Input doesn´t work
-Description: 
-I tried to capture some tunes with my CMI9880 (an a ASUS P5GD2). It doesn´t
-care with mixer settings are made, the is simply no sound input.
+I don't know what this means, but it's a very persistent error!
 
-Does the azx driver support line-in anyways?
-======================================================================
+Mar  9 23:06:22 volcano kernel: BUG (or not enough voices), number 1, nex=
+t free 30!
+Mar  9 23:06:53 volcano last message repeated 556 times
+Mar  9 23:07:07 volcano last message repeated 268 times
 
-----------------------------------------------------------------------
- jdthood - 03-11-05 00:48 
-----------------------------------------------------------------------
-See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=297624 .
-Any similarity to your problem?
+Mar 11 00:06:23 volcano kernel: BUG (or not enough voices), number 1, nex=
+t free 38!
+Mar 11 00:06:54 volcano last message repeated 546 times
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-28-05 13:21 Tom            New Issue                                    
-01-28-05 13:21 Tom            Distribution              => Fedora Core 3 + Alsa
-1.0.8
-01-28-05 13:21 Tom            Kernel Version            => 2.6.9 and 2.6.10
-(from Fedora)
-01-31-05 14:10 Tom            Issue Monitored: Tom                         
-01-31-05 14:10 Tom            Issue End Monitor: Tom                       
-03-11-05 00:48 jdthood        Note Added: 0003876                          
-======================================================================
+I am using the latest alsa CVS, with Linux 2.6.11-SMP (dual P4 with HT). =
+My soundcard is an Audigy
+2.
+
+Cheers,
+Chris
 
 
+Send instant messages to your online friends http://uk.messenger.yahoo.co=
+m=20
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
