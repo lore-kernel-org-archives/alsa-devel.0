@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000516]: [PATCH] 20_alsaconf_lspci
-Date: Wed, 22 Sep 2004 22:34:47 +0200 (CEST)
+Subject: [ALSA - utils 0000520]: [PATCH] 91_debian_alsaconf_noclear
+Date: Wed, 22 Sep 2004 22:37:27 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040922203447.7E0B14500E@server.perex-int.cz>
+Message-ID: <20040922203727.00B734500F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D37D4320
-	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 22:34:47 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C3CB282
+	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 22:37:28 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,61 +22,55 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000516
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000520
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Bug ID:                     516
+Bug ID:                     520
 Category:                   alsaconf
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-21-2004 19:52 CEST
-Last Modified:              09-22-2004 22:34 CEST
+Date Submitted:             09-21-2004 20:03 CEST
+Last Modified:              09-22-2004 22:37 CEST
 ======================================================================
-Summary:                    [PATCH] 20_alsaconf_lspci
+Summary:                    [PATCH] 91_debian_alsaconf_noclear
 Description: 
-Patch to make alsaconf parse lspci output correctly
+This is a patch for alsaconf which makes it not clear the
+screen, but print a newline instead.  The advantage is that
+error messages are not cleared.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-22-2004 18:16 CEST 
+ tiwai - 09-22-2004 18:24 CEST 
 ----------------------------------------------------------------------
-On which system the string "Class" doesn't match?
-Depending on locale?
+Why overwrite clear() even if no error state?
 
 ----------------------------------------------------------------------
- jdthood - 09-22-2004 22:34 CEST 
+ jdthood - 09-22-2004 22:37 CEST 
 ----------------------------------------------------------------------
-Here is my lspci output:
+> Why overwrite clear() even if no error state?
 
-$ sudo lspci -n
-0000:00:00.0 0600: 8086:7190 (rev 03)
-0000:00:01.0 0604: 8086:7191 (rev 03)
-0000:00:02.0 0607: 104c:ac1b (rev 03)
-0000:00:02.1 0607: 104c:ac1b (rev 03)
-0000:00:03.0 0780: 11c1:0449 (rev 01)
-0000:00:06.0 0401: 1013:6003 (rev 01)
-0000:00:07.0 0680: 8086:7110 (rev 02)
-0000:00:07.1 0101: 8086:7111 (rev 01)
-0000:00:07.2 0c03: 8086:7112 (rev 01)
-0000:00:07.3 0680: 8086:7113 (rev 03)
-0000:01:00.0 0300: 10c8:0006
 
-$ uname -a
-Linux thanatos 2.6.8.1 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001 Mon Aug 30 12:40:53 CEST 2004 i686 GNU/Linux
+Error messages can be printed without alsaconf knowing about it.
+It is safest simply to refrain from clearing the screen.  Also
+easiest; and the program looks fine without its doing all those
+clears.
+
+If you would like to refine the patch to add more screen clears
+when you are sure that there was no error, then be my guest.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 19:52 jdthood        New Bug                                      
-09-21-04 19:52 jdthood        File Added: 20_alsaconf_lspci.dpatch                    
-09-22-04 18:16 tiwai          Bugnote Added: 0001815                       
-09-22-04 22:34 jdthood        Bugnote Added: 0001819                       
+09-21-04 20:03 jdthood        New Bug                                      
+09-21-04 20:03 jdthood        File Added: 91_debian_alsaconf_noclear.dpatch                    
+09-22-04 18:24 tiwai          Bugnote Added: 0001816                       
+09-22-04 22:37 jdthood        Bugnote Added: 0001820                       
 ======================================================================
 
 
