@@ -1,10 +1,9 @@
-From: Frank DiPrete <fdiprete@comcast.net>
-Subject: problem with slmodemd and alsa
-Date: Thu, 18 Nov 2004 11:59:17 -0500
-Message-ID: <20041118165917.GA4220@thurston.houselan.com>
+From: Marko Kreen <marko@l-t.ee>
+Subject: [patch] via82xx: Enable DXS on ABIT KV8 Pro
+Date: Thu, 18 Nov 2004 19:05:57 +0200
+Message-ID: <20041118170557.GA14412@l-t.ee>
 Mime-Version: 1.0
-Content-Type: text/plain; Format=Flowed; DelSp=Yes; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
@@ -20,45 +19,32 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Hello
+Enable DXS for via audio chip on ABIT KV8 Pro.
 
-Trying to get slmodemd running with alsa support.
-When loaded, the alsa driver is not creating a second dev (hw:1) for  
-the modem. (slmmodemd from www.smartlink.com)
+Works for me.
 
-Info:
+lspci -v:
+0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.  VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+        Subsystem: ABIT Computer Corp.: Unknown device 1413
+        Flags: medium devsel, IRQ 22
+        I/O ports at e000 [size=256]
+        Capabilities: <available only to root>
 
-modem = 01:05.0 Modem: Broadcom Corporation BCM4212 v.90 56k modem (rev  
-02)
-sound = 00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4)  
-AC'97 Audio Controller (rev 01)
-
-Systen is FC2: 2.6.5-1.358 #1 Sat May 8 09:04:50 EDT 2004 i686 i686  
-i386 GNU/Linux
-
-Alsa libs 1.0.6
-Alsa drivers 1.0.6a
-
-module loaded: snd-intel8x0m
-(no errors)
-no errors in dmesg - no mention of modem either.
+-- 
+marko
 
 
-cat /proc/asound/cards
-0 [I82801DBICH4   ]: ICH - Intel 82801DB-ICH4
-                     Intel 82801DB-ICH4 at 0xfeb7fa00, irq 3
-
-lsmod |grep 8x0m snd_intel8x0m          16712  0
-snd_ac97_codec         59600  2 snd_intel8x0m,snd_intel8x0
-snd_pcm                73096  3 snd_intel8x0m,snd_pcm_oss,snd_intel8x0
-snd_page_alloc          9352  3 snd_intel8x0m,snd_intel8x0,snd_pcm
-snd                    45316  12  
-snd_intel8x0m,snd_pcm_oss,snd_mixer_oss,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-
-
-Regards,
-
-
+diff -urp linux-2.6.9/sound/pci/via82xx.c linux-2.6/sound/pci/via82xx.c
+--- linux-2.6.9/sound/pci/via82xx.c	2004-11-18 18:52:13.000000000 +0200
++++ linux-2.6/sound/pci/via82xx.c	2004-11-08 12:27:27.000000000 +0200
+@@ -2100,6 +2100,7 @@ static int __devinit check_dxs_list(stru
+ 		{ .vendor = 0x1297, .device = 0xc160, .action = VIA_DXS_ENABLE }, /* Shuttle SK41G */
+ 		{ .vendor = 0x1458, .device = 0xa002, .action = VIA_DXS_NO_VRA }, /* Gigabyte GA-7VAXP (FIXME: or DXS_ENABLE?) */
+ 		{ .vendor = 0x147b, .device = 0x1401, .action = VIA_DXS_ENABLE }, /* ABIT KD7(-RAID) */
++		{ .vendor = 0x147b, .device = 0x1413, .action = VIA_DXS_ENABLE }, /* ABIT KV8 Pro */
+ 		{ .vendor = 0x14ff, .device = 0x0403, .action = VIA_DXS_ENABLE }, /* Twinhead mobo */
+ 		{ .vendor = 0x1462, .device = 0x3800, .action = VIA_DXS_ENABLE }, /* MSI KT266 */
+ 		{ .vendor = 0x1462, .device = 0x7120, .action = VIA_DXS_ENABLE }, /* MSI KT4V */
 
 
 
