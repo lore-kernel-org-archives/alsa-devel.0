@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
-Date: Sat, 14 Aug 2004 20:04:19 +0200 (CEST)
+Subject: [ALSA - driver 0000441]: Master volume not doing anything
+Date: Sat, 14 Aug 2004 20:49:07 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040814180419.C45741102F@server.perex-int.cz>
+Message-ID: <20040814184907.06EA41102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2CAC7222
-	for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2004 20:04:20 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 46C25247
+	for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2004 20:49:07 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 1767617D19
+	for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2004 20:49:07 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,99 +23,40 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000328
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000441
 ======================================================================
-Reported By:                aaronkaplan
-Assigned To:                tiwai
+Reported By:                Simon
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     328
-Category:                   PCI - nm256
+Bug ID:                     441
+Category:                   CORE - control
 Reproducibility:            always
-Severity:                   crash
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.5-1.358
+Status:                     new
+Distribution:               Slackware
+Kernel Version:             2.
 ======================================================================
-Date Submitted:             06-08-2004 23:13 CEST
-Last Modified:              08-14-2004 20:04 CEST
+Date Submitted:             08-14-2004 20:49 CEST
+Last Modified:              08-14-2004 20:49 CEST
 ======================================================================
-Summary:                    snd-nm256 freezes Dell Latitude LS
+Summary:                    Master volume not doing anything
 Description: 
-My Dell Latitude LS with an NM256AV hangs when I insert the
-snd-nm256 module.
+I have sound, everything works, but the master volume control doesn't have
+any effect on the actual volume output.
 
-The OSS driver works fine.
-
+Running Soundblaster Live! 5.1 dolby surround system
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-30-2004 16:55 CEST 
-----------------------------------------------------------------------
-Does the attached patch have any effect?
-If not, please show the output of lspci -nv.
-
-----------------------------------------------------------------------
- aaronkaplan - 07-01-2004 16:03 CEST 
-----------------------------------------------------------------------
-No difference with the patch.  I'm attaching the output from lspci.
-
-----------------------------------------------------------------------
- fridolin - 08-13-2004 01:33 CEST 
-----------------------------------------------------------------------
-Hi!
-
-
-I have got a similar problem. My computer is a Latitude Cpi-R 400GT.
-
-The machine hangs not immediately after inserting the nm-nm256 module, but
-it freezes always when accessing the soundcard (by invoking alsamixer).
-
-The similarity is, that I have already tried to activate/deactivate the
-old "latitude_workaround"-thing, but this doesn't help.
-
-The older OSS-driver works for me, too. 
-
-
-I'm using the latest stable driver (alsa-driver-1.0.5.tar.bz2) compiled
-over a linux 2.4.24-kernel.
-
-----------------------------------------------------------------------
- fridolin - 08-13-2004 12:46 CEST 
-----------------------------------------------------------------------
-I've also tried alsa-driver-1.0.5a, but it shows the same crashing.
-
-----------------------------------------------------------------------
- fridolin - 08-13-2004 15:17 CEST 
-----------------------------------------------------------------------
-With 1.0.6rc2, the driver doesn't crash any more.
-
-I'm sorry that I haven't tried out this before, but when compiling on a
-slow machine and after tens of reboots, one day goes by very soon.
-
-----------------------------------------------------------------------
- aaronkaplan - 08-14-2004 20:04 CEST 
-----------------------------------------------------------------------
-I upgraded to kernel 2.6.7 and I no longer have a problem with this driver.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-04 23:13 aaronkaplan    New Bug                                      
-06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
-06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
-06-08-04 23:13 aaronkaplan    Bug Monitored: aaronkaplan                    
-06-30-04 16:55 tiwai          Bugnote Added: 0001362                       
-06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                    
-07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
-07-01-04 16:03 aaronkaplan    Bugnote Added: 0001370                       
-08-13-04 01:33 fridolin       Bugnote Added: 0001559                       
-08-13-04 12:46 fridolin       Bugnote Added: 0001562                       
-08-13-04 15:17 fridolin       Bugnote Added: 0001564                       
-08-14-04 20:04 aaronkaplan    Bugnote Added: 0001565                       
+08-14-04 20:49 Simon          New Bug                                      
+08-14-04 20:49 Simon          Distribution              => Slackware       
+08-14-04 20:49 Simon          Kernel Version            => 2.              
 ======================================================================
 
 
