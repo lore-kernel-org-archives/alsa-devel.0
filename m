@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000160]: snd-cmi8330 produces no sound
-Date: Sat, 19 Mar 2005 09:37:19 +0100
-Message-ID: <441ead2a7548b0de90ea197a33eeccca@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000158]: /lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o: init_module: No such device
+Date: Sat, 19 Mar 2005 09:36:00 +0100
+Message-ID: <e2fd59073a7a794726e212d91b76cd67@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AAE4F1F9
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:37:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 882691F9
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:36:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,52 +23,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=160> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=158> 
 ======================================================================
-Reported By:                sb73542
+Reported By:                stst
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   160
-Category:                   ISA - cmi8330
+Issue ID:                   158
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware
-Kernel Version:             2.4.25
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-27-2004 05:32 CET
-Last Modified:              03-19-2005 09:37 CET
+Date Submitted:             03-24-2004 22:02 CET
+Last Modified:              03-19-2005 09:35 CET
 ======================================================================
-Summary:                    snd-cmi8330 produces no sound
+Summary:                   
+/lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o:
+init_module: No such device
 Description: 
-Hi, I'm trying to use my onboard cmi8330 soundcard with ALSA.  alsaconf
-detectseverything correctly, but unfortunately no sound.  These are the
-devices that appear under /dev/snd :
-controlC0  
-pcmC0D0c   
-pcmC0D0p   
-timer
+when loading the module it crashes with this errormessage:
+/lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o:
+init_module: No such device
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO or IRQ parameters.
+      You may find more information in syslog or the output from dmesg
+/lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o:
+insmod /lib/modules/2.4.21-144-athlon/kernel/sound/pci/cs46xx/snd-cs46xx.o
+failed
 
-I've been trying to use set this up with arts, and it when I overide the
-defaults to any of the above, it says it's an invalid device, and can't be
-written to.  The alsa docs list as a bug for this card: "Is broken".  Any
-fixes?  Thanks for the help!
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 09:37 
+ stst - 03-24-04 22:06 
 ----------------------------------------------------------------------
-Submitter: Have you had better luck with more recent ALSA releases?
+Sorry, I forgot to mention that this happens with a Terratec DMX XFire
+1024.
+
+----------------------------------------------------------------------
+ jdthood - 03-19-05 09:35 
+----------------------------------------------------------------------
+So I take it the problem is that the message suggests "reloading" the
+driver,
+but this cannot be done because the init routine exits with an error
+status?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-27-04 05:32 sb73542        New Issue                                    
-03-27-04 05:32 sb73542        Distribution              => Slackware       
-03-27-04 05:32 sb73542        Kernel Version            => 2.4.25          
-03-19-05 09:37 jdthood        Note Added: 0004022                          
+03-24-04 22:02 stst           New Issue                                    
+03-24-04 22:04 stst           Issue Monitored: stst                        
+03-24-04 22:06 stst           Note Added: 0000702                          
+03-19-05 09:35 jdthood        Note Added: 0004021                          
 ======================================================================
 
 
