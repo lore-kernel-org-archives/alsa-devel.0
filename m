@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000796]: Behavior of LED on mute button
-Date: Sun, 9 Jan 2005 02:26:37 +0100
-Message-ID: <31910fcbfe1004bdd8f418fa3256501e@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: current CVS: compile error
+Date: Sun, 9 Jan 2005 18:04:08 +0100
+Message-ID: <20050109180408.688a5a3d.pochini@shiny.it>
+References: <XFMail.20050107101953.pochini@shiny.it>
+	<1105148369.7230.21.camel@cmn37.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 621CB2BF
-	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2005 02:26:37 +0100 (MET)
+Received: from vsmtp14.tin.it (vsmtp14.tin.it [212.216.176.118])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 10973256
+	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2005 19:47:35 +0100 (MET)
+In-Reply-To: <1105148369.7230.21.camel@cmn37.stanford.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,48 +21,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 07 Jan 2005 17:39:33 -0800
+Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU> wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=796> 
-======================================================================
-Reported By:                kempokaraterulz
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   796
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             01-09-2005 02:26 CET
-Last Modified:              01-09-2005 02:26 CET
-======================================================================
-Summary:                    Behavior of LED on mute button
-Description: 
-On my laptop, there is this little blue LED on the mute button, muting  /
-unmuting the sound doesnt have any effect on this LED currently, if i
-unload the sound module the LED turns on, and if i reload the sound module
-it turns back off. Since the sound driver turns the light on when being
-unloaded, my (possibly incorrect) guess is that this would be a fairly
-easy thing to implement properly, or at least allow control of the light
-through the proc interface or something. 
-======================================================================
+> > > I'm getting this error while building current CVS (one FC3):
+> > >
+> > > /usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/echoaudio_dsp.c:
+> > > In function `load_firmware':
+> > > /usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/echoaudio.h:424:
+> > > sorry, unimplemented: inlining failed in call to 'free_firmware':
+> > > function body not available
+> > > /usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/echoaudio_dsp.c:544: sorry, unimplemented: called from here
+> >
+> > I'll check this ASAP. What gcc are you using ?
+>
+> Standard gcc in fc3, gcc3.4 I believe (I don't have access to that
+> machine right now).
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-09-05 02:26 kempokaraterulzNew Issue                                    
-======================================================================
+Some versions of GCC do not like inline functions to be defined after the
+point they are used. Gcc 2.95 and gcc 3.4.1 compile it without errors, so
+you probably have 3.3.x. Btw, the patch posted by tiwai should fix it.
 
 
+--
+Giuliano.
 
 
 -------------------------------------------------------
