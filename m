@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000807]: No sound w/ ASRock K7S41GX
-Date: Tue, 11 Jan 2005 15:50:17 +0100
-Message-ID: <045d5f974043bfb018fa1c978699a3ed@bugtrack.alsa-project.org>
+Date: Tue, 11 Jan 2005 15:32:26 +0100
+Message-ID: <9fcd20862add2d3c209fbaeb8ed6ed96@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 45AD02D7
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 15:50:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E52452D7
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 15:32:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo GNU/Linux
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             01-11-2005 14:33 CET
-Last Modified:              01-11-2005 15:50 CET
+Last Modified:              01-11-2005 15:32 CET
 ======================================================================
 Summary:                    No sound w/ ASRock K7S41GX
 Description: 
@@ -68,6 +68,11 @@ to make the latest stable build function.
 ======================================================================
 
 ----------------------------------------------------------------------
+ tiwai - 01-11-05 15:03 
+----------------------------------------------------------------------
+Try ALSA 1.0.8rc2.
+
+----------------------------------------------------------------------
  tiwai - 01-11-05 15:32 
 ----------------------------------------------------------------------
 Just make sure: Could you control Master volume and mute switch properly on
@@ -75,20 +80,6 @@ the older version?  Does PCM volume have any effect?
 
 I thought that this codec has no master volume/mute control and no PCM
 volume control, too but only PCM mute switch works...
-
-----------------------------------------------------------------------
- ndarlow - 01-11-05 15:50 
-----------------------------------------------------------------------
-Gentoo has 1.0.8rc1 in masked status but it does work.
-
-You are correct. Master and PCM volume adjustments have no effect and PCM
-mute does work.
-
-Interestingly, the Master, PCM, Surround, Center and LFE volumes adopt a
-value of 77 after unmuting Master and PCM and restarting alsamixer.
-
-I guess we can mark this one as fixed and close. Master volume must be
-adjusted at the speakers, I suppose :-)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -99,7 +90,6 @@ Date Modified  Username       Field                    Change
 01-11-05 14:33 ndarlow        Kernel Version            => 2.6.10          
 01-11-05 15:03 tiwai          Note Added: 0003146                          
 01-11-05 15:32 tiwai          Note Added: 0003148                          
-01-11-05 15:50 ndarlow        Note Added: 0003149                          
 ======================================================================
 
 
