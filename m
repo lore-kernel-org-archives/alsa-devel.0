@@ -1,13 +1,14 @@
-From: "Jonathan Gage" <chimera@darkscape.net>
-Subject: Re: Audiophile USB cat stream info
-Date: Thu, 22 May 2003 23:44:24 +1000
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: PCI write barrier
+Date: Thu, 22 May 2003 15:16:44 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <000901c32068$427e7fe0$3700a8c0@jono>
+Message-ID: <XFMail.20030522151644.pochini@shiny.it>
+References: <E19IWau-0004iJ-00@sc8-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <E19IWau-0004iJ-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,13 +20,15 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->From listening closely to the 0.9.3c 'digital noise' i described in my last
-post, i'm guessing that the problem is to do with bit rate. Sounds play, but
-are unrecognisable due to the level of distortion. The output vaguely
-reminds me of atari 2600 sound effects, only the card output is even !more!
-lofi ;) Hope this is a helpful clue.
 
-Jonathan
+I was reading this: http://people.redhat.com/arjanv/olspaper.pdf. It
+says (page 4, par5.1) the PCI controller is allowed to delay writes
+as long as it likes and a read operation flushes all pending writes.
+Is it true ?  I had a quick look at some ALSA drivers, but I couldn't
+find any barrier or any apparent useless read after a write.
+
+
+Bye.
 
 
 
