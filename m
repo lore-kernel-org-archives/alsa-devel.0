@@ -1,13 +1,12 @@
-From: Gregoire Favre <Gregoire.Favre@freesurf.ch>
-Subject: SB live goes directly to DD mode
-Date: Sat, 4 Oct 2003 17:00:49 +0200
+From: Juha <juhis@trinity.is-a-geek.com>
+Subject: SP/DIF input of Soundblaster Live 5.1
+Date: Sat, 04 Oct 2003 18:57:03 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031004150049.GC31675@magma.epfl.ch>
+Message-ID: <1065283022.1126.25.camel@client.veehoo.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,25 +15,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi there,
 
-I have tried kernel 2.6.0-test6 with a SB live and a DD receiver
-connected to the SPDIF.
+I'm trying to route spdif signal from my dvb card through my soundcard,
+a sb live 5.1, to my amplifier. I connected the spdif out of the dvb
+card to the "CD SPDIF" connector of the sb live card. Is this the proper
+way to do it, ie, should it work or could it be made to work?
 
-As soon as ALSA initialize, the receiver goes to DD mode and I don't
-hear anything as long as I don't sent ac3 (for example in playing a
-DVD).
+I've played around with the settings in alsamixer, but so far been
+unable to hear anything from my amplifier. The most relevant switches
+seem to be "IEC985 Coaxial Capture", "IEC985 Optical  Capture" and
+"IEC985 Optical Raw [on/off]".
 
-Is this a new feature, could I disable it?
+Is this a supported feature in the alsa driver? I'm using version 0.9.7
+of the driver. Any help greatly appreciated.
 
-Thank you very much,
+Best regards,
 
-	Grégoire
-________________________________________________________________________
-http://magma.epfl.ch/greg ICQ:16624071 mailto:Gregoire.Favre@freesurf.ch
+Juha
+
 
 
 -------------------------------------------------------
