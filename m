@@ -1,13 +1,15 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Re: USB recording - repetitive peaks
-Date: Wed, 03 Jul 2002 03:38:41 +0900
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: Re: Re: [PATCH] USB MIDI driver
+Date: Tue, 2 Jul 2002 22:40:10 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D21F331.7090609@boosthardware.com>
-References: <3D208C5C.36649172@ladisch.de>	<s5hhejibem0.wl@alsa2.suse.de>	<3D21B878.8090902@boosthardware.com>	<s5hy9curxdr.wl@alsa2.suse.de>	<3D21C827.2060602@boosthardware.com>	<s5hwuseruac.wl@alsa2.suse.de>	<3D21D6CA.7000308@boosthardware.com> <s5hu1nirsni.wl@alsa2.suse.de> <3D21DDFD.6000206@boosthardware.com> <3D21EB37.7070008@boosthardware.com> <3D21F06E.10604@boosthardware.com>
+Message-ID: <200207022240.10455.plcl@telefonica.net>
+References: <3D208C5C.36649172@ladisch.de> <s5hhejibem0.wl@alsa2.suse.de> <s5hznxarxmz.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hznxarxmz.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,48 +18,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-Cc: thorsten.haas@gmx.de, Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey wrote:
-> Patrick Shirkey wrote:
-> 
->> I did run make install and have just done so again to make sure but 
->> it's not in /usr/local/share/aclocal either. I will copy it over and 
->> try recording again (see below).
->>
->> >
-> 
->  >> Recording was a bit messy, due to killing the arecord process 
-> freezes my >> box.
->  >> Deterministically: whenever the process is interuppted (Ctrl-C) or 
-> killed
->  >> (sig 9).
-> 
-> This seems to be the same here now. The file was recorded and with no 
-> distortions
-> to the sound but arecord hangs my rig when it stops. I'll check with 
-> JACK+ardour.
-> 
-> 
+> - usb compatibility hack was moved to wrapper.h, so that it can be
+>   shared with usbuadio.c
+>
+> - newly added virmidi registrations.
+>   that means, snd-usb-midi will have its own rawmidi devices
+>   automatically as /dev/snd/midiCxDx.
+>   this will be good for applications which speak only with
+>   rawmidi.
+>
+> the latter one was not tested.
+> can anyone update the cvs if it works?
+>
 
-Ouch. JACK+ardour causes an instant hang. Using alt+sysreq I can sync 
-unmount and reboot but nothing else. Also the sound quality is 
-significantly degraded while running through JACK. At least the native 
-drivers are sounding correct now though :)
+I can't compile current CVS usb drivers:
 
+gcc -E -M -DALSA_BUILD -D__KERNEL__ -DMODULE=1 
+-I/home/plc/kernelsrc/ALSA/cvstree/alsa-driver/include 
+-I/lib/modules/2.4.18/build/include -O2 -mpreferred-stack-boundary=2 
+-march=k6 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -pipe  
+usbaudio.c usbaudio.h usbmidi.c usbmixer.c wrapper.h > .depend
+wrapper.h:1:40: missing binary operator before '<'
+wrapper.h:15:40: missing binary operator before '<'
+make[1]: *** [fastdep] Error 1
 
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
+Pedro.
 
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+Sponsored by:
+ThinkGeek at http://www.ThinkGeek.com/
