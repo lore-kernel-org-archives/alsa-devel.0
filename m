@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000845]: Getting sound from the headphones but not from the internal speakers
-Date: Tue, 25 Jan 2005 20:53:05 +0100
-Message-ID: <db007e2c9098d38469d556fa75d276f3@bugtrack.alsa-project.org>
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: alsa-lib plugin devel
+Date: Tue, 25 Jan 2005 14:12:27 +0100
+Message-ID: <20050125141227.51f7822b@mango.fruits.de>
+References: <Pine.HPX.4.33n.0501240933490.4480-100000@studcom.urz.uni-halle.de>
+	<41F522DE.30702@xmission.com>
+	<s5hk6q2u659.wl@alsa2.suse.de>
+	<1106585584.8058.61.camel@pegasus>
+	<s5hhdl6u52n.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A43EE21E
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 20:53:05 +0100 (MET)
+In-Reply-To: <s5hhdl6u52n.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,79 +21,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Brad Midgley <bmidgley@xmission.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 24 Jan 2005 18:09:36 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=845> 
-======================================================================
-Reported By:                zeffy
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   845
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.741_FC3
-======================================================================
-Date Submitted:             01-23-2005 21:36 CET
-Last Modified:              01-25-2005 20:53 CET
-======================================================================
-Summary:                    Getting sound from the headphones but not from the
-internal speakers
-Description: 
-Hey all,
+> 	pcm.aiptek {
+> 		type a2dp
+>  	        bdaddr "00:0B:0D:50:12:10"
+> 		listed yes
+>  	}
+> 		
+> (Well "listed" isn't a good word at all.  Please suggest a better
+>  one.)
 
-I am experiencing a problem with my laptop running the Intel AC'97 codec.
-I get a sound from the headphones but not from the built-in speakers.
-I tried the volume settings and playing with alsamixer, aumix and others,
-tried to  use the ac97_quirk options, but still no clues.
-My laptop is HP Pavillion ZT3447EA running the lastest kernel and FC-3.
+My suggestion was 'register [description]':
 
+http://sourceforge.net/mailarchive/message.php?msg_id=9849308
 
-Any ideas?
+Flo
 
-Thanks.
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-25-05 15:23 
-----------------------------------------------------------------------
-Attach /etc/asound.state and /proc/asound/card0/codec97#0/* files for
-checking.
-
-----------------------------------------------------------------------
- zeffy - 01-25-05 20:53 
-----------------------------------------------------------------------
-I've managed to solve this issue.
-I've changed the asound.state and UNMUTED the headphone jack sence.
-You can close this problem. 
-
-BTW: why isn't there a feature on this bug tracking system that allows you
-to edit your own bug state?
-
-Keep up the good work with ALSA.
-
-Regards,
-Zeffy.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-23-05 21:36 zeffy          New Issue                                    
-01-23-05 21:36 zeffy          Distribution              => Fedora Core 3   
-01-23-05 21:36 zeffy          Kernel Version            => 2.6.10-1.741_FC3
-01-25-05 15:23 tiwai          Note Added: 0003404                          
-01-25-05 20:53 zeffy          Note Added: 0003410                          
-======================================================================
-
-
+-- 
+Palimm Palimm!
+http://affenbande.org/~tapas/
 
 
 -------------------------------------------------------
