@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000937]: No sound unless using OSS driver
-Date: Thu, 24 Feb 2005 23:27:12 +0100
-Message-ID: <cde887b64d1e3e7a24f17db89faf38c9@bugtrack.alsa-project.org>
+From: Sergio Monteiro Basto <sergio@sergiomb.no-ip.org>
+Subject: Re: CMI8768 patch
+Date: Thu, 24 Feb 2005 23:23:49 +0000
+Message-ID: <1109287429.3789.35.camel@bastov>
+References: <92C0412E07F63549B2A2F2345D3DB515F7D65D@cm-msg-02.cmedia.com.tw>
+	 <1109218822.1244.35.camel@bastov> <s5hu0o25jxj.wl@alsa2.suse.de>
+	 <1109270548.3789.5.camel@bastov>  <s5his4h6b9p.wl@alsa2.suse.de>
+Reply-To: sergio@sergiomb.no-ip.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD3F5224
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 23:27:12 +0100 (MET)
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <s5his4h6b9p.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,62 +19,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2005-02-24 at 19:52 +0100, Takashi Iwai wrote:
+> Enable the commented out part again in pci/ac97/ac97_patch.c:2043
+>=20
+> 	ac97->flags |=3D /*AC97_HAS_NO_MASTER_VOL |*/ AC97_HAS_NO_PCM_VOL;
+>=20
+> to=20
+>=20
+> 	ac97->flags |=3D AC97_HAS_NO_MASTER_VOL | AC97_HAS_NO_PCM_VOL;
+>=20
+>=20
+> The _only_ question is, whether the Master volume really does nothing,
+> or has _any_ role.  As mentioned, if it's really a dummy control, we
+> should rather remove it to avoid confusion.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=937> 
-======================================================================
-Reported By:                ruffasdagut
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   937
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora
-Kernel Version:             2.6
-======================================================================
-Date Submitted:             02-24-2005 01:14 CET
-Last Modified:              02-24-2005 23:27 CET
-======================================================================
-Summary:                    No sound unless using OSS driver
-Description: 
-I have no sound from the system unless using the OSS option in gstreamer
-properties. If I do this I get sound but no control over the volume or
-mute. I dont really need all the digital parts, but just the Basic sound
-would be nice. I am going to include the ouput from the alsa debug program
-I found online. Thanks for looking into this issue.
-======================================================================
+Well I try to remove it and Master and PCM volume disappears.=20
+And when put comment back in source, the results of mixer has been
+change from begging, PCM doesn't appears with volume, after some make
+install , modprobes, alsamixer and kmix, finally I got PCM back.
+Seems after install alsa-drive, I have to reinstall alsa-lib !?
 
-----------------------------------------------------------------------
- tiwai - 02-24-05 22:00 
-----------------------------------------------------------------------
-Try the CVS version.  The support of CM9761 was fixed very recently.
 
-----------------------------------------------------------------------
- ruffasdagut - 02-24-05 23:27 
-----------------------------------------------------------------------
-Either I didnt install the CVS properly or it didnt fix the problem. I have
-sound, but no control over the volume. I am not 100% I did the CVS install
-correct. Also did I need to remove the version that Fedora put?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-24-05 01:14 ruffasdagut    New Issue                                    
-02-24-05 01:14 ruffasdagut    File Added: debug.log                        
-02-24-05 01:14 ruffasdagut    Distribution              => Fedora          
-02-24-05 01:14 ruffasdagut    Kernel Version            => 2.6             
-02-24-05 22:00 tiwai          Note Added: 0003725                          
-02-24-05 23:27 ruffasdagut    Note Added: 0003730                          
-======================================================================
-
+>=20
+>=20
+> Takashi
+--=20
+S=E9rgio M.B.
 
 
 
@@ -80,4 +56,4 @@ Date Modified  Username       Field                    Change
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
