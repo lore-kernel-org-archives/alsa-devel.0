@@ -1,13 +1,14 @@
-From: "bernice gonzalez" <raypodesta@velnet.co.uk>
-Subject: Reduces stress
-Date: Sat, 04 Dec 2004 02:22:19 +0700
-Message-ID: <E3B1EA8E.A05FD57@velnet.co.uk>
-Reply-To: "bernice gonzalez" <raypodesta@velnet.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000705]: RME96 Driver crashes
+Date: Fri, 3 Dec 2004 23:43:14 +0100
+Message-ID: <8a8530ca8a65191cd15dc7a4b92824c5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB13C313
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 23:43:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,41 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Reagan Flores <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<HTML>
-now open<BR>
-<BR>
-Recapture your youth and feel the energy<BR>
-For Many, This is a Powerful Second Chance<BR>
-<BR><A href="http://www.idealproductosale.com/7/">press here to read
-about</A><BR>
-This common element can change the way you experience the next half of your
-life<BR>
-<BR>
-<BR>
-<BR>
------Original Message-----<BR>
-From: box1200 Oranjestad Aruba [mailto:jann@kle.com]<BR>
-Sent: Friday, March 4, 2004 6:68AM<BR>
-To: ronnie; deedee@e.com; idell; micah; ryann<BR>
-Subject: not now, then the post office address is listed in link<BR>
-<BR>
-<BR>
-Immunocompromised patients are the most likely to gain from enhanced
-bactericidal activity possibly offered by  lactamaminoglycoside combination
-therapy 9 In a comparison of  lactam monotherapy with  lactamaminoglycoside
-combination therapy restricted to patients with neutropenia we found no
-advantage to combination treatment 89 <BR>
-Although the approach to the management of patients with and without
-neutropenia is separated in clinical practice this similarity supports a
-biological basis underlying our results  <BR>
-<BR>
-They probably won't be able to kill me, unless they find my Garment of
-Repulsion and strip that off; but I never could cross this terrible desert
-on foot and, having lost my food tablets, I'd soon starve if I attempted it
-</FONT></HTML>
+
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=705> 
+======================================================================
+Reported By:                FishB8
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   705
+Category:                   PCI - RME 96
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             12-03-2004 23:43 CET
+Last Modified:              12-03-2004 23:43 CET
+======================================================================
+Summary:                    RME96 Driver crashes
+Description: 
+Something has changed in the RME96 driver between 1.0.6 and 1.0.7 causeing
+it to crash. Whenever an audio program uses ALSA and stops playing the
+driver hangs. When trying to start JACK, it never gets started but the CPU
+hits 100%. It's impossible to kill any of the programs because any program
+dealing with processes hangs as well. The system will not totally shut
+down and has to be reset. Kernel 2.6.8 works just fine.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-03-04 23:43 FishB8         New Issue                                    
+12-03-04 23:43 FishB8         File Added: config                           
+12-03-04 23:43 FishB8         Distribution              => Gentoo          
+12-03-04 23:43 FishB8         Kernel Version            => 2.6.9           
+======================================================================
+
 
 
 
