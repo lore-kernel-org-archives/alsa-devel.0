@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001012]: TI AC97 volume bit 5 sets bits 0-4
-Date: Tue, 29 Mar 2005 17:33:44 +0200
-Message-ID: <eabb879c5b446c8a4e616bbd4f9f02ce@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000567]: "Loudness" and "Sim. stereo" controls missing in mixer
+Date: Tue, 29 Mar 2005 17:47:23 +0200
+Message-ID: <3b85e0b4b6bc0be50a3f0a9ba1907bdb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 963A8192
-	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 17:33:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1D4B820F
+	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 17:47:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,92 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1012> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=567> 
 ======================================================================
-Reported By:                Daniel
-Assigned To:                tiwai
+Reported By:                pmatil
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1012
-Category:                   OTHERS
+Issue ID:                   567
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             03-24-2005 19:15 CET
-Last Modified:              03-29-2005 17:33 CEST
+Date Submitted:             10-05-2004 17:47 CEST
+Last Modified:              03-29-2005 17:47 CEST
 ======================================================================
-Summary:                    TI AC97 volume bit 5 sets bits 0-4
+Summary:                    "Loudness" and "Sim. stereo" controls missing in
+mixer
 Description: 
-Since ALSA driver 1.0.8 the width of the volume controls is probed to be 6
-bits.
-The Texas Instruments datasheet contains a footnote for the 5th and 13th
-bit of register 2 and the 5th bif of register 6, 12 and 14 saying:
-"Special function volume settings. If bit is set, then the 5 volume bits
-implemented are set to all ones."
-check_volume_resolution in ac97_codec.c should check if setting bit 5 (13)
-results in bits 0-4 (8-12) set.
+Since 1.0.4 (somewhere around there), the S/PDIF-controls have disappeared
+from the mixer... It has been there before and there IS one on my
+soundcard (Terratec DMX Xfire 1024, cs46xx)
 ======================================================================
 
 ----------------------------------------------------------------------
- Daniel - 03-24-05 20:13 
+ tiwai - 03-29-05 17:23 
 ----------------------------------------------------------------------
-Yes, it does.
+CS4294 doesn't support Loudness and Simulated stereo.  It was bogus in the
+older version.  Forget it.
+
+"Duplicate Front" should work.  How did you test it?
+
+I have no idea about your mixer save/restore problem.  It sounds like a
+problem of installation...
 
 ----------------------------------------------------------------------
- tiwai - 03-29-05 17:33 
+ pmatil - 03-29-05 17:47 
 ----------------------------------------------------------------------
-The patch was applied to CVS.
+'"Duplicate Front" should work. How did you test it?'
+-I suppose it should work something like copying the front channel audio
+to the rear channel? So when my soundcard has 4 outputs, front channel
+should be on the rear channel too?
+
+'I have no idea about your mixer save/restore problem. It sounds like a
+problem of installation... '
+-As you see from earlier notes, the problem was solved by adding
+--with-cards=cs46xx-new-dsp to the configure options. Now when this has
+been removed, mixer settings won't save. However, the IEC958 controls are
+present. This may be a Debian specifig bug, because I get ALSA from apt
+directly (source and then make-kpkg modules_image).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-24-05 19:15 Daniel         New Issue                                    
-03-24-05 19:44 tiwai          Note Added: 0004196                          
-03-24-05 19:45 tiwai          File Added: ac97-res-check.diff                   
-
-03-24-05 20:13 Daniel         Note Added: 0004199                          
-03-29-05 17:33 tiwai          Status                   new => resolved     
-03-29-05 17:33 tiwai          Resolution               open => fixed       
-03-29-05 17:33 tiwai          Assigned To               => tiwai           
-03-29-05 17:33 tiwai          Note Added: 0004251                          
+10-05-04 17:47 pmatil         New Issue                                    
+10-05-04 17:47 pmatil         Distribution              => Debian GNU/Linux
+10-05-04 17:47 pmatil         Kernel Version            => 2.4.22          
+10-06-04 11:13 tiwai          Note Added: 0002018                          
+10-07-04 18:06 pmatil         File Added: asound.state                     
+10-07-04 18:20 pmatil         File Added: codec97#0                        
+10-07-04 18:23 pmatil         Note Added: 0002037                          
+10-11-04 14:07 tiwai          Note Added: 0002077                          
+10-11-04 14:08 tiwai          File Added: cs4298-spdif.diff                    
+10-13-04 13:05 pmatil         Note Added: 0002122                          
+10-13-04 15:50 tiwai          Note Added: 0002123                          
+10-14-04 13:11 pmatil         File Added: prev_+reg                        
+10-14-04 13:11 pmatil         File Added: current_+reg                     
+10-14-04 13:13 pmatil         Note Added: 0002143                          
+10-14-04 13:14 pmatil         Note Edited: 0002143                         
+10-14-04 14:27 tiwai          Note Added: 0002145                          
+10-14-04 14:39 tiwai          Note Added: 0002146                          
+10-14-04 16:20 pmatil         Note Added: 0002153                          
+10-14-04 16:31 tiwai          Note Added: 0002155                          
+10-14-04 18:08 pmatil         Note Added: 0002157                          
+10-15-04 13:53 pmatil         Note Edited: 0002157                         
+10-18-04 17:44 tiwai          Note Added: 0002196                          
+10-20-04 21:32 pmatil         Note Added: 0002219                          
+03-28-05 04:19 jdthood        Summary                  S/PDIF control missing in
+mixer => "Loudness" and "Sim. stereo" controls missing in mixer
+03-28-05 11:46 pmatil         Note Added: 0004237                          
+03-29-05 17:23 tiwai          Note Added: 0004249                          
+03-29-05 17:47 pmatil         Note Added: 0004252                          
 ======================================================================
 
 
