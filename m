@@ -1,16 +1,14 @@
-From: Niklas Werner <bergtroll@gmx.li>
+From: Sjoerd Simons <sjoerd@luon.net>
 Subject: Re: status of powermac sound?
-Date: Thu, 13 May 2004 09:15:34 +1200
+Date: Wed, 12 May 2004 23:39:35 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405130915.34452.bergtroll@gmx.li>
-References: <200405121138.09878.bergtroll@gmx.li> <1084357911.3034.11.camel@thor.asgaard.local> <20040512145302.GA11235@spring.luon.net>
+Message-ID: <20040512213935.GB4696@spring.luon.net>
+References: <200405121138.09878.bergtroll@gmx.li> <1084357911.3034.11.camel@thor.asgaard.local> <20040512145302.GA11235@spring.luon.net> <200405130915.34452.bergtroll@gmx.li>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040512145302.GA11235@spring.luon.net>
 Content-Disposition: inline
+In-Reply-To: <200405130915.34452.bergtroll@gmx.li>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,32 +20,37 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 13 May 2004 02:53, Sjoerd Simons wrote:
+On Thu, May 13, 2004 at 09:15:34AM +1200, Niklas Werner wrote:
+> On Thu, 13 May 2004 02:53, Sjoerd Simons wrote:
+> 
+> > Using this on my albook. I get strange distorsions and a too low pitch
+> > when playing a dvd or divx with 48Khz audio.
+> >
+> > For the record, the hardware is:
+> > 0 [Snapper        ]: PMac Snapper - PowerMac Snapper
+> >                      PowerMac Snapper (Dev 35) Sub-frame 0
+> 
+> yep, exactly. And normally using alsa directly does not work, and if it 
+> does it shows the same effects...
+> 
+> mplayer with -ao alsa1x yields:
+> 
+> alsa-play: unknown status, trying to reset soundcard
+> 
+> works fine with -ao oss
+> xmms doesn't work with alsa-plugin at all (well, OK, who cares... xmms 
+> seems to have died anyways...)
 
-> Using this on my albook. I get strange distorsions and a too low pitch
-> when playing a dvd or divx with 48Khz audio.
->
-> For the record, the hardware is:
-> 0 [Snapper        ]: PMac Snapper - PowerMac Snapper
->                      PowerMac Snapper (Dev 35) Sub-frame 0
+rhythmbox (with gstreamer 0.8 backend) and gnomemeeting 1.0.2 both work fine 
+with alsa directly here (vanilla 2.6.6 kernel). As long as the samplerate is 
+44100hz alsa works perfectly :)
 
-yep, exactly. And normally using alsa directly does not work, and if it 
-does it shows the same effects...
-
-mplayer with -ao alsa1x yields:
-
-alsa-play: unknown status, trying to reset soundcard
-
-works fine with -ao oss
-xmms doesn't work with alsa-plugin at all (well, OK, who cares... xmms 
-seems to have died anyways...)
-
-astonishingly jackd normally works. Is there an option to force the driver 
-to always use a buffer size of a power of 2?
-
-Have fun*
-
-Niklas
+  Sjoerd
+-- 
+Since everything in life is but an experience perfect in being what it is,
+having nothing to do with good or bad, acceptance or rejection, one may well
+burst out in laughter.
+		-- Long Chen Pa
 
 
 -------------------------------------------------------
