@@ -1,11 +1,13 @@
-From: julien <julien.brule@noos.fr>
-Subject: lowlatency and audigy
-Date: Thu, 30 Sep 2004 23:49:50 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
+Date: Fri,  1 Oct 2004 01:23:24 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1096580990.3799.5.camel@localhost>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-5ijAuCNH7WfvlR72VDEa"
+Message-ID: <20040930232324.6EBA518006@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C005F27B
+	for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2004 01:23:24 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,3427 +16,461 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-5ijAuCNH7WfvlR72VDEa
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000425
+======================================================================
+Reported By:                rncbc
+Assigned To:                karsten
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     425
+Category:                   USB - usb-usx2y
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Mandrake 10.0 Official
+Kernel Version:             2.6.8-rc2
+======================================================================
+Date Submitted:             08-06-2004 10:53 CEST
+Last Modified:              10-01-2004 01:23 CEST
+======================================================================
+Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
+Description: 
+As of ALSA 1.0.6rc1, the US-x2y PCM device driver module exposes a hard
+conflict on OHCI based USB controllers, causing a complete system lockup
+-- kernel oops on an interrupt handler -- exactly upon starting or
+openning the PCM device for audio playback. 
+======================================================================
 
-hi,
+----------------------------------------------------------------------
+ rncbc - 08-06-2004 12:16 CEST 
+----------------------------------------------------------------------
+Just to add, that this issue does not occur as of previous
+alsa-driver-1.0.5a, same platform, kernel or hardware. Seems to have been
+introduced on CVS semewhere since mid-July. Something about "no sleeping"
+in ALSA's pcm START/STOP callbacks, but no sure.
 
-i've got some errors starting jackd...
-jackstart -v -R -d alsa -d fx -p512 -r48000 -ztriangular -i8  -S -s
-back from read, ret = 1 errno == Success
-getting driver descriptor from /usr/lib/libjack0.80.0-0/jack_iec61883.so
-getting driver descriptor from /usr/lib/libjack0.80.0-0/jack_dummy.so
-getting driver descriptor from /usr/lib/libjack0.80.0-0/jack_alsa.so
-getting driver descriptor from /usr/lib/libjack0.80.0-0/jack_oss.so
-jackd 0.98.1
-Copyright 2001-2003 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
+----------------------------------------------------------------------
+ karsten - 09-23-2004 20:52 CEST 
+----------------------------------------------------------------------
+that seams to have something to do with a threaded IRQ10?
+Does it also happen with hardirq_preempting off?
+Please geneate oops traces from the 2.6.9-rc2-mmx-Sy kernel also. 
+If those traces also happen in non usx2y-module area,
+find out, which snd_*() call triggers the oops.
+Check wether it happens if you disable hyperthreads.
+Erm, did I fail to include some important errorchecks after calling
+kernel/usb functions?
+Run with at least ALSA debug options enabled. Other kernel debug options
+may help too.
 
-registered builtin port type 32 bit float mono audio
-capabilities: =
-cap_setpcap,cap_ipc_lock,cap_sys_nice,cap_sys_resource+eip
-loading driver ..
-new client: alsa_pcm, id = 1 type 1 @ 0x8057a20 fd = -1
-apparent rate = 48000
-creating alsa driver ...
-fx|fx|512|2|48000|8|0|nomon|swmeter|soft-mode|16bit
-configuring for 48000Hz, period = 512 frames, buffer = 2 periods
-Triangular dithering at 16 bits
-new buffer size 512
-registered port alsa_pcm:capture_1, offset = 2048
-registered port alsa_pcm:capture_2, offset = 4096
-registered port alsa_pcm:capture_3, offset = 6144
-registered port alsa_pcm:capture_4, offset = 8192
-registered port alsa_pcm:capture_5, offset = 10240
-registered port alsa_pcm:capture_6, offset = 12288
-registered port alsa_pcm:capture_7, offset = 14336
-registered port alsa_pcm:capture_8, offset = 16384
-registered port alsa_pcm:playback_1, offset = 0
-registered port alsa_pcm:playback_2, offset = 0
-++ jack_rechain_graph():
-client alsa_pcm: internal client, execution_order=0.
--- jack_rechain_graph()
-3806 waiting for signals
-jackd watchdog: timeout - killing jackd
-Abandon
+----------------------------------------------------------------------
+ rncbc - 09-24-2004 09:43 CEST 
+----------------------------------------------------------------------
+Please note that this problem is not related to the voluntary-preempt
+kernel patch nor is SMP/HT related. The machine where its beeing exposed
+is a Compaq Presario 2516EA (laptop), P4 2.533GHz (UP, no-HT enabled).
 
-thanks for the help...
-julien
+Also FWIW, it doesn't matter if ACPI is enabled or not. The point where
+the kernel oops occurs seems to be always under ohci_hcd (see
+hard-screenshot).
 
---=-5ijAuCNH7WfvlR72VDEa
-Content-Disposition: attachment; filename=.asoundrc
-Content-Type: text/plain; name=.asoundrc; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
+----------------------------------------------------------------------
+ rncbc - 09-25-2004 17:18 CEST 
+----------------------------------------------------------------------
+Now using 2.6.9-rc2-mm3-S6 (voluntary-preempt).
 
-# This is an example asoundrc file for a system where there's only one
-# soundcard. Note that the name "sblive" is arbitrary, you can call
-# your card whatever you like.
-#
-# Using this setup you can start jackd with "jackd -d alsa -d sblive"
-#
-# For more complex settings you should refer to the ALSA documentation:
-#
-# See http://www.alsa-project.org
-#     http://alsa.opensrc.org
-#
-# Copy this file to ~/.asoundrc
+One thing I've noticed, but just related to VP, is that while having
+hardirq-preempt=1 and /proc/irq/10/ohci_hcd/threaded=1, the kernel
+doesn't
+crash when opening the PCM hw device (either via jackd or aplay). But
+still useless or zombie anyway. It does crash however when I unplug my
+US-224 (switch its power down).
 
+With hardirq-preempt=0 or /proc/irq/10/ohci_hcd/threaded=0, I get the
+same
+old bad behavior: a kernel oops somewhere on the ohci_irq handling,
+almost
+immediately when the PCM device is open (e.g. by jackd or aplay). Yet
+another screenshot added here (usx2y-oops4.png).
 
+----------------------------------------------------------------------
+ karsten - 09-26-2004 15:26 CEST 
+----------------------------------------------------------------------
+its always dl_done_list().
+Please post unassembly of the oops.
+Look in linux/Documentation/oops-tracing.txt.
+Do:
+$gdb /lib/modules/2.6.9-rc2-mm3-S6/kernel/usb/host/ohci_hcd.ko
+$disassemble dl_done_list
 
-pcm.emu10k1 {
-	type hw
-	card 0
-}
+Or find out the point up until evrything is still ok.
+Calling snd_pcm_open from i.e. jackd's alsa or usx2y driver should not
+harm anything as no usb_thingy is triggered, no?
+That like snd_pcm_hw_params_*() should still be ok.
+Most likely things crash in snd_pcm_prepare().
 
-ctl.emu10k1 {
-	type hw
-	card 0
-}
+Place exit() calls or debug breaks before those alsa-lib calls. 
+Step by step check corresponding snd_usb_usx2y functions:
+Place return -EFAULT in those functions before usb subsystem calls.
+Ok, erm sounds like complicated?
 
-pcm.fx{
-   type asym
-   playback.pcm "hw:0,0"
-   capture.pcm "hw:0,2"
-}
-ctl.fx {
-	type hw
-	card 0
-}
-pcm.intel8x0 {
-   type hw
-   card 1
-}
+Mmh, there is this CONFIG_KEXEC kernel option.
+http://marc.theaimsgroup.com/?i=<20040915125041.GA15450%20()%20in%20!%20ibm%20!%20com>
+Could help if it already works.
 
-ctl.intel8x0 {
-   type hw
-   card 1
-}
+Might also set a smaller console font to get more screen estate.
+making visible alsa-debug statements being dumped immediately before the
+oops.
 
---=-5ijAuCNH7WfvlR72VDEa
-Content-Disposition: attachment; filename=asound.state
-Content-Type: text/plain; name=asound.state; charset=iso-8859-15
-Content-Transfer-Encoding: 7bit
+Or get yourself a pcmcia rs232 card.
 
-state.Audigy {
-	control.1 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'PCM Front Playback Volume'
-		value.0 100
-		value.1 100
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'PCM Surround Playback Volume'
-		value.0 100
-		value.1 100
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'PCM Center Playback Volume'
-		value 100
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'PCM LFE Playback Volume'
-		value 100
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 100
-		value.1 100
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Music Playback Volume'
-		value.0 100
-		value.1 100
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'PCM Capture Volume'
-		value.0 0
-		value.1 0
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Music Capture Volume'
-		value.0 0
-		value.1 0
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Mic Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.10 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Mic Capture Volume'
-		value.0 0
-		value.1 0
-	}
-	control.11 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Audigy CD Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.12 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Audigy CD Capture Volume'
-		value.0 0
-		value.1 0
-	}
-	control.13 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'IEC958 Optical Playback Volume'
-		value.0 68
-		value.1 68
-	}
-	control.14 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'IEC958 Optical Capture Volume'
-		value.0 68
-		value.1 68
-	}
-	control.15 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Line2 Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.16 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Line2 Capture Volume'
-		value.0 0
-		value.1 0
-	}
-	control.17 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Analog Mix Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.18 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Analog Mix Capture Volume'
-		value.0 100
-		value.1 100
-	}
-	control.19 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Aux2 Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.20 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Aux2 Capture Volume'
-		value.0 0
-		value.1 0
-	}
-	control.21 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Front Playback Volume'
-		value.0 100
-		value.1 100
-	}
-	control.22 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Surround Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.23 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Center Playback Volume'
-		value 0
-	}
-	control.24 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'LFE Playback Volume'
-		value 0
-	}
-	control.25 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 40'
-		iface MIXER
-		name 'Tone Control - Bass'
-		value.0 20
-		value.1 20
-	}
-	control.26 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 40'
-		iface MIXER
-		name 'Tone Control - Treble'
-		value.0 20
-		value.1 20
-	}
-	control.27 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Tone Control - Switch'
-		value.0 false
-		value.1 false
-	}
-	control.28 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 100'
-		iface MIXER
-		name 'Master Playback Volume'
-		value.0 93
-		value.1 93
-	}
-	control.29 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'IEC958 Optical Raw Playback Switch'
-		value.0 false
-		value.1 false
-	}
-	control.30 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface PCM
-		name 'EFX voices mask'
-		value.0 true
-		value.1 true
-		value.2 true
-		value.3 true
-		value.4 true
-		value.5 true
-		value.6 true
-		value.7 true
-		value.8 false
-		value.9 false
-		value.10 false
-		value.11 false
-		value.12 false
-		value.13 false
-		value.14 false
-		value.15 false
-		value.16 false
-		value.17 false
-		value.18 false
-		value.19 false
-		value.20 false
-		value.21 false
-		value.22 false
-		value.23 false
-		value.24 false
-		value.25 false
-		value.26 false
-		value.27 false
-		value.28 false
-		value.29 false
-		value.30 false
-		value.31 false
-		value.32 false
-		value.33 false
-		value.34 false
-		value.35 false
-		value.36 false
-		value.37 false
-		value.38 false
-		value.39 false
-		value.40 false
-		value.41 false
-		value.42 false
-		value.43 false
-		value.44 false
-		value.45 false
-		value.46 false
-		value.47 false
-		value.48 false
-		value.49 false
-		value.50 false
-		value.51 false
-		value.52 false
-		value.53 false
-		value.54 false
-		value.55 false
-		value.56 false
-		value.57 false
-		value.58 false
-		value.59 false
-		value.60 false
-		value.61 false
-		value.62 false
-		value.63 false
-	}
-	control.35 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'PC Speaker Playback Switch'
-		value false
-	}
-	control.36 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name 'PC Speaker Playback Volume'
-		value 0
-	}
-	control.37 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Phone Playback Switch'
-		value false
-	}
-	control.38 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Phone Playback Volume'
-		value 0
-	}
-	control.41 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mic Boost (+20dB)'
-		value false
-	}
-	control.42 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Line Playback Switch'
-		value true
-	}
-	control.43 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Line Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.44 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'CD Playback Switch'
-		value false
-	}
-	control.45 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'CD Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.48 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Aux Playback Switch'
-		value false
-	}
-	control.49 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Aux Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.58 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'External Amplifier'
-		value true
-	}
-	control.59 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.60 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 1
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.61 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 2
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.62 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 3
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.63 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 4
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.64 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 5
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.65 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 6
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.66 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 7
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.67 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 8
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.68 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 9
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.69 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 10
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.70 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 11
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.71 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 12
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.72 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 13
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.73 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 14
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.74 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 15
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.75 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 16
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.76 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 17
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.77 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 18
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.78 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 19
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.79 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 20
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.80 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 21
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.81 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 22
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.82 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 23
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.83 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 24
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.84 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 25
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.85 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 26
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.86 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 27
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.87 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 28
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.88 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 29
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.89 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 30
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.90 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'EMU10K1 PCM Send Routing'
-		index 31
-		value.0 0
-		value.1 1
-		value.2 2
-		value.3 3
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 0
-		value.9 1
-		value.10 2
-		value.11 3
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 1
-		value.18 2
-		value.19 3
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.91 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.92 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 1
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.93 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 2
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.94 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 3
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.95 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 4
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.96 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 5
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.97 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 6
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.98 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 7
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.99 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 8
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.100 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 9
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.101 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 10
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.102 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 11
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.103 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 12
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.104 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 13
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.105 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 14
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.106 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 15
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.107 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 16
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.108 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 17
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.109 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 18
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.110 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 19
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.111 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 20
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.112 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 21
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.113 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 22
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.114 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 23
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.115 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 24
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.116 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 25
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.117 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 26
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.118 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 27
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.119 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 28
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.120 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 29
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.121 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 30
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.122 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 255'
-		iface MIXER
-		name 'EMU10K1 PCM Send Volume'
-		index 31
-		value.0 255
-		value.1 255
-		value.2 0
-		value.3 0
-		value.4 0
-		value.5 0
-		value.6 0
-		value.7 0
-		value.8 255
-		value.9 0
-		value.10 0
-		value.11 0
-		value.12 0
-		value.13 0
-		value.14 0
-		value.15 0
-		value.16 0
-		value.17 255
-		value.18 0
-		value.19 0
-		value.20 0
-		value.21 0
-		value.22 0
-		value.23 0
-	}
-	control.123 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.124 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 1
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.125 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 2
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.126 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 3
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.127 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 4
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.128 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 5
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.129 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 6
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.130 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 7
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.131 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 8
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.132 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 9
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.133 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 10
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.134 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 11
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.135 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 12
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.136 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 13
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.137 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 14
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.138 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 15
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.139 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 16
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.140 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 17
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.141 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 18
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.142 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 19
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.143 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 20
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.144 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 21
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.145 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 22
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.146 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 23
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.147 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 24
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.148 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 25
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.149 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 26
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.150 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 27
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.151 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 28
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.152 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 29
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.153 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 30
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.154 {
-		comment.access 'read write inactive'
-		comment.type INTEGER
-		comment.range '0 - 65535'
-		iface MIXER
-		name 'EMU10K1 PCM Volume'
-		index 31
-		value.0 65535
-		value.1 65535
-		value.2 65535
-	}
-	control.155 {
-		comment.access read
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Mask'
-		value ffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-	}
-	control.156 {
-		comment.access read
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Mask'
-		index 1
-		value ffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-	}
-	control.157 {
-		comment.access read
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Mask'
-		index 2
-		value ffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-	}
-	control.158 {
-		comment.access read
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Mask'
-		index 3
-		value ffffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-	}
-	control.159 {
-		comment.access 'read write'
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Default'
-		value '0492100200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.160 {
-		comment.access 'read write'
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Default'
-		index 1
-		value '0492100200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.161 {
-		comment.access 'read write'
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Default'
-		index 2
-		value '0492100200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.162 {
-		comment.access 'read write'
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Default'
-		index 3
-		value '3f30cf3f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.163 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Audigy Analog/Digital Output Jack'
-		value true
-	}
-}
-state.I82801BAICH2 {
-	control.1 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Master Playback Switch'
-		value false
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Master Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Center Playback Switch'
-		value false
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Center Playback Volume'
-		value 31
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'LFE Playback Switch'
-		value false
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'LFE Playback Volume'
-		value 0
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Surround Playback Switch'
-		value.0 false
-		value.1 false
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Surround Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Master Mono Playback Switch'
-		value false
-	}
-	control.10 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Master Mono Playback Volume'
-		value 0
-	}
-	control.11 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'PC Speaker Playback Switch'
-		value false
-	}
-	control.12 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name 'PC Speaker Playback Volume'
-		value 0
-	}
-	control.13 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Phone Playback Switch'
-		value false
-	}
-	control.14 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Phone Playback Volume'
-		value 0
-	}
-	control.15 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mic Playback Switch'
-		value false
-	}
-	control.16 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Mic Playback Volume'
-		value 0
-	}
-	control.17 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mic Boost (+20dB)'
-		value false
-	}
-	control.18 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Line Playback Switch'
-		value false
-	}
-	control.19 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Line Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.20 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'CD Playback Switch'
-		value false
-	}
-	control.21 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'CD Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.22 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Video Playback Switch'
-		value false
-	}
-	control.23 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Video Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.24 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Aux Playback Switch'
-		value false
-	}
-	control.25 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Aux Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.26 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'PCM Playback Switch'
-		value false
-	}
-	control.27 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.28 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.item.0 Mic
-		comment.item.1 CD
-		comment.item.2 Video
-		comment.item.3 Aux
-		comment.item.4 Line
-		comment.item.5 Mix
-		comment.item.6 'Mix Mono'
-		comment.item.7 Phone
-		iface MIXER
-		name 'Capture Source'
-		value.0 Mic
-		value.1 Mic
-	}
-	control.29 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Capture Switch'
-		value true
-	}
-	control.30 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name 'Capture Volume'
-		value.0 0
-		value.1 0
-	}
-	control.31 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name '3D Control - Switch'
-		value false
-	}
-	control.32 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.item.0 Mix
-		comment.item.1 Mic
-		iface MIXER
-		name 'Mono Output Select'
-		value Mix
-	}
-	control.33 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.item.0 Mic1
-		comment.item.1 Mic2
-		iface MIXER
-		name 'Mic Select'
-		value Mic1
-	}
-	control.34 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name '3D Control - Center'
-		value 0
-	}
-	control.35 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name '3D Control - Depth'
-		value 0
-	}
-	control.36 {
-		comment.access read
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Con Mask'
-		value '0fff000f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.37 {
-		comment.access read
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Pro Mask'
-		value cf00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-	}
-	control.38 {
-		comment.access 'read write'
-		comment.type IEC958
-		iface MIXER
-		name 'IEC958 Playback Default'
-		value '0082000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.39 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'IEC958 Playback Switch'
-		value false
-	}
-	control.40 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 3'
-		iface MIXER
-		name 'IEC958 Playback AC97-SPSA'
-		value 0
-	}
-	control.41 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Duplicate Front'
-		value false
-	}
-	control.42 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Surround Down Mix'
-		value false
-	}
-	control.43 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Center/LFE Down Mix'
-		value false
-	}
-	control.44 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Exchange Center/LFE'
-		value false
-	}
-	control.45 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Line-In As Surround'
-		value false
-	}
-	control.46 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Swap Surround Slot'
-		value false
-	}
-	control.47 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mic As Center/LFE'
-		value false
-	}
-	control.48 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'IEC958 Capture Switch'
-		value false
-	}
-	control.49 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Analog to IEC958 Output'
-		value false
-	}
-	control.50 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'IEC958 Input Monitor'
-		value false
-	}
-	control.51 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'External Amplifier'
-		value true
-	}
-}
-state.Bt878 {
-	control.1 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name 'Capture Volume'
-		value 0
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Capture Boost'
-		value false
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.item.0 'TV Tuner'
-		comment.item.1 FM
-		comment.item.2 Mic/Line
-		iface MIXER
-		name 'Capture Source'
-		value 'TV Tuner'
-	}
-}
+edited on: 09-26-04 15:26
 
---=-5ijAuCNH7WfvlR72VDEa--
+----------------------------------------------------------------------
+ rncbc - 09-26-2004 15:28 CEST 
+----------------------------------------------------------------------
+After some netconsole sessions, I have uploaded here the respective output
+logs, which would be a bit more intelligible than the actual but
+incomplete screenshots.
 
+Both traces are from US-224 power up and firmware initial loads and then
+the kernel oops that results from issuing just a simple aplay -D hw:1
+somefile.wav.
+
+netconsole.out.0.txt traces a session with all system modules loaded for a
+full functional laptop; netconsole.out.1.txt results from a session
+without pcmcia and ohci1394 related stuff loaded (and therefore saving
+some irq claims).
+
+Hope this eases the search for a solution :)
+
+----------------------------------------------------------------------
+ karsten - 09-26-2004 15:43 CEST 
+----------------------------------------------------------------------
+Please update all of alsa-kernel/usb from cvs head.
+"Badness in usb_unlink_urb at drivers/usb/core/urb.c:457" should vanish.
+Redo netconsole logs.
+
+----------------------------------------------------------------------
+ rncbc - 09-28-2004 22:02 CEST 
+----------------------------------------------------------------------
+Just uploaded netconsole.out.2.txt which is the result after updating to
+full ALSA 1.0.7rc1 CVS (full update: alsa-kernel, alsa-driver, alsa-lib,
+alsa-oss, alsa-tools, alsa-utils and alsa-firmware).
+
+The ohci_hcd oops remains, but the badness on usb_unlink_urb has vanished,
+as Karsten predicted.
+
+Some other run-time info that someone might find useful:
+
+--
+# uname -a
+
+Linux lambda 2.6.9-rc2-mm3-S6.3 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001 Sun Sep 26 12:54:30 WEST 2004 i686
+unknown unknown GNU/Linux
+
+--
+# cat /proc/asound/version
+
+Advanced Linux Sound Architecture Driver Version 1.0.7rc1.
+Compiled on Sep 26 2004 for kernel 2.6.9-rc2-mm3-S6.3.
+
+--
+# cat /proc/asound/cards
+
+0 [A5451          ]: ALI5451 - ALI 5451
+                     ALI 5451 at 0x1000, irq 5
+1 [USX2Y          ]: USB US-X2Y - TASCAM US-X2Y
+                     TASCAM US-X2Y (1604:8005 if 0 at 001/003)
+
+--
+# grep . /proc/asound/*/*/xrun_debug
+
+/proc/asound/A5451/pcm0c/xrun_debug:2
+/proc/asound/A5451/pcm0p/xrun_debug:2
+/proc/asound/card0/pcm0c/xrun_debug:2
+/proc/asound/card0/pcm0p/xrun_debug:2
+/proc/asound/card1/pcm0c/xrun_debug:2
+/proc/asound/card1/pcm0p/xrun_debug:2
+/proc/asound/USX2Y/pcm0c/xrun_debug:2
+/proc/asound/USX2Y/pcm0p/xrun_debug:2
+
+--
+# cat /proc/interrupts
+
+           CPU0       
+  0:     165578          XT-PIC  timer  0/65578
+  1:        309          XT-PIC  i8042  1/309
+  2:          0          XT-PIC  cascade  0/0
+  5:          1          XT-PIC  ALI 5451  0/0
+  8:          1          XT-PIC  rtc  0/1
+  9:         21          XT-PIC  acpi  0/21
+ 10:       4760          XT-PIC  ohci_hcd, ohci_hcd, ohci1394, eth0 
+0/4760
+ 11:          5          XT-PIC  yenta  5/5
+ 12:        114          XT-PIC  i8042  0/114
+ 14:       4156          XT-PIC  ide0  0/4156
+ 15:         11          XT-PIC  ide1  0/11
+NMI:          0 
+LOC:          0 
+ERR:          0
+MIS:          0
+
+--
+# grep . /proc/irq/*/*/threaded
+
+/proc/irq/10/eth0/threaded:1
+/proc/irq/10/ohci1394/threaded:1
+/proc/irq/10/ohci_hcd/threaded:0
+/proc/irq/10/ohci_hcd/threaded:0
+/proc/irq/11/yenta/threaded:1
+/proc/irq/12/i8042/threaded:0
+/proc/irq/14/ide0/threaded:1
+/proc/irq/15/ide1/threaded:1
+/proc/irq/1/i8042/threaded:0
+/proc/irq/5/ALI 5451/threaded:0
+/proc/irq/8/rtc/threaded:0
+/proc/irq/9/acpi/threaded:1
+
+--
+# grep . /sys/block/hd*/queue/max_sectors_kb
+
+/sys/block/hda/queue/max_sectors_kb:16
+/sys/block/hdc/queue/max_sectors_kb:16
+
+--
+# grep . /proc/sys/kernel/*_preemption
+
+/proc/sys/kernel/hardirq_preemption:1
+/proc/sys/kernel/kernel_preemption:1
+/proc/sys/kernel/softirq_preemption:1
+/proc/sys/kernel/voluntary_preemption:1
+
+edited on: 09-28-04 22:02
+
+----------------------------------------------------------------------
+ karsten - 09-26-2004 22:18 CEST 
+----------------------------------------------------------------------
+erm, found the bug:
+snd-usb-usx2y currently really can't cope with ohci,
+as ohci_hcd doesn't use specified urb->start_frame values.
+Only ISO_ASAP is supported and start_frame is 16Bit where
+uhci start_frame is 10Bit.
+... <bulb crackling> ...
+
+----------------------------------------------------------------------
+ karsten - 09-27-2004 13:51 CEST 
+----------------------------------------------------------------------
+Rui, please test "snd-usb-usx2y.patch.0.7.3+ohci" and feed back.
+This patch applies to cvs-head only, not the experimental branch.
+
+----------------------------------------------------------------------
+ rncbc - 09-27-2004 23:49 CEST 
+----------------------------------------------------------------------
+OK. First results are that we're halfway there :)
+
+Applied and installed the "snd-usb-usx2y.patch.0.7.3+ohci" patch on my
+laptop, taking alsa-kernel/driver CVS HEAD as of yesterday (2004-09-26),
+giving it a local version 1.0.7rc1.1.
+
+First tests with aplay gives it a thumbs up SUCCESS! Can play and hear
+actual sound from audio output (headphones), while using the intended hw:1
+alsa native interface--netconsole log capture of this historic event is
+engraved on "netconsole.out.3.aplay_OK.txt".
+
+Second round, now with jackd, shows that there's still work to be done.
+The edited netconsole session is given by
+"netconsole.out.4.jackd_HANGS.txt". Obviously, no sound could be heard or
+worked out, as the jack "alsa" backend seems to hang/loop endlessly in
+usbusx2yaudio.c:844:snd_usX2Y_pcm_prepare(dbcd6794).
+
+The exact jackd startup command line is shown as inserted on the log
+capture file.
+
+Nevertheless, given that the main showstopper (kernel oops) is about to
+being solved, I'm now seeing the light at end of the tunnel ;) I hope its
+not a train coming :)
+
+Thanks Karsten.
+
+----------------------------------------------------------------------
+ karsten - 09-28-2004 15:16 CEST 
+----------------------------------------------------------------------
+Rui, please test "snd-usb-usx2y.patch.0.7.3+ohci_1" and feed back.
+Again, this patch applies to cvs-head only, not the experimental branch.
+
+----------------------------------------------------------------------
+ rncbc - 09-28-2004 22:01 CEST 
+----------------------------------------------------------------------
+Applied "snd-usb-usx2y.patch.0.7.3+ohci_1" and there's the corresponding
+sample netconsole outputs:
+
+  netconsole.out.5.aplay_OOPS.txt
+  netconsole.out.6.jackd_OOPS.txt
+
+As you may infer from the filenames, I get kernel oops on both aplay and
+jackd.
+
+Maybe this was just another train passing over towards the light ;)
+
+----------------------------------------------------------------------
+ karsten - 09-30-2004 01:44 CEST 
+----------------------------------------------------------------------
+Just checked:
+ dmesg.out.7.jackd-R_ABORTS.txt
+ dmesg.out.8.jackd_XRUNS.txt
+two things to lessen xruns:
+1) You can disable disable debug output by
+removing or uncommenting the snd_printd and snd_printdd macros and
+rebuilding
+without alsa debugging options.
+2) Make shure that acpid and apmd are shutdown.
+Here I run at a customized runlevel 4, where those are disabled.
+or enter:
+$/etc/init.d/acpid stop
+$/etc/init.d/apmd stop
+
+----------------------------------------------------------------------
+ rncbc - 09-30-2004 11:44 CEST 
+----------------------------------------------------------------------
+In the meanwhile, Karsten has written:
+> 
+> just prepare a plain linux-2.6.9-rc2-mm4-VP-S7 and cp -r the contents
+of
+> the tar.gz into the linux tree.
+>
+> Works stably here on uhci_hcd with lsa and usx2y jackd.
+> Had evil things happening here when using
+> 	CONFIG_USB_DEBUG
+> 	CONFIG_USB_BANDWIDTH
+> 	CONFIG_REGPARM
+> So at first don't use any of those options.
+> 	CONFIG_CPU_FREQ is maybe also a showstopper.
+> 
+
+Things are really coming out of the dark tunnel :)
+
+Following the suggestion above, the new kernel has been configured as:
+
+ 	CONFIG_USB_DEBUG not set
+ 	CONFIG_USB_BANDWIDTH not set
+ 	CONFIG_REGPARM not set (not available by VP patch, BTW)
+ 	CONFIG_CPU_FREQ not set
+
+In all my previous trials, I was using CONFIG_USB_DEBUG set to Y for
+obvious reasons: I was trying to collect all the USB debug info I could
+get, to hand you :) I'll check soon if having back on this option makes
+any difference at all (besides verbosity).
+
+All aboard?
+
+After untarring (usx2y_linux-2.6.9-rc2-mm4-S7.tar.gz) and arrange a proper
+kernel source tree patch (linux-2.6.9-rc2-mm4-S7_usx2y.patch.gz), I
+succeeded for the very first time to get my US-224 to work on my OHCI
+based laptop without a kernel oops. HURRAY! Kudos to Karsten, you're a
+champ!
+
+OK. We're getting close to karma :)
+
+However (there's always a but), running jackd is not even near perfection.
+Summary is: 
+
+1. jackd -R (realtime) is a NO GO -- see dmesg.out.7.jackd-R_ABORTS.txt. 
+
+2. jackd (non realtime) is prone to XRUNS, if not annoyingly unreliable --
+see dmesg.out.7.jackd-XRUNS.txt. 
+
+Common thing in both modes, is the following jackd output message:
+
+ALSA lib pcm_hw.c:521:(snd_pcm_hw_prepare) SNDRV_PCM_IOCTL_PREPARE failed:
+Broken pipe
+
+This seems that I'm now on par of bugs https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000549 and https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000541, which is
+good news to say the least, given the showstopping I had before ;)
+
+As a side note, the jackd backend driver used in my tests wre the new alsa
+experimental one, specific to usx2y and named as such (-d usx2y), while
+using a latest patched jackd release (notice my custom versioning:
+0.99.0usx2y). 
+
+OTOH, the same kernel, patch and jackd works on my SUSE 9.1 Pro box, P4
+2.8GHz/HT SMP, UHCI based, with much less fuss -- can even run jackd -R -p
+128 -n 2. However (yes, yet another but) it seems to suffer from some
+periodic xruns (something like a burst of 2 consecutive xruns each 10
+minutes) than before. I mean before as the original stuff posted on
+jackit-devel mailing list recently
+(http://sourceforge.net/mailarchive/message.php?msg_id=9597926).
+
+Oh, just noticed Karsten's note about acpid and apmd. Those are not
+started. However ACPI modules are loaded.
+
+edited on: 09-30-04 11:44
+
+----------------------------------------------------------------------
+ karsten - 09-30-2004 02:11 CEST 
+----------------------------------------------------------------------
+relating
+usx2yhwdeppcm.c:77:activ frame status -18
+does it help if you run the laptop from batery?
+sometimes usb is fragile....
+
+----------------------------------------------------------------------
+ karsten - 10-01-2004 01:23 CEST 
+----------------------------------------------------------------------
+please recheck version 0.8.0, which I posted to the alsa-devel list.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-06-04 10:53 rncbc          New Bug                                      
+08-06-04 10:53 rncbc          File Added: usx2y-oops3.png                    
+08-06-04 10:53 rncbc          Distribution              => Mandrake 10.0 Official
+08-06-04 10:53 rncbc          Kernel Version            => 2.6.8-rc2       
+08-06-04 12:16 rncbc          Bugnote Added: 0001538                       
+09-23-04 20:52 karsten        Bugnote Added: 0001849                       
+09-24-04 09:43 rncbc          Bugnote Added: 0001858                       
+09-25-04 17:13 rncbc          File Added: usx2y-oops4.png                    
+09-25-04 17:18 rncbc          Bugnote Added: 0001911                       
+09-25-04 17:45 karsten        Bugnote Added: 0001912                       
+09-26-04 14:54 karsten        Bugnote Edited: 0001912                      
+09-26-04 15:15 rncbc          File Added: netconsole.out.0.txt                    
+09-26-04 15:16 rncbc          File Added: netconsole.out.1.txt                    
+09-26-04 15:26 karsten        Bugnote Edited: 0001912                      
+09-26-04 15:28 rncbc          Bugnote Added: 0001921                       
+09-26-04 15:43 karsten        Bugnote Added: 0001922                       
+09-26-04 21:52 rncbc          File Added: netconsole.out.2.txt                    
+09-26-04 22:00 rncbc          Bugnote Added: 0001925                       
+09-26-04 22:18 karsten        Bugnote Added: 0001927                       
+09-27-04 13:48 karsten        File Added: snd-usb-usx2y.patch.0.7.3+ohci                    
+09-27-04 13:51 karsten        Bugnote Added: 0001936                       
+09-27-04 23:22 rncbc          File Added: netconsole.out.3.aplay_OK.txt                    
+09-27-04 23:22 rncbc          File Added: netconsole.out.4.jackd_HANGS.txt                    
+09-27-04 23:49 rncbc          Bugnote Added: 0001943                       
+09-28-04 15:13 karsten        File Added: snd-usb-usx2y.patch.0.7.3+ohci_1                    
+09-28-04 15:16 karsten        Bugnote Added: 0001945                       
+09-28-04 21:52 rncbc          File Added: netconsole.out.5.aplay_OOPS.txt                    
+09-28-04 21:52 rncbc          File Added: netconsole.out.6.jackd_OOPS.txt                    
+09-28-04 22:01 rncbc          Bugnote Added: 0001957                       
+09-28-04 22:02 rncbc          Bugnote Edited: 0001925                      
+09-29-04 12:38 rncbc          Bug Monitored: rncbc                         
+09-30-04 01:19 rncbc          File Added: usx2y_linux-2.6.9-rc2-mm4-S7.tar.gz                    
+09-30-04 01:22 rncbc          File Added: linux-2.6.9-rc2-mm4-S7_usx2y.patch.gz                    
+09-30-04 01:24 rncbc          File Added: dmesg.out.7.jackd-R_ABORTS.txt                    
+09-30-04 01:25 rncbc          File Added: dmesg.out.8.jackd_XRUNS.txt                    
+09-30-04 01:44 karsten        Bugnote Added: 0001978                       
+09-30-04 02:00 rncbc          Bugnote Added: 0001979                       
+09-30-04 02:11 karsten        Bugnote Added: 0001980                       
+09-30-04 11:43 rncbc          Bugnote Edited: 0001979                      
+09-30-04 11:44 rncbc          Bugnote Edited: 0001979                      
+10-01-04 01:23 karsten        Bugnote Added: 0001988                       
+======================================================================
 
 
 -------------------------------------------------------
