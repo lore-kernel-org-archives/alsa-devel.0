@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000479]: [Patch] VIA based AC97 modem driver
-Date: Thu,  2 Sep 2004 21:24:19 +0200 (CEST)
+Subject: [ALSA - driver 0000480]: Bluetooth Headset Profile Feature request
+Date: Fri,  3 Sep 2004 05:51:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040902192419.18B5D15009@server.perex-int.cz>
+Message-ID: <20040903035112.3C04E2D0C0@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 742A72B6
-	for <alsa-devel@alsa-project.org>; Thu,  2 Sep 2004 21:24:19 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 27B9D1EBCC
-	for <alsa-devel@alsa-project.org>; Thu,  2 Sep 2004 21:24:19 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 801FB20E
+	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 05:51:12 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,35 +22,36 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000479
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000480
 ======================================================================
-Reported By:                sashak
-Assigned To:                sashak
+Reported By:                CTAC
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     479
-Category:                   PCI - via82xx
-Reproducibility:            always
+Bug ID:                     480
+Category:                   USB - usb-audio
+Reproducibility:            N/A
 Severity:                   feature
 Priority:                   normal
 Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             09-02-2004 21:24 CEST
-Last Modified:              09-02-2004 21:24 CEST
+Date Submitted:             09-03-2004 05:51 CEST
+Last Modified:              09-03-2004 05:51 CEST
 ======================================================================
-Summary:                    [Patch] VIA based AC97 modem driver
+Summary:                    Bluetooth Headset Profile Feature request
 Description: 
-New 'via82xx_modem.c' driver supports VIA based AC97 modems. (tested with
-2.6.8.1). The patch (for alsa-driver) is uploaded.
+I think that it will be really cool to have in ALSA possibility to connect
+to a bluetooth headset and create a "Virtual Sound Card" that can be used
+in different applications - from mplayer/xmms to video/voice conferencing
+and VOIP.
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-02-04 21:24 sashak         New Bug                                      
-09-02-04 21:24 sashak         File Added: via-modem.patch                    
+09-03-04 05:51 CTAC           New Bug                                      
 ======================================================================
 
 
