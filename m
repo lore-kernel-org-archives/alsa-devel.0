@@ -1,13 +1,12 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
+From: Peter Zubaj <pzad@pobox.sk>
 Subject: Re: creative SB audigy 2ZS notebook
-Date: Sun, 28 Nov 2004 12:48:48 +0000
-Message-ID: <41A9C930.3050701@superbug.co.uk>
-References: <1101638678.24617.2.camel@localhost.localdomain>
+Date: Sun, 28 Nov 2004 14:22:36 +0100
+Message-ID: <200411281322.iASDMaIP022346@www4.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1101638678.24617.2.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,26 +16,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ingo Braun <ibraun@netcologne.de>
+To: ibraun@netcologne.de
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Ingo Braun wrote:
+Hi,
 
->hello ...
->
->i got this new card some days ago and would like to know
 >if there is support on this or how to enable this card under linux
->
+
+For now there is no support for it and probably never will be, we will
+see.
+
 >is there any source code available to support this card ?
->
->regard  ibraun@netcologne.de
->
->  
->
 
-I don't think Linux supports that sound card yet.
+For now none.
 
+I would like to know pci id of this card. I am not expert in pcmcia,
+but pcmcia card should by listen by lspci
+
+try=20
+lspci -v=20
+
+and send me output.
+
+We will se what is inside.
+
+Peter Zubaj=0A____________________________________=0Ahttp://www.pobox.sk/ -=
+ najvacsi slovensky freemail=0A=0A=0A
 
 
 -------------------------------------------------------
