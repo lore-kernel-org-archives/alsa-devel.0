@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000756]: ASRock k7vt4a+ with CMedia CMI9761 no mixer!
-Date: Wed, 29 Dec 2004 01:24:10 +0100
-Message-ID: <592f1ec2a2f98214095062cc729a3e9b@bugtrack.alsa-project.org>
+Date: Wed, 29 Dec 2004 01:38:26 +0100
+Message-ID: <67ac30a9b2164bbe02fed5d4f517e730@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EAB2A2DD
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 01:24:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E228E2E1
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 01:38:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian/knoppmyth
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             12-29-2004 01:15 CET
-Last Modified:              12-29-2004 01:24 CET
+Last Modified:              12-29-2004 01:38 CET
 ======================================================================
 Summary:                    ASRock k7vt4a+ with CMedia CMI9761 no mixer!
 Description: 
@@ -66,13 +66,6 @@ to work.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-29-04 01:18 
-----------------------------------------------------------------------
-Because this codec does not have a master volume control in the hardware. 
-Please, check the alsa-user and alsa-devel archives before filing a bug
-report!
-
-----------------------------------------------------------------------
  wschrep - 12-29-04 01:24 
 ----------------------------------------------------------------------
 Ok so what do I do because checked alsa-user and alsa-devel but
@@ -93,6 +86,13 @@ snd                    45988  9
 snd_pcm_oss,snd_mixer_oss,snd_via82xx,snd_pcm,snd_timer,snd_ac97_codec,snd_mpu401_uart,snd_rawmidi,snd_seq_device
 soundcore               7328  4 snd
 
+----------------------------------------------------------------------
+ rlrevell - 12-29-04 01:38 
+----------------------------------------------------------------------
+There's nothing you can do for now, because YOUR HARDWARE LACKS THIS
+FEATURE.  The upcoming ALSA 1.0.8 release should have a "software volume"
+plugin to handle broken hardware like yours.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -101,6 +101,7 @@ Date Modified  Username       Field                    Change
 12-29-04 01:15 wschrep        Kernel Version            => 2.6.10          
 12-29-04 01:18 rlrevell       Note Added: 0002989                          
 12-29-04 01:24 wschrep        Note Added: 0002990                          
+12-29-04 01:38 rlrevell       Note Added: 0002991                          
 ======================================================================
 
 
