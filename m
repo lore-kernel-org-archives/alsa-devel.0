@@ -1,13 +1,13 @@
-From: iriXx <m@iriXx.org>
-Subject: problem compiling cvs of  2003-04-19
-Date: Sat, 19 Apr 2003 23:13:24 +0100
+From: Jordi Mallach <jordi@debian.org>
+Subject: building jack
+Date: Sun, 20 Apr 2003 17:18:13 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EA1CA04.5090601@iriXx.org>
-Reply-To: m@iriXx.org
+Message-ID: <20030420151813.GA20213@nubol.int.oskuro.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="liOOAslEiF7prFVr"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,37 +16,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: linux-audio-user@music.columbia.edu, alsa-devel@sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi,
 
-i've just downloaded the cvs from the repository of 2003-04-19 and am 
-trying to compile for use on my desktop machine... which has the 
-wonderful and rather overkill combination of a sbawe, msnd-pinnacle and 
-usb-audio (quattro)...
+--liOOAslEiF7prFVr
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-i'm getting the following error on making cvs:
+Hello,
 
-gcc -D__KERNEL__ -DMODULE=1 -I/usr/src/alsa/alsa-driver/include 
--I/lib/modules/2.4.18-6mdk/build/include -O2 
--mpreferred-stack-boundary=2 -march=i586 -DLINUX -Wall 
--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2 
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD 
--DKBUILD_BASENAME=init   -c -o init.o init.c
-In file included from init.c:2:
-../alsa-kernel/core/init.c:671: conflicting types for 
-`snd_power_wait_Rc1205744'/usr/src/alsa/alsa-driver/include/sound/core.h:187: 
-previous declaration of `snd_power_wait_Rc1205744'
-make[1]: *** [init.o] Error 1
-make[1]: Leaving directory `/usr/src/alsa/alsa-driver/acore'
-make: *** [compile] Error 1
+I've tried to build the jack plugin for alsa-lib, but I can't. Both in
+CVS and 0.9.2, jack.h appears to be missing and the compile fails.
 
-any ideas if i've got a missing library or something?
+gcc -DHAVE_CONFIG_H -I. -I. -I../../../include -I../../../include -I../../.=
+=2E/src/pcm -O2 -Wall -W -pipe -g -MT pcm_jack.lo -MD -MP -MF .deps/pcm_jac=
+k.Tpo -c pcm_jack.c  -fPIC -DPIC -o pcm_jack.lo
+pcm_jack.c:36:23: jack/jack.h: No such file or directory
+pcm_jack.c:68: syntax error before "jack_port_t"
+pcm_jack.c:68: warning: no semicolon at end of struct or union
+pcm_jack.c:69: warning: type defaults to `int' in declaration of `client'
+pcm_jack.c:69: warning: data definition has no type or storage class
+[...]
 
-bw
-m~
+Any idea?
 
+Jordi
+--=20
+Jordi Mallach P=E9rez  --  Debian developer     http://www.debian.org/
+jordi@sindominio.net     jordi@debian.org     http://www.sindominio.net/
+GnuPG public key information available at http://oskuro.net/~jordi/
+
+--liOOAslEiF7prFVr
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQE+oro1JYSUupF6Il4RAi8sAKDDWVl4zvHSTK4k2qa30HRyiMybqACgziTK
+I9xrfgpofvjquRfYWOuFxC4=
+=/j7i
+-----END PGP SIGNATURE-----
+
+--liOOAslEiF7prFVr--
 
 
 -------------------------------------------------------
