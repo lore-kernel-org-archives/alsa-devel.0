@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000625]: ISA - 4232 has no CD sound
-Date: Thu, 11 Nov 2004 14:30:09 +0100
-Message-ID: <9780be5d625d809bc6fb647cc3cd2a6c@bugtrack.alsa-project.org>
+Date: Thu, 11 Nov 2004 14:40:31 +0100
+Message-ID: <ba25447e82021571cf6ed91d15d0560a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0504D270
-	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 14:30:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D2A2826F
+	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 14:40:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=625> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian Sarge
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             11-03-2004 13:49 CET
-Last Modified:              11-11-2004 14:30 CET
+Last Modified:              11-11-2004 14:40 CET
 ======================================================================
 Summary:                    ISA - 4232 has no CD sound
 Description: 
@@ -49,12 +49,6 @@ isa card in kernel. Tried with modules and without. Has sound but not from
 the CD. System ran OSS module  with sound from the CD previous to kernel
 compile, so everything that OSS needed is still there.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 11-09-04 18:49 
-----------------------------------------------------------------------
-Please attach /etc/asound.state for debugging.
-I guess you didn't turn on "CD Playback Switch".
 
 ----------------------------------------------------------------------
  hugovanwoerkom - 11-11-04 13:47 
@@ -211,6 +205,14 @@ state.CS4236 {
 
 I would turn on CD Playback Switch if I knew how.
 
+----------------------------------------------------------------------
+ tiwai - 11-11-04 14:40 
+----------------------------------------------------------------------
+Ah ok you're using cs4232 (the category was missing - added now).
+Then there is no CD volume control indeed.
+
+Try to turn on 'Aux Playback Switch' (or unmute 'Aux' on alsamixer).
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -221,6 +223,7 @@ Date Modified  Username       Field                    Change
 11-11-04 13:47 hugovanwoerkom Note Added: 0002384                          
 11-11-04 14:30 tiwai          Category                 ISA - cs4236 => ISA -
 cs4232
+11-11-04 14:40 tiwai          Note Added: 0002385                          
 ======================================================================
 
 
