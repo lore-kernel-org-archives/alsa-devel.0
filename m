@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000961]: No hardware mixing on SBLive 5.1 which supported OSS hardware mixing under previous OS
-Date: Fri, 4 Mar 2005 01:33:47 +0100
-Message-ID: <3735f3136209a01622049d0c1649064d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000951]: Fix bugs with early IRQs mishandling, missing silence fill, and wrong timing calculations
+Date: Fri, 4 Mar 2005 03:34:36 +0100
+Message-ID: <4bc05866ffcb1c78092bdf6aa37ca4c2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE50A1F3
-	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2005 01:33:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CD71D20D
+	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2005 03:34:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,110 +21,252 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=961> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=951> 
 ======================================================================
-Reported By:                redemption042
+Reported By:                charles_levert
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   961
-Category:                   PCI - emu10k1
+Issue ID:                   951
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu 4.10
-Kernel Version:             2.6.7
+Distribution:               
+Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             03-04-2005 01:33 CET
-Last Modified:              03-04-2005 01:33 CET
+Date Submitted:             02-28-2005 21:26 CET
+Last Modified:              03-04-2005 03:34 CET
 ======================================================================
-Summary:                    No hardware mixing on SBLive 5.1 which supported OSS
-hardware mixing under previous OS
+Summary:                    Fix bugs with early IRQs mishandling, missing
+silence fill, and wrong timing calculations
 Description: 
-Previously, I was running knoppix 3.1 with a 2.4 family kernel, I believe. 
-Under this distro, hardware mixing on my soundcard was supported with
-multiple applications being able to grab /dev/dsp (TeamSpeak and
-Enemy-Territory, for example)
+A patch is forthcoming.
 
-When I loaded up Ubuntu 4.10, I lost the hardware mixing capabilities  of
-my sound card.   I have tried loading the latest version of the driver
-(1.0.8) which, while providing sound, does not seem to allow hardware
-mixing.
+Here is the text from the patch preamble.
 
-my /proc/asound/pcm:
-00-00: emu10k1 : EMU10K1 : playback 32 : capture 1
-00-01: emu10k1 mic : EMU10K1 MIC : capture 1
-00-02: emu10k1 efx : EMU10K1 EFX : playback 8 : capture 1
+    This patch is against alsa-driver-1.0.8.
+    It covers:
+        alsa-kernel/core/pcm_lib.c
+        alsa-kernel/include/pcm.h
+        alsa-kernel/core/pcm_native.c
+        alsa-kernel/core/oss/pcm_oss.c
+    The main changes are in the first listed file.
 
-output of lsmod:
+    An original bug description was filed
+    under "[ALSA - driver] PCI - cmipci":
+        <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=946>
+    since the problems were first observed on this hardware.
 
-Module                  Size  Used by
-usblp                  15360  0
-udf                    94724  0
-binfmt_misc            12424  1
-md5                     7808  1
-ipv6                  262880  6
-af_packet              22152  2
-joydev                 11968  0
-usbhid                 34240  0
-snd_emu10k1           108712  6
-snd_rawmidi            28480  1 snd_emu10k1
-snd_seq_device         12428  2 snd_emu10k1,snd_rawmidi
-snd_ac97_codec         80376  1 snd_emu10k1
-snd_pcm_oss            57768  0
-snd_mixer_oss          24064  3 snd_pcm_oss
-snd_pcm                94624  4 snd_emu10k1,snd_ac97_codec,snd_pcm_oss
-snd_timer              29956  2 snd_emu10k1,snd_pcm
-snd_page_alloc         13576  2 snd_emu10k1,snd_pcm
-snd_util_mem            7936  1 snd_emu10k1
-snd_hwdep              13984  1 snd_emu10k1
-snd                    57828  18
-snd_emu10k1,snd_rawmidi,snd_seq_device,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_util_mem,snd_hwdep
-soundcore              11872  3 snd
-usb_storage            68928  0
-ehci_hcd               33028  0
-ohci_hcd               23428  0
-usbcore               105824  7
-usblp,usbhid,usb_storage,ehci_hcd,ohci_hcd
-nvidia_agp             10012  1
-agpgart                32172  2 nvidia_agp
-evdev                  11520  0
-nls_iso8859_1           7936  1
-nls_cp437               9600  1
-nvidia               4826100  12
-ide_generic             5248  0
-ide_cd                 43524  0
-cdrom                  41248  1 ide_cd
+    The patch fixes the following problems:
 
-/proc/asound/cards:
-0 [Live           ]: EMU10K1 - Sound Blaster Live!
-                     Sound Blaster Live! (rev.7, serial:0x80611102) at
-0xc000, irq 17
+     -- Properly handle early IRQs in
+        snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c.
 
-/proc/asound/devices:
-  4: [0- 0]: hardware dependent
-  8: [0- 0]: raw midi
- 18: [0- 2]: digital audio playback
- 26: [0- 2]: digital audio capture
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
+        This does occur, at least with CMI8738MC6 hardware.
 
+        This bug had a major impact that caused the DMAs
+        to run for too long and irritating noise to be
+        heard at the end of playback.
 
+     -- Properly compute estimated time of next interrupt
+        in snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c;
+        this is no longer done with a
+        "... % runtime->period_size" kludge (which didn't
+        even attempt to round to nearest instead of merely
+        truncating).
+
+     -- Test whether hw_avail is big enough to handle
+        the next runtime->period_size in
+        snd_pcm_update_hw_ptr_post() in pcm_lib.c,
+        otherwise call snd_pcm_tick_prepare() to
+        tentatively set up a timer if needed (to be able
+        to take earlier action in that case).
+
+     -- Centralize all folding of values with regard to
+        runtime->boundary in the new snd_pcm_next_buf()
+        function in pcm_lib.c.
+
+        All relevant values are now systematically in
+        coherent synchronization without resorting to the
+        ugly and error-prone "value %= runtime->boundary"
+        kludge all over the place; unobvious wrapping
+        conditions testing is no longer needed in these
+        places.
+
+        A safe zone worth one runtime->buffer_size is now
+        kept on the left side of the operating interval,
+        just like it was the case for the right side;
+        this is necessary for proper simplified operation.
+
+     -- Direct manipulations of values with respect to
+        runtime->boundary needed to be brought in line
+        with new proper practices (and thus simplified)
+        in pcm.h, pcm_lib.c, pcm_native.c, and pcm_oss.c.
+
+     -- Isolate the second part of
+        snd_pcm_playback_silence() in the new
+        snd_pcm_playback_silence_fill() function in
+        pcm_lib.c.
+
+        This makes the code more readable since the
+        task this performs should not be confused with
+        what is done in the remaining first part of
+        snd_pcm_playback_silence().
+
+        The isolated code is unchanged.
+
+     -- Rewrite the remaining first part of
+        snd_pcm_playback_silence() to properly handle all
+        situations, including computing minimum silence
+        insertion even when "runtime->silence_size == 0".
+
+        This is needed for proper operation of the aplay
+        program, for one, and is much more forgiving on the
+        user; insertion of silence samples in user space
+        was always useless and a wrong solution anyway (but
+        user space specification of kernel space silence
+        insertion is useful and still very much supported).
+
+        The code is now much more straightforward to read.
+
+        Updates of runtime->control->appl_ptr (due
+        to the user writing samples) and updates to
+        runtime->status->hw_ptr (due to the audio hardware
+        consuming samples) are now _both_ properly
+        accounted for in all cases; the new code makes
+        this much more obvious.
+
+     -- All calls to snd_pcm_playback_silence() in
+        pcm_lib.c and pcm_native.c must no longer be under
+        the "runtime->silence_size > 0" condition.
+
+     -- Properly perform rounded-up integer division in
+        snd_pcm_system_tick_set() in pcm_lib.c.
+
+        This only had a minor impact.
+
+     -- Properly compute distance to next interrupt in
+        snd_pcm_tick_prepare() in pcm_lib.c; again, avoid
+        using any "... % runtime->period_size" kludge.
+
+     -- The usage of runtime->rate in
+        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
+        regarless of other changes.
+
+        The impact was that the timer was systematically
+        set to 1 single tick when it needed to be set to
+        typically hundreds of ticks.
+
+     -- The usage of runtime->sleep_min in
+        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
+        regarless of other changes.
+
+        The impact was that the number of ticks for
+        the timer was not properly adjusted up to what
+        sleep_min is documented to mean, when needed.
 
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000946 Early playback DMA IRQ with CMI8738MC6 ...
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 03-03-05 20:30 
+----------------------------------------------------------------------
+* Xrun debugging was dropped. Why?
+
+This is kind of a hack anyway.  There are much, much cleaner ways to debug
+this now.  Just my $0.02.
+
+----------------------------------------------------------------------
+ charles_levert - 03-04-05 03:34 
+----------------------------------------------------------------------
+> The snd_pcm_tick_set() function accepts
+> ticks not microseconds.
+
+Ah, good!  We might be zeroing-in on the problem.  I.e.,
+does what the implemention match the design intentions?
+Please look at what snd_pcm_system_tick_set() actually
+does, regardless of the name of its "ticks" argument.
+Ignoring the rounding part of the division, it does
+(mathematically, in real numbers not integers):
+
+  mod_timer_ticks  :=  "ticks" / (1000000 / HZ)
+                       = ("ticks" / 1000000) * HZ
+
+It really seems to me that
+
+  -- The alsa_ticks unit are no longer involved at this
+     point.
+
+  -- The input "ticks" argument really is treated by this
+     function as microseconds.
+
+  -- There is a first (mathematical) conversion from
+     microseconds to seconds (the /1000000 part).
+
+  -- There is a second (mathematical) conversion from
+     seconds to kernel_timer units (its own ticks, the
+     *HZ part).
+
+Note that the only two other calls to snd_pcm_tick_set(),
+which are in file pcm_native.c, set the "ticks" argument
+to zero so no difference is felt from their point of view.
+
+In the event that a combined solution to what's
+covered in both "hz-int-div.0b03.patch" and
+"rate-sleep-ticks.0b03x.patch" modifies things so that
+snd_pcm_tick_set() really takes its "ticks" argument in
+alsa_ticks units (adding a first [mathematical] conversion
+from alsa_ticks units to microseconds), please verify
+the following.  (The "rate-sleep-ticks.0b03x.patch"
+would no longer be necessary as it stands then.)
+There is effectively a division by runtime->tick_time
+at the end of snd_pcm_tick_prepare(); for that matter,
+there is still a division by runtime->rate.  Since those
+values were initially obtained from the user, were they
+ever validated to be non-zero at any point?  What would
+be the consequences of a division by zero there?  I know
+that setting these values to zero is non-sensical from an
+usefulness point-of-view, but is an attack on the system
+from a local user possible there?  I prefer asking and
+being told I'm wrong than not asking but having been right.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-05 01:33 redemption042  New Issue                                    
-03-04-05 01:33 redemption042  Distribution              => Ubuntu 4.10     
-03-04-05 01:33 redemption042  Kernel Version            => 2.6.7           
+02-28-05 21:26 charles_levert New Issue                                    
+02-28-05 21:26 charles_levert Kernel Version            => 2.4.22          
+02-28-05 21:29 charles_levert File Added: early-irqs.patch                    
+03-01-05 09:36 perex          Relationship added       related to 0000946  
+03-01-05 09:40 perex          Note Added: 0003755                          
+03-01-05 11:15 charles_levert Note Added: 0003757                          
+03-02-05 09:22 Clemens LadischNote Added: 0003761                          
+03-02-05 13:01 charles_levert Note Added: 0003768                          
+03-02-05 13:39 perex          Note Added: 0003771                          
+03-02-05 14:53 charles_levert Note Added: 0003776                          
+03-03-05 14:21 charles_levert File Added: hz-int-div.0b03.patch                 
+  
+03-03-05 14:22 charles_levert File Added: rate-sleep-ticks.0b03.patch           
+        
+03-03-05 14:23 charles_levert File Added: appl_ptr-boundary.0b03.patch          
+         
+03-03-05 14:23 charles_levert File Added: early-irqs.0b03.patch                 
+  
+03-03-05 14:37 charles_levert Note Added: 0003786                          
+03-03-05 15:03 perex          Note Added: 0003787                          
+03-03-05 15:33 charles_levert File Added: rate-sleep-ticks.0b03x.patch          
+         
+03-03-05 15:34 charles_levert Note Added: 0003788                          
+03-03-05 15:52 perex          Note Added: 0003789                          
+03-03-05 16:05 perex          Note Added: 0003790                          
+03-03-05 20:30 rlrevell       Note Added: 0003792                          
+03-04-05 03:34 charles_levert Note Added: 0003795                          
 ======================================================================
 
 
