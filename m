@@ -1,18 +1,19 @@
 From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
 Subject: Re: [Alsa-user] Re: [lack of] dynamic
 	detection/loading of modules
-Date: 05 Mar 2003 10:03:47 -0800
+Date: 05 Mar 2003 12:20:26 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1046887427.10930.24.camel@cmn37.Stanford.EDU>
+Message-ID: <1046895626.10930.116.camel@cmn37.Stanford.EDU>
 References: <E18oElA-0005cD-00@sc8-sf-list1.sourceforge.net>
 	<1046378100.22559.23.camel@cmn37.Stanford.EDU>
 	<s5hptpcihlv.wl@alsa2.suse.de>
 	<1046833285.28937.243.camel@cmn37.Stanford.EDU>
 	<s5hbs0qf7ug.wl@alsa2.suse.de>
+	<1046887427.10930.24.camel@cmn37.Stanford.EDU>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-t6C/fUfbxxnR8N35TDDA"
+Content-Type: multipart/mixed; boundary="=-/ov9B/MW8W2BdEL2pGYw"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbs0qf7ug.wl@alsa2.suse.de>
+In-Reply-To: <1046887427.10930.24.camel@cmn37.Stanford.EDU>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,47 +22,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, Ivica Bukvic <ico@fuse.net>, alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: Takashi Iwai <tiwai@suse.de>, Paul Davis <paul@linuxaudiosystems.com>, Ivica Bukvic <ico@fuse.net>, alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---=-t6C/fUfbxxnR8N35TDDA
+--=-/ov9B/MW8W2BdEL2pGYw
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-> > Thanks! I started working on differentiating in the alsasound alsa
-> > startup script between a full start (all modules are loaded when
-> > alsasound executes) and a partial start (some of the modules are already
-> > loaded when alsasound executes and it has to load the rest). 
-> > 
-> > The first naive question is: do we actually need to differenciate?
-> > Apparently modprobe is happy to be given the name of a module that is
-> > already loaded, as far as I can tell it does not try to load it again
-> > (man modprobe does not say anything about this case that I can see). 
+> > alsasound script calls alsactl and card-specific scripts (if any).
+> > this should be avoided in the case of partial load.
 > 
-> alsasound script calls alsactl and card-specific scripts (if any).
-> this should be avoided in the case of partial load.
+> Yes, I took care of executing them just for the cards that had been
+> loaded. 
+> 
+> > IIRC, modprobe returns 0 even if called with the existing module.
+> > (if the load failed, it returns 255, btw).
+> > thus, we cannot check this only from the return value of modprobe.
+> > instead we need to grep /proc/asound/modules for that module.
+> 
+> That's what I'm doing, more or less. I'm including a copy of the
+> modified alsasound script I'm testing. Seems to be working fine so far. 
+> 
+> I think the sequencer driver part is wrong. I don't know what is
+> expected there (ie: multiple drivers?). I suspect I have to turn that
+> part of the code into a loop iterating over all sequencer drivers. 
 
-Yes, I took care of executing them just for the cards that had been
-loaded. 
-
-> IIRC, modprobe returns 0 even if called with the existing module.
-> (if the load failed, it returns 255, btw).
-> thus, we cannot check this only from the return value of modprobe.
-> instead we need to grep /proc/asound/modules for that module.
-
-That's what I'm doing, more or less. I'm including a copy of the
-modified alsasound script I'm testing. Seems to be working fine so far. 
-
-I think the sequencer driver part is wrong. I don't know what is
-expected there (ie: multiple drivers?). I suspect I have to turn that
-part of the code into a loop iterating over all sequencer drivers. 
+It was wrong, of course... I'm including an updated script that is
+apparently working fine. Takes into account multiple sequencer drivers
+and executes scripts only for devices loaded while it runs. 
 
 -- Fernando
 
 
---=-t6C/fUfbxxnR8N35TDDA
+--=-/ov9B/MW8W2BdEL2pGYw
 Content-Disposition: attachment; filename=alsasound
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/x-sh; name=alsasound; charset=ISO-8859-1
@@ -157,12 +152,13 @@ function start() {
     if [ "$i" !=3D off ]; then
 	is_loaded=3D`grep -c ^$i /proc/modules`
 	if [ "$is_loaded" =3D=3D "0" ]; then
-	    loaded=3D"$loaded $i"
 	    if [ $redhat ] ; then
 		action "Starting sound driver $i" /sbin/modprobe $i
+		if [ "$?" =3D=3D "0" ]; then loaded=3D"$loaded $i" ; fi
 	    else
 		echo -n "Starting sound driver: $i "
 		/sbin/modprobe $i
+		if [ "$?" =3D=3D "0" ]; then loaded=3D"$loaded $i" ; fi
 		echo -e "$rc_done"
 	    fi
 	else
@@ -176,21 +172,21 @@ function start() {
   # insert sequencer modules that are not already loaded
   #
   if [ x"$START_ALSA_SEQ" =3D xyes -a -r /proc/asound/seq/drivers ]; then
-    t=3D`cut -d , -f 1 /proc/asound/seq/drivers`
-    if [ "x$t" !=3D "x" ]; then
-	loaded=3D`grep -c ^$t /proc/modules`
-	if [ "$loaded" =3D=3D "0" ]; then
+    seq_drivers=3D`cut -d , -f 1 /proc/asound/seq/drivers`
+    for i in $seq_drivers; do
+	is_loaded=3D`grep -c ^$i /proc/modules`
+	if [ "$is_loaded" =3D=3D "0" ]; then
 	    if [ $redhat ] ; then
-		action "Starting sequencer driver $t" /sbin/modprobe $t
+		action "Starting sequencer driver $i" /sbin/modprobe $i
 	    else
-		/sbin/modprobe $t
+		/sbin/modprobe $i
 	    fi
-        else
+	else
 	    if [ $redhat ] ; then
-		echo "Sequencer driver $t is already loaded"
+		echo "Sequencer driver $i is already loaded"
 	    fi
 	fi
-    fi
+    done
   fi
   #
   # restore driver settings
@@ -335,7 +331,7 @@ esac
 
 exit 0
 
---=-t6C/fUfbxxnR8N35TDDA--
+--=-/ov9B/MW8W2BdEL2pGYw--
 
 
 
