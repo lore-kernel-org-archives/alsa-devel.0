@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000883]: Odd Mixer Controls with i810 on Fujitsu S6210
-Date: Fri, 4 Feb 2005 12:35:18 +0100
-Message-ID: <1ba97714ca3287156dd03a15c6a76fef@bugtrack.alsa-project.org>
+Date: Fri, 4 Feb 2005 13:02:01 +0100
+Message-ID: <7896104a1b1bf003cad8267a654bf112@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB76E215
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 12:35:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DCF3F1E4
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 13:02:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=883> 
 ======================================================================
@@ -39,7 +39,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             02-04-2005 12:35 CET
-Last Modified:              02-04-2005 12:35 CET
+Last Modified:              02-04-2005 13:02 CET
 ======================================================================
 Summary:                    Odd Mixer Controls with i810 on Fujitsu S6210
 Description: 
@@ -71,12 +71,21 @@ I suspect this is just a quirk of this laptop, but I don't know what info
 you need, so please ask me.
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 02-04-05 13:02 
+----------------------------------------------------------------------
+Try ac97_quirk=hp_only option.  If this works, attach the output of "lspci
+-nv" and the contents of /proc/asound/card0/codec97#0/* files.
+
+(BTW "PC Speaker" controls the internal beep sound routing.)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-04-05 12:35 tonym          New Issue                                    
 02-04-05 12:35 tonym          Distribution              => Gentoo          
 02-04-05 12:35 tonym          Kernel Version            => 2.6.10          
+02-04-05 13:02 tiwai          Note Added: 0003498                          
 ======================================================================
 
 
