@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000870]: Please add "Turtle Beach Riviera" to C-Media PCI (CMI8338/8738)
-Date: Mon, 31 Jan 2005 20:00:30 +0100
-Message-ID: <705bf05dadfd32596da8d7df52eb8f2b@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [linux-audio-user] emu10k1 multichannel support
+Date: Mon, 31 Jan 2005 14:46:46 -0500
+Message-ID: <1107200806.12372.1.camel@krustophenia.net>
+References: <1106091638.30792.3.camel@krustophenia.net>
+	 <200501302354.58104.arnold@roederberg.dyndns.org>
+	 <41FD8252.2070507@machinehasnoagenda.com>
+	 <1107134518.32117.7.camel@krustophenia.net>
+	 <41FE002A.1070807@machinehasnoagenda.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D89E7227
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 20:00:30 +0100 (MET)
+In-Reply-To: <41FE002A.1070807@machinehasnoagenda.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,51 +21,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: A list for linux audio users <linux-audio-user@music.columbia.edu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2005-01-31 at 20:53 +1100, Shayne O'Connor wrote:
+> Lee Revell wrote:
+> 
+> >On Mon, 2005-01-31 at 11:56 +1100, Shayne O'Connor wrote:
+> >  
+> >
+> >>using "Playback Only", i am able to get down to 64 frames/periods when
+> >>using Mixxx - got a couple of xruns in a half-hour session (this was
+> >>with network running azureus and some other stuff).
+> >>
+> >>not sure if you're aware, but the latest patch is this one:
+> >>
+> >>http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v007.patch
+> >>
+> >>    
+> >>
+> >
+> >Actually I just remembered I posted a newer version.  This connects the
+> >external inputs to the multichannel capture device.  The JACK capture
+> >ports should correspond exactly to the default kX ASIO capture channels
+> >(1,2 is Line/Mic, 9,10 is Line2/Mic2, etc),  You can record from all
+> >inputs at once, so with a LiveDrive you can record 4 or 6 analog inputs.
+> >
+> >http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v008.patch
+> >
+> >  
+> >
+> i'm sure i applied the patch correctly, but does this get rid of the
+> following problem? :
+> 
+> >The last version I posted had a stupid bug where it captured
+> >the 16 FX buses instead of the 16 external inputs like I had intended.
+> >So you could only capture what you were playing back.
+> >
+> (btw - with this patch, i'm sure i've always been able to record from
+> the inputs *and* playback - the only problem is seperating the two so as
+> to only record the inputs through the ac97 codec, and not the playback
+> as well)
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=870> 
-======================================================================
-Reported By:                johndhendrickson
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   870
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             01-31-2005 20:00 CET
-Last Modified:              01-31-2005 20:00 CET
-======================================================================
-Summary:                    Please add "Turtle Beach Riviera" to C-Media PCI
-(CMI8338/8738)
-Description: 
+Yes version 008 should fix that problem.  Please report it on alsa-devel
+if you still have the problem with playback and capture being mixed.
 
-Please add "Turtle Beach Riviera" to C-Media PCI (CMI8338/8738)
-
-Note: this card has a sticker over the chip: so users may not realise this
-card goes with cmipci unless you change the website's card list.
-
-Yup.  Infact there site has linux readme + sourcecode.  What a nice
-company.
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-31-05 20:00 johndhendricksonNew Issue                                    
-01-31-05 20:00 johndhendricksonKernel Version            => 2.6.7           
-======================================================================
-
+Lee
 
 
 
