@@ -1,17 +1,10 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: [PATCH]snd-usb-usx2y 0.8.7: Use macro      
-     usb_maxpacket() for portability
-Date: Fri, 10 Dec 2004 15:57:22 -0000 (WET)
-Message-ID: <32799.192.168.1.5.1102694242.squirrel@192.168.1.5>
-References: <200412021319.20027.annabellesgarden@yahoo.de>   
-    <200412072301.52065.annabellesgarden@yahoo.de>   
-    <s5hoeh4a8nh.wl@alsa2.suse.de>   
-    <200412091306.23970.annabellesgarden@yahoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+From: William <walsac3@orthoset.com>
+Subject: Re: Real-time per-note attenuation on single MIDI channel in emu10k1
+Date: Fri, 10 Dec 2004 16:11:47 GMT
+Message-ID: <200412101611.QAA12246@orthoset.com>
+References: <Pine.HPX.4.33n.0412081909590.21064-100000@studcom.urz.uni-halle.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200412091306.23970.annabellesgarden@yahoo.de>
+In-Reply-To: <Pine.HPX.4.33n.0412081909590.21064-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,36 +14,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Clemens Ladisch wrote:
 >
-> May I ask you to check CVS's version?
-> Keep in mind that jackd is now called like:
-> $ jackd -dusx2y -dhw:1,2
-> You might also change qjackctl to always append ",2" to the hw device in
-the usx2y case.
->
+> William wrote:
+>> Does the emu10k1 driver have any way of doing real-time attenuation
+>> for notes that are already playing at particular pitches on one MIDI channel?
+> 
+> The MIDI Aftertouch command should do what you want.
+> See the snd_emux_key_press function.
 
-Oh oh. Tried with alsa-kernel+driver CVS as of yesterday...
+That does exactly what I want (in kernel-space).  Thanks!
 
-First thing:
-
-- Missing SNDRV_HWDEP_IFACE_USX2Y_PCM definition (used to be defined under
-asound.h on the pre-CVS 0.8.6 prototypes)
-
-
-
-
-
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
-
-
-
-
+William
 
 
 -------------------------------------------------------
