@@ -1,13 +1,12 @@
-From: "Ash Willis" <ashwillis@programmer.net>
-Subject: Reverse Engineering?
-Date: Sat, 03 Jan 2004 20:54:34 -0500
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: au88x0 problems with kernel 2.6.0
+Date: Sun, 04 Jan 2004 02:37:30 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040104015434.24190.qmail@mail.com>
+Message-ID: <3FF77C6A.4050903@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,17 +18,28 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi, i'm toying with the idea of coding a driver for an unsupported card (als300).
-I really fancy getting this done but i'm not the most seasoned of programmers by any means. i was just wondering could anyone point me in the direction of some info that may help me to reverse engineer the card (or the windows driver for it).
+Hi,
 
-don't be afraid to mention obvious stuff :p this is my first attempt at coding a driver.
+The normal way I patch the 2.6.x kernel, is i download alsa-kernel from 
+CVS. and then delete the ./alsa-kernel/oss dir, then just copy all the 
+contents of alsa-kernel over the top of /usr/src/linux/sound
+I then copy the include directory to /usr/src/linux/include/sound, and 
+it all works.
 
-Thanks in advance, Ash.
--- 
-___________________________________________________________
-Sign-up for Ads Free at Mail.com
-http://promo.mail.com/adsfreejump.htm
+I have noticed that au88x0 driver only got into the alsa-driver tree.
 
+Should I be doing something different in order to get au88x0 drivers 
+into my local kernel 2.6.x tree.
+
+As the au88x0 drivers are not in the alsa-kernel tree, the kernel 2.6.x 
+Kconfig file does not have a au88x0 entry, so it can not easily be moved 
+into kernel 2.6.x.
+
+Can someone please point me to the correct merge/patch method, or am I 
+in fact highlighting a bug!
+
+Cheers
+James
 
 
 -------------------------------------------------------
