@@ -1,15 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [Alsa-user] Trans.: intel8x0.c : missing define for
- disable midi
-Date: Fri, 03 Sep 2004 14:19:33 +0200 (METDST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000471]: (Patch) Adds field to ignore control bug with LineX device.
+Date: Fri,  3 Sep 2004 14:28:48 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0409031416480.16124-100000@studcom.urz.uni-halle.de>
-References: <1094124756.413704d49abd6@imp1-q.free.fr>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Message-ID: <20040903122848.6B13D2D0BD@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1094124756.413704d49abd6@imp1-q.free.fr>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4C932B6
+	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 14:28:48 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,20 +16,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: castet.matthieu@free.fr
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-castet.matthieu@free.fr wrote:
-> And what about the fact of registering the lpc : since it is use by other driver
-> (hw_random, 8xx_tco, ...), you sould only find the pci device but not register
-> it !!!
 
-Fixed now.  In a rather drastic way. :)
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000471
+======================================================================
+Reported By:                dignome
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     471
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-29-2004 08:22 CEST
+Last Modified:              09-03-2004 14:28 CEST
+======================================================================
+Summary:                    (Patch) Adds field to ignore control bug with LineX device.
+Description: 
+This patch adds PID/VID to usbmixer_maps.c so that a control bug, which
+prevents the device from being claimed for use with snd-usb-audio, will be
+ignored.
 
+Patch goes against 1.0.6a.
+======================================================================
 
-Clemens
+----------------------------------------------------------------------
+ Clemens Ladisch - 09-02-2004 14:41 CEST 
+----------------------------------------------------------------------
+Please provide (here or to <clemens@ladisch.de>) your name/email for the
+Signed-off-by: information.
 
+----------------------------------------------------------------------
+ dignome - 09-03-2004 14:28 CEST 
+----------------------------------------------------------------------
+Signed off by Lonnie Mendez (dignome@gmail.com).
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-29-04 08:22 dignome        New Bug                                      
+08-29-04 08:22 dignome        File Added: linex-usbmixer_maps.patch                    
+09-02-04 14:41 Clemens LadischBugnote Added: 0001683                       
+09-03-04 14:28 dignome        Bugnote Added: 0001691                       
+======================================================================
 
 
 -------------------------------------------------------
