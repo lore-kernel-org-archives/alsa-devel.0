@@ -1,13 +1,10 @@
-From: Garrett Kajmowicz <gkajmowi@tbaytel.net>
-Subject: [App development] - Need list of hardware devices
-Date: Tue, 8 Jul 2003 20:29:21 -0400
+From: Case van Rij <case@seattle.gii.net>
+Subject: problem with alsa "ameter" plugin ?
+Date: Tue, 8 Jul 2003 20:12:11 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307082029.21801.gkajmowi@tbaytel.net>
-Reply-To: gkajmowi@tbaytel.net
+Message-ID: <20030709031211.GE29757@seattle.gii.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -21,14 +18,28 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'm just begining my first ALSA application.  As a part of the GUI I need to 
-prompt the user to select from a list the soundcard and input device for both 
-recording and playback.  How would you suggest doing this?  Examples welcome.
 
+Laurent Georget reported a problem with alsa "level" and "ameter"
+plugins earlier, I'm not sure this problem is related since it doesn't
+seem to involve pcm_wait.. but Im still relativly unfamiliar with the
+inner workings of the code. 
 
-Thanks for your time,
+I'm using ameter 0.3 with alsa-* 0.9.3 and 0.9.4 which works fine on 2
+of my systems with snd-ens1371, but I cant seem to get it to work on
+otherwise identical systems that use snd-hdsp and snd-rme9652 
 
-Garrett Kajmowicz
+Ive tried setting up ameter on either hw:0,0 and plug:hw:0 and running:
+
+arecord -D ameter -t wav -c 18 -r 44100 -f S16_LE file.wav
+
+which fails with 
+pcm_mmap.c:137: snd_pcm_mmap_read_areas: 
+ Assertion `snd_pcm_mmap_capture_avail(pcm) >= size)`
+
+Any ideas what's going on here ? 
+
+Thanks,
+Case
 
 
 
