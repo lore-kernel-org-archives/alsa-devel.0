@@ -1,17 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] ALSA: remove magic cast (0/6)
-Date: Mon, 14 Jun 2004 20:18:31 +0200 (CEST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: quattro usb-audio endianess conversion layer
+Date: Tue, 15 Jun 2004 00:38:25 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0406142003570.1795@pnote.perex-int.cz>
-References: <200406141555.i5EFtD7g013906@melkki.cs.helsinki.fi>
- <s5hk6yadspp.wl@alsa2.suse.de>
+Message-ID: <40CDC671.4020706@boosthardware.com>
+References: <Pine.HPX.4.33n.0406101848280.3148-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from outgoing.perex-int.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 02DAB36A
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2004 20:19:02 +0200 (MEST)
-In-Reply-To: <s5hk6yadspp.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,51 +16,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Pekka J Enberg <penberg@cs.helsinki.fi>, ALSA development <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 14 Jun 2004, Takashi Iwai wrote:
-
-> > This patch remove snd_magic_cast from the kernel.  It's on top of the
-> > kcalloc() patch and was compile-tested with allyesconfig.
+Clemens Ladisch wrote:
+> Patrick Shirkey wrote:
 > 
-> Thanks for the patch.
+>>It turns out the reason for the noise in the input channels all this
+>>time is due to the quattro only reading big endian at input.
 > 
-> Did you already make a patch to remove hidden_kmalloc and
-> hidden_vmalloc wrappers, or do I miss it?  They are also suprefluous.
 > 
-> Jaroslav, what do you think about removing kmalloc/vmalloc wrappers
-> and magic stuffs from the kernel tree?
+> Does this happen all of the time?  There is a bug report which says
+> that it works sometimes.
 > 
-> For me, it's ok to remove them from the linux kernel tree
-> (ie. alsa-kernel tree).  I agree that they are not needed for the
-> matured drivers.  For the experimental drivers, We can provide another
-> type check mechanism in alsa-driver tree locally.
+> 
+>>Has anyone had ideas on how to implement a layer that works to
+>>automatically convert the quattros big endian input into little endian
+>>to enable ease of use with most Linux audio apps?
+> 
+> 
+> With the patch below, it should work with plughw:X.  Does it?
+> 
 
-I think that we need to separate the patch:
+Thanks Clemens.
 
-1) removal of own memory pool (check for memory leaks)
-2) magic stuff
 
-The structure mistakes usually ends with an oops, but the memory leaks 
-cannot be detected easy inside the kernel.
+I finally was able to test the patch and my first impression is that it 
+has made a significant difference and should be committed immediately.
 
-I don't like too much the idea to remove the own memory pool in the debug
-mode. It helped me in past numerous times and I think that ALSA is one
-from the clean subsystems in this area. I don't understand the kernel
-developers - there is no replacement. Yes, it's good only for debugging,
-but why not make debugging easier for other developers as well with
-proposing a general solution?
+I recorded with
+	
+	arecord -f cd -d 10 -D plughw:2,0 test.wav
 
-Regarding the magic stuffs - I do not care so much. It can be removed now.
+played back with
 
-						Jaroslav
+	aplay -f cd -d hw:2,1 test.wav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+The sound is much clearer.
+
+
+My next question is: Does anyone have a good idea how to apply this to a 
+jack setup without sacrificing latency?
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org/LAU/guide/ - The Linux Audio Users guide
+Http://www.djcj.org/gigs/ - Gigs guide Korea
+Http://www.nana7.net - Bar Nana - Itaewon, Seoul, Sth Corea
+========================================
+
+
+Apparently upon the beginning of the barrage, the donkey broke 
+discipline and panicked, toppling the cart. At that point, the rockets 
+disconnected from the timer, leaving them strewn around the street. 
+Tethered to the now toppled cart, the donkey was unable to escape before 
+the arrival of U.S. troops.
+
+United Press International
+Rockets on donkeys hit major Baghdad sites
+
+By P. MITCHELL PROTHERO
+Published 11/21/2003 11:13 AM
+
 
 
 -------------------------------------------------------
