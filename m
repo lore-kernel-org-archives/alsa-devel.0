@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000839]: No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with CS4299
-Date: Thu, 17 Mar 2005 01:00:17 +0100
-Message-ID: <f219da25417ae9d9386f731312572699@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
+Date: Thu, 17 Mar 2005 01:45:23 +0100
+Message-ID: <96206319d117db4a1e7d298dc77dd441@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5AB46234
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 01:00:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E28010F
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 01:45:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,242 +23,133 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=839> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
 ======================================================================
-Reported By:                Mimosius
-Assigned To:                
+Reported By:                Q3Man
+Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   839
-Category:                   PCI - intel8x0
+Issue ID:                   752
+Category:                   PCI - emu10k1x
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE 9.2
-Kernel Version:             2.6.8-24.10 + 2.6.10
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
-Date Submitted:             01-21-2005 03:12 CET
-Last Modified:              03-17-2005 01:00 CET
+Date Submitted:             12-28-2004 05:12 CET
+Last Modified:              03-17-2005 01:45 CET
 ======================================================================
-Summary:                    No AC3/DTS via SPDIF on Intel 82801DB-ICH4 with
-CS4299
+Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
-Audio-mode via SPDIF works fine but I can't get any non-audio passthru
-working.
+I'm having some problems with alsa since 1.0.6a. Previously I just had the
+later versions masked, but now various kde packages require the latest
+alsa, so I'm having to tackle it now. ALSA seems to start normally,
+however I get this error in dmesg: 
+EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
 
-Using 'ac3play -C test.ac3' SPDIF output is set to AES0=0x2 AES1=0x82
-AES2=0x0 AES3=0x2 and the PCM indicator on external decoder turns off, but
-there seems to arrive no decodeable signal on receiver side.
-There are no errors or warnings after loading soundrivers and there are no
-other soundcards plugged in (notebook).
+I also get this error when running alsamixer: 
+alsamixer: function snd_ctl_open failed for default: No such device 
 
+And similar ones in other alsa programs. 
 
-here are some system informations:
+Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
+code and it seems that the error is vaguely interrupt related, but I could
+not find the code that produces error -16. I've swapped interrupts around
+and disabled non-essential devices (usb, serial, parallel ports, removed
+network cards and sound cards - although that last one proved slightly
+less than helpful :) I've changed from having my bios manage irq's to
+having the OS handle them with zero success. 
 
-# cat /etc/modprobe.d/sound
-alias snd-card-0 snd-intel8x0
-options snd-ac97-codec
-options snd-intel8x0 enable=1 index=0
+I've looked around for that error code in google for the last few weeks -
+since the release of 1.0.6a with limited success. Nothing relevant to my
+situation. 
 
+Important configs and error messages:
+$ lspci -v |grep audio -A4
+0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
+EMU10k1X
+        Subsystem: Creative Labs: Unknown device 1003
+        Flags: bus master, medium devsel, latency 32, IRQ 12
+        I/O ports at d000
+        Capabilities: [dc] Power Management version 2
+(It is an actual EMU10k1X and not the Dell bastardized version)
 
-# cat /proc/asound/pcm' 
-00-00: Intel ICH : Intel 82801DB-ICH4 : playback 1 : capture 1
-00-01: Intel ICH - MIC ADC : Intel 82801DB-ICH4 - MIC ADC : capture 1
-00-02: Intel ICH - MIC2 ADC : Intel 82801DB-ICH4 - MIC2 ADC : capture 1
-00-03: Intel ICH - ADC2 : Intel 82801DB-ICH4 - ADC2 : capture 1
-00-04: Intel ICH - IEC958 : Intel 82801DB-ICH4 - IEC958 : playback 1
+$ /etc/init.d/alsasound start; dmesg |tail -n1
+ * Loading ALSA drivers...
+ * Using ALSA OSS emulation
+ * Loading: snd-mixer-oss
+ * Loading: snd-pcm-oss
+ * Loading: snd-seq-oss
+ * Running card-dependent scripts
+ * Restoring Mixer Levels                                                
+[ ok ]
+EMU10K1X: probe of 0000:00:09.0 failed with error -16
 
+$ uname -a
+Linux tobin1 2.6.9-gentoo-r9
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
+2004 i686 AMD
+Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
 
-# cat /proc/asound/card0/codec97#0/ac97#0-0' (while playing ac3 using
-ac3dec -C)
-0-0/0: Cirrus Logic CS4299 rev 4
-
-Capabilities     : -headphone out-
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : Crystal Semi 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : Mic
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=0 AMAP DSA=0 VRA
-Extended status  : VRA
-PCM front DAC    : 48000Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer Non-audio Category=0x2 Generation=1 Rate=48kHz
-Enabled
-
-
-# cat /proc/asound/card0/codec97#0/ac97#0-0+regs (while playing ac3 using
-ac3dec -C)
-0:00 = 1990
-0:02 = 3f3f
-0:04 = 9f1f
-0:06 = 801f
-0:08 = 0000
-0:0a = 801e
-0:0c = 801f
-0:0e = 8000
-0:10 = 9f1f
-0:12 = 9f1f
-0:14 = 9f1f
-0:16 = 9f1f
-0:18 = 8000
-0:1a = 0606
-0:1c = 0f0f
-0:1e = 0000
-0:20 = 0200
-0:22 = 0000
-0:24 = 0000
-0:26 = 800f
-0:28 = 0201
-0:2a = 0001
-0:2c = bb80
-0:2e = 0000
-0:30 = 0000
-0:32 = bb80
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0404
-0:5c = 0000
-0:5e = 0080
-0:60 = 0022
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 8826
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 0000
-0:74 = 0000
-0:76 = 0000
-0:78 = 003f
-0:7a = 0000
-0:7c = 4352
-0:7e = 5934
+If anyone needs any other config information, please let me know. Again,
+it works perfectly fine in 1.0.5a, the problems only appear in later
+versions.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-16-05 12:47 
+ Q3Man - 03-16-05 05:19 
 ----------------------------------------------------------------------
-Don't forget to update both driver and lib, BTW.
+Well, I have some more good news :)
+
+Just booted under knoppix 3.8. Aside from it detecting the card
+incorrectly and loading it with EMU10k1 (which didn't work anyway), when I
+modprobe'd snd-emu10k1x, it dies with the exact same error. 
+
+For a while I thought I had some weird setting in a config somewhere that
+was causing it to fail. I feel a bit more relieved that knoppix fails in
+the same way... although that still doesn't help me much :)
 
 ----------------------------------------------------------------------
- Mimosius - 03-17-05 01:00 
+ fmoraes - 03-17-05 01:45 
 ----------------------------------------------------------------------
-Hi tiwai,
+Try adding the debug lines between the if's in the probe function like
+this:
 
-before updating to 1.0.9rc1 I stopped the whole sound-system. After that
-i've taken a look to the loaded modules using 'lsmod' to make sure
-everything regarding to snd* was unloaded. -> OK
-Then I removed all alsa rpm's distributed with SuSE 9.2 and I've checked
-all lib and include folders for any dead files regarding to alsa. -> OK
+snd_printk(KERN_INFO "Before calling midi\n");
 
-the next compiling steps were:
-alsa-driver-1.0.9rc1
-- ./configure --with-suse=yes --with-oss=yes --enable-debug=full
-- installed it and checked for duplicated versions of modules -> OK
-
-alsa-lib-1.0.9rc1
-- ./configure --prefix=/usr --sysconfdir=/etc/ --with-debug=yes
-
-alsa-oss-1.0.9rc1
-- ./configure --prefix=/usr --sysconfdir=/etc/
-
-alsa-utils-1.0.9rc1
-- ./configure --prefix=/usr --sysconfdir=/etc/
-
-I've started the sound-system and the problem was the same.
-
-My configuration:
-Notebook: AOpen 1557G with Intel 82801DB-ICH4 and CS4299
-
-here is the output of 'lspci':
-0000:00:00.0 Host bridge: Intel Corp. 82855PM Processor to I/O Controller
-(rev 21)
-0000:00:01.0 PCI bridge: Intel Corp. 82855PM Processor to AGP Controller
-(rev 21)
-0000:00:1d.0 USB Controller: Intel Corp. 82801DB/DBL/DBM
-(ICH4/ICH4-L/ICH4-M) USB UHCI Controller
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 (rev 03)
-0000:00:1d.1 USB Controller: Intel Corp. 82801DB/DBL/DBM
-(ICH4/ICH4-L/ICH4-M) USB UHCI Controller
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 (rev 03)
-0000:00:1d.2 USB Controller: Intel Corp. 82801DB/DBL/DBM
-(ICH4/ICH4-L/ICH4-M) USB UHCI Controller
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 (rev 03)
-0000:00:1d.7 USB Controller: Intel Corp. 82801DB/DBM (ICH4/ICH4-M) USB 2.0
-EHCI Controller (rev 03)
-0000:00:1e.0 PCI bridge: Intel Corp. 82801 PCI Bridge (rev 83)
-0000:00:1f.0 ISA bridge: Intel Corp. 82801DBM LPC Interface Controller
-(rev 03)
-0000:00:1f.1 IDE interface: Intel Corp. 82801DBM (ICH4) Ultra ATA Storage
-Controller (rev 03)
-0000:00:1f.3 SMBus: Intel Corp. 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) SMBus
-Controller (rev 03)
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM
-(ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 03)
-0000:00:1f.6 Modem: Intel Corp. 82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) AC'97
-Modem Controller (rev 03)
-0000:01:00.0 VGA compatible controller: ATI Technologies Inc RV350
-[Mobility Radeon 9600 M10]
-0000:02:05.0 Ethernet controller: Broadcom Corporation BCM4401 100Base-T
-(rev 01)
-0000:02:06.0 Network controller: Intel Corp. PRO/Wireless 2200BG (rev 05)
-0000:02:09.0 CardBus bridge: Ricoh Co Ltd RL5c476 II (rev ac)
-0000:02:09.1 CardBus bridge: Ricoh Co Ltd RL5c476 II (rev ac)
-0000:02:09.2 FireWire (IEEE 1394): Ricoh Co Ltd R5C552 IEEE 1394
-Controller (rev 04)
-
-I thought there is maybe a conflict between the modem and the cs4299 i
-deactivated the modem at boot time, but this doesn't help.
-
-For testing I've used 'ac3dec -C' from alsa-tools-1.0.9rc1.
-On my desktop system (Hoontech DigitalXG - ymfpci-driver) it works with
-ac3dec -C and -P)
-
-many thanks,
-Mimosius
+Then, recompile, install and try to modprobe again. Then use dmesg to see
+if the messages.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-21-05 03:12 Mimosius       New Issue                                    
-01-21-05 03:12 Mimosius       Distribution              => SuSE 9.2        
-01-21-05 03:12 Mimosius       Kernel Version            => 2.6.8-24.10 + 2.6.10
-01-21-05 03:13 Mimosius       Issue Monitored: Mimosius                    
-03-01-05 11:31 Mimosius       Note Added: 0003758                          
-03-15-05 21:37 Mimosius       Note Added: 0003917                          
-03-16-05 12:47 tiwai          Note Added: 0003945                          
-03-16-05 12:47 tiwai          Note Added: 0003946                          
-03-17-05 01:00 Mimosius       Note Added: 0003975                          
+12-28-04 05:12 Q3Man          New Issue                                    
+12-28-04 05:12 Q3Man          File Added: einfo                            
+12-28-04 05:12 Q3Man          Distribution              => Gentoo          
+12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
+12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
+01-03-05 12:10 tiwai          Note Added: 0003054                          
+01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
+01-03-05 17:30 Q3Man          Note Added: 0003071                          
+01-16-05 14:54 fmoraes        Note Added: 0003216                          
+01-18-05 00:44 Q3Man          Note Added: 0003240                          
+01-20-05 02:23 Q3Man          Note Added: 0003322                          
+01-20-05 19:12 tiwai          Note Added: 0003332                          
+01-21-05 05:11 Q3Man          Note Added: 0003337                          
+01-21-05 11:14 tiwai          Note Added: 0003341                          
+01-22-05 23:24 fmoraes        Note Added: 0003382                          
+03-09-05 02:57 fmoraes        Note Added: 0003821                          
+03-15-05 17:34 Q3Man          Note Added: 0003916                          
+03-15-05 22:32 Q3Man          Note Added: 0003918                          
+03-16-05 02:09 fmoraes        Note Added: 0003927                          
+03-16-05 03:32 Q3Man          Note Added: 0003930                          
+03-16-05 04:06 fmoraes        Note Added: 0003931                          
+03-16-05 04:53 Q3Man          Note Added: 0003932                          
+03-16-05 05:19 Q3Man          Note Added: 0003933                          
+03-17-05 01:45 fmoraes        Note Added: 0003976                          
 ======================================================================
 
 
