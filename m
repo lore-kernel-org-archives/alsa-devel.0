@@ -1,17 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Rawmidi and CONFIG_DEBUG_SPINLOCK_SLEEP
-Date: Sun, 1 Feb 2004 17:37:49 +0100 (CET)
+Subject: Re: Remote soundcards.
+Date: Sun, 1 Feb 2004 17:43:10 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402011736410.20355@pnote.perex-int.cz>
-References: <40196C9B.3050901@undata.org> <Pine.LNX.4.58.0401310942260.1876@pnote.perex-int.cz>
- <401CE08D.5070903@undata.org> <401D0D6D.60601@undata.org>
+Message-ID: <Pine.LNX.4.58.0402011741350.20355@pnote.perex-int.cz>
+References: <20040201131451.GA32174@ekatalog.com.pl>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA12769
-	for <alsa-devel@alsa-project.org>; Sun, 1 Feb 2004 17:36:24 +0100
-In-Reply-To: <401D0D6D.60601@undata.org>
+In-Reply-To: <20040201131451.GA32174@ekatalog.com.pl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,16 +16,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Filip djMedrzec Zyzniewski <alsa@filip.eu.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 1 Feb 2004, Thomas Charbonnel wrote:
+On Sun, 1 Feb 2004, Filip djMedrzec Zyzniewski wrote:
 
-> The attached patch fixes the problem for me, but I took the obvious and 
-> easy way - I may have missed something.
+> Hello.
+> 
+> I have had this idea for some time now, and would like to ask you for your
+> opinions on it.
+> 
+> There are several solutions for sound transport. Software like esound, nas,
+> arts etc.
+> All those things have two common problems:
+> 1. They're focused on pcm devices (lacks in mixer support etc)
+> 2. They're not transparent for apps, no common API.
+> 3. They suffer from lags.
+> 
+> But we have a nice alsa API, we have support for multiple cards in alsa
+> itself. Now how about developing a patch for alsa-lib, and a small daemon, 
+> which together could create a network transparent link, so that local apps
+> (like xmms, mplayer, aumix, mixer_applet, pmidi etc) could use it as an
+> ordinary soundcard?
+> 
+> It would:
+> 1. support all devices alsa supports (and their pcms, sequencers and mixers)
+> 2. be usable for any alsa-compatible app
+> 3. not suffer from lags (as a tool for LAN networks, we maybe could get 
+>    away with soundcard's buffer), it would be usable for applications
+>    like Internet telephony (gnomemeeting etc)
+> 
+> Who would need this? Linux gets more and more office desktop computers 
+> under it's control. Common solution (my company implements these too) are
+> xterminals, dumb boxen with Xserver.
+> There is a need for convenient usage of local devices from main server.
+> for graphics/keyboard/mouse we have XFree86. But no decent solution
+> for sound stuff!.
+> 
+> 
+> What do you think about it?
 
-Nope. It looks good. I've applied it to CVS. Thanks for analyze.
+See alsa-lib/aserver . It not finished yet, but it is good start.
 
 						Jaroslav
 
