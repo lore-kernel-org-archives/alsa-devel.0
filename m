@@ -1,11 +1,12 @@
-From: Arve Knudsen <aknuds-1@broadpark.no>
-Subject: RME 9636 not recognized with 2.6 kernel?
-Date: Wed, 16 Jul 2003 14:07:43 +0200
+From: mru@users.sourceforge.net (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
+Subject: Re: ALSA timer and 2.6.0-test1 panic
+Date: Wed, 16 Jul 2003 14:16:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <oprsejy5hpq1sf88@mail.broadpark.no>
+Message-ID: <yw1x3ch6650f.fsf@users.sourceforge.net>
+References: <yw1xlluyln01.fsf@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,17 +17,46 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I just installed the 2.6.0 beta kernel to play around a bit, but it seems=
-=20
-my RME 9636 (Hammerfall Lite) isnt recognized. When I do aplay -l, my=20
-nForce2 integrated chip shows up however. I cannot modprobe Alsa kernel=20
-modules either (v0.95). Is this a known problem?
+mru@users.sourceforge.net (Måns Rullgård) writes:
 
-Regards
+> I get thousands of these messages when using the ALSA timer in kernel
+> 2.6.0-test1:
+>
+> bad: scheduling while atomic!
+> Call Trace:
+>  [<c0118408>] schedule+0x3ab/0x3b0
+>  [<c0123190>] schedule_timeout+0x5f/0xb3
+>  [<d08fffb6>] snd_timer_user_poll+0x2a/0x41 [snd_timer]
+>  [<c0123128>] process_timeout+0x0/0x9
+>  [<c0160aa7>] do_poll+0xa1/0xc0
+>  [<c0160c62>] sys_poll+0x19c/0x28e
+>  [<c0160035>] __pollwait+0x0/0xc6
+>  [<c010911b>] syscall_call+0x7/0xb
+>
+> bad: scheduling while atomic!
+> Call Trace:
+>  [<c0118408>] schedule+0x3ab/0x3b0
+>  [<c014ed0e>] sys_read+0x61/0x63
+>  [<c0109142>] work_resched+0x5/0x16
+>
+> bad: scheduling while atomic!
+> Call Trace:
+>  [<c0118408>] schedule+0x3ab/0x3b0
+>  [<c014ed0e>] sys_read+0x61/0x63
+>  [<c0109142>] work_resched+0x5/0x16
+>
+> Everything works like it should anyhow, until the program stops.  At
+> that time the kernel panics (killing interrupt handler).
 
-Arve Knudsen
+If I disable the preemptive kernel it works fine.
+
+-- 
+Måns Rullgård
+mru@users.sf.net
+
 
 
 -------------------------------------------------------
