@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001010]: Speaker output does not work.
-Date: Thu, 24 Mar 2005 19:49:48 +0100
-Message-ID: <9a13c89d454610bee81302bc74da29ba@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001013]: Sound is not working on the MacMini
+Date: Thu, 24 Mar 2005 19:48:05 +0100
+Message-ID: <1cbcf565d3ae35835bd46cea4aab72cf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D0D2F264
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 19:49:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5788B240
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 19:48:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,47 +23,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1010> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1013> 
 ======================================================================
-Reported By:                sylware
+Reported By:                timing
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1010
+Issue ID:                   1013
 Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Hoary
-Kernel Version:             2.6.10
+Distribution:               Ubuntu
+Kernel Version:             2.6.11.5
 ======================================================================
-Date Submitted:             03-24-2005 10:24 CET
-Last Modified:              03-24-2005 19:49 CET
+Date Submitted:             03-24-2005 19:27 CET
+Last Modified:              03-24-2005 19:48 CET
 ======================================================================
-Summary:                    Speaker output does not work.
+Summary:                    Sound is not working on the MacMini
 Description: 
-I use a powermac windtunnel newworld with a keywest snapper audio
-controller on the uninorth i2c bus (according to the /sys and /proc
-filesystems). I'm able to get sound from the headphone output at the front
-of the computer(it does automute the computer speaker when I plug the jack
-in) but I'm unable to get sound from the speaker output at the rear of the
-computer.
+Sound is not working on the MacMini. When loading the dmasound_pmac i get
+the following error:
+
+FATAL: Error inserting dmasound_pmac
+(/lib/modules/2.6.11.5/kernel/sound/oss/dmasound/dmasound_pmac.ko): No
+such device
+
+When trying to play music i get an "maybe your device is busy?" error.
+
+I've found a solution on the ubuntuforums(
+http://www.ubuntuforums.org/showthread.php?t=12748 )
+
+it says:
+
+To manually apply the patch (just as easy in this case),
+just open the file linux/sound/ppc/pmac.c in an editor,
+and search for OAKeylargo.
+Where it says SNAPPER right below, you change to SCREAMER (in uppercase).
+(In kernel 2.6.10 it's at line 967). 
+
+this solution is very minimal, the alsamixer is slow, and my computer
+hangs for a couple of seconds before the start of every new process (when
+opening a new window in gnome etc.). When i edit pmac.c in the old way my
+system runs normal again.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-24-05 19:49 
+ timing - 03-24-05 19:32 
 ----------------------------------------------------------------------
-Snapper has two PCM volumes (you can see in alsamixer).  Does the second
-PCM (PCM,1) have any influence?
+okat the link to the forum is:
+http://www.ubuntuforums.org/showthread.php?t=12748
+i hope the regexp won't eat this url. otherwise you need to put together
+the following pieces of url:
+
+http://www.ubuntuforums.org
+showthread.php?t=12748
+
+----------------------------------------------------------------------
+ tiwai - 03-24-05 19:48 
+----------------------------------------------------------------------
+Does device_is_comatible(sound, "screamer") return true?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-24-05 10:24 sylware        New Issue                                    
-03-24-05 10:24 sylware        Distribution              => Ubuntu Hoary    
-03-24-05 10:24 sylware        Kernel Version            => 2.6.10          
-03-24-05 19:49 tiwai          Note Added: 0004198                          
+03-24-05 19:27 timing         New Issue                                    
+03-24-05 19:27 timing         Distribution              => Ubuntu          
+03-24-05 19:27 timing         Kernel Version            => 2.6.11.5        
+03-24-05 19:32 timing         Note Added: 0004194                          
+03-24-05 19:35 timing         Issue Monitored: timing                      
+03-24-05 19:48 tiwai          Note Added: 0004197                          
 ======================================================================
 
 
