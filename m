@@ -1,8 +1,8 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] intel8x0.c: fix typo
-Date: Mon, 11 Aug 2003 13:21:33 +0200 (METDST)
+Subject: [PATCH] fix doc typos
+Date: Mon, 11 Aug 2003 13:22:32 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0308111319430.2094-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0308111321431.2094-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
@@ -19,42 +19,52 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-fix mixed up vendor/device ID's for Asus P4P800
+fix typos
 
 
-Index: alsa-kernel/pci/intel8x0.c
+Index: alsa-kernel/Documentation/DocBook/writing-an-alsa-driver.tmpl
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/intel8x0.c,v
-retrieving revision 1.87
-diff -u -r1.87 intel8x0.c
---- alsa-kernel/pci/intel8x0.c	30 Jul 2003 14:39:38 -0000	1.87
-+++ alsa-kernel/pci/intel8x0.c	11 Aug 2003 11:16:08 -0000
-@@ -1569,6 +1569,12 @@
- 		.type = AC97_TUNE_SWAP_SURROUND
- 	},
- 	{
-+		.vendor = 0x1043,
-+		.device = 0x80f3,
-+		.name = "ASUS ICH5/AD1985",
-+		.type = AC97_TUNE_AD_SHARING
-+	},
-+	{
- 		.vendor = 0x10f1,
- 		.device = 0x2665,
- 		.name = "Fujitsu-Siemens Celcius",
-@@ -1641,12 +1647,6 @@
- 		.mask = 0xfff0,
- 		.name = "Intel ICH5/AD1985 (discrete)",
- 		.type = AC97_TUNE_HP_ONLY
--	},
--	{
--		.vendor = 0x80f3,
--		.device = 0x1043,
--		.name = "ASUS ICH5/AD1985",
--		.type = AC97_TUNE_AD_SHARING
- 	},
- 	{ } /* terminator */
- };
+RCS file: /cvsroot/alsa/alsa-kernel/Documentation/DocBook/writing-an-alsa-driver.tmpl,v
+retrieving revision 1.12
+diff -u -r1.12 writing-an-alsa-driver.tmpl
+--- alsa-kernel/Documentation/DocBook/writing-an-alsa-driver.tmpl	3 Jul 2003 11:37:29 -0000	1.12
++++ alsa-kernel/Documentation/DocBook/writing-an-alsa-driver.tmpl	11 Aug 2003 11:14:12 -0000
+@@ -438,7 +438,7 @@
+   // chip-specific constructor
+   // (see "Management of Cards and Components")
+   static int __devinit snd_mychip_create(snd_card_t *card,
+-                                         struct pci_device *pci,
++                                         struct pci_dev *pci,
+                                          mychip_t **rchip)
+   {
+           mychip_t *chip;
+@@ -1915,7 +1915,7 @@
+   };
+
+   /* open callback */
+-  static int snd_mychip_pcm_open(snd_pcm_substream_t *subs)
++  static int snd_mychip_pcm_open(snd_pcm_substream_t *substream)
+   {
+           mychip_t *chip = snd_pcm_substream_chip(substream);
+           snd_pcm_runtime_t *runtime = substream->runtime;
+@@ -2716,7 +2716,7 @@
+           <informalexample>
+             <programlisting>
+ <![CDATA[
+-  static int snd_xxx_open(snd_pcm_substream_t *subs);
++  static int snd_xxx_open(snd_pcm_substream_t *substream);
+ ]]>
+             </programlisting>
+           </informalexample>
+@@ -2767,7 +2767,7 @@
+           <informalexample>
+             <programlisting>
+ <![CDATA[
+-  static int snd_xxx_close(snd_pcm_substream_t *subs);
++  static int snd_xxx_close(snd_pcm_substream_t *substream);
+ ]]>
+             </programlisting>
+           </informalexample>
 
 
 
