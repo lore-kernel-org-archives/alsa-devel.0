@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000489]: With NForce [Patch] With NForce cards "modem" device does not exist.
-Date: Wed,  8 Sep 2004 17:24:11 +0200 (CEST)
+Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
+Date: Wed,  8 Sep 2004 17:16:16 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040908152411.0ED8013002@server.perex-int.cz>
+Message-ID: <20040908151616.8A71D13002@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 875BD29D
-	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 17:27:38 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2460B1BA
+	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 17:16:19 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,47 +20,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000489
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000453
 ======================================================================
-Reported By:                sashak
-Assigned To:                sashak
+Reported By:                Andrew
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     489
-Category:                   PCI - intel8x0m
+Bug ID:                     453
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     new
 Distribution:               
 Kernel Version:             
-Resolution:                 fixed
 ======================================================================
-Date Submitted:             09-08-2004 17:14 CEST
-Last Modified:              09-08-2004 17:24 CEST
+Date Submitted:             08-18-2004 13:16 CEST
+Last Modified:              09-08-2004 17:16 CEST
 ======================================================================
-Summary:                    With NForce [Patch] With NForce cards "modem" device does not exist.
+Summary:                    it is impossible to select spdif as capture source
 Description: 
-NFORCE-MODEM resonably does not defined in alsa-lib config (it is same as
-ICH-MODEM). Since there is no configuration differences just common driver
-name 'ICH-MODEM' may be always used.
+There are no anything spdif-input-related among
+capture source enumeration.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-08-2004 17:24 CEST 
+ tiwai - 08-25-2004 19:55 CEST 
 ----------------------------------------------------------------------
-Applied to CVS.  Thanks.
+Did you use 'iec958' pcm?
+
+    % arecord -Diec958 -fdat foo.wav
+
+----------------------------------------------------------------------
+ Andrew - 08-25-2004 23:47 CEST 
+----------------------------------------------------------------------
+A dat fromat doesn't work: "Sample format non available"
+I have tried
+
+arecord -Diec958 -fs32_LE -r48000 -c2 -d600 foo.wav
+
+Format/rate are accepted, but the resulted file is empty.
+I use aureon 7.1.
+
+While filing the isuue, I have thought about capture selecting via
+mixer Capture Source control. Does this (others?) control influence
+to shown above command working?
+
+----------------------------------------------------------------------
+ tiwai - 08-27-2004 19:39 CEST 
+----------------------------------------------------------------------
+You can use'plug:iec958' for 16bit conversion.
+
+"Capture Source" shouldn't affect the digital input.
+It might be a wrong CS8415 initialization sequence in the driver...
+
+----------------------------------------------------------------------
+ Andrew - 09-07-2004 10:33 CEST 
+----------------------------------------------------------------------
+I have tried with plug:iec958 with the same silent file. Is there any way
+to be sure spdif input is receiving some signal?
+
+----------------------------------------------------------------------
+ tiwai - 09-08-2004 17:16 CEST 
+----------------------------------------------------------------------
+Could you elaborate more?
+Is the DMA working?  Or did you get the short-cut output?
+Is it all zero or any signals in the output?
+
+Also, as I wrote, the CS8415 init sequence might be wrong.
+Compare the CS8415 init data in aureon.c with the datasheet
+whether it's correct for your setting.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-08-04 17:14 sashak         New Bug                                      
-09-08-04 17:14 sashak         File Added: ich_modem-config.patch                    
-09-08-04 17:24 tiwai          Bugnote Added: 0001736                       
-09-08-04 17:24 tiwai          Resolution               open => fixed       
-09-08-04 17:24 tiwai          Status                   assigned => resolved
+08-18-04 13:16 Andrew         New Bug                                      
+08-25-04 19:55 tiwai          Bugnote Added: 0001625                       
+08-25-04 23:47 Andrew         Bugnote Added: 0001628                       
+08-27-04 19:39 tiwai          Bugnote Added: 0001648                       
+09-07-04 10:33 Andrew         Bugnote Added: 0001706                       
+09-08-04 17:16 tiwai          Bugnote Added: 0001734                       
 ======================================================================
 
 
