@@ -1,8 +1,8 @@
 From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: [PATCH] GUS PCM fixes
-Date: Fri, 10 May 2002 04:20:42 +0300
+Subject: Question on sequencer synth driver
+Date: Fri, 10 May 2002 05:06:10 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020510042042.A8147@sci.fi>
+Message-ID: <20020510050610.C8147@sci.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
@@ -16,57 +16,35 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: perex@suse.cz
+Cc: perex@suse.cz, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Here's a fix for gus pcm rate limits and interwave pcm name.
+I'm still struggling with my MikMod driver, and since no one has answered 
+my previous mails, I've been trying to figure it out myself. Maybe I'm in
+Jaroslav's procmailrc or something :( Takashi can you take a look?
 
-Index: alsa-kernel/isa/gus/gus_pcm.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/isa/gus/gus_pcm.c,v
-retrieving revision 1.8
-diff -u -r1.8 gus_pcm.c
---- alsa-kernel/isa/gus/gus_pcm.c	18 Feb 2002 13:21:15 -0000
-1.8
-+++ alsa-kernel/isa/gus/gus_pcm.c	10 May 2002 01:13:43 -0000
-@@ -38,7 +38,7 @@
- 
- /* maximum rate */
- 
--#define SNDRV_GF1_PCM_RATE		48000
-+#define SNDRV_GF1_PCM_RATE		44100
- 
- #define SNDRV_GF1_PCM_PFLG_NONE		0
- #define SNDRV_GF1_PCM_PFLG_ACTIVE	(1<<0)
-@@ -624,7 +624,7 @@
- 				 SNDRV_PCM_FMTBIT_S16_LE |
-SNDRV_PCM_FMTBIT_U16_LE),
- 	rates:			SNDRV_PCM_RATE_CONTINUOUS |
-SNDRV_PCM_RATE_8000_44100,
- 	rate_min:		5510,
--	rate_max:		48000,
-+	rate_max:		44100,
- 	channels_min:		1,
- 	channels_max:		2,
- 	buffer_bytes_max:	(128*1024),
-Index: alsa-kernel/isa/gus/interwave.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/isa/gus/interwave.c,v
-retrieving revision 1.11
-diff -u -r1.11 interwave.c
---- alsa-kernel/isa/gus/interwave.c	18 Mar 2002 14:27:50 -0000
-1.11
-+++ alsa-kernel/isa/gus/interwave.c	10 May 2002 01:13:44 -0000
-@@ -805,7 +805,7 @@
- 		return err;
- 	}
- 	sprintf(pcm->name + strlen(pcm->name), " rev %c", gus->revision +
-'A');
--	strcat(pcm->name, " (chip)");
-+	strcat(pcm->name, " (codec)");
- 	if ((err = snd_cs4231_timer(cs4231, 2, NULL)) < 0) {
- 		snd_card_free(card);
- 		return err;
+My problem is that events get delivered but I don't get any sound. I've
+concluded that snd_gus_synth_event_input() get's called and it in turn
+calls snd_gus_sample_event(). And in that function the problem arises. The
+for-loop tests for v->use for each voice. And in my case v->use is never
+set. The 'use' field is set in snd_gf1_alloc_voice() which is called from
+snd_gus_synth_use(). Is's called for as many voices as the subscriber has
+requested. But the voices field in snd_seq_port_subscribe_t can't be set
+because there is no function to do so. So I think I need 
+snd_seq_port_subscribe_set_voices(). To continue my testing I added that
+function to my local copy of alsa-lib. But I was disappointed again. Now
+it seems that snd_gus_synth_use() doesn't even get called when I
+connect my client to the synth. It's registered as the 'use' port
+callback, and if I'm not mistaken it should get called whenever a client
+connects.
+
+Summary:
+I think snd_subscribe_{set,get}_voices() are needed.
+Why doesn't snd_gus_synth_use() get called when my client connects to it?
+
+
+The latest verions of the MikMod driver is at
+"http://www.saunalahti.fi/~syrjala/alsa/"
 
 -- 
 Ville Syrjälä
