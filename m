@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000663]: [PATCH] Fix alsa-driver/pcmcia/pdaudiocf/pdaudiocf.patch so that it applies cleanly to alsa-kernel/pcmcia/pdaudiocf/pdaudiocf.c
-Date: Mon, 22 Nov 2004 14:40:14 +0100
-Message-ID: <48c6870cae98aa09383c99f84b5ab409@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000662]: [PATCH] Fix pcmcia/vx/vxpocket.patch so that it applies cleanly to alsa-kernel/pcmcia/vx/vxpocket.c
+Date: Mon, 22 Nov 2004 14:40:49 +0100
+Message-ID: <189b38e419c1a6ca1799d4465a598612@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 461BA2B3
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 14:40:15 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 112CA2B3
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 14:40:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=663> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=662> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   663
+Issue ID:                   662
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
@@ -41,12 +41,11 @@ Kernel Version:
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-21-2004 16:10 CET
+Date Submitted:             11-21-2004 16:08 CET
 Last Modified:              11-22-2004 14:40 CET
 ======================================================================
-Summary:                    [PATCH] Fix
-alsa-driver/pcmcia/pdaudiocf/pdaudiocf.patch so that it applies cleanly to
-alsa-kernel/pcmcia/pdaudiocf/pdaudiocf.c
+Summary:                    [PATCH] Fix pcmcia/vx/vxpocket.patch so that it
+applies cleanly to alsa-kernel/pcmcia/vx/vxpocket.c
 Description: 
 See Summary
 ======================================================================
@@ -54,18 +53,17 @@ See Summary
 ----------------------------------------------------------------------
  tiwai - 11-22-04 14:40 
 ----------------------------------------------------------------------
-Thanks for the patch.
-It was already fixed on CVS...
+Already fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-04 16:10 jdthood        New Issue                                    
-11-21-04 16:10 jdthood        File Added: fix_context_of_pdaudiocf-patch.patch  
-                 
+11-21-04 16:08 jdthood        New Issue                                    
+11-21-04 16:08 jdthood        File Added: fix_context_of_vxpocket-patch.patch   
+                
 11-22-04 14:40 tiwai          Status                   assigned => resolved
 11-22-04 14:40 tiwai          Resolution               open => fixed       
-11-22-04 14:40 tiwai          Note Added: 0002500                          
+11-22-04 14:40 tiwai          Note Added: 0002501                          
 ======================================================================
 
 
