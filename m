@@ -1,12 +1,12 @@
-From: Allan Klinbail <allank@labyrinth.net.au>
-Subject: confirmed working EDIROL - PCR 30
-Date: 15 Dec 2003 03:40:05 +1100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Query devices in a non-blocking fashion
+Date: Sun, 14 Dec 2003 11:38:51 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1071420005.11530.2.camel@littlewolf1.littlewolf>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <200312141638.hBEGcpco011444@oud.linuxaudiosystems.com>
+References: <3FDC8D16.6070608@boosthardware.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Mon, 15 Dec 2003 01:17:26 +0900."
+             <3FDC8D16.6070608@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,26 +15,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-dev <alsa-devel@lists.sourceforge.net>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: Arve Knudsen <aknuds-1@broadpark.no>, Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi 
+>My opinion is that a simple function could be included in alsactl which 
+>scans for available devices, makes a list of their abilities. Everyone 
+>uses "post-insert alsactl restore" in the modules.conf file so it would 
+>be essentially a non issue from a user perspective.
 
-I know it's no big news for a USB Midi device to be working but I
-thought I may as well announce this anyway. 
+i think it needs to be slightly more complex than that (because of the
+way the configuration space is reduced as various parameters are set).
 
-The Edirol PCR-30 Midi Keyboard Controller (with sliders, knobs, buttons
-e.t.c..) works perfectly the USB audio module (snd-usb-audio). 
-This most likely means the PCR-50 and PCR-80 also work. 
+we need a structure that is somewhat equivalent to hw_params. the
+program fills it out, in effect asking for "16 bit, stereo, 48kHz,
+1024 frames/period" and then queries to see what devices can satisfy
+that. it will be hard for the program to use this if it thinks it can
+handle multiple configurations, but there are not many programs that
+work this way: most know what configuration they want, and just want
+to find devices that can work that way.
 
-NOTE: The device must be set to use the Generic USB driver and not the
-"Original" driver (aka FPT) 
+otoh, one may counter that the plughw layer in alsa-lib is there to
+allow *any* h/w device to be used with *any* configuration, so this is
+all a bit ridiculous. 
 
-cheers
-
--- 
-Allan Klinbail <allank@labyrinth.net.au>
-
+of course, the devices may be busy, so the program needs to be ready
+for that as well (this applies to multiopen cards just the same, even
+if its much less likely that they are "fully" busy).
 
 
 -------------------------------------------------------
