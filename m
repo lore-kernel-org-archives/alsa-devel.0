@@ -1,12 +1,14 @@
 From: Martin Langer <martin-langer@gmx.de>
-Subject: Typo in Writing-an-ALSA-Driver
-Date: Sun, 21 Dec 2003 19:11:17 +0100
+Subject: Re: Typo in Writing-an-ALSA-Driver
+Date: Sun, 21 Dec 2003 19:29:25 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031221181117.GA13971@tuba.home>
+Message-ID: <20031221182925.GB13971@tuba.home>
+References: <20031221181117.GA13971@tuba.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
+In-Reply-To: <20031221181117.GA13971@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,27 +21,30 @@ To: alsa-devel@lists.sourceforge.net
 Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Dec 21, 2003 at 07:11:17PM +0100, Martin Langer wrote:
+> 
+> Hi,
+> 
+> two small typos in the docs on
+> http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x494.htm
+> 
+> There are *playback* labeled functions for open and close:
+> 
+> static snd_pcm_ops_t snd_mychip_playback_ops = {
+>        .open =        snd_mychip_playback_open,
+>        .close =       snd_mychip_playback_close,
+>        [...]
+> };
+> 
+> But OTOH they were called *pcm* instead of *playback*:
+> 
+> static int snd_mychip_pcm_open(snd_pcm_substream_t *subs) {}
 
-Hi,
-
-two small typos in the docs on
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x494.htm
-
-There are *playback* labeled functions for open and close:
-
-static snd_pcm_ops_t snd_mychip_playback_ops = {
-       .open =        snd_mychip_playback_open,
-       .close =       snd_mychip_playback_close,
-       [...]
-};
-
-But OTOH they were called *pcm* instead of *playback*:
-
-static int snd_mychip_pcm_open(snd_pcm_substream_t *subs) {}
-static int snd_mychip_pcm_close(snd_pcm_substream_t *substream) {}
+another typo: subs has to be substream.
 
 
 martin
+
 
 
 -------------------------------------------------------
