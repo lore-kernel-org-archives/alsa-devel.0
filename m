@@ -1,13 +1,12 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: problems with intel8x0 and 1.0.0pre3
-Date: Mon, 1 Dec 2003 19:44:53 +0200 (EET)
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: Intel8x0 problems with rc1
+Date: Mon, 01 Dec 2003 19:15:59 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0312011939020.5723-100000@ecabase.localdomain>
-References: <Pine.LNX.4.44.0311271804180.15840-100000@ecabase.localdomain>
+Message-ID: <3FCB855F.7080505@undata.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0311271804180.15840-100000@ecabase.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,20 +18,24 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
 
-On Thu, 27 Nov 2003, Kai Vehmanen wrote:
-> With 1.0.0pre3, for example "arecord -r 8000 - |aplay -r 8000 -" produces 
-> constant xruns. A similar app that relies on poll()/select(), fails even 
-> more severely. When looking at... 
+I'm testing rc1, and I have problems with my laptop's internal intel8x0
+soundcard :
+* Using OSS emulation, after between 19 and 20 seconds of playing the
+sound gets garbled for a few seconds and then comes back to normal. This
+happens each time I stop and start playback again.
+* Using alsa natively there is a performance problem : running jack with 
+the card (-p 1024) I get 3 or 4 xruns per second (I used to run this 
+card with -p 64 with previous alsa versions !). With -p 4096 I get c.a. 
+1 xrun/second, so there seems to be a constant ratio, like 1 xrun every 
+10 buffers.
 
-this problem was fixed in 1.0.0rc1! It seems that the final commit to 
-ac97_pcm.c (rev1.7) took care of the problem (the added 'rpcm->stream == 
-rpcms[k].stream' check).
+No problem in the same conditions using the hdsp.
 
--- 
- http://www.eca.cx
- Audio software for Linux!
+Thomas
+
+
 
 
 
