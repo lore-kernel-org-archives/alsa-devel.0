@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000517]: [PATCH] 50_aconnect_betwen
-Date: Thu, 23 Sep 2004 19:50:33 +0200 (CEST)
+Subject: [ALSA - driver 0000505]: SPDIF sound distorted on non-48000 rates
+Date: Thu, 23 Sep 2004 19:50:21 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040923175033.A83944500F@server.perex-int.cz>
+Message-ID: <20040923175021.2F9C14500F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 678D4354
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 54FBF324
 	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:51:13 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id B2CA4264E5
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:50:33 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,41 +22,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000517
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000505
 ======================================================================
-Reported By:                jdthood
+Reported By:                ramendik
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Bug ID:                     517
-Category:                   aconnect
+Project:                    ALSA - driver
+Bug ID:                     505
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   text
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               RH-based
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             09-21-2004 19:54 CEST
+Date Submitted:             09-19-2004 10:03 CEST
 Last Modified:              09-23-2004 19:50 CEST
 ======================================================================
-Summary:                    [PATCH] 50_aconnect_betwen
+Summary:                    SPDIF sound distorted on non-48000 rates
 Description: 
-Patch for aconnect.c to make it print the word 'between'
-with two 'e's.
+I have an Intel ICH AC97 sound subsystem, on an Intel i865 motherboard(ASUS
+P4P800). It has an analog output and an SPDIF output.When I play 48Khz
+files, thinks are OK on all outputs. But when I play 44.1 Khz files, the
+sound on the SPDIF output is audibly distorted. The analog output is OK.
+
+I am using the 2.6.8.1 kernel, and tried both the ALSA inside it (1.0.4)
+and newer alsa-driver 1.0.7rc1. This same problem shows up with 2.6.6 and
+2.6.7 kernels. So apparently it's present across several versons of ALSA.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-23-2004 19:50 CEST 
+ tiwai - 09-23-2004 18:37 CEST 
 ----------------------------------------------------------------------
-Summary: Add a missing letter 'e'
+Which ac97 codec?  Please attach /proc/asound/card0/codec97#0/* files.
+Also, check the IEC958 status bits (run iecset) during playback of
+44.1kHz samples.
 
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 19:50 CEST 
+----------------------------------------------------------------------
+Well, iecset showed 48000 Hz during the playback of 44100 Hz samples. So
+apparently this is the bug. Here is the full result:
+
+# iecset
+Mode: consumer
+Data: audio
+Rate: 48000 Hz
+Copyright: protected
+Emphasis: none
+Category: PCM coder
+Original: original
+Clock: 1000 ppm
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 19:54 jdthood        New Bug                                      
-09-21-04 19:54 jdthood        File Added: 50_aconnect_betwen.dpatch                    
-09-23-04 19:50 jdthood        Bugnote Added: 0001840                       
+09-19-04 10:03 ramendik       New Bug                                      
+09-19-04 10:03 ramendik       Distribution              => RH-based        
+09-19-04 10:03 ramendik       Kernel Version            => 2.6.8.1         
+09-19-04 10:05 ramendik       Bug Monitored: ramendik                      
+09-23-04 18:37 tiwai          Bugnote Added: 0001831                       
+09-23-04 19:50 ramendik       Bugnote Added: 0001839                       
 ======================================================================
 
 
