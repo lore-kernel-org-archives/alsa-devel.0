@@ -1,17 +1,12 @@
-From: Russ Garrett <russ@garrett.co.uk>
-Subject: Re: "does not support 28bit PCI busmaster DMA" on
-	AMD64
-Date: Sat, 08 May 2004 18:06:12 +0100
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Suggestion regarding alsa driver writing documentation.
+Date: Sat, 08 May 2004 19:33:51 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1084035972.7630.1.camel@localhost>
-References: <1083263559.6227.39.camel@localhost>
-	 <s5hr7u133yo.wl@alsa2.suse.de>
-Reply-To: russ@garrett.co.uk
+Message-ID: <409D361F.5050903@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hr7u133yo.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,29 +15,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2004-05-03 at 16:50, Takashi Iwai wrote:
-> At Thu, 29 Apr 2004 19:32:39 +0100,
-> Russ Garrett wrote:
-> > Whenever I try to modprobe snd_ice1712, I get the following error in
-> > dmesg:
-> > 
-> > architecture does not support 28bit PCI busmaster DMA
-> > ICE1712: probe of 0000:01:0a.0 failed with error -6
-> 
-> you can try "soft" boot option.
-> or, simply ignore the dma address check as the patch attached below :)
+I have been helping some people with writing alsa drivers.
+One thing that they did not totally understand from the alsa 
+documentation was the concept of frames.
+To help with this, could we add a html link between in the following 
+document: -
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x490.htm
 
-Thanks, the patch works fine for me. I don't fully understand what the
-problem is - is this likely to be fixed in a future version?
+In section: -
+/* pointer callback */
 
---
-Russ Garrett
-russ@garrett.co.uk
+pointing to: -
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x537.htm
 
+In Section: -
+PCM Configurations
+
+Where it explains about what a "frame" is.
+I think it would be helpful to also explain that the document: -
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x490.htm
+
+has a line: -
+current_ptr = mychip_get_hw_pointer(chip);
+
+I think that comments should be added close to that line to say: -
+"
+The pointer value obtained from the hardware is likely to be a byte 
+offset within the buffer. In order to convert this value to a type 
+"snd_pcm_uframes_t" , that is required as the return value, use the 
+following code: -
+return bytes_to_frames(substream->runtime, pointer);
+
+An explanation of what a "frame" is can be found at http://xyz
+"
+
+Or just change the document example code: -
+/* pointer callback */
+   static snd_pcm_uframes_t
+   snd_mychip_pcm_pointer(snd_pcm_substream_t *substream)
+   {
+           mychip_t *chip = snd_pcm_substream_chip(substream);
+-          unsigned int current_ptr;
++          unsigned int current_byte_ptr;
+
+           // get the current hardware pointer
+-          current_ptr = mychip_get_hw_pointer(chip);
+-          return current_ptr;
++          current_byte_ptr = mychip_get_hw_pointer(chip);
++          return bytes_to_frames(substream->runtime, current_byte_ptr);
+
+   }
+
+
+Cheers
+James
 
 
 -------------------------------------------------------
