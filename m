@@ -1,13 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsa-utils patches
-Date: Mon, 24 Feb 2003 14:51:53 +0100 (CET)
+From: "Ronny V. Vindenes" <s864@lstud.ii.uib.no>
+Subject: Terratec EWX24/96 AC3 passthru wierdness
+Date: Mon, 24 Feb 2003 14:57:14 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302241451350.1652-100000@pnote.perex-int.cz>
-References: <20030224133802.GA3299@nubol.int.oskuro.net>
+Message-ID: <Pine.LNX.4.44.0302241444470.3322-100000@gullvinge.ii.uib.no>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030224133802.GA3299@nubol.int.oskuro.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +14,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jordi Mallach <jordi@debian.org>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "debian-alsa@lists.wedontsleep.org" <debian-alsa@lists.wedontsleep.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 24 Feb 2003, Jordi Mallach wrote:
+The sound stutters like crazy (but not xrun messages) when doing ac3 
+passthru over the spdif, if I decode the ac3 stream to 6 channels and use 
+envy24control to mix those to the spdif out there is no stutter (but also 
+no proper surround sound). Am I doing something wrong?
 
-> Hello!
-> 
-> Here's a new batch of Debian patches, all from David B. Harris.
-> 
-> - add a "Press Escape to quit" string to alsamixer's title, some uses
->   couldn't figure out how to exit the program (Debian Bug#178393).
-> - hide the cursor, which was missplaced and wasn't goodlooking anyway
->   (Debian Bug#81169).
-> - remove trailing spaces from amixer's output (Debian Bug#177518).
-> - don't ignore second -l/-L flags in aplay (Debian Bug#177521).
-> 
-> As always, details for each bug is in http://bugs.debian.org/xxxxxx,
-> where xxxxxx is the bug number.
+relevant part of ~/.asoundrc looks like this:
 
-Applied. Thanks.
+pcm.ice1712 {
+        type hw
+        card 1
+        device 0
+}
 
-						Jaroslav
+pcm.ice1712_spdif {
+        type plug
+        ttable.0.8 1
+        ttable.1.9 1
+        slave.pcm ice1712
+}
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Tested with ac3dec and xine (alsa-* 0.9.0rc7)
+
+-- 
+Ronny V. Vindenes <sublett@dc-s.com>
 
 
 
