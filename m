@@ -1,15 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Static versus shared builds of alsa-utils
-Date: Mon, 1 Sep 2003 20:30:43 +0100
+From: Carsten Koch <Carsten.Koch@icem.com>
+Subject: Re: optical SPDIF output on Abit NF7 nforce2 main board.
+Date: Mon, 01 Sep 2003 23:00:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200309012030.43931.adrian@mcmen.demon.co.uk>
-References: <Pine.HPX.4.33n.0309011225190.11732-100000@studcom.urz.uni-halle.de>
+Message-ID: <3F53B38B.6070307@icem.com>
+References: <3F532D5E.6040300@icem.com>	<s5hy8x8oefw.wl@alsa2.suse.de>	<3F534D6A.5030706@icem.com>	<s5hllt8oaye.wl@alsa2.suse.de>	<3F535A42.6020403@icem.com>	<s5hekz0o7wi.wl@alsa2.suse.de>	<3F536C97.5080008@icem.com>	<s5hbru4o444.wl@alsa2.suse.de>	<3F538893.1010801@icem.com> <s5h7k4snyhl.wl@alsa2.suse.de> <3F539A3E.3030508@icem.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0309011225190.11732-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <3F539A3E.3030508@icem.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,45 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 01 September 2003 11:27, Clemens Ladisch wrote:
-> Adrian McMenamin wrote:
-> > > Do the compiler flags include --static? Maybe you can add this flag=
- by
-> > > setting CFLAGS explicitly when ./configure-ing.
-> >
-> > Exactly, but how?
->
-> CC=3Dsh-linux-gcc CFLAGS=3D--static ./configure --xxx=3D...
->
->
-OK, this works great for the alsa-utils, but I have now discovered that m=
-any=20
-of the tools installed by alsa-lib are not properly built static even whe=
-n I=20
-follow the instructions in the INSTALL file -----
+Hi,
+
+here is a summary of the facts that I found so far regarding
+the optical SPDIF output on my Abit NF7 nforce2 main board:
+
+                                                        Alsa   Nvidia
+                                                        driver driver
+Default setting plays sound on analog output           Yes    Yes
+Default setting plays sound on digital output          No     Yes
+Sound works on both (D and A) outputs at the same time No     Yes
+kde desktop sounds work on digital output              No     Yes
+mpg123 works on digital output                         No     Yes(1)
+mpg321 works on digital output                         Yes(2) Yes(3)
+main volume slider controls volume on digital output   No     Yes
+PCM volume slider controls volume on digital output    No     Yes
+Digital output can be muted by mixer application       No     Yes
+
+(1) Requires -r 48000 parameter unless file contains 48 kHz data.
+(2) Requires -o alsa09  --audiodevice hw:0,1 parameters or
+     an entry in ~/.asoundrc that makes device 1 the default.
+     Sound is played at wrong speed unless data is 48kHz.
+(3) Only if file contains 48 kHz data.
 
 
-For instance:
-
-/usr/bin # ./alsalisp
-=2E/alsalisp: No such file or directory
-
-
-I have configured the sources for building thus:
-
-CC=3Dsh-linux-gcc ./configure --enable-shared=3Dno --enable-static=3Dyes=20
---host=3Dsh-linux --prefix=3D/home/Adrian/dc-down/initrd/usr
-
-
-Adding in CFLAGS=3D--static causes the build to fail.
-
-So any clues on this one?
-
-Adrian
+Carsten.
 
 
 
