@@ -1,13 +1,14 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Subject: ALSA Aureal driver merged (soundcard matrix update)
-Date: Sun, 12 Oct 2003 12:22:34 -0400
+From: Frank Barknecht <fbar@footils.org>
+Subject: Re: Build-in mixer
+Date: Sun, 12 Oct 2003 18:44:10 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1065975744.1786.43.camel@localhost>
-Reply-To: manuel.jander@mat.utfsm.cl
+Message-ID: <20031012164410.GA5834@fliwatut.scifi>
+References: <3F83C9B8.9050407@kky.zcu.cz> <200310081124.h98BOGqq018813@oud> <s5hsmm49bq5.wl@alsa2.suse.de> <1065886408.3f8822c843535@webmail.zcu.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <1065886408.3f8822c843535@webmail.zcu.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,39 +17,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hallo,
+Daniel Tihelka hat gesagt: // Daniel Tihelka wrote:
 
-First of all i'm pleased to announce that there is now a driver merged
-into the latest ALSA version, that supports the complete line of AUREAL
-VORTEX / VORTEX2 / ADVANTAGE soundcards.
+> As I wrote some day ago, it is possible to play two or more sounds 
+> simultenaously with mentioned setting. But only with 'aplay'
+> 
+> I tried to use xmms with ALSA 0.9 output plugin and Mplayer with ALSA-0.9.x 
+> support and it is impossible to play any two sound streams at the same time (i 
+> tried two xmms, xmms + mplayer, xmms + asound, mplayer + asound and two 
+> mplayers, but only the first played and the second was stopped until the first 
+> finished or breaked).
+> 
+> Where can be problem? 
 
-I would like to ask to update the soundcard matrix. Any soundcard using
-a AU88x0 chip is supported.
+The problem lies in the wrong way in which these apps try to use ALSA.
+I don't use XMMS anymore, but for mplayer I can say, that it tries to
+open hw:X devices and doesn't allow the user to specify a device by
+name. As dmix goes beyond and extends the capabilites of the hardware
+you're out of luck with these kind of apps unless the authors fix
+their mistakes. For a correctly written ALSA music player try
+alsaplayer. It works like a charm with dmix and since ALSA 0.9.7 it
+does so even on my M-Audio Audiophile card btw.
 
-At last, any bug reports are gladly welcome, and anyone owning a Aureal
-AU88x0 soundcard are invited to test this new driver, which was written
-from scratch, but supports many more features than the old binary driver
-(hardware EQ), and more important than that, doesn't hang your computer
-on any chipset (via+nvidia ...) like the old binary driver did. 
+You might have success with running these apps in OSS-mode and useing
+alsa-oss.
 
-Anyone who wants to contribute, are gladly welcome to the Openvortex
-project. There is much fun stuff coming, like hardware A3D (yeah, i mean
-3D audio spatialization) support and wavetable. Maybe some day this can
-be extended to other soundcards too (ESS maestro3 support HRTF's ?). Its
-very disappointing to not have any working 3D audio interface today,
-being HRTF's such an old technology.
-
-Openvortex:
-http://savannah.nongnu.org/projects/openvortex/
-
-Best Regards
-
-Manuel Jander
-
-
+ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
