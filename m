@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Mon, 27 Dec 2004 16:33:54 +0100
-Message-ID: <f8b94ae977c66a7d535ea52923342743@bugtrack.alsa-project.org>
+Date: Mon, 27 Dec 2004 16:38:46 +0100
+Message-ID: <f89d32993e5b7fa354581535d01eedea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5F08516F
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 16:33:54 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 77C91212
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 16:38:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-27-2004 16:33 CET
+Last Modified:              12-27-2004 16:38 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -56,19 +56,24 @@ successful in all other regards install of Fedora FC3.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 12-27-04 10:46 
-----------------------------------------------------------------------
-save and attach test.state again
-
-alsactl -f test.state store
-
-What speakers do you have 2, 4, 5.1 ???
-
-----------------------------------------------------------------------
  misnagid - 12-27-04 16:33 
 ----------------------------------------------------------------------
 am sending you new file requested as test2.state, had problems deleteng
 older test.state.  please accept test2.state
+
+----------------------------------------------------------------------
+ misnagid - 12-27-04 16:38 
+----------------------------------------------------------------------
+speaker setup is 2.1.  2 speakers.  the subwoofer channel is generated post
+alsa processing in the passive xover of speaker system.  so therefore, as
+far as alsa is concerned, just 2 speakers period.  these are analogue
+speakers.
+
+anything more pls let me know.  would sure like to get these speakers
+working.  do you think i should just do a whole new install of fedora??
+
+Thanks!
+jerry
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -102,6 +107,8 @@ Date Modified  Username       Field                    Change
 12-26-04 23:46 misnagid       Note Added: 0002957                          
 12-27-04 10:46 pzad           Note Added: 0002958                          
 12-27-04 16:33 misnagid       Note Added: 0002964                          
+12-27-04 16:34 misnagid       File Added: test2.state                      
+12-27-04 16:38 misnagid       Note Added: 0002965                          
 ======================================================================
 
 
