@@ -1,14 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: USB quattro input quality
-Date: Sat, 08 May 2004 12:58:31 +0000
+From: Aner Gusic <aner@lysator.liu.se>
+Subject: problems with the mixer (fwd)
+Date: Sat, 8 May 2004 16:37:06 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <409CD977.9000300@superbug.demon.co.uk>
-References: <409B0D89.6090503@boosthardware.com> <20040507140321.28777db8@laptop> <409C687E.8010702@boosthardware.com>
+Message-ID: <20040508143705.GA7511@sture.lysator.liu.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <409C687E.8010702@boosthardware.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,48 +16,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: Tim Blechmann <TimBlechmann@gmx.net>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey wrote:
-> Tim Blechmann wrote:
-> 
->>> Just wondering if anyone has found time to look into fixing the input 
->>> quality of the usb quattro?
->>>
->>> I'm not sure it has ever functioned perfectly for input quality.
->>>
->>> Currently I get a better sound quality from my $10 cmipci than my $400
->>>
->>> usb-quattro ;-P
->>>
->>> There is a constant crackle in the audio stream.
->>
->>
->> there is a thread on this on the alsa bugtracking system ... there is a
->> patch available, but it's not fully working for me...
->> using kernel 2.6.6rc2 with the patch to the usb subsystem to allow the
->> using of the quattro, i'll only have to restart alsa about once or
->> twice. (probably i still had problems with the alsa patch because of
->> kernel 2.6.6)
->>
-> 
-> 
-> Thanks for the tip.
-> 
-> Just to confirm what I read in mantis. The quattro can only record in 
-> big endian mode and playback in little endian?
-> 
-> How does this affect jackd?
-> 
-> AFAIK it's not possible to have dual modes while using jack...
-> 
-> 
+Hi!
 
-kernel 2.6.6rc2 is very broken with respect to USB. Use 2.6.6rc3 or above.
+I didn't get any answer on alsa-user list so I try here.
 
 
+I have a Hoontech NX card with outputs for front and rear speakers.
+Volume settings for these I would like to set independently of each
+other, and this worked just fine while I was running ALSA 0.5.x.
+However, a couple of days ago I upgraded to ALSA 1.0.3.
+
+Now, there are two possibilities for controling volume settings on
+speakers, one with "Sigmatel 4-speaker stereo" off and another with
+this switch turned on.
+
+The second posibility (4-s s on), has following setup:
+  - "Master" controls front speakers
+  - "PCM" controls both front and rear speakers
+
+Sigmatel 4-speaker stereo off is almost what I want:
+  - "Master", "PCM", "PCM Front" control front speakers
+  - "Surrownd", "PCM Reverb" control rear speakers
+
+However, PCM Front and PCM Reverb are set to 100% resp. 0% each time
+/dev/dsp is opened.  This works perfectly for front speakers since
+they can be controled with Master or PCM controls, but rear speakers
+are muted each time a new song starts.
+
+Is this a bug? (I hope it is.)  Is it a known bug, or is it some kind
+of feature I can hope to be able to go around in future release of
+trident driver?
+
+Regards,
+
+-- 
+Aner Gusic,
+Linköping
+Sweden
 
 
 -------------------------------------------------------
