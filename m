@@ -1,12 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] seq_midi_emul.c: fix typo
-Date: Mon, 24 Mar 2003 09:43:31 +0100 (MET)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] OPL4 support
+Date: Mon, 24 Mar 2003 10:31:07 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0303240941570.21613-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.LNX.4.44.0303241022570.1189-100000@pnote.perex-int.cz>
+References: <Pine.HPX.4.33n.0303240924100.19990-101000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0303240924100.19990-101000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,29 +16,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 24 Mar 2003, Clemens Ladisch wrote:
 
-fix typo
+> 
+> This adds support for the mixer and wavetable synthesizer of OPL4 chips.
+> 
+> The OPL4 can be used with OPTi 82C928/Mozart, 82C929 and 82C924 cards
+> (82C925 and 82C93x have an integrated OPL3 and don't support an external
+> OPLx chip).
 
+Is there any reason why this code is in isa/opl4? The code looks generic, 
+so we can put it to drivers/opl4 as well.
 
-Index: alsa-kernel/core/seq/seq_midi_emul.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/core/seq/seq_midi_emul.c,v
-retrieving revision 1.9
-diff -u -r1.9 seq_midi_emul.c
---- alsa-kernel/core/seq/seq_midi_emul.c	25 Feb 2003 12:35:44 -0000	1.9
-+++ alsa-kernel/core/seq/seq_midi_emul.c	24 Mar 2003 08:41:12 -0000
-@@ -561,7 +561,7 @@
+						Jaroslav
 
- 		} else if (buf[5] == 0x00 && buf[6] == 0x04) {
- 			/* master volume */
--			parsed = SNDRV_MIDI_SYSEX_GS_REVERB_MODE;
-+			parsed = SNDRV_MIDI_SYSEX_GS_MASTER_VOLUME;
- 			chset->gs_master_volume = buf[7];
-
- 		}
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
