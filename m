@@ -1,12 +1,12 @@
-From: Nathaniel Gray <n8gray@caltech.edu>
-Subject: More info on the intel8x0 vs. Dell APM problem
-Date: Tue, 29 Apr 2003 16:30:47 -0700
+From: "mahendra  sp" <mahendra_sp@rediffmail.com>
+Subject: problem ragarding execution of Latency.c
+Date: 30 Apr 2003 05:19:17 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200304291630.47676.n8gray@caltech.edu>
+Message-ID: <20030430051917.27750.qmail@webmail28.rediffmail.com>
+Reply-To: "mahendra  sp" <mahendra_sp@rediffmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,30 +18,39 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: pzad@pobox.sk, hall@maoz.com, abramo@alsa-project.org, tiwai@suse.de, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-I found a link or two that might help to understand the problem with the 
-intel8x0 driver on Dell laptops.  It looks like APM has adverse effects 
-on the system clock:
+hi ,
 
-http://math.stanford.edu/~carlton/i8200/time.html
+   I am trying to execute the file latency.c , provided by ALSA.MY 
+driver is ES 1938 solo-1. I have source code for the driver.
 
-I imagine that maybe the alsa intel8x0 driver keeps time differently 
-than the oss driver, which is why it gets disrupted by reads from 
-/proc/apm when the oss driver doesn't.  I've seen a report that 
-configuring the kernel to enable interrupts during APM calls 
-(CONFIG_APM_ALLOW_INTS=y) solves the problem.  Here's a link:
-http://groups.yahoo.com/group/linux-dell-laptops/message/15701
+  application i want to write is similar to latency.c
 
-I'm recompiling my kernel right now and I'll report back on whether or 
-not it helps.
+  I want to write application to capture ansd playback.So i want 
+to execute latency.c and see the output. I have include 
+asoundlib.h.
 
-Cheers,
--n8
+   The errors it is giving when i give the command
 
--- 
->>>-- Nathaniel Gray -- Caltech Computer Science ------>
->>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
+  gcc -o latency.out latency.c
+
+"in functio set_hwparams:undefined reference to 
+snd_pcm_hw_params_any
+snd_strerror,snd_pcm_hw_params_set_format..."
+
+so please help as i am new to linux.
+please give replies as i have to complete my project and my 
+deadline in nearing.
+
+thanks,
+warm regards,
+mahendra
+
+
+
+
 
 
 
