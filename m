@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000869]: alsa-oss-1.0.8rc1 can't find module linkages
-Date: Mon, 31 Jan 2005 18:30:56 +0100
-Message-ID: <4605fa88ad522cd3dc5860dfc6bd685d@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000859]: alsactl does not report error status when given an illegal option
+Date: Mon, 31 Jan 2005 18:49:14 +0100
+Message-ID: <b3fe43d05ac78bc9f501d648da8f211e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 305CF21C
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 18:30:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6C58121C
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 18:49:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,56 +22,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=869> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=859> 
 ======================================================================
-Reported By:                lovett
-Assigned To:                
+Reported By:                jdthood
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   869
-Category:                   PCI - emu10k1
+Project:                    ALSA - utils
+Issue ID:                   859
+Category:                   alsactl
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-31-2005 18:30 CET
-Last Modified:              01-31-2005 18:30 CET
+Date Submitted:             01-29-2005 17:16 CET
+Last Modified:              01-31-2005 18:49 CET
 ======================================================================
-Summary:                    alsa-oss-1.0.8rc1 can't find module linkages
+Summary:                    alsactl does not report error status when given an
+illegal option
 Description: 
-alsa-driver-1.0.8rc1 | alsa-lib-1.0.8rc1 | alsa-utils-1.0.8rc1
-alsa-oss-1.0.8rc1 all compiled from source and installed without
-fatal compliant.
-
-Booting enters this error into syslog
-	kernel: Error seeking in /dev/kmem 
-	kernel: Symbol #snd-page-alloc, value 002c4000 
-	kernel: Error adding kernel module table entry.
-	modprobe: modprobe: Can't locate module snd-seq-client-62
-	
-Now invoking the most recent TiMidity gives an error message:
-	# /usr/local/bin/timidity -p64:0 file.mid   -->
-Requested buffer size 32768, fragment size 8192
-ALSA pcm 'default' can't set hw_params
-
-Now invoking aplaymidi runs in the sense that CPU cycles are
-consumed, but no sound is produced and syslog reports (several times)
-	# aplaymidi -p65:0 file.mid   -->
-	kernel: ALSA pcm_oss.c:450: HW_PARAMS failed: -12
-
-How should I go about finding what is missing?
+$ /usr/sbin/alsactl --foobar > /dev/null/usr/sbin/alsactl: unrecognized
+option `--foobar'
+$ echo $?
+0
 
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-31-05 18:49 
+----------------------------------------------------------------------
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-05 18:30 lovett         New Issue                                    
+01-29-05 17:16 jdthood        New Issue                                    
+01-31-05 18:49 tiwai          Status                   new => resolved     
+01-31-05 18:49 tiwai          Resolution               open => fixed       
+01-31-05 18:49 tiwai          Assigned To               => tiwai           
+01-31-05 18:49 tiwai          Note Added: 0003448                          
 ======================================================================
 
 
