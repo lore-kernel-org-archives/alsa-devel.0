@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000384]: Crackly PCM output.
-Date: Mon, 3 Jan 2005 14:27:22 +0100
-Message-ID: <6118787adf9d68143710be81af649fff@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000766]: Truble with alsa 1.0.7 (1.0.8rc1 too) on 2.6.10
+Date: Mon, 3 Jan 2005 14:32:28 +0100
+Message-ID: <1db7a9f4130aafac85d02d9b2aa9f657@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 63AD62D3
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 14:27:22 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A3652D3
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 14:32:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,127 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=384> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=766> 
 ======================================================================
-Reported By:                bryanb
-Assigned To:                
+Reported By:                cyclon
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   384
-Category:                   PCI - ymfpci
+Issue ID:                   766
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo dev sources
-Kernel Version:             2.6
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-13-2004 19:28 CEST
-Last Modified:              01-03-2005 14:27 CET
+Date Submitted:             12-31-2004 14:38 CET
+Last Modified:              01-03-2005 14:32 CET
 ======================================================================
-Summary:                    Crackly PCM output.
+Summary:                    Truble with alsa 1.0.7 (1.0.8rc1 too) on 2.6.10
 Description: 
-When playing a sound through the speakers on Toshiba Tecra 8100 the only
-sound produced is noise.
+Don't compile.
+
+/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/drivers/serialmidi.c:
+In function `tx_loop':
+/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/drivers/serialmidi.c:327:
+warning: passing arg 3 of pointer to function makes integer from
+pointerwithout a cast
+/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/drivers/serialmidi.c:327:
+error: too many arguments to function
+make[4]: ***
+[/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/kbuild/../drivers/serialmidi.o]
+Error 1
+make[3]: ***
+[/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/kbuild/../drivers]
+Error 2
+make[2]: ***
+[_module_/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/kbuild]
+Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.10-gentoo-r1-na'
+make: *** [compile] Error 2
+
+!!! ERROR: media-sound/alsa-driver-1.0.7-r4 failed.
+!!! Function src_compile, Line 88, Exitcode 2
+!!! Parallel Make Failed
+!!! If you need support, post the topmost build error, NOT this status
+message.
+
+Use: gcc version 3.3.4 20040623 (Gentoo Linux 3.3.4-r1, ssp-3.3.2-2,
+pie-8.7.6)
+
 ======================================================================
 
 ----------------------------------------------------------------------
- wallsga - 01-03-05 13:48 
+ tiwai - 01-03-05 12:23 
 ----------------------------------------------------------------------
-Neither "ac97-default-rate-fix.diff" nor "ymfpci-novra.diff" 
-solved the problem.
+Not reproducible with vanilla 2.6.10 kernel and the latest CVS version.
 
-Testing using the /proc interface with "tecra8100demo.patch"
-in place revealed:
-
-   - turing VRA on & off without changing the rate did not induce the
-problem
-
-   - turning on VRA and changing the rate in register 0x2c away from 48
-Khz 
-        and then back to 48 KHz always induced the problem (except in one
-trial)
-
-   - trying to set the rate back to 48 Khz and/or turning off VRA does
-not
-        make the problem go away, once induced
-
-
-I conclude that simply changing the rate induces the problem.  Once
-induced
-the problem cannot be reversed except via chipset reset.  To date it
-appears that
-the only solution for this laptop is to prevent VRA rate changes
-altogether (including the probe).
-
-
-I'd be happy with an ac97_codec module option to prevent VRA rate probes
-and enables.
-
-
-I wanted to test more, like not allowing the modem rate register (0x32?)
-to change,
-since I don't think it's a valid register for this chip, and then see if
-VRA works.
-But honestly, I don't have the time.
+Is your kernel patched?
 
 ----------------------------------------------------------------------
- tiwai - 01-03-05 14:27 
+ cyclon - 01-03-05 14:32 
 ----------------------------------------------------------------------
-The latest CVS already includes the change for ac97_codec.c.  The rate
-detection is no longer performed for non-vra case.
-Please give a try.
+Yes, my kernel is patched - 2.6.10-gentoo-r1.
+
+P.S. Sorry, I have no more this truble in 1.0.8rc1, in 1.0.8rc1 another
+problem (see 0000775).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-13-04 19:28 bryanb         New Issue                                    
-07-13-04 19:28 bryanb         Distribution              => Gentoo dev sources
-07-13-04 19:28 bryanb         Kernel Version            => 2.6             
-07-29-04 22:43 codefathers    Note Added: 0001485                          
-07-29-04 22:45 codefathers    Issue Monitored: codefathers                    
-09-03-04 03:37 Derek_Burdick  Issue Monitored: Derek_Burdick                    
-09-03-04 03:40 Derek_Burdick  Note Added: 0001684                          
-10-23-04 23:24 c0ldevil       Note Added: 0002257                          
-10-23-04 23:27 c0ldevil       Note Edited: 0002257                         
-10-23-04 23:55 c0ldevil       Note Added: 0002259                          
-10-23-04 23:56 c0ldevil       Note Added: 0002260                          
-11-10-04 12:48 tiwai          Note Added: 0002369                          
-11-17-04 18:14 c0ldevil       Note Added: 0002436                          
-11-17-04 20:33 c0ldevil       Note Added: 0002442                          
-11-17-04 20:39 rlrevell       Note Added: 0002443                          
-11-18-04 14:30 tiwai          Note Added: 0002445                          
-11-18-04 15:46 c0ldevil       Note Added: 0002446                          
-11-18-04 15:56 c0ldevil       Note Added: 0002447                          
-11-18-04 15:59 c0ldevil       File Added: dumps.zip                        
-11-18-04 16:00 c0ldevil       Note Added: 0002448                          
-11-18-04 19:44 tiwai          Note Added: 0002465                          
-11-18-04 21:05 c0ldevil       Note Added: 0002471                          
-11-18-04 21:29 c0ldevil       Note Edited: 0002471                         
-11-22-04 14:24 wallsga        Note Added: 0002496                          
-11-22-04 14:26 wallsga        Note Edited: 0002496                         
-11-22-04 14:30 wallsga        Issue Monitored: wallsga                     
-11-22-04 14:37 tiwai          Note Added: 0002498                          
-11-23-04 16:14 wallsga        File Added: tecra8100-bug-data.tar.gz             
-      
-11-23-04 16:15 wallsga        Note Added: 0002520                          
-12-16-04 22:44 wallsga        Note Added: 0002843                          
-12-20-04 16:08 wallsga        Note Added: 0002883                          
-12-20-04 16:10 wallsga        File Added: tecra8100demo.patch                   
-
-12-20-04 16:11 wallsga        File Added: codec-init-seq.tar.gz                 
-  
-12-20-04 16:59 tiwai          Note Added: 0002887                          
-12-20-04 17:00 tiwai          File Added: ac97-default-rate-fix.diff            
-       
-12-20-04 17:25 wallsga        Note Added: 0002888                          
-12-20-04 17:27 wallsga        Note Edited: 0002888                         
-12-20-04 17:37 tiwai          Note Added: 0002890                          
-12-20-04 17:42 tiwai          Note Added: 0002892                          
-12-20-04 17:43 tiwai          File Added: ymfpci-novra.diff                    
-12-30-04 23:25 c0ldevil       Issue Monitored: c0ldevil                    
-01-03-05 13:48 wallsga        Note Added: 0003059                          
-01-03-05 14:27 tiwai          Note Added: 0003062                          
+12-31-04 14:38 cyclon         New Issue                                    
+01-02-05 11:02 cyclon         Issue Monitored: cyclon                      
+01-02-05 11:02 cyclon         Issue End Monitor: cyclon                    
+01-03-05 12:23 tiwai          Note Added: 0003058                          
+01-03-05 14:32 cyclon         Note Added: 0003063                          
 ======================================================================
 
 
