@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Radio card and sound card?
-Date: Tue, 29 Apr 2003 16:53:00 +0200 (CEST)
+From: Nathaniel Gray <n8gray@caltech.edu>
+Subject: Re: Problems playing with intel8x0 [long]
+Date: Tue, 29 Apr 2003 10:56:21 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0304291652160.15946-100000@pnote.perex-int.cz>
-References: <Pine.LNX.4.44.0304300026130.1205-100000@home.aussec.com>
+Message-ID: <200304291056.21280.n8gray@caltech.edu>
+References: <200304281542.54340.n8gray@caltech.edu> <s5hllxty7yc.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0304300026130.1205-100000@home.aussec.com>
+In-Reply-To: <s5hllxty7yc.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,32 +19,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tom burkart <alsa@aussec.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 30 Apr 2003, tom burkart wrote:
+On Tuesday 29 April 2003 02:22 am, Takashi Iwai wrote:
+> At Mon, 28 Apr 2003 15:42:54 -0700,
+>
+> Nathaniel Gray wrote:
+> > The intel8x0 driver has a bad habit of going into an infinite loop
+> > and consuming 100% cpu when I try to play certain sound files.  I
+> > think it has trouble with non-standard sample rates.  It will
+> > handle 44100, 22050, and 11025, but KDE ships some samples with
+> > weird rates like 7418, 11127 and 22254, and if I try to play these
+> > with, for example, aplay, I get the loop.
+>
+> which version are you using?
+> there WAS a bug in this regard but i believe it was fixed in the
+> recent version.
 
-> Hi there,
-> I have been asked by Innes Corp <http://www.innescorp.com.au/> to write
-> some drivers for their professional radio capture cards.
-> 
-> The real issue is as follows:  They are radio cards so really it should be
-> written as a V4L driver.  Yet they have only digital outputs (on the PCI
-> bus).  So they are really very fancy sound cards.
-> There is no single API that adequadely covers all aspects of their
-> operation.
-> 
-> What am I missing?  Any ideas on how to proceed?
+Was it a driver bug or an application bug?  I found that I could play 
+the samples with "play" but not with xmms or aplay.
 
-Tuner settings using V4L and stream capture using ALSA API?
+I'm using 0.9.0rc7.  (Stock Mandrake 9.1)
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Cheers,
+-n8
+-- 
+>>>-- Nathaniel Gray -- Caltech Computer Science ------>
+>>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
 
 
 
