@@ -1,13 +1,9 @@
-From: "Jack O'Quin" <joq@io.com>
-Subject: Re: 2.6.0-test11
-Date: 01 Dec 2003 13:49:08 -0600
+From: Juhana Sadeharju <kouhia@nic.funet.fi>
+Subject: emufx.c bug/LiveDrive capture is finally working
+Date: Mon, 1 Dec 2003 21:51:00 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87smk4pbd7.fsf@sulphur.joq.us>
-References: <Pine.HPX.4.33n.0312011002010.24218-100000@studcom.urz.uni-halle.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <S31578AbTLATvA/20031201195101Z+6734@nic.funet.fi>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0312011002010.24218-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,42 +12,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello. Good news: LiveDrive line-in2 capture is working!
+Earlier I could record only via AC97 Capture which apparently
+is the wrong way.
 
-> Apostolos Dimitromanolakis wrote:
-> > I noticed that the newest alsa driver has not yet found it's way to the
-> > 2.6 kernel tree.. I hope it does before the official 2.6.0 release.
+As instructed by Peter Zubaj I changed 
+  alsa-driver/alsa-kernel/pci/emu10k1/emufx.c
+in the following way (with 1.0.0pre3 driver):
 
-These lists naturally contain lots of messages about things not
-working.  So, I'd like to report that my experience with 2.6.0-test11
-and ALSA was completely successful.  I downloaded the sources,
-configured them, selected my ALSA drivers, compiled, installed,
-rebooted, and (*gasp*) everything worked fine!
+"Line LiveDrive Playback Volume" --> "Line2 LiveDrive Playback Volume"
+"Line LiveDrive Capture Volume"  --> "Line2 LiveDrive Capture Volume"
+"Line LiveDrive Capture Switch"  --> "Line2 LiveDrive Capture Switch"
 
-So, a big "well done" to the ALSA developers.  This is significant
-milestone, years in the making.  You deserve all our thanks.
+The change was done in the place where EXTIN_LINE2_L and EXTIN_LINE2_R
+are used.
 
-Clemens Ladisch <clemens@ladisch.de> writes:
+Now the recording is possible with the settings:
+  AC97 Capture: 0        // Note this!
+  PCM: 100
+  Capture: 0 <no rec>
+  Mix: <rec>
 
-> It has been too late for anything but important bugfixes quite some
-> time now.  The latest ALSA won't be in 2.6.0, but in 2.6.1.
-> 
-> Linus wrote in the -test11 announcement:
-> | Please don't even bother sending me patches, because I'll be
-> | stuffing my face away from email over the next few days. And after
-> | that it will be up to Andrew to say how to go on from here.
+However, there is now LiveDrive naming problem as the LiveDrive settings
+are the following for recording the "line-in2/mic-in2" plug:
+  Line LiveDrive: 100 <rec>
+  Line LiveDrive Capture: 100
+  Line2 LiveDrive: 0              // should be "Capture"
+  Line2 LiveDrive 1: 0 <no rec>   // what is that "1"
 
-Linus is right about this.  Problems in ALSA can be fixed in CVS and
-released in 2.6.[12345].  No one should get hung up by that.  Right
-now, 2.6.0 needs stability.
+As one can see "Line" is the "line-in2" plug, and "Line2" is the
+"aux-in2" plug as revealed by a quick test.
+
+The above list should look the following:
+  Line2/Mic2 LiveDrive: 100 <rec>      // was Line LiveDrive
+  Line2/Mic2 LiveDrive Capture: 100    // was Line LiveDrive Capture
+  Aux2 LiveDrive: 0 <no rec>           // was Line2 LiveDrive 1
+  Aux2 LiveDrive Capture: 0            // was Line2 LiveDrive
+
+I would like to provide a patch, but I don't know why "Capture" was
+dropped and "1" was added in above. In any case, one may fix the code
+by noting that EXTIN_LINE1 is "Line2/Mic2" and EXTIN_LINE2 is "Aux2".
+
+ -*-
+
+Wow! It made sense to post about the problem until somebody noticed
+what was wrong. I waited for this nearly 1.5 years!
+
+Now we should look at why LiveDrive "midi-in" does not work.
+It looks like there is no driver for it. There seem to be only
+a driver for the midi at the rear panel.
 
 Regards,
--- 
-  Jack O'Quin
-  Austin, Texas
-
+Juhana
 
 
 -------------------------------------------------------
