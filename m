@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000443]: OSS emulation and nonblocking write to /dev/dsp
-Date: Tue, 9 Nov 2004 16:17:11 +0100
-Message-ID: <05cd272efe480428accacbe536f21b71@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000379]: necessary file backed out in update 3 months ago
+Date: Tue, 9 Nov 2004 16:15:40 +0100
+Message-ID: <50ce251bccf88041c3586b8cbeb4cd8c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 57A1D244
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:17:11 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB8B7244
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:15:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=443> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=379> 
 ======================================================================
-Reported By:                serge
+Reported By:                ndbusek
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   443
-Category:                   CORE OSS - pcm
+Issue ID:                   379
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
@@ -41,47 +41,50 @@ Kernel Version:
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-15-2004 12:19 CEST
-Last Modified:              11-09-2004 16:17 CET
+Date Submitted:             07-13-2004 03:38 CEST
+Last Modified:              11-09-2004 16:15 CET
 ======================================================================
-Summary:                    OSS emulation and nonblocking write to /dev/dsp
+Summary:                    necessary file backed out in update 3 months ago
 Description: 
-When you open '/dev/dsp' in nonblocking mode (O_NONBLOCK) and write too
-much data to it, it seems that write operation always returns success and
-pretends that all data was written. But calls to ioctl(oss_fd,
-SNDCTL_DSP_GETOSPACE, &bufinfo) start returning weird information. Test
-program that reproduces the bug is attached.
+compiling vxp440.c fails with 
+vxpocket.c: File not found
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000368 vxpocket.c missing from 1.0.5 releases
 ======================================================================
 
 ----------------------------------------------------------------------
- serge - 08-26-04 19:54 
+ perex - 09-07-04 16:35 
 ----------------------------------------------------------------------
-Just tested and reproduced the same problem on 'snd-intel8x0' (nforce2
-chipset), so this is not 'snd-via82xx' specific (KT133A chipset). Please
-anybody replace the summary of this bug with 'OSS emulation & nonblocking
-write to /dev/dsp'.
+This patch will solve your problem.
 
-----------------------------------------------------------------------
- perex - 09-07-04 16:38 
-----------------------------------------------------------------------
-Confirmed. Fixed in current ALSA CVS tree.
+Index: Makefile
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/pcmcia/vx/Makefile,v
+retrieving revision 1.10
+retrieving revision 1.11
+diff -u -r1.10 -r1.11
+--- Makefile    7 Apr 2004 17:53:41 -0000       1.10
++++ Makefile    7 Sep 2004 14:33:48 -0000       1.11
+@@ -14,4 +14,5 @@
+ include $(SND_TOPDIR)/Rules.make
+ 
+ vxpocket.c: vxpocket.patch
+$(SND_TOPDIR)/alsa-kernel/pcmcia/vx/vxpocket.c
++vxp440.c: vxpocket.c
+ vx_entry.c: vx_entry.patch vx_entry.inc vx_entry.inc1
+$(SND_TOPDIR)/alsa-kernel/pcmcia/vx/vx_entry.c
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-15-04 12:19 serge          New Issue                                    
-08-15-04 12:19 serge          File Added: oss-bug.cpp                      
-08-15-04 12:26 serge          Issue Monitored: serge                       
-08-26-04 19:54 serge          Note Added: 0001635                          
-08-27-04 14:01 Clemens LadischSummary                  OSS emulation on
-'snd-via82xx' & nonblocking write to /dev/dsp => OSS emulation and nonblocking
-write to /dev/dsp
-08-29-04 12:26 perex          Status                   new => assigned     
-08-29-04 12:26 perex          Assigned To               => perex           
-09-07-04 16:38 perex          Status                   assigned => resolved
-09-07-04 16:38 perex          Resolution               open => fixed       
-09-07-04 16:38 perex          Note Added: 0001713                          
-11-09-04 16:17 tiwai          Status                   resolved => closed  
+07-13-04 03:38 ndbusek        New Issue                                    
+09-07-04 16:35 perex          Status                   assigned => resolved
+09-07-04 16:35 perex          Resolution               open => fixed       
+09-07-04 16:35 perex          Note Added: 0001709                          
+09-07-04 16:40 perex          Relationship added       has duplicate 0000368
+11-09-04 16:15 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
