@@ -1,14 +1,10 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] ALSA sound/pcmcia/pdaudiocf/pdaudiocf_core.c: make some code static
-Date: Mon, 22 Nov 2004 00:58:53 +0100
-Message-ID: <20041121235853.GH13254__11970.7059966915$1101082142$gmane$org@stusta.de>
+From: "Andreas Fenkart" <afenkart@gmx.ch>
+Subject: Patch,
+Date: Mon, 22 Nov 2004 00:58:51 +0100 (MET)
+Message-ID: <7979.1101081531@www9.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="========GMXBoundary79791101081531"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 2B6FA271
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 00:58:54 +0100 (MET)
-Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,52 +14,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The patch below makes some needlessly global code static.
+This is a MIME encapsulated multipart message -
+please use a MIME-compliant e-mail program to open it.
 
+Dies ist eine mehrteilige Nachricht im MIME-Format -
+bitte verwenden Sie zum Lesen ein MIME-konformes Mailprogramm.
 
-diffstat output:
- sound/pcmcia/pdaudiocf/pdaudiocf.h      |    2 --
- sound/pcmcia/pdaudiocf/pdaudiocf_core.c |    4 ++--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+--========GMXBoundary79791101081531
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
+Hi list
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+My gnomemeeting hung when accessing the microphone.
+The problem was that the rate variable was not initialized when jumping to
+the __partial label.
 
---- linux-2.6.10-rc2-mm2-full/sound/pcmcia/pdaudiocf/pdaudiocf.h.old	2004-11-21 23:57:28.000000000 +0100
-+++ linux-2.6.10-rc2-mm2-full/sound/pcmcia/pdaudiocf/pdaudiocf.h	2004-11-21 23:57:46.000000000 +0100
-@@ -130,8 +130,6 @@
- 	return inw(chip->port + reg);
- }
- 
--unsigned char pdacf_ak4117_read(void *private_data, unsigned char reg);
--void pdacf_ak4117_write(void *private_data, unsigned char reg, unsigned char val);
- pdacf_t *snd_pdacf_create(snd_card_t *card);
- int snd_pdacf_ak4117_create(pdacf_t *pdacf);
- void snd_pdacf_powerdown(pdacf_t *chip);
---- linux-2.6.10-rc2-mm2-full/sound/pcmcia/pdaudiocf/pdaudiocf_core.c.old	2004-11-21 23:57:54.000000000 +0100
-+++ linux-2.6.10-rc2-mm2-full/sound/pcmcia/pdaudiocf/pdaudiocf_core.c	2004-11-21 23:58:10.000000000 +0100
-@@ -28,7 +28,7 @@
- /*
-  *
-  */
--unsigned char pdacf_ak4117_read(void *private_data, unsigned char reg)
-+static unsigned char pdacf_ak4117_read(void *private_data, unsigned char reg)
- {
- 	pdacf_t *chip = private_data;
- 	unsigned long timeout;
-@@ -60,7 +60,7 @@
- 	return res;
- }
- 
--void pdacf_ak4117_write(void *private_data, unsigned char reg, unsigned char val)
-+static void pdacf_ak4117_write(void *private_data, unsigned char reg, unsigned char val)
- {
- 	pdacf_t *chip = private_data;
- 	unsigned long timeout;
+Greetings
+
+Andreas
+
+-- 
+NEU +++ DSL Komplett von GMX +++ http://www.gmx.net/de/go/dsl
+GMX DSL-Netzanschluss + Tarif zum supergünstigen Komplett-Preis!
+--========GMXBoundary79791101081531
+Content-Type: text/x-patch; name="grab_period.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="grab_period.patch"
+
+LS0tIGFsc2EtbGliLTEuMC42L3NyYy9wY20vcGNtX3JhdGUuYwkyMDA0LTA4LTA5IDA4OjMxOjQx
+LjAwMDAwMDAwMCArMDIwMAorKysgL21udC9pY2Uvc3JjL2Fsc2EtbGliLTEuMC42L3NyYy9wY20v
+cGNtX3JhdGUuYwkyMDA0LTExLTIyIDAyOjUzOjEzLjAwMDAwMDAwMCArMDEwMApAQCAtMTA4Miw3
+ICsxMDgyLDYgQEAgc3RhdGljIGludCBzbmRfcGNtX3JhdGVfZ3JhYl9uZXh0X3BlcmlvZAogCQkJ
+cmV0dXJuIDA7CiAJCX0KIAl9IGVsc2UgewotCQlzbmRfcGNtX3JhdGVfdCAqcmF0ZSA9IHBjbS0+
+cHJpdmF0ZV9kYXRhOwogCQlzbmRfcGNtX3VmcmFtZXNfdCB4ZmVyOwogCiAJCS8qIG9rLCBncmFi
+IGZpcnN0IGZyYWdtZW50ICovCg==
+
+--========GMXBoundary79791101081531--
 
 
 
