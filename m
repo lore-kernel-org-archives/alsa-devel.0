@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000618]: Can not play sound or no sound output
-Date: Sun, 31 Oct 2004 04:39:30 +0100
-Message-ID: <1edb74928c6b006925708de3b56d4b57@bugtrack.alsa-project.org>
+Date: Sun, 31 Oct 2004 05:28:28 +0100
+Message-ID: <cc3bea63541ae0989cc1c582d436c473@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B52B12B5
-	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2004 04:39:30 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C3C902C3
+	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2004 05:28:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=618> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Mandrake 9, Mandrake 10, Slackware 10
 Kernel Version:             2.4.19, 2.6.8, 2.4.26
 ======================================================================
 Date Submitted:             10-31-2004 04:39 CET
-Last Modified:              10-31-2004 04:39 CET
+Last Modified:              10-31-2004 05:28 CET
 ======================================================================
 Summary:                    Can not play sound or no sound output
 Description: 
@@ -357,6 +357,19 @@ I selected /dev/dsp1 and /dev/mixer1 but no sound.
 I woud apreciate that someone fixes this ASAP.
 ======================================================================
 
+----------------------------------------------------------------------
+ ungod - 10-31-04 05:28 
+----------------------------------------------------------------------
+First of all, have you tried the 1.0.7rc2 drivers (or the CVS)? There have
+been made significant changes, which impacts the Prodigy 7.1 driver.
+
+As for DAC/ADC, these control elements still exists, however under
+different names, such as Front,Rear,Center/LFE,Side and Capture
+
+And have you tried actually playing back directly with ALSA? That is,
+using aplay og selecting ALSA as output plugin. The /dev/dsp1 and
+/dev/mixer1 devices are OSS devices
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -364,6 +377,7 @@ Date Modified  Username       Field                    Change
 10-31-04 04:39 Electro        Distribution              => Mandrake 9, Mandrake
 10, Slackware 10
 10-31-04 04:39 Electro        Kernel Version            => 2.4.19, 2.6.8, 2.4.26
+10-31-04 05:28 ungod          Note Added: 0002292                          
 ======================================================================
 
 
