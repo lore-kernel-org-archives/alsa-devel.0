@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
-Date: Wed, 19 Jan 2005 16:50:27 +0100
-Message-ID: <8db5e620f8daa489b97870191bfd7681@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000703]: alsa-driver-1.0.7 compile error dealing with 'remap_page_range'
+Date: Wed, 19 Jan 2005 16:50:48 +0100
+Message-ID: <66ce3aa6b4b6de7f8801de8688e9fa14@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 848F726D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:50:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8AB1B26D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:50:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,100 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=703> 
 ======================================================================
-Reported By:                brentcfisher
-Assigned To:                
+Reported By:                Nsane457
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   671
-Category:                   PCI - via82xx
+Issue ID:                   703
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.8.1
+Distribution:               Gentoo 2004.3
+Kernel Version:             linux-2.6.9-nitro4 (also tried mm-sources and
+gentoo-dev-sources)
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-24-2004 06:36 CET
+Date Submitted:             12-03-2004 21:00 CET
 Last Modified:              01-19-2005 16:50 CET
 ======================================================================
-Summary:                    ALSA sound cuts out w/ message: ALSA
-sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Summary:                    alsa-driver-1.0.7 compile error dealing with
+'remap_page_range'
 Description: 
-Particularily noticeable when watching a DVD via xine using AC3 Pass
-Through.  Sound will cut out momentarily (usually for no more than a
-second).  The skip is always accompanied by multiples of this message in
-the /var/log/messages file:
-
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-
-These messages appear in the log file once or twice a minute although the
-sound only noticable cuts out every few minutes .  Very annoying on an
-HTPC.
+Since I have a crappy OEM Dell SBLive! soundcard I can't use the emu10k1
+module.  I need the emu10k1x module which is now supported in alsa but not
+in any kernel.  I followed the instructions from
+http://gentoo-wiki.com/HOWTO_ALSA_sound_mixer_aka_dmix .  But no matter
+what it won't compile. I changed the ALSA_CARDS variable to other cards,
+and just one card, and it won't work.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-16-04 18:23 
+ Nsane457 - 12-07-04 06:47 
 ----------------------------------------------------------------------
-Thanks for confirmation.  I apply the patch to CVS now.
-Let's resolve this issue as FIXED.
+I got it to compile effectively with a generic kernel configuration. It
+seems that this is the only way.  Even if I configure the kernel with
+sound support and/or alsa support and/or all the alsa options and drivers
+it doesn't compile.  But if I use a generic kernel config offered by
+"genkernel all" and the compile the alsa-driver it works. And after it
+compiles the driver it seems to recompile correctly afterwards,  no matter
+what config I used.  So for now I just used a generic config to compile
+the kernel, compiled alsa-driver, erased kernel, erased modules (but kept
+the alsa modules), recompiled kernel with my own config (same kernel type,
+however) and it works. Thanx.
 
 ----------------------------------------------------------------------
- tiwai - 12-16-04 18:25 
+ tiwai - 12-16-04 18:43 
 ----------------------------------------------------------------------
-Oops, I found that I already did apply the change together with another
-fix.
-So, the fixed version is already in the CVS ;)
+Resolved as FIXED.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 06:36 brentcfisher   New Issue                                    
-11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
-11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
-11-24-04 06:47 brentcfisher   Note Added: 0002541                          
-11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
-11-24-04 23:50 squarooticus   Note Added: 0002584                          
-11-25-04 01:59 brentcfisher   Note Added: 0002585                          
-11-25-04 06:45 squarooticus   Note Added: 0002586                          
-12-02-04 19:34 tiwai          Note Added: 0002694                          
-12-06-04 02:24 brentcfisher   Note Added: 0002725                          
-12-07-04 18:24 tiwai          Note Added: 0002753                          
-12-07-04 18:24 tiwai          File Added: via-pointer-fix.diff                  
- 
-12-08-04 05:03 brentcfisher   Note Added: 0002774                          
-12-08-04 12:13 tiwai          Note Added: 0002779                          
-12-08-04 16:33 brentcfisher   Note Added: 0002786                          
-12-08-04 16:35 tiwai          Note Added: 0002787                          
-12-08-04 16:36 tiwai          File Added: via-pointer-fix2.diff                 
-  
-12-08-04 17:02 brentcfisher   Note Added: 0002789                          
-12-09-04 15:35 tiwai          Note Added: 0002803                          
-12-09-04 15:35 tiwai          File Added: via-pointer-fix3.diff                 
-  
-12-10-04 16:59 brentcfisher   Note Added: 0002807                          
-12-11-04 23:30 brentcfisher   Note Added: 0002812                          
-12-12-04 03:14 squarooticus   Issue Monitored: squarooticus                    
-12-12-04 03:14 squarooticus   Issue End Monitor: squarooticus                   
-
-12-15-04 16:13 tiwai          Note Added: 0002827                          
-12-15-04 16:13 tiwai          File Added: via-pointer-fix4.diff                 
-  
-12-16-04 17:53 brentcfisher   Note Added: 0002831                          
-12-16-04 18:23 tiwai          Status                   new => resolved     
-12-16-04 18:23 tiwai          Resolution               open => fixed       
-12-16-04 18:23 tiwai          Assigned To               => tiwai           
-12-16-04 18:23 tiwai          Note Added: 0002833                          
-12-16-04 18:23 tiwai          Assigned To              tiwai =>            
-12-16-04 18:25 tiwai          Note Added: 0002834                          
+12-03-04 21:00 Nsane457       New Issue                                    
+12-03-04 21:00 Nsane457       File Added: 2299-alsa-driver-1.0.7-r1.log         
+          
+12-03-04 21:00 Nsane457       Distribution              => Gentoo 2004.3   
+12-03-04 21:00 Nsane457       Kernel Version            => linux-2.6.9-nitro4
+(also tried mm-sources and gentoo-dev-sources)
+12-03-04 21:03 Nsane457       File Added: straceinfo.log                    
+12-03-04 21:11 rlrevell       Note Added: 0002713                          
+12-04-04 00:53 eradicator     Note Added: 0002714                          
+12-04-04 00:53 eradicator     Issue Monitored: eradicator                    
+12-06-04 11:01 Nsane457       Note Added: 0002726                          
+12-06-04 20:51 tiwai          Note Added: 0002731                          
+12-06-04 21:51 eradicator     Note Added: 0002736                          
+12-07-04 06:47 Nsane457       Note Added: 0002746                          
+12-16-04 18:43 tiwai          Status                   assigned => resolved
+12-16-04 18:43 tiwai          Resolution               open => fixed       
+12-16-04 18:43 tiwai          Note Added: 0002839                          
 01-19-05 16:50 tiwai          Status                   resolved => closed  
 ======================================================================
 
