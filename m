@@ -1,15 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: New PCM API extension
-Date: Sun, 23 Feb 2003 16:01:52 -0500
+From: Drake Wilson <drake@libcom.com>
+Subject: 0.9 sequencer interface documentation
+Date: Sun, 23 Feb 2003 16:37:35 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200302232100.WAA06673@alsa.alsa-project.org>
-References: <3E591FD3.5DA500C5@libero.it>
+Message-ID: <20030223163735.A1607@octothorpe.dyndns.org>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail09.voicenet.com (mail09.voicenet.com [207.103.0.43])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id WAA06673
-	for <alsa-devel@alsa-project.org>; Sun, 23 Feb 2003 22:00:10 +0100
-In-reply-to: Your message of "Sun, 23 Feb 2003 20:24:03 +0100."
-             <3E591FD3.5DA500C5@libero.it>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,34 +16,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Abramo Bagnara <abramo.bagnara@libero.it>
-Cc: Jaroslav Kysela <perex@suse.cz>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->> where the buffer is auto-silenced that they need to write samples into the
->> specific position. Reset is nice, but you cannot tell the count of frames
->> to be skipped without filling.
->
->However I think that auto-silence is not the best thing we've designed.
->
->We're using an interrupt handler to do what a rt-like user space process
->should do.
->
->We'd have many things that might be solvable (like saturation in dmix by
->example) in this way, but we've (rightly) choosen not to do it to
->respect the general principle "never do in kernel space what is doable
->in user space".
->
->Sometimes I think that auto silence is an unfortunate exception and I'd
->prefer we'd try to move in the opposite direction.
 
-i think that its similar to the discussion we had 2 weeks ago about
-callbacks abramo. alsa-lib could provide functions to do auto-silence,
-but the question remains: where and when are they called? the kernel
-provides a clearly defined point of control where this can happen if
-the user has asked for it and its needed. trying to do it in user
-space is clearly a nicer idea, but its hard to see where it should
-happen, or how to make sure it does happen if it has been requested.
+--WIyZ46R2i8wDzkSu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+There isn't much, is there?
+
+Say I want to open 64:0 for reading and writing, in a queue-timed
+fashion.  What do I do?  seq_snd_open to get the sequencer handle,
+presumably -- then what?  I can't figure it out, and looking at the
+sources of existing programs doesn't seem to help all that much.
+
+   ---> Drake Wilson
+
+
+--WIyZ46R2i8wDzkSu
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE+WT8f1fuSPH+onEsRAoMTAKDj8St6LYmnZJ8ohs2FufABYgrK6gCdFxk6
+XVEYpV9m519zLjfgZVx0Ll0=
+=ByXn
+-----END PGP SIGNATURE-----
+
+--WIyZ46R2i8wDzkSu--
+----------------
+[Virus Scanned by Libcom]
+[Libcom: The only true $9.95 Unlimited Service in Pittsburgh]
+
 
 
 -------------------------------------------------------
