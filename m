@@ -1,18 +1,13 @@
-From: "polar express movie" <pckicosjlsavmy@de.kaercher.com>
-Subject: Download christmas music -isochronous cross
-Date: Sun, 26 Dec 2004 11:04:49 +0500
-Message-ID: <5726ek93kx4052$5883319$kx24a2@Glenxs72swh782bk16pqo>
+From: "Lorenzo M. Catucci" <lorenzo@sancho.ccd.uniroma2.it>
+Subject: intel8x0m doesn't work on acer tm 8000 centrino notebook
+Date: Sun, 26 Dec 2004 14:10:36 +0100
+Message-ID: <200412261410.36484.lorenzo@sancho.ccd.uniroma2.it>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--37986655540547173"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 68-174-71-142.ucwphilly.rr.com (68-174-71-142.ucwphilly.rr.com [68.174.71.142])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id B5D522AB
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 07:06:38 +0100 (MET)
-Received: from Glenuaa9nc72y622p (76.71.31.208) by bvxdy876.gmx.net
-          (InterMail vM.5.01.06.05 987-808-219-727-437-969952) with SMTP
-          id <4083546257591.OQX173.numbnfj675185.gmx.net@fructifyvy592m483b4tf>
-          for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 05:04:49 -0100
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-----37986655540547173
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+Subject says it all, I tried both in-kernel (2.6.10) alsa drivers and 
+1.0.8rc1, and I'm still getting those dreaded
 
-Hello
+Dec 26 13:54:21 ronzinante kernel:
+   ALSA /mnt/virtuals/uml/alsa-driver-1.0.8rc1/alsa-kernel/pci/intel8x0m.c:402:
+   codec_semaphore: semaphore is not ready [0x1][0x701300]
+Dec 26 13:54:21 ronzinante kernel:
+   ALSA /mnt/virtuals/uml/alsa-driver-1.0.8rc1/alsa-kernel/pci/intel8x0m.c:417:
+   codec_write 1: semaphore is not ready for register 0x54
 
-Un limited
-Music and MP 3 songs
-Movies
-Games
-Software
-TV Shows
-Song Lyrics
-Audio Books
+syslog messages when trying to use slmodem:
 
-Download anything you could possibly want 
-in three simple, fast, and easy steps
-START DOWNLOADING NOW
-This service is Safe, Secure and Legal
+# slmodemd --alsa modem:1
+SmartLink Soft Modem: version 2.9.10 Nov 27 2004 16:36:26
+symbolic link `/dev/ttySL0' -> `/dev/pts/3' created.
+modem `modem:1' created. TTY is `/dev/pts/3'
+Use `/dev/ttySL0' as modem device, Ctrl+C for termination.
 
-http://www.citywidedownloads.com/news.html
+on the minicom console I try 
 
-If you are a beginner, no need to worry,
-we will show you how to do it from start to finish
-We have made it so easy, you will be downloading anything 
-you could possibly want  
-This Service Comes with
+ati2
+SmartLink Soft Modem, 2.9.10
+Smart Link Ltd.
+OK
 
-More  Bonuses
+and then 
+atdt 06 555 5555
+NO DIALTONE
 
-DVD Copying Software
-MP3 Burning Software
-Anti-Virus Software
-Game Copying Software
-Pop-Up, Spyware, Adware Killer Software
-
-http://www.citywidedownloads.com/news.html
-
-Even More Benefits : 
-
-Latest FileSharing Software
-In-Depth Visual Tutorials
-Internet History Cleaner
-Privacy Protection Software
-Access to 90000000 Songs
-Unlimited Technical Support
-Stay Legal  Do not Get Sued
-
-
-Lifetime Membership is $34.95
-Check out to Join Now and Start Downloading in Minutess
-
-http://www.citywidedownloads.com/news.html
-
-
-Regards
-Glen Piper
-Affilate Manager
-Multimedia Download Center
-
-----37986655540547173--
-
+and the above mentioned messages in syslog.
 
 
 -------------------------------------------------------
