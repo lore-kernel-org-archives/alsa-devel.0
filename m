@@ -1,17 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Problem with www.alsa-project.org web site.
-Date: Tue, 10 Aug 2004 12:26:26 +0100
+From: Matthias Nagorni <mana@suse.de>
+Subject: Edirol UA-25
+Date: Tue, 10 Aug 2004 14:36:24 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4118B0E2.80302@superbug.demon.co.uk>
-References: <4118A730.1050304@superbug.demon.co.uk> <Pine.LNX.4.58.0408101258560.1779@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.58.0408101424520.17110@wotan.suse.de>
+References: <20040810103809.GB6622@schurger.org>
+ <Pine.LNX.4.58.0408101316180.1779@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-37.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6FBC217B
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 13:26:33 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.58.0408101258560.1779@pnote.perex-int.cz>
+In-Reply-To: <Pine.LNX.4.58.0408101316180.1779@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,38 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Tue, 10 Aug 2004, James Courtier-Dutton wrote:
-> 
-> 
->>The real ALSA project web site is http://www.alsa-project.org/
->>
->>There appears to now be a FAKE alsa project web site
->>http://www.alsaproject.org/
->>
->>The only difference being the "-" sign.
->>
->>I think that in the intrests of users, we should fight to get ownership 
->>of alsaproject.org.
->>
->>Any comments?
-> 
-> 
-> 
-> It seems like that the ALSA project web name is used to increase adverts 
-> for an Italian company.
-> 
-> 						Jaroslav
-> 
+Hi,
 
-So, based on that, could we not complain to the appropriate DNS 
-organisation, and get the name for ourselves?
+what is the status regarding ALSA support for the new Edirol UA-25 ? 
+The UA-5, which is the predecessor of UA-25 (and no longer available) 
+is said to run perfectly with Linux. I heard that Edirol takes a lot of 
+care to obey the USB audio specs, so perhaps it works out-of-the-box with 
+ALSA ? It might be that the UA-25 uses USB 2.0. Would this pose any 
+problem ?
 
-James
+Matthias
+
+-- 
+Dr. Matthias Nagorni
+SuSE Linux AG
+Maxfeldstr. 5             phone: +49 911 74053375
+D - 90409 Nuernberg       fax  : +49 911 74053483
+
 
 
 -------------------------------------------------------
