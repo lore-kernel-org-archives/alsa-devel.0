@@ -1,15 +1,15 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: How to put 16bit none audio PCM data stream into
- a 32bit none audio S/P-DIF transport stream?
-Date: Thu, 10 Apr 2003 12:21:38 +0100
+From: Gregoire Favre <greg@ulima.unil.ch>
+Subject: Re: How to put 16bit none audio PCM data stream into a 32bit none audio S/P-DIF transport stream?
+Date: Thu, 10 Apr 2003 13:26:57 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E9553C2.3000100@superbug.demon.co.uk>
-References: <20030408140230.GA1987@ulima.unil.ch>	<E192u0x-0007pF-00@sc8-sf-list1.sourceforge.net>	<s5hn0j1q97r.wl@alsa2.suse.de>	<3E934193.6090605@cucumelo.org>	<20030408205515.GB6940@ulima.unil.ch>	<3E933EF6.5030601@superbug.demon.co.uk>	<3E93C4CA.4080604@cucumelo.org>	<20030409082815.GA14489@ulima.unil.ch>	<s5h65poq65j.wl@alsa2.suse.de>	<20030409114312.GE14489@ulima.unil.ch> <s5h4r57rf1m.wl@alsa2.suse.de>
+Message-ID: <20030410112657.GA2332@ulima.unil.ch>
+References: <s5hn0j1q97r.wl@alsa2.suse.de> <3E934193.6090605@cucumelo.org> <20030408205515.GB6940@ulima.unil.ch> <3E933EF6.5030601@superbug.demon.co.uk> <3E93C4CA.4080604@cucumelo.org> <20030409082815.GA14489@ulima.unil.ch> <s5h65poq65j.wl@alsa2.suse.de> <20030409114312.GE14489@ulima.unil.ch> <s5h4r57rf1m.wl@alsa2.suse.de> <3E9553C2.3000100@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4r57rf1m.wl@alsa2.suse.de>
+Content-Disposition: inline
+In-Reply-To: <3E9553C2.3000100@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,29 +18,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gregoire Favre <greg@ulima.unil.ch>
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Gregoire,
-You say that in windows SPDIF works fine and you get the AC3 decoded by 
-your external decoder.
-Does the decoder have any indicators telling you whether it is an AC3 of 
-PCM stream ?
+On Thu, Apr 10, 2003 at 12:21:38PM +0100, James Courtier-Dutton wrote:
 
-So, in linux, when playing a DVD in PASSTHRU mode in xine, does your 
-decoder think it is AC3 or PCM ?
+Hello James and others ;-)
 
-If the decoder still thinks it is PCM, then the problem is a bug in the 
-alsa-driver, and not the application or sample rate.
-If the decoder thinks it is AC3, then we can look at different problems, 
-like hardware-resamplers in the way.
+> You say that in windows SPDIF works fine and you get the AC3 decoded by=
+=20
+> your external decoder.
+> Does the decoder have any indicators telling you whether it is an AC3 o=
+f=20
+> PCM stream ?
 
-Cheers
-James
+Yes (well, I have an indicator of Dolby Digital).
 
+> So, in linux, when playing a DVD in PASSTHRU mode in xine, does your=20
+> decoder think it is AC3 or PCM ?
 
+PCM...
 
+> If the decoder still thinks it is PCM, then the problem is a bug in the=
+=20
+> alsa-driver, and not the application or sample rate.
+
+I think it's something I have tried to explain here ;-)
+
+	Gr=E9goire
+________________________________________________________________
+http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
 
 
 -------------------------------------------------------
