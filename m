@@ -1,10 +1,11 @@
-From: Albrecht <ag-linux@4usgass.net>
-Subject: strange via8235 problem
-Date: Sun, 14 Dec 2003 06:09:33 +0000
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: usb midi devices.
+Date: Sun, 14 Dec 2003 18:32:58 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1071382173.3fdbfe9d5091f@www.4usgass.net>
+Message-ID: <3FDC2E4A.2050105@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="-MOQ1071382173e4f6a91e933b14a7f946940e0377b2ef"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,220 +18,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message is in MIME format.
-
----MOQ1071382173e4f6a91e933b14a7f946940e0377b2ef
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-
-Hey,
-
-I have a very strange sound problem using my via p4pb400 motherboard that use a
-via vt8235 southbridge running Suse 9.0 (kernel 2.4.21-144).
-
-I have to run 3-4 aplay apps simultaniously to hear sound, my computer is
-connected to my sound system using an optical link. I am currently using alsa
-1.0rc2 since I had the same problem with 0.9.8.
-I enabled APIC by specifying "apic" in the kernel options in grub, without that
-setting I was not able to hear any sound.
-
-this is my options line from /etc/modules.conf
-options snd-via82xx ac97_clock=48000 enable=1 index=0 id=ac97 dxs_support=0
-
-I can only hear any sound with dxs_support values of 0,1,3,4 -- 2 does not work
-at all.
-
-lspci -vv reports:
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233/A/8235 AC97
-Audio Controller (rev 50)
-        Subsystem: VIA Technologies, Inc.: Unknown device b003
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr-
-Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin C routed to IRQ 22
-        Region 0: I/O ports at e800 [size=256]
-        Capabilities: [c0] Power Management version 2
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-I think ther are no more IRQ conflicts since cat /proc/interrupts returns:
-home:/tmp # cat /proc/interrupts
-           CPU0
-  0:     695489    IO-APIC-edge  timer
-  1:      10996    IO-APIC-edge  keyboard
-  2:          0          XT-PIC  cascade
-  8:          2    IO-APIC-edge  rtc
-  9:          0   IO-APIC-level  acpi
- 12:      67545    IO-APIC-edge  PS/2 Mouse
- 14:      23791    IO-APIC-edge  ide0
- 15:     109665    IO-APIC-edge  ide1
- 17:          2   IO-APIC-level  ohci1394
- 18:       4371   IO-APIC-level  eth0
- 21:          0   IO-APIC-level  ehci_hcd, usb-uhci, usb-uhci, usb-uhci
- 22:       3741   IO-APIC-level  VIA8233
-NMI:          0
-LOC:     695423
-ERR:          0
-MIS:          0
-
-The content of /etc/asound.conf is as follows:
-pcm.via82xx {
-type hw
-card 0
-}
-
-ctl.via82xx {
-type hw
-card 0
-}
-
-Attached is the content of all files under /proc/asound.
-
-Any help in resolving this problem would be greatly appreciated.
-
-Albrecht
+Could someone send me a list of all the usbmidi devices that require 
+firmware to be inserted. I am redesigning the docs for these cards.
 
 
----MOQ1071382173e4f6a91e933b14a7f946940e0377b2ef
-Content-Type: text/plain; name="proc.asound.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="proc.asound.txt"
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
-LS0tPiAvcHJvYy9hc291bmQvY2FyZDAvaWQgPC0tLQphYzk3Ci0tLT4gL3Byb2MvYXNvdW5kL2Nh
-cmQwL3ZpYTgyeHggPC0tLQpWSUEgODIzNSBhdCAweGU4MDAsIGlycSAyMgoKMDA6IDAwMDAwMDAw
-CjA0OiAxMzQxMDAwMAowODogZmYzZmZmZmYKMGM6IDAwMDAwMDAwCjEwOiAwMDAwMDAwMAoxNDog
-MTQyYWIwMDAKMTg6IGZmM2ZmZmZmCjFjOiAwMDAwMDAwMAoyMDogMDAwMDAwMDAKMjQ6IDEyZTc0
-MDAwCjI4OiBmZjNmZmZmZgoyYzogMDAwMDAwMDAKMzA6IDAwMDAwMDAwCjM0OiAxNzQzNzAwMAoz
-ODogZmYzZmZmZmYKM2M6IDAwMDAwMDAwCjQwOiAwMDAwMDAwMAo0NDogMTY2ZjMwMDAKNDg6IGZm
-MDAwMDIxCjRjOiAwMDAwMDAwMAo1MDogMDAwMDAwMDAKNTQ6IDAwMDAwMDAwCjU4OiAwMDAwMDAw
-MAo1YzogMDAwMDAwMDAKNjA6IDAwMDAwMDAwCjY0OiAwMDAwMDAwMAo2ODogZmYwMDAwMDAKNmM6
-IDAwMDAwMDAwCjcwOiAwMDAwMDAwMAo3NDogMDAwMDAwMDAKNzg6IGZmMDAwMDAwCjdjOiAwMDAw
-MDAwMAo4MDogMzIyY2JiODAKODQ6IDAwMDAwMDAwCjg4OiAwMDAwMDAwMAo4YzogMDAwMDAwMDAK
-OTA6IDAwMDBjYzAxCjk0OiAwMDAwMDAwMAo5ODogMDAwMDA4MDAKOWM6IDAwMDAwMDAwCi0tLT4g
-L3Byb2MvYXNvdW5kL2NhcmQwL3BjbTFjL3N1YjAvcHJlYWxsb2MgPC0tLQo2NAotLS0+IC9wcm9j
-L2Fzb3VuZC9jYXJkMC9wY20xYy9zdWIwL3N0YXR1cyA8LS0tCmNsb3NlZAotLS0+IC9wcm9jL2Fz
-b3VuZC9jYXJkMC9wY20xYy9zdWIwL3N3X3BhcmFtcyA8LS0tCmNsb3NlZAotLS0+IC9wcm9jL2Fz
-b3VuZC9jYXJkMC9wY20xYy9zdWIwL2h3X3BhcmFtcyA8LS0tCmNsb3NlZAotLS0+IC9wcm9jL2Fz
-b3VuZC9jYXJkMC9wY20xYy9zdWIwL2luZm8gPC0tLQpjYXJkOiAwCmRldmljZTogMQpzdWJkZXZp
-Y2U6IDAKc3RyZWFtOiBDQVBUVVJFCmlkOiBWSUEgODIzNQpuYW1lOiBWSUEgODIzNQpzdWJuYW1l
-OiBzdWJkZXZpY2UgIzAKY2xhc3M6IDAKc3ViY2xhc3M6IDAKc3ViZGV2aWNlc19jb3VudDogMQpz
-dWJkZXZpY2VzX2F2YWlsOiAxCi0tLT4gL3Byb2MvYXNvdW5kL2NhcmQwL3BjbTFjL2luZm8gPC0t
-LQpjYXJkOiAwCmRldmljZTogMQpzdWJkZXZpY2U6IDAKc3RyZWFtOiBDQVBUVVJFCmlkOiBWSUEg
-ODIzNQpuYW1lOiBWSUEgODIzNQpzdWJuYW1lOiBzdWJkZXZpY2UgIzAKY2xhc3M6IDAKc3ViY2xh
-c3M6IDAKc3ViZGV2aWNlc19jb3VudDogMQpzdWJkZXZpY2VzX2F2YWlsOiAxCi0tLT4gL3Byb2Mv
-YXNvdW5kL2NhcmQwL3BjbTFwL3N1YjAvcHJlYWxsb2MgPC0tLQo2NAotLS0+IC9wcm9jL2Fzb3Vu
-ZC9jYXJkMC9wY20xcC9zdWIwL3N0YXR1cyA8LS0tCmNsb3NlZAotLS0+IC9wcm9jL2Fzb3VuZC9j
-YXJkMC9wY20xcC9zdWIwL3N3X3BhcmFtcyA8LS0tCmNsb3NlZAotLS0+IC9wcm9jL2Fzb3VuZC9j
-YXJkMC9wY20xcC9zdWIwL2h3X3BhcmFtcyA8LS0tCmNsb3NlZAotLS0+IC9wcm9jL2Fzb3VuZC9j
-YXJkMC9wY20xcC9zdWIwL2luZm8gPC0tLQpjYXJkOiAwCmRldmljZTogMQpzdWJkZXZpY2U6IDAK
-c3RyZWFtOiBQTEFZQkFDSwppZDogVklBIDgyMzUKbmFtZTogVklBIDgyMzUKc3VibmFtZTogc3Vi
-ZGV2aWNlICMwCmNsYXNzOiAwCnN1YmNsYXNzOiAwCnN1YmRldmljZXNfY291bnQ6IDEKc3ViZGV2
-aWNlc19hdmFpbDogMQotLS0+IC9wcm9jL2Fzb3VuZC9jYXJkMC9wY20xcC9pbmZvIDwtLS0KY2Fy
-ZDogMApkZXZpY2U6IDEKc3ViZGV2aWNlOiAwCnN0cmVhbTogUExBWUJBQ0sKaWQ6IFZJQSA4MjM1
-Cm5hbWU6IFZJQSA4MjM1CnN1Ym5hbWU6IHN1YmRldmljZSAjMApjbGFzczogMApzdWJjbGFzczog
-MApzdWJkZXZpY2VzX2NvdW50OiAxCnN1YmRldmljZXNfYXZhaWw6IDEKLS0tPiAvcHJvYy9hc291
-bmQvY2FyZDAvcGNtMGMvc3ViMC9wcmVhbGxvYyA8LS0tCjY0Ci0tLT4gL3Byb2MvYXNvdW5kL2Nh
-cmQwL3BjbTBjL3N1YjAvc3RhdHVzIDwtLS0KY2xvc2VkCi0tLT4gL3Byb2MvYXNvdW5kL2NhcmQw
-L3BjbTBjL3N1YjAvc3dfcGFyYW1zIDwtLS0KY2xvc2VkCi0tLT4gL3Byb2MvYXNvdW5kL2NhcmQw
-L3BjbTBjL3N1YjAvaHdfcGFyYW1zIDwtLS0KY2xvc2VkCi0tLT4gL3Byb2MvYXNvdW5kL2NhcmQw
-L3BjbTBjL3N1YjAvaW5mbyA8LS0tCmNhcmQ6IDAKZGV2aWNlOiAwCnN1YmRldmljZTogMApzdHJl
-YW06IENBUFRVUkUKaWQ6IFZJQSA4MjM1Cm5hbWU6IFZJQSA4MjM1CnN1Ym5hbWU6IHN1YmRldmlj
-ZSAjMApjbGFzczogMApzdWJjbGFzczogMApzdWJkZXZpY2VzX2NvdW50OiAxCnN1YmRldmljZXNf
-YXZhaWw6IDEKLS0tPiAvcHJvYy9hc291bmQvY2FyZDAvcGNtMGMvaW5mbyA8LS0tCmNhcmQ6IDAK
-ZGV2aWNlOiAwCnN1YmRldmljZTogMApzdHJlYW06IENBUFRVUkUKaWQ6IFZJQSA4MjM1Cm5hbWU6
-IFZJQSA4MjM1CnN1Ym5hbWU6IHN1YmRldmljZSAjMApjbGFzczogMApzdWJjbGFzczogMApzdWJk
-ZXZpY2VzX2NvdW50OiAxCnN1YmRldmljZXNfYXZhaWw6IDEKLS0tPiAvcHJvYy9hc291bmQvY2Fy
-ZDAvcGNtMHAvc3ViMy9wcmVhbGxvYyA8LS0tCjY0Ci0tLT4gL3Byb2MvYXNvdW5kL2NhcmQwL3Bj
-bTBwL3N1YjMvc3RhdHVzIDwtLS0KY2xvc2VkCi0tLT4gL3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBw
-L3N1YjMvc3dfcGFyYW1zIDwtLS0KY2xvc2VkCi0tLT4gL3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBw
-L3N1YjMvaHdfcGFyYW1zIDwtLS0KY2xvc2VkCi0tLT4gL3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBw
-L3N1YjMvaW5mbyA8LS0tCmNhcmQ6IDAKZGV2aWNlOiAwCnN1YmRldmljZTogMwpzdHJlYW06IFBM
-QVlCQUNLCmlkOiBWSUEgODIzNQpuYW1lOiBWSUEgODIzNQpzdWJuYW1lOiBzdWJkZXZpY2UgIzMK
-Y2xhc3M6IDAKc3ViY2xhc3M6IDAKc3ViZGV2aWNlc19jb3VudDogNApzdWJkZXZpY2VzX2F2YWls
-OiA0Ci0tLT4gL3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBwL3N1YjIvcHJlYWxsb2MgPC0tLQo2NAot
-LS0+IC9wcm9jL2Fzb3VuZC9jYXJkMC9wY20wcC9zdWIyL3N0YXR1cyA8LS0tCmNsb3NlZAotLS0+
-IC9wcm9jL2Fzb3VuZC9jYXJkMC9wY20wcC9zdWIyL3N3X3BhcmFtcyA8LS0tCmNsb3NlZAotLS0+
-IC9wcm9jL2Fzb3VuZC9jYXJkMC9wY20wcC9zdWIyL2h3X3BhcmFtcyA8LS0tCmNsb3NlZAotLS0+
-IC9wcm9jL2Fzb3VuZC9jYXJkMC9wY20wcC9zdWIyL2luZm8gPC0tLQpjYXJkOiAwCmRldmljZTog
-MApzdWJkZXZpY2U6IDIKc3RyZWFtOiBQTEFZQkFDSwppZDogVklBIDgyMzUKbmFtZTogVklBIDgy
-MzUKc3VibmFtZTogc3ViZGV2aWNlICMyCmNsYXNzOiAwCnN1YmNsYXNzOiAwCnN1YmRldmljZXNf
-Y291bnQ6IDQKc3ViZGV2aWNlc19hdmFpbDogNAotLS0+IC9wcm9jL2Fzb3VuZC9jYXJkMC9wY20w
-cC9zdWIxL3ByZWFsbG9jIDwtLS0KNjQKLS0tPiAvcHJvYy9hc291bmQvY2FyZDAvcGNtMHAvc3Vi
-MS9zdGF0dXMgPC0tLQpjbG9zZWQKLS0tPiAvcHJvYy9hc291bmQvY2FyZDAvcGNtMHAvc3ViMS9z
-d19wYXJhbXMgPC0tLQpjbG9zZWQKLS0tPiAvcHJvYy9hc291bmQvY2FyZDAvcGNtMHAvc3ViMS9o
-d19wYXJhbXMgPC0tLQpjbG9zZWQKLS0tPiAvcHJvYy9hc291bmQvY2FyZDAvcGNtMHAvc3ViMS9p
-bmZvIDwtLS0KY2FyZDogMApkZXZpY2U6IDAKc3ViZGV2aWNlOiAxCnN0cmVhbTogUExBWUJBQ0sK
-aWQ6IFZJQSA4MjM1Cm5hbWU6IFZJQSA4MjM1CnN1Ym5hbWU6IHN1YmRldmljZSAjMQpjbGFzczog
-MApzdWJjbGFzczogMApzdWJkZXZpY2VzX2NvdW50OiA0CnN1YmRldmljZXNfYXZhaWw6IDQKLS0t
-PiAvcHJvYy9hc291bmQvY2FyZDAvcGNtMHAvc3ViMC9wcmVhbGxvYyA8LS0tCjY0Ci0tLT4gL3By
-b2MvYXNvdW5kL2NhcmQwL3BjbTBwL3N1YjAvc3RhdHVzIDwtLS0KY2xvc2VkCi0tLT4gL3Byb2Mv
-YXNvdW5kL2NhcmQwL3BjbTBwL3N1YjAvc3dfcGFyYW1zIDwtLS0KY2xvc2VkCi0tLT4gL3Byb2Mv
-YXNvdW5kL2NhcmQwL3BjbTBwL3N1YjAvaHdfcGFyYW1zIDwtLS0KY2xvc2VkCi0tLT4gL3Byb2Mv
-YXNvdW5kL2NhcmQwL3BjbTBwL3N1YjAvaW5mbyA8LS0tCmNhcmQ6IDAKZGV2aWNlOiAwCnN1YmRl
-dmljZTogMApzdHJlYW06IFBMQVlCQUNLCmlkOiBWSUEgODIzNQpuYW1lOiBWSUEgODIzNQpzdWJu
-YW1lOiBzdWJkZXZpY2UgIzAKY2xhc3M6IDAKc3ViY2xhc3M6IDAKc3ViZGV2aWNlc19jb3VudDog
-NApzdWJkZXZpY2VzX2F2YWlsOiA0Ci0tLT4gL3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBwL2luZm8g
-PC0tLQpjYXJkOiAwCmRldmljZTogMApzdWJkZXZpY2U6IDAKc3RyZWFtOiBQTEFZQkFDSwppZDog
-VklBIDgyMzUKbmFtZTogVklBIDgyMzUKc3VibmFtZTogc3ViZGV2aWNlICMwCmNsYXNzOiAwCnN1
-YmNsYXNzOiAwCnN1YmRldmljZXNfY291bnQ6IDQKc3ViZGV2aWNlc19hdmFpbDogNAotLS0+IC9w
-cm9jL2Fzb3VuZC9jYXJkMC9jb2RlYzk3IzAvYWM5NyMwLTArcmVncyA8LS0tCjA6MDAgPSA2ZDUw
-CjA6MDIgPSA5ZjFmCjA6MDQgPSA5ZjFmCjA6MDYgPSA4MDFmCjA6MDggPSAwMDAwCjA6MGEgPSA4
-MDFlCjA6MGMgPSA4MDFmCjA6MGUgPSA4MDFmCjA6MTAgPSA5ZjFmCjA6MTIgPSA5ZjFmCjA6MTQg
-PSA5ZjFmCjA6MTYgPSA5ZjFmCjA6MTggPSA5ZjFmCjA6MWEgPSAwMDAwCjA6MWMgPSAwMDAwCjA6
-MWUgPSAwMDAwCjA6MjAgPSAwMDAwCjA6MjIgPSAwMDAwCjA6MjQgPSAwMDAwCjA6MjYgPSAwMDBm
-CjA6MjggPSAwMWM1CjA6MmEgPSAwNWY1CjA6MmMgPSBiYjgwCjA6MmUgPSBiYjgwCjA6MzAgPSBi
-YjgwCjA6MzIgPSBiYjgwCjA6MzQgPSAwMDAwCjA6MzYgPSA5ZjgwCjA6MzggPSA5ZjlmCjA6M2Eg
-PSAyODI0CjA6M2MgPSAwMDAwCjA6M2UgPSAwMDAwCjA6NDAgPSAwMDAwCjA6NDIgPSAwMDAwCjA6
-NDQgPSAwMDAwCjA6NDYgPSAwMDAwCjA6NDggPSAwMDAwCjA6NGEgPSAwMDAwCjA6NGMgPSAwMDAw
-CjA6NGUgPSAwMDAwCjA6NTAgPSAwMDAwCjA6NTIgPSAwMDAwCjA6NTQgPSAwMDAwCjA6NTYgPSAw
-MDAwCjA6NTggPSAwMDAwCjA6NWEgPSA4MjMwCjA6NWMgPSAwMDAwCjA6NWUgPSAwMDAwCjA6NjAg
-PSAwMDAwCjA6NjIgPSAwMDAwCjA6NjQgPSAwMDAwCjA6NjYgPSAwMDAwCjA6NjggPSAwMDAwCjA6
-NmEgPSAwMDAwCjA6NmMgPSAwMDAwCjA6NmUgPSAwMDAwCjA6NzAgPSAwMDAwCjA6NzIgPSAwMDAw
-CjA6NzQgPSAwMDAwCjA6NzYgPSAwMDAwCjA6NzggPSAwMDAwCjA6N2EgPSAwMDAwCjA6N2MgPSA0
-OTQzCjA6N2UgPSA0NTUyCi0tLT4gL3Byb2MvYXNvdW5kL2NhcmQwL2NvZGVjOTcjMC9hYzk3IzAt
-MCA8LS0tCjAtMC8wOiBJQ0Vuc2VtYmxlIFZUMTYxNmkKCkNhcGFiaWxpdGllcyAgICAgOiAtaGVh
-ZHBob25lIG91dC0KREFDIHJlc29sdXRpb24gICA6IDE4LWJpdApBREMgcmVzb2x1dGlvbiAgIDog
-MTgtYml0CjNEIGVuaGFuY2VtZW50ICAgOiBJQyBFbnNlbWJsZS9LUyBXYXZlcwoKQ3VycmVudCBz
-ZXR1cApNaWMgZ2FpbiAgICAgICAgIDogKzBkQiBbKzBkQl0KUE9QIHBhdGggICAgICAgICA6IHBy
-ZSAzRApTaW0uIHN0ZXJlbyAgICAgIDogb2ZmCjNEIGVuaGFuY2VtZW50ICAgOiBvZmYKTG91ZG5l
-c3MgICAgICAgICA6IG9mZgpNb25vIG91dHB1dCAgICAgIDogTUlYCk1pYyBzZWxlY3QgICAgICAg
-OiBNaWMxCkFEQy9EQUMgbG9vcGJhY2sgOiBvZmYKRXh0ZW5kZWQgSUQgICAgICA6IGNvZGVjPTAg
-cmV2PTAgTERBQyBTREFDIENEQUMgRFNBPTAgU1BESUYgVlJBCkV4dGVuZGVkIHN0YXR1cyAgOiBT
-UENWIExEQUMgU0RBQyBDREFDIFNQRElGPXJlcyBTUERJRiBWUkEKUENNIGZyb250IERBQyAgICA6
-IDQ4MDAwSHoKUENNIFN1cnIgREFDICAgICA6IDQ4MDAwSHoKUENNIExGRSBEQUMgICAgICA6IDQ4
-MDAwSHoKUENNIEFEQyAgICAgICAgICA6IDQ4MDAwSHoKU1BESUYgQ29udHJvbCAgICA6IENvbnN1
-bWVyIFBDTSBDYXRlZ29yeT0weDIgR2VuZXJhdGlvbj0xIFJhdGU9NDhrSHoKLS0tPiAvcHJvYy9h
-c291bmQvcGNtIDwtLS0KMDAtMDA6IFZJQSA4MjM1IDogVklBIDgyMzUgOiBwbGF5YmFjayA0IDog
-Y2FwdHVyZSAxCjAwLTAxOiBWSUEgODIzNSA6IFZJQSA4MjM1IDogcGxheWJhY2sgMSA6IGNhcHR1
-cmUgMQotLS0+IC9wcm9jL2Fzb3VuZC90aW1lcnMgPC0tLQpHMDogc3lzdGVtIHRpbWVyIDogMTAw
-MDAuMDAwdXMgKDEwMDAwMDAwIHRpY2tzKQpQMC0wLTA6IFBDTSBwbGF5YmFjayAwLTAtMCA6IFNM
-QVZFClAwLTAtMTogUENNIGNhcHR1cmUgMC0wLTEgOiBTTEFWRQpQMC0wLTI6IFBDTSBwbGF5YmFj
-ayAwLTAtMiA6IFNMQVZFClAwLTAtNDogUENNIHBsYXliYWNrIDAtMC00IDogU0xBVkUKUDAtMC02
-OiBQQ00gcGxheWJhY2sgMC0wLTYgOiBTTEFWRQpQMC0xLTA6IFBDTSBwbGF5YmFjayAwLTEtMCA6
-IFNMQVZFClAwLTEtMTogUENNIGNhcHR1cmUgMC0xLTEgOiBTTEFWRQotLS0+IC9wcm9jL2Fzb3Vu
-ZC9tb2R1bGVzIDwtLS0KMCBzbmQtdmlhODJ4eAotLS0+IC9wcm9jL2Fzb3VuZC9jYXJkcyA8LS0t
-CjAgW2FjOTcgICAgICAgICAgIF06IFZJQTgyMzMgLSBWSUEgODIzNQogICAgICAgICAgICAgICAg
-ICAgICBWSUEgODIzNSBhdCAweGU4MDAsIGlycSAyMgotLS0+IC9wcm9jL2Fzb3VuZC9kZXZpY2Vz
-IDwtLS0KICAwOiBbMC0gMF06IGN0bAogMTc6IFswLSAxXTogZGlnaXRhbCBhdWRpbyBwbGF5YmFj
-awogMjU6IFswLSAxXTogZGlnaXRhbCBhdWRpbyBjYXB0dXJlCiAxNjogWzAtIDBdOiBkaWdpdGFs
-IGF1ZGlvIHBsYXliYWNrCiAyNDogWzAtIDBdOiBkaWdpdGFsIGF1ZGlvIGNhcHR1cmUKIDMzOiAg
-ICAgICA6IHRpbWVyCi0tLT4gL3Byb2MvYXNvdW5kL3ZlcnNpb24gPC0tLQpBZHZhbmNlZCBMaW51
-eCBTb3VuZCBBcmNoaXRlY3R1cmUgRHJpdmVyIFZlcnNpb24gMS4wLjByYzIuCkNvbXBpbGVkIG9u
-IERlYyAxMSAyMDAzIGZvciBrZXJuZWwgMi40LjIxLTE0NC1kZWZhdWx0IHdpdGggdmVyc2lvbmVk
-IHN5bWJvbHMuCi0tLT4gL3Byb2MvYXNvdW5kL3NlcS9kcml2ZXJzIDwtLS0KLS0tPiAvcHJvYy9h
-c291bmQvb3NzL3NuZHN0YXQgPC0tLQpTb3VuZCBEcml2ZXI6My44LjFhLTk4MDcwNiAoQUxTQSB2
-MS4wLjByYzIgZW11bGF0aW9uIGNvZGUpCktlcm5lbDogTGludXggaG9tZSAyLjQuMjEtMTQ0LWRl
-ZmF1bHQgIzEgRnJpIE5vdiAxNCAwMDowMTozNiBVVEMgMjAwMyBpNjg2CkNvbmZpZyBvcHRpb25z
-OiAwCgpJbnN0YWxsZWQgZHJpdmVyczogClR5cGUgMTA6IEFMU0EgZW11bGF0aW9uCgpDYXJkIGNv
-bmZpZzogClZJQSA4MjM1IGF0IDB4ZTgwMCwgaXJxIDIyCgpBdWRpbyBkZXZpY2VzOiBOT1QgRU5B
-QkxFRCBJTiBDT05GSUcKClN5bnRoIGRldmljZXM6IE5PVCBFTkFCTEVEIElOIENPTkZJRwoKTWlk
-aSBkZXZpY2VzOiBOT1QgRU5BQkxFRCBJTiBDT05GSUcKClRpbWVyczoKNzogc3lzdGVtIHRpbWVy
-CgpNaXhlcnM6IE5PVCBFTkFCTEVEIElOIENPTkZJRwotLS0+IC9wcm9jL2Fzb3VuZC9vc3MvZGV2
-aWNlcyA8LS0tCg==
 
----MOQ1071382173e4f6a91e933b14a7f946940e0377b2ef--
+  Apparently upon the beginning of the barrage, the donkey broke 
+discipline and panicked, toppling the cart. At that point, the rockets 
+disconnected from the timer, leaving them strewn around the street. 
+Tethered to the now toppled cart, the donkey was unable to escape before 
+the arrival of U.S. troops.
+
+United Press International
+Rockets on donkeys hit major Baghdad sites
+
+By P. MITCHELL PROTHERO
+Published 11/21/2003 11:13 AM
+
 
 
 -------------------------------------------------------
