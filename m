@@ -1,18 +1,16 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [RFC] Echoaudio driver
-Date: Sat, 9 Oct 2004 00:04:45 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000573]: no SPDIF output with vt82xx/ICEnsemble VT1616i
+Date: Sat,  9 Oct 2004 00:59:04 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041009000445.0ef85b2a.pochini@shiny.it>
-References: <s5h6566zhlq.wl@alsa2.suse.de>
-	<XFMail.20040923102231.pochini@shiny.it>
-	<s5h7jqlxnnp.wl@alsa2.suse.de>
-	<20041007220154.37b79947.pochini@shiny.it>
-	<s5hmzyx5krr.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <20041008225904.B99404800E@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hmzyx5krr.wl@alsa2.suse.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1BF43242
+	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 00:59:05 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id CC1322C9D8
+	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 00:59:04 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,44 +19,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 08 Oct 2004 16:47:52 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
 
-> > > In the case of au88x0, it was hard to merge because they use different
-> > > addresses in each chip, while echo boards seem to have the same
-> > > register offsets, right?
-> > > But I don't insist on this rewrite if you prefer keeping this, of
-> > > course.
-> >
-> > Most of the #ifdef's are used to exclude unused controls. Those parts can be
-> > moved into separate files and included from <card>.c just like the other
-> > parts. snd_ctl_add() calls will remain inside conditionals anyway.
->
-> Sounds better (unless this results in too many files :)
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000573
+======================================================================
+Reported By:                vladimir
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     573
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3 test 2
+Kernel Version:             2.6.8-1.541, as shipped with FC3t2
+======================================================================
+Date Submitted:             10-09-2004 00:59 CEST
+Last Modified:              10-09-2004 00:59 CEST
+======================================================================
+Summary:                    no SPDIF output with vt82xx/ICEnsemble VT1616i
+Description: 
+With alsa 1.0.6 (in kernel), 1.0.7rc1, or CVS, I'm unable to reliably get
+SPDIF output to work -- it might work once out of a dozen or so times. 
+The attached patch improves things -- ignoring the cached values in
+ac97_read_cache gives me working spdif playbac.  The values I see printed
+with the printk added in ac97_read_cache by the patch are:
 
-8 new files... And I'm not sure it looks better than before.
+AC97_read_cache: register 0x002a has real value 0x01f1 cached 0x05f1 
+AC97_read_cache: register 0x002a has real value 0x05f1 cached 0x01f1 
 
-http://xoomer.virgilio.it/g_pochini/ea-0.9.0.tar.bz2
+which indicates a change in the read-only SPCV bit.  Perhaps registers
+with read-only status bits shouldn't be cached?  I'm not sure if that's
+the fix, or if there's a deeper issue here.
 
+======================================================================
 
-> About the firmware: since the recent 2.4 kernel also includes
-> request_firmware(), it's the easiest way to go, I believe.
->
-> I'll rewrite the firmware code later for other drivers.  I'll likely
-> keep the old implementation of ALSA firmware loader for the cases that
-> no kernel fw-loader is configured or the driver is built in kernel.
->
-> If you finish them, please send me the patch.
-
-I've not written the firmware loader yet. I'll do it during the week end.
-
-
---
-Giuliano.
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-09-04 00:59 vladimir       New Bug                                      
+10-09-04 00:59 vladimir       File Added: ac97_codec-no-readcache.patch                    
+10-09-04 00:59 vladimir       Distribution              => Fedora Core 3 test 2
+10-09-04 00:59 vladimir       Kernel Version            => 2.6.8-1.541, as shipped with FC3t2
+======================================================================
 
 
 -------------------------------------------------------
