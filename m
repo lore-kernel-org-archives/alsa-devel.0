@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000716]: patch to enable Line In->Rear Out Switch on GA-8IEXP motherboard
-Date: Wed, 8 Dec 2004 13:52:44 +0100
-Message-ID: <c440f3fce961851de43f8c3fdc833b03@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000714]: On newer xboxes, the xbox=1 workaround does not solve the problem.
+Date: Wed, 8 Dec 2004 13:47:20 +0100
+Message-ID: <b3e075ca1a1256ce2153c9fb9822cf66@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B12983D1
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 13:52:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A3E6B3CF
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 13:47:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug-test/view.php?id=716> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=714> 
 ======================================================================
-Reported By:                wrx
-Assigned To:                perex
+Reported By:                davidmpye
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   716
-Category:                   PCI - ens1371
+Issue ID:                   714
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.4.28
 ======================================================================
-Date Submitted:             12-08-2004 12:49 CET
-Last Modified:              12-08-2004 13:52 CET
+Date Submitted:             12-08-2004 01:35 CET
+Last Modified:              12-08-2004 13:47 CET
 ======================================================================
-Summary:                    patch to enable Line In->Rear Out Switch on GA-8IEXP
-motherboard
+Summary:                    On newer xboxes, the xbox=1 workaround does not
+solve the problem.
 Description: 
-Trivial patch to enable rear out selection for ens1373 on the Gigabyte
-GA-8IEXP motherboard.
+This is a followup to bug 221, and the workaround that was added to ALSA
+1.0.7.
 
-Signed-off-by: Andrew Dennison <andrew-lists@optusnet.com.au>
+Unfortunately, on newer xboxes, the chip reports less info than before,
+making another change necessary - this change is backwards compatible, and
+doesn't break earlier xboxes, of course. 
 
-patch attached to this report
+Please see attached patch.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000221 ac97 detect fails on xbox/i8x0
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 12-08-04 13:52 
+ tiwai - 12-08-04 12:17 
 ----------------------------------------------------------------------
-Applied to CVS. Thanks.
+Please provide the signed-off-by, as described in the News page.
+
+----------------------------------------------------------------------
+ davidmpye - 12-08-04 13:47 
+----------------------------------------------------------------------
+Although Ed Hucek is the original finder of this workaround as I stated
+previously, I reformatted the patch, by attaching the conditional to the
+existing if clause, instead of nesting it in another if.
+
+Therefore, and due to it's triviality, I'm happy to sign off on it
+personally.
+
+Signed-off-by: David Pye <dmp@davidmpye.dyndns.org>
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-08-04 12:49 wrx            New Issue                                    
-12-08-04 12:49 wrx            File Added: ens1373_rear_ga-8iexp.patch           
-        
-12-08-04 13:47 perex          Status                   new => resolved     
-12-08-04 13:47 perex          Resolution               open => fixed       
-12-08-04 13:47 perex          Assigned To               => perex           
-12-08-04 13:52 perex          Note Added: 0002785                          
+12-08-04 01:35 davidmpye      New Issue                                    
+12-08-04 01:35 davidmpye      Distribution              => Debian          
+12-08-04 01:35 davidmpye      Kernel Version            => 2.4.28          
+12-08-04 01:52 davidmpye      Note Added: 0002772                          
+12-08-04 12:17 tiwai          Note Added: 0002780                          
+12-08-04 12:21 tiwai          Relationship added       related to 0000221  
+12-08-04 13:47 davidmpye      Note Added: 0002783                          
 ======================================================================
 
 
