@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000598]: Audigy 2 Value detected
-Date: Thu, 16 Dec 2004 18:14:53 +0100
-Message-ID: <2c3a2a49ad8f691bb0e9783b6e6c7d1c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000596]: Audigy 2 Value detected
+Date: Thu, 16 Dec 2004 18:14:34 +0100
+Message-ID: <745a1a493875180385e1b64b11087784@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4FDF9245
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:14:53 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6B4DB245
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:14:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=598> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=596> 
 ======================================================================
 Reported By:                mohammed_imran
 Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   598
+Issue ID:                   596
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   feature
@@ -42,7 +42,7 @@ Resolution:                 duplicate
 Duplicate:                  597
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-23-2004 09:06 CEST
+Date Submitted:             10-23-2004 08:58 CEST
 Last Modified:              12-16-2004 18:14 CET
 ======================================================================
 Summary:                    Audigy 2 Value detected
@@ -67,8 +67,6 @@ reports but it is: 1102:0008 as listed by cat /proc/pci:
       I/O at 0xc800 [0xc83f].
 
 please correct me if i am wrong.
-
-Tested on RedHat Linux 9
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
@@ -78,11 +76,13 @@ duplicate of        0000597 Audigy 2 Value detected
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-23-04 09:06 mohammed_imran New Issue                                    
-11-10-04 12:53 tiwai          Relationship added       duplicate of 0000597
-11-10-04 12:53 tiwai          Duplicate ID             0 => 597            
-11-10-04 12:53 tiwai          Status                   assigned => resolved
-11-10-04 12:53 tiwai          Resolution               open => duplicate   
+10-23-04 08:58 mohammed_imran New Issue                                    
+10-23-04 08:58 mohammed_imran File Added: alsa-driver-1.0.6-mod.tar.bz2         
+          
+11-10-04 12:52 tiwai          Relationship added       duplicate of 0000597
+11-10-04 12:52 tiwai          Duplicate ID             0 => 597            
+11-10-04 12:52 tiwai          Status                   assigned => resolved
+11-10-04 12:52 tiwai          Resolution               open => duplicate   
 12-16-04 18:14 tiwai          Status                   resolved => closed  
 ======================================================================
 
