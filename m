@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000559]: 64 Bit Drivers for Analog Devices SoundMax
-Date: Sat,  2 Oct 2004 13:46:54 +0200 (CEST)
+Date: Sat,  2 Oct 2004 15:08:59 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041002114654.994EC32009@server.perex-int.cz>
+Message-ID: <20041002130859.4A78F3200A@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB38323D
-	for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2004 13:46:54 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id A917E28B82
-	for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2004 13:46:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AF416242
+	for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2004 15:08:59 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,7 +20,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000559
 ======================================================================
@@ -41,7 +38,7 @@ Distribution:               Suse
 Kernel Version:             2.6.5-7.108
 ======================================================================
 Date Submitted:             10-02-2004 13:46 CEST
-Last Modified:              10-02-2004 13:46 CEST
+Last Modified:              10-02-2004 15:08 CEST
 ======================================================================
 Summary:                    64 Bit Drivers for Analog Devices SoundMax
 Description: 
@@ -50,12 +47,21 @@ Are there any 64 bit drivers available anywhere for this chipset?
 Thanks
 ======================================================================
 
+----------------------------------------------------------------------
+ Clemens Ladisch - 10-02-2004 15:08 CEST 
+----------------------------------------------------------------------
+When compiled with a 64 bit kernel, the drivers are 64 bit, too.
+
+The driver for your device is snd-intel8x0 or snd-via82xx or snd-atiixp,
+depending on your chipset.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 10-02-04 13:46 sandy bodell   New Bug                                      
 10-02-04 13:46 sandy bodell   Distribution              => Suse            
 10-02-04 13:46 sandy bodell   Kernel Version            => 2.6.5-7.108     
+10-02-04 15:08 Clemens LadischBugnote Added: 0002006                       
 ======================================================================
 
 
