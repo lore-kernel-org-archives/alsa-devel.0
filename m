@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000515]: [PATCH] 15_arecord_doc_duration
-Date: Thu, 23 Sep 2004 19:51:26 +0200 (CEST)
+Subject: [ALSA - driver 0000505]: SPDIF sound distorted on non-48000 rates
+Date: Thu, 23 Sep 2004 20:06:07 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040923175126.D2FAA4500F@server.perex-int.cz>
+Message-ID: <20040923180607.8973245010@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 218EE300
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:51:27 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id D77EC25AA0
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:51:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E836C265
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 20:06:07 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,41 +22,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000515
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000505
 ======================================================================
-Reported By:                jdthood
+Reported By:                ramendik
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Bug ID:                     515
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Bug ID:                     505
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   text
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               RH-based
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             09-21-2004 19:49 CEST
-Last Modified:              09-23-2004 19:51 CEST
+Date Submitted:             09-19-2004 10:03 CEST
+Last Modified:              09-23-2004 20:06 CEST
 ======================================================================
-Summary:                    [PATCH] 15_arecord_doc_duration
+Summary:                    SPDIF sound distorted on non-48000 rates
 Description: 
-Patch for aplay.1 to make it describe what happens if the
-duration is set to zero
+I have an Intel ICH AC97 sound subsystem, on an Intel i865 motherboard(ASUS
+P4P800). It has an analog output and an SPDIF output.When I play 48Khz
+files, thinks are OK on all outputs. But when I play 44.1 Khz files, the
+sound on the SPDIF output is audibly distorted. The analog output is OK.
+
+I am using the 2.6.8.1 kernel, and tried both the ALSA inside it (1.0.4)
+and newer alsa-driver 1.0.7rc1. This same problem shows up with 2.6.6 and
+2.6.7 kernels. So apparently it's present across several versons of ALSA.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-23-2004 19:51 CEST 
+ tiwai - 09-23-2004 18:37 CEST 
 ----------------------------------------------------------------------
-Summary: Describe what happens if aplay's --duration is zero
+Which ac97 codec?  Please attach /proc/asound/card0/codec97#0/* files.
+Also, check the IEC958 status bits (run iecset) during playback of
+44.1kHz samples.
 
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 19:50 CEST 
+----------------------------------------------------------------------
+Well, iecset showed 48000 Hz during the playback of 44100 Hz samples. So
+apparently this is the bug. Here is the full result:
+
+# iecset
+Mode: consumer
+Data: audio
+Rate: 48000 Hz
+Copyright: protected
+Emphasis: none
+Category: PCM coder
+Original: original
+Clock: 1000 ppm
+
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 19:52 CEST 
+----------------------------------------------------------------------
+I have uploaded both files from /proc/asound/card0/codec97#0/ .
+
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 19:58 CEST 
+----------------------------------------------------------------------
+BTW, "iecset rate 44100" does make things better on 44100 Hz - but breaks
+them on 48000.
+
+----------------------------------------------------------------------
+ tiwai - 09-23-2004 20:06 CEST 
+----------------------------------------------------------------------
+How about the attached patch (it's already applied to CVS).
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 19:49 jdthood        New Bug                                      
-09-21-04 19:49 jdthood        File Added: 15_arecord_doc_duration.dpatch                    
-09-23-04 19:51 jdthood        Bugnote Added: 0001841                       
+09-19-04 10:03 ramendik       New Bug                                      
+09-19-04 10:03 ramendik       Distribution              => RH-based        
+09-19-04 10:03 ramendik       Kernel Version            => 2.6.8.1         
+09-19-04 10:05 ramendik       Bug Monitored: ramendik                      
+09-23-04 18:37 tiwai          Bugnote Added: 0001831                       
+09-23-04 19:50 ramendik       Bugnote Added: 0001839                       
+09-23-04 19:51 ramendik       File Added: ac97#0-0                         
+09-23-04 19:52 ramendik       File Added: ac97#0-0+regs                    
+09-23-04 19:52 ramendik       Bugnote Added: 0001843                       
+09-23-04 19:58 ramendik       Bugnote Added: 0001845                       
+09-23-04 20:06 tiwai          Bugnote Added: 0001846                       
 ======================================================================
 
 
