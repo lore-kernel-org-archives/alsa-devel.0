@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: snd_pcm_lib_preallocate_pages_for_all
-Date: Tue, 6 Jul 2004 10:34:41 +0200 (CEST)
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000367]: alsamixer problems with preempt
+Date: Tue, 6 Jul 2004 13:31:14 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0407061029490.2318@linux.local>
-References: <A6991F0FA073F34C94E97976CAC0323116F8E5@server2.nordicid.com>
- <s5hzn6e7lrj.wl@alsa2.suse.de>
+Message-ID: <83e9579ce630bfa178a37bb2ed44036d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hzn6e7lrj.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,28 +15,123 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 5 Jul 2004, Takashi Iwai wrote:
 
-> Ah, of course, the crash in snd_pcm_lib_preallocate_pages_for_all has
-> nothing to do with mmap.  I overlooked the point of crash.
-> 
-> The attached patch should fix it.
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0367
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                Safari
+Assigned To:               =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     367
+Category:                   CORE - control
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:              =20
+Kernel Version:             2.6.7-bk18 + gcc-3.4.0
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             07-06-2004 06:24 CEST
+Last Modified:              07-06-2004 13:31 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    alsamixer problems with preempt
+Description:=20
+when I for example mute channels in alsamixer, I get "bad: scheduling whi=
+le
+atomic!".
 
-The patch looks wrong. Some architectures does not mark pages as reserved
-and other do it. I discussed this problem with Russell and it seems that
-there is no way to distinct these diferences using a generic way, so we
-need to add #ifdefs for some platforms.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-						Jaroslav
+----------------------------------------------------------------------
+ jesse - 07-06-2004 13:31 CEST=20
+----------------------------------------------------------------------
+I got some similar messages here when I try to run xmms with alsa plugin =
+on
+2.6.7-bk18.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Jul  6 12:05:10 libra kernel: [<c0105c77>] dump_stack+0x17/0x20
+Jul  6 12:05:10 libra kernel: [<c028a300>] schedule+0x4c0/0x4d0
+Jul  6 12:05:10 libra kernel: [<c028a77e>] io_schedule+0xe/0x20
+Jul  6 12:05:10 libra kernel: [<c0134f05>] __lock_page+0xb5/0xe0
+Jul  6 12:05:10 libra kernel: [<c01356e7>]
+do_generic_mapping_read+0x397/0x440
+Jul  6 12:05:10 libra kernel: [<c0135a30>]
+__generic_file_aio_read+0x1d0/0x200
+Jul  6 12:05:10 libra kernel: [<c0135b24>] generic_file_read+0x64/0x80
+Jul  6 12:05:10 libra kernel: [<c01528a2>] vfs_read+0xa2/0x100
+Jul  6 12:05:10 libra kernel: [<c0152ad5>] sys_read+0x35/0x60
+Jul  6 12:05:10 libra kernel: [<c0104e89>] sysenter_past_esp+0x52/0x71
+Jul  6 12:05:10 libra kernel: [<c0105c77>] dump_stack+0x17/0x20
+Jul  6 12:05:10 libra kernel: [<c028a300>] schedule+0x4c0/0x4d0
+Jul  6 12:05:10 libra kernel: [<c0104f02>] work_resched+0x5/0x16
+Jul  6 12:05:10 libra kernel: [<c0105c77>] dump_stack+0x17/0x20
+Jul  6 12:05:10 libra kernel: [<c028a300>] schedule+0x4c0/0x4d0
+Jul  6 12:05:10 libra kernel: [<c0104f02>] work_resched+0x5/0x16
+Jul  6 12:05:10 libra kernel: [<c0105c77>] dump_stack+0x17/0x20
+Jul  6 12:05:10 libra kernel: [<c028a300>] schedule+0x4c0/0x4d0
+Jul  6 12:05:10 libra kernel: [<c0104f02>] work_resched+0x5/0x16
+
+After doing this, I can get rid of this problem...
+
+--- linux/sound/core/control.c.orig     2004-07-06 18:38:55.000000000
++0800
++++ linux/sound/core/control.c  2004-07-06 18:39:30.000000000 +0800
+@@ -1114,7 +1114,7 @@ static ssize_t snd_ctl_read(struct file
+                        wait_queue_t wait;
+                        if ((file->f_flags & O_NONBLOCK) !=3D 0 || result=
+ >
+0) {
+                                err =3D -EAGAIN;
+-                               goto out;
++                               goto __end;
+                        }
+                        init_waitqueue_entry(&wait, current);
+                        add_wait_queue(&ctl->change_sleep, &wait);
+@@ -1135,7 +1135,7 @@ static ssize_t snd_ctl_read(struct file
+                kfree(kev);
+                if (copy_to_user(buffer, &ev, sizeof(snd_ctl_event_t))) {
+                        err =3D -EFAULT;
+-                       goto __end;
++                       goto out;
+                }
+                spin_lock_irq(&ctl->read_lock);
+                buffer +=3D sizeof(snd_ctl_event_t);
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+07-06-04 06:24 Safari         New Bug                                    =
+ =20
+07-06-04 06:24 Safari         Kernel Version            =3D> 2.6.7-bk18 +
+gcc-3.4.0
+07-06-04 13:31 jesse          Bugnote Added: 0001384                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
 
 
 -------------------------------------------------------
