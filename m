@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000366]: driver hangs when trying to load a soundfont >8MB
-Date: Thu,  9 Sep 2004 03:49:18 +0200 (CEST)
+Date: Thu,  9 Sep 2004 04:30:51 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040909014918.D103A13002@server.perex-int.cz>
+Message-ID: <20040909023051.88D0914026@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 43465206
-	for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2004 03:49:19 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E95912A2
+	for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2004 04:30:51 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             07-05-2004 09:43 CEST
-Last Modified:              09-09-2004 03:49 CEST
+Last Modified:              09-09-2004 04:30 CEST
 ======================================================================
 Summary:                    driver hangs when trying to load a soundfont >8MB
 Description: 
@@ -157,6 +157,12 @@ it thinks there isn't enough memory.
 ah, it's using dma_alloc, and the txt I attached says there was only 32kb
 DMA memory free.
 
+----------------------------------------------------------------------
+ deathpudding - 09-09-2004 04:30 CEST 
+----------------------------------------------------------------------
+and also that there was 16MB of DMA memory total, while the soundfont is
+32MB...
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -177,6 +183,7 @@ Date Modified  Username       Field                    Change
 09-08-04 17:06 tiwai          Bugnote Added: 0001732                       
 09-09-04 03:46 deathpudding   Bugnote Added: 0001740                       
 09-09-04 03:49 deathpudding   Bugnote Added: 0001741                       
+09-09-04 04:30 deathpudding   Bugnote Added: 0001742                       
 ======================================================================
 
 
