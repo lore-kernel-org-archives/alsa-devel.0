@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000286]: Wrong MIDI I/O count in HDSP9632
-Date: Fri, 28 Jan 2005 18:22:09 +0100
-Message-ID: <cd6dc43ea21d3cbcab39157b1b318518@bugtrack.alsa-project.org>
+From: thomas charbonnel <thomas@undata.org>
+Subject: [PATCH] hdsp ghost midi device fix
+Date: Fri, 28 Jan 2005 18:17:39 +0100
+Message-ID: <1106932660.10925.6.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-zpEGk1ZUbrR/b/PDCKdI"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 79B7E20A
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 18:22:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +14,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=286> 
-======================================================================
-Reported By:                penttiala
-Assigned To:                charbonnel
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   286
-Category:                   PCI - RME HDSP
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             05-20-2004 17:22 CEST
-Last Modified:              01-28-2005 18:22 CET
-======================================================================
-Summary:                    Wrong MIDI I/O count in HDSP9632
-Description: 
-There is only one MIDI I/O in HDSP9632 but driver tells there is two.
-======================================================================
+--=-zpEGk1ZUbrR/b/PDCKdI
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-----------------------------------------------------------------------
- charbonnel - 05-22-04 13:42 
-----------------------------------------------------------------------
-Hi Pentti,
+Hi,
 
-It will be fixed soon (the problem exists also for all hdsp cards with
-only one midi port, e.g. multiface).
+The following patch, on top of the patches I submitted yesterday,
+prevents a ghost midi device to be created on cards with only one midi
+I/O (Multiface and HDSP9632).
+It closes the ALSA bug #0000286.
 
 Thomas
 
-----------------------------------------------------------------------
- charbonnel - 01-28-05 18:22 
-----------------------------------------------------------------------
-I just submitted a patch on alsa-devel that should solve the problem.
-Sorry about the "soon" in my previous note :)
+ChangeLog:
+* Prevents the creation of a second midi device for cards with only
+  one midi I/O
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-20-04 17:22 penttiala      New Issue                                    
-05-22-04 13:42 charbonnel     Note Added: 0001170                          
-12-24-04 12:35 penttiala      Issue Monitored: penttiala                    
-01-28-05 18:22 charbonnel     Note Added: 0003433                          
-======================================================================
+Signed-off-by: Thomas Charbonnel <thomas@undata.org>
 
+
+
+--=-zpEGk1ZUbrR/b/PDCKdI
+Content-Disposition: attachment; filename=hdsp_midi_dev_fix.patch
+Content-Type: text/x-patch; name=hdsp_midi_dev_fix.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+--- hdsp.c.old	2005-01-28 17:42:27.000000000 +0100
++++ hdsp.c	2005-01-28 18:15:35.000000000 +0100
+@@ -3670,7 +3670,7 @@
+ 			snd_hdsp_midi_input_read (&hdsp->midi[0]);
+ 		}
+ 	}
+-	if (midi1 && midi1status) {
++	if (hdsp->io_type != Multiface && hdsp->io_type != H9632 && midi1 && midi1status) {
+ 		if (hdsp->use_midi_tasklet) {
+ 			/* we disable interrupts for this input until processing is done */
+ 			hdsp->control_register &= ~HDSP_Midi1InterruptEnable;
+@@ -4827,10 +4827,11 @@
+ 		return err;
+ 	}
+ 
+-
+-	if ((err = snd_hdsp_create_midi(card, hdsp, 1)) < 0) {
+-		snd_printk("Hammerfall-DSP: Error creating second midi interface\n");
+-		return err;
++	if (hdsp->io_type == Digiface || hdsp->io_type == H9652) {
++		if ((err = snd_hdsp_create_midi(card, hdsp, 1)) < 0) {
++			snd_printk("Hammerfall-DSP: Error creating second midi interface\n");
++			return err;
++		}
+ 	}
+ 
+ 	if ((err = snd_hdsp_create_controls(card, hdsp)) < 0) {
+@@ -4967,6 +4968,8 @@
+ 	hdsp->midi[1].input = NULL;
+ 	hdsp->midi[0].output = NULL;
+ 	hdsp->midi[1].output = NULL;
++	hdsp->midi[0].pending = 0;
++	hdsp->midi[1].pending = 0;
+ 	spin_lock_init(&hdsp->midi[0].lock);
+ 	spin_lock_init(&hdsp->midi[1].lock);
+ 	hdsp->iobase = NULL;
+
+--=-zpEGk1ZUbrR/b/PDCKdI--
 
 
 
