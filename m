@@ -1,15 +1,15 @@
 From: Carlos Pita <carlosjosepita@yahoo.com.ar>
-Subject: emu10k1 devices
-Date: Sun, 26 Dec 2004 22:43:55 -0300
-Message-ID: <200412262243.55482.carlosjosepita@yahoo.com.ar>
+Subject: emu10k1 devices (w/correction)
+Date: Sun, 26 Dec 2004 22:45:41 -0300
+Message-ID: <200412262245.41264.carlosjosepita@yahoo.com.ar>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp205.mail.sc5.yahoo.com (smtp205.mail.sc5.yahoo.com [216.136.129.95])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 8B2C62C1
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 02:37:42 +0100 (MET)
+Received: from smtp201.mail.sc5.yahoo.com (smtp201.mail.sc5.yahoo.com [216.136.129.91])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 577C814C
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 02:39:27 +0100 (MET)
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -22,6 +22,11 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
+
+Sorry, the error reported by portaudio is not
+  ALSA lib pcm_hw.c:1155:(snd_pcm_hw_open) open /dev/snd/pcmC0D3p failed: No such file or directory
+but
+  ALSA lib pcm_hw.c:1155:(snd_pcm_hw_open) open /dev/snd/pcmC0D3p failed: No such device
 
 Hi!
 
