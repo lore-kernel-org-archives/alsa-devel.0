@@ -1,14 +1,12 @@
-From: Allan Klinbail <allank@labyrinth.net.au>
-Subject: Re: mtpav revisited.. MTC/SMPTE
-Date: 16 Jun 2003 12:21:00 +1000
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: hdsp patch
+Date: Sun, 15 Jun 2003 22:42:36 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1055730059.25635.47.camel@littlewolf2.littlewolf>
-References: <20030615192016.C502C36B02@mail3.southern.net.au>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <E19RjsK-00057y-00@sc8-sf-list1.sourceforge.net>
+References: <1055707956.1551.55.camel@Wizard.knechthome.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030615192016.C502C36B02@mail3.southern.net.au>
+In-reply-to: Your message of "15 Jun 2003 13:12:36 PDT."
+             <1055707956.1551.55.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,32 +15,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Alsa-dev <alsa-devel@lists.sourceforge.net>, MusE list <muse@seh.de>
+To: Mark Knecht <markknecht@attbi.com>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2003-06-16 at 05:25, Paul Davis wrote:
-> >This occurs in both MusE and ardour  but I'm kind of ignoring the ardour
-> >results as I can't find where the frame rate is setup..  I haven't used
-> >any other clients.. I ahve to check with MusE list to see if MTC is
-> >fully implemented 
-> 
-> if you mean audio frame rate, ardour doesn't set it - its up to JACK.
-> if you mean the SMPTE frame rate, its in the session state file. there
-> is no way to set the value from the GUI at this time.
+>RME HDSP 9652 (Card #1)
+>Buffers: capture df000000 playback dee00000
+>IRQ: 17 Registers bus: 0xe8800000 VM: 0xe08e6000
+>Control register: 0x10080b3
 
-Thanks Paul, 
+You don't have the correct version of the driver. It would print:
 
-I meant SMPTE frame rate. 
+RME Hammerfall HDSP 9652 (Card #1)
+Buffers: capture f7000000 playback f6e00000
+IRQ: 11 Registers bus: 0xfebb0000 VM: 0xf88af000
+Control register: 0x10080f9
+Control2 register: 0x800
 
-cheers
+notice the extra "Control2" register printout. check the source code
+in alsa-kernel/pci/rme9652/hdsp.c contains the
+snd_hdsp_9652_enable_mixer, and verify that the modifications dates on
+your installed modules match those of the built object files. or
+something like that. its definitely a version skew thing.
 
-Allan 
-
-
--- 
-Allan Klinbail <allank@labyrinth.net.au>
-
+--p
 
 
 -------------------------------------------------------
