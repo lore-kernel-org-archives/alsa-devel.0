@@ -1,12 +1,14 @@
-From: <leif@sm5bsz.com>
-Subject: oss compatibility
-Date: Tue, 25 Jan 2005 01:01:44 +0100
-Message-ID: <CFEIKLJOPPJLBFPEJHKOEECBEBAA.leif@sm5bsz.com>
+From: Horacio de Oro <horacio@trimaxcba.com>
+Subject: Re: Mixer problem with VT8233/A/8235/8237 AC97 Audio
+ Controller (rev 60)
+Date: Mon, 24 Jan 2005 21:10:05 -0300
+Message-ID: <41F58E5D.4000409@trimaxcba.com>
+References: <41F1CE80.1080302@trimaxcba.com> <s5hd5vv2lfk.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hd5vv2lfk.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,80 +21,54 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Linrad as an SDR package, filtering decoding radio signals in a PC.
-It uses soundcards to read wideband audio into the computer, typically
-a Delta 44 can supply 2 channels of 90 kHz bandwidth with a very good
-dynamic range. http://www.sm5bsz.com/linuxdsp/linrad.htm
+Takashi Iwai wrote:
+> At Sat, 22 Jan 2005 00:54:40 -0300,
+> Horacio de Oro wrote:
+> 
+>>I've a problem with the mixer of my sound card. It never has worked fine.
+>>
+>>I run 'aumix', the /dev/mixer is opened fine:
+>>
+>>horacio@corralito-ng:~$ lsof  /dev/mixer
+>>COMMAND    PID    USER   FD   TYPE DEVICE SIZE NODE NAME
+>>mixer_app  859 horacio   34u   CHR   14,0      5239 /dev/mixer0
+>>aumix     1869 horacio    3u   CHR   14,0      5239 /dev/mixer0
+>>
+>>I can change any volume control (for example: "CD"). While I move the 
+>>control, I can hear the volume goes UP and DOWN, but I can't change the 
+>>"main" volume, and I can't change the "PCM" volume (this control are on 
+>>"top").
+> 
+> 
+> They are not supporbed by your hardware.
+> CMI9739 AC97 codec doesn't have Master and PCM volumes.
+> Only PCM switch works.
+> 
+> 
+> Takashi
+> 
 
-It would certainly be most welcome if alsa could be used for
-the Linrad device drivers, but there are still some small
-compatibility problems that most probably would be very
-easy to resolv.
+Hi Takashi! Thanks for your response!
 
-To get the full performance from (so called) 24 bit soundcards
-such as Delta 44 it is not enough to read 16 bits only. The original
-soundcard.h does not support any 32 bit format but 4-Front supplies
-drivers that can use a format AFMT_S32_LE. It would be a very good
-idea if the alsa-oss compatibility routine could support this format
-or allow some other way of specifying 32 bits.=20
+Using "Gnome Volume Control" v2.8.0 (or earlier), the "PCM" works like a 
+"binary variable", so:
+   1) if the PCM volume is between 1% to 100%, then the volume you hear 
+is at maximum (the same volume is at 1% and to 100%).
+   2) if you put PCM volume at 0%, the PCM volume go off, and you can't 
+hear more mp3, wav, etc.
 
-Another problem is that calls to ioctl to set speed, number of channels
-and other things do not return the value actually accepted by the=20
-hardware as the oss manual says it should. The Linrad program follows
-the instructions in the oss manual and tries to set a very high sampling
-speed to get a return value that is the highest possible speed.
-A Delta 44 will return 96000 Hz in some oss versions although it will
-return whatever value set by ossmix in other versions. Linrad uses this
-strategy to get max and min speeds, no of channels and supported
-formats (no of bits). This does not work under alsa since all sound
-cards seem to be identical, supporting everything. As a consequence
-the user has to take decisions based on knowledge of the hardware
-actually present inside his box. This is a problem to new-comers who
-are reluctant to install Linux in the first place.
+So:
+  PCM = 0% -> PCM volume off
+  PCM = 1% to 100% -> PCM volume at maximum
 
-It would certainly be a very good thing if alsa could be fully =
-compatible
-with oss. Some day I hope Linrad will be rewritten, but it seems to
-be a good idea to keep the oss interface for a couple of years to come
-because Linrad is efficient enough to run on Pentium and Pentium MMX=20
-computers on which it is difficult (or impossible) to install
-modern Linux distributions. Computers that are obsolete for MS Windows
-can be converted to excellent radio receivers using SuSE 7.3, RedHat =
-7.1,=20
-Mandrake 8.1 or similar and novices will not be able to install alsa
-on such systems so it is better to keep the oss interface that works
-well.
+This way, the only way to put the volume a little down, is using the 
+speakers.
 
-I am the single author of Linrad, I am not a programmer at all, I just
-use a small sub-set of the C language and some assembly. I have good
-hope that I will get help from others to rewrite the code from a rather
-messy single thread to a easily understandable multi-threaded
-structure that could perhaps take advantage of some alsa features that
-are above my level as a programmer.
+Is this the way the mixer should work? (because of the lack of support)
 
-The programming techniques of Linrad may be at a very low level (in
-several meanings of the sentence) but the processing actually done
-is quite sophisticated, it includes interference recognition and
-coherent processing as well as highly optimised fft routines. It would
-certainly be very good if it would work directly under new Linux
-distributions without the need for paying for an oss license.
+Thanks in advance!!
 
-It seems to me that the corrections needed are quite small:-)
-
-  Regards
-
-  Leif Asbrink
-
-PS. I tried to subscribe to the list, but failed. (There is no =
-postmaster
-at my domain for spam reasons.) I hope the contents of this mail reaches =
-
-some of the people involved with the alsa development. My E-mail address =
-
-can be found in a gif file at http://www.sm5bsz.com/ in case something =
-is
-unclear. DS.
-
+Horacio
 
 
 -------------------------------------------------------
