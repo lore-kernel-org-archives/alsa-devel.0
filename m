@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
-Date: Tue, 25 Jan 2005 15:07:57 +0100
-Message-ID: <5adc6c6bbfe46e0e9351289ca17f57e9@bugtrack.alsa-project.org>
+Date: Tue, 25 Jan 2005 15:11:52 +0100
+Message-ID: <40ff599c7977cb4610150ace29b95b1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E2E9C263
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 15:07:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 95230263
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 15:11:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Suse
 Kernel Version:             2.6.8-24.10-smp
 ======================================================================
 Date Submitted:             01-19-2005 18:19 CET
-Last Modified:              01-25-2005 15:07 CET
+Last Modified:              01-25-2005 15:11 CET
 ======================================================================
 Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
 slider control for Surround/Center/LFE/Side
@@ -52,11 +52,6 @@ PCM, PC Speaker and the two (2) Capture sliders.
 In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
 appear at all.
 ======================================================================
-
-----------------------------------------------------------------------
- 1g0R - 01-25-05 12:19 
-----------------------------------------------------------------------
-Please, please....
 
 ----------------------------------------------------------------------
  tiwai - 01-25-05 15:07 
@@ -75,6 +70,12 @@ which ALSA version, and what configuration.  For testing purpse, try
 aplay.  For AC3 testing, you can use ac3dec in alsa-tools.  Attach the
 file /etc/asound.state, the content of /proc/asound/card0/codec#* files as
 the detailed information.
+
+----------------------------------------------------------------------
+ tiwai - 01-25-05 15:11 
+----------------------------------------------------------------------
+The "Channel Mode" switch doesn't appear when you pass model=full_dig.
+In this model, the channels are set to 8-channels always.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -120,6 +121,7 @@ Date Modified  Username       Field                    Change
 01-24-05 20:04 1g0R           Note Added: 0003396                          
 01-25-05 12:19 1g0R           Note Added: 0003398                          
 01-25-05 15:07 tiwai          Note Added: 0003399                          
+01-25-05 15:11 tiwai          Note Added: 0003400                          
 ======================================================================
 
 
