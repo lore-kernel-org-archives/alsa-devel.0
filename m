@@ -1,22 +1,10 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [linux-audio-user] Re: [linux-audio-dev] Re: [Alsa-devel]
- Firewire Audio Card Support
-Date: Sat, 20 Nov 2004 11:22:22 +0100
-Message-ID: <20041120112222.58297e17.pochini@shiny.it>
-References: <31148074.1100630541337.JavaMail.root@scooter.psp.pas.earthlink.net>
-	<419C9D47.4090606@x-i.net>
-	<200411181515.52218.olaf@solutionworks.de>
-	<20041118143205.GA21282@login.ecs.soton.ac.uk>
-	<419CB554.3080709@esitcom.org>
-	<Pine.LNX.4.58.0411181601440.14962@denise.shiny.it>
-	<1100809010.10150.5.camel@krustophenia.net>
-	<1100884361.13133.10.camel@vaarlahti.uworld>
-	<1100889432.11973.15.camel@krustophenia.net>
+From: mike hoy <michael_hoy_636@yahoo.com>
+Subject: ati technologies inc soundmax integrated digital media
+Date: Sat, 20 Nov 2004 04:32:46 -0800 (PST)
+Message-ID: <20041120123246.1518.qmail@web50305.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1100889432.11973.15.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,23 +14,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: sxpert@esitcom.org, alsa-devel@lists.sourceforge.net, pochini@denise.shiny.it, S.W.Harris@ecs.soton.ac.uk
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 19 Nov 2004 13:37:12 -0500
-Lee Revell <rlrevell@joe-job.com> wrote:
+developers,
 
-> Compared to doing an open 3D graphics card, it sounds like a pretty good
-> deal.  Bigger market, higher margins.
+i am using a compaq r3000 laptop with ati technologies
+inc soundmax integrated digital media soundcard.
 
-And it's simpler IMHO. Also you could make a good card compared to
-commercial ones, while you can't do a nearly as good gfx card.
+I need you to bottom line this for me:
+
+Can I use this hardware with linux?
+
+I'm running alsa on this laptop now and no luck, and
+NO the sound isn't muted..
+
+what do i need to do to get my sound card working?
+
+Please reply with good news.
+
+the computer: compaq r3000 p4 2.8 ghz
+the os : Slackware 2.4.26
+
+btw: http://www.alsa-project.org/black.html
+
+look for the workd 'bellow' and you will notice a
+typo.  
+
+bellow:  To make the deep roaring sound characteristic
+of a bull.
+
+below: In or to a lower place; beneath.
+
+Mike H.
+Phoenix AZ
 
 
+		
+__________________________________ 
+Do you Yahoo!? 
+The all-new My Yahoo! - Get yours free! 
+http://my.yahoo.com 
+ 
 
---
-Giuliano.
 
 
 -------------------------------------------------------
