@@ -1,14 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: The ALSA Situation
-Date: Wed, 10 Nov 2004 00:59:52 -0500
-Message-ID: <1100066393.3137.4.camel@krustophenia.net>
-References: <200411100150.iAA1okCE029069@localhost.localdomain>
-	 <001e01c4c6ce$77672eb0$0a00000a@eugenia>
+From: K.Fetscher@t-online.de (Klaus Fetscher)
+Subject: Re: Cross Compile Problems
+Date: Wed, 10 Nov 2004 08:28:21 +0100
+Message-ID: <4191C315.7050206@fetron.de>
+References: <418FEF0E.8080304@fetron.de> <s5h3bzjs9hr.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <001e01c4c6ce$77672eb0$0a00000a@eugenia>
+In-Reply-To: <s5h3bzjs9hr.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,25 +17,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eugenia Loli-Queru <eloli@eugenia.co.uk>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net, torvalds@osdl.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2004-11-09 at 18:38 -0800, Eugenia Loli-Queru wrote:
-> 2. This: http://www.osnews.com/img/6443/audio.png Check the clean and 
-> logical OSS options and then check the endless alsa ones (my monitor was not 
-> wide enough to fit them all). Why things like that are not cleaned up? (it's 
-> not gnome's volume control fault btw, I asked the developer, he said it's 
-> Alsa's)
 
-Bullshit.  If ALSA provides too many controls then GNOME volume control
-should abstract them a bit.  For example, use separate tabs for playback
-and capture, like alsamixer, or leave some elements out, instead of
-blithely cramming every mixer element into one tab without regard to
-whether it will fit on screen or whether that mixer control SHOULD be
-user visible.  Sorry, this is not ALSA's job. 
+>>I want to use ALSA for my ARM based custom board, but I have the 
+>>following problems.
+>>
+>>- I am using a NFS-Root Filesystem for my embedded hardware. I have 
+>>cross compiled the alsa-lib and the alsa-utils with the 
+>>"--PREFIX=/tftpboot/acc-rootfs" . The root filesystem is mounted below 
+>>"/tftpboot/acc-rootfs". When I start the mixer, he want to load the file 
+>>"alsa.conf" with the complete path 
+>>"/tftpboot/acc-rootfs/share/alsa/alsa.conf" . The problem is, that the 
+>>correct path for the ARM CPU is only "/share/alsa/alsa.conf" . Are there 
+>>any options to solve this problem ?
+>>    
+>>
+>
+>You can specify datadir, libdir, etc with configure options to
+>override the default values.
+>
+>  
+>
+If I specify datadir or libdir, some files will be installed into that 
+directory. So is it necessary to copy these files manual to the exported 
+NFS directory ?
+I didn't find any solution to specify the options for the different 
+directories (--datadir=/dir1.. --libdir-/dir1.." and do a "make install" 
+and all files will be on the correct directories.
 
-Lee
+Thanks,
+
+Klaus
 
 
 
