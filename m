@@ -1,15 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Re: bug tracking?
-Date: Tue, 20 May 2003 12:46:02 -0400
+From: Cliff Bradshaw <cliff@postmaster.co.uk>
+Subject: documentation - yeah right!
+Date: Tue, 20 May 2003 21:10:08 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305201649.SAA06156@alsa.alsa-project.org>
-References: <Pine.LNX.4.50-xtra.0305201645001.6471-100000@yme.mo.himolde.no>
+Message-ID: <PM.9386.1053461408@pmweb11.uk1.bibliotech.net>
+Reply-To: cliff@postmaster.co.uk
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: binary
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail09.voicenet.com (mail09.voicenet.com [207.103.0.43])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id SAA06156
-	for <alsa-devel@alsa-project.org>; Tue, 20 May 2003 18:49:41 +0200
-In-reply-to: Your message of "Tue, 20 May 2003 16:51:56 +0200."
-             <Pine.LNX.4.50-xtra.0305201645001.6471-100000@yme.mo.himolde.no>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,26 +17,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Erik Inge Bols <knan@mo.himolde.no>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->every bug, log any discussion on that mailing list as related to that
->bug... and add anyone seen in CC: to the same mailing list. Don't
->remember the bug system's name right now, sorry.
->
->But it strikes me as an elegant way of doing it.
 
-the upcoming ardour bugzilla will be primarily controlled (for
-submissions) by using a script that the user runs on their machine. it
-collects a lot of information about their h/w and s/w configuration,
-tars that all up with their report, and emails it to the bugzilla
-database. the relevant info is extracted from the tarfile, entered
-into the bug system, and associated with the tarfile so we can look at
-it later it we need to. they don't login, but they do need to go
-online at some point. thats all ...
+If alsa is supposed to be so profesional, why does it have no decent documentation?
 
---p
+I have searched the whole internet and still cant find any proper documentation on how to use the fscking sequencer interface!
+
+sure there is the howto by Matthias Nagorni, (thank god *someone* is writing docs for the seuqncer!) but I want to see a proper API reference
+
+doxygen is just an excuse to avoid writing documentation and should be banned from all projects. If I want a list of all the damn globals I'll look in the source code thankyou.
+
+seriously though. Alsa is great, but is not going to suceed unless we know how to use it.  OSS has pretty good documentation and it will continue to be the standard linux audio api unless we tell people how to use alsa!!!!!!!!!
+
+
+___________________________________________________ 
+What does an anemometer measure? 
+Find out at postmaster.co.uk
+
+http://www.postmaster.co.uk/cgi-bin/meme/quiz.pl?id=200
 
 
 -------------------------------------------------------
