@@ -1,13 +1,17 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: Is there plans to support SiS7019?
-Date: Fri, 13 Aug 2004 13:19:03 +0200
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: aoss [patch: /dev/sound, man page]
+Date: Fri, 13 Aug 2004 14:11:39 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408131119.i7DBJ3oW008049@www3.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Message-ID: <20040813141139.673fcb8e@mango.fruits.de>
+References: <20040805014457.49395908@mango.fruits.de>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 150A228C
+	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2004 14:01:18 +0200 (MEST)
+In-Reply-To: <20040805014457.49395908@mango.fruits.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,18 +20,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: vrihad@softhome.net
-Cc: alsa-devel@lists.sourceforge.net
+To: Florian Schmidt <mista.tapas@gmx.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
+
+On Thu, 5 Aug 2004 01:44:57 +0200
+Florian Schmidt <mista.tapas@gmx.net> wrote:
+
+> 
+> The below patch [also attached] fixes the check for device files in
+> /dev/sound/ [for users of devfs who have configured their apps to use
+> /dev/sound/dsp, etc..] and  adds a note to the aoss manpage
+> about the state of mmap support:
+> 
 
 Hi,
 
-I think (and from alsa source), looks like it is not supported for now.
-Maybe it is similiar to 7018, maybe someone could try to add it to
-trident module.
+i wanted to ask if there's a reason for not including this patch in the
+rc's?
 
-Peter Zubaj=0A____________________________________=0Ahttp://www.logofun.pob=
-ox.sk - urobte radost svojmu telefonu=0A
+
+Flo
+
+-- 
+Palimm Palimm!
+http://affenbande.org/~tapas/
+
 
 
 -------------------------------------------------------
