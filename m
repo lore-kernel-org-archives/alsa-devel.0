@@ -1,11 +1,12 @@
-From: Shane Walton <dsrelist@yahoo.com>
-Subject: ALSA-0.9.0rc2 and RME HammerFall
-Date: Wed, 4 Sep 2002 09:03:47 -0700 (PDT)
+From: Paul Davis <pbd@op.net>
+Subject: Re: [noreply@sourceforge.net: [pcmcia-cs - Multifunction Cards] RE: configuring unsupported sound-card]
+Date: Wed, 04 Sep 2002 12:14:24 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020904160347.95202.qmail@web20809.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <E17mcll-0002k1-00@usw-sf-list1.sourceforge.net>
+References: <20020904080358.GB19686@finnendahl.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: Your message of "Wed, 04 Sep 2002 10:03:59 +0200."
+             <20020904080358.GB19686@finnendahl.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,33 +15,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: ALSA Development <alsa-devel@lists.sourceforge.net>
+To: Orm Finnendahl <finnendahl@folkwang-hochschule.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Is there any know problems with 0.9.0rc2/Linux
-2.4.19/RME HammerFall.  I had a working application
-using 0.9.0beta6/Linux/2.2.19/RME HammerFall, since I
-am changing to a Intel P4 arch, I can't get the beta6
-to work.  It fails on an ioctl with something about a
-PVERSION...  I would like to use a new version of ALSA
-but I can only get one channel to work.  In other
-words, when I try to read from the HammerFall
-configured as non-interleaved and two channels, I get
-all zeroed data.  When I try to read from the
-HammerFall configured one channel (mono), I get real
-data, but it has not been checked for validity.  Is
-this possibly a bug?  Thanks for the help.
+>This is a message from Dave Hinds concerning autoconfiguring the
+>PCMCIA.  I looked for pci_register_driver and grep only found it in
+>the binaries of snd-hdsp. Has the driver been written with the
+>"modern" kernel API, Dave is referring to?
 
-=====
-Shane M. Walton, Software Engineer
-Digital System Resources, Inc.
-dsrelist@yahoo.com : swalton@dsrnet.com
-703.234.1674
+yes, all of ALSA does this. we use pci_module_init() and
+pci_unregister_driver(), amongst others. this is common to all ALSA
+PCI-based drivers. pci_module_init() calls pci_register_driver() (see 
+linux/include/linux/pci.h)
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Finance - Get real-time stock quotes
-http://finance.yahoo.com
+--p
 
 
 -------------------------------------------------------
