@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000739]: Invalid "AutoSync Reference" value reported using controlers
-Date: Fri, 21 Jan 2005 21:03:17 +0100
-Message-ID: <4f6aec855d4a52ed1d575b602cd362b0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
+Date: Fri, 21 Jan 2005 21:03:51 +0100
+Message-ID: <3ec60fec91f751b20dd53297f899c08c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB49C21B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:03:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8EC9D21B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:03:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,106 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=739> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
 ======================================================================
-Reported By:                remy
-Assigned To:                charbonnel
+Reported By:                1g0R
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   739
-Category:                   PCI - RME HDSP
+Issue ID:                   822
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     feedback
+Distribution:               FC3
+Kernel Version:             2.6.10-ac8
 ======================================================================
-Date Submitted:             12-21-2004 18:41 CET
+Date Submitted:             01-16-2005 19:06 CET
 Last Modified:              01-21-2005 21:03 CET
 ======================================================================
-Summary:                    Invalid "AutoSync Reference" value reported using
-controlers
+Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
-The value returned by controllers for control number 14 ("AutoSync
-Reference") is incorrect and different from that reported by doing a cat
-/proc/asound/card0/hdsp.
-The value reported is not "AutoSync Reference" but "Preferred Sync
-Reference" instead.
+The compile went fine.
+I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
+I cant raise the trigger.
+No SPDIF out.
 ======================================================================
 
 ----------------------------------------------------------------------
- remy - 12-21-04 18:54 
+ tiwai - 01-21-05 20:55 
 ----------------------------------------------------------------------
-Ok, sorry
-Signed-off-by: Rémy Bruno <remy.bruno@trinnov.com>
+It means your installation of alsa-lib is somehow wrong.
 
 ----------------------------------------------------------------------
- tiwai - 12-21-04 19:00 
+ 1g0R - 01-21-05 21:03 
 ----------------------------------------------------------------------
-Thanks, applied to CVS.  Perhaps the change appears in 1.0.8rc2.
+in /alsa-lib
+./configure
+........
+.....
+config.status: creating src/ordinary_pcm/Makefile
+config.status: creating src/rawmidi/Makefile
+config.status: creating src/timer/Makefile
+config.status: creating src/hwdep/Makefile
+config.status: creating src/seq/Makefile
+config.status: creating src/instr/Makefile
+config.status: creating src/compat/Makefile
+config.status: creating src/alisp/Makefile
+config.status: creating src/conf/Makefile
+config.status: creating src/conf/cards/Makefile
+config.status: creating src/conf/pcm/Makefile
+config.status: creating alsalisp/Makefile
+config.status: creating aserver/Makefile
+config.status: creating test/Makefile
+config.status: creating utils/Makefile
+config.status: creating utils/alsa-lib.spec
+config.status: creating utils/alsa.pc
+config.status: creating include/config.h
+config.status: executing depfiles commands
+[root@skynet alsa-lib-1.0.8]#
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-21-04 18:41 remy           New Issue                                    
-12-21-04 18:41 remy           File Added: hdsp.c.diff                      
-12-21-04 18:46 tiwai          Note Added: 0002902                          
-12-21-04 18:54 remy           Note Added: 0002903                          
-12-21-04 19:00 tiwai          Status                   assigned => resolved
-12-21-04 19:00 tiwai          Resolution               open => fixed       
-12-21-04 19:00 tiwai          Note Added: 0002904                          
-01-21-05 21:03 tiwai          Status                   resolved => closed  
+01-16-05 19:06 1g0R           New Issue                                    
+01-16-05 19:06 1g0R           Distribution              => FC3             
+01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
+01-17-05 15:05 tiwai          Status                   new => resolved     
+01-17-05 15:05 tiwai          Resolution               open => not an issue
+01-17-05 15:05 tiwai          Assigned To               => tiwai           
+01-17-05 15:05 tiwai          Note Added: 0003235                          
+01-17-05 15:05 tiwai          Assigned To              tiwai =>            
+01-17-05 16:43 1g0R           Status                   resolved => feedback
+01-17-05 16:43 1g0R           Resolution               not an issue => reopened
+01-17-05 16:43 1g0R           Note Added: 0003238                          
+01-17-05 16:43 1g0R           Assigned To               => tiwai           
+01-18-05 14:01 1g0R           Note Added: 0003249                          
+01-18-05 14:01 1g0R           Issue Monitored: 1g0R                        
+01-18-05 17:57 tiwai          Note Added: 0003254                          
+01-19-05 13:33 1g0R           Note Added: 0003264                          
+01-19-05 14:25 tiwai          Note Added: 0003265                          
+01-19-05 14:36 1g0R           Note Added: 0003272                          
+01-19-05 14:40 tiwai          Note Added: 0003275                          
+01-19-05 14:59 1g0R           Note Added: 0003280                          
+01-19-05 15:16 tiwai          Note Added: 0003281                          
+01-19-05 15:46 1g0R           Note Added: 0003289                          
+01-19-05 16:08 tiwai          Note Added: 0003290                          
+01-19-05 16:25 1g0R           Note Added: 0003291                          
+01-19-05 18:39 1g0R           File Added: asound.state                     
+01-19-05 18:39 1g0R           File Added: codec#0                          
+01-19-05 18:40 1g0R           Note Added: 0003315                          
+01-19-05 18:44 tiwai          Note Added: 0003316                          
+01-19-05 21:53 1g0R           Note Added: 0003318                          
+01-19-05 21:58 1g0R           Note Added: 0003319                          
+01-20-05 00:13 1g0R           File Added: alsamixer.png                    
+01-20-05 00:18 1g0R           File Added: alsamixer.jpg                    
+01-21-05 12:15 tiwai          Note Added: 0003345                          
+01-21-05 20:53 1g0R           Note Added: 0003352                          
+01-21-05 20:55 tiwai          Note Added: 0003353                          
+01-21-05 21:03 1g0R           Note Added: 0003354                          
 ======================================================================
 
 
