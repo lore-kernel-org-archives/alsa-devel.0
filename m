@@ -1,15 +1,11 @@
-From: <gooch55@voila.fr>
-Subject: =?koi8-r?B?SGVsbG8gRnJpZW5k?=
-Date: Sat, 18 Dec 2004 15:50:23 -0000
-Message-ID: <75291027.20040527090353@voila.fr>
-Reply-To: <norvensi199@yahoo.se>
+From: Petr Gladkikh <batyi@mail.ru>
+Subject: alsa-lib: Volume control emulation plugin
+Date: Sat, 18 Dec 2004 23:10:50 +0600
+Message-ID: <41C4649A.9090608@mail.ru>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="----------4776C8326EB"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gorkon.momentous.ca (gorkon.backboneservers.com [66.6.63.5])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 68D4B290
-	for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2004 16:50:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,35 +15,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------------4776C8326EB
-Content-Type: text/plain; charset=koi8-r
-Content-Transfer-Encoding: quoted-printable
+Hello.
 
+I have on-board sound card which has been mentioned for example in bug
+"[ALSA - driver 0000725]: Intel8x0, chip CMI9761A - no volume control, 
+sound mixer broken"
+AFAIK this sound card indeed has no hardware PCM volume control and its 
+"Master" volume control affects only sound which comes from analog 
+inputs. IMHO following solutions which were offered elsewhere look not 
+very elegant (at leas for me ;)
+1. "I suggest that forget the mixer and tune the speaker volume."
+2. "To reduce the volume, decrease the output level in the application." 
+(I just unable to rewrite every application I need)
+3. "use Intel8x0 driver and an extra sound demon (e.g. KDE's artsd)"
+4. "use CMedia's OSS driver (avail. at 
+http://www.cmedia.com.tw/download/e_UDA9738_linux_01.htm)"
+5. "curse CMedia for building such a crappy chip; curse them again for 
+not releasing an ALSA driver; curse NVidia for using such a crappy chip 
+(older nforce boards had a better chip on-board..); in the end, buy an 
+extra sound card and be happy :)"
 
+It seems then that the right solution is to write an ALSA lib plug-in which
+1. Accepts input in some format and puts it out being multiplied by some 
+coefficient 0.0..1.0
+2. Provides software emulated volume control which can change the 
+coefficient (so ALSA applications can use it)
 
-Hello alsa-devel@alsa-project.org
-=20
-You can earn from $300 to $2000 per week easily !=20
+"route" plug-in is almost there but it allows to set volume in 
+configuration file not dynamically, and I do not know how to emulate 
+volume control in ALSA lib with it.
 
-You shouldn't invest or purchase anything, it will not cost even $1 for y=
-ou.=20
-You should just spend some time, about 1-2 hours per day and even in the =
-first week you will start to receive your earned money.=20
-If you are interested in that, just write us to the following e-mail artu=
-r@freelance-biz.info .=20
-It is obligatory to indicate in the letter what country are you from and =
-we will send you a detailed description how you can earn those money.
+So here is the question: does anyone have written/going to write such 
+plug-in? If so how can I help to make it happen (testing, write some 
+code)? (I do not have experience with ALSA to write it completely by 
+myself).
 
-Sincerely yours, Artur Vovan
+BTW I was unable to read bug track database even for read-only due to 
+denied access. Is there any anonymous access?
 
-Your mail is alsa-devel@alsa-project.org
-Your  fax=20
+/ Petr Gladkikh
 
-g dfsd6f546sadfc23zcx2v3x21cgv4f65sd54g6s5dfg6sadg
-------------4776C8326EB--
 
 
 
