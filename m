@@ -1,15 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Bug in ALSA OSS mixer emulation. Volume++ does not
- work.
-Date: Wed, 03 Dec 2003 21:36:57 +0000
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: [PATCH]only start us428control if an us428 listens
+Date: Wed, 3 Dec 2003 23:08:19 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FCE5779.3010205@superbug.demon.co.uk>
-References: <3FCD5830.2000702@superbug.demon.co.uk> <Pine.LNX.4.58.0312030924420.12963@pnote.perex-int.cz>
+Message-ID: <200312032305.08537.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_T7lz/vxB0keYFVP"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0312030924420.12963@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,76 +15,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Wed, 3 Dec 2003, James Courtier-Dutton wrote:
-> 
-> 
->>Hi,
->>
->>  The alsa keeps state of all mixer levels in alsa's internal format 
->>which has min,max info. So, for example if alsa has 0-31 levels, 
->>converting that to the OSS 0-100 range is easy with a simple 
->>calculation, but if an OSS app just does Volume++, the change will be 
->>lost in the conversion from OSS to ALSA to actually set the state. So, 
->>to work the way it should, OSS will have to cache all mixer state in OSS 
->>format, thus requiring 2 state tables.
->>
->>E.g.
->>OSS Volume(0-100)   ALSA Volume(0-31)
->>OSS = ALSA * 100/31;
->>
->>0		    0
->>1                   0
->>2                   0
->>3                   1
->>4                   1
->>etc.
->>
->>So, if OSS Volume is 2, and the OSS application does Volume++, the OSS 
->>volume will be set to 3. but if OSS Volume is 3, and the OSS application 
->>does Volume++, the OSS volume will stay at 3!
-> 
-> 
-> I don't undestand. Actually we have volumes in OSS format (in the kernel's 
-> mixer emulation), because some applications simply does not work for 
-> reason as you described (++ or -- applied). Note that these values are 
-> valid per application (so the resolution is reverted to ALSA's when 
-> another application changes volume too much). I don't see any other way to 
-> do it.
-> 
-> 						Jaroslav
-> 
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SuSE Labs
-> 
-> 
-Why is the OSS volume value kept for each application?
-Surely, mixer volumes should be globally stored?
-Or does the OSS volume for one application only control the volume of 
-the sound from that particular application ?
 
-What about the mixer open/close transition?
-If a single application does: -
-open
-volume++
-close
-...
-open
-volume++
-close
+--Boundary-00=_T7lz/vxB0keYFVP
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Will the OSS volume settings be reset from the alsa levels ?
+Hi Takashi,
 
-Cheers
-James
+please commit. thanks!
+
+Karsten
 
 
+
+--Boundary-00=_T7lz/vxB0keYFVP
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="tascam_fpga.in.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="tascam_fpga.in.patch"
+
+
+Index: alsa-tools/usx2yloader/tascam_fpga.in
+===================================================================
+RCS file: /cvsroot/alsa/alsa-tools/usx2yloader/tascam_fpga.in,v
+retrieving revision 1.2
+diff -u -r1.2 tascam_fpga.in
+--- alsa-tools/usx2yloader/tascam_fpga.in	2 Dec 2003 11:57:06 -0000	1.2
++++ alsa-tools/usx2yloader/tascam_fpga.in	3 Dec 2003 21:54:27 -0000
+@@ -1,18 +1,45 @@
+ #!/bin/sh
+-# load the firmware into Tascam USB devices (FPGA design)
++# load the firmware into Tascam USB devices (FPGA design),
++# start appropriate control application.
+ 
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ 
+ LOADER=@bindir@/usx2yloader
++CONTROLLER=
+ 
+-if [ -x /usr/bin/logger ]; then
+-	/usr/bin/logger -t $0 "calling $LOADER for $DEVICE"
++if [ -x $LOADER ]; then
++	if [ -x /usr/bin/logger ]; then
++		/usr/bin/logger -t $0 "calling $LOADER for $DEVICE"
++	fi
++	$LOADER
++else
++	if [ -x /usr/bin/logger ]; then
++		/usr/bin/logger -t $0 "missing $LOADER for $DEVICE"
++	fi
+ fi
+-$LOADER
+-if [ -x @bindir@/us428control ]; then
+-	@bindir@/us428control &
++
++case $PRODUCT in
++1604/8001/*)
++	CONTROLLER=@bindir@/us428control
++	;;
++*)
++	;;
++esac
++
++if [ -n $CONTROLLER ]; then
++	if [ -x $CONTROLLER ]; then
++		if [ -x /usr/bin/logger ]; then
++			/usr/bin/logger -t $0 "starting $CONTROLLER for $DEVICE"
++		fi
++		$CONTROLLER &
++	else
++		if [ -x /usr/bin/logger ]; then
++			/usr/bin/logger -t $0 "missing $CONTROLLER for $DEVICE"
++		fi
++	fi
+ fi
++
+ if [ -x /usr/bin/logger ]; then
+ 	/usr/bin/logger -t $0 "leaving"
+ fi
+
+--Boundary-00=_T7lz/vxB0keYFVP--
 
 
 
