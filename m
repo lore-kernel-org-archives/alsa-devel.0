@@ -1,14 +1,13 @@
-From: David Lloyd <dmlloyd@tds.net>
-Subject: Re: dmix and full-duplex
-Date: Wed, 17 Dec 2003 15:18:04 -0600 (CST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: usb midi devices.
+Date: Thu, 18 Dec 2003 06:36:27 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312171505080.23689@tomservo.workpc.tds.net>
-References: <Pine.LNX.4.58.0312171402370.23689@tomservo.workpc.tds.net>
- <200312172155.59061.pwk.linuxfan@gmx.de>
+Message-ID: <3FE0CC5B.9030201@boosthardware.com>
+References: <Pine.HPX.4.33n.0312171510340.4515-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200312172155.59061.pwk.linuxfan@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,33 +16,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Kirk <pwk.linuxfan@gmx.de>
-Cc: Alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 17 Dec 2003, Peter Kirk wrote:
-
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
+Clemens Ladisch wrote:
+> Martin Langer wrote:
 > 
-> Am Mittwoch, 17. Dezember 2003 21:11 schrieb David Lloyd:
-> > Otherwise, if you all think this is not a worthwhile avenue to pursue, I
-> > will try to convince my wife to let me buy a sblive and call it a day. :)
+>>And there are some other cards (Sonica, ...) which need a firmware download,
+>>but there's no linux loader available.
 > 
-> its a very worth while avenue - in my personal and biased opinion (as
-> being heavily involved with teamspeak and its linux problems). You might
-> want to read the lengthy thread I created by asking for smart dmix and
-> dsnooping - Title is "smart and automatic use of dmix and dsnoop -
-> feature suggestion."
+> 
+> MobilePre, Sonica, Transit, Ozone (all from M-Audio).
+> 
 
-I read the thread, it was very informative.  Actually that thread was 
-pretty much my initial reference for learing how dmix works. :)  But it 
-didn't directly address the full-duplex software issue, mostly it talked 
-about using cards with hardware mixing.  I'm hoping to address the issue 
-directly, and beat it to a bloody conclusion in time for a clan match!  
-Now *that* is coding under pressure :)
+Thanks.
 
-- D
+> 
+> BTW:  Patrick, what would be the preferred format for submitting
+> changed to the soundcard list?  (There's no file to send a patch for.)
+> 
+
+For now just make additions to each manufacturer. I am working on a more 
+simple backend but haven't finished it yet.
+
+ATM I have just split each manufacturer into their own file and parse it 
+when the user asks to see it.
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+
+  Apparently upon the beginning of the barrage, the donkey broke 
+discipline and panicked, toppling the cart. At that point, the rockets 
+disconnected from the timer, leaving them strewn around the street. 
+Tethered to the now toppled cart, the donkey was unable to escape before 
+the arrival of U.S. troops.
+
+United Press International
+Rockets on donkeys hit major Baghdad sites
+
+By P. MITCHELL PROTHERO
+Published 11/21/2003 11:13 AM
+
 
 
 -------------------------------------------------------
