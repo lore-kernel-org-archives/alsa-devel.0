@@ -1,15 +1,12 @@
-From: Anders Torger <torger@ludd.luth.se>
-Subject: Re: Why do I get broken pipe on write to a pcm in statePREPARED?
-Date: Wed, 18 Sep 2002 21:57:28 +0200
+From: Ivan Middleton <ivan_middleton@yahoo.com>
+Subject: problems with external MIDI port
+Date: Wed, 18 Sep 2002 14:10:19 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200209181957.g8IJvS008300@d1o87.telia.com>
-References: <Pine.HPX.4.33n.0209171615490.1084-100000@studcom.urz.uni-halle.de>
+Message-ID: <20020918211019.55831.qmail@web13408.mail.yahoo.com>
+Reply-To: ivan_middleton@yahoo.com
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0209171615490.1084-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,64 +18,72 @@ List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 17 September 2002 16.40, Clemens Ladisch wrote:
-> > I feel that one can interpret both ways, so it is a quite open
-> > choice. Either way, one can state POSIX behaviour. Then the
-> > question becomes: what is the most usable behaviour?
->
-> I think we have only two choices for POSIX-compliant write()
-> behaviour in the prepared state:
->
-> 1) Don't allow any writes. Always return EPIPE.
->    (my interpretation above)
->
-> 2) Allow writes until the buffer is full, then block.
->    (Takashi's second interpretation)
->
-> The current ALSA implementation is an inconsistent mixture of both:
-> returning EPIPE means that it is impossible to write, but then it
-> should not have been possible for the first bufferfull to succeed.
->
-> And we want to be able to fill the first buffer, so IMHO 2) is the
-> way to go.
+Hi all,
 
-So, are we going to see a change in behaviour here? It seems like 
-everyone which has discussed this, except Abramo, wants to see a change 
-to the second interpretation which is:
+I'm having a problem with the ALSA sequencer.  First I was using
+0.9.0rc2, and then I switched to cvs, hoping that things would be fixed
+there.  But alas, the problems occur in both.  I was going to try the
+0.5 release, but it didn't want to compile for me.
 
-* write() blocks on blocking mode when output buffer is full, and 
-  returns EAGAIN when in non-blocking mode.
+The problem is as follows: I am running a program (called Linux Pipe
+Organ) which reads from the external MIDI port (64:0) via an ALSA
+sequencer connection, and which also starts a TiMidity process and
+sends events to it via ALSA sequencer connections.  (Basically, the
+program is just relaying MIDI events, after some modifications.)  This
+works fine for a few minutes, and then suddenly... nothing.  The ALSA
+sequencer stops relaying events from the external MIDI port.  Now, my
+digital piano is connected to the MIDI port, and it sends something
+like 30 MIDI events per second (I don't know exactly what these are)
+even when no keys are being pressed.  The problem I just described
+occurs even if I never press any keys on the piano; I can tell by
+watching /proc/asound/seq/clients, looking at the following lines
 
-* poll/select blocks when output buffer is full
+Client 132 : "Linux Organ" [User]
+  Port   0 : "Linux Organ" (rWe-)
+    Connected From: 64:0
+  Input pool :
+    Pool size          : 200
+    Cells in use       : 0
+    Peak cells in use  : 30
+    Alloc success      : 27513
+    Alloc failures     : 0
 
-...with no difference if the card is running or not. Today, it is a 
-different behaviour when the card is not running, where write returns 
-EPIPE (both blocking/non-blocking) and poll/select does not block.
+and noticing that after a while the "Alloc success" number stops
+changing (when everything is working it goes up by about 30 every
+second).
 
-The arguments for keeping the current behaviour is according to its 
-supporter(s?):
+Now, I wanted to test whether this problem is the fault of Linux Pipe
+Organ (hereafter LPO) or the ALSA sequencer.  So I recompiled LPO to
+have it listen to T. Iwai's Virtual Keyboard instead of the external
+MIDI port.  I then ran those programs, while simultaneously having
+'aseqview' listen to 64:0 (the external MIDI port).  The same thing
+happened again--after a little while, 'aseqview' stopped registering
+anything from the MIDI port, even though LPO, Virtual Keyboard, and
+TiMidity hadn't been communicating at all, only sitting there with
+established connections.  After this, LPO was still listening to the
+Virtual Keyboard just fine, meaning that the ALSA sequencer wasn't
+completely trashed or anything.  When I had 'aseqview' listen to 64:0
+in the absence of LPO, it seemed to work fine indefinitely.
 
- * It is easier to detect bugs which else would dead-lock the program
- * It is more logical, like a pipe with the hardware in the read end
+So it seems that the ALSA sequencer has problems with the external MIDI
+port in the presence of too many sequencer clients (8-10 in my
+situation).  I really have no idea what's going on here.  I should
+mention that my kernel is 2.5.33 and my sound card is sbawe.  Another
+funny thing I found was that in order to get the external MIDI port
+working again, I had to unload and reload the ALSA modules *twice* (I
+think this was the case every time, anyway).
 
-The arguments for changing to the new are:
+I'm hoping that the developers can reproduce this or at least have
+ideas for things I should try in order to probe this problem some more.
 
- * It is sometimes used in multi-threaded programs (fill buffer in one 
-   thread, start from another).
- * The current behaviour has no use apart from detection of a trivial 
-   dead-lock bug.
- * Especially in multi-threaded programs, the current behaviour with
-   EPIPE can be confused with underruns or overflows, making the 
-   "easier-to-detect-bug" feature to have the opposite effect.
- * It is a POSIX-compliant behaviour which the current is not
- * It is more logical, always same behaviour, no special case for cards
-   not running
- * It seems to be the more popular choice, and would break very little
-   if any if implemented.
+Thanks for your time,
+Ivan Middleton
 
-Ok, I said I would stop argue about this, so sue me.
 
-/Anders Torger
+__________________________________________________
+Do you Yahoo!?
+Yahoo! News - Today's headlines
+http://news.yahoo.com
 
 
 -------------------------------------------------------
