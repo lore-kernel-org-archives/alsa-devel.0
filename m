@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000787]: Headphone == Master if plugged
-Date: Fri, 7 Jan 2005 18:21:40 +0100
-Message-ID: <7731764bb140a3afc1af7ccccdec8ff0@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000785]: Add support to quickly change volume
+Date: Fri, 7 Jan 2005 18:25:31 +0100
+Message-ID: <353a7dde62e7ca7a0bf1b7b4e66a7b45@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 289B42F6
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 18:21:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 81BC624F
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 18:25:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=787> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=785> 
 ======================================================================
-Reported By:                Nafallo
+Reported By:                nijel
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   787
-Category:                   PCI - via82xx
+Project:                    ALSA - utils
+Issue ID:                   785
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu Linux 5.10 (hoary)
-Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             01-06-2005 02:04 CET
-Last Modified:              01-07-2005 18:21 CET
+Date Submitted:             01-05-2005 12:27 CET
+Last Modified:              01-07-2005 18:25 CET
 ======================================================================
-Summary:                    Headphone == Master if plugged
+Summary:                    Add support to quickly change volume
 Description: 
-When I'm using headphones the master volume meter changes to headphones
-volume meter, making me unable to use gnome-hotkeys to turn the volume
-up/down (i.e. they change master that's inactivated by headphones).
+Attached patch adds support for quickly changing volume using 0-9 keys in
+simmilar way as aumix does.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 18:21 
+ nijel - 01-05-05 14:00 
 ----------------------------------------------------------------------
-Isn't it nice to have separate volume controls for different outputs ;)
+Added new patch to fix muting on start, I forgot to set initial value
+correctly.
 
-ATM, I'm not sure which fix (or implemention) would be the right way.
-We can use the soft-volume control, or bind both volumes in the driver,
-and hide the headphone volume.
+----------------------------------------------------------------------
+ tiwai - 01-07-05 18:25 
+----------------------------------------------------------------------
+Well, I already assigned some number keys for alternatives to F1-F5.
+I think this feature is very nice, so we need to reassign keys.
+Any suggestions?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-06-05 02:04 Nafallo        New Issue                                    
-01-06-05 02:04 Nafallo        Distribution              => Ubuntu Linux 5.10
-(hoary)
-01-06-05 02:04 Nafallo        Kernel Version            => 2.6.9           
-01-06-05 02:13 Nafallo        Issue Monitored: Nafallo                     
-01-07-05 18:21 tiwai          Note Added: 0003109                          
+01-05-05 12:27 nijel          New Issue                                    
+01-05-05 12:27 nijel          File Added: alsamixer-numbers.patch               
+    
+01-05-05 14:00 nijel          File Added: alsamixer-numbers2.patch              
+     
+01-05-05 14:00 nijel          Note Added: 0003089                          
+01-07-05 18:25 tiwai          Note Added: 0003110                          
 ======================================================================
 
 
