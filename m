@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
-Date: Thu, 17 Feb 2005 18:31:20 +0100
-Message-ID: <f2097a75236e25dd206fafe7fbaf5516@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000823]: Shutdown messages
+Date: Thu, 17 Feb 2005 18:33:52 +0100
+Message-ID: <3bf756fccd92030584a2b95de09b2063@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF16F23D
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 18:31:23 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DE97523D
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 18:33:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,104 +21,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=823> 
 ======================================================================
-Reported By:                vaxen
-Assigned To:                tiwai
+Reported By:                Mark Knecht
+Assigned To:                charbonnel
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   914
-Category:                   PCI - nm256
+Issue ID:                   823
+Category:                   PCI - RME HDSP
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.9 2.6.10
+Status:                     closed
+Distribution:               FC2/PlanetCCRMA - up to date but not running newest
+kernel due to other Alsa problems
+Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-16-2005 20:39 CET
-Last Modified:              02-17-2005 18:31 CET
+Date Submitted:             01-16-2005 21:45 CET
+Last Modified:              02-17-2005 18:33 CET
 ======================================================================
-Summary:                    nm256 causes kernel to hard freeze
+Summary:                    Shutdown messages
 Description: 
-Hi, here is my specs:
+When shutting my system down I consistently get the following message:
 
-Gateway solo 3300
-http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
-Audio chipset NM2200 interface to AC97 CODEC
-
-pegasos vaxen # lspci -tv
--[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
-      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
-      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
-Audio]
-      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
-      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
-      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
-      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
-      +-0a.0  Texas Instruments PCI1211
-      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
-      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
-
-I am using a custom patched kernel at
-http://morph-sources.sourceforge.net/?q=node/27 
-
-It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
-alsa-bk-2005-01-14.patch.
-
-I compiled the drivers into the kernel, the kernel hard freezes after
-displaying these message:
-nm256:found card signature in video RAM: 0x27ec00
-nm256:Mapping port 1 from 0x2709a0-0x27ec00
-I have to switch off the laptop as it does not respond to any inputs.
-
-I also tried compiling the drivers as modules, when I tried to modprobe
-snd-nm256, the kernel hard freezes without any warning message.
-
-I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
-like 2.6.10.
-
-I have not tried alsa 1.0.7 driver.
-
-Please let me know if you need more diagnostic information to fix this
-problem.
+Shutting down sound driver rme_hammerfall dsp 0:00:0f 
+device was removed without properly calling pci_disable_device()
+This may need fixing
 ======================================================================
 
 ----------------------------------------------------------------------
- vaxen - 02-16-05 21:56 
+ tiwai - 01-17-05 15:04 
 ----------------------------------------------------------------------
-I tried booting from knoppix 3.4 which comes with kernel 2.6.5 and lsmod
-and dmesg tells me that it is using nm256_audio version 1.1p. This
-particular module works. Doing some research, the nm256_audio 1.1p is an
-OSS driver.
-
-ps:- knoppix 3.7 with kernel 2.6.9 also freeze.
-
-Thanks
-
-
-
-----------------------------------------------------------------------
- tiwai - 02-17-05 18:31 
-----------------------------------------------------------------------
-Well, it's really hard to debug this beast without hardware...
-
-Try reset_workaround=1 module option at first.
-Make sure that you load this module before starting X.  Once after you
-start X, the video RAM is cleared, and this confuses the sound driver
-(which uses the video RAM for the sound buffer).
+Already fixed in 1.0.8.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-16-05 20:39 vaxen          New Issue                                    
-02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
-02-16-05 21:36 vaxen          Note Added: 0003626                          
-02-16-05 21:38 vaxen          Note Edited: 0003626                         
-02-16-05 21:56 vaxen          Note Edited: 0003626                         
-02-17-05 18:31 tiwai          Note Added: 0003632                          
+01-16-05 21:45 Mark Knecht    New Issue                                    
+01-16-05 21:45 Mark Knecht    Distribution              => FC2/PlanetCCRMA - up
+to date but not running newest kernel due to other Alsa problems
+01-16-05 21:45 Mark Knecht    Kernel Version            =>
+2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+01-17-05 15:04 tiwai          Status                   assigned => resolved
+01-17-05 15:04 tiwai          Resolution               open => fixed       
+01-17-05 15:04 tiwai          Note Added: 0003234                          
+02-17-05 18:33 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
