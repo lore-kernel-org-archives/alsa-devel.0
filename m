@@ -1,16 +1,18 @@
-From: Georgi Georgiev <chutz@gg3.net>
-Subject: Re: snd-ioctl32 is failing on x86_64 (no crashes, just errors)
-Date: Sat, 8 Jan 2005 16:40:27 +0900
-Message-ID: <20050108074026.GA8595@lion.gg3.net>
-References: <20050106130649.GA253131@lion.gg3.net> <s5h1xcxy0tj.wl@alsa2.suse.de>
+From: Alan Jenkins <aj504@student.cs.york.ac.uk>
+Subject: Re: SiS 7012 with snd_intel8x0 is silent
+ [aj504@student.cs.york.ac.uk]
+Date: Sat, 08 Jan 2005 09:16:26 +0000
+Message-ID: <1105175786l.10260l.0l@localhost>
+References: <1105049276.12514.11.camel@localhost>
+	<1105105972l.10186l.0l@localhost> <s5h3bxdw4az.wl@alsa2.suse.de>
+	<1105133121.21211.3.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8; DelSp=Yes; Format=Flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from tiger.gg3.net (142.13.111.219.st.bbexcite.jp [219.111.13.142])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CDAD72DB
-	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 08:40:30 +0100 (MET)
+In-Reply-To: <1105133121.21211.3.camel@localhost> (from
+	aj504@student.cs.york.ac.uk on Fri Jan  7 21:25:21 2005)
 Content-Disposition: inline
-In-Reply-To: <s5h1xcxy0tj.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,82 +22,393 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-maillog: 07/01/2005-11:45:44(+0100): Takashi Iwai types
-> At Thu, 6 Jan 2005 22:06:50 +0900,
-> Georgi Georgiev wrote:
-> > 
-> > Running a 32-bit version of any application fails with:
-> > 
-> > amixer: Mixer hw:0 load error: Invalid argument
-> > 
-> > for example. I have snd-ioctl32 loaded properly (lsmod shows it).
-> 
-> Try strace amixer and see which ioctl failed.  Maybe it's the size
-> mismatching of argument, or an unimplemented ioctl.
+Copied to list for posterity.
 
-Here is the relevant part of a diff between the output of stracing 32
-and 64-bit versions of amixer on 2.6.10:
+On Fri, 2005-01-07 at 17:13, Takashi Iwai wrote:
+> At Fri, 07 Jan 2005 13:52:52 +0000,
+> Alan Jenkins wrote:
+> >
+> > My original message was too big for the list; I have now replaced
+two
+> > kernel configurations with the more recent one one and a diff.
+> >
+> > The problem is in linux 2.6.10 but not 2.6.9
+> > The OSS driver i810_audio works on both versions
+> > I compiled the driver as a module
+> > I have tried to make sure the kernel configurations are comparable
+by
+> > using make oldconfig and answering "n" to (almost) everything.
+>
+> This kind of problem is likely a mixer configuration, not the kernel
+> configuration.  Make sure that you set up the mixer properly.
+>
+> For debugging, please attach the content of /etc/asound.state and the
+> output of /proc/asound/card0/codec97#0/* files.
+>
+>
+> Takashi
 
---- amixer.2.6.10-y2.32.log     2005-01-08 16:07:48.000000000 +0900
-+++ amixer.2.6.10-y2.64.log     2005-01-08 16:07:27.000000000 +0900
--ioctl(3, USBDEVFS_CONTROL, 0xffffcd4c)  = 0
--fcntl64(3, F_GETFL)                     = 0x2 (flags O_RDWR)
--fcntl64(3, F_SETFL, O_RDWR|O_NONBLOCK)  = 0
--ioctl(3, USBDEVFS_RELEASEINTERFACE, 0xffffcf90) = 0
--ioctl(3, USBDEVFS_RELEASEINTERFACE, 0xffffcf90) = 0
--ioctl(3, USBDEVFS_CONNECTINFO, 0xffffcc80) = 0
--ioctl(3, USBDEVFS_IOCTL, 0xffffc510)    = -1 EINVAL (Invalid argument)
--write(2, "amixer: ", 8)                 = 8
--write(2, "Mixer default load error: Invali"..., 42) = 42
--write(2, "\n", 1)                       = 1
-+ioctl(3, USBDEVFS_CONTROL, 0x7fbfffeb7c) = 0
-+fcntl(3, F_GETFL)                       = 0x8002 (flags O_RDWR|O_LARGEFILE|0x8000)
-+fcntl(3, F_SETFL, O_RDWR|O_NONBLOCK|0x8000) = 0
-+ioctl(3, USBDEVFS_RELEASEINTERFACE, 0x7fbfffed90) = 0
-+ioctl(3, USBDEVFS_RELEASEINTERFACE, 0x7fbfffed90) = 0
-+open("/etc/mtab", O_RDONLY)             = 4
-+fstat(4, {st_mode=S_IFREG|0644, st_size=1041, ...}) = 0
-+mmap(NULL, 131072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x2a9556c000
-+read(4, "/dev/hdc3 / reiserfs rw,noatime,"..., 131072) = 1041
-+close(4)                                = 0
-+munmap(0x2a9556c000, 131072)            = 0
-+open("/proc/meminfo", O_RDONLY)         = 4
-+fstat(4, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
-+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x2a9556c000
-+read(4, "MemTotal:       768156 kB\nMemFre"..., 1024) = 600
-+close(4)                                = 0
-+munmap(0x2a9556c000, 4096)              = 0
-+ioctl(3, USBDEVFS_CONNECTINFO, 0x7fbfffeac0) = 0
-+ioctl(3, USBDEVFS_IOCTL, 0x7fbfffd980)  = 0
-+ioctl(3, USBDEVFS_CONNECTINFO, 0x7fbfffeac0) = 0
-+ioctl(3, USBDEVFS_IOCTL, 0x7fbfffd980)  = 0
-+ioctl(3, USBDEVFS_IOCTL, 0x7fbfffd980)  = 0
+Attached as requested.
 
-Except for minor differences (like 0x7fbfffda40 instead of 0x7fbfffeac0,
-etc.), the log from 2.6.7 was identical to the one from 2.6.10.
+I ran out of time last night.  I ran alsamixer and mixer configuration
+problems did appear to be involved.
 
-> > Kernel is vanilla 2.6.10 and I just tried it with version 1.0.8rc2 of
-> > alsa-driver. Also, alsa-lib and alsa-utils version 1.0.8rc2 are
-> > installed in my 64-bit environment, and also in the 32-bit chroot env
-> > where I am trying to run amixer from. The distro is Gentoo, and I also
-> > have their alsa-headers-1.0.8_rc2 installed in the 32-bit chroot.
-> 
-> ALSA ioctl32 in 2.6.10 or older is buggy.  Try to avoid it.
+When I boot the 2.6.10 kernel I get zero volume on every channel though
+not muted), when previouslly runlevel scripts would restore the volume
+level set last time.  I still get no sound if I push every channel
+possible to 100% unmuted (as shown in the attached files).  Restarting
+the runlevel script responsible seems to preseve volume settings but
+occasionally mutes channels which where not previously muted.
 
-Avoid using ioctl32? I don't have much of a choice since it doesn't work
-anyway. It would be nice to get some sound on flash pages and wine,
-though.
+I am using an analogue output (3.5mm jack plug), and have set
+the "IEC958 Playback Source" (in alsamixer) option to Analog.
 
-2.6.10 or older pretty much covers every kernel out there. What kernel
-version is it OK to test this with?
+My suspicion is that the output selection is at fault.
 
--- 
-*)   Georgi Georgiev   *) What hath Bob wrought?                       *)
-(*    chutz@gg3.net    (*                                              (*
-*)  +81(90)6266-1163   *)                                              *)
+Thanks!
+
+
+state.SI7012 {
+	control.1 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Master Playback Switch'
+		value true
+	}
+	control.2 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Master Playback Volume'
+		value.0 11
+		value.1 11
+	}
+	control.3 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Center Playback Switch'
+		value true
+	}
+	control.4 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Center Playback Volume'
+		value 0
+	}
+	control.5 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'LFE Playback Switch'
+		value true
+	}
+	control.6 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'LFE Playback Volume'
+		value 0
+	}
+	control.7 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Surround Playback Switch'
+		value.0 true
+		value.1 true
+	}
+	control.8 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Surround Playback Volume'
+		value.0 0
+		value.1 0
+	}
+	control.9 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'PC Speaker Playback Switch'
+		value true
+	}
+	control.10 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 15'
+		iface MIXER
+		name 'PC Speaker Playback Volume'
+		value 0
+	}
+	control.11 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Mic Playback Switch'
+		value true
+	}
+	control.12 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Mic Playback Volume'
+		value.0 0
+		value.1 0
+	}
+	control.13 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Mic Boost (+20dB)'
+		value true
+	}
+	control.14 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Line Playback Switch'
+		value true
+	}
+	control.15 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Line Playback Volume'
+		value.0 0
+		value.1 0
+	}
+	control.16 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'CD Playback Switch'
+		value true
+	}
+	control.17 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'CD Playback Volume'
+		value.0 0
+		value.1 0
+	}
+	control.18 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Video Playback Switch'
+		value true
+	}
+	control.19 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Video Playback Volume'
+		value.0 0
+		value.1 0
+	}
+	control.20 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Aux Playback Switch'
+		value true
+	}
+	control.21 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Aux Playback Volume'
+		value.0 0
+		value.1 0
+	}
+	control.22 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'PCM Playback Switch'
+		value true
+	}
+	control.23 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 31'
+		iface MIXER
+		name 'PCM Playback Volume'
+		value.0 0
+		value.1 0
+	}
+	control.24 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.item.0 Mic
+		comment.item.1 CD
+		comment.item.2 Video
+		comment.item.3 Aux
+		comment.item.4 Line
+		comment.item.5 Mix
+		comment.item.6 'Mix Mono'
+		comment.item.7 Phone
+		iface MIXER
+		name 'Capture Source'
+		value.0 'Mix Mono'
+		value.1 'Mix Mono'
+	}
+	control.25 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Capture Switch'
+		value true
+	}
+	control.26 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 15'
+		iface MIXER
+		name 'Capture Volume'
+		value.0 0
+		value.1 0
+	}
+	control.27 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.item.0 Mix
+		comment.item.1 Mic
+		iface MIXER
+		name 'Mono Output Select'
+		value Mix
+	}
+	control.28 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.item.0 Mic1
+		comment.item.1 Mic2
+		iface MIXER
+		name 'Mic Select'
+		value Mic1
+	}
+	control.29 {
+		comment.access read
+		comment.type IEC958
+		iface MIXER
+		name 'IEC958 Playback Con Mask'
+		value =20
+'0fff000f000000000000000000000000000000000000000000000000000000000000000000=
+000000000000000000000000000000000000000000000000000000000000000000000000000=
+000000000000000000000000000000000000000000000000000000000000000000000000000=
+000000000000000000000000000000000000000000000000000000000000000000000000000=
+00000000000000000000000000000000000000000000000000000'
+	}
+	control.30 {
+		comment.access read
+		comment.type IEC958
+		iface MIXER
+		name 'IEC958 Playback Pro Mask'
+		value =20
+cf0000000000000000000000000000000000000000000000000000000000000000000000000=
+000000000000000000000000000000000000000000000000000000000000000000000000000=
+000000000000000000000000000000000000000000000000000000000000000000000000000=
+000000000000000000000000000000000000000000000000000000000000000000000000000=
+0000000000000000000000000000000000000000000000000000
+	}
+	control.31 {
+		comment.access 'read write'
+		comment.type IEC958
+		iface MIXER
+		name 'IEC958 Playback Default'
+		value =20
+'00820002000000000000000000000000000000000000000000000000000000000000000000=
+000000000000000000000000000000000000000000000000000000000000000000000000000=
+000000000000000000000000000000000000000000000000000000000000000000000000000=
+000000000000000000000000000000000000000000000000000000000000000000000000000=
+00000000000000000000000000000000000000000000000000000'
+	}
+	control.32 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'IEC958 Playback Switch'
+		value true
+	}
+	control.33 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 3'
+		iface MIXER
+		name 'IEC958 Playback AC97-SPSA'
+		value 0
+	}
+	control.34 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.item.0 Analog
+		comment.item.1 Digital
+		iface MIXER
+		name 'IEC958 Playback Source'
+		value Analog
+	}
+	control.35 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'IEC958 Capture Valid Switch'
+		value true
+	}
+	control.36 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'IEC958 Capture Monitor'
+		value true
+	}
+	control.37 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'IEC958 Capture Switch'
+		value false
+	}
+	control.38 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Line-In As Surround'
+		value true
+	}
+	control.39 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Mic As Center/LFE'
+		value true
+	}
+	control.40 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'External Amplifier'
+		value true
+	}
+}
+
+
+
 
 
 -------------------------------------------------------
