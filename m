@@ -1,14 +1,14 @@
-From: =?big5?B?Qy5MLiBUaWVuIC0gpdCp08Kn?= <cltien@cmedia.com.tw>
-Subject: RE: AFMT_AC3 support
-Date: Thu, 18 Dec 2003 10:04:26 +0800
+From: Benouille <benouille@ifrance.com>
+Subject: Re: snd-rme9652 fails
+Date: Thu, 18 Dec 2003 09:38:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D31E@cm-msg-02.cmedia.com.tw>
+Message-ID: <3FE1676C.40806@ifrance.com>
+References: <3FE02BA2.8020900@emt.iis.fhg.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
+In-Reply-To: <3FE02BA2.8020900@emt.iis.fhg.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,41 +17,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The problem is that I need to have my driver work with application that =
-already use AFMT_AC3 in OSS. I don't need AC3 API for it because AC3 =
-stream will be sent by that application so what I need is just to handle =
-the AFMT_AC3 just as other AFMT_S16_LE PCM formats.
+Hi
 
-Sincerely,
-ChenLi Tien
+I confirm this fact:
+with kernel 2.4.23 and alsa 1.0rc2, the module snd-rme9652 can't be loaded
+althought the "old"  rme digi 9652 is perfectly working with alsa 0.9.6
 
+Regards,
 
------Original Message-----
-From:	James Courtier-Dutton [mailto:James@superbug.demon.co.uk]
-Sent:	2003/12/17 [=ACP=B4=C1=A4T] =A4U=A4=C8 06:04
-To:	C.L. Tien - =A5=D0=A9=D3=C2=A7
-Cc:	alsa-devel@lists.sourceforge.net
-Subject:	Re: [Alsa-devel] AFMT_AC3 support
-C.L. Tien - ??? wrote:
+Benoit
+
+Le 17/12/2003 11:10, Martin Wilhelm a &eacute;crit :
+
 > Hi,
->=20
-> Can ALSA support AFMT_AC3 to enable xine to play AC3 through S/PDIF =
-interface? I check in core/pcm.c and core/oss/pcm_oss.c, neither of them =
-has keywork AC3.
->=20
-> Sincerely,
-> ChenLi Tien
->=20
-It works if you use the ALSA API instead of the OSS emulation in the=20
-ALSA driver.
-
-
-
-
+> 
+> 
+> according to martin dausel's posting some weeks ago, I can
+> confirm, that since alsa-0.9.8 was released, the "old" rme-9652
+> cards are no longer working.
+> This is very strange, because the driver was not changed... :(
+> And: The OSS-kernelmod (rme96xx) works fine!
+> 
+> Here's some output (long lines not wrapped):
+> 
+> 
+> Alsa-Try:
+> ----------------------------------------------------------------
+> [root@il028 /]# modprobe snd-rme9652
+> /lib/modules/2.4.23-uv1-AEMT/kernel/sound/pci/rme9652/snd-rme9652.o:
+> init_module: No such device
+> Hint: insmod errors can be caused by incorrect module parameters,
+> including invalid IO or IRQ parameters.
+>       You may find more information in syslog or the output from dmesg
+> modprobe: insmod
+> /lib/modules/2.4.23-uv1-AEMT/kernel/sound/pci/rme9652/snd-rme9652.o failed
+> modprobe: insmod snd-rme9652 failed
+> [root@il028 /]#
+> 
+> [root@il028 /]# dmesg
+> RME Digi9652/Digi9636: no cards found
+> [root@il028 /]#
+> ----------------------------------------------------------------
+> 
+> 
 
 
 -------------------------------------------------------
