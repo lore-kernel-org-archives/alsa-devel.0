@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ad1888 as in ASUS P4R800-VM motherboards
-Date: Mon, 16 Feb 2004 11:04:23 +0100 (MET)
+Subject: Re: Creamware Noah, snd-usb-audio capable?
+Date: Mon, 16 Feb 2004 11:12:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0402161100220.4733-100000@studcom.urz.uni-halle.de>
-References: <002f01c3f317$58b65e90$6601a8c0@peterlaptop>
+Message-ID: <Pine.HPX.4.33n.0402161110040.4733-100000@studcom.urz.uni-halle.de>
+References: <1076789647.2475.5.camel@chief.local>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <002f01c3f317$58b65e90$6601a8c0@peterlaptop>
+In-reply-to: <1076789647.2475.5.camel@chief.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,30 +17,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Antypas <peter@joyfaktory.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Hartmut Geissbauer <nwgbh@swissonline.ch>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Peter Antypas wrote:
-> I 've had no luck in using the cvs version with the ad1888 update.
-> In fact, I can't even load snd-intel8x0. I thought the intel8x0
-> module was supposed to work here?
-
-An AC'97 system consists of two components: an AC'97 codec (in your
-case, the AD1888), and an AC'97 controller (usually part of the
-southbridge).  Your codec is supported, but your controller isn't.
-
-> cat /proc/pci reveals a PCI id of 1002:4341 with I/O at 0xfbe00000
-> to 0xfbe000ff. It reports the device is (ATI Technologies) (rev 0)
-> grepping through the CVS source (checked out today) for "1002" or
-> "4341" reveals nothing.
+Hartmut Geissbauer wrote:
+> Clemens Ladisch wrote:
+> > The problem is that the kernel automatically selects the first
+> > configuration.  Please try the patch below.
 >
-> I added the PCI ids to snd-intel8x0 and it fails to grab the
-> specified I/O ports. What could be the problem here?
+> drivers/usb/core/usb.c: usb_hotplug
+> usb 1-2.4: configuration #1 chosen from 2 choices
+> usb 1-2.4: registering 1-2.4:1.0 (config #1, interface 0)
+> drivers/usb/core/usb.c: usb_hotplug
+> snd-usb-audio 1-2.4:1.0: usb_probe_interface
+> snd-usb-audio 1-2.4:1.0: usb_probe_interface - got id
+>
+> The device is not appearing in /proc/asound.
 
-The problem is that ATI's AC'97 controller isn't compatible with
-Intel's, so snd-intel8x0 doesn't work with it.  And it's completely
-undocumented, so we cannot write a driver for it.
+Does the new configuration (the audio interfaces) show up in
+/proc/bus/usb/devices?  What happens when you re-load snd-usb-audio
+after that?
 
 
 Regards,
