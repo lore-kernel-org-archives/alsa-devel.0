@@ -1,15 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: smart and automatic use of dmix and dsnoop - feature
- suggestion.
-Date: Mon, 17 Nov 2003 21:58:54 +0000
+From: Roderick Colenbrander <thunderbird2k@gmx.net>
+Subject: alsa-oss emulation bug?
+Date: Mon, 17 Nov 2003 23:02:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FB9449E.3030904@superbug.demon.co.uk>
-References: <200311171936.hAHJaW1B013634@oud.linuxaudiosystems.com> <Pine.LNX.4.53.0311172102250.16992@pnote.perex-int.cz> <200311172128.34259.pwk.linuxfan@gmx.de>
+Message-ID: <200311172302.04469.thunderbird2k@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200311172128.34259.pwk.linuxfan@gmx.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,58 +22,37 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-Just a general comment on dmix/dsnoop.
-1) It is not bug free yet. I have an application that fails when one 
-tries to use it. (xine.sf.net). I have not had time to establish why 
-yet. E.g. xine using "front" device, output's stereo sounding perfectly. 
-I note down the buffer and period sizes and rate and sample format being 
-used for "front" and set "dmix" to use the same via the alsa.conf file.
-But playing with "dmix" causes the sound to stutter, as though only 
-every second period is being played, with zero samples in between.
-When I get a moment I will investigate further the exact cause. 
-Initially I thought it was a buffer/period size problem, but I have 
-checked that, and that is not the problem. The next TODO test I will do 
-will be testing the snd_pcm_delay() returned from the dmix device, and 
-compare it's accuracy with "front".
+At the moment I'm debugging an alsa-oss emulation related bug. I'm using 
+alsa .9.8 on a i810 card. Using native alsa code I can query the capabilities 
+of the card. Alsa tells that only some 16bit formats are supported which is 
+is correct. When I'm in oss emulation mode, the driver also advertises 
+various 8bit formats which is wrong. Because of this problem the app I'm 
+debugging (Wine) is crashing as it tries to use 8bit while it isn't 
+supported.
 
-2) For smart dmix/dsnoop to be really user friendly, we will need a 
-version of it that works in full duplex. I.E. Multiple applications able 
-to record the same stream as well as play to it at the same time.
+After some digging in the alsa oss source I found this in 
+snd_pcm_oss_get_formats of pcm_oss.c:
+        if ((err = snd_pcm_oss_get_active_substream(pcm_oss_file, &substream)) 
+< 0)
+                return err;
+        if (atomic_read(&substream->runtime->mmap_count)) {
+                direct = 1;
+        } else {
+                snd_pcm_oss_setup_t *setup = substream->oss.setup;
+                direct = (setup != NULL && setup->direct);
+        }
+        if (!direct)
+                return AFMT_MU_LAW | AFMT_U8 |
+                       AFMT_S16_LE | AFMT_S16_BE |
+                       AFMT_S8 | AFMT_U16_LE |
+                       AFMT_U16_BE;
 
-3) If one application wishes to play to "surround51" and a different 
-application wishes to play to "front", dmix will have to be clever 
-enought to mix the two.
+The supported formats alsa returns in my case is what you see behind the 
+if(!direct) line, so for some reason direct = 0. As I barely know anything 
+about alsa I hope you guys can help me out.
 
-4) If one application wishes to play to "front" and a different 
-application wishes to play to "rear", the mixer should be able to mix to 
-get 4 output channels.
-
-5) I think that this sound mixing problem might be better served by 
-sound servers like jack.
-
-6) software mixing is ok, but software resampling is not a good idea to 
-do in alsa-lib, because a) It cannot do good quality resamplings because 
-t is trying to keep latency low. b) A audio/video application could do 
-resampling better because it could do it at the decoding stages, before 
-latency and audio/video sync is a problem.
-
-7) For mixing, each open of the alsa multi-open device should have it's 
-own volume control per open, and not just the hardware backend volume 
-controls. The application could easily control their own volume, without 
-effecting other application's volume.
-
-Summary: -
-An application should be able to use device names like "rear", "front", 
-"surround51" and then have a separate control to tell alsa whether it is 
-allowed to do resampling or not. Then at least the more advanced 
-application could decide for itself whether to use alsa-lib's low 
-quality resampler, or implement it's own multi-tap interpolation filter.
-For a video/audio application like xine.sf.net, being able to open the 
-alsa device in such a way to ensure we know where the sound will be 
-routed(which speakers sound will come from) is useful.
-
-Cheers
-James
+Thanks in advance,
+Roderick Colenbrander
 
 
 
