@@ -1,15 +1,13 @@
-From: Peter Heatwole <peter599@gotnet.net>
-Subject: Re: cs46xx experimental DSP drivers
-Date: Tue, 24 Sep 2002 23:41:51 -0700
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Problems with SBLive! and current CVS
+Date: Wed, 25 Sep 2002 10:08:36 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020925064151.GC781@porky>
-References: <3D8F7F59.6030105@prism.gatech.edu> <3D90A8D8.7070103@cucumelo.org> <3D90B54F.20402@prism.gatech.edu> <3D90D641.7050200@cucumelo.org> <20020925010806.GA4779@porky>
+Message-ID: <Pine.LNX.4.33.0209251007560.532-100000@pnote.perex-int.cz>
+References: <Pine.GSO.4.44.0209250037500.13764-100000@oneiro.csd.uch.gr>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20020925010806.GA4779@porky>
+In-Reply-To: <Pine.GSO.4.44.0209250037500.13764-100000@oneiro.csd.uch.gr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,48 +16,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: gorm@cucumelo.org
+To: Panagiotis Papadakos <papadako@csd.uoc.gr>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 2002.09.24 18:08 Peter Heatwole wrote:
+On Wed, 25 Sep 2002, Panagiotis Papadakos wrote:
+
+> hw_params:
+> 
+> access: RW_INTERLEAVED
+> format: S16_LE
+> subformat: STD
+> channels: 2
+> rate: 44100 (44100/1)
+> period_size: 4096
+> buffer_size: 32768
+> tick_time: 10000
 > 
 > 
->    Booyah!   Just got digital out working properly on my Santa Cruz, and 
-> it
-> sounds great. I just needed to unmute "EGPIO In" and "IEC 958 Output".
+> info:
+> 
+> card: 0
+> device: 0
+> subdevice: 0
+> stream: PLAYBACK
+> id: emu10k1
+> name: EMU10K1
+> subname: subdevice #0
+> class: 0
+> subclass: 0
+> subdevices_count: 32
+> subdevices_avail: 31
+> 
+> 
+> status:
+> 
+> state: RUNNING
+> trigger_time: 1032900260.282144
+> tstamp      : 1032903565.206917
+> delay       : 27890
+> avail       : 4878
+> avail_max   : 4878
+> -----
+> hw_ptr      : 145774350
+> appl_ptr    : 145802240
+> 
+> 
+> sw_params:
+> 
+> tstamp_mode: NONE
+> period_step: 1
+> sleep_min: 0
+> avail_min: 4096
+> xfer_align: 4096
+> start_threshold: 1
+> stop_threshold: 32768
+> silence_threshold: 0
+> silence_size: 0
+> boundary: 1073741824
+> 
+> This is a 2.4.20-pre7 kernel on an Athlon 600 Mhz (Slot-A) with 512 Mb
+> RAM.
 
+I don't see any problem on first glance. Please, could you introduce 
+your problem to us more deeply?
 
-    My apologies, I was rushed for a meeting and had to fire that e-mail 
-off
-in a hurry. (Not to mention I was elated to have digital output)
-    To be more precise, here is the information I've collected.
+						Jaroslav
 
-    I've double checked, and from a fresh module insertion, I need to 
-unmute
-"EGPIO Input/Output" (therby setting bit one in BA0_EGPIODR), and unmute
-"IEC 958 Output". Then coaxial digital out functions properly on my TB 
-Santa
-Cruz.
-    Benny: what needs to be done so that the proper BA0_EGPIODR bits are 
-set
-to input or output when the user uses the "IEC 958 Input" and "IEC 958
-Output" sliders? In other words, how could using the "IEC 958 Input" and
-"IEC 958 Output" sliders properly set the BA0_EGPIODR bits? Also, can the
-Game Theater have both optical in/out, and coaxial in/out simultaneously?
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
-    On a side note, I noticed that the chip retains certain register 
-values.
-When I re-tested my instructions, I noticed that "EGPIO Input/Output" would
-retain it's value after reloading the snd-cs46xx module. Just a heads up in
-case you hadn't noticed this. It confused me for a minute, since I couldn't
-understand why simply unmuting "IEC 958 Output" worked now, whereas earlier
-it did not.
-
-I hope all that makes sense. =o)
-
--- Peter Heatwole
-"Murphy was just a well known pessimist."
 
 
 -------------------------------------------------------
