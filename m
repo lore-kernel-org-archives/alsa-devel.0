@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0000577]: locking two (or more) mixer sliders together to get full volume range
-Date: Thu, 14 Oct 2004 14:45:43 +0200 (CEST)
+Date: Thu, 14 Oct 2004 14:58:56 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041014124543.CD81D2D0C1@server.perex-int.cz>
+Message-ID: <20041014125856.230AA2D0C1@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 867EB290
-	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 14:45:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A2FB1290
+	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2004 14:58:56 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000577
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000577
 ======================================================================
 Reported By:                ldarby
 Assigned To:                
@@ -36,7 +36,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             10-10-2004 17:35 CEST
-Last Modified:              10-14-2004 14:45 CEST
+Last Modified:              10-14-2004 14:58 CEST
 ======================================================================
 Summary:                    locking two (or more) mixer sliders together to get full volume range
 Description: 
@@ -94,6 +94,24 @@ interested.
 
 Laurence
 
+----------------------------------------------------------------------
+ tiwai - 10-14-2004 14:58 CEST 
+----------------------------------------------------------------------
+Sending bugs to alsa-devel is fine, IMO, since alsa-devel is the
+place where every development process should be centralized.
+(Though, the message should be shorten, containing only diffs.)
+
+Again, BTS is not the place for DISCUSSION.  It's the place for
+REPORTING.
+If you ask something, or want to hear something from other people
+(like this case), then alsa-devel is the appropriate place.
+That's my point.
+
+The feature request itself is fine (although it will be likely in
+the low priority).
+
+BTW, any patches are very appreciated, of course :) !!
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -102,6 +120,7 @@ Date Modified  Username       Field                    Change
 10-11-04 20:26 ldarby         Bugnote Added: 0002084                       
 10-12-04 11:49 tiwai          Bugnote Added: 0002088                       
 10-14-04 14:45 ldarby         Bugnote Added: 0002147                       
+10-14-04 14:58 tiwai          Bugnote Added: 0002148                       
 ======================================================================
 
 
