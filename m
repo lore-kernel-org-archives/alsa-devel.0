@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
-Date: Fri, 21 Jan 2005 12:04:21 +0100
-Message-ID: <7ffd83ce13d0e9ccacdeb3bd5aa53f77@bugtrack.alsa-project.org>
+Date: Fri, 21 Jan 2005 12:05:58 +0100
+Message-ID: <2c52181d947f0afac6cff0dd23dba23d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 56664247
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 12:04:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7AF07247
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 12:05:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Suse
 Kernel Version:             2.6.8-24.10-smp
 ======================================================================
 Date Submitted:             01-19-2005 18:19 CET
-Last Modified:              01-21-2005 12:04 CET
+Last Modified:              01-21-2005 12:05 CET
 ======================================================================
 Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
 slider control for Surround/Center/LFE/Side
@@ -52,14 +52,6 @@ PCM, PC Speaker and the two (2) Capture sliders.
 In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
 appear at all.
 ======================================================================
-
-----------------------------------------------------------------------
- 1g0R - 01-21-05 11:08 
-----------------------------------------------------------------------
-Hi mab,
-
-I have sound, but I cant slide down or up the volume (PCM) slider.
-Then always 100% the volume level.
 
 ----------------------------------------------------------------------
  tiwai - 01-21-05 12:04 
@@ -75,6 +67,12 @@ Don't use OSS apps, or you have no volume control at all.
 Or try aoss instead of kernel OSS emulation.
 
 Again: the chip has no control for playback volumes.
+
+----------------------------------------------------------------------
+ tiwai - 01-21-05 12:05 
+----------------------------------------------------------------------
+For SPDIF, try "model=full_dig" option.  This will change the configuration
+to the full mode (back 6 + front 2 jacks with digital in/out).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -101,6 +99,7 @@ Date Modified  Username       Field                    Change
 01-21-05 08:16 mab            Note Added: 0003339                          
 01-21-05 11:08 1g0R           Note Added: 0003340                          
 01-21-05 12:04 tiwai          Note Added: 0003343                          
+01-21-05 12:05 tiwai          Note Added: 0003344                          
 ======================================================================
 
 
