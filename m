@@ -1,14 +1,15 @@
-From: "Men Muheim" <muheim@gmx.ch>
-Subject: snd_pcm_status_get_trigger_tstamp
-Date: Wed, 13 Nov 2002 11:22:33 +0100
+From: =?iso-8859-15?Q?Jos=E9?= Fonseca <j_r_fonseca@yahoo.co.uk>
+Subject: Re: Oops in cs4281_suspend
+Date: Mon, 11 Nov 2002 16:57:54 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <004601c28afe$94d57aa0$461d8481@profi>
-Reply-To: <men@ife.ee.ethz.ch>
+Message-ID: <20021111165754.GA15463@localhost.localdomain>
+References: <20021111143136.GB6862@localhost.localdomain> <Pine.LNX.4.21.0211111716180.1287-100000@mailserver.intern.bfad.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.21.0211111716180.1287-100000@mailserver.intern.bfad.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,49 +18,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: tomasz motylewski <T.Motylewski@bfad.de>
+Cc: alsa-devel@lists.sourceforge.net, arip@bfad.de
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Mon, Nov 11, 2002 at 05:19:14PM +0100, tomasz motylewski wrote:
+> > options (also attached), it shows that the problem is in the line:
+> > 
+> > 	chip->suspend_regs[i] = snd_cs4281_peekBA0(chip, saved_regs[i]);
+> 
+> Very good report :-)
+> 
 
-I am having a problem using the function
-snd_pcm_status_get_trigger_tstamp(). I expect the function to return the
-sample time of the latest trigger, which corresponds to the time of the
-first sample in the actual channel area.
+Well I'm still beating myself for not noticing what was the bug even
+after looking so many times to those lines! 8O
 
-Instead the function returns zero in my case. Am I misunderstanding the
-means of the function or is the function not supported in
-alsa-0.9.0beta10?
+> I think the following patch should solve this problem. But since that
+> suspend/resume seems to not have been tested at all for that driver,
+> may be some other things will show up.
 
-I appreciate any comments on this...
+It solved indeed. And surprisingly suspend/resume worked flawlessly
+after.
 
-Regards, Men
+Thanks,
 
-
-
-PS: I am using SND_PCM_ACCESS_MMAP_NONINTERLEAVED from
-(http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2pcm_8c-example.ht
-ml#example_test_pcm) and want to get the time of the first sample in the
-actual channel area by calling 
-
-
-void gettimestamp(snd_pcm_t *handle, snd_timestamp_t *timestamp)
-{
-        int err;
-        snd_pcm_status_t *status;
-
-        snd_pcm_status_alloca(&status);
-        if ((err = snd_pcm_status(handle, status)) < 0) {
-                printf("Stream status error: %s\n", snd_strerror(err));
-                exit(0);
-        }
-        snd_pcm_status_get_trigger_tstamp(status, timestamp);
-}
-
+José Fonseca
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by: Are you worried about 
-your web server security? Click here for a FREE Thawte 
-Apache SSL Guide and answer your Apache SSL security 
-needs: http://www.gothawte.com/rd523.html
+This sf.net email is sponsored by:ThinkGeek
+Welcome to geek heaven.
+http://thinkgeek.com/sf
