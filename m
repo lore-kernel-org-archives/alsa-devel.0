@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: dmix plugin
-Date: Mon, 17 Feb 2003 20:45:55 +0100 (CET)
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: [linux-audio-user] Re: Please explain Alsa Interface MIDI numbering PLEASE!
+Date: Mon, 17 Feb 2003 12:40:24 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302172038300.15268-100000@pnote.perex-int.cz>
-References: <1045495976.3e5100a8efb9b@webmail3.namezero.com>
+Message-ID: <NDBBLGIKBJENLAMOLFHGOEEBBHAB.mknecht@controlnet.com>
+References: <E18kpeu-0008Rr-00@sc8-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1045495976.3e5100a8efb9b@webmail3.namezero.com>
+In-Reply-To: <E18kpeu-0008Rr-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,38 +18,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslaw Sobierski <fycio@gucio.com>
-Cc: "abramo.bagnara@libero.it" <abramo.bagnara@libero.it>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: Linux-Audio-User <linux-audio-user@music.columbia.edu>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 17 Feb 2003, Jaroslaw Sobierski wrote:
-
-> >> I see, the read/saturate/write must be atomic, too. In this case, it would
-> >> be better to use a global (or a set of) mutex(es) to lock the hardware
-> >> ring buffer. The futexes are nice.
+> >    0 'Timer           '
+> >    1 'Announce        '
+> >client 64: 'External MIDI 0' [type=kernel]
+> >    0 'MIDI 0-0        '
+> >   32 'MIDI 0-1        '
+> >client 72: 'External MIDI 1' [type=kernel]
+> >    0 'Midisport 2x2 Port 0'
+> >    1 'Midisport 2x2 Port 1'
+> >    2 'Midisport 2x2 Port 2'
+> >    3 'Midisport 2x2 Port 3'
+> >[mark@Godzilla mark]$
 > >
-> >They are nice indeed, but definitely not the right solution here.
 > >
-> >Although I don't know if it's the absolute best solution, the 'retry'
-> >approach I've proposed is far better and much more efficient.
-> 
-> I have to agree with Abramo. A global mutex would cause long and unnecessary 
-> waits for the processes trying to write to the plugin. Locking access to
-> individual parts of the buffer is messy. Notice that concurrent writes 
-> to the same sample in the buffer will occur sporadically, and the "re-read"
-> in the loop costs almost nothing, while synchronization mechanisms could 
-> block often.
+> >   The above information is certainly a bit more readable, but it seems
+> >to still be, at the least, inconsistent.
+> >
+> >1) For client 64, which is an HDSP 9652, there are two rawmidi ports.
+> >However, the info above says they are labeled '0' and '32'. Should they
+> >not be 0 & 1? If this is an error, then what needs to be fixed? The HDSP
+> >9652 driver?
+>
+> no, the port numbers are 0 and 32, but in the name, its 0 and 1.
 
-Note that your all nice ideas go to some blind alley. Who will silence the 
-sum buffer? Driver silences only hardware buffer which will not be used 
-for the calculation in your algorithm.
+Well, OK, I guess I don't understand the meaning of 'ports' then. The HDSP
+only has two sets of in and out connectors. Are these not ports? Or does the
+Alsa spec think that each 'port' is somehow combination of a MIDI connector
+and a channel or something? How is it that a single input uses up 32 port
+number? (HDSP 9652 MIDI 1 seems to go from port 0 to port 31, and I guess #2
+goes from 32-63.)
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+>
+> >2) Why does the HDSP 9652 not tell me its name like the MidiSport does?
+>
+> its using a copy of some generic ALSA code that just calls the ports
+> "MIDI C P" where C=card number and P=physical port number. i'll change
+> this when i add the fixes for the mixer and the h/w names.
+>
+
+This would be very helpful. Thanks!
 
 
 
