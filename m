@@ -1,10 +1,11 @@
-From: =?utf-8?q?Tibbie Jgodwn?= <requisitesfy@dungeonbazaar.com>
-Subject: =?utf-8?q?Usher wears Rolex?=
-Date: Mon, 13 Dec 2004 10:35:16 +0000
-Message-ID: <E1Cdr9n-0006L6-Ez@sc8-sf-mx2.sourceforge.net>
+From: "Vijay Narasimha" <vjnr83@rediffmail.com>
+Subject: new to alsa..
+Date: 13 Dec 2004 15:10:57 -0000
+Message-ID: <20041213151057.6715.qmail@webmail17.rediffmail.com>
+Reply-To: "Vijay Narasimha" <vjnr83@rediffmail.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	 boundary="X5C3b61ZTEoNl2qs"
+	boundary="Next_1102950657---0-203.199.83.27-6711"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,51 +16,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?utf-8?q?Maude Mray?= <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+ This is a multipart mime message
 
---X5C3b61ZTEoNl2qs
-Content-Type: text/plain;
-	charset="utf-8"
+
+--Next_1102950657---0-203.199.83.27-6711
+Content-type: text/plain;
+	charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Genuine Replicas Watches
-
-We offer the following trademarks available besides:
-
-Rolex
-Chopard
-Jaeger-lecoultre
-Chronoswiss
-Tag Heuer
-
-http://oitmlamba.ro1ex.com/rolex/vron/encp.pl
---X5C3b61ZTEoNl2qs
-Content-Type: text/html;
-	charset="utf-8"
+  =0Ahi,=0A=0Ai'm new to alsa.  i went through the tutorials but I couldn't=
+ find how to  start off with it initially.  My doubts is:=0A=0A I don't hav=
+e alsa_netplay/alsa_netcapture in my linux.what should I install? (utilitie=
+s, lib, drivers)=0A=0A=0AThanks,=0AVijay
+--Next_1102950657---0-203.199.83.27-6711
+Content-type: text/html;
+	charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
-<STYLE></STYLE>
-</HEAD>
-<HTML>
-<BODY>
-<A href=3D"http://ckletmosce.cmik.com/r/vron/irto.cfm">
-Genuine Replications Wristwatches
-</A><BR>
-Our company have this trademarks available also:<BR>
-Frank Muller<BR>
-Chopard<BR>
-Roger Dubuis<BR>
-Officine Panerai<BR>
-Sinn<BR>
-</BODY>
-</HTML></HTML>
---X5C3b61ZTEoNl2qs--
+<P>=0A&nbsp; <BR>=0Ahi,<BR>=0A<BR>=0Ai'm new to alsa.&nbsp; i went through =
+the tutorials but I couldn't find how to&nbsp; start off with it initially.=
+&nbsp; My doubts is:<BR>=0A<BR>=0A I don't have alsa_netplay/alsa_netcaptur=
+e in my linux.what should I install? (utilities, lib, drivers)<BR>=0A<BR>=
+=0A<BR>=0AThanks,<BR>=0AVijay=0A</P>=0A<br><br>=0A<A target=3D"_blank" HREF=
+=3D"http://clients.rediff.com/signature/track_sig.asp"><IMG SRC=3D"http://a=
+ds.rediff.com/RealMedia/ads/adstream_nx.cgi/www.rediffmail.com/inbox.htm@Bo=
+ttom" BORDER=3D0 VSPACE=3D0 HSPACE=3D0></a>=0A
+--Next_1102950657---0-203.199.83.27-6711--
 
 
 
