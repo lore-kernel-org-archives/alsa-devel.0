@@ -1,14 +1,14 @@
 From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Problem with RME 9632 and Plug
-Date: Wed, 4 Aug 2004 12:20:14 +0200 (CEST)
+Date: Wed, 4 Aug 2004 12:20:41 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408041218030.1857@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.58.0408041220190.1857@pnote.perex-int.cz>
 References: <200408040018.i740ITg5017942@localhost.localdomain>
- <Pine.LNX.4.58.0408040935080.1857@pnote.perex-int.cz> <s5h8ycvqltj.wl@alsa2.suse.de>
+ <Pine.LNX.4.58.0408040935080.1857@pnote.perex-int.cz> <4110ADEB.9050807@wildgooses.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h8ycvqltj.wl@alsa2.suse.de>
+In-Reply-To: <4110ADEB.9050807@wildgooses.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,19 +17,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, Ed Wildgoose <lists@wildgooses.com>, alsa-devel@lists.sourceforge.net
+To: Ed Wildgoose <lists@wildgooses.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 4 Aug 2004, Takashi Iwai wrote:
+On Wed, 4 Aug 2004, Ed Wildgoose wrote:
 
-> If we have an intermediate buffer, any number of periods must be able
-> to handle (only when the given period size or size/N is supported by
-> hw)...
+> However, 2048 samples looks to be *just* enough to make mplayer work ok, 
+> but there are still some problems occuring which look like they might be 
+> driver related.  Main issue seems to be that the 
+> "snd_pcm_status_get_avail" function only returns space in whole chunk 
+> size blocks, ie with a 2048 sample long buffer, then I only get results 
+> of 2048 or 0 (you never see 4096, the driver feels that this is an 
+> over-run condition, which I guess is fair enough - some of the other 
+> drivers, eg my RME96 PAD seem to give you that one remaining tick to try 
+> and fill the buffer again before overflow...).  Same thing happens in 
+> mmap mode
 
-The situation is not quite clear for this hardware like for CS46xx etc., 
-because it has already the big ring buffer with max period size - 8192 
-frames. So only another timing source is enough.
+Set precise_ptr module option for your driver.
 
 						Jaroslav
 
