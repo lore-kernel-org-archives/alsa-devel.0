@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Wed, 24 Nov 2004 12:53:07 +0100
-Message-ID: <10f045a722b66392996fec33fba67a57@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000672]: alternate ALS0200 ident string
+Date: Wed, 24 Nov 2004 12:16:57 +0100
+Message-ID: <442e3160c6e658de3dab90202f9ef13a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EB6E62AD
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:53:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 98093223
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:16:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,107 +24,43 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=672> 
 ======================================================================
-Reported By:                bons78
+Reported By:                basic
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   167
-Category:                   SPARC - cs4231
+Issue ID:                   672
+Category:                   ISA - als100
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               debian/unstable
-Kernel Version:             linux-2.6.4+
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-24-2004 12:53 CET
+Date Submitted:             11-24-2004 07:31 CET
+Last Modified:              11-24-2004 12:16 CET
 ======================================================================
-Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
+Summary:                    alternate ALS0200 ident string
 Description: 
-alsamixer crashes system hard when snd-ioctl32 is loaded.
-System still responds to some sysrq commands (sync remount boot show) -
-sysrq (term killall) has no effect.
-There's no chance to do any other keyboard input. No logs, no traps, no
-oops. Machine still responds to ping,(even port 22 stays open) but login
-via ssh is not possible. 
-
-alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
-does not crash the system then.
-So I suspect a problem in the ioctl32 wrapper.
-
-
-
+recently dug up some older hardware to put togather a pc for my brother,
+found this OEM ALS0200 card, couldn't get the module to load, so
+downloaded pnptools and used pnpdump... long story short, here's the patch
+to get it to work.
 ======================================================================
 
 ----------------------------------------------------------------------
- eradicator - 11-24-04 10:26 
+ tiwai - 11-24-04 12:16 
 ----------------------------------------------------------------------
-your patch is working good for me so far.
-
-----------------------------------------------------------------------
- eradicator - 11-24-04 12:53 
-----------------------------------------------------------------------
-actually... wait... I goofed... I was really still using my patch instead
-of yours...
-
-your patch is causing problems for me... from dmesg:
-snd_ioctl32: Unknown symbol __copy_in_user
-snd_ioctl32: Unknown symbol __copy_in_user
-snd_ioctl32: Unknown symbol __copy_in_user
-ioctl32(alsactl:26414): Unknown cmd fd(3) cmd(40045500){00} arg(efffea04)
-on /dev/snd/controlC0
-ioctl32(alsactl:26415): Unknown cmd fd(3) cmd(40045500){00} arg(efffea04)
-on /dev/snd/controlC1
-ioctl32(aconnect:26454): Unknown cmd fd(3) cmd(40045300){00} arg(efffecf4)
-on /dev/snd/seq
-
-I wonder why it's not liking copy_in_user...
+Please provide the summary, description and signed-off-by lines.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 00:02 bons78         New Issue                                    
-03-30-04 00:02 bons78         Distribution              => debian/unstable 
-03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
-04-13-04 19:41 tiwai          Note Added: 0000795                          
-07-04-04 22:32 weeve          Note Added: 0001381                          
-07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
-11-19-04 05:45 weeve          Note Added: 0002474                          
-11-19-04 05:46 weeve          Issue Monitored: weeve                       
-11-19-04 05:55 rlrevell       Note Added: 0002475                          
-11-20-04 10:23 eradicator     Note Added: 0002478                          
-11-20-04 11:14 eradicator     Note Added: 0002479                          
-11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
- 
-11-20-04 16:36 sjoerd         Note Added: 0002480                          
-11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
-11-21-04 03:05 eradicator     Note Added: 0002482                          
-11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:39 eradicator     Note Added: 0002485                          
-11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:50 eradicator     Note Added: 0002486                          
-11-21-04 11:57 eradicator     Note Added: 0002487                          
-11-21-04 12:54 sjoerd         Note Added: 0002488                          
-11-21-04 17:44 sjoerd         Note Added: 0002489                          
-11-21-04 21:26 eradicator     Note Added: 0002490                          
-11-21-04 21:36 eradicator     Note Added: 0002491                          
-11-21-04 22:46 sjoerd         Note Added: 0002492                          
-11-22-04 00:08 eradicator     Note Added: 0002493                          
-11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
-            
-11-22-04 00:49 eradicator     Note Added: 0002494                          
-11-22-04 16:22 tiwai          Note Added: 0002508                          
-11-23-04 10:16 eradicator     Note Added: 0002514                          
-11-23-04 15:34 tiwai          Note Added: 0002515                          
-11-23-04 15:36 tiwai          File Added: ioctl32-user-alloc.diff               
-    
-11-24-04 10:26 eradicator     Note Added: 0002544                          
-11-24-04 12:53 eradicator     Note Added: 0002553                          
+11-24-04 07:31 basic          New Issue                                    
+11-24-04 07:31 basic          File Added: als100.c.patch                    
+11-24-04 12:16 tiwai          Note Added: 0002546                          
 ======================================================================
 
 
