@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Fri, 21 Jan 2005 20:55:10 +0100
-Message-ID: <313ca9fa545f4e022a793efa608afd0a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000727]: segmentation fault when running modprobe & alsaconf, no sound, no mixer on D915GAV
+Date: Fri, 21 Jan 2005 21:03:00 +0100
+Message-ID: <46f650e0652ed017d4c11216093eed7a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B7CDE21B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 20:55:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA7AF21B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:03:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,87 +22,114 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=727> 
 ======================================================================
-Reported By:                1g0R
+Reported By:                IMAMUDDIN AKBAR
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   822
+Issue ID:                   727
 Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     feedback
-Distribution:               FC3
-Kernel Version:             2.6.10-ac8
+Status:                     closed
+Distribution:               FEDORA CORE 3
+Kernel Version:             2.6.9-1.667
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-21-2005 20:55 CET
+Date Submitted:             12-16-2004 09:09 CET
+Last Modified:              01-21-2005 21:02 CET
 ======================================================================
-Summary:                    CMI9880 (IHDA) alsamixer no controll
+Summary:                    segmentation fault when running modprobe & alsaconf,
+no sound, no mixer on D915GAV
 Description: 
-The compile went fine.
-I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
-I cant raise the trigger.
-No SPDIF out.
+
+i have compiled alsa-driver-1.0.7 alsa-lib-1.0.7 alsa-utils-1.0.7
+but thereis still no sound, and nomiser appear when running alsamixer
+
+i use Intel D915GAV with lspci -v:
+00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+        Subsystem: Intel Corp.: Unknown device e203
+        Flags: bus master, fast devsel, latency 0, IRQ 169
+        Memory at ffa3c000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+
+when i run 
+# modprobe snd-azx
+Segmentation fault
+#lsmod
+snd_azx                31094  6
+snd_pcm_oss            51752  0
+snd_mixer_oss          21760  1 snd_pcm_oss
+snd_pcm                89860  2 snd_azx,snd_pcm_oss
+snd_timer              27524  1 snd_pcm
+
+when i run amixer
+no mixer appear on screen
+
+and when i reboot my computer it cannot boot and just hang...
+so i have to uninstall all alsa from rescue to boot again.
+
+Help me to make mysound work fine...
+ 
+
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 01-21-05 20:53 
+ rlrevell - 12-21-04 18:10 
 ----------------------------------------------------------------------
-I make a clean in alsa, and start from the begining.
-Then i get this message:
-[root@skynet lib]# aplay accessed.wav
-ALSA lib pcm.c:1939:(snd_pcm_open_conf) Cannot open shared library
-/usr/lib/alsa-lib/libasound_module_pcm_softvol.so
-aplay: main:508: audio open error: No such file or directory
+Probably because the azx driver is so new that system-config-soundcard does
+not know about it yet.  Once ALSA 1.0.8 is released then I would imagine
+there will be a new Fedora RPM available.
+
+If this is a problem for you please file a Fedora bug report.
+
+This one can be closed.
 
 ----------------------------------------------------------------------
- tiwai - 01-21-05 20:55 
+ tiwai - 12-21-04 18:31 
 ----------------------------------------------------------------------
-It means your installation of alsa-lib is somehow wrong.
+OK, moved to FIXED now.
+
+BTW, 1.0.8rc1 will be released soon.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-16-05 19:06 1g0R           New Issue                                    
-01-16-05 19:06 1g0R           Distribution              => FC3             
-01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
-01-17-05 15:05 tiwai          Status                   new => resolved     
-01-17-05 15:05 tiwai          Resolution               open => not an issue
-01-17-05 15:05 tiwai          Assigned To               => tiwai           
-01-17-05 15:05 tiwai          Note Added: 0003235                          
-01-17-05 15:05 tiwai          Assigned To              tiwai =>            
-01-17-05 16:43 1g0R           Status                   resolved => feedback
-01-17-05 16:43 1g0R           Resolution               not an issue => reopened
-01-17-05 16:43 1g0R           Note Added: 0003238                          
-01-17-05 16:43 1g0R           Assigned To               => tiwai           
-01-18-05 14:01 1g0R           Note Added: 0003249                          
-01-18-05 14:01 1g0R           Issue Monitored: 1g0R                        
-01-18-05 17:57 tiwai          Note Added: 0003254                          
-01-19-05 13:33 1g0R           Note Added: 0003264                          
-01-19-05 14:25 tiwai          Note Added: 0003265                          
-01-19-05 14:36 1g0R           Note Added: 0003272                          
-01-19-05 14:40 tiwai          Note Added: 0003275                          
-01-19-05 14:59 1g0R           Note Added: 0003280                          
-01-19-05 15:16 tiwai          Note Added: 0003281                          
-01-19-05 15:46 1g0R           Note Added: 0003289                          
-01-19-05 16:08 tiwai          Note Added: 0003290                          
-01-19-05 16:25 1g0R           Note Added: 0003291                          
-01-19-05 18:39 1g0R           File Added: asound.state                     
-01-19-05 18:39 1g0R           File Added: codec#0                          
-01-19-05 18:40 1g0R           Note Added: 0003315                          
-01-19-05 18:44 tiwai          Note Added: 0003316                          
-01-19-05 21:53 1g0R           Note Added: 0003318                          
-01-19-05 21:58 1g0R           Note Added: 0003319                          
-01-20-05 00:13 1g0R           File Added: alsamixer.png                    
-01-20-05 00:18 1g0R           File Added: alsamixer.jpg                    
-01-21-05 12:15 tiwai          Note Added: 0003345                          
-01-21-05 20:53 1g0R           Note Added: 0003352                          
-01-21-05 20:55 tiwai          Note Added: 0003353                          
+12-16-04 09:09 IMAMUDDIN AKBARNew Issue                                    
+12-16-04 17:21 tiwai          Status                   new => resolved     
+12-16-04 17:21 tiwai          Resolution               open => fixed       
+12-16-04 17:21 tiwai          Assigned To               => tiwai           
+12-16-04 17:21 tiwai          Note Added: 0002829                          
+12-16-04 17:21 tiwai          Assigned To              tiwai =>            
+12-17-04 10:36 IMAMUDDIN AKBARDistribution              => FEDORA CORE 3   
+12-17-04 10:36 IMAMUDDIN AKBARKernel Version            => 2.6.9-1.667     
+12-17-04 10:36 IMAMUDDIN AKBARStatus                   resolved => feedback
+12-17-04 10:36 IMAMUDDIN AKBARResolution               fixed => reopened   
+12-17-04 10:36 IMAMUDDIN AKBARNote Added: 0002848                          
+12-17-04 10:37 IMAMUDDIN AKBARAssigned To               => tiwai           
+12-20-04 16:04 tiwai          Note Added: 0002880                          
+12-21-04 02:39 IMAMUDDIN AKBARNote Added: 0002894                          
+12-21-04 03:08 rlrevell       Note Added: 0002895                          
+12-21-04 10:29 IMAMUDDIN AKBARNote Added: 0002897                          
+12-21-04 18:10 rlrevell       Note Added: 0002898                          
+12-21-04 18:31 tiwai          Status                   feedback => resolved
+12-21-04 18:31 tiwai          Resolution               reopened => fixed   
+12-21-04 18:31 tiwai          Note Added: 0002899                          
+01-21-05 21:02 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
