@@ -1,20 +1,12 @@
-From: alsadev@noid.net
-Subject: Re: intel8x0 (82801BA): swap headphone/master quirk patch
-Date: Fri,  6 Feb 2004 15:15:49 -0800 (PST)
+From: "Mathieu Rondonneau" <mathieu.rondonneau@polymtl.ca>
+Subject: using preallocate pci, isa or nothing?
+Date: Fri, 6 Feb 2004 20:45:33 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040206231549.EB2DEEFC37@skyfire.absmc.net>
-References: <s5hk7308osi.wl@alsa2.suse.de>
+Message-ID: <006d01c3ed24$75653b40$c4f9cb18@win2K>
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_006A_01C3ECF2.2A709D50"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from remote.absmc.net ([198.217.112.6])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA16462
-	for <alsa-devel@alsa-project.org>; Sat, 7 Feb 2004 00:16:24 +0100
-Received: from aeon.absmc.org (monica.absmc.org [10.25.35.47])
-	by remote.absmc.net (Postfix) with ESMTP id 1955B1802D8
-	for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2004 15:15:51 -0800 (PST)
-Received: from skyfire.absmc.net (skyfire.absmc.org [10.25.46.207])
-	by aeon.absmc.org (Postfix) with ESMTP id 5D97511776F
-	for <alsa-devel@alsa-project.org>; Fri,  6 Feb 2004 15:15:47 -0800 (PST)
-In-Reply-To: <s5hk7308osi.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,57 +15,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 06, 2004 at 11:50:37AM +0100, Takashi Iwai wrote:
-> At Thu,  5 Feb 2004 18:13:18 -0800 (PST),
-> alsadev@noid.net wrote:
-> > 
-> > My Intel motherboard (D845WN) has built-in intel8x0 (82801BA)
-> > audio with the Headphone <--> Master swapping problem...
-> > 
-> > This fixed it for me:
-> 
-> thanks for the patch.  i'll apply it.
-> 
-> for information, what is the ac97 codec?
-> you can see it in /proc/asound/card0/codec97#0/* files.
+This is a multi-part message in MIME format.
 
-My /proc/asound/card0/codec97#0/ac97#0-0 file contains:
+------=_NextPart_000_006A_01C3ECF2.2A709D50
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-  0-0/0: Analog Devices AD1885
+Hi all,
 
-  Capabilities     : -headphone out-
-  DAC resolution   : 16-bit
-  ADC resolution   : 16-bit
-  3D enhancement   : Analog Devices Phat Stereo
+I'm writing an ALSA driver for a CSB337 board (AT91RM9200). There is no =
+PCI or ISA on this board. Should I preallocate memory with: =
+snd_pcm_lib_preallocate_pages_for_all, =
+snd_pcm_lib_preallocate_isa_pages_for_all() or =
+snd_pcm_lib_preallocate_pci_pages_for_all()?
 
-  Current setup
-  Mic gain         : +0dB [+0dB]
-  POP path         : pre 3D
-  Sim. stereo      : off
-  3D enhancement   : off
-  Loudness         : off
-  Mono output      : MIX
-  Mic select       : Mic1
-  ADC/DAC loopback : off
-  Extended ID      : codec=0 rev=0 DSA=0 VRA
-  Extended status  : VRA
-  PCM front DAC    : 8000Hz
-  PCM ADC          : 48000Hz
+There is a specific DMA (PDC) on the AT91RM9200, so i'm trying to use =
+snd_pcm_lib_preallocate_pages_for_all() but seems complicated to =
+understand what is needed by the ALSA pcm and what i have to write.
+What does the function snd_..._pointer() mean? should i need it if i =
+don't use ISA or PCI mecanism?
+What does the function snd_pcm_period_elapsed() mean? Should i need it =
+if i don't use ISA or PCI mecanism?
 
+Thanks
+any help would be very appreciate.
 
+Mathieu Rondonneau
+------=_NextPart_000_006A_01C3ECF2.2A709D50
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-  AD18XX configuration
-  Unchained        : 0x1000,0x0000,0x0000
-  Chained          : 0x0000,0x0000,0x0000
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2>Hi all,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>I'm writing&nbsp;an ALSA driver for a =
+CSB337 board=20
+(AT91RM9200). There is no PCI or ISA on this board. Should I preallocate =
+memory=20
+with: </FONT><FONT face=3DArial =
+size=3D2>snd_pcm_lib_preallocate_pages_for_all,=20
+snd_pcm_lib_preallocate_isa_pages_for_all() or=20
+snd_pcm_lib_preallocate_pci_pages_for_all()?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>There is a specific DMA (PDC) on the =
+AT91RM9200, so=20
+i'm trying to use snd_pcm_lib_preallocate_pages_for_all() but seems =
+complicated=20
+to understand what is needed by the ALSA pcm and what i have to=20
+write.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>What does the function =
+snd_..._pointer() mean?=20
+should i need it if i don't use ISA or PCI mecanism?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>What does the function =
+snd_pcm_period_elapsed()=20
+mean? Should i need it if i don't use ISA or PCI mecanism?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>any help would be very =
+appreciate.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Mathieu=20
+Rondonneau</FONT></DIV></FONT></DIV></BODY></HTML>
 
-
-
-
-Thanks...
-
+------=_NextPart_000_006A_01C3ECF2.2A709D50--
 
 
 
