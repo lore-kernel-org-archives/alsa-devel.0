@@ -1,16 +1,11 @@
-From: Bernhard Rosenkraenzer <bero@arklinux.org>
-Subject: Re: ALI M5451 (CMI 9739): PCM always muted?
-Date: Tue, 20 Apr 2004 21:25:12 +0200
+From: Arek Korbik <arek.korbik@eee.strath.ac.uk>
+Subject: [PATCH] intel8x0 - fixes 'periodical noisy output'
+Date: Tue, 20 Apr 2004 21:22:07 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200404202125.12660.bero@arklinux.org>
-References: <200404171945.35824.bero@arklinux.org> <200404201939.54966.bero@arklinux.org> <20040420183931.GB2166@sirius.home>
+Message-ID: <1082492527.1407.131.camel@deeli.eee.strath.ac.uk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-CtJsfO2e93NV+EAsMxtN"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040420183931.GB2166@sirius.home>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,159 +14,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Sergey Vlasov <vsu@altlinux.ru>
+To: ALSA Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 20 April 2004 20:39, Sergey Vlasov wrote:
-> > > > On an ALI M5451 (Using a CMI 9739 - PCI ID 10b9:5451 Sub-ID
-> > > > 1019:0f22), snd_ali5451 loads and can adjust mixer settings (except
-> > > > for PCM volume, but I think that's a limitation of the hardware), but
-> > > > doesn't make any noise - apparently PCM is always muted (volume fixed
-> > > > at 0?).
->
-> And what does "amixer contents" show?
 
-numid=9,iface=MIXER,name='Master Mono Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=10,iface=MIXER,name='Master Mono Playback Volume'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=31,step=0
-  : values=31
-numid=1,iface=MIXER,name='Master Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=2,iface=MIXER,name='Master Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=31,31
-numid=26,iface=MIXER,name='PCM Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=7,iface=MIXER,name='Surround Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=8,iface=MIXER,name='Surround Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=31,31
-numid=3,iface=MIXER,name='Center Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=4,iface=MIXER,name='Center Playback Volume'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=31,step=0
-  : values=0
-numid=5,iface=MIXER,name='LFE Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=6,iface=MIXER,name='LFE Playback Volume'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=31,step=0
-  : values=0
-numid=41,iface=MIXER,name='Line-In As Surround'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=18,iface=MIXER,name='Line Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=19,iface=MIXER,name='Line Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=0,0
-numid=20,iface=MIXER,name='CD Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=21,iface=MIXER,name='CD Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=0,0
-numid=17,iface=MIXER,name='Mic Boost (+20dB)'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=31,iface=MIXER,name='Mic Select'
-  ; type=ENUMERATED,access=rw---,values=1,items=2
-  ; Item #0 'Mic1'
-  ; Item #1 'Mic2'
-  : values=0
-numid=15,iface=MIXER,name='Mic Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=16,iface=MIXER,name='Mic Playback Volume'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=31,step=0
-  : values=0
-numid=13,iface=MIXER,name='Phone Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=14,iface=MIXER,name='Phone Playback Volume'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=31,step=0
-  : values=0
-numid=22,iface=MIXER,name='Video Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=23,iface=MIXER,name='Video Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=0,0
-numid=11,iface=MIXER,name='PC Speaker Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=12,iface=MIXER,name='PC Speaker Playback Volume'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=15,step=0
-  : values=0
-numid=24,iface=MIXER,name='Aux Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=25,iface=MIXER,name='Aux Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=0,0
-numid=30,iface=MIXER,name='Mono Output Select'
-  ; type=ENUMERATED,access=rw---,values=1,items=2
-  ; Item #0 'Mix'
-  ; Item #1 'Mic'
-  : values=0
-numid=27,iface=MIXER,name='Capture Source'
-  ; type=ENUMERATED,access=rw---,values=2,items=8
-  ; Item #0 'Mic'
-  ; Item #1 'CD'
-  ; Item #2 'Video'
-  ; Item #3 'Aux'
-  ; Item #4 'Line'
-  ; Item #5 'Mix'
-  ; Item #6 'Mix Mono'
-  ; Item #7 'Phone'
-  : values=5,5
-numid=28,iface=MIXER,name='Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=29,iface=MIXER,name='Capture Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=15,step=0
-  : values=0,0
-numid=38,iface=MIXER,name='IEC958 Capture Valid Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=32,iface=MIXER,name='IEC958 Playback Con Mask'
-  ; type=IEC958,access=r----,values=1
-  : values=?
-numid=33,iface=MIXER,name='IEC958 Playback Pro Mask'
-  ; type=IEC958,access=r----,values=1
-  : values=?
-numid=36,iface=MIXER,name='IEC958 Playback AC97-SPSA'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=3,step=0
-  : values=3
-numid=34,iface=MIXER,name='IEC958 Playback Default'
-  ; type=IEC958,access=rw---,values=1
-  : values=?
-numid=37,iface=MIXER,name='IEC958 Playback Source'
-  ; type=ENUMERATED,access=rw---,values=1,items=2
-  ; Item #0 'Analog'
-  ; Item #1 'Digital'
-  : values=0
-numid=35,iface=MIXER,name='IEC958 Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=39,iface=MIXER,name='IEC958 Capture Monitor'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=40,iface=MIXER,name='IEC958 Capture Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-numid=42,iface=MIXER,name='External Amplifier'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
+--=-CtJsfO2e93NV+EAsMxtN
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+It seems, the ICH3 chipset (82801CA/CAM AC'97) in my laptop doesn't
+behave according the Intel's specification: 'FIFOE interrupts' are
+generated on buffer underrun/overrun even though FEIE bit is not set in
+the control register. It doesn't happen too often, but when it does
+happen the driver's idea of the hardware state gets 'desynchronised'
+with the actual state, as interrupt handler doesn't recognise this
+condition and preparing next buffer fragment increases card's LVI
+register while the CIV register remains without changes - the card had
+not finished processing the current fragment yet. In the result card's
+CIV and LVI registers indicate the same buffer fragment, and from this
+point on every buffer fragment prepared by driver is effectively the
+last-and-only valid fragment available to the hardware. Which
+p-p-p-pops!
+
+To summarise: hardware generates an interrupt when it should not - the
+driver should handle it (the simplest solution: ignore). The attached
+patch:
+ - adds interrupt-on-FIFOE handling(/ignoring) to handler routine
+
+Possibly it addresses/resolves #0000086, #0000145, #0000131, ...?
+
+Two notes:
+ - although the solution is quite general and should not break things on
+other chipset versions, I've only tested it (successfully!) on my ICH3;
+ - I'm not sure how does it affect input devices - the driver initial
+intention is not to handle this kind of interrupts anyway, but well...
+
+
+I hope this helps and makes some of you as happy as, finally, me!
+
+Arek
+
+
+--=-CtJsfO2e93NV+EAsMxtN
+Content-Description: intel8x0 interrupt-on-FIFOE handling patch
+Content-Disposition: inline; filename=alsa.diff
+Content-Type: text/x-patch; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+Index: alsa-kernel/pci/intel8x0.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/intel8x0.c,v
+retrieving revision 1.135
+diff -b -p -u -r1.135 intel8x0.c
+--- alsa-kernel/pci/intel8x0.c	14 Apr 2004 17:24:32 -0000	1.135
++++ alsa-kernel/pci/intel8x0.c	20 Apr 2004 14:51:41 -0000
+@@ -777,9 +777,13 @@ static inline void snd_intel8x0_update(i
+ 	civ = igetbyte(chip, port + ICH_REG_OFF_CIV);
+ 	if (civ == ichdev->civ) {
+ 		// snd_printd("civ same %d\n", civ);
++		if (igetbyte(chip, port + ICH_REG_OFF_SR) & ICH_FIFOE) {
++			step = 0;
++		} else {
+ 		step = 1;
+ 		ichdev->civ++;
+ 		ichdev->civ &= ICH_REG_LVI_MASK;
++		}
+ 	} else {
+ 		step = civ - ichdev->civ;
+ 		if (step < 0)
+@@ -789,6 +793,7 @@ static inline void snd_intel8x0_update(i
+ 		ichdev->civ = civ;
+ 	}
+ 
++	if (step > 0) {
+ 	ichdev->position += step * ichdev->fragsize1;
+ 	ichdev->position %= ichdev->size;
+ 	ichdev->lvi += step;
+@@ -808,6 +813,7 @@ static inline void snd_intel8x0_update(i
+ 		spin_unlock(&chip->reg_lock);
+ 		snd_pcm_period_elapsed(ichdev->substream);
+ 		spin_lock(&chip->reg_lock);
++		}
+ 	}
+ 	iputbyte(chip, port + ichdev->roff_sr, ICH_FIFOE | ICH_BCIS | ICH_LVBCI);
+ }
+
+--=-CtJsfO2e93NV+EAsMxtN--
+
 
 
 -------------------------------------------------------
