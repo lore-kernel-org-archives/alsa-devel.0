@@ -1,16 +1,15 @@
-From: Christian Esken <c.esken@cityweb.de>
-Subject: Re: Occasional metallic sound when recording (cs46xx)
-Date: Mon, 24 Nov 2003 00:27:32 +0100
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: fedora core alsaconf patch
+Date: 23 Nov 2003 18:39:06 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311240015.13787.c.esken@cityweb.de>
-References: <200310221739.h9MHd0m1024945@oud.linuxaudiosystems.com> <87oew7g4m9.fsf@canaima.chapus.net> <s5h7k2u93l7.wl@alsa2.suse.de>
+Message-ID: <1069641542.7493.18.camel@cmn30.stanford.edu>
+References: <1069458051.11875.5.camel@cmn37.stanford.edu>
+	 <3FBF3808.1060104@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7k2u93l7.wl@alsa2.suse.de>
-Content-Disposition: inline
+In-Reply-To: <3FBF3808.1060104@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,29 +18,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Lars Heineken <Lars.Heineken@gmx.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 24 October 2003 15:18, Takashi Iwai wrote:
-> At Thu, 23 Oct 2003 15:01:50 -0400,
->
-> Eloy A. Paris wrote:
-> > Hello,
-> >
-> > Wilfried Weissmann <Wilfried.Weissmann@gmx.at> writes:
-> > > i also have the same problem with speakfreely with my cs46xx.
-> >
-> > I'm sorry for you but am happy at the same time that I am not the only
-> > one experiencing this.
+> I think we need a similar extension to support Mandrake, after 
+> installation from the sources all modules in modules.conf where gone, 
+> except the ones from alsa.. :-)
 
-You are not alone. It happens on my CS46xx as well (Hercules 
-GameTheaterXP7.1).
+I think the patch will fix mandrake too. I have the dubious honor of
+being able to claim ownership of the original bug :-( Anything having a
+/etc/redhat-release file but without having "Red Hat" inside would
+trigger the bug. 
 
-> then it sounds like the specific problem for cs46xx driver.
+The currently result with Mandrake would be to use the SuSE filter to
+try to erase the oss preferences from modules.conf. If the RedHat filter
+is better then another "if" could be added to the distro selection code
+to include Mandrake. 
 
-Sounds like it.
+-- Fernando
 
-Chris
+> >Included is a patch that fixes alsaconf to work correctly under fedora
+> >core 1. Otherwise alsaconf happily creates a modules.conf file that only
+> >contains the alsa configuration and nothing else (a path in the if's
+> >that does not create a $TMP file before the alsa configuration process
+> >starts). 
+
+
 
 
 -------------------------------------------------------
