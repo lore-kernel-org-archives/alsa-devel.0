@@ -1,14 +1,11 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000813]: Terratec USB surround broken
-Date: Wed, 12 Jan 2005 19:41:11 +0100
-Message-ID: <810fabc591fc91f20c712fc160ef4c86@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Subject: [ALSA - lib 0000812]: SNDRV_PCM_IOCTL_DELAY failed:
+Date: Wed, 12 Jan 2005 20:42:46 +0100
+Message-ID: <20050112194246.F3CC62D8@alsa.alsa-project.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D121F2F0
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 19:41:11 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F3CC62D8
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 20:42:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,48 +18,87 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+SNDRV_PCM_IOCTL_DELAY failed: File descriptor in bad state
+Message-ID: <0b3183954cc1214e33404e6f93b73150@bugtrack.alsa-project.org>
+X-Priority: 3
+X-Mailer: PHPMailer [version 1.72]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 
-The following issue has been SUBMITTED.
+
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=813> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=812> 
 ======================================================================
-Reported By:                ilikejam
-Assigned To:                Clemens Ladisch
+Reported By:                jdthood
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   813
-Category:                   USB - usb-audio
+Project:                    ALSA - lib
+Issue ID:                   812
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10 (ALSA compiled in)
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-12-2005 19:41 CET
-Last Modified:              01-12-2005 19:41 CET
+Date Submitted:             01-12-2005 19:06 CET
+Last Modified:              01-12-2005 20:42 CET
 ======================================================================
-Summary:                    Terratec USB surround broken
+Summary:                    SNDRV_PCM_IOCTL_DELAY failed: 
+SNDRV_PCM_IOCTL_DELAY failed: File descriptor in bad state
 Description: 
-I'm using a Terratec USB 5.1 card. The 6 channels test correctly using
-'./speaker-test -c6', but any attempt to use 5.1 channel in Xine, or using
-'aplay -Dsurround51 file.wav' results in errors e.g.
------
-ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
-definition (id: surround51, value: cards.pcm.surround51)
-aplay: main:508: audio open error: Invalid argument
------
-Xine similarly fails saying the sound card is in use. Xine works fine for
-stereo audio, even when configured to use 5.1 channel sound.
+This is Debian bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=287583: please see
+http://bugs.debian.org/287583
+for the full report.
+
+Summary: The user runs xmms with the ALSA output plugin and gets huge
+numbers of error messages:
+
+..
+ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
+File descriptor in bad state
+ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
+File descriptor in bad state
+ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
+File descriptor in bad state
+..
+
+
+The problem disappeared when the user reverted to libasound2 1.0.6-5.
+Indeed, it seems that the error message in question was only added to
+libasound2 in 1.0.7.
+
+
 ======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 01-12-05 19:09 
+----------------------------------------------------------------------
+See also Debian bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=290034:
+
+    http://bugs.debian.org/290034
+
+----------------------------------------------------------------------
+ tiwai - 01-12-05 20:42 
+----------------------------------------------------------------------
+This is partly a problem of xmms ALSA output plugin.
+
+But, anyway, this messages no longer appears on alsa-lib 1.0.8.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-12-05 19:41 ilikejam       New Issue                                    
-01-12-05 19:41 ilikejam       Distribution              => Fedora Core 3   
-01-12-05 19:41 ilikejam       Kernel Version            => 2.6.10 (ALSA compiled
-in)
+01-12-05 19:06 jdthood        New Issue                                    
+01-12-05 19:09 jdthood        Note Added: 0003176                          
+01-12-05 20:42 tiwai          Status                   new => resolved     
+01-12-05 20:42 tiwai          Resolution               open => fixed       
+01-12-05 20:42 tiwai          Assigned To               => tiwai           
+01-12-05 20:42 tiwai          Note Added: 0003177                          
 ======================================================================
 
 
