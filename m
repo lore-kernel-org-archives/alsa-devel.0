@@ -1,14 +1,13 @@
-From: Richard Bown <bownie@bownie.com>
-Subject: sequencing ALSA ports and clients
-Date: Wed, 10 Apr 2002 14:38:04 +0100
+From: Nicolas Pitre <nico@cam.org>
+Subject: RE: UDA1341TS (iPAQ H3X00) sound driver for ALSA
+Date: Wed, 10 Apr 2002 09:47:25 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200204101341.AFH83147@msgdirector1.onetel.net.uk>
-Reply-To: bownie@bownie.com
+Message-ID: <a91fsp$iu8$2@main.gmane.org>
+References: <D99C1FB421989A40818B6370E31870940283ADF0@tayexc19.americas.cpqcorp.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <D99C1FB421989A40818B6370E31870940283ADF0@tayexc19.americas.cpqcorp.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,21 +16,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "Hicks, Jamey" <Jamey.Hicks@compaq.com>
+Cc: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>, alsa-devel@lists.sourceforge.net, Linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Ok, earlier I sent this question to LAD but this is probably a better place
-to be asking it.  Apologies if you've already seen it.
+On Wed, 10 Apr 2002, Hicks, Jamey wrote:
 
-Basically I'm still confused about synth clients and ports.  My SBLive presents
-four synth ports as default.  I create a port and subscribe or connect_to a specfic
-SBLive port and client.  When I'm sequencing out to this port should I be multiplexing
-among the other ports to exploit the synth's full polyphony?  Should I be adding to
-the ports myself or can I get away with just using the one?  If the latter then why
-are there four ports made available?  I'm sure there's a dunce's document someone
-can point me to!
+> 
+> I would prefer that the ALSA driver for the iPAQ have a different name
+> than the OSS driver for the iPAQ, since they have different interfaces.  
+> How about h3600-alsa?
 
-R
--- 
-http://www.all-day-breakfast.com/rosegarden
-http://www.bownie.com
+No.  Please pick a relevant name.  H3600 is not the only device with an 
+UDA1341 out there.
+
+
+Nicolas
