@@ -1,8 +1,11 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: vmap/snd_compat_vmap messed up ...
-Date: Thu, 8 May 2003 12:35:16 -0400
+From: jfm3 <jfm3@ouroboros-complex.org>
+Subject: pcmcia hdsp problems
+Date: 08 May 2003 12:25:34 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305081635.h48GZG731155@linuxaudiosystems.com>
+Message-ID: <1052411146.1361.54.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -12,16 +15,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA Developer List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-the #idef's for this in alsa-driver/acore/wrappers.c seem all messed
-up. the #ifdef for 2.3.0 extends all the way to the bottom of the
-file. sound.c exports snd_compat_vmap for kernels < 2.5.69, yet that
-function includes a call to "vmap()" which is not defined anywhere in
-kernel 2.4.20 ...
+I'm running the latest Planet CCRMA on Redhat 8. This is alsa 9.2 and
+kernel 2.4.20 with the usual audio patches. I've taken the plunge and
+acquired a hdsp Multiface. I'm using it with a PCMCIA interface.
 
-what it is the intent of all this?
+I put 'modprobe snd-hammerfall-mem enable=1' as the first thing that
+happens in /etc/rc.sysinit. It doesn't seem to allocate any memory. When
+the machine first boots with the PCMCIA card in, it lists it as this: 
+
+$ lspci
+...
+01:00.0 Class ffff: Illegal Vendor ID: Unknown device ffff (rev ff)
+
+If I remove the card with cardctl eject and put it back in, it shows up.
+
+$ lspci
+...
+01:00.0 Multimedia audio controller: Xilinx, Inc. RME Hammerfall DSP
+(rev 0b)
+
+At this point I can reload snd-hammerfall-mem and snd-hdsp and they
+don't complain. The bright red HOST light is still on though. Of course,
+at this point, it is probably too late for snd-hammerfall-mem to have
+been loaded correctly.
+
+Does the enable argument to snd-hammerfall-mem do anything anymore? Any
+other ideas?
+
+-- 
+(jfm3  2838 BCBA 93BA 3058 ED95  A42C 37DB 66D1 B43C 9FD0)
+
 
 
 -------------------------------------------------------
