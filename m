@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
+From: Arve Knudsen <aknuds-1@broadpark.no>
 Subject: Re: Query devices in a non-blocking fashion
-Date: Sun, 14 Dec 2003 11:38:51 -0500
+Date: Sun, 14 Dec 2003 17:46:36 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312141638.hBEGcpco011444@oud.linuxaudiosystems.com>
-References: <3FDC8D16.6070608@boosthardware.com>
+Message-ID: <oprz6jjyl7q1sf88@mail.broadpark.no>
+References: <oprztqwoi4q1sf88@mail.broadpark.no> <200312071919.hB7JJTNk004757@oud.linuxaudiosystems.com> <20031208161936.310df2cb.pochini@shiny.it> <oprzvc5mu3q1sf88@mail.broadpark.no> <Pine.LNX.4.58.0312081745340.20863@pnote.perex-int.cz> <oprzvh60rmq1sf88@mail.broadpark.no> <3FDC8D16.6070608@boosthardware.com>
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Mon, 15 Dec 2003 01:17:26 +0900."
-             <3FDC8D16.6070608@boosthardware.com>
+In-Reply-To: <3FDC8D16.6070608@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,32 +18,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: Arve Knudsen <aknuds-1@broadpark.no>, Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
+Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->My opinion is that a simple function could be included in alsactl which 
->scans for available devices, makes a list of their abilities. Everyone 
->uses "post-insert alsactl restore" in the modules.conf file so it would 
->be essentially a non issue from a user perspective.
+On Mon, 15 Dec 2003 01:17:26 +0900, Patrick Shirkey=20
+<pshirkey@boosthardware.com> wrote:
 
-i think it needs to be slightly more complex than that (because of the
-way the configuration space is reduced as various parameters are set).
+> If we have a DB of info how would we define the abilities of each devic=
+e?
+>
+> I assume this info is available in the driver layer because there is a=20
+> point where ALSA will return false eg. if a card is not able to run at=20
+> 48000Hz
+>
+> My opinion is that a simple function could be included in alsactl which=
+=20
+> scans for available devices, makes a list of their abilities. Everyone=20
+> uses "post-insert alsactl restore" in the modules.conf file so it would=
+=20
+> be essentially a non issue from a user perspective.
+>
+> Couldn't this be saved in the config settings for alsactl?
+This whole database thing seems like overkill to me, to be honest. This i=
+s
+dynamic information would best be obtained from cards during operation,
+the only problem is that you have to lock the device. A better design wou=
+ld
+be to, if possible, allow the configuration space to be read even when a
+device is streaming.
 
-we need a structure that is somewhat equivalent to hw_params. the
-program fills it out, in effect asking for "16 bit, stereo, 48kHz,
-1024 frames/period" and then queries to see what devices can satisfy
-that. it will be hard for the program to use this if it thinks it can
-handle multiple configurations, but there are not many programs that
-work this way: most know what configuration they want, and just want
-to find devices that can work that way.
+I dont know the dirty details of writing drivers, but would this be a
+problem? Perhaps we could differ between read-locked and write-locked
+configuration, so there would be inclusive read access to the device, and
+totally exclusive access if it is to be modified.
 
-otoh, one may counter that the plughw layer in alsa-lib is there to
-allow *any* h/w device to be used with *any* configuration, so this is
-all a bit ridiculous. 
+Hope some of this makes sense
 
-of course, the devices may be busy, so the program needs to be ready
-for that as well (this applies to multiopen cards just the same, even
-if its much less likely that they are "fully" busy).
+Arve Knudsen
+
+
 
 
 -------------------------------------------------------
