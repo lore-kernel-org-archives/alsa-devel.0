@@ -1,16 +1,14 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: CVS changes, rc4 release in H-9
-Date: Tue, 22 Oct 2002 11:51:30 -0700 (PDT)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: [linux-audio-user] Evolution UC16 problems, modules.conf for
+ usb-midi and usb-audio together
+Date: Wed, 23 Oct 2002 04:06:42 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0210221147430.2070-100000@cmn37.stanford.edu>
-References: <Pine.LNX.4.33.0210221313250.521-100000@pnote.perex-int.cz>
+Message-ID: <3DB5A1C2.4030708@boosthardware.com>
+References: <1035239386.4549.73.camel@hamish.iriXx.org> <3DB57DD6.8070303@boosthardware.com> <3DB59381.5000007@iriXx.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA16904
-	for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2002 20:52:30 +0200
-In-Reply-To: <Pine.LNX.4.33.0210221313250.521-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,28 +17,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: linux-audio-user@music.columbia.edu, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > > Yep, please, commit it for more wide use...
-> > 
-> > ok, it's now on alsa-driver/utils.
-> > should it be installed to the public directory via "make install" ?
+iriXx wrote:
+> hi Patrick,
 > 
-> I don't think so. Perhaps, we might add a note for users to the INSTALL 
-> file.
 
-Please do, it is a very useful utility. 
+I have forwarded this to the devel list. To subscribe please visit this 
+link.
 
-On a different aspect of the upcoming release. The module options naming
-has been changed, I hope that will be highlighted in the release notes. I
-just managed to install the latest cvs (it worked, at least in limited
-tests)  and of course the modules failed to load... I bet most users will
-not do a detailed reading of the error messages :-) My first reaction (and 
-I should know better) was to think, oops the module is broken...
+http://lists.sourceforge.net/lists/listinfo/alsa-devel
 
--- Fernando
+> thanks so much... this will improve things wonderfully not just for the 
+> Evolution but for my quattro as well... i had assumed that in rc3 the 
+> midi interface for the quattro wasnt implemented.... i shall give cvs a 
+> try straight away, as this is part of a review for a uk magazine...
+> 
+> could you give me the address for subscribing to alsa-devel? i would be 
+> happy to test and report back...
+> 
+> the problems i've had with modules.conf are in adding support for the 
+> two cards - which of course wont be necessary with the cvs version...
+> i shall ask again on alsa-devel if i have any more problems...
+> 
+
+There are some changes that need to be made regarding the modules.conf 
+file and the options for the driver. Specifically all snd_xxx references 
+have been changed to just xxx. Ie remove the snd_ prefix. This has been 
+done to ensure the alsa modules options are inline with the Kernel 
+standard. NB this is completely seperate from the module name which is 
+snd-xxx. That has not been changed.
+
+Interestingly enough we are in the process of debating how and what to 
+do about getting more articles published on Linux Audio. If you want any 
+  second opinions on the article before it is published I am happy to 
+have a look at it.
+
+Please let us know when you publish it too.
+
+Also could you send your modules.conf file in the next post so we can 
+see what you are doing to load the modules.
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+"Um...symbol_get and symbol_put... They're
+kindof like does anyone remember like get_symbol
+and put_symbol I think we used to have..."
+- Rusty Russell in his talk on the module subsystem
 
 
 
