@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000906]: OSS mixer does not work
-Date: Mon, 14 Feb 2005 23:30:15 +0100
-Message-ID: <ea29b01eee03f1ce1cc4f793e23a168f@bugtrack.alsa-project.org>
+From: Michael Gerdau <mgd@technosis.de>
+Subject: ALSA support for Unitor8/AMT8 ?
+Date: Tue, 15 Feb 2005 01:01:07 +0100
+Message-ID: <200502150101.22061.mgd@technosis.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: multipart/signed;
+  boundary="nextPart1351543.ohvsFqBnWK";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 516E624F
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 23:30:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,84 +17,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+--nextPart1351543.ohvsFqBnWK
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=906> 
-======================================================================
-Reported By:                adaviel
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   906
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22
-======================================================================
-Date Submitted:             02-13-2005 07:02 CET
-Last Modified:              02-14-2005 23:30 CET
-======================================================================
-Summary:                    OSS mixer does not work
-Description: 
-OSS-based mixers such as aumix or xmixer will not
-work. aumix says "no device found". A second sound device on the same PC
-configured as snd-card-1 appears to work as /dev/mixer1
-Alsamixer appears to work on both the Audigy and Intel devices
-(at the time of writing I do not have physical access to the device
-to verify sound output)
-======================================================================
+Hi !
 
-----------------------------------------------------------------------
- tiwai - 02-14-05 16:27 
-----------------------------------------------------------------------
-Do you have /dev/mixer with a proper permission?
+The subject pretty much summarizes what I'm looking for.
 
-----------------------------------------------------------------------
- adaviel - 02-14-05 23:30 
-----------------------------------------------------------------------
-lrwxrwxrwx    1 root     root          /dev/mixer -> /dev/mixer0
-crw-rw-rw-    1 root     root      14, /dev/mixer0
-crw-rw-rw-    1 root     root      14, /dev/mixer1
+Searching the archives reveals this topic pops up occasionally
+(roughly once every 12 month or so).
 
-card 0 is ca0106
-card 1 is Intel ich5 which seems to work OK
+I have downloaded the documentation at
+http://www.math.tu-berlin.de/~sbartels/unitor/unitor8_doc.txt
+However I had no success in accessing their CVS as described on
+http://www.math.tu-berlin.de/~sbartels/unitor/
 
-I want to use the vrvs.org/Mbone tool "rat" which needs full-duplex
-audio at (usually) 8kHz o 16kHz with microphone/speakers
-I cannot get any input on the VU meter with any input selected in
-alsamixer or
-with "capture into playback" set high. The input levels won't move in
-alsamixer
-for any inputs e.g. "AC97 in". I don't see "mic in" - but I'm not very
-familiar with ALSA or with this card. It's what a user found in a store
-when
-they wanted to retrofit sound to an older PC running RedHat 7.3.
+=46or a start I have translated the above german document into
+english. I'm happy to share it with whoever might be interested.
 
-When I use OSS "play" on a WAV file the sound is very choppy and the rate
-sounds
-wrong. When I try aplay it's not choppy but the rate is still odd.
-However mpg123 sounds OK on an MP3 file. Will this card work for me in
-Rat,
-or is it only really good for playing DVDs/CDs ?
+Last not least I'm interested in (participating in) creating the
+software required for ALSA to support the Unitor8/AMT family of
+MIDI devices.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-13-05 07:02 adaviel        New Issue                                    
-02-13-05 07:02 adaviel        Distribution              => Fedora Core 1   
-02-13-05 07:02 adaviel        Kernel Version            => 2.4.22          
-02-14-05 16:27 tiwai          Note Added: 0003600                          
-02-14-05 23:30 adaviel        Note Added: 0003614                          
-======================================================================
+While I have no practical experience with writing ALSA drivers
+I'm happy to help testing with my Unitor8.
 
+Provided someone provides some pointers as to how to learn writing
+the appropriate drivers I'd be willing to do that as well.
 
+Best,
+Michael
+=2D-=20
+ Vote against SPAM - see http://www.politik-digital.de/spam/
+ Michael Gerdau       email: mgd@technosis.de
+ GPG-keys available on request or at public keyserver
+
+--nextPart1351543.ohvsFqBnWK
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQBCETvSUYYhyuxDQc4RAh4iAJ9AfPCdovFnO4DCeBdbeagXCbKTKACgkamS
+A60LMYG7vP4b6tyAZkuMBkA=
+=8l8k
+-----END PGP SIGNATURE-----
+
+--nextPart1351543.ohvsFqBnWK--
 
 
 -------------------------------------------------------
