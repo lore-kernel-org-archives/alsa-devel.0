@@ -1,14 +1,18 @@
-From: Juan Linietsky <coding@reduz.com.ar>
-Subject: Re: Lo mejor para su impresora
-Date: Sun, 14 Apr 2002 00:08:10 -0300
+From: Jean-Marc Valin <jean-marc.valin@hermes.usherb.ca>
+Subject: Re: No sound with Midiman Delta 1010LT
+Date: 13 Apr 2002 23:35:05 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020414000810.43c82d88.coding@reduz.com.ar>
-References: <200204140254.EAA21687@alsa.alsa-project.org>
+Message-ID: <1018755316.1852.23.camel@idefix.homelinux.org>
+References: <1018717194.5273.21.camel@idefix.homelinux.org>
+	<056001c1e332$b551ee40$2900a8c0@burp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200204140254.EAA21687@alsa.alsa-project.org>
+Received: from VL-MS-MR001.sc1.videotron.ca (relais.videotron.ca [24.201.245.36])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id FAA22214
+	for <alsa-devel@alsa-project.org>; Sun, 14 Apr 2002 05:35:51 +0200
+In-Reply-To: <056001c1e332$b551ee40$2900a8c0@burp>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,23 +21,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Tom Browne <tbrowne@tbrowne.demon.co.uk>
+Cc: alsa-devel@alsa-project.org, martino_an@yahoo.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 14 Apr 2002 04:49:17
-"easyinkje" <easyinkje@eresmas.com> wrote:
+> The 1010LT uses different codecs to the normal 1010... they may well need
+> initialising in a different way...
 
-> 
-> IMPRESION CON CALIDAD FOTOGRAFICA.
-> OBTENGA HASTA 10 CARGAS-POR EL PRECIO DE UN CARTUCHO
-> easyinkje
-> 
-> Les informamos que disponemos de kits de tinta, para todas las marcas de impresoras,
-> por 28 EUROS (iva incluido) para negro y 34 para el de color mas 3 euros de gastos de envio. Con un Kit tiene para recargar los cartuchos de 5 a 10 veces; dependiendo de la marca.
-> HAGA SU PEDIDO INDICANDO: marca de la impresora y modelo al tel.934315124-Fax934319444 o
-> al contestador 934311054
+Any hope for me? Any way I can extract some information from the card so
+the driver can be fixed to work with the 1010LT.
 
+	Jean-Marc
 
-la que te pario gallego estafador, porque no te tragas el cartucho y te moris bien intoxicado?
-
-.evil spam :(
+--=20
+Jean-Marc Valin, M.Sc.A.
+LABORIUS (http://www.gel.usherb.ca/laborius)
+Universit=E9 de Sherbrooke, Qu=E9bec, Canada
