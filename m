@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000901]: The onboard audigyls chip on msi k8 diamond motherboard not recognized. Path supplied.
-Date: Sat, 12 Feb 2005 22:47:09 +0100
-Message-ID: <1779708dc484033a72ae4b5d0253c247@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000904]: PCM volume sliders are Left-Right switched for all 3 analog outputs on Audigy2 Platinum Pro ZS
+Date: Sat, 12 Feb 2005 22:55:50 +0100
+Message-ID: <aea36f0d68f01e54c6e50a54219404ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A9B6202
-	for <alsa-devel@alsa-project.org>; Sat, 12 Feb 2005 22:47:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8B3BD202
+	for <alsa-devel@alsa-project.org>; Sat, 12 Feb 2005 22:55:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,64 +23,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=901> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=904> 
 ======================================================================
-Reported By:                kiksen
-Assigned To:                jcdutton
+Reported By:                riwright
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   901
-Category:                   PCI - ca0106
+Issue ID:                   904
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.10
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             &nbsp;2.6.10-1.741
 ======================================================================
-Date Submitted:             02-11-2005 23:49 CET
-Last Modified:              02-12-2005 22:47 CET
+Date Submitted:             02-12-2005 20:26 CET
+Last Modified:              02-12-2005 22:55 CET
 ======================================================================
-Summary:                    The onboard audigyls chip on msi k8 diamond
-motherboard not recognized. Path supplied.
+Summary:                    PCM volume sliders are Left-Right switched for all 3
+analog outputs on Audigy2 Platinum Pro ZS
 Description: 
-We'll. The driver fails to load (and dmesg comlaints about a missing AC97)
+Using either the stereo PCM device (hw:0,0) or Lee Revell's multichannel
+patch PCM device (hw:0,3), the volume control sliders
+(gnome-volume-control) incorrectly control the L & R channels of the
+soundcard's analog outputs (i.e. they are backward).
 
-Have made a path.
+For example for the multichannel case (think 5.1 speaker setup), the PCM
+Front LEFT slider controls the Stereo Output
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 RIGHT channel and vice
+versa.  The PCM Surround LEFT slider controls the Stereo Output
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 RIGHT
+channel and vice versa.  Finally, the PCM Center slider controls the
+Stereo Output https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 RIGHT
+channel and the PCM LFE slider controls the Stereo
+Output https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 LEFT
+channel....this is backwards too, the Center should be Left
+and LFE Right.
+
+Using the 2 channel stereo PCM (hw:0,0) the Front Left slider controls the
+Stereo Output https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 RIGHT
+channel and vice versa.  The card's Stereo Output's
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 &
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 are not available.
 ======================================================================
 
 ----------------------------------------------------------------------
- kiksen - 02-12-05 14:36 
+ riwright - 02-12-05 22:55 
 ----------------------------------------------------------------------
-Found out the serial in the names section should be 0x10091462 for
-detection of correct name.
+The 3 analog outputs mentioned in the summary are all stereo outputs (L/R
+pairs) for a total of 6 analog output channels.
 
-Here's the output of lspci -vn | grep -1 0401:
-
-00000:01:0d.0 Class 0401: 1102:0007
-        Subsystem: 1462:1009
-
-By the way. The chip is named SB0438
-
-----------------------------------------------------------------------
- sHINOBI - 02-12-05 22:47 
-----------------------------------------------------------------------
-I have the same board, so including it to the future versions of ALSA will
-be highly appreciated :-). I'll try the patch and let you know, if it
-works.
+Also, I appologize for the numerical hyperlinks appearing in the bug
+description.  I used the "pound" symbol and I guess this creates the
+links.  Each of the numeric links should just imply the specific number of
+the stereo analog output.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-11-05 23:49 kiksen         New Issue                                    
-02-11-05 23:49 kiksen         File Added: msi_audigyls_patch.patch              
-     
-02-11-05 23:49 kiksen         Distribution              => Gentoo          
-02-11-05 23:49 kiksen         Kernel Version            => 2.6.10          
-02-12-05 00:56 jcdutton       Note Added: 0003569                          
-02-12-05 14:36 kiksen         Note Added: 0003571                          
-02-12-05 22:43 sHINOBI        Issue Monitored: sHINOBI                     
-02-12-05 22:47 sHINOBI        Note Added: 0003572                          
+02-12-05 20:26 riwright       New Issue                                    
+02-12-05 20:26 riwright       Distribution              => Fedora Core 3   
+02-12-05 20:26 riwright       Kernel Version            =>  2.6.10-1.741   
+02-12-05 20:27 riwright       Issue Monitored: riwright                    
+02-12-05 22:55 riwright       Note Added: 0003573                          
 ======================================================================
 
 
