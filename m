@@ -1,13 +1,13 @@
-From: K.Fetscher@t-online.de (Klaus Fetscher)
+From: Giuliano Pochini <pochini@denise.shiny.it>
 Subject: Re: Driver Programming
-Date: Mon, 29 Nov 2004 09:37:39 +0100
-Message-ID: <41AADFD3.6030001@fetron.de>
+Date: Mon, 29 Nov 2004 10:19:44 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0411291004150.13337@denise.shiny.it>
 References: <200411290327.iAT3RTlT019644@localhost.localdomain>
+ <41AADFD3.6030001@fetron.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200411290327.iAT3RTlT019644@localhost.localdomain>
+In-Reply-To: <41AADFD3.6030001@fetron.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,37 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Klaus Fetscher <K.Fetscher@t-online.de>, Clemens Ladisch <clemens@ladisch.de>, Giuliano Pochini <pochini@shiny.it>, alsa-devel@lists.sourceforge.net
+To: Klaus Fetscher <K.Fetscher@t-online.de>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis schrieb:
 
->>Is it possible, to select a substream with aplay ?
->>    
->>
+
+On Mon, 29 Nov 2004, Klaus Fetscher wrote:
+
+> Okay, I found my error. No, I am calling snd_pcm_new(chip->card, "name",
+> DEV_x, ONE_OUT, ONE_IN, &pcm); three times. During the last call, the
+> parameter ONE_IN is 0 (because I only have three output channels and two
+> input channels).
 >
->aplay -D hw:stream,substream
->
->  
->
-Okay, I found my error. No, I am calling snd_pcm_new(chip->card, "name", 
-DEV_x, ONE_OUT, ONE_IN, &pcm); three times. During the last call, the 
-parameter ONE_IN is 0 (because I only have three output channels and two 
-input channels).
+> When I list the /proc/asound/card0 directory, I can see pcm0c, pcm1c,
+> pcm0p, pcm1p, pcm2p. And with substream->pcm->device I can detect, which
+> device I am using. All seems to be okay.
 
-When I list the /proc/asound/card0 directory, I can see pcm0c, pcm1c, 
-pcm0p, pcm1p, pcm2p. And with substream->pcm->device I can detect, which 
-device I am using. All seems to be okay.
+If you want to play a 6-channel track you have to open all tree devices
+and the hw should support sync-start. (There was a typo in the my message:
+THREE_OUT and TWO_IN should have been 6 and 4).
 
-Another question belonging to the Control names of the mixer. Is it 
-correct, to use "Master Volume" three times for the different output 
-channels (the channels are independent from each other) ?
 
-Thanks,
+> Another question belonging to the Control names of the mixer. Is it
+> correct, to use "Master Volume" three times for the different output
+> channels (the channels are independent from each other) ?
 
-Klaus
+I don't think so.  IMO you should register one "Master Volume" as an
+int[6]. or maybe you can register three "Master Volume n". Applications
+will have problems accessing them anyway :)
 
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
