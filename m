@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Fri, 19 Nov 2004 05:55:39 +0100
-Message-ID: <cc9302236b1c3f3ffbf8f1de5c916531@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000646]: emu10k1: sound chopped when passthru enabled
+Date: Fri, 19 Nov 2004 07:14:17 +0100
+Message-ID: <202e92426cbd7b2a7e05d83802f8788a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F98FEB
-	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2004 05:55:39 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC1211C8
+	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2004 07:14:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=646> 
 ======================================================================
-Reported By:                bons78
+Reported By:                flink
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   167
-Category:                   SPARC - cs4231
+Project:                    ALSA - lib
+Issue ID:                   646
+Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               debian/unstable
-Kernel Version:             linux-2.6.4+
 ======================================================================
-Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-19-2004 05:55 CET
+Date Submitted:             11-12-2004 17:02 CET
+Last Modified:              11-19-2004 07:14 CET
 ======================================================================
-Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
+Summary:                    emu10k1: sound chopped when passthru enabled
 Description: 
-alsamixer crashes system hard when snd-ioctl32 is loaded.
-System still responds to some sysrq commands (sync remount boot show) -
-sysrq (term killall) has no effect.
-There's no chance to do any other keyboard input. No logs, no traps, no
-oops. Machine still responds to ping,(even port 22 stays open) but login
-via ssh is not possible. 
-
-alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
-does not crash the system then.
-So I suspect a problem in the ioctl32 wrapper.
-
-
-
+When I play a DVD with AC3 passthru enabled, the signal is correctly send
+to my AC3 decoder but this signal is chopped. I've a little led on my
+decoder to show if dolby digital is enabled or not and this led blinks
+instead of remaining enabled. So the sound is also chopped and a DVD can't
+be 
+watched this way.
 ======================================================================
 
 ----------------------------------------------------------------------
- weeve - 11-19-04 05:45 
+ rlrevell - 11-18-04 23:34 
 ----------------------------------------------------------------------
->From a recent thread on the sparclinux mailing list
-<http://marc.theaimsgroup.com/?t=110017101000004&r=1&w=2>, get_fs() ==
-KERNEL_DS will always cause a SPARC64 machne to hang.
+Hmm, other users all report this fixes the bug.  Are you _sure_ it works
+with 2.6.7 and not with the 2.6.10-rc2?
+
+I think you might have a different issue.
 
 ----------------------------------------------------------------------
- rlrevell - 11-19-04 05:55 
+ visit0r - 11-19-04 07:14 
 ----------------------------------------------------------------------
-That mailing list thread refers to an ALSA patch that fixes the problem and
-which was not posted.  It would help if you could get that patch and post
-it here.
+You might be right that the problem could be somewhere else, even outside
+ALSA. Maybe somekind of I/O problem? I tried yesterday to reproduce the
+bug without success. I'll try watching couple of DVDs on weekend using
+different input sources and report if the problem occurs again.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 00:02 bons78         New Issue                                    
-03-30-04 00:02 bons78         Distribution              => debian/unstable 
-03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
-04-13-04 19:41 tiwai          Note Added: 0000795                          
-07-04-04 22:32 weeve          Note Added: 0001381                          
-07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
-11-19-04 05:45 weeve          Note Added: 0002474                          
-11-19-04 05:46 weeve          Issue Monitored: weeve                       
-11-19-04 05:55 rlrevell       Note Added: 0002475                          
+11-12-04 17:02 flink          New Issue                                    
+11-13-04 22:18 rlrevell       Note Added: 0002403                          
+11-13-04 22:31 rlrevell       File Added: patch                            
+11-13-04 22:33 rlrevell       Note Added: 0002404                          
+11-16-04 00:13 visit0r        Note Added: 0002421                          
+11-16-04 00:24 rlrevell       Note Added: 0002422                          
+11-16-04 21:09 visit0r        Note Added: 0002430                          
+11-17-04 04:06 duanev         Issue Monitored: duanev                      
+11-17-04 07:00 duanev         Note Added: 0002432                          
+11-17-04 08:05 visit0r        Issue Monitored: visit0r                     
+11-17-04 08:09 visit0r        Note Added: 0002434                          
+11-18-04 23:34 rlrevell       Note Added: 0002472                          
+11-19-04 07:14 visit0r        Note Added: 0002476                          
 ======================================================================
 
 
