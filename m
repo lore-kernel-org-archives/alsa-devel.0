@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000651]: via82xxx No Sound Kernel 2.6.10-rc2
-Date: Thu, 18 Nov 2004 19:48:55 +0100
-Message-ID: <98884a2646c930a39476942b40d1db73@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000653]: poor microphone recording quality on pcicmi
+Date: Thu, 18 Nov 2004 19:36:48 +0100
+Message-ID: <3e8810f5e3a86a676a4990e8bc769eff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C0371205
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:48:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6594C268
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:36:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=651> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=653> 
 ======================================================================
-Reported By:                glen
-Assigned To:                
+Reported By:                pbienst
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   651
-Category:                   PCI - via82xx
+Issue ID:                   653
+Category:                   PCI - cmipci
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10.0 + Dropline Gnome 2.8.0
-Kernel Version:             2.6.10-rc2
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r4
 ======================================================================
-Date Submitted:             11-17-2004 19:03 CET
-Last Modified:              11-18-2004 19:48 CET
+Date Submitted:             11-18-2004 10:58 CET
+Last Modified:              11-18-2004 19:36 CET
 ======================================================================
-Summary:                    via82xxx No Sound Kernel 2.6.10-rc2
+Summary:                    poor microphone recording quality on pcicmi
 Description: 
-Upgraded to kernel 2.6.10-rc2 from 2.6.10-rc1 with identical config.  No
-compile problems.  No boot up problems.  No sound.
+I have a C-Media PCI CMI8738-MC6 (rev 16) from a Hercules Muse DVD soundd
+card.
+
+When recording from a headset microphone, sound quality is really bad: low
+
+volume and quite some noise / distortion.
+
+I have my microphone mixers maxed out, 'Mic boost' is on, 'Mic as
+Center/LFE' 
+is off.
+
+I've fiddled with all the other options, but they don't seem to affect the
+
+quality.
+
+I do my recording with:
+
+arecord -D hw:1,0 -d 4 test.wav
+
+Under Windows, sound quality is a lot better with the same setup.
 ======================================================================
 
 ----------------------------------------------------------------------
- glen - 11-17-04 19:05 
+ tiwai - 11-18-04 19:33 
 ----------------------------------------------------------------------
-Added output from lspci.
+They could be read only.  Do all of them behave so?
 
 ----------------------------------------------------------------------
- tiwai - 11-18-04 19:48 
+ pbienst - 11-18-04 19:36 
 ----------------------------------------------------------------------
-What is the exact symptom?  Is the playback DMA working?
-
-More info required, too, for example, the mixer configuration
-(/etc/asound.state) and codec information (/proc/asound/card0/codec97#0/*
-files).
+Yes, all 3 of them behave like that. But changing the driver source as I
+did should have done the trick too?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-17-04 19:03 glen           New Issue                                    
-11-17-04 19:03 glen           File Added: config-2.6.10-rc2                    
-11-17-04 19:03 glen           Distribution              => Slackware 10.0 +
-Dropline Gnome 2.8.0
-11-17-04 19:03 glen           Kernel Version            => 2.6.10-rc2      
-11-17-04 19:05 glen           Note Added: 0002439                          
-11-17-04 19:06 glen           File Added: lspci.txt                        
-11-18-04 19:48 tiwai          Note Added: 0002466                          
+11-18-04 10:58 pbienst        New Issue                                    
+11-18-04 10:58 pbienst        Distribution              => Gentoo          
+11-18-04 10:58 pbienst        Kernel Version            => 2.6.9-gentoo-r4 
+11-18-04 18:07 tiwai          Note Added: 0002453                          
+11-18-04 18:08 tiwai          File Added: cmipci-test.diff                    
+11-18-04 19:11 pbienst        Note Added: 0002459                          
+11-18-04 19:26 pbienst        Note Added: 0002460                          
+11-18-04 19:33 tiwai          Note Added: 0002461                          
+11-18-04 19:36 pbienst        Note Added: 0002462                          
 ======================================================================
 
 
