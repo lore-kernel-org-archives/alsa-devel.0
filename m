@@ -1,12 +1,11 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: smix plugin
-Date: Tue, 01 Oct 2002 09:14:46 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Suggestion: Multichannel enharnacements to alsa-lib.
+Date: Wed, 02 Oct 2002 17:44:59 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D994B66.81897955@libero.it>
-References: <3D98D9B4.9070603@claudia.daemon.sh>
+Message-ID: <3D9AA3FB.5000104@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------6F169A73FEC1553D269ADBF7"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,227 +15,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Pete Black <pete@claudia.daemon.sh>
-Cc: abramo@alsa-project.org, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------6F169A73FEC1553D269ADBF7
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Hello
+It would be nice if there was a feature in alsa that would let the user 
+tell alsa which speakers are plugged into which sound card sockets.
+E.g. On sound card 0, I have: -
+Left speaker in Stereo Jack 1-Left
+Right speaker in Stereo Jack 1-Right
+Rear Left in Stereo Jack 2 - Left
+Rear Right in Stereo Jack 2 - Right
+Center in Stereo Jack 3 - Right
+LFE in Stereo Jack 3 - Left.
 
-Pete Black wrote:
-> 
-> Hi there,
-> 
-> After some discussion on the ALSA-devel list, it appears that you may be
-> the only one who knows anything about the mythical 'smix' plugin that
-> might allow myself and others to get more functionality out of
-> soundcards that do not support multi-open capability in hardware.
-> 
-> I was wondering if you could let me know what the status of this plugin
-> is, and if it might be possible to get it put into the official ALSA
-> tree so that some progress might be made on it, or that at least some
-> documentation more than 'unknown reference' might be added to the ALSA
-> docs, which would at least reduce the confusion over the availability of
-> this capability.
-> 
-> I understand you are busy, so please consider this as a polite request
-> for you toadd the smix plugin to ALSA, as it would make my life much
-> easier when trying to run multiple software synths on linux via my
-> cm8738 card, and also provide a 'definite' piece of code to work on for
-> others who may be interested in this capability.
-> 
-> As it stands, every time anyone asks about 'software multi-open' they
-> are directed either to the 'share' plugin which clearly does not work in
-> this capacity, or told that you have once got the smix plugin to work,
-> and that it is all anyone knows.
-> 
-> This has the effect of discouraging an alternate implementation, and it
-> would seem silly to rewrite something that has already been written.
 
-I doubt that some code edited last time more than 18 months ago and that
-has never been completed or executed (the skeleton was from pcm_share)
-may be of some usefulness for someone, but I've no problem to release
-it.
+This would tell alsa-lib that if it was sent 5.1 channel audio, it would 
+not change it.
+If it was send 2-channel PCM, it would up-mix it using the dolby 2->4 
+channel sound method and also generate the Center and LFE channels.
 
-I still hope that you or someone else will be able to complete this very
-useful component.
+If the user did not have 6 speakers, they could tell alsa :-
+Left speaker in Stereo Jack 1-Left
+Right speaker in Stereo Jack 1-Right
+LFE in Stereo Jack 2 - Left.
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+alsa-lib would then accept 6 channels from the user's application and 
+automatically downmix it for the 3 speakers the user had.
+The user could also have 2 sound cards, with Front speakers on one sound 
+card, and rear speakers on another sound card.
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
---------------6F169A73FEC1553D269ADBF7
-Content-Type: application/x-gzip;
- name="pcm_mix.c.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="pcm_mix.c.gz"
+Another feature for alsa-lib could be adding volume and delay controls in.
+For example, the user might want to adjust the volume of the LFE without 
+changing the volume of the other channels.
+Also, depending on where the speakers are in the room, the user might 
+want to add certain delays to certain channels so that the sound is in 
+sync when it gets to the user's ears.
 
-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
---------------6F169A73FEC1553D269ADBF7--
+The reason I think that this would be good to have in alsa-lib is so it 
+would only have to be implemented once, and then all audio applications 
+could use the features.
+
+I am currently helping to write a media application in linux that plays 
+DVDs that have 5.1(e.g 6 channels) audio tracks. It would be nice if my 
+audio application did not have to care about what speakers the user has, 
+and just output 6 channels every time and let alsa-lib adjust. Also, if 
+I used another audio application that could play CD-Digital Audio, 
+alsa-lib could automatically upmix it to 5.1 using dolby surround 2->4 
+upmix, and alsa-lib could then fill in the center and lfe channels. This 
+way, all the current linux applications that use ALSA would not have to 
+be changed, but the user would get much better sound output as alsa-lib 
+would convert the sound to make full use of the users speaker layout.
+
+Supported speaker formats needed are: -
+1) Center (Mono)
+2) Front Right, Front Left. (Stereo)
+3) Front Right, Front Left, Center (3 Channel front.)
+4) Front Right, Front Left, LFE (3 channel front/LFE)
+5) Front Right, Front Left, Rear Right, Rear Left (4 channel front/rear)
+6) Front Right, Front Left, Center, Rear Right, Rear Left (5 Channel 
+front/rear/center)
+7) Front Right, Front Left, Rear Right, Rear Left, LFE (5 Channel 
+front/rear/LFE)
+8) Front Right, Front Left, Center, Rear Right, Rear Left, LFE (6 
+channel "5.1")
+9) Future setups with maybe 7,8 or 9 speakers  for home real cinema 
+setups. DTS 6.1 etc.
+
+Cheers
+James
+
 
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by: DEDICATED SERVERS only $89!
-Linux or FreeBSD, FREE setup, FAST network. Get your own server 
-today at http://www.ServePath.com/indexfm.htm
+This sf.net email is sponsored by:ThinkGeek
+Welcome to geek heaven.
+http://thinkgeek.com/sf
