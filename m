@@ -1,18 +1,13 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: [PATCH] - emu10k1 external tram size
-Date: Sun, 20 Mar 2005 20:41:24 +0100
-Message-ID: <423DD1E4.5020400@pobox.sk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000790]: no sound with azx driver in Realtek integrated sound chip
+Date: Sun, 20 Mar 2005 21:00:26 +0100
+Message-ID: <3d10e5ecb9b0c2fe82e34b8245c99f60@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------090508050901020207080000"
-Received: from gwen.pobox.sk (gwen.pobox.sk [212.5.216.21])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E5B4025D
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 20:35:11 +0100 (MET)
-Received: from [192.168.1.20] (NAT-pool_1.gaya.sk [62.168.75.5] (may be forged))
-	(authenticated bits=0)
-	by gwen.pobox.sk (8.12.10/8.12.9/relay) with ESMTP id j2KJZAKh018455
-	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NOT)
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 20:35:11 +0100 (CET)
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 589EB25F
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 21:00:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,51 +20,124 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090508050901020207080000
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=790> 
+======================================================================
+Reported By:                theoneandonlysm
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   790
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware 10 (-current)
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             01-07-2005 01:38 CET
+Last Modified:              03-20-2005 21:00 CET
+======================================================================
+Summary:                    no sound with azx driver in Realtek integrated sound
+chip
+Description: 
+Using the CVS checkout on 01/05/05 at 8:00 EDT, I compiled the alsa drivers
+with kernel 2.6.10 . Running alsaconf (provided by slackware), it was able
+to detect the azx module as the correct driver and modified by
+/etc/modprobe.conf as needed. Although alsamixer and kmix show all the
+channels and devices for the sound chip, I get no sound output.
 
-This patch fixes wrong size reported by driver for external tram. It 
-reports size in bytes and should report it in samples as for internal tram.
+Dmesg states:
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA /home/sandeep/alsa_cvs/alsa-driver/pci/azx/patch_realtek.c:953:
+hda_codec: Unknown model for ALC880
 
-Signed off: Peter Zubaj <pzad@pobox.sk>
+I'm guessing there is just something specifically not included in the
+driver needed by this chip.
 
---------------090508050901020207080000
-Content-Type: text/x-patch;
- name="etram_size.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="etram_size.diff"
+lsmod:
+Module                  Size  Used by
+snd_pcm_oss            59168  0
+snd_mixer_oss          19840  1 snd_pcm_oss
+snd_azx                12640  2
+snd_hda_codec          46208  1 snd_azx
+snd_pcm                96260  4 snd_pcm_oss,snd_azx,snd_hda_codec
+snd_timer              23556  1 snd_pcm
+snd                    58628  9
+snd_pcm_oss,snd_mixer_oss,snd_azx,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8452  2 snd_azx,snd_pcm
 
-diff -r -u o/alsa-kernel/pci/emu10k1/emufx.c n/alsa-kernel/pci/emu10k1/emufx.c
---- o/alsa-kernel/pci/emu10k1/emufx.c	2004-11-23 16:11:54.000000000 +0100
-+++ n/alsa-kernel/pci/emu10k1/emufx.c	2005-03-20 20:31:29.000000000 +0100
-@@ -2064,7 +2064,7 @@
- 	memset(info, 0, sizeof(info));
- 	info->card = emu->card_type;
- 	info->internal_tram_size = emu->fx8010.itram_size;
--	info->external_tram_size = emu->fx8010.etram_pages.bytes;
-+	info->external_tram_size = emu->fx8010.etram_pages.bytes / 2;
- 	fxbus = fxbuses;
- 	extin = emu->audigy ? audigy_ins : creative_ins;
- 	extout = emu->audigy ? audigy_outs : creative_outs;
-diff -r -u o/alsa-kernel/pci/emu10k1/emuproc.c n/alsa-kernel/pci/emu10k1/emuproc.c
---- o/alsa-kernel/pci/emu10k1/emuproc.c	2004-11-23 16:06:17.000000000 +0100
-+++ n/alsa-kernel/pci/emu10k1/emuproc.c	2005-03-20 20:29:40.000000000 +0100
-@@ -184,7 +184,7 @@
- 	snd_iprintf(buffer, "Card                  : %s\n",
- 		    emu->audigy ? "Audigy" : (emu->APS ? "EMU APS" : "Creative"));
- 	snd_iprintf(buffer, "Internal TRAM (words) : 0x%x\n", emu->fx8010.itram_size);
--	snd_iprintf(buffer, "External TRAM (words) : 0x%x\n", (int)emu->fx8010.etram_pages.bytes);
-+	snd_iprintf(buffer, "External TRAM (words) : 0x%x\n", (int)emu->fx8010.etram_pages.bytes / 2);
- 	snd_iprintf(buffer, "\n");
- 	snd_iprintf(buffer, "Effect Send Routing   :\n");
- 	for (idx = 0; idx < NUM_G; idx++) {
+lspci:
+00:00.0 Host bridge: Intel Corp.: Unknown device 2580 (rev 04)
+00:02.0 VGA compatible controller: Intel Corp.: Unknown device 2582 (rev
+04)
+00:02.1 Display controller: Intel Corp.: Unknown device 2782 (rev 04)
+00:1b.0 Class 0403: Intel Corp.: Unknown device 2668 (rev 03)
+00:1c.0 PCI bridge: Intel Corp. I/O Controller Hub PCI Express Port 0 (rev
+03)
+00:1d.0 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.1 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.2 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.3 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
+00:1d.7 USB Controller: Intel Corp. I/O Controller Hub USB2 (rev 03)
+00:1e.0 PCI bridge: Intel Corp. 82801BA/CA/DB/EB/ER Hub interface to PCI
+Bridge (rev d3)
+00:1f.0 ISA bridge: Intel Corp. I/O Controller Hub LPC (rev 03)
+00:1f.1 IDE interface: Intel Corp. I/O Controller Hub PATA (rev 03)
+00:1f.2 IDE interface: Intel Corp. I/O Controller Hub SATA cc=ide (rev
+03)
+00:1f.3 SMBus: Intel Corp. I/O Controller Hub SMBus (rev 03)
+02:01.0 FireWire (IEEE 1394): VIA Technologies, Inc. IEEE 1394 Host
+Controller (rev 80)
+02:02.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+RTL-8139/8139C/8139C+ (rev 10)
 
---------------090508050901020207080000--
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-13-05 20:49 
+----------------------------------------------------------------------
+Maybe the connection of headphone is different from the predefined one.
+Anyway I'll add your device to 5stack model as a temporary solution.
+
+Could you check whether surround outputs and line/mic inputs work as
+expected?
+
+I'm not sure what's wrong with the volume.  Basically there are no many
+volume controls for this output route...
+
+----------------------------------------------------------------------
+ theoneandonlysm - 03-20-05 21:00 
+----------------------------------------------------------------------
+Using drivers 1.0.9rc1 solves a lot of issues. Thanks!
+
+Sound output is much more crisp and volume control works for "front" and
+"side" controls. Also, the problem from the cvs versions causing knotify
+to hang is no longer present.
+
+However, KDE (kmix) still identifies the "main" audio control as the
+headphone slider, which has no effect on changing the volume. Furthermore,
+the headphone jack at the front of my computer still doesn't produce any
+sound output
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-07-05 01:38 theoneandonlysmNew Issue                                    
+01-07-05 01:38 theoneandonlysmDistribution              => Slackware 10
+(-current)
+01-07-05 01:38 theoneandonlysmKernel Version            => 2.6.10          
+01-07-05 17:50 tiwai          Note Added: 0003102                          
+01-08-05 02:20 theoneandonlysmNote Added: 0003126                          
+01-08-05 02:21 theoneandonlysmNote Edited: 0003126                         
+01-13-05 20:49 tiwai          Note Added: 0003202                          
+03-20-05 21:00 theoneandonlysmNote Added: 0004100                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
