@@ -1,13 +1,13 @@
 From: thomas schorpp <t.schorpp@gmx.de>
-Subject: Re: C-Media	CMI9761A REV
-Date: Sat, 19 Feb 2005 04:52:44 +0100
-Message-ID: <4216B80C.2090507@gmx.de>
-References: <1108782279.23185.38.camel@bastov>
+Subject: Re: CMI8768 patch, CMI9761A
+Date: Sat, 19 Feb 2005 06:07:14 +0100
+Message-ID: <4216C982.4090205@gmx.de>
+References: <92C0412E07F63549B2A2F2345D3DB515F7D63F@cm-msg-02.cmedia.com.tw>
 Reply-To: t.schorpp@gmx.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108782279.23185.38.camel@bastov>
+Content-Type: text/plain; charset=Big5
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <92C0412E07F63549B2A2F2345D3DB515F7D63F@cm-msg-02.cmedia.com.tw>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,32 +17,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: sergio@sergiomb.no-ip.org
-Cc: Jakob Schurdak <jakobs@myrealbox.com>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Sergio Monteiro Basto wrote:
+hi,
 
-> I have one ASRock P4VT8+ with CMedia CMI9761 (not the same of Jakob) but
-> same rev. of sound card.
-> 00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+Tien, C.L. - =A5=D0=A9=D3=C2=A7 wrote:
+> Hi,
+>=20
+> I made a patch for CM8768, which has the same PCI ID but there are
+> several HW diffecece, aas listed:
 
-BTW, THATS NOT THE CODEC, only a interface.
+same with the 9761A i assume?
 
-this is it:
+>=20
+> 1. 8768 has no PCM volume control.
 
-lspci -v
+all model policy? strange cost optimation, driver software should be
+more expensive... for customers.
 
-  0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc. 
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
-         Subsystem: Unknown device 1849:9761 <--------------------
+> 2. The ADC of 8768 can only record in 44.1kHz or 48kHz.
+> 3. 8768 can support up to 8 channels.
+>=20
+> I made change for item 2 and 3, I want to use the softvol plugin but
+> don't know how to. The driver just don't generate the PCM volume slider
+>  for now.
 
+i want it too and at least 2 dxs sliders. so i could play loud mp3
+without getting my speakers blown by knotify beeps.
+
+lee stated, it cant be used by apps needing oss-mixer. anyway. most
+newer apps like xine + xmms have conf options for using alsa or oss.
+
+>=20
+> The patch file is attached.
+>=20
+> Sincerely,
+> ChenLi Tien
+>=20
+>=20
+
+y
 tom
-
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
