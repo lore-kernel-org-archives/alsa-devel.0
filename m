@@ -1,13 +1,12 @@
-From: Anthony <avan@uwm.edu>
-Subject: Guillemot ISIS Maxi Studio
-Date: Fri, 15 Aug 2003 23:19:45 -0500
+From: ROOTLOOP@aol.com
+Subject: ADATPCR Drivers
+Date: Sat, 16 Aug 2003 06:39:31 EDT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030816041945.GA23675@ice_nine.wi.rr.com>
-Reply-To: avan@uwm.edu
+Message-ID: <14c.22dbd497.2c6f63e3@aol.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,20 +18,15 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi, 
-
-Curious if there is any progress/info regarding the
-Guillemot ISIS Maxi Studio card. I found some mails
-back in 2000 which weren't very positive. I understand
-this has two chipsets, a es1968 and a sam9457. There
-are some kernel drivers for the later which dont help
-with using jack and the es1968 driver loads, appears
-happy but no output at all. So is there a user base out
-there to make some progress on this? I'd be happy to
-devote some time provided I'm not stabbing away in the
-dark.
-
---ant
+This is a message for Jaymz Julian or whomever may be the appropriate person 
+to address this to at this time. I am looking for win2000 drivers for the 
+ADATPCR card. There seems to be no trace. Perhaps someone could tell me how I 
+might modify my win98 drivers to be used with win2k. win2k recognizes the .inf 
+file from the win98 drivers, but when I click to install, the os says that the 
+driver files were not found. I'd REALLY like to be able to do this, cause I'm 
+using win2k now and all my other high-end audio cards have drivers for win2k. 
+Please help, I really love this card.
+Debbie
 
 
 -------------------------------------------------------
