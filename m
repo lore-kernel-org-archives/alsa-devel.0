@@ -1,11 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: web site: alsa-project.org  appears to be down.
-Date: Thu, 20 May 2004 11:40:21 +0100
+From: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
+Subject: Re: web site: alsa-project.org  appears to be down.
+Date: Thu, 20 May 2004 13:03:13 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40AC8B15.4080001@superbug.demon.co.uk>
+Message-ID: <yw1xwu37bbta.fsf@ford.guide>
+References: <40AC8B15.4080001@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,12 +16,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Is it just my end, or is the alsa-project.org web site down?
+James Courtier-Dutton <James@superbug.demon.co.uk> writes:
 
-James
+> Is it just my end, or is the alsa-project.org web site down?
+
+Here too (Sweden).
+
+-- 
+Måns Rullgård
+mru@kth.se
+
 
 
 -------------------------------------------------------
