@@ -1,17 +1,11 @@
-From: Carl-Daniel Hailfinger <c-d.hailfinger.kernel.2004@gmx.net>
-Subject: Re: 1.0.2 release
-Date: Tue, 27 Jan 2004 11:11:23 +0100
+From: tibors@freestart.hu
+Subject: SBLive: mirroring analog inputs to rear channel
+Date: Tue, 27 Jan 2004 11:26:38 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4016394B.7080201@gmx.net>
-References: <Pine.LNX.4.58.0401271049310.3133@pnote.perex-int.cz>
+Message-ID: <4240322.1075199198356.JavaMail.www-data@www3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=1397771.1075199198355.JavaMail.www-data.www3
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id LAA15537
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 11:22:20 +0100
-In-Reply-To: <Pine.LNX.4.58.0401271049310.3133@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,23 +14,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> Hello all,
-> 
-> 	we released packages 1.0.2.
+--1397771.1075199198355.JavaMail.www-data.www3
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 7bit
 
-The current tree from kernel.org claims in linux/include/sound/version.h
-that only Alsa 0.9.7 is integrated. Is that correct?
+Hi,
 
+sorry if this is not the right place to ask, but on alsa-users noone could help me...
 
-Regards,
-Carl-Daniel
--- 
-http://www.hailfinger.org/
+recently I have discovered that all kind of external inputs 
+(stereo inputs) on my SBLive (with 4 analog speakers) works, 
+but their sounds (analog cd, mic, line-in) can be hear only 
+on the front channels. I tried all of alsamixer's elements - no success.
+Computer based sounds (mp3, video, games) use all four 
+speakers, regardless of how many channels are in it. (E.g. my 
+stereo mp3s are played through all 4 speakers.)
+
+I don't know if rear channels should be used by simple mixer 
+tricks - I think I need to mirror these inputs to rear channels, too.
+
+Should anyone help me how to make it?
+
+Thanks!
+Sipi
+____________________________________________________________________
+Miert fizetsz az internetert? Korlatlan, ingyenes internet hozzaferes a FreeStarttol.
+Probald ki most! http://www.freestart.hu
+
+--1397771.1075199198355.JavaMail.www-data.www3--
+
 
 
 
