@@ -1,9 +1,11 @@
-From: German Gomez Garcia <german@piraos.com>
-Subject: SBLive SPDIF output under SMP.
-Date: Tue, 19 Feb 2002 01:21:10 +0100 (CET)
-Message-ID: <Pine.LNX.4.44.0202190116450.2045-100000@hal9000.piraos.com>
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: Re: Re: should i be able to abort in the middle of
+ snd_pcm_mmap_{begin,commit} ?
+Date: Tue, 19 Feb 2002 04:04:55 +0200 (EET)
+Message-ID: <Pine.LNX.4.44.0202190354560.3739-100000@ecabase.localdomain>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <Pine.LNX.4.44.0202141523230.3739-100000@ecabase.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,36 +14,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa mailing list <Alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-	Hello,
+I think we can close this problem at least for now. The cause for the
+garbled audio problem was found from JACK's side.
 
-	I would like to know if S/PDIF output of AC3 frames is supported
-in the ALSA emu10k1 driver under SMP, I was unable to make it work, I've
-tried ac3play (from alsaplayer) and latest ALSA CVS and also opensource
-emu10k1 driver and the play-ac3 utils that comes with it. I have a
-Cambridge Soundworks DTT2500 external Dolby Digital decoder, when I load
-the emu10k1 opensource driver I get the following info about my SBLive
-card:
+I'm still a bit puzzled why I didn't get xruns in the test case quoted
+below, but until I can reproduce the problem, there's not much to discuss
+about. But for the readers of alsa-devel archives, if you are having xrun
+detection problems with ALSA mmap pcm API, do post a message about it. :)
 
-Creative EMU10K1 PCI Audio Driver, version 0.18, 00:59:28 Feb 19 2002
-EMU10K1 rev 5 model 0x8040 found, IO at 0x1800-0x181f, IRQ 19
-ac97_codec: AC97 Audio codec, id: 0x8384:0x7609 (SigmaTel STAC9721/23)
+On Thu, 14 Feb 2002, Kai Vehmanen wrote:
 
-It's a SBLive Platinum (with the LiveDrive II) and I'm connecting the
-DTT2500 to the LiveDrive II's coaxial spdif output.
+> - no xruns are detected even though after the timeout
+>   alsa_driver_wait() took 56.4msec which is more than
+>   period_size * number_of_periods (1024*2/44100*1000=46msec);
+>   in other words there should have been an xrun
 
-	I'm running it on a dual Athlon 1.4 Thunderbird in a Tyan TigerMP,
-any ideas??
-
-	Regards,
-
-	- german
-
--------------------------------------------------------------------------
-German Gomez Garcia          | Send email with "SEND GPG KEY" as subject
-<german@piraos.com>          | to receive my GnuPG public key.
+-- 
+ http://www.eca.cx
+ Audio software for Linux!
 
 
 _______________________________________________
