@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000434]: System hang after playing
-Date: Fri, 24 Sep 2004 13:45:11 +0200 (CEST)
+Subject: [ALSA - driver 0000450]: Line In only gives left channel - no stereo recording/listening
+Date: Fri, 24 Sep 2004 13:42:09 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924114511.45DB1101DB@server.perex-int.cz>
+Message-ID: <20040924114209.B9EEC101DE@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9B354288
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:45:11 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 051A4288
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:42:10 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,55 +22,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000434
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000450
 ======================================================================
-Reported By:                crsw
+Reported By:                ZaphodB
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     434
-Category:                   PCI - atiixp
+Bug ID:                     450
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora core 2
-Kernel Version:             2.6.7-1.494.2.2custom
+Distribution:               Debian unstable/testing/experimental
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             08-11-2004 10:56 CEST
-Last Modified:              09-24-2004 13:45 CEST
+Date Submitted:             08-18-2004 02:04 CEST
+Last Modified:              09-24-2004 13:42 CEST
 ======================================================================
-Summary:                    System hang after playing
+Summary:                    Line In only gives left channel - no stereo recording/listening
 Description: 
-After playing a sound file the system hang whitout any message. It hang
-even if you send a kill -1 signal to the process reproducing the sound
-file
+Whatever stunts i do with alsamixer, selecting Line IN as capture source
+leaves me with one channel (left) on output hw/0 - hw/1 does neither
+contains the right channel nor does setting the hw/1 output to hw/0
+provide me with a stereo signal. Same with recording from Line, audacity
+shows good input signal (waveform pattern) for the left channel but
+absolutely nothing for right.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-19-2004 19:19 CEST 
+ ZaphodB - 08-18-2004 02:08 CEST 
 ----------------------------------------------------------------------
-Can you get a trace via magic sysrq?
+forgot: stereo-recording from Line In with audacity works with WindowsXP
+;-)
 
 ----------------------------------------------------------------------
- crsw - 08-19-2004 22:01 CEST 
+ ZaphodB - 08-18-2004 02:17 CEST 
 ----------------------------------------------------------------------
-I'v just installed alsa-lib 1.0.6.rc1.
-The problem is solved now.
+sorry, overlooked BugID 0000382 reporting basically same bug.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-11-04 10:56 crsw           New Bug                                      
-08-11-04 10:56 crsw           Distribution              => Fedora core 2   
-08-11-04 10:56 crsw           Kernel Version            => 2.6.7-1.494.2.2custom
-08-11-04 10:56 crsw           Bug Monitored: crsw                          
-08-11-04 10:56 crsw           Bug End Monitor: crsw                        
-08-19-04 19:19 tiwai          Bugnote Added: 0001594                       
-08-19-04 22:01 crsw           Bugnote Added: 0001596                       
-08-20-04 12:38 tiwai          Resolution               open => fixed       
-08-20-04 12:38 tiwai          Status                   assigned => resolved
-09-24-04 13:45 tiwai          Status                   resolved => closed  
+08-18-04 02:04 ZaphodB        New Bug                                      
+08-18-04 02:04 ZaphodB        Distribution              => Debian unstable/testing/experimental
+08-18-04 02:04 ZaphodB        Kernel Version            => 2.6.8.1         
+08-18-04 02:08 ZaphodB        Bugnote Added: 0001573                       
+08-18-04 02:17 ZaphodB        Bugnote Added: 0001574                       
+08-19-04 19:08 tiwai          duplicate_id             0 => 382            
+08-19-04 19:08 tiwai          Assigned To               => tiwai           
+08-19-04 19:08 tiwai          Resolution               open => duplicate   
+08-19-04 19:08 tiwai          Status                   new => resolved     
+09-24-04 13:42 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
