@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Badness in remove_proc_entry
-Date: Sun, 28 Mar 2004 09:54:46 +0200 (CEST)
+Subject: Re: non standard sample rate
+Date: Sun, 28 Mar 2004 10:06:32 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403280954360.1828@pnote.perex-int.cz>
-References: <20040327215238.6e3f0762.pochini@shiny.it>
+Message-ID: <Pine.LNX.4.58.0403281001440.1828@pnote.perex-int.cz>
+References: <20040327214924.2d3a1c93.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040327215238.6e3f0762.pochini@shiny.it>
+In-Reply-To: <20040327214924.2d3a1c93.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,12 +22,12 @@ List-Id: alsa-devel@alsa-project.org
 
 On Sat, 27 Mar 2004, Giuliano Pochini wrote:
 
-> 
-> I'm not sure if this is alsa's fault. It happens when I unload the module.
-> Yup, snd_gina24 is the driver I'm developing, but it also happens with
-> snd-powermac and when I try to load a module for a card I don't have.
+> The hw supports all standard sample rates from 8KHz to 96KHz and continuous
+> mode, but the latter only in the range 25KHz-100KHz. What kind of constraint
+> I have to set ?
 
-It's fixed in 1.0.4rc1.
+You need to create your own constraint (rule) in this case in the 
+pcm open() callback.
 
 						Jaroslav
 
