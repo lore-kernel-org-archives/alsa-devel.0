@@ -1,14 +1,13 @@
-From: Richard Cochran <cochran@cs.umass.edu>
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
 Subject: Re: documentation - yeah right!
-Date: Wed, 21 May 2003 13:16:43 -0400
+Date: Wed, 21 May 2003 20:36:09 +0300 (EEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030521131643.A24752@loki.cs.umass.edu>
-References: <20030521115921.B793@loki.cs.umass.edu> <Pine.LNX.4.44.0305211934470.19955-100000@ecabase.localdomain>
+Message-ID: <Pine.LNX.4.44.0305212030450.19955-100000@ecabase.localdomain>
+References: <20030521131643.A24752@loki.cs.umass.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0305211934470.19955-100000@ecabase.localdomain>; from kai.vehmanen@wakkanet.fi on Wed, May 21, 2003 at 07:52:46PM +0300
+In-Reply-To: <20030521131643.A24752@loki.cs.umass.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,30 +16,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Richard Cochran <cochran@cs.umass.edu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 21, 2003 at 07:52:46PM +0300, Kai Vehmanen wrote:
-> > Mixing can be done using a fifo. It would not be hard to shadow the
-> 
-> Simply does not work nor scale if you want low latency and support
-> multichannel configurations.
+On Wed, 21 May 2003, Richard Cochran wrote:
 
-One interest of mine is real-time automatic accompaniement by
-computer. I am very interested in low latency for this purpose. I
-cannot imagine that a generic mixing library would reduce latency over
-using a dedicated write to a dsp device! Thus I favor simple access to
-the dsp hardware over using any conversion layers.
+> If you want generic mixing, then you must sacrifice latency. The most
+> efficient mixer can be achieved if the app handles the channels
+> itself.
 
-If you want generic mixing, then you must sacrifice latency. The most
-efficient mixer can be achieved if the app handles the channels
-itself.
+That's just not true. Both ALSA's dmix (which is really very
+very clever) and JACK provide generic mixing without increasing 
+latency.
 
-Also, regarding latency, can someone point to any benchmarks/studies
-contrasting OSS drivers with the corresponding Alsa drivers?
+> Also, regarding latency, can someone point to any benchmarks/studies
+> contrasting OSS drivers with the corresponding Alsa drivers?
 
-Thanks,
-Richard
+Gladly, see:
+
+http://dkc.mse.jhu.edu/~karlmac/publications/latency-icmc2001.pdf
+
+In addition there're some notes about JACK (then known as
+LAAGA). They tested OSS, but only once, as, directly 
+quoting the paper:
+""Only one test was done under Linux using the OSS (Open Sound System)
+(www.opensound.com/oss.html) because of a lack of
+reliable support for full duplex with the test system
+hardware.""
+
+-- 
+ http://www.eca.cx
+ Audio software for Linux!
+
 
 
 -------------------------------------------------------
