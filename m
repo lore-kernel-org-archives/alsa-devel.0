@@ -1,21 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Mantis mailings on this list
-Date: Mon, 14 Jun 2004 09:05:29 -0400
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: rmmod snd-es1968 crashes my laptop...
+Date: Sun, 13 Jun 2004 20:23:48 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406141305.i5ED5TO3002459@dhin.linuxaudiosystems.com>
+Message-ID: <200406132023.48894.annabellesgarden@yahoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from out010.verizon.net (out010pub.verizon.net [206.46.170.133])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 886EA343
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2004 15:05:32 +0200 (MEST)
-Received: from dhin.linuxaudiosystems.com ([151.197.27.69])
-          by out010.verizon.net
-          (InterMail vM.5.01.06.06 201-253-122-130-106-20030910) with ESMTP
-          id <20040614130530.MLRA15848.out010.verizon.net@dhin.linuxaudiosystems.com>
-          for <alsa-devel@alsa-project.org>;
-          Mon, 14 Jun 2004 08:05:30 -0500
-Received: from dhin.linuxaudiosystems.com (localhost.localdomain [127.0.0.1])
-	by dhin.linuxaudiosystems.com (8.12.10/8.12.8) with ESMTP id i5ED5U4s002463
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2004 09:05:30 -0400
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,17 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-i don't see a problem with posting mantis email to the list. but if
-its going to happen, can we please use a *nix-standard text
-encoding. these messages are more or less unreadable to me because
-they are encoded in that appalling MS-centric "quoted/printable"
-format. I get a page or two of "=3D" and "=20" all over my screen.
+...if the us428 is running. 
+the us428 (via uhci module) uses exactly the same irq 5 as the snd-es1968 
+here.
+If the us428 is deactivated, that is there are only snd-es1968 related 
+interrupts on irq5, "rmmod snd-es1968" is ok.
 
-thanks.
---p
+This prevents the crash here (2.4.26 kernel, planet CCRMA fc1):
+>>>>>>
+--- alsa-kernel/pci/es1968.c	3 May 2004 17:34:48 -0000	1.66
++++ alsa-kernel/pci/es1968.c	13 Jun 2004 17:01:32 -0000
+@@ -2477,7 +2477,7 @@
+ 		kfree_nocheck(chip->res_joystick);
+ 	}
+ #endif
+-	snd_es1968_set_acpi(chip, ACPI_D3);
++	//snd_es1968_set_acpi(chip, ACPI_D3);
+ 	chip->master_switch = NULL;
+ 	chip->master_volume = NULL;
+ 	if (chip->res_io_port) {
+<<<<<<
+
+I don't know, if this is the correct solution.
+Let me know, if you need more details or tests.
+
+thanks,
+Karsten
+
 
 
 -------------------------------------------------------
