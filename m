@@ -1,8 +1,11 @@
-From: Juhana Sadeharju <kouhia@nic.funet.fi>
-Subject: SB Live capture and effects
-Date: Mon, 21 Oct 2002 10:54:12 +0300
+From: Francesco Rossi <franc@agbms.ch>
+Subject: Handling Mixer settings...
+Date: 21 Oct 2002 15:42:10 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021021075412Z12568-25317+527@nic.funet.fi>
+Message-ID: <1035207730.3254.89.camel@franc.agbms.ch>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,50 +18,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello. I tried the settings given in the following table
-(and minor variations). It does not work.
+I haven't found any documentation on setting the mixer.
+My need is to set the volume to 80% for the LINE input and to grab from
+there.
+Right now I am setting the alsamixer to set it manually, but I would
+like to do it from the software code. I was doing it before with OSS, I
+should be able to do it better with ALSA I believe.
+Can somebody give me a hint?
+Thanks,
+            Franc
 
-name                   | capture switch | mute switch | level
--------------------------------------------------------------
-PCM                    | <none>         | off         | 100
-Line LiveDrive         | on             | <none>      | 0
-Line LiveDrive Capture | <none>         | <none>      | 100
-Capture                | off            | <none>      | 0
-Mix                    | on             | <none>      | 0
-AC97 Capture           | <none>         | <none>      | 0
 
-What I should do now?
 
- -*-
 
-It was said emu10k1 runs at 48000 Hz. What then happens when I record
-at 44100 Hz? Who does the 48000-to-44100 Hz conversion?
 
-I did not mean the MS Windows SB Live driver effects should be
-included to Alsa distribution. Each SB Live owner would select and
-extract the wanted effects from their own "windows/system/sblfx.dll"
-driver file. The effects are in COM packets as described in the
-documentation -- are there software to extract individual COM packets
-and their subentries from dll files? As far as nobody tries to find out
-how the effects works, it could not be reverse engineering at all.
-
-Following effects are listed in "sblfx.dll":
- ac3pass, Auto Wah, Chorus, Fuzz, Panning Echo, FDNReverb-EAX2.0,
- Stereo Flanger, Freak Shifter, Parametric EQ, Peak Meter, PitchShift,
- Record Dither, RingMod, SB2Mixer, SBLTone4, SB2SpeakerSpatializer,
- SB4Mixer, SBLTone4, SB4SpeakerSpatializer, SB5Mixer, SBLTone5,
- SB5_1SpeakerSpatializer, HeadphoneSpatializer, Surround Encoder,
- SurroundSpatializer, Formant Filter.
-
-The freeverb is Scroeder/Moorer type comb+allpass reverb, but
-SB Live has Jot type FDN reverb. DAFX '01 had a paper presenting
-another reverb by Creative people. I don't know if that reverb is
-available in the latest driver updates. Could somebody check their
-SB Live driver for the effect names? Thanks.
-
-Best regards,
-
-Juhana
 
 
 -------------------------------------------------------
