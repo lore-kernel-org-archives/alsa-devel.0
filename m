@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000318]: alsaconf: -bash: syntax error in conditional expression
-Date: Wed, 19 Jan 2005 16:44:25 +0100
-Message-ID: <80f2f2f6507651fd9d3439cbdfc1396e@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000798]: Make alsaconf optinal able to create an asound.conf
+Date: Wed, 19 Jan 2005 16:48:29 +0100
+Message-ID: <fbc628e14b78fdb9fb6284ccd0b434bf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8AB9626D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:44:25 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 77E2A26D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 16:48:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=318> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=798> 
 ======================================================================
-Reported By:                Toralf Förster
+Reported By:                christeck
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   318
+Issue ID:                   798
 Category:                   alsaconf
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             05-31-2004 12:25 CEST
-Last Modified:              01-19-2005 16:44 CET
+Date Submitted:             01-09-2005 22:05 CET
+Last Modified:              01-19-2005 16:48 CET
 ======================================================================
-Summary:                    alsaconf: -bash: syntax error in conditional
-expression
+Summary:                    Make alsaconf optinal able to create an asound.conf
 Description: 
-The error above results from lines like:
-  
-elif [ -f /etc/redhat-release -a `grep -c "Red Hat" /etc/redhat-release
-2>/dev/null` -ne 0 ]; then
+An asound.conf is difficult to create manually due to its difficult to
+understand syntax. Would be great if alsaconf could optional create it, so
+the user can
 
-instead it should be 
-elif [[ -f /etc/redhat-release && `grep -c "Red Hat" /etc/redhat-release
-2>/dev/null` -ne 0 ]; then
+* Define in which order the cards appear (e.g., internal AC97, Modem,
+USB-Audio and an USB MIDI card)
 
-notice the doubled '[[' and ']]' and '&&' instead of '-a', isn't it ?
+* Define some dmix devices
+
+* Else? Not familiar enough with dmix, I do not use it :)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-19-05 15:36 
+ jdthood - 01-19-05 15:29 
 ----------------------------------------------------------------------
-You don't have to use double brackets.
-
-< elif [ -f /etc/redhat-release -a `grep -c "Red Hat" /etc/redhat-release
-2>/dev/null` -ne 0 ]; then
-> elif [ -f /etc/redhat-release ] && [ "$(grep -c "Red Hat"
-/etc/redhat-release 2>/dev/null)" -ne "0" ]; then
+A nice idea, but it would be better to write a separate program
+to generate asound.conf.  alsaconf writes configuration files for
+the ALSA drivers whereas asound.conf is a configuration file for the
+ALSA library.
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 16:44 
+ tiwai - 01-19-05 16:48 
 ----------------------------------------------------------------------
-Even the second [] isn't necessary when you use grep -q.
+Agreed.  Both issues described are above the scope of alsaconf.
+
+dmix will be default in alsa-lib without any special configuration for
+most of mobo drivers in the next version (I hope).
+
+The order of card is not the problem of asound.conf but rather index
+module option.  Since alsaconf supports only a single card, this is also 
+out or its target.  The hack to move modem to the secondary card (by
+James) will be added in the next rext version, too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-31-04 12:25 Toralf Förster New Issue                                    
-01-19-05 15:36 jdthood        Note Added: 0003288                          
-01-19-05 16:44 tiwai          Note Added: 0003292                          
+01-09-05 22:05 christeck      New Issue                                    
+01-19-05 15:29 jdthood        Note Added: 0003287                          
+01-19-05 16:48 tiwai          Note Added: 0003293                          
 ======================================================================
 
 
