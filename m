@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000467]: Need quirk added for Sony S1XP laptop
-Date: Thu, 13 Jan 2005 17:22:37 +0100
-Message-ID: <d3c16784aabcafc32b58b2307f44da89@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000486]: Sony Vaio vgn-a115z require ac97_quirk=-1
+Date: Thu, 13 Jan 2005 17:25:10 +0100
+Message-ID: <35271714bcf390bd8f6d36630342f790@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AAE08309
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 17:22:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 54F04309
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 17:25:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=467> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=486> 
 ======================================================================
-Reported By:                hadess
+Reported By:                sandro
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   467
+Issue ID:                   486
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               FC2
-Kernel Version:             2.6.6-1.435.2.3
-Resolution:                 fixed
+Distribution:               Debian Sid
+Kernel Version:             2.6.9-rc1-bk14
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-26-2004 23:35 CEST
-Last Modified:              01-13-2005 17:22 CET
+Date Submitted:             09-07-2004 22:15 CEST
+Last Modified:              01-13-2005 17:25 CET
 ======================================================================
-Summary:                    Need quirk added for Sony S1XP laptop
+Summary:                    Sony Vaio vgn-a115z require ac97_quirk=-1
 Description: 
-Sound on the Sony S1XP only works with ac97_quirk=-1
+Sony Vaio vgn-a115z require ac97_quirk=-1
 
-lspci -vn output:
-00:1f.5 Class 0401: 8086:24c5 (rev 03)
-        Subsystem: 104d:8197
-        Flags: bus master, medium devsel, latency 0, IRQ 9
-        I/O ports at 1c00
-        I/O ports at 18c0 [size=64]
-        Memory at d0000c00 (32-bit, non-prefetchable) [size=512]
-        Memory at d0000800 (32-bit, non-prefetchable) [size=256]
+i'm not sure if this problem is related with bug 0000467 but ac97_quirk=-1
+solve the  problem for me
+
+0000:00:1f.5 0401: 8086:24c5 (rev 03)
+        Subsystem: 104d:818b
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0
+        Interrupt: pin B routed to IRQ 9
+        Region 0: I/O ports at ee00 [size=256]
+        Region 1: I/O ports at e000 [size=64]
+        Region 2: Memory at ff7ff800 (32-bit, non-prefetchable)
+[size=512]
+        Region 3: Memory at ff7ff400 (32-bit, non-prefetchable)
+[size=256]
         Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-Let me know if you need any more details.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-20-04 17:45 
+ tiwai - 09-08-04 17:10 
 ----------------------------------------------------------------------
-Try to install 1.0.7rc1.
+Seems to be a false positive.
+
+Your device isn't listed on the quirk list, so ac97_quirk=-1 has
+no influence on the behavior.  Or, is it a typo of 1?
 
 ----------------------------------------------------------------------
- tiwai - 01-13-05 17:22 
+ tiwai - 01-13-05 17:25 
 ----------------------------------------------------------------------
-Closing this now...
+No reponse.  Closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-26-04 23:35 hadess         New Issue                                    
-08-26-04 23:35 hadess         Distribution              => FC2             
-08-26-04 23:35 hadess         Kernel Version            => 2.6.6-1.435.2.3 
-08-26-04 23:37 hadess         Note Added: 0001638                          
-08-26-04 23:46 hadess         Note Added: 0001639                          
-09-01-04 23:06 tiwai          Note Added: 0001680                          
-09-03-04 16:12 tiwai          Note Added: 0001695                          
-09-03-04 16:12 tiwai          File Added: inv-eapd.dif                     
-09-04-04 00:43 hadess         Note Added: 0001699                          
-09-07-04 03:13 ichino         Issue Monitored: ichino                      
-09-20-04 17:45 tiwai          Note Added: 0001792                          
-01-13-05 17:22 tiwai          Status                   new => resolved     
-01-13-05 17:22 tiwai          Resolution               open => fixed       
-01-13-05 17:22 tiwai          Assigned To               => tiwai           
-01-13-05 17:22 tiwai          Note Added: 0003191                          
+09-07-04 22:15 sandro         New Issue                                    
+09-07-04 22:15 sandro         Distribution              => Debian Sid      
+09-07-04 22:15 sandro         Kernel Version            => 2.6.9-rc1-bk14  
+09-08-04 17:10 tiwai          Note Added: 0001733                          
+01-13-05 17:25 tiwai          Status                   new => resolved     
+01-13-05 17:25 tiwai          Resolution               open => unable to
+duplicate
+01-13-05 17:25 tiwai          Assigned To               => tiwai           
+01-13-05 17:25 tiwai          Note Added: 0003193                          
 ======================================================================
 
 
