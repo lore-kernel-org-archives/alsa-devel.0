@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Problem with multiopen on SB Audigy 2
-Date: Wed, 8 Oct 2003 13:08:38 +0200 (CEST)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Build-in mixer
+Date: Wed, 08 Oct 2003 07:24:16 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0310081307320.1357@pnote.perex-int.cz>
-References: <3F82F126.4000800@superbug.demon.co.uk> <s5h4qylkmbk.wl@alsa2.suse.de>
- <3F833B40.9070009@superbug.demon.co.uk>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200310081124.h98BOGqq018813@oud>
+References: <3F83C9B8.9050407@kky.zcu.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F833B40.9070009@superbug.demon.co.uk>
+In-reply-to: Your message of "Wed, 08 Oct 2003 10:24:24 +0200."
+             <3F83C9B8.9050407@kky.zcu.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,80 +15,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Dan Tihelka <dtihelka@kky.zcu.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 7 Oct 2003, James Courtier-Dutton wrote:
+>I don't know, if the term "mixer" is used correctly, because i am not 
+>expert on it. I have in mind to use ALSA by more than one programs at 
+>the same time (simultaneously), and ALSA itself should mix these audio 
+>streams to one and play it via soundcard.
 
-> Takashi Iwai wrote:
-> > At Tue, 07 Oct 2003 18:00:22 +0100,
-> > James Courtier-Dutton wrote:
-> >
-> >>I have 2 sound cards, card 0 is the motherboard intel/alc650 one, and
-> >>card 1 is a SB Audigy2
-> >>
-> >>Playing two streams at once on device "front:1" works: -
-> >>aplay -D front:1 filename.wav
-> >>aplay -D front:1 filename.wav
-> >>So, this is playing two files to the SB Audigy2 front speakers.
-> >>I can hear the two files being mixed together and output together to a
-> >>single set of speakers.
-> >>
-> >>Playing two streams at once on device "rear:1" fails: -
-> >>aplay -D rear:1 filename.wav
-> >>aplay -D rear:1 filename.wav
-> >>So, this is trying to play two files to the SB Audigy2 rear speakers.
-> >>
-> >>The first files comes out of the rear speakers, but the output from the
-> >>second aplay command fails with: -
-> >>
-> >>bash-2.05b# aplay -D rear:1 filename.wav
-> >>Playing WAVE 'filename.wav' : Signed 16 bit Little Endian, Rate 44100
-> >>Hz, Stereo
-> >>ALSA lib setup.c:94:(snd_sctl_install) Cannot lock ctl elem
-> >>aplay: set_params:876: Unable to install hw params:
-> >>ACCESS:  RW_INTERLEAVED
-> >>FORMAT:  S16_LE
-> >>SUBFORMAT:  STD
-> >>SAMPLE_BITS: 16
-> >>FRAME_BITS: 32
-> >>CHANNELS: 2
-> >>RATE: 44100
-> >>PERIOD_TIME: (125011 125012)
-> >>PERIOD_SIZE: 5513
-> >>PERIOD_BYTES: 22052
-> >>PERIODS: 2
-> >>BUFFER_TIME: (250022 250023)
-> >>BUFFER_SIZE: 11026
-> >>BUFFER_BYTES: 44104
-> >>TICK_TIME: 1000
-> >>
-> >>Can you explain why this might be happening?
-> >
-> >
-> > this is because the "Wave Surround Playback Volume" control is locked
-> > by the first rear stream.
-> > you can find it in /usr/share/alsa/cards/Audigy2.conf.
-> > please try to remove the lock.
-> >
-> >
-> > Takashi
-> >
-> Thanks that fixed the problem.
-> Please see attached patch files, for the SB Live and Audigy2, both of
-> which have been tested.
+just so you know, although this functionality is certain desired by
+many, its not the way that some users want things to work. as a
+result, ALSA makes this possible, but it doesn't do it by default. Put
+another way, it provides a mechanism to do this, but doesn't enforce
+it as a policy.
 
-Yes, but the question is, if we want this behaviour. We expect that the
-rear channel will go only via rear speakers thus setting of Wave Surround
-Volume is required.
+>I tried dmix plug-in together with aplay -Dplug:dmix simultaneously from 
+>  two consoles and it works sufficiently (well, "underun!!! (at least 
+>...ms long)" message was there but i don't know, if is is serious bug or 
+>not). I thing that it should work transparently without special swithes 
+>or settings separately for each application or its instance, but i don't 
+>know if it is possible or not.
 
-						Jaroslav
+the dmix plugin is indeed the way to do this. what you need to do (or
+perhaps ALSA needs to by default) is to set up your ~/.asoundrc so
+that the default device is a dmix configuration.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+all ALSA applications should accept options from the user specifying
+which PCM (or MIDI or ...) device they should open, and they fall back
+to "default" if none is specified. consequently, with this
+configuration setup, you'd get what you are hoping for, but other
+people could still use "hw:1" or specific named devices when they
+don't want dmix to get in the way (e.g. professional audio users).
+
+unfortunately, i don't know how to write an ~/.asoundrc file that
+would do that :( somebody will, though.
+
+--p
 
 
 -------------------------------------------------------
