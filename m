@@ -1,57 +1,70 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [RFC] Echoaudio driver
-Date: Sat, 6 Nov 2004 23:53:52 +0100
-Message-ID: <20041106235352.72b20afa.pochini@shiny.it>
-References: <s5his9h4a3u.wl@alsa2.suse.de>
-	<XFMail.20041012112521.pochini@shiny.it>
-	<20041023161530.605de269.pochini@shiny.it>
-	<20041026231854.4708848a.pochini@shiny.it>
+From: Christian Kujau <evil@g-house.de>
+Subject: Oops in 2.6.10-rc1
+Date: Sun, 07 Nov 2004 02:24:41 +0100
+Message-ID: <418D7959.4020206@g-house.de>
+References: <4180F026.9090302@g-house.de> <Pine.LNX.4.58.0410281526260.31240@pnote.perex-int.cz> <4180FDB3.8080305@g-house.de> <418A47BB.5010305@g-house.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041026231854.4708848a.pochini@shiny.it>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@lists.sourceforge.net
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S261508AbUKGBYw@vger.kernel.org>
+In-Reply-To: <418A47BB.5010305@g-house.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: alsa-devel@lists.sourceforge.net, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 26 Oct 2004 23:18:54 +0200
-Giuliano Pochini <pochini@shiny.it> wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> 1- All levels are exported to userspace in 24.8 fixed point format. This is
-> done by the driver, because the hw currently only have 1 or 0.5 dB
-> resolution.
+hi again,
 
-I removed that crap. Ctl interface now uses raw values.
+i *think* i found the ChangeSet leading to the bug i tried to report in
+ http://marc.theaimsgroup.com/?l=linux-kernel&m=109888178603516&w=2
 
-I don't see anything obviously wrong in the driver now. What have I to do to
-include it in alsa-driver yet ?
+the error is sill present here (and only here? strange...), the latest -BK
+does not fix it. i had some difficulties in telling BK to do the right
+thing. to summarise the error:
 
-(the code is here as usual: http://xoomer.virgilio.it/g_pochini/ea.html)
+- - upon loading of snd_ens1371 the Oops occurs. system is still stable
+then, but no sound available.
+- - this occured somewhere between 2.6.9 (released 15-Oct-2004) and 2.6.9-10
+(released 22-Oct-2004)
 
-Perhaps I'll put the driver in bugfixes-only state because it's very stable
-and ready for production for a long time now and because Echoaudio has just
-released a new version of their generic code that support all cards and I
-want to start working of it ASAP. There are several changes to the DSP
-firmware that may cause incompatibilities with the current driver (maybe
-not, I only had a look at the notes).
+one interesting changeset was:
 
+ChangeSet@1.2000.7.1, 2004-10-20 20:33:06+02:00, perex@suse.cz
+  Merge suse.cz:/home/perex/bk/linux-sound/linux-2.5
+  into suse.cz:/home/perex/bk/linux-sound/linux-sound
 
---
-Giuliano.
+i tried to back it out:
 
+$ bk clone -r1.2000.7.1 linux-2.6-BK linux-2.6-BK-test
 
--------------------------------------------------------
-This SF.Net email is sponsored by:
-Sybase ASE Linux Express Edition - download now for FREE
-LinuxWorld Reader's Choice Award Winner for best database on Linux.
-http://ads.osdn.com/?ad_id=5588&alloc_id=12065&op=click
+but the said ChangeSet was still there (of course). i tried to back it out
+(now for sure):
+
+$ bk undo -a1.2010
+(hm: the changesets get renumbered everytime i "do" something with the
+tree) this one reverted quite a few ChangeSets but i let it happen.
+
+compiling & booting this thing goes fine and i am now running 2,6,9-BK(?)
+with working snd_ens1371.
+
+if someone could give me a hint here what to do next or perhaps tell me
+that the whole things was totally pointless - please say so.
+i am somehow lost as to which is the right person to bug here.
+
+thank you for your time,
+Christian.
+- --
+BOFH excuse #328:
+
+Fiber optics caused gas main leak
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFBjXlZ+A7rjkF8z0wRAqaVAJ9ljiIpxi01SblgEg/ce/Vd/uYksQCfeuJ9
+hRGA0/17ttZ83xRQDb8jfhs=
+=DQYp
+-----END PGP SIGNATURE-----
