@@ -1,8 +1,8 @@
 From: Anton Worshevsky <gbdj@linux.spb.org>
-Subject: Re: VIA8235 with ALC650
-Date: Fri, 24 Jan 2003 14:45:57 +0300
+Subject: Re: via8235 swaped channels
+Date: Fri, 24 Jan 2003 14:43:48 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <18615.030124@linux.spb.org>
+Message-ID: <13613.030124@linux.spb.org>
 Reply-To: Anton Worshevsky <gbdj@linux.spb.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -31,41 +31,43 @@ Thursday, January 16, 2003, 12:21:42 PM, you wrote:
 >> >         http://www.alsa-project.org/~iwai/via82xx.c
 >>
 >> i has VIA8235 and ALC650 codec. After installing new driver from cvs from
-
->> >  the new driver can (hopefully) play multiple streams simultaneously on
->> >  VIA8233, VIA8233C and VIA8235, but NOT on VIA8233A.
+>> 20030113, there is following problem:
 >>
->> It's worked, but second stream plays only left channel.
+>> In 5.1-channel dvd playback with xine using surround51 device,
+>> i has swapped Rear and Center/lfe channels.
+>> RL <-> Center, RR <-> LFE
+
+this can be fixed just by exchanging Rear and Center/LFE jacks
+
+>> i fixed this with following patch for via82xx.c
 >>
->> Almost all OSS application such as games (UT, tux-racer and other) now producing
->> cracking and skipping sound. Only XMMS OSS-plugin plays good. OSS-sound was good
->> with rc6.
+>> 812,813c812,815
+>> <       case 5: slots = (1<<0) | (2<<4) | (5<<8) | (3<<12) | (4<<16); break;
+>> <       case 6: slots = (1<<0) | (2<<4) | (5<<8) | (6<<12) | (3<<16) | (4<<20); break;
+>> ---
+>> > //    case 5: slots = (1<<0) | (2<<4) | (5<<8) | (3<<12) | (4<<16); break;
+>> > //    case 6: slots = (1<<0) | (2<<4) | (5<<8) | (6<<12) | (3<<16) | (4<<20); break;
+>> >       case 5: slots = (1<<0) | (2<<4) | (3<<8) | (4<<12) | (5<<16); break;
+>> >       case 6: slots = (1<<0) | (2<<4) | (3<<8) | (4<<12) | (5<<16) | (6<<20); break;
+>>
+>> I'm not sure that it is alsa problem, xine' may be.
 
-TI> does the patch below change something?
+TI> hmm, it could be due to the setting of ALC650.  how is the status of
+TI> "Exchange Center/LFE" mixer switch?
 
-There are no change in apps which played good before (all tested apps with
-alsa output, mpg123 and xmms oss-plugin). In games sound with patch playing faster and
-higher, but as i can hear with same bad quality. RC6 do not has such problems.
+This switch has no effect. Strange. Usually its muted.
+Now i think this is ALC650 problem.
+Is there problem exist on via8235 with other codecs?
 
-Any idea?
+>> It will be nice to have a small prog for channel position testing in different
+>> playback modes, because now i know no 5.1ch source other then video player.
+>> In general multichannel playback has good quality now (with rc6 sound was
+>> cracking).
 
-Can you explain me in which units we must calculate rate under mask 0xfffff in
-next code ? Are there any special values for it (such as 0xfffff)?
-
-        outl((runtime->format == SNDRV_PCM_FORMAT_S16_LE ? VIA8233_REG_TYPE_16BIT : 0) | /* format */
-             (runtime->channels > 1 ? VIA8233_REG_TYPE_STEREO : 0) | /* stereo */
--            (0xffff * runtime->rate)/(48000/16) | /* rate */
-+            // (0xffff * runtime->rate)/(48000/16) | /* rate */
-+            0xfffff |
-             0xff000000,    /* STOP index is never reached */
-             port + VIA_REG_OFFSET_STOP_IDX);
-
-Please point me to the documentation in which such questions are described.
-
-8235 detected as via8233C by alsa. But my kernel 2.4.20 has correct pci ID for
-via8235. May be this important.
-
-I will try to help you with development, but i need appropriate documentation.
+Can you point me to a 5.1ch test audio file where recorded signals for single
+channel in known order ?
+I can easily understand where center channel is playing, but understanding where
+is Sub playing much more difficult task. You need big Stardestroyer for it =)
 
 Anton Worshevsky
 
