@@ -1,9 +1,20 @@
-From: "info@62816747.com" <info@62816747.com>
-Subject: www.51097757.com
-Date: Tue, 8 Mar 2005 05:53:45 +0800
-Message-ID: <E1D8QAh-0005gJ-8v@sc8-sf-mx1.sourceforge.net>
-Reply-To: info@62816747.com
-Content-Type: text/plain;charset="GB2312"
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: 2.6.11-mm1: sound <-> GAMEPORT problems
+Date: Mon, 7 Mar 2005 17:05:17 -0500
+Message-ID: <d120d50005030714056511c214@mail.gmail.com>
+References: <20050304033215.1ffa8fec.akpm@osdl.org>
+	 <200503070941.59365.petkov@uni-muenster.de>
+	 <20050307215206.GH3170@stusta.de>
+Reply-To: dtor_core@ameritech.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Received: from rproxy.gmail.com (rproxy.gmail.com [64.233.170.204])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A67FB156
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2005 23:05:18 +0100 (MET)
+Received: by rproxy.gmail.com with SMTP id r35so1219364rna
+        for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2005 14:05:17 -0800 (PST)
+In-Reply-To: <20050307215206.GH3170@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -13,42 +24,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Adrian Bunk <bunk@stusta.de>
+Cc: Borislav Petkov <petkov@uni-muenster.de>, perex@suse.cz, vojtech@suse.cz, Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-input@atrey.karlin.mff.cuni.cz
 List-Id: alsa-devel@alsa-project.org
 
-   ¤╭⌒╮ ╭⌒╮                
- ╱◥██◣ ╭╭ ⌒╮      www.51097757.com
-︱田︱田田| ╰----------------------------------------- 
-╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬ 
+On Mon, 7 Mar 2005 22:52:06 +0100, Adrian Bunk <bunk@stusta.de> wrote:
+> On Mon, Mar 07, 2005 at 09:41:59AM +0100, Borislav Petkov wrote:
+> > On Friday 04 March 2005 12:32, Andrew Morton wrote:
+> > > ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.11/2.6.11
+> > >-mm1/
+> > >
+> > <snip>
+> >
+> > Hi,
+> >
+> > the ymfpci sound driver wouldn't compile without gameport support selected
+> > since the sound card has a gameport on it:
+> >
+> > Signed-off-by: Borislav Petkov <petkov@uni-muenster.de>
+> >
+> > --- sound/pci/ymfpci/ymfpci.c.orig 2005-03-07 09:07:10.000000000 +0100
+> > +++ sound/pci/ymfpci/ymfpci.c 2005-03-07 09:08:02.000000000 +0100
+> > @@ -332,7 +332,9 @@ static int __devinit snd_card_ymfpci_pro
+> >    }
+> >   }
+> >
+> > +#ifdef SUPPORT_JOYSTICK
+> >   snd_ymfpci_create_gameport(chip, dev, legacy_ctrl, legacy_ctrl2);
+> > +#endif /* SUPPORT_JOYSTICK */
+> >
+> >   if ((err = snd_card_register(card)) < 0) {
+> >    snd_card_free(card);
+> 
+> Nice catch (but I had to apply the patch manually due to some
+> whitespace damage).
+> 
+> After a quick look, it seems there are a dozen other sound drivers (most
+> OSS but also ALSA) with similar problems.
+> 
+> There are two possibilities:
+> 1. continue to #ifdef all GAMEPORT support in sound drivers
+> 2. remove all #ifdef's for GAMEPORT and let drivers that can use the
+>   gameport (including the sound drivers) simply select GAMEPORT
+>   As far as I can see, in this case GAMEPORT does no longer have to be
+>   user-visible?
+> 
+> I can send patches for both, but I'd prefer the second solution.
+> 
 
-  注册上海公司  1000元起   验资资金由我们垫
-  个人创业的良机 --- 自己做老板
-  网址：www.51097757.com 
-  电话：021- 51097757， 13391355761 
-  网络实名：注册上海公司招商代理 
- －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－ 
-  代理财务记帐 代理报税 
-  只要 100元/月 起
-  网址：www.51097757.com 
-  电话：021- 51097757  
- －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
-  外地客户可以申请上海地区固定电话号码 1000元/年
-  可以转到任何3门电话、手机上
-  转外地电话 0.3元/分钟 转上海本地电话免费
-  外地客户需要一次性预存500元话费
- －－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
-  主页空间（虚拟主机）
-  200M主页空间，送20M邮箱，送（国际或国内）域名   230元/年
-  200M主页空间，ASP+ACCESS，送（国际或国内）域名  330元/年
-  还可以享受8.5折购买各种搜索引擎的优惠 
-  承接各类企业及商务网站设计，1000元起
-  招聘兼职优秀网页设计师（上海地区）
-  更多产品请登陆 http://www.51097757.com
-－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
- 欢迎与有一定访问量的网站交换链接 www.51097757.com
- 欢迎与有一定访问量的网站交换链接 www.51097757.com
------------------------------------------------------------------------
-如果本信息打扰了您，我们向您表示歉意。
+Not everyone wants gameport. I think say very small percentage of
+people using sound cards that can support gameports actually uses
+them.
+
+-- 
+Dmitry
 
 
 -------------------------------------------------------
