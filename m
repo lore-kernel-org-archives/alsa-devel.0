@@ -1,14 +1,12 @@
-From: "Michael S. Tsirkin" <mst@mellanox.co.il>
-Subject: Re: unregister_ioctl32_conversion and modules. ioctl32 revisited.
-Date: Wed, 15 Dec 2004 21:34:58 +0200
-Message-ID: <20041215193458.GB13539@mellanox.co.il>
-References: <20041215065650.GM27225@wotan.suse.de> <20041215074635.GC11501@mellanox.co.il> <s5hbrcvqv7r.wl@alsa2.suse.de> <1103135460.18982.68.camel@krustophenia.net>
-Reply-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
+From: "Stephen Warren" <SWarren@nvidia.com>
+Subject: Fix for CVS not compiling against 2.6.9 (init.patch failed)
+Date: Wed, 15 Dec 2004 12:20:12 -0800
+Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B0033AE409@hqemmail02.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_001_01C4E2E3.7C0B46E3"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1103135460.18982.68.camel@krustophenia.net>
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +16,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Andi Kleen <ak@suse.de>, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel <alsa-devel@lists.sourceforge.net>, Ingo Molnar <mingo@elte.hu>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
-Quoting r. Lee Revell (rlrevell@joe-job.com) "Re: unregister_ioctl32_conversion and modules. ioctl32 revisited.":
-> On Wed, 2004-12-15 at 19:20 +0100, Takashi Iwai wrote:
-> > At Wed, 15 Dec 2004 09:46:35 +0200,
-> > Michael S. Tsirkin wrote:
-> > > 
-> > > There were two additional motivations for my patch:
-> > > 1. Make it possible to avoid the BKL completely by writing
-> > >    an ioctl with proper internal locking.
-> > > 2. As noted by  Juergen Kreileder, the compat hash does not work
-> > >    for ioctls that encode additional information in the command, like this:
-> > > 
-> > > #define EVIOCGBIT(ev,len)  _IOC(_IOC_READ, 'E', 0x20 + ev, len) > > 
-> > I like the idea very well.  Other benifits in addition:
-> > 
-> 
-> How does this all relate to Ingo's ->unlocked_ioctl stuff which is "an
-> official way to do BKL-less ioctls"?
-> 
-> http://lkml.org/lkml/2004/12/14/53
-> 
-> Lee
+This is a multi-part message in MIME format.
 
-It conflicts :) When I wrote the original patch for 2.6.8.1
-I didnt see the unlocked_ioctl.patch.
+------_=_NextPart_001_01C4E2E3.7C0B46E3
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-unlocked_ioctl is the same as ioctl_native in my patch, except that
+In the latest (anon) CVS, I find that alsa-driver/acore/init.patch
+doesn't apply cleanly.
 
-1. I added more documentation in several places :)
-   (notably Documentation/filesystems/Locking)
+Here's an updated version of init.patch that does apply, and yields a
+version of init.c that I can build. See attachment.
 
-2. I thought it a bit silly to name a function for what
-   it does not do (does not take a lock), and we
-   still need a call for the compat layer.
+--=20
+Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
+swarren@nvidia.com        http://www.nvidia.com/
+swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
 
-My patch adds another call to enable special handling
-for 32 bit ioctls on 64 bit systems.
+------_=_NextPart_001_01C4E2E3.7C0B46E3
+Content-Type: application/octet-stream;
+	name="init.patch"
+Content-Transfer-Encoding: base64
+Content-Description: init.patch
+Content-Disposition: attachment;
+	filename="init.patch"
 
-I could look at porting to -rc3-mm1, unless
-we dont want to back unlocked_ioctl.patch off.
-What do people here think?
+LS0tIC4uL2Fsc2Eta2VybmVsL2NvcmUvaW5pdC5jCTIwMDQtMTEtMjkgMDc6MDk6NDQuMDAwMDAw
+MDAwIC0wNzAwCisrKyBpbml0LmMJMjAwNC0xMi0xNSAwNzo1NDoyNS4wNDcxNTA0MzIgLTA3MDAK
+QEAgLTEsMyArMSw0IEBACisjZGVmaW5lIF9fTk9fVkVSU0lPTl9fCiAvKgogICogIEluaXRpYWxp
+emF0aW9uIHJvdXRpbmVzCiAgKiAgQ29weXJpZ2h0IChjKSBieSBKYXJvc2xhdiBLeXNlbGEgPHBl
+cmV4QHN1c2UuY3o+CkBAIC0xOTYsNyArMTk3LDkgQEAKIAkJZl9vcHMgPSAmc19mX29wcy0+Zl9v
+cHM7CiAKIAkJbWVtc2V0KGZfb3BzLCAwLCBzaXplb2YoKmZfb3BzKSk7CisjaWZuZGVmIExJTlVY
+XzJfMgogCQlmX29wcy0+b3duZXIgPSBmaWxlLT5mX29wLT5vd25lcjsKKyNlbmRpZgogCQlmX29w
+cy0+cmVsZWFzZSA9IGZpbGUtPmZfb3AtPnJlbGVhc2U7CiAJCWZfb3BzLT5wb2xsID0gc25kX2Rp
+c2Nvbm5lY3RfcG9sbDsKIApAQCAtNzc4LDYgKzc4MSwzOSBAQAogfQogCiAjaWZkZWYgQ09ORklH
+X1BDSQorI2lmbmRlZiBDT05GSUdfSEFWRV9QQ0lfU0FWRURfQ09ORklHCitzdGF0aWMgdW5zaWdu
+ZWQgaW50IHBjaV9zYXZlZF9jb25maWdbU05EUlZfQ0FSRFNdWzE2XTsKKyNlbmRpZgorI2lmZGVm
+IFBDSV9PTERfU1VTUEVORAordm9pZCBzbmRfY2FyZF9wY2lfc3VzcGVuZChzdHJ1Y3QgcGNpX2Rl
+diAqZGV2KQoreworCXNuZF9jYXJkX3QgKmNhcmQgPSBwY2lfZ2V0X2RydmRhdGEoZGV2KTsKKwlp
+ZiAoISBjYXJkIHx8ICEgY2FyZC0+cG1fc3VzcGVuZCkKKwkJcmV0dXJuOworCWlmIChjYXJkLT5w
+b3dlcl9zdGF0ZSA9PSBTTkRSVl9DVExfUE9XRVJfRDNob3QpCisJCXJldHVybjsKKwkvKiBGSVhN
+RTogY29ycmVjdCBzdGF0ZSB2YWx1ZT8gKi8KKwljYXJkLT5wbV9zdXNwZW5kKGNhcmQsIDApOwor
+CXBjaV9zYXZlX3N0YXRlKGRldiwgJnBjaV9zYXZlZF9jb25maWdbY2FyZC0+bnVtYmVyXVswXSk7
+CisJc25kX3Bvd2VyX2NoYW5nZV9zdGF0ZShjYXJkLCBTTkRSVl9DVExfUE9XRVJfRDNob3QpOwor
+fQorCit2b2lkIHNuZF9jYXJkX3BjaV9yZXN1bWUoc3RydWN0IHBjaV9kZXYgKmRldikKK3sKKwlz
+bmRfY2FyZF90ICpjYXJkID0gcGNpX2dldF9kcnZkYXRhKGRldik7CisJaWYgKCEgY2FyZCB8fCAh
+IGNhcmQtPnBtX3Jlc3VtZSkKKwkJcmV0dXJuOworCWlmIChjYXJkLT5wb3dlcl9zdGF0ZSA9PSBT
+TkRSVl9DVExfUE9XRVJfRDApCisJCXJldHVybjsKKwkvKiByZXN0b3JlIHRoZSBQQ0kgY29uZmln
+IHNwYWNlICovCisJcGNpX3Jlc3RvcmVfc3RhdGUoZGV2LCAmcGNpX3NhdmVkX2NvbmZpZ1tjYXJk
+LT5udW1iZXJdWzBdKTsKKwkvKiBGSVhNRTogY29ycmVjdCBzdGF0ZSB2YWx1ZT8gKi8KKwljYXJk
+LT5wbV9yZXN1bWUoY2FyZCwgMCk7CisJc25kX3Bvd2VyX2NoYW5nZV9zdGF0ZShjYXJkLCBTTkRS
+Vl9DVExfUE9XRVJfRDApOworfQorCisjZWxzZSAvKiBuZXcgc3VzcGVuZCAqLworCiBpbnQgc25k
+X2NhcmRfcGNpX3N1c3BlbmQoc3RydWN0IHBjaV9kZXYgKmRldiwgdTMyIHN0YXRlKQogewogCXNu
+ZF9jYXJkX3QgKmNhcmQgPSBwY2lfZ2V0X2RydmRhdGEoZGV2KTsKQEAgLTc4OCw3ICs4MjQsMTIg
+QEAKIAkJcmV0dXJuIDA7CiAJLyogRklYTUU6IGNvcnJlY3Qgc3RhdGUgdmFsdWU/ICovCiAJZXJy
+ID0gY2FyZC0+cG1fc3VzcGVuZChjYXJkLCAwKTsKKyNpZm5kZWYgQ09ORklHX0hBVkVfUENJX1NB
+VkVEX0NPTkZJRworCXBjaV9zYXZlX3N0YXRlKGRldiwgJnBjaV9zYXZlZF9jb25maWdbY2FyZC0+
+bnVtYmVyXVswXSk7CisjZWxpZiBMSU5VWF9WRVJTSU9OX0NPREUgPj0gS0VSTkVMX1ZFUlNJT04o
+MiwgNiwgMTApCiAJcGNpX3NhdmVfc3RhdGUoZGV2KTsKKyNlbmRpZgorCiAJcmV0dXJuIGVycjsK
+IH0KIApAQCAtODAwLDEwICs4NDEsMTggQEAKIAlpZiAoY2FyZC0+cG93ZXJfc3RhdGUgPT0gU05E
+UlZfQ1RMX1BPV0VSX0QwKQogCQlyZXR1cm4gMDsKIAkvKiByZXN0b3JlIHRoZSBQQ0kgY29uZmln
+IHNwYWNlICovCisjaWZuZGVmIENPTkZJR19IQVZFX1BDSV9TQVZFRF9DT05GSUcKKwlwY2lfcmVz
+dG9yZV9zdGF0ZShkZXYsICZwY2lfc2F2ZWRfY29uZmlnW2NhcmQtPm51bWJlcl1bMF0pOworI2Vs
+aWYgZGVmaW5lZChDT05GSUdfSEFWRV9ORVdfUENJX1NBVkVfU1RBVEUpCiAJcGNpX3Jlc3RvcmVf
+c3RhdGUoZGV2KTsKKyNlbHNlCisJcGNpX3Jlc3RvcmVfc3RhdGUoZGV2LCBkZXYtPnNhdmVkX2Nv
+bmZpZ19zcGFjZSk7CisjZW5kaWYKIAkvKiBGSVhNRTogY29ycmVjdCBzdGF0ZSB2YWx1ZT8gKi8K
+IAlyZXR1cm4gY2FyZC0+cG1fcmVzdW1lKGNhcmQsIDApOwogfQotI2VuZGlmCisKKyNlbmRpZiAv
+KiBQQ0lfT0xEX1NVU1BFTkQgKi8KKyNlbmRpZiAvKiBDT05GSUdfUENJICovCiAKICNlbmRpZiAv
+KiBDT05GSUdfUE0gKi8K
 
-MST
+------_=_NextPart_001_01C4E2E3.7C0B46E3--
 
 
 -------------------------------------------------------
