@@ -1,15 +1,14 @@
-From: Josh Buhl <uzs33d@uni-bonn.de>
-Subject: Re: intel8x0 driver motorboots (gets caught in loop)
- in Quake 3
-Date: Thu, 13 Feb 2003 11:47:45 +0100
+From: Arnaud de Bossoreille de Ribou <arnaud.debossoreille@via.ecp.fr>
+Subject: emu10k1 bug and patch (0.9.0rc7)
+Date: Mon, 10 Feb 2003 18:21:12 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E4B77D1.3070904@uni-bonn.de>
-References: <3E4A8A39.9000608@uni-bonn.de>	<s5h4r78mrrr.wl@alsa2.suse.de>	<3E4B6E83.2070000@uni-bonn.de> <s5hznp0lc2u.wl@alsa2.suse.de>
+Message-ID: <20030210172112.GA12226@via.ecp.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="vkogqOf2sHV7VnPd"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hznp0lc2u.wl@alsa2.suse.de>
+Content-Disposition: inline
+Resent-To: alsa-devel@lists.sourceforge.net
+Resent-Message-Id: <20030213105609.711593AD28@zen.via.ecp.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,62 +18,87 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
 
-> check /proc/interrupts during the playback whether the number of irq
-> 10 increases.
+--vkogqOf2sHV7VnPd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-During the looped sound, the number of interrupts increases by about 
-fifty a second:
+Hi, I discovered a bug in the emu10k1 driver which I'll explain here:
 
-josh@spleen:/proc$ date; cat interrupts | grep SiS
-Thu Feb 13 11:41:10 CET 2003
-  10:      64806          XT-PIC  SiS SI7012
-josh@spleen:/proc$ date; cat interrupts | grep SiS
-Thu Feb 13 11:41:20 CET 2003
-  10:      65281          XT-PIC  SiS SI7012
+I was developing an application which uses the timestamps given in the
+status of the device to send S/PDIF data to it. This app worked pretty
+well except that sometimes I heard sound discontinuities and then a
+constant time delay between the sound and the video.
 
+I finally found where was the problem, my results is based on the
+emu10k1-debug.patch file attached. The "frame" argument is equal to 0
+when the app gets the status of the device. With this patch applied I
+saw some output on the console exactly at the same time the bug occured.
+Adding a "else" after the "if" to prevent sw_ready from being updated
+fixed the problem and the output looked like
 
-> 
-> also, check the status shown in /proc/asound/card0/pcm0p/sub0 during
-> the playback, too.
+----------------
+plop 0 -1536 A B
+plop 0 1536 B A
+----------------
 
-Here are several polls taken a couple of seconds apart while the looped 
-sound is playing:
+where B == A - 1536 (1536 is the period_size). These two lines were
+repeated a few times during playback.
 
-josh@spleen:/proc$ cat asound/card0/pcm0p/sub0/status
-state: RUNNING
-trigger_time: 1045132684.647330
-tstamp      : 1045133005.954117
-delay       : -11695398
-avail       : 11711782
-avail_max   : 11711782
------
-hw_ptr      : 15423782
-appl_ptr    : 3728384
-josh@spleen:/proc$ cat asound/card0/pcm0p/sub0/status
-state: RUNNING
-trigger_time: 1045132684.647330
-tstamp      : 1045133012.359933
-delay       : -12002901
-avail       : 12019285
-avail_max   : 12019285
------
-hw_ptr      : 15731285
-appl_ptr    : 3728384
-josh@spleen:/proc$ cat asound/card0/pcm0p/sub0/status
-state: RUNNING
-trigger_time: 1045132684.647330
-tstamp      : 1045133015.458098
-delay       : -12151624
-avail       : 12168008
-avail_max   : 12168008
------
-hw_ptr      : 15880008
-appl_ptr    : 3728384
+So the bug looks like a signedness problem since sw_ready is unsigned
+and there is a while(sw_ready > 0), which explain the constant delay,
+next in the "snd_emu10k1_fx8010_playback_transfer" function.
 
+So the emu10k1.patch file attached fixes the problem and seems not to
+introduce new ones.
+
+Note: patches were made with the 0.9.0rc7 version of the alsa-driver
+package.
+
+Regards,
+
+-- 
+Arnaud.
+
+--vkogqOf2sHV7VnPd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="emu10k1-debug.patch"
+
+--- alsa-kernel/pci/emu10k1/emufx.c.orig	2003-02-08 23:02:50.000000000 +0100
++++ alsa-kernel/pci/emu10k1/emufx.c	2003-02-08 23:17:09.000000000 +0100
+@@ -531,6 +531,11 @@
+ 	if (diff) {
+ 		if (diff < -(snd_pcm_sframes_t) (runtime->boundary / 2))
+ 			diff += runtime->boundary;
++		if(frames == 0)
++		{
++			printk("plop %d %ld (%lu %u)\n",
++				pcm->sw_ready, diff, appl_ptr, pcm->appl_ptr);
++		}
+ 		pcm->sw_ready += diff;
+ 	}
+ 	pcm->sw_ready += frames;
+
+--vkogqOf2sHV7VnPd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="emu10k1.patch"
+
+--- alsa-kernel/include/emu10k1.h.orig	2003-02-08 23:00:43.000000000 +0100
++++ alsa-kernel/include/emu10k1.h	2003-02-08 23:02:02.000000000 +0100
+@@ -879,7 +879,8 @@
+ 	unsigned char etram[32];	/* external TRAM address & data */
+ 	unsigned int sw_data, hw_data;
+ 	unsigned int sw_io, hw_io;
+-	unsigned int sw_ready, hw_ready;
++	int sw_ready;
++	unsigned int hw_ready;
+ 	unsigned int appl_ptr;
+ 	unsigned int tram_pos;
+ 	unsigned int tram_shift;
+
+--vkogqOf2sHV7VnPd--
 
 
 -------------------------------------------------------
