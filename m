@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000658]: processor detection in configure.in breaks detection of kernel config options
-Date: Wed, 29 Dec 2004 14:32:18 +0100
-Message-ID: <d88316e8b2b9e9ae8cc2519324eb36bb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000688]: Errors in testing gcc and ld in the sparc and sparc64 sections of the configure file
+Date: Wed, 29 Dec 2004 14:32:28 +0100
+Message-ID: <86ef8c56053c4de058478e566f21ad03@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0797726D
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 14:32:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A518226D
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 14:32:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=658> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=688> 
 ======================================================================
-Reported By:                eradicator
+Reported By:                jdthood
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   658
+Issue ID:                   688
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.7
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-19-2004 12:13 CET
+Date Submitted:             11-28-2004 19:36 CET
 Last Modified:              12-29-2004 14:32 CET
 ======================================================================
-Summary:                    processor detection in configure.in breaks detection
-of kernel config options
+Summary:                    Errors in testing gcc and ld in the sparc and
+sparc64 sections of the configure file
 Description: 
-The location of the processor detection code in configure.in needs to be
-moved to the end of configure.in after all calls to CHECK_KERNEL_CONFIG
-and AC_TRY_RUN.  This is because the processor detection code changes CC
-(which is used by CHECK_KERNEL_CONFIG) to the compiler used by kernel
-compilation.  The kernel compiler might not be able to make runable
-binaries (such as when libc is not available for its target and thus
-should not be used for AC_TRY_RUN (which is used by CHECK_KERNEL_CONFIG). 
-This was experienced on Gentoo/Sparc and resulted in kernel modules being
-built for the wrong kernel configuration (such as not detecting procfs).
+Here is a patch to fix the configure script so that it less incorrectly
+tests gcc and ld functionality on sparc and sparc64.  You will want to fix
+configure.in, of course.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-29-04 16:14 
+ jdthood - 11-29-04 16:12 
 ----------------------------------------------------------------------
-This should have been fixed on CVS.
+I have updated from cvs but the bug is still there.
+
+----------------------------------------------------------------------
+ tiwai - 11-29-04 16:19 
+----------------------------------------------------------------------
+The anonymous CVS on sourceforge is sync'ed only once per day.
+So wait for a while...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-19-04 12:13 eradicator     New Issue                                    
-11-19-04 12:13 eradicator     File Added: alsa-driver-1.0.7-configure.patch     
-              
-11-19-04 12:13 eradicator     Distribution              => Gentoo          
-11-19-04 12:13 eradicator     Kernel Version            => 2.6.7           
-11-29-04 16:14 tiwai          Status                   assigned => resolved
-11-29-04 16:14 tiwai          Resolution               open => fixed       
-11-29-04 16:14 tiwai          Note Added: 0002651                          
+11-28-04 19:36 jdthood        New Issue                                    
+11-28-04 19:36 jdthood        File Added:
+alsa-driver-configure.jdth20041128.patch                    
+11-29-04 15:25 tiwai          Note Added: 0002637                          
+11-29-04 15:38 jdthood        Note Added: 0002641                          
+11-29-04 15:39 jdthood        Note Edited: 0002641                         
+11-29-04 15:40 jdthood        Note Edited: 0002641                         
+11-29-04 15:49 tiwai          Status                   assigned => resolved
+11-29-04 15:49 tiwai          Resolution               open => fixed       
+11-29-04 15:49 tiwai          Note Added: 0002645                          
+11-29-04 16:12 jdthood        Status                   resolved => feedback
+11-29-04 16:12 jdthood        Resolution               fixed => reopened   
+11-29-04 16:12 jdthood        Note Added: 0002649                          
+11-29-04 16:19 tiwai          Status                   feedback => resolved
+11-29-04 16:19 tiwai          Resolution               reopened => fixed   
+11-29-04 16:19 tiwai          Note Added: 0002652                          
 12-29-04 14:32 tiwai          Status                   resolved => closed  
 ======================================================================
 
