@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000609]: No Mixer control for Ouput on CMI9880
-Date: Mon, 8 Nov 2004 09:22:25 +0100
-Message-ID: <20f75491aaa27dd851beda5a4745cf48@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: grupo@in-out.es
+Subject: Re: Mail Delivery (failure grupo@in-out.es)
+Date: Mon, 8 Nov 2004 03:26:33 -0500
+Message-ID: <200411080826.iA88QXMm019533@host.verdial.org>
+References: <200411080826.iA88QVLR019452@host.verdial.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C7C6D244
-	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2004 09:22:25 +0100 (MET)
+In-Reply-To: <200411080826.iA88QVLR019452@host.verdial.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,61 +14,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+El correo al cual a enviado este eMail no existe, para contactar con nosotros por favor envie sus correos a alguna de las siguientes direcciones.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=609> 
-======================================================================
-Reported By:                Grazy
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   609
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.8
-======================================================================
-Date Submitted:             10-27-2004 00:10 CEST
-Last Modified:              11-08-2004 09:22 CET
-======================================================================
-Summary:                    No Mixer control for Ouput on CMI9880
-Description: 
-The CMI9880 chip on my MotherBoard is detect by the snd-azx module.
-But there is only one mixer control for "Capture" and two mute switch for
-"Line" and "Mic". But nothing to control the output volume.
-======================================================================
+administración@in-out.es 	Administracion Grupo IN-out.
 
-----------------------------------------------------------------------
- cltien - 10-27-04 02:36 
-----------------------------------------------------------------------
-The CM9880 has no PCM volume control widget.
+comercial@in-out.es		Dpto. Comercial Grupo IN-out.
 
-----------------------------------------------------------------------
- madsend - 11-08-04 09:22 
-----------------------------------------------------------------------
-If there is no PCM volume control widgets, what is the best method to
-approach volume control / mixer settings for boards with the CM9880? 
-There is volume control in the Windows drivers.  Are they using a separate
-mixer somewhere?
+pedidos@in-out.es		Pedidos Grupo IN-out.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-27-04 00:10 Grazy          New Issue                                    
-10-27-04 00:10 Grazy          Distribution              => Debian          
-10-27-04 00:10 Grazy          Kernel Version            => 2.6.8           
-10-27-04 02:36 cltien         Note Added: 0002270                          
-11-08-04 09:22 madsend        Note Added: 0002310                          
-======================================================================
-
-
+grafismo@in-out.es		Dpto. diseño Grupo IN-out
 
 
 -------------------------------------------------------
