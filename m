@@ -1,11 +1,17 @@
-From: Peter Chapman <x6pe9syq02@sneakemail.com>
-Subject: module_init fails with OEM SoundBlaster Live!
-Date: Sun, 2 Nov 2003 11:46:34 +0000
+From: Michael Buesch <mbuesch@freenet.de>
+Subject: [2.6.0-test9 ALSA] ALSA-OSS-emulation unable to register
+Date: Sun, 2 Nov 2003 15:01:53 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031102114634.GA13679@gondolin.homeip.net>
+Message-ID: <200311021458.59759.mbuesch@freenet.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mout2.freenet.de (mout2.freenet.de [194.97.50.155])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA12716
+	for <alsa-devel@alsa-project.org>; Sun, 2 Nov 2003 15:16:30 +0100
+Content-Description: clearsigned data
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,58 +21,126 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
+Cc: linux kernel mailing list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I have an SBLive! which came with a Dell Dimension PC. The snd-emu10k1
-module has been refusing to load ("EMU10K1/Audigy soundcard not found or
-device busy"), however I found the following patch makes it work:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Index: alsa-kernel/pci/emu10k1/emumixer.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emumixer.c,v
-retrieving revision 1.18
-diff -u -r1.18 emumixer.c
---- alsa-kernel/pci/emu10k1/emumixer.c	23 Oct 2003 14:34:53 -0000	1.18
-+++ alsa-kernel/pci/emu10k1/emumixer.c	2 Nov 2003 11:23:13 -0000
-@@ -540,10 +540,6 @@
- 			return -ENOMEM;
- 		if ((err = snd_ctl_add(card, kctl)))
- 			return err;
--		if ((kctl = snd_ctl_new1(&snd_emu10k1_spdif_control, emu)) == NULL)
--			return -ENOMEM;
--		if ((err = snd_ctl_add(card, kctl)))
--			return err;
+Hi,
+
+ALSA work's fine for me, but the OSS emulation layer doesn't work.
+My configuration is:
+
+CONFIG_SOUND=y
+CONFIG_SND=y
+CONFIG_SND_SEQUENCER=y
+CONFIG_SND_OSSEMUL=y
+CONFIG_SND_MIXER_OSS=y
+CONFIG_SND_PCM_OSS=y
+CONFIG_SND_SEQUENCER_OSS=y
+CONFIG_SND_RTCTIMER=y
+CONFIG_SND_VERBOSE_PRINTK=y
+CONFIG_SND_ENS1371=y
+# OSS options
+CONFIG_SOUND_PRIME=y
+CONFIG_SOUND_BT878=y
+CONFIG_SOUND_TVMIXER=y
+All other sound options are disabled.
+It's a SoundBlaster 128 PCI card.
+
+I've applied the attached patch to display more meaningful
+error-messages.
+
+Kernel-log messages are:
+Nov  2 15:59:27 lfs kernel: Advanced Linux Sound Architecture Driver Version 0.9.7 (Thu Sep 25 19:16:36 2003 UTC).
+Nov  2 15:59:27 lfs kernel: request_module: failed /sbin/modprobe -- snd-card-0. error = -16
+* Nov  2 15:59:27 lfs kernel: register1 failed: 35
+Nov  2 15:59:27 lfs kernel: ALSA sound/core/oss/pcm_oss.c:2353: unable to register OSS PCM device 0:0
+* Nov  2 15:59:27 lfs kernel: ALSA sound/core/oss/pcm_oss.c:2354: error code: -16 == -EBUSY
+* Nov  2 15:59:27 lfs kernel: register1 failed: 32
+Nov  2 15:59:27 lfs kernel: ALSA sound/core/oss/mixer_oss.c:1210: unable to register OSS mixer device 0:0
+Nov  2 15:59:27 lfs kernel: ALSA device list:
+Nov  2 15:59:27 lfs kernel:   #0: Ensoniq AudioPCI ENS1371 at 0xb800, irq 19
+
+Lines marked with a * at the beginning are from my patch.
+
+The failed request_module() seems to be triggered by
+if (!system_running)
+		return -EBUSY;
+in call_usermodehelper() which is called by request_module().
+
+Why are we trying to load a module, althought ALSA is completely
+compiled into the kernel? We shouldn't do it, should we?
+
+OSS-emulation failes, because something is -EBUSY.
+==> ALSA sound/core/oss/pcm_oss.c:2354: error code: -16 == -EBUSY
+I've not found out, why it fails. Maybe someone has an idea?
+
+Here's my patch:
+
+diff -urN -X /home/mb/dontdiff linux-2.6.0-test9/sound/core.orig/oss/pcm_oss.c linux-2.6.0-test9/sound/core/oss/pcm_oss.c
+- --- linux-2.6.0-test9/sound/core.orig/oss/pcm_oss.c	2003-11-02 14:32:35.000000000 +0100
++++ linux-2.6.0-test9/sound/core/oss/pcm_oss.c	2003-11-02 13:20:49.000000000 +0100
+@@ -2343,12 +2343,21 @@
+
+ static void register_oss_dsp(snd_pcm_t *pcm, int index)
+ {
++	int ret;
+ 	char name[128];
+ 	sprintf(name, "dsp%i%i", pcm->card->number, pcm->device);
+- -	if (snd_register_oss_device(SNDRV_OSS_DEVICE_TYPE_PCM,
++	ret = snd_register_oss_device(SNDRV_OSS_DEVICE_TYPE_PCM,
+ 				    pcm->card, index, &snd_pcm_oss_reg,
+- -				    name) < 0) {
++				    name);
++	if (ret < 0) {
+ 		snd_printk("unable to register OSS PCM device %i:%i\n", pcm->card->number, pcm->device);
++		snd_printk("error code: %i ", ret);
++		if (ret == -ENOMEM)
++			printk("== -ENOMEM\n");
++		else if (ret == -EBUSY)
++			printk("== -EBUSY\n");
++		else
++			printk("== unknown\n");
  	}
- 
- 	if (emu->audigy) {
+ }
+
+diff -urN -X /home/mb/dontdiff linux-2.6.0-test9/sound/core.orig/sound_oss.c linux-2.6.0-test9/sound/core/sound_oss.c
+- --- linux-2.6.0-test9/sound/core.orig/sound_oss.c	2003-11-02 14:31:57.000000000 +0100
++++ linux-2.6.0-test9/sound/core/sound_oss.c	2003-11-02 13:57:17.000000000 +0100
+@@ -122,12 +122,16 @@
+ 		break;
+ 	}
+ 	register1 = register_sound_special(reg->f_ops, minor);
+- -	if (register1 != minor)
++	if (register1 != minor) {
++		printk("register1 failed: %i\n", register1);
+ 		goto __end;
++	}
+ 	if (track2 >= 0) {
+ 		register2 = register_sound_special(reg->f_ops, track2);
+- -		if (register2 != track2)
++		if (register2 != track2) {
++			printk("register2 failed: %i\n", register2);
+ 			goto __end;
++		}
+ 	}
+ 	up(&sound_oss_mutex);
+ 	return 0;
+
+- --
+Regards Michael Buesch  [ http://www.tuxsoft.de.vu ]
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
+
+iD8DBQE/pQ5RoxoigfggmSgRAotoAJwPqKatKtf2X+CeLKQOhyDlpXrPiACdFM7Q
+a7bOrRMTgjmhHd70fi1C8l0=
+=8kOI
+-----END PGP SIGNATURE-----
 
 
-By no coincidence I'm sure, I never got the spdif output on the card to
-work. Perhaps it's a cut-down OEM version? I noticed a DELL OEM entry in
-snd_emu10k1_ids[], but my card does not match that device id. Here is
-the lspci output:
-
-03:03.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 07)
-        Subsystem: Creative Labs CT4780 SBLive! Value
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-        Latency: 32 (500ns min, 5000ns max)
-        Interrupt: pin A routed to IRQ 19
-        Region 0: I/O ports at b000 [size=32]
-        Capabilities: [dc] Power Management version 1
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-with lspci -n:
-03:03.0 Class 0401: 1102:0002 (rev 07)
-        Subsystem: 1102:8022
-etc....
-
-could a failure to add the spdif control be made non-fatal perhaps?
-
-Thanks,
-Pete Chapman
 
 
 -------------------------------------------------------
