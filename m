@@ -1,12 +1,18 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: pcm interfaces questions
-Date: Tue, 25 Mar 2003 12:51:15 -0500
+From: =?ISO-8859-1?Q?S=F8ren?= Wedel Nielsen <swn@herlevkollegiet.dk>
+Subject: Re: envy24control and gtk2
+Date: 25 Mar 2003 18:56:50 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18xsVR-0005cL-00@sc8-sf-list1.sourceforge.net>
-References: <XFMail.20030325182413.pochini@shiny.it>
+Message-ID: <1048614706.3481.10.camel@v304.herlevkollegiet.dk>
+References: <1048462242.1151.40.camel@v304.herlevkollegiet.dk>
+	 <s5hbrzzpcpn.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 25 Mar 2003 18:24:13 +0100."
-             <XFMail.20030325182413.pochini@shiny.it>
+Resent-Message-Id: <200303251756.h2PHuir16820@valhalla.herlevkollegiet.dk>
+In-Reply-To: <s5hbrzzpcpn.wl@alsa2.suse.de>
+Resent-To: "alsa-devel@lists.sourceforge.net"
+	<alsa-devel@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,26 +21,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
->snd_pcm_new() has two parameters for the number of substreams
->for playback and capture. 
+tir, 2003-03-25 kl. 18:39 skrev Takashi Iwai:
+> Hi,
+>=20
+> > To get it to use gtk2 I have changed the build configuration files.
+> >=20
+> > http://www.heko.dk/~swn/envy24control/envy24control-gtk2-230303.patch
+>=20
+> this is not yet - i suppose many users still stick with gtk1.2.
+> would it be better to put the patch on cvs?
+>=20
+>=20
+> Takashi
 
-its a language problem. its not the number of substreams as in "the
-quantity of substreams". rather, it means "the ID of the substream".
+That would be fine.=20
 
->			   Yes, but what does it mean ? If I
->have N playback substreams, can I service N applications that
->use one stream ? Can channels be allocated on demand, to allow
->the user to use 4 xmms or 1 xmms and a dvd player (5.1) at the
->same time ? :))
+I could also try to figure out if it is possible to make it an option to=20
+the configure script.=20
+I am not at very friendly terms with the autotools, so please put the=20
+patch in for now.
 
-this depends on (1) whether the underlying hardware supports it and
-(2) whether you use a "dmix" PCM device rather than a "hw" PCM
-device. the "hw" PCM device only offers the capabilities of the
-hardware, nothing more.
+S=C3=B8ren
 
 
 
