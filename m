@@ -1,13 +1,15 @@
-From: Bob McElrath <mcelrath@draal.physics.wisc.edu>
-Subject: cs46xx bug on alpha
-Date: Thu, 9 May 2002 10:30:05 -0500
+From: Stuffed Crust <pizza@shaftnet.org>
+Subject: Re: CS4205 -- personal conclusion: avoid these laptops (for now)...
+Date: Mon, 6 May 2002 18:11:55 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <acqdo1$e0l$2@main.gmane.org>
+Message-ID: <20020506221155.GA5941@shaftnet.org>
+References: <000001c1f547$54e8f180$ac1f830a@ico>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="i7F3eY7HS/tUJxUd"
+	protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
+In-Reply-To: <000001c1f547$54e8f180$ac1f830a@ico>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,54 +22,49 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---i7F3eY7HS/tUJxUd
+--17pEHd4RhPHOinZp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-The cs46xx driver seems to compile, install, and load fine on alpha, and
-the mixer (alsamixer) appears to work fine.  When trying to play a .wav
-file with aplay though, I get this message repeatedly:
-    May  9 10:11:47 draal kernel: ALSA pcm_lib.c:116: Unexpected
-    hw_pointer value (stream =3D 0, delta: -2679, max jitter =3D 2756):
-    wrong interrupt acknowledge?
-Follwed by:
-    May  9 10:11:57 draal kernel: ALSA pcm_lib.c:1864: playback write
-    error (DMA or IRQ trouble?)
+On Mon, May 06, 2002 at 05:45:24PM -0400, Ivica Bukvic wrote:
+> ALSA -- works (sort of), it reports 4 modprobe errors using intel8x0
+> driver prior to firing-up soundcard, resulting in 4 loud "clicks." It
+> can play only one stream at the time, so it does not provide even basic
+> mixing capabilities (i.e. multiple Csound or RTcmix streams, and/or
+> multiple apps). Even Maestro 3i had 2 streams going. There are also some
+> buffering issues which are hard to pinpoint (sometimes sound clips more
+> when the buffer is larger, than when it's smaller).
 
-My /proc/interrupts:
-  1:      19515          XT-PIC   keyboard
-  2:          0          XT-PIC   cascade
-  3:          0          XT-PIC   serial
-  8:   27950319             RTC  +timer
- 10:      44924          XT-PIC   eth0
- 12:      91482          XT-PIC   PS/2 Mouse
- 14:       2221          XT-PIC  +ide0
- 16:     115375       CABRIOLET   BusLogic BT-958
- 17:      15103       CABRIOLET  +CS46XX
- 18:          2       CABRIOLET  +mgacore
- 19:          9       CABRIOLET   usb-uhci
- 20:          0       CABRIOLET   isa-cascade
-ERR:          0
+Now let's be fair to the ALSA driver -- the fault here is the hardware,
+not the driver.  The intel ICH sound design only supports three
+simultaneous channels, one playback, one record, and one dedicated mic
+channel.
 
-My /proc/dma:
- 4: cascade
+Any "multiple open" would have to be performed and mixed by the
+driver/library.  Unlike, say, the SBLive which is capable of something
+like 64 simultaneous playback channels in hardware; fully routed and
+DSPed, even.
 
-This is kernel 2.4.17 with a Hercules Game Theater XP.
+> They should not be allowed to advertise their laptops as Linux friendly
+> when they are not entirely (or not enough soundwise at least).
 
-Any ideas?
+Also to be fair, "good" sound is still not a priority in laptops.   Much
+like 3D accelleration wasn't until about a year ago.  Within another
+year, I imagine we'll see decent multi-channel sound in laptops become
+commonplace.
 
-P.S. I'm surprised to see many more channels in alsamixer than I thought
-the OSS driver supported.  Does the alsa driver really do 3D and support
-all the extra inputs on this card?  (YAY!)
+While I admit the ICH driver still has much work remaining, no matter
+how good the driver is the underlying hardware still sucks.
 
-Cheers,
--- Bob
+ - Pizza
+--=20
+Solomon Peachy                                    pizzaATfucktheusers.org
+I ain't broke, but I'm badly bent.                           ICQ# 1318344
+Patience comes to those who wait.
+    ...It's not "Beanbag Love", it's a "Transanimate Relationship"...
 
-Bob McElrath (rsmcelrath@students.wisc.edu)=20
-Univ. of Wisconsin at Madison, Department of Physics
-
---i7F3eY7HS/tUJxUd
+--17pEHd4RhPHOinZp
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
@@ -75,12 +72,12 @@ Content-Disposition: inline
 Version: GnuPG v1.0.6 (GNU/Linux)
 Comment: For info see http://www.gnupg.org
 
-iEYEARECAAYFAjzalf0ACgkQjwioWRGe9K2usQCgsbcxxj3EP5O8pTFho4GUVXMS
-2EMAoL+0dhrz6sP8GCnNjJsmEx3rxpRG
-=vSYp
+iD8DBQE81v+rPuLgii2759ARAntIAJwKuROoOlAikmHoJ+TC8xBwiyQ67QCg3h06
+f2xhcXouzqEVTkeuekKC//4=
+=9+Ky
 -----END PGP SIGNATURE-----
 
---i7F3eY7HS/tUJxUd--
+--17pEHd4RhPHOinZp--
 
 _______________________________________________________________
 
