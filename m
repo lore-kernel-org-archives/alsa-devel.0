@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000866]: Can not install snd-intel8x0
-Date: Mon, 31 Jan 2005 05:30:14 +0100
-Message-ID: <bc3225e96478f445d349483806a4c306@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000864]: No Support for C-Media CMI9880
+Date: Mon, 31 Jan 2005 09:30:48 +0100
+Message-ID: <6a0d8c9bb6c2516785552b813c3dcf43@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 194581DA
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 05:30:15 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D587197
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 09:30:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,77 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=866> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=864> 
 ======================================================================
-Reported By:                ghostdaemon
-Assigned To:                
+Reported By:                neverread
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   866
-Category:                   PCI - intel8x0
+Issue ID:                   864
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             01-31-2005 05:30 CET
-Last Modified:              01-31-2005 05:30 CET
+Date Submitted:             01-31-2005 01:57 CET
+Last Modified:              01-31-2005 09:30 CET
 ======================================================================
-Summary:                    Can not install snd-intel8x0
+Summary:                    No Support for C-Media CMI9880
 Description: 
-I have to use Redhat Linux 7.3.I have  tried ALSA 1.0.8 and 0.9.6,but they
-all failed .when i extact driver package to ./config;make;make install
-,some errors infomation displayed.such as:
- unresolved symbol fasync_helper_Rsmp_0f820065
- unresolved symbol proc_symlink_Rsmp_515b8074
- ...........
- ...........
+A number of the new ASUS motherboards have HD sound using the C-Media
+cmi9880 chip.  I've looked through the list of supported devices and the
+CMI9880 is not listed.  I expect support for the chipset to become more
+common.
 
-when i use modpobe command:
-[root@localhost root]# modprobe snd-intel8x0
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-fasync_helper_Rsmp_0f820065
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-proc_symlink_Rsmp_515b8074
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-remove_proc_entry_Rsmp_18199406
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-kill_fasync_Rsmp_f866c12a
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-proc_root_Rsmp_c79b35f0
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-register_chrdev_Rsmp_10735b95
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-create_proc_entry_Rsmp_9cfe096c
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-register_sound_special_Rsmp_3a650025
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-remove_wait_queue_Rsmp_ca8842ea
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-add_wait_queue_Rsmp_2fd0ca84
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-__pollwait_Rsmp_4c541ea9
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: insmod
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o failed
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: insmod snd-intel8x0
-failed
-[root@localhost root]#
+During the install (Through YaST) no sound device is detected at all. 
+When trying to use sensible alternates (ie cmipci module by selecting
+cmi87x support) the install fails.
 
-My Motherboard is ASUS P4P800, AD1985 integrated on it.
-
-Many thanks !
-
+It would be great if we could add support.
 
 ======================================================================
+
+----------------------------------------------------------------------
+ 1g0R - 01-31-05 09:30 
+----------------------------------------------------------------------
+Hi,
+
+Try with azx card support.
+./configure --with-card=azx
+
+Chher,
+1gR
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-05 05:30 ghostdaemon    New Issue                                    
+01-31-05 01:57 neverread      New Issue                                    
+01-31-05 09:30 1g0R           Note Added: 0003447                          
 ======================================================================
 
 
