@@ -1,148 +1,73 @@
-From: egel@scoutnet.nl
-Subject: How to get alsa 0.9.3 working with 2.4 kernels on Alpha; part 2t
-Date: Fri, 23 May 2003 11:35:45 GMT
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <200305231135.h4NBZjM03144@explorer.scouting.nl>
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: alsa-user@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net
+From: Florian Zwoch <zwoch@backendmedia.com>
+Subject: Terratec Aureon Sky/Space
+Date: Fri, 23 May 2003 14:25:50 +0200
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <3ECE134E.50005@backendmedia.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I got Alsa 0.9.3c finally build an loaded with kernel 2.4.20 with 
-only " #include <asm/pgtable.h> " in highmem.h 
+to Takashi:
+some stupid used our mailserver for spamming which lead to heavily 
+blocking of my emails. well, i hope that was the reason you didnt 
+respond to my email anymore =)
 
-#include <linux/sched.h>
-#include <linux/mm.h>
-added to acore/memory_wrapper.c
+anyway i tried to get more information on the Aureon hardware.. and of 
+course im still confused as i dont know much about that.
 
-#include <linux/slab.h>
-added to misc.c , opl4_lib.c and opl4_proc.c
+with my voltmeter i could identify the following (Aureon Sky that is..):
 
-and this patch:
-----------------------------------------------
+Envy24HT
+GPIO 0  (pin 50)	->	XILINX pin 7
+GPIO 1  (pin 51)	->	XILINX pin 6
+GPIO 2  (pin 52)	->	XILINX pin 5
+GPIO 3  (pin 53)	->	XILINX pin 4
+GPIO 4  (pin 56)	->	XILINX pin 3
+GPIO 5  (pin 57)	->	XILINX pin 2
+GPIO 6  (pin 58)	->	XILINX pin 1
+GPIO 7  (pin 59)	->	XILINX pin 44
+GPIO 8  (pin 75)	->	XILINX pin 42
+GPIO 9  (pin 76)	->	XILINX pin 39
+GPIO 10 (pin 77)	->	XILINX pin 40
+GPIO 11 (pin 86)	->	XILINX pin 41
+GPIO 12 (pin 88)	->	WM8770 pin 63 (CE)
+GPIO 16 (pin 96)	->	XILINX pin 33
+GPIO 17 (pin 97)	->	74HC125D pin 1
+GPIO 18 (pin 98)	->	74HC125D pin 3
+GPIO 19 (pin 99)	->	74HC125D pin 13
 
-diff -Naur alsa-driver-0.9.3a/alsa-kernel/isa/sb/emu8000_patch.c alsa-driver-0.
-9.3a-linux2420/alsa-kernel/isa/sb/emu8000_patch.c
---- alsa-driver-0.9.3a/alsa-kernel/isa/sb/emu8000_patch.c	2002-08-12 03:43:
-46.000000000 -0500
-+++ alsa-driver-0.9.3a-linux2420/alsa-kernel/isa/sb/emu8000_patch.
-c	2003-05-18 15:50:53.000000000 -0500
-@@ -233,7 +233,7 @@
- 		/* we may take too long time in this loop.
- 		 * so give controls back to kernel if needed.
- 		 */
--		if (need_resched()) {
-+		if (ALSA_NEED_RESCHED()) {
- 			if (current->state != TASK_RUNNING)
- 				set_current_state(TASK_RUNNING);
- 			schedule();
-diff -Naur alsa-driver-0.9.3a/alsa-kernel/isa/sb/emu8000_pcm.c alsa-driver-0.9.
-3a-linux2420/alsa-kernel/isa/sb/emu8000_pcm.c
---- alsa-driver-0.9.3a/alsa-kernel/isa/sb/emu8000_pcm.c	2003-02-10 05:53:49.
-000000000 -0600
-+++ alsa-driver-0.9.3a-linux2420/alsa-kernel/isa/sb/emu8000_pcm.c	2003-05-18 
-15:50:53.000000000 -0500
-@@ -424,7 +424,7 @@
-  */
- #define CHECK_SCHEDULER() \
- do { \
--	if (need_resched()) {\
-+	if (ALSA_NEED_RESCHED()) {\
- 		if (current->state != TASK_RUNNING)\
- 			set_current_state(TASK_RUNNING);\
- 		schedule();\
-diff -Naur alsa-driver-0.9.3a/include/adriver.h alsa-driver-0.9.
-3a-linux2420/include/adriver.h
---- alsa-driver-0.9.3a/include/adriver.h	2003-04-27 09:49:58.000000000 -0500
-+++ alsa-driver-0.9.3a-linux2420/include/adriver.h	2003-05-18 15:50:53.
-000000000 -0500
-@@ -105,7 +105,9 @@
- #endif
- 
- #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 5, 3)
--#define need_resched() (current->need_resched)
-+#define ALSA_NEED_RESCHED() (current->need_resched)
-+#else
-+#define ALSA_NEED_RESCHED() (need_resched())
- #endif
- #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 5, 4)
- #include <linux/fs.h>
-diff -Naur alsa-driver-0.9.3a/pci/vx222/vx222_ops.c alsa-driver-0.9.
-3a-linux2420/pci/vx222/vx222_ops.c
---- alsa-driver-0.9.3a/pci/vx222/vx222_ops.c	2003-03-21 11:41:57.000000000 
--0600
-+++ alsa-driver-0.9.3a-linux2420/pci/vx222/vx222_ops.c	2003-05-18 15:50:53.
-000000000 -0500
-@@ -376,7 +376,7 @@
- 		if (put_xilinx_data(chip, port, 8, data) < 0)
- 			return -EINVAL;
- 		/* don't take too much time in this loop... */
--		if (need_resched()) {
-+		if (ALSA_NEED_RESCHED()) {
- 			if (current->state != TASK_RUNNING)
- 				set_current_state(TASK_RUNNING);
- 			schedule();
+74HC125D pin 11		->	WM8770 pin 61 (CL)
+74HC125D pin 6		->	WM8770 pin 62 (DI)
 
-----------------------------------------------
+wow, lots of GPIO thingies go to the XILINX chip. so aparrently only CE 
+is directly connected to the Envy Chip, the other two go through a small 
+chip labeled:
 
-Thanks to Kelledin and the Axp-list@redhat.com
+74HC125D
+AA432 01
+Unn0219D
 
-but i'm stil getting this error when using alsaplayer:
+a 14 pin chip from phillips.. nothing big i guess. oh yeah.. the pin 
+descriptions for that chip may be wrong since i couldnt see any label on 
+the chip where to start counting.
 
-ALSA lib pcm_hw.c:324:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS failed: 
-Cannot allocate memory
-Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: 44100
-PERIOD_TIME: (23219 23220)
-PERIOD_SIZE: 1024
-PERIOD_BYTES: 4096
-PERIODS: 8
-BUFFER_TIME: (185759 185760)
-BUFFER_SIZE: 8192
-BUFFER_BYTES: 32768
-TICK_TIME: 976
-failed to configure output device...trying OSS
-error setting sample_rate
-failed to configure output device...trying OSS
+i hope this helps. maybe i can try to figure out other important 
+connections? (as you noticed.. i still lack some of the GPIOs)
 
-And sfxload gives this error:
+plz.. let me be the helping hand for the blind :)
 
-pci_map_single failed:could not allocate dma page tables
-
-I'm using a 164SX ALPHA with Debian Woody and trying to use a emu10k1
-
-What is the way to solve these problems ? 
-
-Met Vriendelijke Zwerversgroeten
- 
-Wouter Rademaker
-
-Snel-post:    egel@scoutnet.nl
-
-    \ / \ /
-    >O< >O<
-  *{_}   {_}*
-
-
-
-------------------------------------------
-This message was sent by Scoutnet Webmail.
-http://www.scoutnet.nl                    
-
+Florian
 
 
 
