@@ -1,16 +1,13 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - utils 0000398]: aplay produces no sound on short wav files through dmix
-Date: Mon, 19 Jul 2004 16:21:38 +0200 (CEST)
+From: "Ash Willis" <ashwillis@programmer.net>
+Subject: ALS300 Driver....kinda
+Date: Mon, 19 Jul 2004 18:58:31 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040719142138.B763D18005@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040719235831.B509579004D@ws1-14.us4.outblaze.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3563C1D6
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jul 2004 16:21:39 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id CA44313BC1
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jul 2004 16:21:38 +0200 (MEST)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,46 +16,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi people, I had this Avance Logic ALS300 card kicking about and I thought I'd make an attempt at writing a driver for it. I know this isn't too interesting though as this card is quite old now and I can't imagine it being too popular but I wanted to do this driver becuase it'd make ALSA that tiny bit more 'complete', and OSS supports it so it'd just generally be nice for it to work with ALSA...
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000398
-======================================================================
-Reported By:                raveng
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Bug ID:                     398
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             07-19-2004 16:21 CEST
-Last Modified:              07-19-2004 16:21 CEST
-======================================================================
-Summary:                    aplay produces no sound on short wav files through dmix
-Description: 
-Wav files shorter than about 0.157 seconds produce no sound under aplay and
-dmix. No error message is given, and it looks like it should be working.
-If I add silence to the file to make the duration longer, it plays fine.
-Also, if I direct aplay to use the hardware directly, it plays the
-original file just fine.  Tested on both ens1371 and i810 audio.
+I WAS reversing it but then the lovely people at Realtek sent me the sheet.
 
-Other media players (xmms, mplayer, and artsplay) all play the same file
-correctly with dmix. It is only the ALSA-provided aplay that seems to have
-difficulty.
-======================================================================
+Anyway, I've done some work on this, but if I'm honest, I'm a noob to ALSA and to hardware programming in general. I've hit a bit of a wall and I need some help.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-19-04 16:21 raveng         New Bug                                      
-======================================================================
+I've only been focusing on PCM playback for the moment and the driver is in such a state that it will allow the first dma transfer to take place but then when servicing interrupts, no further writes to dma take place, so the card just sits there playing a small sample over and over...
+
+So yeah, i'm opening this up to anyone who wants to help. It seems a waste for me to be messing around trying to fix this when someone else could probably fix it up in a few minutes :)
+
+I have my (very) partially working code and the datasheet to show anyone who is interested. If no-one else has this card then I'd be happy to test any hacks anyone wants to try. It may just be the case that i have an obvious mess up in my code that anyone used to this stuff would spot. I don't have the code or the sheet on me right now but i can post/email any info anyone wants in the next couple of days.
+
+Thanks,
+Ash Willis
+-- 
+___________________________________________________________
+Sign-up for Ads Free at Mail.com
+http://promo.mail.com/adsfreejump.htm
+
+
 
 
 -------------------------------------------------------
