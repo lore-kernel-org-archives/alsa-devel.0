@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000621]: Audigy input
-Date: Sun, 31 Oct 2004 15:16:34 +0100
-Message-ID: <a380bc67934709ac1ff3fc1bd83ae549@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000615]: AC'97 broken on SB Live 24 bit
+Date: Sun, 31 Oct 2004 16:24:01 +0100
+Message-ID: <27d7f12f72107c49eb9002a7f58105cb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BBAD92D3
-	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2004 15:16:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5CD2F2C2
+	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2004 16:24:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=621> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=615> 
 ======================================================================
-Reported By:                KoxtaRF
-Assigned To:                
+Reported By:                MRB
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   621
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   615
+Category:                   PCI - audigyls
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.7-gentoo-r1
 ======================================================================
-Date Submitted:             10-31-2004 15:14 CET
-Last Modified:              10-31-2004 15:16 CET
+Date Submitted:             10-29-2004 12:34 CEST
+Last Modified:              10-31-2004 16:24 CET
 ======================================================================
-Summary:                    Audigy input
+Summary:                    AC'97 broken on SB Live 24 bit
 Description: 
-I get exactly the same issue as the guy who posted this message:
-
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg13087.html
-
-I cannot select any input source to be captured in alsamixer . Moreover,
-many of the output sliders cannot be muted by pressing M (like Master or
-PCM).
+The Creative Sound Blaster 24bit is using an Audigy chip according to its
+PCI ID. The driver audigyls doesn't work because AC'97 does not respond
+and AC'97 0 access is not valid. When you remove the error checking the
+audigyls module can be loaded but there's no sound output. See attached
+file for details. 
 ======================================================================
 
 ----------------------------------------------------------------------
- KoxtaRF - 10-31-04 15:16 
+ MRB - 10-31-04 00:30 
 ----------------------------------------------------------------------
-I forgot to give you my system specs...
+Tested it, compiled with latest release. Driver loads without any errors,
+no more ac97 errors in syslog. In alsamixer volume or mute of AC97, SPDIF,
+Unknown and What U Hear cannot be changed, everthing else set to max. I
+get no sound whatever on all 3 output plugs, neither with Creative 7.1
+speakers nor a headphone. Over the input plug I get sound that with a lot
+of creativity sounds like it's supposed to ( a lot of noise and extremely
+unclean, hard to notice it's not random noise ) and only over the left
+speaker of my headphones. 
 
-Linux Gentoo (current)
-Alsa 1.0.6
-kernel 2.6.9 (using included alsa-driver)
+Output in syslog loading module and attempting to play sound attached (
+uncommented snd_printk calls ). 
+
+If the soundcard it not available to the developers I'm willing to donate
+the price of the card if that helps.
+
+----------------------------------------------------------------------
+ jcdutton - 10-31-04 16:24 
+----------------------------------------------------------------------
+This looks like I will actually have to play with the actual card.
+As you offer to donate the value of a card, I will agree to try to get it
+working.
+Please email me direct, and we can arrange things off list.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-04 15:14 KoxtaRF        New Issue                                    
-10-31-04 15:15 KoxtaRF        Issue Monitored: KoxtaRF                     
-10-31-04 15:16 KoxtaRF        Note Added: 0002293                          
+10-29-04 12:34 MRB            New Issue                                    
+10-29-04 12:34 MRB            File Added: details.txt                      
+10-29-04 12:34 MRB            Distribution              => Gentoo Linux    
+10-29-04 12:34 MRB            Kernel Version            => 2.6.7-gentoo-r1 
+10-30-04 18:08 jcdutton       Note Added: 0002289                          
+10-31-04 00:30 MRB            Note Added: 0002290                          
+10-31-04 00:30 MRB            File Added: details2.txt                     
+10-31-04 16:24 jcdutton       Note Added: 0002294                          
 ======================================================================
 
 
