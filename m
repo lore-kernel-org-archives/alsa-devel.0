@@ -1,17 +1,12 @@
-From: "Jack O'Quin" <joq@io.com>
-Subject: Re: Driver(s) for IEEE 1394 based break out boxes
-Date: 13 Jul 2004 12:26:09 -0500
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000383]: Audigy LS - Capturing from Mic and kernel oops
+Date: Tue, 13 Jul 2004 19:40:21 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87u0wbzumm.fsf@sulphur.joq.us>
-References: <20040712191930.GA20382@vis.ethz.ch>
-	<s5hr7rfamgt.wl@alsa2.suse.de>
+Message-ID: <7c39458ab2caf677ebe0e086860fedaa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sulphur.joq.us (mail.joq.us [67.65.12.105])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6614522A
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2004 19:26:06 +0200 (MEST)
-In-Reply-To: <s5hr7rfamgt.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,44 +15,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Daniel Wagner <wagi@vis.ethz.ch>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-> At Mon, 12 Jul 2004 21:19:30 +0200,
-> Daniel Wagner wrote:
-> > 
-> > On the on hand, there exists already the IEEE 1394 stack with IEC
-> > 61883 support in user-land.  I don't know if the libiec61883 is already
-> > ready to use but still it exists.  As I understand the general idea
-> > behind libraw1394 and libiec61883 is to do as much as possible in
-> > users-pace.  Any application which wants to take advantage of IEEE 1394
-> > based sound cards has to use those libraries.  I guess it means for
-> > jack to have a new backend in order to use those cards.  But most
-> > application wont be aware of this interface, I suppose.
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0383
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                Luke
+Assigned To:                pzad
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     383
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:              =20
+Kernel Version:            =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             07-13-2004 17:45 CEST
+Last Modified:              07-13-2004 19:40 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    Audigy LS - Capturing from Mic and kernel oop=
+s
+Description:=20
+I just updated my cvs repository and rebuilt the snd_audigyls module to
+check if my former reported bugs are fixed.
+Unfortunateley, my kernel oopsed once again.
 
-Takashi Iwai <tiwai@suse.de> writes:
-> IIRC, JACK has already a driver for IEC61883.
-> Don't know whether it really works, though.
+I tried to capture some voice of my mic with no success. Maybe I don't ge=
+t
+the explanation in the cvs log. I attached a screenshot to review my
+alsamixer settings. This is what I used to configure it:
 
-Bob Ham wrote an experimental IEC61883 driver which has been part of
-JACK CVS for quite a while.  I doubt it's getting much use.
+"The MIC and LINE IN use the AC97 chip.
 
-I don't know if it works either, having no hardware to test it.
+The AC97 uses the PLAYBACK(Not CAPTURE) controls in alsamixer for
+controlling CAPTURE. Then, instead of sending that output to the
+speakers, it sends it to the Philips 1361T ADC. This results in high
+quality ADC conversion.
+E.g. For LINE IN capture, set LINE IN playback volume and unmute it.
+Set MASTER volume.
+There is a new control for "CAPTURE feedback into PLAYBACK". If one does
+not want any feedback, leave it at it's minimum."
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-> > The question is which way to go?  Get the break out boxes working with
-> > the existing libraries or write an ALSA driver which implements those
-> > parts again?  Personaly, I think ALSA might be the better idea but it
-> > does not make use of the already written code.  Maybe there exists a
-> > better way...
-> 
-> The user-space driver can be implemented on alsa-lib as a plugin.
-> For example, you can find ALSA <-> JACK transparent layer.
+----------------------------------------------------------------------
+ jcdutton - 07-13-2004 19:40 CEST=20
+----------------------------------------------------------------------
+Fixed in latest cvs.
+Fixed by:
+[alsa-cvslog] CVS: alsa-kernel/core memalloc.c,1.34,1.35
 
-An ALSA solution would be great, either user- or kernel-space.
--- 
-  joq
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+07-13-04 17:45 Luke           New Bug                                    =
+ =20
+07-13-04 17:45 Luke           File Added: audigyoops                     =
+ =20
+07-13-04 17:50 Luke           File Added: audigyscreen.png               =
+    =20
+07-13-04 19:40 jcdutton       Bugnote Added: 0001415                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
 
 
 -------------------------------------------------------
