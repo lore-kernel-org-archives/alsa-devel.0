@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000707]: Incorrect suspend code
-Date: Fri, 7 Jan 2005 17:46:31 +0100
-Message-ID: <7c8acfc2cf0c668e7fdfa5ed0cce18c0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000784]: CMI 9739A PCM does not allow volume control only on/off (when on starts with full volume)
+Date: Fri, 7 Jan 2005 17:55:27 +0100
+Message-ID: <5fe845b78df8a6566df8451b40452306@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3BCBB329
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 17:46:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DFF3524F
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 17:55:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=707> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=784> 
 ======================================================================
-Reported By:                Eric Valette
-Assigned To:                perex
+Reported By:                ajir
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   707
-Category:                   0_compilation problem_!!!
+Issue ID:                   784
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Debian
-Kernel Version:             
+Status:                     resolved
+Distribution:               
+Kernel Version:             2.6.8.1
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-05-2004 10:09 CET
-Last Modified:              01-07-2005 17:46 CET
+Date Submitted:             01-04-2005 20:34 CET
+Last Modified:              01-07-2005 17:55 CET
 ======================================================================
-Summary:                    Incorrect suspend code
+Summary:                    CMI 9739A PCM does not allow volume control only
+on/off (when on starts with full volume)
 Description: 
-My laptop does not wakeup from suspend to RAM due to intel8xx
-driver. Many other are seeing the very same problem. It is due to
-incorrect suspend code.
-
-In additionnal information there is a fix for this problem that I tested
-on my laptop and that indeed fix the problem.
+This issue was studied before but without any effect. Some says that this
+codec has different hadrware and it can not be controled.BUT WINDOWS
+DRIVER CAN CONTROL damn VOLUME. Please can it be fixed?
 ======================================================================
 
 ----------------------------------------------------------------------
- Eric Valette - 12-06-04 14:41 
+ tiwai - 01-07-05 17:54 
 ----------------------------------------------------------------------
-This patch has been integrated in the linux kernel tree yesterday...
+ALSA 1.0.8rc2 includes the softvol feature.
+
+When you access to the PCM "default", softvol is automatically enabled.
 
 ----------------------------------------------------------------------
- tiwai - 12-06-04 20:52 
+ tiwai - 01-07-05 17:55 
 ----------------------------------------------------------------------
-OK, closed.
+I move this issue to FIXED.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-05-04 10:09 Eric Valette   New Issue                                    
-12-05-04 10:09 Eric Valette   Distribution              => Debian          
-12-06-04 14:21 rgmerk         Note Added: 0002728                          
-12-06-04 14:41 Eric Valette   Note Added: 0002729                          
-12-06-04 20:52 tiwai          Status                   assigned => resolved
-12-06-04 20:52 tiwai          Resolution               open => fixed       
-12-06-04 20:52 tiwai          Note Added: 0002732                          
-01-07-05 17:46 tiwai          Status                   resolved => closed  
+01-04-05 20:34 ajir           New Issue                                    
+01-04-05 20:34 ajir           Kernel Version            => 2.6.8.1         
+01-04-05 20:57 rlrevell       Note Added: 0003080                          
+01-04-05 22:42 rlrevell       Note Added: 0003087                          
+01-06-05 12:03 ajir           Note Added: 0003091                          
+01-07-05 17:54 tiwai          Note Added: 0003104                          
+01-07-05 17:55 tiwai          Status                   new => resolved     
+01-07-05 17:55 tiwai          Resolution               open => fixed       
+01-07-05 17:55 tiwai          Assigned To               => tiwai           
+01-07-05 17:55 tiwai          Note Added: 0003105                          
 ======================================================================
 
 
