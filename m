@@ -1,8 +1,8 @@
 From: James Courtier-Dutton <James@superbug.demon.co.uk>
 Subject: Re: xine with dmix
-Date: Wed, 21 Jan 2004 23:15:23 +0000
+Date: Wed, 21 Jan 2004 23:41:49 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <400F080B.3060800@superbug.demon.co.uk>
+Message-ID: <400F0E3D.3010605@superbug.demon.co.uk>
 References: <1074607760.9700.453.camel@thor.asgaard.local>  <Pine.LNX.4.58.0401201628140.2010@pnote.perex-int.cz>  <1074614789.9699.464.camel@thor.asgaard.local> <1074620372.9697.480.camel@thor.asgaard.local> <Pine.LNX.4.58.0401212012430.2010@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
@@ -59,23 +59,13 @@ Jaroslav Kysela wrote:
 > 
 > 						Jaroslav
 > 
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SuSE Labs
-> 
-> 
 
-Thank you very much for your efforts to help xine work with alsa.
-
-So, the problem was a bug in alsa?
-As you have obviously looked very hard now at the xine code, would you 
-have any recommendations for any changes?
+I have tried both your patches, but neither of them fix the problem or 
+jerky output. Sound for a short burst, short pause, sound for a short 
+burst, short pause etc.
 
 Cheers
 James
-
-
 
 
 -------------------------------------------------------
