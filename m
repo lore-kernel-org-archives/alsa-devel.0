@@ -1,11 +1,10 @@
 From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: Updating www.alsa-project.org?
-Date: Tue, 12 Feb 2002 18:53:21 +0200 (EET)
-Message-ID: <Pine.LNX.4.44.0202121823170.32090-100000@ecabase.localdomain>
+Subject: Re: Status of ALSA documentation?
+Date: Tue, 12 Feb 2002 19:17:31 +0200 (EET)
+Message-ID: <Pine.LNX.4.44.0202121854210.32090-100000@ecabase.localdomain>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20020212142244Z11404-696+8614@nic.funet.fi>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <Pine.GSO.3.96.1020212093858.23743A-100000@yin.interaccess.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,33 +16,39 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 12 Feb 2002, Juhana Sadeharju wrote:
+On Tue, 12 Feb 2002, Kevin Conder wrote:
 
-> We barely have any proper documentation. Checking source code is also
-> outdated.
+> 	I was wondering about the status of ALSA's API documentation. The
+> last time I checked, the ALSA developers were adding doxygen comments to
+> the source code. Was that project completed?
 
-We do have quite detailed documentation in the form of javadoc comments. =
-=20
-Not perfect but actually much better than docs of many other kernel
-subsystems.
+Yes and no. Just like code, there's always room for improvement. Anyway,
+almost all functions are already documented, see:
 
-Improving the documentation, writing howtos, updating the web site has
-been discussed many times here but so far not much has happened. What
-really is missing is coordination, or should I say leadership. The ALSA
-core dev team have they hands full with coding and kernel-integration wor=
-k
-and many of us active alsa-devel members have our own projects that take
-our time.
+http://www.alsa-project.org/alsa-doc/alsa-lib/index.html
 
-A prime example of what we need is the LAD web pages. J=F6rn Nettingsmeie=
-r=20
-took the job and made it happen (with excellent results should I add).=20
-In other words, we need someone who "leads the ALSA documentation=20
-project" and someone who is the "ALSA website maintainer".=20
+It's not a tutorial, but as a reference documentation it really is quite 
+good!
 
-Any takers for these jobs?
+The best part of javadoc is that it adds very little overhead. Even if we
+had complete documentation for ALSA0.9 available, I don't think the ALSA
+team would have resources for maintaining it at the moment. Keeping the
+javadoc comments up-to-date on the other hand involves much less work. No
+reason to write more documentation if it's known before hand that nobody
+has time to maintain it.
 
---=20
+This may sound pessimistic, but a fact is that lots of time went to
+writing API docs for ALSA 0.3, 0.4 and 0.5. That time could have been
+instead spent on working on the code.
+
+I've said this before and I'll say it again; my biggest worry is that ALSA
+team will lose their interest because of the huge amount work they are
+facing.  In free sw projects people should be able to concentrate on doing
+what they love to do. If someone likes to write code, it's best for
+everyone involved that he can keep on doing just that. In the end this is
+the only way to keep projects going on for long periods of time.
+
+-- 
  http://www.eca.cx
  Audio software for Linux!
 
