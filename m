@@ -1,9 +1,10 @@
-From: Ian Kumlien <pomac@vapor.com>
-Subject: [snd_ca0106] volume, oss-emu etc
-Date: Fri, 04 Mar 2005 16:05:29 +0100
-Message-ID: <1109948729.21021.91.camel@debian>
+From: Michael <katakis@freenet.de>
+Subject: capture problem with maestro2
+Date: Fri, 04 Mar 2005 18:26:47 +0100
+Message-ID: <42289A57.1090005@freenet.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-7LgX8674s5EHOelbLMmY"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -13,72 +14,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
---=-7LgX8674s5EHOelbLMmY
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I have a capture problem with ALSA on a 2.6.10 kernel with a maestro2 
+soundcard. Teamspeak doesn't work and i get this line in my teamspeak 
+log file:
 
-Hi,=20
+04-03-05 12:14:33,11835,ERROR,All,TOSSioThread.execute,Exception 
+EOSSException: OSS error in InputSound: Invalid argument
 
-I dunno how many others that has suffered from this... I just bought a
-new machine and i thought i was getting a safer bet going with one that
-had a soundcard from creative (i was hoping for EMU10k1 chip but..).=20
 
-I now use snd_ca0106 which is compiled from alsa-driver 1.0.8 and it
-works but there is some issues.
+I examined the problem and found out that with the following changes, 
+everything works fine.
 
-The worst one first:
-There is no master volume, no pcm volume... I can only change the
-individual channel volumes. This doesn't help me, i doubt it helps
-anyone... Channel variance is something that should be tweaked once or
-twice not constantly imho. Also with gnome volume thingies this problem
-compounds... Right now selecting front works, but which front? digital
-or analog? I will have sound coming from both...=20
+diff -rup sound/core/pcm_lib.c sound_new/core/pcm_lib.c
+--- sound/core/pcm_lib.c        2005-03-04 12:14:00.951071880 +0100
++++ sound_new/core/pcm_lib.c    2005-03-04 12:23:19.734123944 +0100
+@@ -2561,8 +2561,6 @@ snd_pcm_sframes_t snd_pcm_lib_read(snd_p
+                }
+        }
+ #endif
+-       if (runtime->access != SNDRV_PCM_ACCESS_RW_INTERLEAVED)
+-               return -EINVAL;
+        return snd_pcm_lib_read1(substream, (unsigned long)buf, size, 
+nonblock, snd_pcm_lib_read_transfer);
+ }
 
-And now some words on OSS emu:
-It seems like this card defaults to a higher hertz than common oss, so
-you get samples that play too quick and some clipping noises... I have
-noticed that if you play something long enough it will eventually work
-but that's not fun...
 
-The same clipping noise can happen with apps using alsa... it doesn't
-happen with the gstreamer framework though.
+The function "snd_pcm_lib_read" gets called from the oss-emulation 
+layer. But since the maestro2 only supports non-interleaved capture it 
+returns EINVAL. Suprisingly, if the check for 
+"SNDRV_PCM_ACCESS_RW_INTERLEAVED" is removed,  mono and stereo recording 
+works! I don't know why.
+Maybe someone with more ALSA insight could take a look at it and find a 
+cleaner solution.
 
-Common commandline mpg123 works (uses oss) but, f.ex. xmms doesn't work.
-The OSS mixer doesn't work either...
-
-If something plays via OSS, alsa won't work stating that it's busy...
-But playing multiple streams over alsa seems to work.
-
-That's about it from now, I guess i have been spoiled coming from
-emu10k1 on OSS...=20
-
-PS. CC: since I'm not subbed.
-	alsa-devel was added as a initial post, if you use reply-to-all
-	from alsa-user, please drop it since it might not be appreciated
-	by them =3D).
-DS.
-
---=20
-Ian Kumlien <pomac () vapor ! com> -- http://pomac.netswarm.net
-
---=-7LgX8674s5EHOelbLMmY
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (GNU/Linux)
-
-iD8DBQBCKHk57F3Euyc51N8RApbNAJ4nJ1LKyScs/LDxycHKUhLn8r/qYwCfbdRP
-ed8or5WgtGYttw2ruPgxjHk=
-=jh/w
------END PGP SIGNATURE-----
-
---=-7LgX8674s5EHOelbLMmY--
 
 
 
