@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000388]: pci ali5451 suspend/resume
-Date: Thu, 15 Jul 2004 11:22:17 +0200
+Subject: [ALSA - driver 0000312]: MasterVolume & Headphone volume switched...
+Date: Thu, 15 Jul 2004 11:28:20 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <9546972f027027231b2eee061b37074b@bugtrack.alsa-project.org>
+Message-ID: <8493f697b4ca1d46769a996846bceb9a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -19,71 +19,129 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0388
+0312
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                Nemaru
-Assigned To:                tiwai
+Reported By:                subdude
+Assigned To:               =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     388
-Category:                   PCI - ali5451
+Bug ID:                     312
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:              =20
-Kernel Version:            =20
-Resolution:                 fixed
+Status:                     new
+Distribution:               Slackware Current
+Kernel Version:             2.4.26
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-15-2004 07:24 CEST
-Last Modified:              07-15-2004 11:22 CEST
+Date Submitted:             05-29-2004 11:11 CEST
+Last Modified:              07-15-2004 11:28 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    pci ali5451 suspend/resume
+Summary:                    MasterVolume & Headphone volume switched...
 Description:=20
-Please ignore, if you are the already solved problem.
+The onboard sound chip is called a VIA 8233/8235.
 
-It is the problem of Kernel-2.6.7 ali5451 sound driver
-& suspend/resume.
+I am running dxs_support=3D4
 
-ali_suspend/ali_resume of ali5451 driver has not set
-card->power_state.
-Therefore, resume processing is not performed by the
-following codes.
-power->state should be set up in pci/ali5451.c?
-or
-power->state should be set up in core/init.c (and core/control.c)?
-by snd_power_change_state().
+I have tried:
 
------------------------------------------------------------
-sound/core/init.c
-snd_card_pci_resume(struct pci_dev *dev)
-{
-    .....
-    if (card->power_state =3D=3D SNDRV_CTL_POWER_D0)
-        return 0;
------------------------------------------------------------
-
+ac97_quirks=3D-1 thru 3 =3D no effect
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- tiwai - 07-15-2004 11:22 CEST=20
+ subdude - 06-01-2004 07:19 CEST=20
 ----------------------------------------------------------------------
-Thanks, I fixed the code on CVS.
+The motherboard is an ECS L7VMM2 uATX with onboard VIA VT8375 Northbridge
+and VT8235 Southbridge chipset.
+
+The CPU is an AMD XP2400+ with 512 MByte 266 DDRAM.
+
+The AGP X4 socket has a nVidia 64 MByte MX-440 gpu.
+
+The sound chip is identified as a VIA 8233/8235.
+
+Sound is excellent at dxs_support=3D4.
+
+The ONLY problem is the Headphone Volume is really the Master Volume.
+
+How do I fix????
+
+----------------------------------------------------------------------
+ tiwai - 06-30-2004 16:40 CEST=20
+----------------------------------------------------------------------
+Please show the output of lspci -nv (for the entry of VIA823x only).
+
+About the HP output - I guess you mistyped:
+it's ac97_quirk (without 's').
+Try ac97_quirk=3D1 or ac97_quirk=3D2.
+
+----------------------------------------------------------------------
+ subdude - 07-10-2004 04:39 CEST=20
+----------------------------------------------------------------------
+Here is the output of 'lspci -nv' for 00:11.5 Multimedia audio controller=
+:
+VIA Technologies, Inc. VT8233/A/8235/8237 AC97 Audio Controller (rev 50).
+
+00:11.5 Class 0401: 1106:3059 (rev 50)
+        Subsystem: 1019:0a85
+        Flags: medium devsel, IRQ 12
+        I/O ports at e000 [size=3D256]
+        Capabilities: [c0] Power Management version 2
+
+What I meant by 'ac97_quirks=3D-1 thru 3' was I have tried the various
+different combinations of 'ac97_quirk=3D-1' through to 'ac97_quirk=3D3', =
+all
+to no avail.
+
+Here is my /etc/modules.conf for Slackware 10.0 custom kernel and alsa
+driver 1.0.5a:
+
+/ect/modules.conf
+alias char-major-116 snd
+alias snd-card-0 snd-via82xx
+
+options snd-via82xx index=3D0 dxs_support=3D4
+#options ac97_quirk=3D1
+options ac97_quirk=3D2
+
+alias char-major-14 soundcore
+alias sound-slot-0 snd-card-0
+
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+alias char-major-195 nvidia
+#
+
+I look forward to hearing from you.
+
+Best regards,
+
+Brian
+
+----------------------------------------------------------------------
+ tiwai - 07-15-2004 11:28 CEST=20
+----------------------------------------------------------------------
+You need to _add_ ac97_quirk option to snd-via82xx line:
+
+options snd-via82xx index=3D0 dxs_support=3D4 ac97_quirk=3D1
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -91,16 +149,22 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-15-04 07:24 Nemaru         New Bug                                    =
+05-29-04 11:11 subdude        New Bug                                    =
  =20
-07-15-04 11:22 tiwai          Bugnote Added: 0001425                     =
+05-29-04 11:11 subdude        Distribution              =3D> Slackware Cu=
+rrent
+05-29-04 11:11 subdude        Kernel Version            =3D> 2.4.26      =
+   =20
+05-29-04 11:12 subdude        Bug Monitored: subdude                     =
  =20
-07-15-04 11:22 tiwai          Assigned To               =3D> tiwai       =
-   =20
-07-15-04 11:22 tiwai          Resolution               open =3D> fixed   =
-   =20
-07-15-04 11:22 tiwai          Status                   new =3D> resolved =
-   =20
+06-01-04 07:19 subdude        Bugnote Added: 0001288                     =
+ =20
+06-30-04 16:40 tiwai          Bugnote Added: 0001359                     =
+ =20
+07-10-04 04:39 subdude        Bugnote Added: 0001397                     =
+ =20
+07-15-04 11:28 tiwai          Bugnote Added: 0001429                     =
+ =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
