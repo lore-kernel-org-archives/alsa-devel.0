@@ -1,14 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Problems with snd-intel8x0
-Date: Tue, 13 Apr 2004 18:13:04 +0200 (METDST)
+From: holborn <holborn@telefonica.net>
+Subject: Re: sfxload / asfxload page allocation failure
+Date: Tue, 13 Apr 2004 17:22:52 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0404131811180.10741-100000@studcom.urz.uni-halle.de>
-References: <94de2d94ee62.94ee6294de2d@southeast.rr.com>
+Message-ID: <200404131722.52087.holborn@telefonica.net>
+References: <200404131237.11198.holborn@telefonica.net> <s5hisg3vqxi.wl@alsa2.suse.de>
+Reply-To: holborn@telefonica.net
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <94de2d94ee62.94ee6294de2d@southeast.rr.com>
+In-Reply-To: <s5hisg3vqxi.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,31 +20,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: dlbarron@nc.rr.com
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-dlbarron@nc.rr.com wrote:
-> I have a home-bilt computer using an MSI 865PE Neo 2 motherboard.
-> I've booted with xnoppix and it detects the sound card as
-> intel8x0, so that's what I'm trying to get going using alsa.
+On Martes 13 Abril 2004 16:27, Takashi Iwai wrote:
+> At Tue, 13 Apr 2004 12:37:10 +0100,
 >
-> So lately I've been trying to use alsa and I'm stuck.  I do not
-> get any errors at all, in fact it looks like sound is working
-> fine, but I never get a peep out of my speakers.
 
-Probably you didn't unmute and raise the volume of all appropriate
-controls in alsamixer.
+>
+> well, it means that your machine has really no RAM available for the
+> soundfont.  on 2.4 kernel (or older ALSA version), the driver
+> allocated the pages in atomic, so it doesn't go to sleep.
+> on 2.6 and current ALSA, the page allocation is done with GFP_KERNEL,
+> so it may sleep until the page is available.  it can take a long time
+> but must not be infinitely long.
+>
+> could you check whether the "page allocation failure" message already
+> appeared when sfxload hangs up?
+> does the message appears once or many times?
+>
+>
 
-What codec do you have (second line at top alsamixer screen)?
-What are the contents of /etc/asound.state after running
-"alsactl store"?
+Hi ... the message appears after reboot command ... 
+I have load this soundfonts for years :-)
+No problems to load the soundfont in kernel 2.6.4 alsa 1.0.2c but still no 
+load in 2.6.5, i checked in two machines gentoo and Debian .. 
 
 
-Regards,
-Clemens
+I made the sfxload after booting ... 
 
 
+free command after login is:
+
+Mem total 515728    used 37940    free 477788   ----> in kernel 2.6.5
+Mem total 515728    used 38916    free 476824   ----> in kernel 2.6.4
+
+Then i try to run sfxload .... in kernel 2.6.4 loads in a seconds ...  in 
+kernel 2.6.5 i wait minutes .... then i login in other tty and i try to kill 
+the sfxload .... no way ... and i use reboot command .... then appears the 
+error message.
+
+
+Thanks
+
+Josep
+ 
 
 
 -------------------------------------------------------
