@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] emu10k1 multichannel support
-Date: Wed, 19 Jan 2005 11:10:45 -0500
-Message-ID: <1106151046.2981.10.camel@krustophenia.net>
-References: <200501191438.OAA11750@orthoset.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
+Date: Wed, 19 Jan 2005 17:22:43 +0100
+Message-ID: <0c2fa206576f344181b0f73801071372@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200501191438.OAA11750@orthoset.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5331C26D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 17:22:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,53 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: William <walsac3@orthoset.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-01-19 at 14:38 +0000, William wrote:
-> Lee Revell wrote:
-> >
-> > As promised, here's an updated patch to add real multichannel playback
-> > support (and improved multichannel capture) to the emu10k1 driver.
-> > 
-> > http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v001.patch
-> > 
-> > Please test it and report any problems.
-> 
-> I tested it on 2.6.10 with alsa 1.0.8 and have found what looks like
-> a possible problem with the emu10k1 synth support.
-> Soundfonts still load ok but despite mixer levels being ok
-> ("Music=Master=...etc...=100%") there is no sound at all when using the
-> emu10k1 wavetable synth, e.g. with aplaymidi.
-> 
 
-OK, thanks, I knew I forgot to test something.  Now I remember, the
-synth uses its own voice allocator, which I did not update.  I will take
-a look at it.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=359> 
+======================================================================
+Reported By:                davidsrsb
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   359
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware 10.0
+Kernel Version:             2.4.26
+======================================================================
+Date Submitted:             07-01-2004 16:26 CEST
+Last Modified:              01-19-2005 17:22 CET
+======================================================================
+Summary:                    Alsa always uses card0 and does not use card1, even
+when card0 is a modem
+Description: 
+PC is laptop with AC97 DAA (Si3036 modem) detected as card0 and sound is
+Intel 8x0 as card1. Alsamixer has to be run with -c1 option to avoid "no
+mixer elems" error (like bug 338)
+KDE has no sound ( same as bug 353)
+======================================================================
 
-> > I am especially interested in any regressions that impact regular
-> > PCM playback (the hw:0,0 device).
-> 
-> PCM playback and recording both seem to work ok.
-> 
+----------------------------------------------------------------------
+ tiwai - 01-19-05 17:22 
+----------------------------------------------------------------------
+Thomas, could you provide a patch summary, description and signed-off-by to
+apply?
+I'll set the default index -2 for all modem drivers.
 
-Great!
+----------------------------------------------------------------------
+ tiwai - 01-19-05 17:22 
+----------------------------------------------------------------------
+Also, a correction for ALSA-Configuration.txt would be appreciated, too.
 
-> > QuickStart:
-> > 
-> > $ jackd -R -v -d alsa -P hw:0,3 -C hw:0,2 -S
-> > 
-> > This also adds some new register info including a per channel half loop
-> > interrupt that I have discovered by reverse engineering the Windows drivers.
-> > Improvements over previous versions:
-> 
-> Excellent work!  Very well done.
-> 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-01-04 16:26 davidsrsb      New Issue                                    
+07-01-04 16:26 davidsrsb      Distribution              => Slackware 10.0  
+07-01-04 16:26 davidsrsb      Kernel Version            => 2.4.26          
+07-02-04 14:34 pzad           Note Added: 0001374                          
+01-05-05 23:34 jdthood        Note Added: 0003090                          
+01-06-05 17:48 phormix        Note Added: 0003092                          
+01-07-05 18:10 tiwai          Note Added: 0003108                          
+01-07-05 18:28 jdthood        Note Added: 0003112                          
+01-07-05 18:59 jdthood        Note Added: 0003114                          
+01-07-05 18:59 jdthood        Note Added: 0003115                          
+01-07-05 18:59 jdthood        Note Deleted: 0003115                        
+01-07-05 19:00 jdthood        File Added: core_init_index_jdth20050107-1.patch  
+                 
+01-07-05 19:03 jdthood        Note Edited: 0003114                         
+01-07-05 19:18 tiwai          Note Added: 0003116                          
+01-07-05 21:51 jdthood        Note Added: 0003122                          
+01-07-05 21:51 jdthood        Note Edited: 0003114                         
+01-19-05 17:22 tiwai          Note Added: 0003303                          
+01-19-05 17:22 tiwai          Note Added: 0003304                          
+======================================================================
 
-Thanks.
-
-Lee
 
 
 
