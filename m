@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000509]: Conexant Moden "not ready"
-Date: Wed, 22 Sep 2004 19:53:16 +0200 (CEST)
+From: iain@psand.net
+Subject: Re: Re: hdspmixer issues
+Date: Wed, 22 Sep 2004 20:13:21 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040922175316.BCC6E4500E@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.LNX.4.58.0409222005050.2791@tallow.psand.net>
+References: <Pine.LNX.4.58.0409202101350.2974@tallow.psand.net>
+ <s5hk6uoylxb.wl@alsa2.suse.de> <Pine.LNX.4.58.0409221545340.2696@tallow.psand.net>
+ <s5h3c1az6db.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1FA732DB
-	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 19:53:17 +0200 (MEST)
+In-Reply-To: <s5h3c1az6db.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,166 +18,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 22 Sep 2004, Takashi Iwai wrote:
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000509
-======================================================================
-Reported By:                gbilotta
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     509
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian GNU/Linux Testing
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             09-20-2004 19:20 CEST
-Last Modified:              09-22-2004 19:53 CEST
-======================================================================
-Summary:                    Conexant Moden "not ready"
-Description: 
-modprobing for snd_intel8x0m gives the following error:
+> At Wed, 22 Sep 2004 15:46:41 +0100 (BST),
+> Iain Kennedy wrote:
+> >
+> > On Tue, 21 Sep 2004, Takashi Iwai wrote:
+> >
+> > > At Mon, 20 Sep 2004 21:09:18 +0100 (BST),
+> > > Iain Kennedy wrote:
+> > > >
+> > > > > > I"ve been messing with hdsp (again :-) and found out that my hdspmixer
+> > > > > > has very oddly behaving sound meters. While the input (2nd row)
+> > > > > > appears to be more or less ok (the yellow peak things kind of fly all
+> > > > > > over the place and often drop off below green lines or even completely
+> > > > > > dissapear), the analog outputs as well as combined monitoring output
+> > > > > > (front 1/4" phono jack on the multiface) only occassionally spike with
+> > > > > > a line input (usually only one channel). I am wondering why this is so
+> > > > > > since the audio is definitely working ok, but the monitoring of the
+> > > > > > outputs simply isn"t working (at least not visually).
+> > > > >
+> > > > > i"ve been experiencing similar spikes on the analog outputs as ico
+> > > > > described. since we had a somehow similar problem with screwed up pci
+> > > > > cycles that was caused by incorrect initialisation of the cardbus briges
+> > > > > on our machines, i somehow doubt that it"s related to the problem we
+> > > > > had.
+> > > >
+> > > > > cheers...
+> > > >
+> > > > I've been experiencing lack of/sporadic metering on hdspmixer too..
+> > > > I'm running Debian testing with kernel 2.6.8 (same effect with 2.6.3),
+> > > > with both the debian alsa packages and a locally compiled latest alsa
+> > > > version...
+> > > >
+> > > > I had no such problem using 2.4.xx series kernels, although I was using a
+> > > > pre-1.06 version of the alsa drivers..
+> > >
+> > > Are you using ppc?  I found a bug in hdsp driver that it doesn't
+> > > handle big-endian correctly in the metering mmap.
+> > > Could you try the CVS version?
+> > >
+> > >
+> > > Takashi
+> > >
+> >
+> > I'm using intel architecture... (Inspiron 8500 with 2GHz P4 M)
+> >
+> > I've tried the CVS version, and still get the same results.
+>
+> How about the attached patch (to cvs) ?
+>
+>
+> Takashi
+>
 
-MC'97 1 converters and GPIO not ready (0xff00)
-======================================================================
+OK, I'm not familiar with the build process for this yet, but I did the
+following:
 
-----------------------------------------------------------------------
- sashak - 09-20-2004 22:23 CEST 
-----------------------------------------------------------------------
-Hello Giuseppe "Oblomov",
+cd alsacvs
+patch -p0 < path/to/patch.txt
+cd alsa-driver
+make clean
+make
+sudo make install
 
-I'm not sure that this is the reason, but according to AC97 spec (rev.2.3
-at least) modem reset should be performed by writing something to register
-AC97_EXTENDED_MID (0x3c) and AC97_RESET (0x0) should not be touched. So
-probably this hw just works in right way.
+Rebooted...
 
-Just for clarification could you try this patch ( cd linux-2.6.7 ; patch
--p0 ):
+And excellent stuff, I now get sane (looking) mixer levels all over the
+place :)
 
---- sound/pci/ac97/ac97_codec.c.orig    2004-09-20 23:00:24.903845416
-+0300
-+++ sound/pci/ac97/ac97_codec.c 2004-09-20 23:07:23.341233264 +0300
-@@ -1784,7 +1784,16 @@
-                goto __access_ok;
-        }
- 
-+#define JUST_FORCHECK 1
-+#ifdef JUST_FORCHECK
-+       /* reset to defaults */
-+       if(ac97->scaps & AC97_SCAP_SKIP_AUDIO)
-+               snd_ac97_write(ac97, AC97_EXTENDED_MID, 0);     /* modem
-*/
-+       else
-+               snd_ac97_write(ac97, AC97_RESET, 0);    /* audio */
-+#else
-        snd_ac97_write(ac97, AC97_RESET, 0);    /* reset to defaults */
-+#endif
-        if (bus->wait)
-                bus->wait(ac97);
-        else {
+Now that I can see the levels, I notice that all 8 analogue ins are
+sitting at about  3/4 of the way up (showing about -6.60 variable) with
+nothin plugged in to them... no audible noise coming through.. I guess
+this is not related though... I'll investigate later.
 
-----------------------------------------------------------------------
- gbilotta - 09-22-2004 00:24 CEST 
-----------------------------------------------------------------------
-Yes, your diagnosis seems to be correct. With the separate init code for
-the modem I don't get the "not ready" error. Of course I'm still not 100%
-sure whether I can use the modem or not ... is there some way I can check?
+Thanks very much indeed :)
 
-----------------------------------------------------------------------
- sashak - 09-22-2004 02:16 CEST 
-----------------------------------------------------------------------
-Good for start. Thanks. :)
-You may try to capture sound from phone line (with arecord) - when line is
-connected you should be able to record dial tone in grabbed file.
-If it will ok. Try to dial with slmodem-2.9.9-alsa
-(http://linmodems.technion.ac.il/packages/smartlink/).
-If not please send again '/proc/asound/Modem/codec97#0/mc97#1-1+regs'.
-
-----------------------------------------------------------------------
- gbilotta - 09-22-2004 13:52 CEST 
-----------------------------------------------------------------------
-I only get silence (except for an initial and final click) when trying to
-record, and still a couple of errors. I'm uploading a test.out file
-showing the (console) outputs from the recording and from cat'ing the
-/proc regs file.
-
-----------------------------------------------------------------------
- sashak - 09-22-2004 19:53 CEST 
-----------------------------------------------------------------------
-Could you try patch below with 8000 rate arecord:
-
-arecord -D hw:1 -v -d 5 -f S16_LE -r 8000 -t wav result.wav
-
-And please grab '/proc/asound/Modem/codec97#0/mc97#1-1+regs' during
-arecord or aplay.
-
-Thanks.
-
---- sound/pci/intel8x0m.c.orig  2004-09-22 20:34:21.929490088 +0200
-+++ sound/pci/intel8x0m.c       2004-09-22 20:48:53.969919792 +0200
-@@ -643,12 +643,10 @@
-        /* TODO: move it to ac97 controls */
-        switch (cmd) {
-        case SNDRV_PCM_TRIGGER_START:
--               snd_ac97_update_bits(ichdev->ac97, AC97_GPIO_STATUS,
--                                    AC97_GPIO_LINE1_OH,
-AC97_GPIO_LINE1_OH);
-+               snd_ac97_write(ichdev->ac97, AC97_GPIO_STATUS, 0x31)
-                break;
-        case SNDRV_PCM_TRIGGER_STOP:
--               snd_ac97_update_bits(ichdev->ac97, AC97_GPIO_STATUS,
--                                    AC97_GPIO_LINE1_OH,
-~AC97_GPIO_LINE1_OH);
-+               snd_ac97_write(ichdev->ac97, AC97_GPIO_STATUS, 0x20)
-                break;
-        default:
-                return -EINVAL;
-@@ -684,9 +682,9 @@
-        .rate_max =             16000,
-        .channels_min =         1,
-        .channels_max =         1,
--       .buffer_bytes_max =     32 * 1024,
-+       .buffer_bytes_max =     64 * 1024,
-        .period_bytes_min =     32,
--       .period_bytes_max =     32 * 1024,
-+       .period_bytes_max =     64 * 1024,
-        .periods_min =          1,
-        .periods_max =          1024,
-        .fifo_size =            0,
-@@ -818,8 +816,8 @@
-                .suffix = "Modem",
-                .playback_ops = &snd_intel8x0m_playback_ops,
-                .capture_ops = &snd_intel8x0m_capture_ops,
--               .prealloc_size = 4 * 1024,
--               .prealloc_max_size = 16 * 1024,
-+               .prealloc_size = 32 * 1024,
-+               .prealloc_max_size = 64 * 1024,
-        },
- };
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-20-04 19:20 gbilotta       New Bug                                      
-09-20-04 19:20 gbilotta       File Added: asound.tar.bz2                    
-09-20-04 19:20 gbilotta       Distribution              => Debian GNU/Linux Testing
-09-20-04 19:20 gbilotta       Kernel Version            => 2.6.7           
-09-20-04 19:21 gbilotta       File Added: lspci.out                        
-09-20-04 22:23 sashak         Bugnote Added: 0001795                       
-09-22-04 00:24 gbilotta       Bugnote Added: 0001809                       
-09-22-04 02:16 sashak         Bugnote Added: 0001810                       
-09-22-04 13:52 gbilotta       Bugnote Added: 0001812                       
-09-22-04 13:53 gbilotta       File Added: test.out                         
-09-22-04 19:53 sashak         Bugnote Added: 0001818                       
-======================================================================
+Iain
 
 
 -------------------------------------------------------
