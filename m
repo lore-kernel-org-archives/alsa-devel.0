@@ -1,10 +1,10 @@
-From: Adam K Kirchhoff <adamk@voicenet.com>
-Subject: Quick devfs question.
-Date: Wed, 20 Mar 2002 19:51:03 -0500 (EST)
+From: Dave Andruczyk <djandruczyk@yahoo.com>
+Subject: Monitoring output in realtime, is it possible?
+Date: Wed, 20 Mar 2002 18:58:26 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.10.10203201945210.3161-100000@sorrow.ashke.com>
+Message-ID: <20020321025826.32954.qmail@web14107.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,31 +17,33 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-So I just installed devfs, and now seemingly have everything up and
-running.  There's just one problem that I'm encountering.
 
-I'm using that trick of setting my rear channel duplicating my front
-channel with my .asoundrc setup as:
+Is there any way to monitor the audio output, of ANY channels via some setup in
+.asoundrc??  I'm looking to do what the older ALSA 0.5.x loopback did.  My app
+did have ALSA support until that portion was dropped with the 0.9.x series.  
 
-pcm.ch4dup {
-	type plug
-	slave.pcm surround40
-	ttable.0.0 1
-	ttable.1.1 1
-	ttable.0.2 1
-	ttable.1.3 1
-}
+Has anyone been able to get a loopback copy of audio being output? (both native
+and OSS emulation loopback would be ideal. 0.5.x had both OSS emul and native
+ALSA loopback ability (albeit a bit limited, but worked well for the most
+part))
 
-pcm.dsp0 pcm.ch4dup
-
-Though this still works with alsaplayer (with the -d dsp0 flag), aoss no
-longer works.  
-
-Any ideas?
-
-Adam
+The more generic it is the better.  I know there are other apps that would
+benefit from this functionality. (being able to record the output of one app,
+in realtime, for example or App independant Vu meters/Anaylyzers among other
+things)
 
 
+
+
+
+=====
+Dave J. Andruczyk
+Enterprise Resource Providers
+
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Movies - coverage of the 74th Academy Awards®
+http://movies.yahoo.com/
 
 _______________________________________________
 Alsa-devel mailing list
