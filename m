@@ -1,15 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: How do create a dummy device for recording audio?
- Does it exist already?
-Date: Mon, 26 Apr 2004 18:29:34 +0200 (METDST)
+Subject: Re: How to branch from WDM to ALSA fastest way??
+Date: Mon, 26 Apr 2004 18:33:37 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0404261825390.25756-100000@studcom.urz.uni-halle.de>
-References: <4089663E.4000200@crome.org>
+Message-ID: <Pine.HPX.4.33n.0404261832060.25756-100000@studcom.urz.uni-halle.de>
+References: <609327339.19981112025636@pisem.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <4089663E.4000200@crome.org>
+In-reply-to: <609327339.19981112025636@pisem.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,34 +17,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Caleb Crome <caleb@crome.org>
-Cc: ALSA Devel <alsa-devel@lists.sourceforge.net>
+To: ns <neslon@pisem.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Caleb Crome wrote:
-> >>>pcm.file {
-> >>>   type file
-> >>>   slave {
-> >>>       pcm "hw:0,0"
-> >>>   }
-> >>>   file "/tmp/file.raw"
-> >>>}
+ns wrote:
+> I have WDM driver for our lab's own propertiary sound
+> card(ADAT+SPDIF+DB...) and wanna write ALSA drv.
+> I have linux w/kernel 2.4.20 (original).
 >
-> Alright, I did what you suggested, and real player comes up and connects
-> to the dummy sound card (I had to do a modprobe snd-pcm-oss and
-> snd-mixer-oss).   However, I don't get a file called /tmp/file.raw.
+> I know that I must patch kernel for ALSA and write ALSA driver.
+> HOw to do it fastest?
 
-You have to configure the program to use the PCM named "file" instead
-of the default "default".
-
-However, Realplayer uses the OSS emulation through /dev/dsp0.  To make
-that work with your "file" device, add the following to the config
-file:
-
-  pcm.dsp0 = file
-
-and try to run realplayer with the aoss script from the alsa-oss
-package.
+look into alsa-kernel/Documentation/DocBook/writing-an-alsa-driver
 
 
 HTH
