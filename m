@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: signal loss recovery
-Date: Sun, 30 Nov 2003 11:17:57 +0100 (CET)
+Subject: Re: [snd-intel8x0] distortion on PCM volume >> 50%
+Date: Sun, 30 Nov 2003 11:35:27 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0311301117190.21602@pnote.perex-int.cz>
-References: <D7AA4A37-21F8-11D8-8A08-00039393D25E@gigagig.org>
+Message-ID: <Pine.LNX.4.58.0311301133500.21602@pnote.perex-int.cz>
+References: <20031130100343.GA12681@zombie.inka.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <D7AA4A37-21F8-11D8-8A08-00039393D25E@gigagig.org>
+In-Reply-To: <20031130100343.GA12681@zombie.inka.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,26 +16,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Burris Ewell <dalsa@gigagig.org>
+To: Eduard Bloch <eb@zombie.inka.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 28 Nov 2003, Burris Ewell wrote:
+On Sun, 30 Nov 2003, Eduard Bloch wrote:
 
-> I am writing a simple capture program using 0.9.8 and a PDAudioCF card. 
->   I want to recover gracefully when the A/D converter stops and starts 
-> sending signal during capture.   When signal is lost, I call 
-> snd_pcm_start periodically until the signal returns  and continue 
-> capture.  On odd numbered starts (first, third, fifth stop/start of A/D 
-> converter) everything recovers normally and I continue to capture the 
-> output of the converter.  However, on even numbered starts (second, 
-> fourth, sixth stop/start of A/D converter) I capture full scale white 
-> noise.
+> Hello,
 > 
-> I'm probably not doing something right.  Any pointers or suggestions 
-> will be greatly appreciated.
+> I have some problems with a ac97 based sound card (Notebook built-in)
+> where the kernel driver works fine (except of not beeing able to
+> resample on-the-fly).
+> 
+> When I set the PCM mixer volume to more then 50%, I hear few sound
+> fragments. If I go over 75% I hear them all the time and on 100% PCM,
+> the sound is full of scratching fragments. You can get an example
+> catched with microphone on
+> http://sites.inka.de/W1752/alsa-distortion.ogg and the original is on
+> www.vorbis.com/music/Mists_of_Time-4T.ogg . First I suspected a speaker
+> problem since it sounds very similar to overloud speaker setting, but it
+> is not!
 
-Can you send me your code? I'll try give a look to this problem.
+Are you sure that you don't have enable any other analog input? My 
+notebook has very noisy build-in microphone for example.
+
+Also note that if you have value over 70% with most of AC'97 controls, the 
+analog gain is applied to the signal (thus you can really overdrive the 
+output or input).
 
 						Jaroslav
 
