@@ -1,16 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000449]: unresolved symbol snd_compat_strlcpy_Rb4409a1e
-Date: Tue, 17 Aug 2004 14:15:28 +0200 (CEST)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: hang on boot loading snd-emu10k1-synth with alsa-driver 1.0.6a
+Date: Tue, 17 Aug 2004 15:31:20 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040817121528.999821102F@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1092771079.825.4.camel@krustophenia.net>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB34B134
-	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 14:15:28 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id A98381899E
-	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 14:15:28 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,50 +15,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Using alsa-driver 1.0.6a with vanilla kernel 2.6.8.1, the system hangs
+on boot when loading snd-emu10k1-synth.  The problem did not happen with
+ALSA CVS from a few weeks ago.
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000449
-======================================================================
-Reported By:                isotrope
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     449
-Category:                   PCI - ens1370
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Tao Linux (RHEL 3 clone)
-Kernel Version:             2.4.21-15.0.4.TL
-======================================================================
-Date Submitted:             08-17-2004 14:15 CEST
-Last Modified:              08-17-2004 14:15 CEST
-======================================================================
-Summary:                    unresolved symbol snd_compat_strlcpy_Rb4409a1e
-Description: 
-I am unable to load the kernel module for ALSA. While loading snd.o, I get
-the message:
-snd-ens1370 /lib/modules/2.4.21-15.0.4.TL/kernel/sound/snd.o: unresolved
-symbol snd_compat_strlcpy_Rb4409a1e
-/lib/modules/2.4.21-15.0.4.TL/kernel/sound/snd.o: insmod
-/lib/modules/2.4.21-15.0.4.TL/kernel/sound/snd.o failed
-/lib/modules/2.4.21-15.0.4.TL/kernel/sound/snd.o: insmod snd-ens1370
-failed
+I cannot try other versions as pserver based CVS access is STILL down!
+It has been almost a week.  They have not even updated the status page
+in four days!
 
-======================================================================
+Lee
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-17-04 14:15 isotrope       New Bug                                      
-08-17-04 14:15 isotrope       Distribution              => Tao Linux (RHEL 3 clone)
-08-17-04 14:15 isotrope       Kernel Version            => 2.4.21-15.0.4.TL
-======================================================================
 
 
 -------------------------------------------------------
