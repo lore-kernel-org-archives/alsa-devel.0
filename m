@@ -1,14 +1,13 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Re: Soundcard Matrix: SEKD -> Marian
-Date: Wed, 26 Nov 2003 21:19:15 -0800 (PST)
+From: p z oooo <pzad@pobox.sk>
+Subject: PATCH - Typo ??? Line 2 on LiveDrive not working ???
+Date: Thu, 27 Nov 2003 08:00:01 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031127051915.2349.qmail@web21504.mail.yahoo.com>
-References: <E1AOn5n-0004Xd-00@sc8-sf-list2.sourceforge.net>
-Reply-To: tsw@johana.com
+Message-ID: <200311270700.IAA25618@www4.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97783512-1804289383-1069916402=:25614"
+Content-Transfer-Encoding: 8BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1AOn5n-0004Xd-00@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,63 +19,56 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Hi
-> 
-> I wanted to propose a change in the alsa soundcard Matrix: The 
-> Company known as SEK'D was acquired by Magix and took down its audio 
-> hardware product line. The Interfaces are now sold by SEK'Ds former 
-> production company called 
-> MARIAN:
-> 
-> http://www.marian.de
-> 
-> this results in a name change for the SEK'D Siena, which is now 
-> called "Marc 8 Midi" to fit into the marian product line. Similarly,
-> all the other SEK'D cards, namely the ARC and Prodif Series are now 
-> sold by Marian keeping their old name.
-> 
-> Also I wanted to provide additional information about the Marc 8 Midi
+--97783512-1804289383-1069916402=:25614
+Content-Type: TEXT/plain; CHARSET=US-ASCII
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-> (SEK'D Siena): 
-> 
-> the Card uses 4 AKM AK4524 Converters, there is an PLX PCI 9050 
-> target chip on there,  3 memory chips (2 by EliteMT and one by 
-> Winbond) and a Xilinx Spartan FPGA. These are the main components I 
-> could make out. I hope that is enough information for you to replace 
-> that question mark in the Siena row, and maybe even for a skilled 
-> person to write a driver ;-).
-> 
-> Are there similar cards with existing alsa drivers?
-> 
-> Thank You
-> 
-> Andreas
+Hi,
 
-Nice cards these ones (Marc-8 MIDI).  While I have most of the details
-of how this card works (some info from Marion), I have yet to write the
-driver.  The driver involves a bunch of memory mapped ram that is dual
-ported (PIC & codec's).  The Xylinx part needs a download to make it
-work.  I'd like to get them working as well, as 8 full duplex channels
-for the cost is VERY attractive.  Two MIDI channels are the "bonus", as
-my application doesn't need them.  In addition, the cards support clock
-linking to eliminate skew, but that takes more work.  My friend who
-uses them in Windoze doesn't use the clock linking seems to be happy,
-maybe it makes a difference, but I don't know. He uses the cards in
-groups of 2 and 3 with no problems.
+In this mailing list was message that Line2 on LiveDrive is not=20
+working. I think there is typo in driver (copy & paste typo). There=20
+are created controls with same control names for line1 and line2 of=20
+LiveDrive and then controls for Line2 are not created (maybe are=20
+overwriten). Attached patch is not tested.
 
-Probably after the first of the year (you know in "copious free time")
-I should start the task of the driver.  If someone wants to go faster,
-I can forward some information (I haven't signed anything!).
+Peter Zubaj
 
-=====
--- 
-Tom Watson
-tsw@johana.com
 
-__________________________________
-Do you Yahoo!?
-Free Pop-Up Blocker - Get it now
-http://companion.yahoo.com/
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=0ANeobmedzen=FD r=FDchly pr=EDstup na internet =
+u=BE od 666,- Sk mesa=E8ne!=0ANextra ADSLink. http://adsl.nextra.sk=0A
+--97783512-1804289383-1069916402=:25614
+Content-Type: APPLICATION/octet-stream; name="C:\\live2.diff"
+Content-Transfer-Encoding: BASE64
+
+LS0tIG8vZW11ZnguYwkyMDAzLTExLTA3IDE4OjUyOjAxLjAwMDAwMDAwMCAr
+MDEwMAorKysgbi9lbXVmeC5jCTIwMDMtMTEtMjYgMTg6NDg6NTEuMDAwMDAw
+MDAwICswMTAwCkBAIC0xOTQ4LDcgKzE5NDgsNyBAQAogCQkvKiBMaW5lIExp
+dmVEcml2ZSBQbGF5YmFjayBWb2x1bWUgKi8KIAkJZm9yICh6ID0gMDsgeiA8
+IDI7IHorKykKIAkJCVZPTFVNRV9BRERJTihpY29kZSwgJnB0ciwgcGxheWJh
+Y2sgKyB6LCBFWFRJTl9MSU5FMl9MICsgeiwgZ3ByICsgeik7Ci0JCXNuZF9l
+bXUxMGsxX2luaXRfc3RlcmVvX2NvbnRyb2woY29udHJvbHMgKyBpKyssICJM
+aW5lIExpdmVEcml2ZSBQbGF5YmFjayBWb2x1bWUiLCBncHIsIDApOworCQlz
+bmRfZW11MTBrMV9pbml0X3N0ZXJlb19jb250cm9sKGNvbnRyb2xzICsgaSsr
+LCAiTGluZTIgTGl2ZURyaXZlIFBsYXliYWNrIFZvbHVtZSIsIGdwciwgMCk7
+CiAJCWNvbnRyb2xzW2ktMV0uaWQuaW5kZXggPSAxOwogCQlncHIgKz0gMjsK
+IAkKQEAgLTE5NTcsOCArMTk1Nyw4IEBACiAJCQlTV0lUQ0hfSU4oaWNvZGUs
+ICZwdHIsIHRtcCArIDAsIEVYVElOX0xJTkUyX0wgKyB6LCBncHIgKyAyICsg
+eik7CiAJCQlWT0xVTUVfQUREKGljb2RlLCAmcHRyLCBjYXB0dXJlICsgeiwg
+dG1wICsgMCwgZ3ByICsgeik7CiAJCX0KLQkJc25kX2VtdTEwazFfaW5pdF9z
+dGVyZW9fY29udHJvbChjb250cm9scyArIGkrKywgIkxpbmUgTGl2ZURyaXZl
+IENhcHR1cmUgVm9sdW1lIiwgZ3ByLCAwKTsKLQkJc25kX2VtdTEwazFfaW5p
+dF9zdGVyZW9fb25vZmZfY29udHJvbChjb250cm9scyArIGkrKywgIkxpbmUg
+TGl2ZURyaXZlIENhcHR1cmUgU3dpdGNoIiwgZ3ByICsgMiwgMCk7CisJCXNu
+ZF9lbXUxMGsxX2luaXRfc3RlcmVvX2NvbnRyb2woY29udHJvbHMgKyBpKyss
+ICJMaW5lMiBMaXZlRHJpdmUgQ2FwdHVyZSBWb2x1bWUiLCBncHIsIDApOwor
+CQlzbmRfZW11MTBrMV9pbml0X3N0ZXJlb19vbm9mZl9jb250cm9sKGNvbnRy
+b2xzICsgaSsrLCAiTGluZTIgTGl2ZURyaXZlIENhcHR1cmUgU3dpdGNoIiwg
+Z3ByICsgMiwgMCk7CiAJCWNvbnRyb2xzW2ktMV0uaWQuaW5kZXggPSAxOwog
+CQlncHIgKz0gNDsKIAl9Cg==
+
+--97783512-1804289383-1069916402=:25614--
 
 
 -------------------------------------------------------
