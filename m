@@ -1,12 +1,13 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: Underruns (borken pipes)
-Date: Mon, 15 Jul 2002 13:57:02 -0400
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: FYI: Recording with USB Quattro
+Date: Tue, 16 Jul 2002 03:53:54 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17UA4a-0006F5-00@usw-sf-list1.sourceforge.net>
-References: <3D326D99.5F419B7C@tele-ip.com>
+Message-ID: <3D331A42.8090202@boosthardware.com>
+References: <E17U8lL-0001uF-00@usw-sf-list1.sourceforge.net> <3D331243.8010005@boosthardware.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Mon, 15 Jul 2002 16:37:13 +1000."
-             <3D326D99.5F419B7C@tele-ip.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,50 +16,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Bruce Paterson <bruce@tele-ip.com>
-Cc: alsa development <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: ardour-dev <ardour-dev@lists.sourceforge.net>, linux-audio-user@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
->OK. I believe I now understand the tradeoffs. Also, it was not clear
->to me that the Jack audio driver would solve my problems since most
->of what Jack is about is allowing multiple audio clients (which I
->don't have, and in fact don't want at all in this case).
+Just to let y'all know that I have just recorded cleanly in stereo 
+through the USB Quattro. Using a combination of ALSA-cvs, JACK, 
+lowlatency patched kernel 2.4.19-rc10, and ardour.
 
-Thats not entirely true. At least 30-50% of JACK's design comes from
-the desire to have a simple, highly abstracted, highly efficient model
-for audio i/o. 95%+ of the time that i use JACK, its with one client
-(for now, anyway).
+Some of the other things I had to do were check my video card driver was 
+running correctly and turn off some of the virtual desktop windows I had 
+open (was 9 now 6).
 
->Would you care to speculate that the reason it works better *without*
->poll is that on average I'm stuffing something into the buffers
->before they are totally empty (which would be the case for poll), so
->the impact of a long system latency just prior to stuffing is less
->since there's a bit more left in the hardware buffer ?
+Hardware is:
 
-well, there's that aspect of things, but just as likely is the
-behaviour of the kernel is scheduling certain things, which is
-erratic, and though deterministic in a strict sense, tends to feel
-mostly random.
+CPU: PIV 1.5GHz
+RAM: 384MB RDRAM
+HDD: 2x7200rpm ide (one for os, one for recording to)
+Sound: intel8x0, cmipci, USB Quattro soundcards
+Video: 64MB Geforce2 DDR NVIDIA
 
->I suspect writing less in each time won't help because the behaviour
->of 'poll' remains unchanged only reporting when the hardware buffer
->is empty (too late !).
+Big shout outs to all the people who have worked on the previously 
+mentioned projects.
 
-no, poll reports back to you when the amount of data/space equals or
-exceeds the "avail_min" count set by your program.
+Let the fun begin :)
 
->> you're just facing the inevitable poor scheduling latency of the
->
->...and this would be fixed by jack driver style code, or would
->require the low latency kernel patch as well ?  No point going to
->Jack at this stage if it's not going to help.  The fact that it's
->much better without Xwindows supports the occasional latency problem.
 
-the problems you have will not be solved by JACK alone. however, you
-will find that JACK's design and what it forces on your application,
-will provide some assistance in this area.
 
---p
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
+
 
 
 -------------------------------------------------------
