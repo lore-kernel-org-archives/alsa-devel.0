@@ -1,14 +1,15 @@
-From: Uros Bizjak <uros@kss-loka.si>
+From: "John S. Denker" <jsd@monmouth.com>
 Subject: Re: sb16 gets wedged when doing overlapped i/o (full
  duplex)
-Date: Thu, 5 Dec 2002 13:07:15 +0100 (CET)
+Date: Thu, 05 Dec 2002 08:45:09 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.05.10212051304370.3576-100000@pulsar.kss-loka.si>
-References: <3DEF2ED7.7000808@monmouth.com>
+Message-ID: <3DEF5865.7060109@monmouth.com>
+References: <Pine.LNX.4.05.10212051304370.3576-100000@pulsar.kss-loka.si>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DEF2ED7.7000808@monmouth.com>
+In-Reply-To: <Pine.LNX.4.05.10212051304370.3576-100000@pulsar.kss-loka.si>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,31 +18,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "John S. Denker" <jsd@monmouth.com>
+To: Uros Bizjak <uros@kss-loka.si>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+Uros Bizjak wrote:
 
-  Did you try to set 16bit DMA allocation flag to Playback or Capture?
+>   Did you try to set 16bit DMA allocation flag to Playback or Capture?
 
-  Also, there are problems if your ISA bus is overclocked to more
-than 8MHz.
+I tried setting it to Capture.
+No joy.  ALSA gets wedged just the same as before.
 
-	Uros.
+By the way, is this DMA Allocation thingy documented anywhere?????
 
-On Thu, 5 Dec 2002, John S. Denker wrote:
+I had to do a huge find|grep to figure out what this
+suggestion was referring to.  Alsamixer knows nothing
+of this switch.  Amixer knows nothing of this switch.
+Fortunately alsactl can deal with it.
 
-> 	==== This is a slightly-updated clone of item
-> 	#648232 on the sourceforge bug/patch reporting
-> 	system.  I'm moving it to here (the alsa-devel
-> 	mailing list) at the request of Jaroslav. ====
-> 
-> Things run OK for a few minutes (sometimes 30 seconds,
-> sometimes 5+ minutes) then ALSA gets wedged.  Every read or
-> write results in an error.  This only happens when I'm doing
-> overlapped i/o; pure input runs happily for hours, and
-> although I haven't tried it I assume pure output works fine.
+ From the keen-grasp-of-the-obvious department:
+This project would be a lot better off if there were
+better documentation, and (some) comments in the code.
+Why write the code if it's not going to be used?
+If it's not documented, it's not going to be used!
+
+>   Also, there are problems if your ISA bus is overclocked to more
+> than 8MHz.
+
+I haven't been messing with that.
+But thanks for the hint; I'll fire up the oscilloscope and
+take a look when I get a chance.
 
 
 
