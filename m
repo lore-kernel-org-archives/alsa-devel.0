@@ -1,13 +1,14 @@
-From: David Stuart <dave@sipquest.com>
-Subject: Re: Quick question
-Date: Tue, 03 Jun 2003 23:37:43 -0400
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: multiple instances of snd-virmidi?
+Date: Wed, 04 Jun 2003 08:43:50 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EDD6987.3020807@sipquest.com>
-References: Your        message        of        "03        Jun        2003        13:58:08        EDT."        <E19NMCj-0006SU-00@sc8-sf-list1.sourceforge.net> <41743.24.225.156.130.1054688467.squirrel@webmail.ouroboros-complex.org>
+Message-ID: <Pine.HPX.4.33n.0306040833410.868-100000@studcom.urz.uni-halle.de>
+References: <41797.24.225.156.130.1054688709.squirrel@webmail.ouroboros-complex.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <41797.24.225.156.130.1054688709.squirrel@webmail.ouroboros-complex.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,33 +21,37 @@ To: jfm3@ouroboros-complex.org
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-
 jfm3@ouroboros-complex.org wrote:
+> Is there some way I can load snd-virmidi into the kernel multiple times?
 
->Jack is so great, many developers on this list have named their children
->after it. Do the right thing.
->
+Yes. This would be something like this in the modules.conf:
 
-LOL! That's a good one! David, meet Jack. David, Jack. David, Jack. ... 
-"Is your name not Jack?" .. "no" ..."that's going to cause a little 
-confusion, mind if we call you Jack, just to keep it clear?"
+	options snd cards_limit=3
 
-Well OK, I guess all of the lobbying here (in the ALSA-dev mailing list 
-of all places) has convinced me that JACK is indeed the way to go. At 
-the very least I could suggest that our customers install the CCRMA on 
-top of their RedHat platform..
+	alias snd-card-0 snd-whatever
+	alias snd-slot-0 snd-card-0
+	options snd-whatever index=0 ...
 
-My only complaint with the CCRMA stuff is that it forces them to install 
-apt-get, which is not really sound related, and not packaged with RedHat 
-by default. But apart from that (which is indeed a very minor beef) it 
-seems like a great idea to have a low-latency pre-packaged solution. 
-Certainly this is a lot easier than telling them how to patch their 
-kernel, etc.
+	alias snd-card-1 snd-virmidi
+	alias snd-card-2 snd-virmidi
+	alias snd-slot-1 snd-card-1
+	alias snd-slot-2 snd-card-2
+	options snd-virmidi index=1,2 enable=1,1 midi_devs=2,2
 
-I guess this means that I will have to start reading JACK documentation 
-in earnest. I trust that there is such a thing.. ;)
+> This would help me get around a deficiency in Pd. Pd uses OSS to open the
+> MIDI devices, and only opens each one once. So it only talks to port 1 on
+> my mtpav, for example. It treats a virmidi device the same way. But I
+> figure if I could load multiple virmidi drivers I could hack around this.
 
+With the above settings, you'd have
+/dev/midi1  -> card 1, device 0
+/dev/amidi1 -> card 1, device 1
+/dev/midi2  -> card 2, device 0
+/dev/amidi2 -> card 2, device 1
+
+
+HTH
+Clemens
 
 
 
