@@ -1,14 +1,15 @@
-From: David Lloyd <dmlloyd@tds.net>
-Subject: Re: DMIX and capture stream
-Date: Tue, 6 Jan 2004 11:05:52 -0600 (CST)
+From: Klaus-Peter Schrage <kpschrage@gmx.de>
+Subject: Re: alsa-drivers can't make on kernel 2.6 because of
+ broken vx driver
+Date: Tue, 06 Jan 2004 19:03:02 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401061105040.8705@tomservo.workpc.tds.net>
-References: <Pine.LNX.4.58.0401051113381.8705@tomservo.workpc.tds.net>
- <200401051741.i05HfCXl007120@dhin.linuxaudiosystems.com> <s5h1xqe2rjp.wl@alsa2.suse.de>
+Message-ID: <3FFAF856.2020901@gmx.de>
+References: <1073392202.2633.4.camel@d51528079.kabel.telenet.be>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h1xqe2rjp.wl@alsa2.suse.de>
+In-Reply-To: <1073392202.2633.4.camel@d51528079.kabel.telenet.be>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,25 +18,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, ALSA Mailing List <alsa-devel@lists.sourceforge.net>
+To: Kristof vansant <de_lupus@pandora.be>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 5 Jan 2004, Takashi Iwai wrote:
+Kristof vansant wrote:
+> I don't know how alsa patches drivers when it has to compile on kernel
+> 2.6, so I don't know how to fix it. 
+> 
+> I think lot of kernel 2.6 users would be gratefull if you fixed this
+> issue. 
+> 
+>   CC [M]  /home/lupus/alsa-driver-1.0.0rc2/pcmcia/vx/vxp440.o
+> /home/lupus/alsa-driver-1.0.0rc2/pcmcia/vx/vxp440.c:6:31:
+> linux/modversions.h: Onbekend bestand of map
 
-> anyway, it's possible if you use aoss wrapper and specify dmix/dsnoop as
-> the device.  you're right for the kernel emulation.  no way. but still
-> we need a fix for aoss wrapper.  the only necessary change is to allow
-> aoss open different pcm per playback and capture stream.
->
-> for example, the below is a minute quick hack (untested) for that. you
-> can specify pcm.dsp0p and pcm.dsp0c for playback and capture directions,
-> respectively.
+My Dutch is a bit rusty, but I guess the last line expresses that 
+modversions.h is missing. As far as I remember, this is created during 
+the kernel build process. So, is this a virgin kernel source which 
+hasn't been configured and compiled yet?
+Klaus
 
-This patch works great - I'm now able to use TeamSpeak (which opens 
-capture and playback through oss) at the same time as xmms.
-
-- D
 
 
 -------------------------------------------------------
