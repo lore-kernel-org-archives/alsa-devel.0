@@ -1,11 +1,10 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: Is there any queston when using ALSA in arm platform?
-Date: Fri, 3 Dec 2004 08:18:40 +0100
-Message-ID: <200412030718.iB37IaIP006319@www4.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+From: "=?gb2312?B?c3Vkb25n?=" <sudong@tcl.com>
+Subject: =?gb2312?B?UmU6IHdoeSBub3QgZmluZCBkZWZpbml0aW9uIG9mIGwzX2NsaWVudCA=?=
+ =?gb2312?B?aW4gc2ExMXh4LXVkYTEzNDEuYz8=?=
+Date: Fri, 3 Dec 2004 17:45:24 +0800 (CST)
+Message-ID: <41B035B4.000005.03919@TCLmail>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: Multipart/Alternative; boundary="Boundary-=_BrMHxIsWgPDDNuekXZbQfDyLDSqq"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,40 +15,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: sudong@tcl.com
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-AFAIK AC97 API is not dependant on bus type.=20
+--Boundary-=_BrMHxIsWgPDDNuekXZbQfDyLDSqq
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 
-This is code from emu10k1 driver, it initializes ac97 struct:
+dG8gUGV0ZXIgWnViYWoNCg0KICAgIFRoYW5rcy4NCiAgICBJIGhhdmUgZG9uZSBhcyB5b3Ug
+c2FpZC4gQnV0IHdoZW4gSSBpbnNtb2QgbXkgc291bmQgbW9kdWxlLCB0aGVyZSBhcmUgc29t
+ZSBlcnJvcnMgYXMgOg0KLi4uLi4uLg0KVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgTlVMTCBw
+b2ludGVyIGRlcmVmZXJlbmNlIGF0IHZpcnR1YWwgYWRkcmVzcyAwMDAwMDE5NA0KcGdkID0g
+YzM5ZDQwMDANClswMDAwMDE5NF0gKnBnZD1hMzk3OTAxMSwgKnB0ZT0wMDAwMDAwMCwgKnBw
+dGU9MDAwMDAwMDANCkludGVybmFsIGVycm9yOiBPb3BzOiA3IFsjMV0NCk1vZHVsZXMgbGlu
+a2VkIGluOiBzbmRfdWNiMTQwMCBzbmRfYWM5N19jb2RlYyBzbmRfcGNtIHNuZF9wYWdlX2Fs
+bG9jIHNuZF90aW1lciBlQ1BVOiAwDQpQQyBpcyBhdCBzbmRfYWM5N192YWxpZF9yZWcrMHgy
+OC8weDFkNCBbc25kX2FjOTdfY29kZWNdDQpMUiBpcyBhdCAweDENCnBjIDogWzxiZjAzODAy
+OD5dICAgIGxyIDogWzwwMDAwMDAwMT5dICAgIE5vdCB0YWludGVkDQpzcCA6IGMzOGYzZDk0
+ICBpcCA6IDAwMDAwMDAwICBmcCA6IGMzOGYzZGFjDQpyMTA6IGMwMDBiMmM0ICByOSA6IDAw
+MDAwMDAxICByOCA6IGMzOTIzYzEwDQpyNyA6IGJmMDQyN2Q4ICByNiA6IDAwMDAwMTk4ICBy
+NSA6IDAwMDAwMDAwICByNCA6IDAwMDAwMDAwDQpyMyA6IGMwMjk2NDc0ICByMiA6IGMwMjk2
+NDc0ICByMSA6IGMwMmYwNmQwICByMCA6IDAwMDAwMDI1DQpGbGFnczogblpDdiAgSVJRcyBv
+biAgRklRcyBvbiAgTW9kZSBTVkNfMzIgIFNlZ21lbnQgdXNlcg0KQ29udHJvbDogMzk3RiAg
+VGFibGU6IEEzOUQ0MDAwICBEQUM6IDAwMDAwMDE1DQouLi4uLi4uDQoNCiAgIEkgZG9uJ3Qg
+a25vdyB3aGF0IHRoZXNlIGluZm9tYXRpb24gbWVhbi4gQ2FuIGFueW9uZSB0ZWxsIG1lID8g
+VGhhbmtzIGEgbG90IQ0KDQpzdWRvbmcNCjIwMDQtMTItMw==
+--Boundary-=_BrMHxIsWgPDDNuekXZbQfDyLDSqq
+Content-Type: text/html; charset="gb2312"
+Content-Transfer-Encoding: base64
 
-ac97_template_t ac97;
-static ac97_bus_ops_t ops =3D {
-=09.write =3D snd_emu10k1_ac97_write,
-=09.read =3D snd_emu10k1_ac97_read,
-};
-
-if ((err =3D snd_ac97_bus(emu->card, 0, &ops, NULL, &pbus)) < 0)
-=09return err;
-=09=09
-memset(&ac97, 0, sizeof(ac97));
-ac97.private_data =3D emu;
-ac97.private_free =3D snd_emu10k1_mixer_free_ac97;
-if ((err =3D snd_ac97_mixer(pbus, &ac97, &emu->ac97)) < 0)
-=09return err;=20
-
-
-.write =3D snd_emu10k1_ac97_write,
-.read =3D snd_emu10k1_ac97_read,
-
-These 2 functions are responsible to transfer control data to/from
-ac97. You should implement it for your chip.
-
-Peter Zubaj=0A____________________________________=0Ahttp://www.pobox.sk/ -=
- najvacsi slovensky freemail=0A=0A=0A
+dG8gUGV0ZXIgWnViYWo8YnI+PGJyPiAgICBUaGFua3MuPGJyPiAgICBJIGhhdmUgZG9uZSBh
+cyB5b3Ugc2FpZC4gQnV0IHdoZW4gSSBpbnNtb2QgbXkgc291bmQgbW9kdWxlLCB0aGVyZSBh
+cmUgc29tZSBlcnJvcnMgYXMgOjxicj4uLi4uLi4uPGJyPlVuYWJsZSB0byBoYW5kbGUga2Vy
+bmVsIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5jZSBhdCB2aXJ0dWFsIGFkZHJlc3MgMDAwMDAx
+OTQ8YnI+cGdkID0gYzM5ZDQwMDA8YnI+WzAwMDAwMTk0XSAqcGdkPWEzOTc5MDExLCAqcHRl
+PTAwMDAwMDAwLCAqcHB0ZT0wMDAwMDAwMDxicj5JbnRlcm5hbCBlcnJvcjogT29wczogNyBb
+IzFdPGJyPk1vZHVsZXMgbGlua2VkIGluOiBzbmRfdWNiMTQwMCBzbmRfYWM5N19jb2RlYyBz
+bmRfcGNtIHNuZF9wYWdlX2FsbG9jIHNuZF90aW1lciBlQ1BVOiAwPGJyPlBDIGlzIGF0IHNu
+ZF9hYzk3X3ZhbGlkX3JlZysweDI4LzB4MWQ0IFtzbmRfYWM5N19jb2RlY108YnI+TFIgaXMg
+YXQgMHgxPGJyPnBjIDogWyZsdDtiZjAzODAyOCZndDtdICAgIGxyIDogWyZsdDswMDAwMDAw
+MSZndDtdICAgIE5vdCB0YWludGVkPGJyPnNwIDogYzM4ZjNkOTQgIGlwIDogMDAwMDAwMDAg
+IGZwIDogYzM4ZjNkYWM8YnI+cjEwOiBjMDAwYjJjNCAgcjkgOiAwMDAwMDAwMSAgcjggOiBj
+MzkyM2MxMDxicj5yNyA6IGJmMDQyN2Q4ICByNiA6IDAwMDAwMTk4ICByNSA6IDAwMDAwMDAw
+ICByNCA6IDAwMDAwMDAwPGJyPnIzIDogYzAyOTY0NzQgIHIyIDogYzAyOTY0NzQgIHIxIDog
+YzAyZjA2ZDAgIHIwIDogMDAwMDAwMjU8YnI+RmxhZ3M6IG5aQ3YgIElSUXMgb24gIEZJUXMg
+b24gIE1vZGUgU1ZDXzMyICBTZWdtZW50IHVzZXI8YnI+Q29udHJvbDogMzk3RiAgVGFibGU6
+IEEzOUQ0MDAwICBEQUM6IDAwMDAwMDE1PGJyPi4uLi4uLi48YnI+PGJyPiAgIEkgZG9uJ3Qg
+a25vdyB3aGF0IHRoZXNlIGluZm9tYXRpb24gbWVhbi4gQ2FuIGFueW9uZSB0ZWxsIG1lID8g
+VGhhbmtzIGEgbG90ITxicj48YnI+c3Vkb25nPGJyPjIwMDQtMTItMzxicj4KCg==
+--Boundary-=_BrMHxIsWgPDDNuekXZbQfDyLDSqq--
 
 
 -------------------------------------------------------
