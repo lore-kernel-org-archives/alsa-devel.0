@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000732]: If PCM is set to norma to mt Sound Blaster Live, It emit a very high frequency sound damaging ears
-Date: Mon, 20 Dec 2004 08:34:37 +0100
-Message-ID: <0b7e64883fd04aa3bf24d680ad45390e@bugtrack.alsa-project.org>
+Date: Mon, 20 Dec 2004 09:36:55 +0100
+Message-ID: <947169f0d968357ce05c11afa45de526@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C9460279
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 08:34:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DCCFA2B0
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 09:36:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.10-rc3
 ======================================================================
 Date Submitted:             12-19-2004 15:10 CET
-Last Modified:              12-20-2004 08:34 CET
+Last Modified:              12-20-2004 09:36 CET
 ======================================================================
 Summary:                    If PCM is set to norma to mt Sound Blaster Live, It
 emit a very high frequency sound damaging ears
@@ -60,21 +60,30 @@ version of the code?
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 12-20-04 08:17 
-----------------------------------------------------------------------
-Your problem is "Tone" control. When you enable Bass, treble you will get
-this problem. Problem is , that Tone controls will amplify input signal
-and clipping starts in tne dsp code. I know how to fix this, but
-unfortunatly I don't have sb live :-( .
-
-If you want bass, treble then lower Wave volume and then you can put PCM
-volume higher.
-
-----------------------------------------------------------------------
  rlrevell - 12-20-04 08:34 
 ----------------------------------------------------------------------
 Peter, I have an SBLive, and am somewhat familiar with emu10k1 DSP code. 
 Is there anything I can do to help diagnose this?
+
+----------------------------------------------------------------------
+ Eric Valette - 12-20-04 09:36 
+----------------------------------------------------------------------
+I confirm that one of the item I did change using alsamixer that solved the
+problem was indeed the Bass and Treeble value that were slightly in the
+red area. Tone cursor is apparently not changeable.
+
+And just for rlrevell : no the default volume setting were really low as
+I'm a 40 years old folk that takes care of its ears... So, indeed it is a
+setting problem  and not really a problem in the code but what is sure is
+that something chnaged as I do not modify my settings by default. Problem
+is that I do not know where...
+
+Besides, as volumes were generaly low, I think it can really cause
+damage...
+
+I'm readdy to beta test any changes you suggest.
+
+-- eric
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -97,6 +106,7 @@ Date Modified  Username       Field                    Change
 12-20-04 00:15 Eric Valette   Note Added: 0002863                          
 12-20-04 08:17 pzad           Note Added: 0002867                          
 12-20-04 08:34 rlrevell       Note Added: 0002869                          
+12-20-04 09:36 Eric Valette   Note Added: 0002870                          
 ======================================================================
 
 
