@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000548]: Format not supported by Webcam
-Date: Tue, 28 Sep 2004 16:13:28 +0200 (CEST)
+Subject: [ALSA - driver 0000145]: Nforce2 Audio - Bacon Fry ssZzZZZZzzle
+Date: Tue, 28 Sep 2004 16:17:37 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040928141328.CF75239006@server.perex-int.cz>
+Message-ID: <20040928141737.ECE0039006@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D96F277
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 16:13:29 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 52608305
+	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 16:17:38 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,45 +22,175 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000548
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000145
 ======================================================================
-Reported By:                djtm
-Assigned To:                Clemens Ladisch
+Reported By:                onemaN
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     548
-Category:                   USB - usb-audio
+Bug ID:                     145
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.8.1-ck6
+Status:                     new
+Distribution:               slackware!
+Kernel Version:             2.6.4
 ======================================================================
-Date Submitted:             09-28-2004 15:57 CEST
-Last Modified:              09-28-2004 16:13 CEST
+Date Submitted:             03-18-2004 09:07 CET
+Last Modified:              09-28-2004 16:17 CEST
 ======================================================================
-Summary:                    Format not supported by Webcam
+Summary:                    Nforce2 Audio - Bacon Fry ssZzZZZZzzle
 Description: 
-1 [webcam         ]: USB-Audio - USB Device 0x46d:0x8b4
-                     USB Device 0x46d:0x8b4 at usb-0000:00:02.1-2, full
-speed
+Im using 2.6.4 with an abit nf7-s 2.0. Bacon fry is apparent on both analog
+and spdif output (exactly the same effect). When playing music the pitch
+is correct (with 2.6.2 everything was speeded up 20% it seemed) 
 
-Only supports: 16_le, 44100, mono.
+It does this every time when I play mp3 or flac files with xmms or any
+other player. 
+
+OK so when I got on this bug system I saw there was allready many bugs
+listed simaler to this. The reason im making effort here, is because Im
+willing to be contacted and work with you guys to get this one right, I
+want of course to use this linux box as a half terabyte flac jukebox, and
+I cant do that if the sound is anything less than perfect. ;P 
+
+Let me know! I will do what I can to help debug!
+
+-David 
+david@wdtp.com
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 09-28-2004 16:13 CEST 
+ onemaN - 03-18-2004 09:11 CET 
 ----------------------------------------------------------------------
-Please show the contents of /proc/asound/card0/stream0.
+also 'analog to spdif' doesnt seem to do a thing :[] ....
+
+----------------------------------------------------------------------
+ perex - 03-23-2004 16:20 CET 
+----------------------------------------------------------------------
+Try to find 'IEC958 Input Monitor' control in alsamixer and turn it off (or
+use amixer).
+
+----------------------------------------------------------------------
+ onemaN - 03-23-2004 18:15 CET 
+----------------------------------------------------------------------
+Its allways been off..
+
+----------------------------------------------------------------------
+ perex - 03-23-2004 18:42 CET 
+----------------------------------------------------------------------
+Could you try to test latest 2.6.5-rc kernel?
+
+----------------------------------------------------------------------
+ onemaN - 03-23-2004 19:16 CET 
+----------------------------------------------------------------------
+Im still on 2.6.4, when 2.6.5 comes I will be there. I installed all the
+103b componets (besides the driver witch is compiled into my kernel) 
+
+Then I set up a .asoundrc file, and now if i use alsaplayer or aplay I can
+get distortion free output from spdif!
+
+.asoundrc file: 
+
+cm.nforce-hw {
+type hw
+card 0
+}
+
+pcm.!default {
+type plug
+slave.pcm "nforce"
+}
+
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000000,0 is analog out and 0,2 is spdif out.
+
+pcm.nforce {
+type dmix
+ipc_key 1234
+slave {
+pcm "hw:0,2"
+period_time 0
+period_size 1024
+buffer_size 4096
+rate 44100
+}
+}
+
+ctl.nforce-hw {
+type hw
+card 0
+}
+
+
+XMMS and everything else still frys etc from spdif... future looking good
+tho
+
+----------------------------------------------------------------------
+ onemaN - 03-23-2004 19:26 CET 
+----------------------------------------------------------------------
+Still some crackling when i for example use the volume slider on
+alsaplayer, and once or twice its skipped for unknown reason..
+
+----------------------------------------------------------------------
+ cosmix - 07-22-2004 05:44 CEST 
+----------------------------------------------------------------------
+This persists with kernel 2.6.7 and ALSA versions 1.0.4 (incl. in 2.6.7),
+1.0.5, 1.0.5a and current CVS (at the time of writing). It practically
+renders the onboard audio on nforce2 motherboards useless with ALSA :(
+
+Note that on a nforce2 equipped motherboard, disabling the 'Disconnect on
+STPGNT' bit on the board, the problem goes away almost completely. This
+may provide a clue as to why this happens.
+
+Hope this helps.
+
+----------------------------------------------------------------------
+ mcbridematt - 07-31-2004 17:11 CEST 
+----------------------------------------------------------------------
+Possible hardware bug relating to the fact that most nForce MCP/MCP-T
+southbridges aren't cooled adequately?
+
+I'm getting bacon fry in both Windows and Linux occasionally. (stick in a
+C-Media 8738 and it goes away..) One of my friends had the same problem
+but it stopped when he placed a heatsink on the southbridge. I'll test it
+out next time it starts frying. I haven't had the IEC input monitor on at
+all, ever either.
+
+----------------------------------------------------------------------
+ rotech - 09-28-2004 02:57 CEST 
+----------------------------------------------------------------------
+I have cured this problem with the following line.
+
+Does it work for others?
+
+amixer set "Surround Down Mix" off
+
+----------------------------------------------------------------------
+ djtm - 09-28-2004 16:17 CEST 
+----------------------------------------------------------------------
+Do you have any inputs connected? (Mic-In, Line-In, etc)
+Have you tried muting and disconnecting inputs such as Mic-In, Line-In,
+etc?
+Does the same problem occur under Windows? (if possible to test)
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-28-04 15:57 djtm           New Bug                                      
-09-28-04 15:57 djtm           Distribution              => Debian          
-09-28-04 15:57 djtm           Kernel Version            => 2.6.8.1-ck6     
-09-28-04 16:13 Clemens LadischBugnote Added: 0001950                       
+03-18-04 09:07 onemaN         New Bug                                      
+03-18-04 09:07 onemaN         Distribution              => slackware!      
+03-18-04 09:07 onemaN         Kernel Version            => 2.6.4           
+03-18-04 09:11 onemaN         Bugnote Added: 0000640                       
+03-18-04 09:36 onemaN         Bug Monitored: onemaN                        
+03-23-04 16:20 perex          Bugnote Added: 0000666                       
+03-23-04 18:15 onemaN         Bugnote Added: 0000674                       
+03-23-04 18:42 perex          Bugnote Added: 0000686                       
+03-23-04 19:16 onemaN         Bugnote Added: 0000691                       
+03-23-04 19:26 onemaN         Bugnote Added: 0000692                       
+07-22-04 05:44 cosmix         Bugnote Added: 0001466                       
+07-31-04 17:11 mcbridematt    Bugnote Added: 0001510                       
+09-28-04 02:57 rotech         Bugnote Added: 0001944                       
+09-28-04 16:17 djtm           Bugnote Added: 0001951                       
 ======================================================================
 
 
