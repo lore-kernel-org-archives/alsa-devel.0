@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 9 Jan 2005 00:27:08 +0100
-Message-ID: <85f3b40789de9b6eff40d5e9e1642daa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000669]: Creative SB Live! 24-bit External (USB) works only at a minimal level.
+Date: Sun, 9 Jan 2005 02:04:11 +0100
+Message-ID: <cedc30b72d4e040fe6ca0e2110584b1a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0C4B2287
-	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2005 00:27:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD33A1E9
+	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2005 02:04:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,120 +24,105 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=669> 
 ======================================================================
-Reported By:                misnagid
-Assigned To:                pzad
+Reported By:                Henni
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   749
-Category:                   PCI - emu10k1
+Issue ID:                   669
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora FC3
-Kernel Version:             2.6.9
+Distribution:               Gentoo 2004.3
+Kernel Version:             2.6.9-cko3
 ======================================================================
-Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              01-09-2005 00:27 CET
+Date Submitted:             11-23-2004 19:23 CET
+Last Modified:              01-09-2005 02:04 CET
 ======================================================================
-Summary:                    Buzz from ALSA setup
+Summary:                    Creative SB Live! 24-bit External (USB) works only
+at a minimal level.
 Description: 
-I get an almost constant buzz from speakers when I've tried to use ALSA. 
-Have followed your directions from the online web page directions to the
-letter.  Still buzz.
-Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
-Have tried everything I've seen about this problem.
-OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
-driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
-successful in all other regards install of Fedora FC3.
+The Creative SB Live! 24-bit External is a "card" similar to the Audigy 2
+NX (probably its litte brother).
+
+With the snd-usb-audio the ''only'' thing working is the stereo output. I
+read that the Audigy 2 NX works far better with the snd-usb-audio.
+Probably there is a way to get the SB Live! 24-bit on a similar lvl?
+
+PS: I added some informations about it as an attachment.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 01-03-05 15:10 
+ Henni - 11-24-04 00:51 
 ----------------------------------------------------------------------
-Could you try to connect your speakers to rear (surround output) ??
-You should set "Master", "PCM", "Surround" volume. and try to play sound
-with aplay.
+Yes. I tried alsamixer. It shows only PCM Output and PCM Capture (I got
+"PCM capture" by using the "Show only Capture" option of alsamixer).
 
-If you have mic try to use mic too - set "Mic", "Master", "Surround".
+I 'got' working the 4 and 6 channels Mode with mplayer by using the
+following option:
+
+  mplayer $FILE -channels 4 (or 6) -ao alsa:device=default 
+
+(I have to use alsa:device=default because mplayer tries to use surround41
+or surround51 if you choose alsa and channels > 2 and this results in an
+error).
+
+But DigitalOut doesn't work as it should.
+
+If I choose mplayer $FILE -channels 4 the digital out works (testet with
+an Pioneer Home Cinema System with Optical In). With -channels 6 I get an
+underrun and with -ac hwac3 (for AC3 Passthrough) it doesn't work (there
+is no definition for the optical out).
 
 ----------------------------------------------------------------------
- misnagid - 01-09-05 00:27 
+ kempokaraterulz - 01-09-05 02:04 
 ----------------------------------------------------------------------
-Hello Peter!
-I went ahead and I bought the M-Audio Revolution 7.1 Card in hopes I could
-get ALSA working with it.  I have followed all the instructions at your
-web site for installation.  Still no sound but there's also no buzzing
-either this time around with this card.  Could you please assist me maybe
-to get this card working?  The reason that I did not open a new case was
-because I wanted to be sure that I reveived your assistance rather than
-somebody elses's!  I was very happy with your hard work last time although
-it was not successful.  That's ok.  We all bleed.
-I would be happy to create a new case if you like.  I would just like to
-be able to work with you again.  It was a pleasure!
-Thanks!
-Jerr
+I have the same results  as the original reporter, except i notice randomly
+my sound dies and i have to pause / unpause whatever i was playing music
+in in order to get the sound to come out again. This may not be alsa's
+fault since i find that  my usb webcam randomly dies when attached to my
+laptop as well. 
+
+Here is some additional info about the unit itself,
+FRONT: 
+Two LED's: 1 power (if  driver is loaded it is lit) 1 'CMSS' light ... ive
+never seen it lit
+A 'CMSS' button, pressing it appears to have no effect, no messages are
+logged in any of my logs either
+An IRDA port, doesnt seem to be detected in any way on the computer
+A head phone jack: Works
+A microphone jack: Untested
+An optical output: Works in 2 channel mode
+TOP:
+An analog Mic level wheel (untested)
+A click wheel type deal thats for controlling volume: Non functional
+Pushing in the volume click wheel is supposed to mute / unmute, but it
+only mutes and the only way to unmute is to unload the driver and reload
+the driver
+BACK:
+C/Sub port: Untested
+Rear Port: Untested
+Front Port: Untested
+Line in port: Untested
+SPDIF Out: Works, but only in 2 channel mode
+DIN(for controlling creative brand speakers i guess): Untested
+USB 2.0 connection.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-04 15:37 misnagid       New Issue                                    
-12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
-12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
-12-26-04 15:58 pzad           Note Added: 0002935                          
-12-26-04 16:31 misnagid       Note Added: 0002936                          
-12-26-04 16:44 misnagid       Note Added: 0002937                          
-12-26-04 16:56 pzad           Note Added: 0002938                          
-12-26-04 17:47 misnagid       Note Added: 0002939                          
-12-26-04 18:07 misnagid       Note Added: 0002940                          
-12-26-04 18:17 misnagid       Note Added: 0002942                          
-12-26-04 18:38 misnagid       Note Added: 0002943                          
-12-26-04 19:27 pzad           Note Added: 0002944                          
-12-26-04 19:44 misnagid       File Added: test.state                       
-12-26-04 19:44 misnagid       Note Added: 0002945                          
-12-26-04 20:02 misnagid       Note Added: 0002946                          
-12-26-04 20:09 misnagid       Note Added: 0002947                          
-12-26-04 20:22 pzad           File Added: newtest.state                    
-12-26-04 20:27 pzad           Note Added: 0002948                          
-12-26-04 20:32 pzad           Note Added: 0002949                          
-12-26-04 20:59 misnagid       Note Added: 0002950                          
-12-26-04 21:11 misnagid       Note Added: 0002951                          
-12-26-04 21:19 pzad           Note Added: 0002952                          
-12-26-04 21:22 pzad           Note Added: 0002953                          
-12-26-04 21:43 misnagid       Note Added: 0002954                          
-12-26-04 21:47 pzad           Note Added: 0002955                          
-12-26-04 22:18 misnagid       Note Added: 0002956                          
-12-26-04 23:46 misnagid       Note Added: 0002957                          
-12-27-04 10:46 pzad           Note Added: 0002958                          
-12-27-04 16:33 misnagid       Note Added: 0002964                          
-12-27-04 16:34 misnagid       File Added: test2.state                      
-12-27-04 16:38 misnagid       Note Added: 0002965                          
-12-27-04 16:45 pzad           Note Added: 0002966                          
-12-27-04 16:58 misnagid       Note Added: 0002967                          
-12-27-04 16:58 misnagid       File Added: test3.state                      
-12-27-04 17:42 misnagid       Note Added: 0002968                          
-12-27-04 17:57 misnagid       Note Added: 0002969                          
-12-27-04 18:16 pzad           Note Added: 0002970                          
-12-27-04 18:43 misnagid       Note Added: 0002971                          
-12-27-04 19:27 misnagid       Note Added: 0002972                          
-12-27-04 21:09 misnagid       Note Added: 0002975                          
-12-27-04 21:31 pzad           Note Added: 0002976                          
-12-27-04 21:47 misnagid       Note Added: 0002977                          
-12-27-04 21:49 misnagid       Note Added: 0002978                          
-12-27-04 22:00 pzad           Note Added: 0002979                          
-12-27-04 22:29 misnagid       Note Added: 0002980                          
-12-27-04 22:54 pzad           Note Added: 0002981                          
-12-27-04 23:15 misnagid       Note Added: 0002982                          
-12-27-04 23:19 misnagid       Note Added: 0002983                          
-12-27-04 23:46 pzad           Note Added: 0002984                          
-12-27-04 23:48 misnagid       Note Added: 0002985                          
-12-28-04 21:13 rlrevell       Note Added: 0002987                          
-01-03-05 00:36 misnagid       Note Added: 0003049                          
-01-03-05 15:10 pzad           Note Added: 0003064                          
-01-09-05 00:27 misnagid       Note Added: 0003132                          
+11-23-04 19:23 Henni          New Issue                                    
+11-23-04 19:23 Henni          File Added: output.txt                       
+11-23-04 19:23 Henni          Distribution              => Gentoo 2004.3   
+11-23-04 19:23 Henni          Kernel Version            => 2.6.9-cko3      
+11-23-04 19:58 Henni          Issue Monitored: Henni                       
+11-23-04 21:09 pzad           Note Added: 0002527                          
+11-24-04 00:51 Henni          Note Added: 0002540                          
+01-09-05 02:04 kempokaraterulzNote Added: 0003133                          
 ======================================================================
 
 
