@@ -1,16 +1,12 @@
-From: Werner Schweer <ws@seh.de>
-Subject: Re: tascam us-122 midi in does not work
-Date: Wed, 16 Jun 2004 19:25:26 +0200
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000337]: "alsactl restore" always fails
+Date: Wed, 16 Jun 2004 22:04:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406161925.26126.ws@seh.de>
-References: <200406131307.21072.ws@seh.de> <20040614224314.GA625@tuba.home>
+Message-ID: <c38df2522fce57a0ba68fa8008a4ebfb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040614224314.GA625@tuba.home>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,32 +15,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Martin Langer <martin-langer@gmx.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 15 June 2004 00:43, Martin Langer wrote:
-> On Sun, Jun 13, 2004 at 01:07:20PM +0200, Werner Schweer wrote:
-> > Hello,
-> >
-> > Some strange effect occurs on my tascam us-122 audio/midi usb
-> > device:
-> >    After starting JACK the midi input does not work anymore. Not even
-> > the midi in led on the us-122 flashes. Midi output is always fine.
-> > After stopping JACK midi input still does not work. Midi input works
-> > again after disconnect/reconnect the usb cable.
-> > I'm using current ALSA cvs and kernel 2.6.7rc3.
-> >
-> > Can anyone confirm this to work on a normal system?
->
-> Hmm. US122, 2.6.6 with ALSA 1.0.5 and jack works here. Another machine with
-> us122 and ALSA CVS on 2.4.25rc1 is also fine.
->
-> What about reconnecting midi clients without removing usb cable?
 
-does not work either.
+The following bug has been SUBMITTED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0337
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                kuulasma
+Assigned To:                tiwai
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     337
+Category:                   PCI - nm256
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian sarge
+Kernel Version:             Linux 2.6.6-1-686
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-16-2004 22:04 CEST
+Last Modified:              06-16-2004 22:04 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    "alsactl restore" always fails
+Description:=20
+Dell Latitude CPt with an NM256ZX fails always to restore previously save=
+d
+state. Command "alsactl store" succesfully stores current state but
+"alsactl restore" always fails to restore previous state. The OSS driver
+works fine.
 
-/Werner
+Example:
+----------------------------------------------------------
+# alsactl restore
+alsactl: set_control:966: Cannot write control '2:0:0:CD Playback
+Switch:0' : Invalid argument
+----------------------------------------------------------
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-16-04 22:04 kuulasma       New Bug                                    =
+ =20
+06-16-04 22:04 kuulasma       Distribution              =3D> Debian sarge=
+   =20
+06-16-04 22:04 kuulasma       Kernel Version            =3D> Linux 2.6.6-=
+1-686
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
 
 
 
