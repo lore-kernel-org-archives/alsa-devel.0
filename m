@@ -1,70 +1,90 @@
-From: Kristof vansant <de_lupus@pandora.be>
-Subject: [PATCH] for vx make bug on kernel 2.6!!!! add to cvs plz
-Date: Tue, 06 Jan 2004 23:53:22 +0100
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1073429602.2670.14.camel@d51528079.kabel.telenet.be>
+From: Paul Brossier <piem-lists-whniv8GeeGkdnm+yROfE0A@public.gmane.org>
+Subject: Re: Tascam USB 122 thingy
+Date: Wed, 07 Jan 2004 03:21:43 +0000
+Sender: linux-audio-user-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Message-ID: <1073445703.23203.51.camel@bastille>
+References: <Pine.HPX.4.33n.0309260825560.4970-100000@studcom.urz.uni-halle.de>
+Reply-To: A list for linux audio users <linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Return-path: <linux-audio-user-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+In-Reply-To: <Pine.HPX.4.33n.0309260825560.4970-100000-uTWBjZk67LHpX0crx97Rjzs8JdKFpwrh@public.gmane.org>
+List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-user>,
+	<mailto:linux-audio-user-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1v5P9MsFVvkkBB/WhxxnpHQ@public.gmane.org>
+List-Archive: <http://music.columbia.edu/pipermail/linux-audio-user>
+List-Post: <mailto:linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+List-Help: <mailto:linux-audio-user-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1aFUAG64dwko@public.gmane.org>
+List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-user>,
+	<mailto:linux-audio-user-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1+iqrErVy8Mf2+df2TVCvIA@public.gmane.org>
+Errors-To: linux-audio-user-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+To: linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Cc: alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Before I added this line alsa-driver would have make error on vxp440.c
-and vxpocket.c . This patch should keep the driver working with kernel
-2.4 to. Can someone test it and add it to the CVS. 
+the tascam 122 is now reported to work on linux.
+http://www.langerland.de/us122/index.html
 
-[root@d51528079 vx]# cat vxkernel26.patch
---- ./vxp440.c.kernel26 2004-01-06 20:40:30.757564000 +0100
-+++ ./vxp440.c  2004-01-06 20:44:50.167564000 +0100
-@@ -1,11 +1,13 @@
- #include <linux/config.h>
- #include <linux/version.h>
-  
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
- #if defined(CONFIG_MODVERSIONS) && !defined(__GENKSYMS__) &&
-!defined(__DEPEND__)
- #define MODVERSIONS
- #include <linux/modversions.h>
- #include "sndversions.h"
- #endif
-+#endif
-  
- #include "config.h"
- #include "adriver.h"
---- ./vxpocket.c.kernel26       2004-01-06 23:41:09.047564000 +0100
-+++ ./vxpocket.c        2004-01-06 23:43:34.537564000 +0100
-@@ -1,11 +1,13 @@
- #include <linux/config.h>
- #include <linux/version.h>
-  
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
- #if defined(CONFIG_MODVERSIONS) && !defined(__GENKSYMS__) &&
-!defined(__DEPEND__)
- #define MODVERSIONS
- #include <linux/modversions.h>
- #include "sndversions.h"
- #endif
-+#endif
-  
- #include "config.h"
- #include "adriver.h"
+according the thread you mention below, the drivers snd-usb-us428 and
+snd-usb-us122 are now merged into snd-usb-usx2y (in alsa 1.0.0-rc2).
 
--- 
-lupus  (Kristof Vansant Belgium)
+i managed to load snd-usb-usx2y, load the firmware in the card, and
+create the alsa devices, but still got that same errors
+(SNDRV_PCM_IOCTL_HW_PARAMS failed).
 
+some threads i found :
+http://www.mail-archive.com/alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org/msg09840.html
+http://www.mail-archive.com/alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org/msg10408.html
 
+the error i got was very similar to this :
 
--------------------------------------------------------
-This SF.net email is sponsored by: IBM Linux Tutorials.
-Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
-Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
+.ALSA lib pcm_hw.c:324:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS
+failed: Operation not permitted
+ACCESS: MMAP_NONINTERLEAVED
+FORMAT: S32_LE
+SUBFORMAT: STD
+SAMPLE_BITS: 32
+FRAME_BITS: 448
+CHANNELS: 14
+RATE: NONE
+PERIOD_TIME: (85333 85334)
+PERIOD_SIZE: 8192
+PERIOD_BYTES: 458752
+PERIODS: 2
+BUFFER_TIME: (170666 170667)
+BUFFER_SIZE: 16384
+BUFFER_BYTES: 917504
+TICK_TIME: 10000
+
+has anyone go any further than that ?
+
+greetings, piem
+
+On Fri, 2003-09-26 at 07:42, Clemens Ladisch wrote:
+> Andy Cragg wrote:
+> 
+> > Clemens Ladisch wrote:
+> >
+> > >Andy Cragg wrote:
+> > >
+> > >>Anyone know if the new Tascam US-122 USB audio/midi soundcard is
+> > >>supported by the generic USB drivers in Alsa?
+> > >
+> > >I've heard that it works if you use the loader from
+> > ><http://usb-midi-fw.sourceforge.net/>.
+> >
+> > Thanks for that - looks like I'll have to go out and get one now ...
+> 
+> It seems what I said was wrong. :-( According to the thread at
+> <http://www.mail-archive.com/alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org/msg09292.html>,
+> it doesn't work.
+> 
+> Please ask Martin before buying anything; he's the only one who knows
+> if it will work with the current ALSA drivers.
+> 
+> 
+> Regards,
+> Clemens
+> 
+> 
+> 
