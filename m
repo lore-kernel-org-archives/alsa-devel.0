@@ -1,13 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Fri, 4 Feb 2005 09:22:26 +0100
-Message-ID: <f5c742922d0412cf82832aebdc8a75c4@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7052B22C
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 09:22:26 +0100 (MET)
+From: "Sunil Manohar" <sunil@submitinme.com>
+Subject: alsa-project.org has been added to pr4links.com
+Date: Fri, 4 Feb 2005 15:15:25 +0000
+Message-ID: <1107509577.11124@mx67a.mysite4now.com>
+Received: from mx67a.mysite4now.com (mx67a.mysite4now.com [66.102.135.67])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B662322F
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 10:31:51 +0100 (MET)
+Received: from [61.246.225.35] by mx67a.mysite4now.com [66.102.135.67] with SmartMax MailMax for alsa-devel@alsa-project.org; Fri, 04 Feb 2005 01:32:54 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,82 +15,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa Devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+We are pleased to inform you that your Website  alsa-project.org has 
+been listed in our site http://www.pr4links.com
+ 
+Our Website http://www.pr4links.com has a PageRank of 3 
+(Three).PageRank is crucial for a higher position in the search 
+engines. PageRank® is the MAIN factor that determines a website's 
+position in the results pages. Your link at our site will significantly 
+increase your website's pagerank and thus high position in the search 
+engines.
+ 
+You can find your link at :
+http://www.pr4links.com/computer_resources/programming.html
+ 
+Please let us know if your listing is under the right category. We 
+would like our link to be placed under Computer
+ 
+Our Link Details:
+----------------------------------------------------------------------------------------------------------------------------
+ 
+Website Title : Link building services. reciprocal link building
+ 
+Website URL : http://www.pr4links.com
+ 
+Website Description : Link building, Specialist in Computers, health, 
+fitness and weight loss link building. PR specific Reciprocal link 
+building. Offer free link building to computers, health and fitness 
+related sites.
+ 
+Categories: Website Promotion, link building, Website Marketing or any 
+suitable category
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
-======================================================================
-Reported By:                Quietti
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   306
-Category:                   PPC - powermac
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             self-compiled 2.6.6 vanilla.
-======================================================================
-Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              02-04-2005 09:22 CET
-======================================================================
-Summary:                    compiles, but no sound comes out
-Description: 
-This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
+Email: sunil@submitinme.com 
 
-The kernel compiles fine, the snd_powermac module loads without any error,
-but no sound comes up.
+We expect our link to be added in the next 7 days at your site and 
+please inform us where we can find our link.
 
-Running alsamixer gives me a mixer screen where none of the sliders can be
-moved.
-======================================================================
-
-----------------------------------------------------------------------
- Quietti - 01-14-05 00:53 
-----------------------------------------------------------------------
-These CVS repositorie appear to contain Apple's own open source drivers:
-
-http://cvs.opendarwin.org/index.cgi/src/AppleOnboardAudio/
-http://cvs.opendarwin.org/index.cgi/src/IOAudioFamily/
-
-Note that some files must be unhidden from the Attic to appear visible.
-
-Comparing those to what you have should at least allow you to see what
-might be wrong in the current ALSA code.
-
-----------------------------------------------------------------------
- Quietti - 02-04-05 09:22 
-----------------------------------------------------------------------
-ALSA 1.0.8 (as found in kernel 2.6.11-rc3) is also broken).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-25-04 20:35 Quietti        New Issue                                    
-05-25-04 20:35 Quietti        File Added: asound.state                     
-05-25-04 20:35 Quietti        Distribution              => Debian          
-05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
-vanilla.
-05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
-05-28-04 21:18 tiwai          Note Added: 0001274                          
-05-28-04 21:37 Quietti        Note Added: 0001275                          
-07-25-04 20:16 Quietti        Note Added: 0001473                          
-09-08-04 06:32 Quietti        Note Added: 0001726                          
-10-20-04 00:38 Quietti        Note Added: 0002209                          
-01-06-05 18:14 Quietti        Note Added: 0003093                          
-01-06-05 18:27 rlrevell       Note Added: 0003094                          
-01-06-05 19:43 Quietti        Note Added: 0003095                          
-01-07-05 00:00 Quietti        Note Added: 0003096                          
-01-07-05 00:19 Quietti        Note Added: 0003097                          
-01-07-05 00:30 Quietti        Note Added: 0003098                          
-01-14-05 00:53 Quietti        Note Added: 0003206                          
-02-04-05 09:22 Quietti        Note Added: 0003496                          
-======================================================================
+Have a Great Day.
+ 
+Administrator
+pr4links.com
+ 
+Visit http://www.pr4links.com - Building Quality & Relevant Health & 
+Fitness  Links to enhance your Site’s Page Rank & Link Popularity                
 
 
 
