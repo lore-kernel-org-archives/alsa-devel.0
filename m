@@ -1,14 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] Interwave PCM name
-Date: Sat, 11 May 2002 08:37:56 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Reverse engineering from Windows 2000 WDM drivers?
+Date: Sat, 11 May 2002 16:14:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0205110837200.509-100000@pnote.perex-int.cz>
-References: <20020511005108.A16303@sci.fi>
+Message-ID: <3CDD353C.5020505@superbug.demon.co.uk>
+References: <3CDBDD6F.F67EEA8F@informatik.uni-kl.de>
+Reply-To: James@superbug.demon.co.uk
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020511005108.A16303@sci.fi>
+Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net [194.217.242.92])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA02852
+	for <alsa-devel@alsa-project.org>; Sat, 11 May 2002 17:13:08 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,25 +20,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: =?ISO-8859-1?Q?J=FCrgen_Zimmermann?= <jnzimmer@informatik.uni-kl.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 11 May 2002, [iso-8859-1] Ville Syrj=E4l=E4 wrote:
+J=FCrgen Zimmermann wrote:
 
-> I'm resending this since you didn't apply it from my previous patch.
+>Hello,
+>I wonder if anyone has experience in doing reverse engineering=20
+>Windows 2000 WDM drivers in order to create a new driver for
+>the ALSA chipset.
+>
+>The card I have in question is a YAMAHA SW1000XG, and there are both
+>Windows9x and Windows 2000 WDM drivers available, but to my knowledge
+>there are no signs for Linux support (as this is a "professional"
+>card... Hm...).
+>
+>On the other hand, perhaps it could be possible to setup the card
+>and create a driver with the knowledge derived from the Windows drivers.
+>
+>So, can anyone give me some hints how to "trace" the card's setup and
+>working?
+>
+>So long,
+>  J=FCrgen
+>
+> =20
+>
+http://dxr3.sf.net
+has some good tips on reverse engineering.
 
-The revision is revision of interwave chip not codec which is only a part=
-=20
-of interwave chip. So this change does not make sense.
 
-=09=09=09=09=09=09Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
 
 
 _______________________________________________________________
