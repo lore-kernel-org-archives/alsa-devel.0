@@ -1,12 +1,13 @@
-From: ian esten <deviant@custard.org>
-Subject: emagic mt4
-Date: 18 Feb 2004 13:27:51 -0500
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Audacity-devel reports bug in Alsa OSS emulation
+Date: Wed, 18 Feb 2004 19:50:38 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1077128870.1967.5.camel@ian-lnx.ycrdi.com>
+Message-ID: <Pine.LNX.4.58.0402181949480.10724@pnote.perex-int.cz>
+References: <4033A8EE.1030701@starhub.net.sg>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <4033A8EE.1030701@starhub.net.sg>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,20 +16,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Richard Chan <rspchan@starhub.net.sg>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi all,
-i have an emagic mt4 i'm trying to use with alsa. it's a 2 in 4 out usb
-midi device. i have just updated to alsa-driver-1.0.2c to see if that
-would help, but no joy. from /var/log/messages i get:
-Feb 18 13:19:26 ian-lnx kernel: usb.c: USB device 4 (vend/prod
-0x86a/0x3) is not claimed by any active driver.
-has anyone else had any luck or got any suggestions?
-thanks,
-ian
+On Thu, 19 Feb 2004, Richard Chan wrote:
 
+> Hi,
+> 
+> I'm using Audacity with Alsa OSS emulation - I have observed an infamous 
+> Audacity cursor bug
+> with Alsa OSS emulation. Another user has tracked it down as follows:
+> 
+> Quote:
+> 
+> " I made some investigations about this problem and discovered that the ALSA
+> OSS emulation is broken: ioctl(fd, SNDCTL_DSP_GETOPTR, &info) sometimes
+> returns wrong results.
+> I do not know ALSA enough to fix it, but I have patched an audacity source
+> file as a workaround."
+> 
+> Known bug? Worth fixing?
 
+No. I'm actually writting our own test tool. Anyway, what's your hardware? 
+Is resampling on the way (see /proc/asound/card0/pcm0p/sub0/* files for 
+more details)?
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
