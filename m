@@ -1,11 +1,14 @@
-From: "Katida Devore" <Norbert@ixtens.com>
-Subject: WWW Pharmmacy u can trust
-Date: Mon, 31 Jan 2005 17:43:19 -0400
-Message-ID: <E1Cvf2d-0004zN-K5@sc8-sf-mx1.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000869]: alsa-oss-1.0.8rc1 can't find module linkages
+Date: Mon, 31 Jan 2005 18:30:56 +0100
+Message-ID: <4605fa88ad522cd3dc5860dfc6bd685d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_0E5E2D45.2E8AE1EC"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 305CF21C
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 18:30:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,78 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Renzo Olsen <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_0E5E2D45.2E8AE1EC
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=869> 
+======================================================================
+Reported By:                lovett
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   869
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-31-2005 18:30 CET
+Last Modified:              01-31-2005 18:30 CET
+======================================================================
+Summary:                    alsa-oss-1.0.8rc1 can't find module linkages
+Description: 
+alsa-driver-1.0.8rc1 | alsa-lib-1.0.8rc1 | alsa-utils-1.0.8rc1
+alsa-oss-1.0.8rc1 all compiled from source and installed without
+fatal compliant.
 
-"Five million."
-"Five million!" Butler sat up.  "Man, what are you talking about?
-That's a good deal of .  Where are you going to sell all tha
-"I want to bid for five million," assuaged Cowperwood, softly.  "
-only want one million but I want the prestige of putting in a bon.
-fide bid for five million.  It will do me good on the street."
-Butler sank back somewhat relieved.
+Booting enters this error into syslog
+	kernel: Error seeking in /dev/kmem 
+	kernel: Symbol #snd-page-alloc, value 002c4000 
+	kernel: Error adding kernel module table entry.
+	modprobe: modprobe: Can't locate module snd-seq-client-62
+	
+Now invoking the most recent TiMidity gives an error message:
+	# /usr/local/bin/timidity -p64:0 file.mid   -->
+Requested buffer size 32768, fragment size 8192
+ALSA pcm 'default' can't set hw_params
 
+Now invoking aplaymidi runs in the sense that CPU cycles are
+consumed, but no sound is produced and syslog reports (several times)
+	# aplaymidi -p65:0 file.mid   -->
+	kernel: ALSA pcm_oss.c:450: HW_PARAMS failed: -12
 
-Have a nice day!
+How should I go about finding what is missing?
 
-------=_NextPart_000_0001_0E5E2D45.2E8AE1EC
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+======================================================================
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1441" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Hello, Welcome to Health =
-Suite!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV>
-<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
-  <TBODY>
-  <TR vAlign=3Dbottom>
-    <TD rowSpan=3D2><FONT size=3D4>Vi</FONT></TD>
-    <TD><FONT size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT size=3D4>ra&nbsp;</FONT></TD>
-    <TD><FONT size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT size=3D4>al</FONT></TD>
-    <TD><FONT size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT size=3D4>Xa</FONT></TD>
-    <TD><FONT size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT size=3D4>x&nbsp;</FONT></TD>
-    <TD><FONT size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT size=3D4>cod</FONT></TD>
-    <TD><FONT size=3D4></FONT></TD></TR>
-  <TR vAlign=3Dbottom>
-    <TD><FONT size=3D4>ag</FONT></TD>
-    <TD><FONT size=3D4>Ci</FONT></TD>
-    <TD><FONT size=3D4>is&nbsp;</FONT></TD>
-    <TD><FONT size=3D4>na</FONT></TD>
-    <TD><FONT size=3D4>Vi</FONT></TD>
-    <TD><FONT size=3D4>in</FONT></TD></TR></TBODY></TABLE></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>And many other at&nbsp;<A=20
-href=3D"http://www.blackhearted.thescientistssaid.com"=
->http://www.blackhearted</A></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D3>Save Yourself a Huge 70% Off =
-All 0rders With us.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Have a nice =
-day!</FONT></DIV></BODY></HTML>
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-31-05 18:30 lovett         New Issue                                    
+======================================================================
 
-------=_NextPart_000_0001_0E5E2D45.2E8AE1EC--
 
 
 
