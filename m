@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000696]: Doom 3 crashes when using alsa
-Date: Wed, 1 Dec 2004 23:26:17 +0100
-Message-ID: <0c095e9bcb563b79bae35ac7bf6ec503@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000617]: Front / rear out of sync
+Date: Thu, 2 Dec 2004 00:53:13 +0100
+Message-ID: <24af255378b0cab5f5d5da0d450fe88e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A4022305
-	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2004 23:26:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B6950227
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 00:53:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=696> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617> 
 ======================================================================
-Reported By:                Mo6eB
+Reported By:                henkie_
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   696
-Category:                   PCI - intel8x0
+Issue ID:                   617
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.9
+Distribution:               SuSE 9.0
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             12-01-2004 20:18 CET
-Last Modified:              12-01-2004 23:26 CET
+Date Submitted:             10-30-2004 18:20 CEST
+Last Modified:              12-02-2004 00:53 CET
 ======================================================================
-Summary:                    Doom 3 crashes when using alsa
+Summary:                    Front / rear out of sync
 Description: 
-Doom 3 crashes with the following error message:
-snd_pcm_writei short write: 4095 out of 4096
-snd_pcm_writei short write: 4095 out of 4096
-doom.x86: pcm.c:5957: snd_pcm_mmap_commit: Assertion `frames <=
-snd_pcm_mmap_avail(pcm)' failed.
-signal caught: Aborted
+When using the config specified below the sound gets out of sync (front and
+rear sound) in xmms. The higher cpu-usage is the faster the sound goes
+out-of-sync. When using mplayer in combo with this config, cpu usage goes
+up, and the image of the movie halts but sound keeps playing. Without this
+config the cpu-usage is around 20%. Tested on P4 2.8GHz.  
+In alsa <1.0  the front and rear sound was duplicated, is it possible to
+reimplement that behaviour again?
 
+pcm.ch40dup {
+        type route
+        slave.pcm surround40
+        slave.channels 4
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+}
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-01-04 23:26 
+ darkbrain - 11-29-04 15:13 
 ----------------------------------------------------------------------
-I guess your AC97 doesn't support VRA?  Check
-/proc/asound/card0/codec97#0/ac97#0-0 file.
+It's true i tried alsa driver version 0.9.0b10 (in debian stable) and the
+signal is duplicated. From witch version this feature was disabled? I
+don't want to test every version to find it!
+
+----------------------------------------------------------------------
+ darkbrain - 12-02-04 00:53 
+----------------------------------------------------------------------
+Found it!
+Seems a problem caused by setting EAM(Extended Audio Mode) bit.
+Try to comment out:
+snd_cs46xx_codec_write(chip, AC97_CSR_ACMODE,
+0x200,CS46XX_PRIMARY_CODEC_INDEX);
+
+into cs46xx_lib.c
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-01-04 20:18 Mo6eB          New Issue                                    
-12-01-04 20:18 Mo6eB          Distribution              => Gentoo          
-12-01-04 20:18 Mo6eB          Kernel Version            => 2.6.9           
-12-01-04 23:26 tiwai          Note Added: 0002671                          
+10-30-04 18:20 henkie_        New Issue                                    
+10-30-04 18:20 henkie_        Distribution              => SuSE 9.0        
+10-30-04 18:20 henkie_        Kernel Version            => 2.4.26          
+11-10-04 12:43 tiwai          Note Added: 0002368                          
+11-10-04 22:37 henkie_        Note Added: 0002379                          
+11-29-04 15:13 darkbrain      Note Added: 0002636                          
+12-02-04 00:53 darkbrain      Note Added: 0002672                          
 ======================================================================
 
 
