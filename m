@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000395]: No Sound-Output on FSC D1219 Mainboard (OSS-Free from Kenrel works)
-Date: Fri, 25 Mar 2005 15:46:29 +0100
-Message-ID: <fab677387fcccf404bcc287ea04ce183@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000174]: CVS build problem
+Date: Fri, 25 Mar 2005 15:50:08 +0100
+Message-ID: <8e9cad06ac2baea5de9348cca9b4e265@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5D8E173
-	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 15:46:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0CEB2227
+	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 15:50:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,65 +21,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=395> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=174> 
 ======================================================================
-Reported By:                thorstenl
+Reported By:                bgolenko
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   395
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   174
+Category:                   general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.6-1.435.2.3
-Resolution:                 unable to duplicate
+Status:                     closed
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-17-2004 11:32 CEST
-Last Modified:              03-25-2005 15:46 CET
+Date Submitted:             03-31-2004 17:36 CEST
+Last Modified:              03-25-2005 15:50 CET
 ======================================================================
-Summary:                    No Sound-Output on FSC D1219 Mainboard (OSS-Free
-from Kenrel works)
+Summary:                    CVS build problem
 Description: 
-On my Fujitsu Siemens D1219 Mainboard the snd-intel8x0 from alsa 1.05a
-(compiled by myself) or the version that comes with the Fedora Core 2
-Kernel (2.6.6-1.435.2.3; alsa 1.04a) are not able to output any sound.
-Trying to experiment with the different volume settings in alsamixer did
-not help. With the oss-free module i810_audio (compiled from the Fedora
-Core 2 kernel-sourcecode) it works fine.  
+gcc -shared  .libs/conf.o .libs/confmisc.o .libs/input.o .libs/output.o
+.libs/async.o .libs/error.o .libs/dlmisc.o .libs/socket.o .libs/shmarea.o
+.libs/userfile.o -Wl,--whole-archive control/.libs/libcontrol.a
+mixer/.libs/libmixer.a ordinary_mixer/.libs/libordinarymixer.a
+pcm/.libs/libpcm.a ordinary_pcm/.libs/libordinarypcm.a
+rawmidi/.libs/librawmidi.a timer/.libs/libtimer.a hwdep/.libs/libhwdep.a
+seq/.libs/libseq.a instr/.libs/libinstr.a compat/.libs/libcompat.a
+alisp/.libs/libalisp.a -Wl,--no-whole-archive  -lm -ldl -lpthread 
+-Wl,-soname -Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
+/usr/bin/ld: .libs/libasound.so.2.0.0: undefined versioned symbol name
+snd_pcm_hw_params_get_buffer_size_max@ALSA_0.9
+/usr/bin/ld: failed to set dynamic section sizes: Bad value
+collect2: ld returned 1 exit status
+make[2]: *** [libasound.la] Error 1
+make[2]: Leaving directory `/home/bartek/tomove/alsa-cvs/alsa-lib/src'
 ======================================================================
 
 ----------------------------------------------------------------------
- thorstenl - 03-25-05 15:27 
+ jdthood - 03-16-05 22:18 
 ----------------------------------------------------------------------
-jdthood, thanks for the tip. I removed the system/boards two weeks ago, so
-I can't try it anymore.
+This can probably be closed.
 
 ----------------------------------------------------------------------
- thorstenl - 03-25-05 15:31 
+ tiwai - 03-18-05 18:16 
 ----------------------------------------------------------------------
-Seems I'm blind. I can't find any option to close this bug...
+Resolved to 'not an issue'.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-17-04 11:32 thorstenl      New Issue                                    
-07-17-04 11:32 thorstenl      File Added: fsc_d1219                        
-07-17-04 11:32 thorstenl      Distribution              => Fedora Core 2   
-07-17-04 11:32 thorstenl      Kernel Version            => 2.6.6-1.435.2.3 
-07-17-04 11:33 thorstenl      Issue Monitored: thorstenl                    
-03-23-05 16:11 jdthood        Note Added: 0004176                          
-03-25-05 15:27 thorstenl      Note Added: 0004208                          
-03-25-05 15:27 thorstenl      Issue End Monitor: thorstenl                    
-03-25-05 15:31 thorstenl      Note Added: 0004209                          
-03-25-05 15:46 jdthood        Status                   new => resolved     
-03-25-05 15:46 jdthood        Resolution               open => unable to
-duplicate
+03-31-04 17:36 bgolenko       New Issue                                    
+04-15-04 20:30 perex          Note Added: 0000822                          
+03-16-05 22:18 jdthood        Note Added: 0003965                          
+03-18-05 18:16 tiwai          Status                   new => resolved     
+03-18-05 18:16 tiwai          Resolution               open => not an issue
+03-18-05 18:16 tiwai          Assigned To               => tiwai           
+03-18-05 18:16 tiwai          Note Added: 0004001                          
+03-18-05 18:16 tiwai          Assigned To              tiwai =>            
+03-25-05 15:50 jdthood        Status                   resolved => closed  
 ======================================================================
 
 
