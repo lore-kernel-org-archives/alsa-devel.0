@@ -1,12 +1,29 @@
-From: "Juan Carlos Granda" <granda@telecable.es>
-Subject: Audio and Video sync. Getting Timestamps
-Date: Tue, 27 Apr 2004 20:36:29 +0200
+From: "Robert Rozman" <rozman@fri.uni-lj.si>
+Subject: Separate device for spdif on Sis si7012 ?
+Date: Tue, 27 Apr 2004 21:21:34 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <002901c42c86$902cc730$38b36153@palmian>
+Message-ID: <017101c42c8c$dad4a8b0$6500a8c0@Lapitopi>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0026_01C42C97.5167AF90"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from ninurta.fe.uni-lj.si (ninurta.fe.uni-lj.si [193.2.72.1])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA26647
+	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2004 21:21:50 +0200
+Received: from FRI-SMTPSCAN (unknown [193.2.104.232])
+	by ninurta.fe.uni-lj.si (Postfix) with SMTP id 16CC91BA1D
+	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2004 21:21:48 +0200 (CEST)
+Received: from mail.fri.uni-lj.si ([127.0.0.1])
+ by localhost (mail.fri.uni-lj.si [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 26530-07 for <alsa-devel@alsa-project.org>;
+ Tue, 27 Apr 2004 21:21:52 +0200 (CEST)
+Received: from postar.fri.uni-lj.si (unknown [193.2.104.227])
+	by mail.fri.uni-lj.si (Postfix) with ESMTP id 3E58D7DA6
+	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2004 21:21:52 +0200 (CEST)
+Received: from Lapitopi (fe-fri011.fri.uni-lj.si [193.2.73.191])
+	by postar.fri.uni-lj.si (Postfix) with SMTP id 09A29BC76
+	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2004 21:21:41 +0200 (CEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,101 +32,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0026_01C42C97.5167AF90
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-I'm developing a Multi-thread app for capturing audio+video and i have a =
-few questions. The app is based on 3 threads:
+I have Asus pundit and I'm using analog outputs as 3 separate stereo
+channels (with some dmix problems that noone responded :-(  ...). Is it
+possible to ouput another stream to spdif connector on this device ?
+Is spdif supported as separate device ?
 
- - 1 thread for capturing audio using ALSA lib.
- - 1 thread for capturing video using V4L2.
- - 1 thread for saving audio+video into an AVI file.
+Regards,
 
-Both of capturing threads store captured data into a queue and the last =
-thread picks the data and sync A/V.
-
-I start audio capturing and then the video. So, i need to known the =
-point of the stream of audio the video begins.=20
-I'm readings frames by period size times. My prob is how to get valid =
-ALSA timestamps to eliminate the previous frames of the period the video =
-starts. I've tried snd_pcm_status_get_trigger_tstamp but it returns the =
-same timestamp for a long period of time (13 secs) (is it related to the =
-period or buffer time?). I've tried snd_pcm_status_get_tstamp too but i =
-obtain a delay of several microseconds from the period time (50 - 100 =
-more or less) (is it because the clock resolution?).
-
-Thanks
-
-pd. Sorry for my little knowledge of english.
-------=_NextPart_000_0026_01C42C97.5167AF90
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I'm developing a Multi-thread app for =
-capturing=20
-audio+video and i have a few questions. The app is based on 3=20
-threads:</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;- 1 thread for capturing audio =
-using ALSA=20
-lib.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;- 1 thread for capturing video =
-using=20
-V4L2.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;- 1 thread for saving audio+video =
-into an AVI=20
-file.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Both of capturing threads store =
-captured data into=20
-a queue and the last thread picks the data and sync A/V.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I start audio capturing and then the =
-video. So, i=20
-need to known the point of the stream of audio the video begins. =
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>I'm readings frames by period size =
-times. </FONT>My=20
-prob is how to get valid ALSA timestamps to eliminate the previous =
-frames of the=20
-period the video starts. I've tried snd_pcm_status_get_trigger_tstamp =
-but it=20
-returns the same timestamp for a long period of time (13 secs) (is it =
-related to=20
-the period or buffer time?). I've tried snd_pcm_status_get_tstamp too =
-but i=20
-obtain a delay of several microseconds from the period time (50 - 100 =
-more or=20
-less) (is it because the clock resolution?).</FONT></DIV></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>pd. Sorry for my little knowledge of=20
-english.</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_0026_01C42C97.5167AF90--
-
+Robert.
 
 
 
