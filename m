@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000263]: Maya44 MKII (Envy 24HT processor) probes correctly yet doesn't work.
-Date: Thu, 17 Jun 2004 06:51:07 +0200
+Date: Thu, 17 Jun 2004 08:02:41 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <bd32a94ef9a6940cb61d80d55b16b74a@bugtrack.alsa-project.org>
+Message-ID: <e0020444a11ed791321bbe0de80ac9c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -46,7 +46,7 @@ Kernel Version:             kernel-2.6.5-mm6
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             05-08-2004 08:27 CEST
-Last Modified:              06-17-2004 06:51 CEST
+Last Modified:              06-17-2004 08:02 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -567,6 +567,24 @@ Hi.
 I've plugged in alsa-1.0.5a driver and now get this in dmesg:
 http://linux.alhimia.ru/pub/alsa/3/dmesg
 
+----------------------------------------------------------------------
+ Apostolos Dimitromanolakis - 06-17-2004 08:02 CEST=20
+----------------------------------------------------------------------
+The ice1724 driver will need to be extended to handle your card, it will
+not work as it is since I don't think any othe card has a WM8731 chip (no=
+t
+sure about this, at least not Prodigy, M-Audio Revolution and Aureon). Th=
+e
+thing to do is figure out the connections between envy24 and WM8731 codec=
+s
+and then maybe someone can modift the driver to work. This is a bit
+difficult if you don't have the card but possible with some patience. Loo=
+k
+what the guys at some other new eny24 card did:
+
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0142
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -604,6 +622,9 @@ Fedora Core 1)
  =20
 06-17-04 06:51 Vladimir DyakovBugnote Added: 0001314                     =
  =20
+06-17-04 08:02 Apostolos DimitromanolakisBugnote Added: 0001315          =
+      =20
+    =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
