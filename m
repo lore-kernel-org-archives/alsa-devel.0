@@ -1,100 +1,50 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [RFC] Echoaudio driver
-Date: Sat, 25 Sep 2004 20:16:09 +0200
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040925201609.53a0fea0.pochini@shiny.it>
-References: <s5h6566zhlq.wl@alsa2.suse.de>
-	<XFMail.20040923102231.pochini@shiny.it>
-	<s5h7jqlxnnp.wl@alsa2.suse.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: usx2y jack driver
+Date: Sat, 25 Sep 2004 15:33:29 -0400
+Sender: jackit-devel-admin@lists.sourceforge.net
+Message-ID: <1096140809.3504.13.camel@krustophenia.net>
+References: <200409222228.38243.annabellesgarden@yahoo.de>
+	 <32827.192.168.1.5.1096065064.squirrel@192.168.1.5>
+	 <1096078552.1407.1.camel@krustophenia.net>
+	 <200409251555.59384.annabellesgarden@yahoo.de>
+	 <32983.192.168.1.5.1096125029.squirrel@192.168.1.5>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7jqlxnnp.wl@alsa2.suse.de>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Return-path: <jackit-devel-admin@lists.sourceforge.net>
+In-Reply-To: <32983.192.168.1.5.1096125029.squirrel@192.168.1.5>
+Errors-To: jackit-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:jackit-devel@lists.sourceforge.net>
+List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
+To: Rui Nuno Capela <rncbc@rncbc.org>
+Cc: Karsten Wiese <annabellesgarden@yahoo.de>, Martin Langer <martin-langer@gmx.de>, Werner Schweer <ws@seh.de>, alsa-devel <alsa-devel@lists.sourceforge.net>, jackit-devel <jackit-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 23 Sep 2004 12:52:42 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+On Sat, 2004-09-25 at 11:10, Rui Nuno Capela wrote:
+> Karsten Wiese wrote:
 
-> > The overall structure of the driver is about the same of the
-> > au88x0 driver (I took it as model).
->
-> Well, I don't like the current implementation of au88x0 drivers, too
-> ;)  As a result, you got bunch of ifdefs in the code.
+Thanks for the excellent description of the driver.
 
-Yep. Some of them are unavoidable because the cards have very different
-capabilities.
+> If someone have an idea on how to dig on this, like some debugging
+> silver-bullet :) I'll very thankful. Ingo Molnar has taught me the serial
+> console method but, guess what, this is a post-modern laptop: it doesn't
+> have a serial port. Duh?
+> 
 
+This is a really good point, I asked about it on LKML.  I don't think an
+equivalent procedure is currently available for a legacy-free machine.  
+This will become a serious problem as such machines become more common,
+as the serial console is the only way to diagnose some bugs.
 
-> In the case of au88x0, it was hard to merge because they use different
-> addresses in each chip, while echo boards seem to have the same
-> register offsets, right?
+For now you have to get by with magic sysrq.
 
-They have only 4 registers and most of the data is passed through a "comm
-page", which is a single page in system ram that the DSP accesses via bus
-mastering. Both the real registers and the stuff in the comm page have fixed
-offsets, but a lot of constants are different and each cards requires its
-own functions to do a lot of things (the code is in Echo_<card>Dsp files).
+Lee
 
-
-> But I don't insist on this rewrite if you prefer keeping this, of course.
-
-I'm undecided yet on how to rearrange it.
-
-
-> BTW, let's kill SWAP32/SWAP16 macro.  They are always le16_to_cpu()
-> and le32_to_cpu() regardless of endianness.
-
-I did it to translate the code quickly. It's already gone.
-
-
-> Also, checking of sizeof(dma_addr_t) is not correct.  You should check
-> that the value itself is in 32bit, not the variable type.
-
-Ah, it's another peice of code. The PCI is limited at 32bits anyway. The
-kernel should not return out of range addresses, unless there is an IOMMU
-that remaps them AFAIK. I'll remove that check.
-
-
-> At least, all functions and variables should have the same style.
-> The combination of HowLooksThis and how_looks_that is ugly, IMO.
-
-I'm changing everything to the alsa style, because changing the whole alsa
-to ThisStyle is a way too long work :))
-(almost done btw)
-
-
-> >  If you're talking about the
-> > *eg thing, well, it's not a problem at all moving the EchoGals
-> > structure inside chip_t and passing it to the lowlevel
-> > functions in place of &eg just like au88x0 does. That would
-> > also allow some cleanup and maybe tighter locking.
->
-> Having a common struct as a super calss is ok.
-
-Done.
-
-
-> To be noted, it's not recommended to
-> include such binary data into the kernel tree, especially if it's
-> avoidable easily.  (I see you already started coding
-> request_firmware().)
-
-The firmware is also quite big...
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
