@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000570]: Sparse mixer for RME96
-Date: Thu,  7 Oct 2004 14:12:33 +0200 (CEST)
+Date: Thu,  7 Oct 2004 14:11:27 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041007121233.A07F12100D@server.perex-int.cz>
+Message-ID: <20041007121127.44F8A2100D@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E21E72B6
-	for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2004 14:12:33 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9C1002B6
+	for <alsa-devel@alsa-project.org>; Thu,  7 Oct 2004 14:11:27 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             10-07-2004 10:59 CEST
-Last Modified:              10-07-2004 14:12 CEST
+Last Modified:              10-07-2004 14:11 CEST
 ======================================================================
 Summary:                    Sparse mixer for RME96
 Description: 
@@ -60,18 +60,12 @@ The patch will break alsa-tools/rmedigicontrol.
 I agree with convesion to IFACE_MIXER, but I'm not sure what was the
 author's original intention...
 
-----------------------------------------------------------------------
- tiwai - 10-07-2004 14:12 CEST 
-----------------------------------------------------------------------
-BTW, the same change should be done for rme32, too.
-
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 10-07-04 10:59 ungod          New Bug                                      
 10-07-04 10:59 ungod          File Added: rme96-mixerfix.diff                    
 10-07-04 14:11 tiwai          Bugnote Added: 0002030                       
-10-07-04 14:12 tiwai          Bugnote Added: 0002031                       
 ======================================================================
 
 
