@@ -1,14 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH]alsa-driver-0.9.6/acore/hwdep.c
-Date: Thu, 4 Sep 2003 20:45:47 +0200 (CEST)
+From: Jose Alberto Reguero <jareguero@telefonica.net>
+Subject: Re: AC3 output problem with via82xx
+Date: Thu, 4 Sep 2003 23:01:35 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0309042045200.6731@pnote.perex-int.cz>
-References: <200309041842.31333.annabellesgarden@yahoo.de>
- <Pine.LNX.4.53.0309042012160.6731@pnote.perex-int.cz> <s5hznhk2z1r.wl@alsa2.suse.de>
+Message-ID: <200309042301.35462.jareguero@telefonica.net>
+References: <200309041932.05033.jareguero@telefonica.net> <s5hwuco2yod.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hznhk2z1r.wl@alsa2.suse.de>
+In-Reply-To: <s5hwuco2yod.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,35 +19,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Karsten Wiese <annabellesgarden@yahoo.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 4 Sep 2003, Takashi Iwai wrote:
-
-> At Thu, 4 Sep 2003 20:12:38 +0200 (CEST),
-> Jaroslav wrote:
-> >
-> > On Thu, 4 Sep 2003, Karsten Wiese wrote:
-> >
-> > > Hi,
-> > >
-> > > I'm trying the hwdep interface with poll().
-> > > looking for reasons why removal of USB-device caused bad MAGIC in hwdep.c,
-> > > I found this solution:
-> >
-> > Thanks. Applied with small changes to fix the error path.
+El Jueves, 4 de Septiembre de 2003 20:31, Takashi Iwai escribi=F3:
+> At Thu, 4 Sep 2003 19:32:05 +0200,
 >
-> shouldn't we add also module_get/put() ?
+> Jose Alberto Reguero wrote:
+> > I have a problem with ogle 0.9.1 and alsa 0.9.6 with AC3 output.
+> > My Sound card is VIA 8235 whith AC97 CODEC Realtek ALC650.
+> >
+> > ERROR[ogle_audio]: Unable to update the IEC958 control: No such file or
+> > directory
+>
+> try cvs version.
+> bunch of fixes for ALC650 have been done.
 
-Yes, we should. Done.
+With the cvs version don't work.
 
-						Jaroslav
+Jose Alberto Reguero
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
