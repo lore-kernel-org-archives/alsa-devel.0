@@ -1,14 +1,12 @@
-From: Mark Knecht <markknecht@comcast.net>
-Subject: Re: hdsp9652 mixer
-Date: 09 Jul 2003 17:19:17 -0700
+From: Carlo Wood <carlo@alinoe.com>
+Subject: Bug in OSS simulation (ALSA 0.9.4)
+Date: Thu, 10 Jul 2003 03:33:26 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1057796357.2959.8.camel@Wizard.knechthome.com>
-References: <33068.217.128.161.242.1057308191.squirrel@www.undata.org>
+Message-ID: <20030710013326.GA12086@alinoe.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <33068.217.128.161.242.1057308191.squirrel@www.undata.org>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,45 +15,156 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2003-07-04 at 01:43, Thomas Charbonnel wrote:
-> Hi,
-> 
-> Could people using the hdsp9652 try the attached patch against current cvs
-> ? (Mark, you didn't sell it yet, did you ? :) Could you please report
-> what's happening when playing around with the mixer, testing possibly all
-> channels, before and after patching ?
-> Thanks.
-> 
-> Thomas
-> 
-> 
+I pinpointed the problem and wrote a small program
+to illustrate the problem.
 
-Thomas,
-   I wanted to spend some time this afternoon trying this mixer patch
-out, but I'm not sure how to proceed. Maybe you can give me a
-suggestion. Thanks.
+When compiling the program given below with:
 
-   I'm running Gentoo. The current version of Alsa I have installed is
-Version 0.9.4-r1. I looked at your patch, and I also looked at the code
-I'm building from, and they don't seem to match up by line number, but
-the section you are modifying is in the file on my system. You're patch
-expected to find it on line 705, while in my code the equivalent
-position around line 677. My code has been patched beyond the CVS using
-two patches provided by Paul a couple of weeks ago. This may account
-completely for the differences, or maybe not. I'm not sure.
+  gcc -DUSE_DSP_SETFMT=0 troep.c
 
-   I'll probably try just inserting your code in by hand as it is pretty
-simple change, but I'm not sure if bad results will mean anything...
+it runs fine.
 
-   Let me know your thoughts.
+But, when compiling it with:
 
-Thanks,
-Mark
+  gcc -DUSE_DSP_SETFMT=1 troep.c
 
+It stops rather quickly with reading data.
+
+Example output of the latter:
+
+~>a.out
+Fragment size: 1024
+Number of fragments: 32767
+Number of channels: 1
+Sample rate: 22050
+Read 1024 bytes.
+Number of full fragments that can be read or written without blocking: 0
+Total number of fragments allocated for buffering: 2
+Size of a fragment in bytes: 1024
+Number of bytes that can be read or written immediately without blocking: 0
+#fragments, #bytes: 0, 0
+#fragments, #bytes: 1, 1632
+Read 1024 bytes.
+#fragments, #bytes: 2, 2048
+Read 1024 bytes.
+#fragments, #bytes: 1, 1024
+Read 1024 bytes.
+#fragments, #bytes: 0, 0
+#fragments, #bytes: 0, 0
+#fragments, #bytes: 0, 0
+...etc
+
+-- 
+Carlo Wood <carlo@alinoe.com>
+
+
+The program:
+
+
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+#include <linux/soundcard.h>
+#include <time.h>
+
+int main(void)
+{
+  int res;
+  char buf[1024];
+
+  int fd = open("/dev/dsp", O_RDONLY);
+  if (fd == -1)
+  {
+    perror("open");
+    exit(1);
+  }
+
+  res = 0x7fff000a;
+  if (ioctl(fd, SNDCTL_DSP_SETFRAGMENT, &res) == -1)
+  {
+    perror("ioctl");
+    exit(1);
+  }
+  printf("Fragment size: %d\n", 1 << (res & 0xffff));
+  printf("Number of fragments: %d\n", res >> 16);
+
+#if USE_DSP_SETFMT
+  res = AFMT_S16_LE;
+  if (ioctl(fd, SNDCTL_DSP_SETFMT, &res) == -1)
+  {
+    perror("ioctl");
+    exit(1);
+  }
+#endif
+
+  res = 0;	// Not stereo (1 channel).
+  if (ioctl(fd, SNDCTL_DSP_STEREO, &res) == -1)
+  {
+    perror("ioctl");
+    exit(1);
+  }
+  printf("Number of channels: %d\n", res ? 2 : 1);
+
+  res = 22050;
+  if (ioctl(fd, SOUND_PCM_READ_RATE, 0xbfffdcfc) == -1)
+  {
+    perror("ioctl");
+    exit(1);
+  }
+  printf("Sample rate: %d\n", res);
+
+  ssize_t rlen = read(fd, buf, sizeof(buf));
+  if (rlen <= 0)
+  {
+    perror("read");
+    exit(1);
+  }
+  printf("Read %d bytes.\n", rlen);
+
+  audio_buf_info info;
+
+  if (ioctl(fd, SNDCTL_DSP_GETISPACE, &info) == -1)
+  {
+    perror("read");
+    exit(1);
+  }
+  printf("Number of full fragments that can be read or written without blocking: %d\n", info.fragments);
+  printf("Total number of fragments allocated for buffering: %d\n", info.fragstotal);
+  printf("Size of a fragment in bytes: %d\n", info.fragsize);
+  printf("Number of bytes that can be read or written immediately without blocking: %d\n", info.bytes);
+
+  int i;
+  for (i = 0; i < 100; ++i)
+  {
+    if (ioctl(fd, SNDCTL_DSP_GETISPACE, &info) == -1)
+    {
+      perror("read");
+      exit(1);
+    }
+    printf("#fragments, #bytes: %d, %d\n", info.fragments, info.bytes);
+    if (info.fragments > 0)
+    {
+      ssize_t rlen = read(fd, buf, sizeof(buf));
+      if (rlen <= 0)
+      {
+	perror("read");
+	exit(1);
+      }
+      printf("Read %d bytes.\n", rlen);
+    }
+    static struct timespec naptime = { 0, 100000000 };
+    nanosleep(&naptime, 0);
+  }
+
+  close(fd);
+  return 0;
+}
 
 
 -------------------------------------------------------
