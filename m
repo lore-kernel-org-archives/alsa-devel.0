@@ -1,9 +1,13 @@
-From: William <walsac@liam2.demon.co.uk>
-Subject: Re: Redhat 9.0 also has the snd.o unresolved symbol schedule_work issue
-Date: Mon, 31 Mar 2003 12:25:51 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: matrix mixer control (Re: Complex mixer questions)
+Date: Mon, 31 Mar 2003 13:39:10 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200303311125.MAA02409@koyuki.liam2.demon.co.uk>
+Message-ID: <Pine.LNX.4.44.0303311307170.1602-100000@pnote.perex-int.cz>
+References: <s5hznnbj47h.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hznnbj47h.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,49 +16,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa@slackware.ru, jason@corekin.no-ip.com
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, Giuliano Pochini <pochini@shiny.it>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-alsa@slackware.ru wrote:
-> [Jason Corekin wrote ... ]
-> > Instead I am getting the error unresolved symbol schedule_work.
-> please, check the kernel includes.
-> /usr/include/linux MUST be the link to the include directory of the
-> kernel. it was in the process of migration from 2.4.<20 to 2.4.>20.
-> some distributions have /usr/include/linux as a directory. and, when
-> compiling the fresh kernel, one can get strange things with unresolved
-> symbols etc (old headers + new kernel).
->
-> so,
-> /usr/include/linux must be the link to /usr/src/linux/include/linux,
-> if kernel sources were unpacked to the /usr/src/linux.
+On Mon, 31 Mar 2003, Takashi Iwai wrote:
 
-The kernel README file has a section "INSTALLING the kernel:"
+> i think it's good time to discuss this theme again.
+> 
+> as we talked in the LAD meeting, there are some possibilities:
+> 
+> 1. implement it on hwdep device
+> 2. implement it as a new control element (e.g. CTL_ELEM_MATRIX)
+> 3. introduce a flag to allow the indirect access with CTL_ELEM_INTEGER
+> 4. use 1500+ mixer elements.
+> 
+> 
+> we all agreed that really allocating thousands of elements is not
+> clever.  so, the case 4 would introduce some "virtual" mapping in the
+> kernel side, but from the user-space, it looks like a normal control
+> API access.  however, this will need many changes in the alsa core
+> code.
+> 
+> 
+> OTOH, the case 1 would need no change for the alsa core itself, but
+> the driver needs to implement by itself.  and above all, there is no
+> notification mechanism.
+> 
+> the case 2 is, IMO, the most straightforward way.  the info field will
+> have number of rows and columns, in addition to min, max and step
+> values.  the change in the alsa core wouldn't be too much.
 
-  "- If you install the full sources, put the kernel tarball in a
-     directory where you have permissions (eg. your home directory) and
-     unpack it:
+I think that we simply touch the barrier given by 'struct
+sndrv_ctl_elem_id'. The identification which differentiate identical
+controls is only the 'index' value. If we don't use 'struct
+sndrv_ctl_elem_id' as the identification unit for read/writing of data,
+then we end with trouble with notification and other representation
+(single data unit locking, inactive flag etc). Imagine three or four
+dimensional data types. Do you think that it's really worth to describe
+these types? My original idea was to keep the control API as simple as
+possible. The only one exception is the SNDRV_CTL_ELEM_TYPE_IEC958
+structure but making more of those complicated data definitions seems to
+be as a bad idea in my eyes.
 
-                gzip -cd linux-2.4.XX.tar.gz | tar xvf -
+The case 4) doesn't look as bad as it seems at first look. We do already 
+have many controls in emu10k1 and trident drivers (route, pcm volumes 
+etc.). If we optimize the memory usage and representation for these 
+multiple identical controls, more drivers will benefit.
 
-     Replace "XX" with the version number of the latest kernel.
+Note: Think in this way: If we have such large matrix mixer, then we
+should allow to different applications sharing (lock -thus allocate- some
+elements from matrix). Your suggested "solutions" (other than 4) don't
+allow it fully. This might cause trouble in future.
 
-     Do NOT use the /usr/src/linux area! This area has a (usually
-     incomplete) set of kernel headers that are used by the library header
-     files.  They should match the library, and not get messed up by
-     whatever the kernel-du-jour happens to be."
+> the case 3 would be similar with case 2, but use an additional bit
+> flag to indicate the matrix type.
 
-Doesn't this mean the kernel header files in /usr/src/linux/include/linux
-should be the same header files which were used to build your C library,
-i.e. you shouldn't change or unpack new kernels into /usr/src/linux ? 
+I don't understand. We have already SNDRV_CTL_ELEM_ACCESS_INDIRECT 
+although it is not implemented. The problem here is that you will have 
+totaly unoptimized event notification (because we can notify only change 
+for whole row) and problematic sharing of single values (element locking).
 
-Have you tried "make clean; rm config.cache;
-./configure --with-kernel=/my_kernel", where /my_kernel is the
-top-level directory of the kernel source code
-which should match the version of your current running kernel ("uname -a")?
+> in the cases 2 and 3, you'll need to change alsactl to save/restore
+> the whole matrix data.  in the case 4, it's not.  the case 1, alsactl
+> cannot do it, since it's on hwdep device.
 
-William
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
+
 
 
 -------------------------------------------------------
