@@ -1,11 +1,15 @@
-From: =?GB2312?B?1tC5+sDPsOXN+A==?= <kiudj@8jk.net>
-Subject: =?GB2312?B?vczE+tf2tPPAz7Dl?=
-Date: Sun, 31 Oct 2004 04:13:05 +0800
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Oops with ALSA CVS + kernel 2.6.9-rc3-mm3-VP-T3
+Date: Sat, 30 Oct 2004 16:28:18 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1CNzoj-00072C-0w@sc8-sf-mx1.sourceforge.net>
-Reply-To: djkudj@8jh.net
-Content-Type: text/plain;charset="GB2312"
+Message-ID: <1099168099.1434.6.camel@krustophenia.net>
+References: <1099097590.1579.11.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0410300945060.2210@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.58.0410300945060.2210@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,21 +18,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 2004-10-30 at 09:45 +0200, Jaroslav Kysela wrote:
+> On Fri, 29 Oct 2004, Lee Revell wrote:
+> 
+> > I compiled and installed new ALSA modules and got this Oops when I did
+> > 'modprobe snd-emu10k1':
+> 
+> It should be fixed now (sorry).
 
-●中国老板网，
-提供中国最专业，最便宜----教您做大老板的相关营销教材.
-★★★★★白手起家从中国老板网开始
+OK now I do not get the Oops but modprobe just hangs when I modprobe
+snd-emu10k1.  I will try again.
 
-●http://www.gd123.com
-●http://www.gd123.com
-●http://www.gd123.com
+Lee
 
-
-
-★★★白手起家从中国老板网开始
 
 
 -------------------------------------------------------
