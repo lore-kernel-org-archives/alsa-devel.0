@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000994]: 5.1 output broken since ~1.0.8 with VIA8237
-Date: Mon, 14 Mar 2005 23:42:29 +0100
-Message-ID: <6310b02cbcb63c56d1f9abca3cc4eb4a@bugtrack.alsa-project.org>
+From: James <whitetigerx7@sbcglobal.net>
+Subject: Extra Emu10k1 documentation that may be helpful
+Date: Mon, 14 Mar 2005 15:17:50 -0800
+Message-ID: <42361B9E.2080604@sbcglobal.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 371171EB
-	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2005 23:42:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,57 +14,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I found that by loading the snd-emu10k1-synth module and such like 
+awesfx, pmidi, and timidity up using the rc.local script in my Slackware 
+10.1 installation worked very well if not very simplified. Here's a copy 
+and sample of what I used:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=994> 
-======================================================================
-Reported By:                mru
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   994
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             03-14-2005 23:42 CET
-Last Modified:              03-14-2005 23:42 CET
-======================================================================
-Summary:                    5.1 output broken since
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1#1.0.8 with VIA8237
-Description: 
-The surround51 device on VIA8237 stopped working some time after alsa-lib
-version 1.0.7.  Driver v1.0.8 works properly with older library versions.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+echo "Loading Emu10kx Wavetable Synthesizer module: /sbin/modprobe 
+snd-emu10k1-synth"
+/sbin/modprobe snd-emu10k1-synth
+echo "Loading AWESFX Soundfonts for Emu10kx Wavetable Synthesizer: 
+/usr/bin/asfxload /etc/midi/CT4MGM.SF2"
+/usr/bin/asfxload /etc/midi/CT4MGM.SF2
+echo "Starting TiMidity Software Midi Synthesizer: /usr/bin/timidity -iA 
+-B2,8 -Os -EFreverb=0 > /dev/null"
+/usr/bin/timidity -iA -B2,8 -Os -EFreverb=0 > /dev/null &
+echo "Loading PMidi ALSA Midi Sequencer and Ports: /usr/bin/pmidi -l"
+/usr/bin/pmidi -l &
+echo "Defining Pmidi Default Sequencer Port: /usr/bin/pmidi -p 65:0"
+/usr/bin/pmidi -p 65:0 &
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-With alsa-lib 1.0.8, there is this error: ALSA lib
-pcm_hw.c:407:(snd_pcm_hw_channel_info) SNDRV_PCM_IOCTL_CHANNEL_INFO
-failed: Inappropriate ioctl for device
-
-With CVS of today (2005-03-14), about 100 ms of random sound is looped.
-
-Using the surround40 device works, with some channels moved around.
-
->From the output of aplay -v, it appears that the surround51 device is
-surround40, with some channel rerouting applied, all else being equal. 
-Could there be a bug in the route plugin?
-
-The same problem occurs with surround41 and surround50 as well.
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-14-05 23:42 mru            New Issue                                    
-======================================================================
-
-
+For other users it would have to be editted some but documentation on 
+this is lacking and most people don't know enough on how easy it is to 
+setup Midi on Linux.
 
 
 -------------------------------------------------------
