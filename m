@@ -1,16 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: aoss: problems with using functions in dlfcn.h
-Date: Fri, 11 Jun 2004 09:43:13 +0200 (CEST)
+From: noreply@alsa-project.org
+Subject: [ALSA - utils 0000332]: Unable to enable 'Mic as Center/LFE'
+Date: Fri, 11 Jun 2004 09:12:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0406110939170.1785@pnote.perex-int.cz>
-References: <40C8F53B.4010303@superbug.demon.co.uk>
+Message-ID: <9d79ebd36bdcdadd0f5d96354a1d55f0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from outgoing.perex-int.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A29C724E
-	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2004 09:42:28 +0200 (MEST)
-In-Reply-To: <40C8F53B.4010303@superbug.demon.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8209822C
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2004 09:12:33 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,36 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 11 Jun 2004, James Courtier-Dutton wrote:
 
-> I have an application (xine) that opens oss output from a plugin.
-> This plugin is loaded into xine using dlopen(), dlsym() and friends.
-> When, during runtime, dlsym() resolves the open() function, it bypasses 
-> aoss, and links directly to open() instead of linking to the aoss's 
-> version of open().
-> 
-> Is there any way to fix this problem with dlopen and friends.
-> 
-> Although we don't actually need aoss to work with xine, because xine has 
-> good native alsa support, it just highlights a possible problem that 
-> other apps might have.
+The following bug has been SUBMITTED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0332
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                Johan Gorter
+Assigned To:               =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - utils
+Bug ID:                     332
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-11-2004 09:12 CEST
+Last Modified:              06-11-2004 09:12 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    Unable to enable 'Mic as Center/LFE'
+Description:=20
+In the alsa versions I have used thus far (1.0.3 and 1.0.5) I am unable t=
+o
+enable the 'Mic as Center/LFE' option of my onboard AC '97. Alsamixer
+cannot change its value from 0 and record / mute is also disabled. I
+tracked the problem by using alsactl to store the settings. This results
+in a file where this option (nr 47 on my system) is an Integer with the
+comment that the value may be from 0 to 0. On other systems I found out
+that this is supposed to be a Boolean which can be switched on and off.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-I don't know a working solution, because LD_PRELOAD works only for
-the main code not dlopen one.
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-11-04 09:12 Johan Gorter   New Bug                                    =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Perhaps, it's time to persuade all developers using OSS API to use my OSS 
-redirector from the alsa-oss package. See alsa-oss/oss-redir/README .
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
