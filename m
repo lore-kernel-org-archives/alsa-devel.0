@@ -1,14 +1,14 @@
-From: Hanbiao Wang <hbwang@lecs.cs.ucla.edu>
-Subject: Re: what is trigger time?
-Date: Fri, 8 Oct 2004 10:16:15 -0700 (PDT)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: rawmidi
+Date: Fri, 08 Oct 2004 18:18:10 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0410081004450.27057@concorde.cs.ucla.edu>
-References: <Pine.LNX.4.58.0410071801160.18124@concorde.cs.ucla.edu>
- <1097208527.9372.50.camel@krustophenia.net>
+Message-ID: <Pine.HPX.4.33n.0410081749220.12584-100000@studcom.urz.uni-halle.de>
+References: <Pine.LNX.4.58.0410081115480.13304@pat.dumaisnet.ca>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1097208527.9372.50.camel@krustophenia.net>
+In-reply-to: <Pine.LNX.4.58.0410081115480.13304@pat.dumaisnet.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,57 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Patrick Dumais <pat@dumaisnet.ca>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 8 Oct 2004, Lee Revell wrote:
+Patrick Dumais wrote:
+> I noticed that some drivers tend to send "batch" note-on commands. I mean:
+> instead of sending 90h,01h,7Fh everytime, it sends a first 90,01,7f then
+> just 02,7f etc...
 
-> On Thu, 2004-10-07 at 21:07, Hanbiao Wang wrote:
-> > Hi, All
-> >     According to the ALSA documentation, the following two functions
-> > snd_pcm_status_get_trigger_tstamp()
-> > snd_pcm_status_get_trigger_htstamp()
-> > are suppose to get the "trigger time". However, I can not find any
-> > documents that explains or define the meaning of the "trigger time".
-> > Is that the time when a whole period of samples in the buffer is ready to
-> > be read in? Could somebody please give me a hint? Thanks a lot.
-> >
->
-> I don't have the source in front of me but I would expect this to be the
-> time when the ALSA middle layer executed the trigger callback.  This
-> happens when a PCM is stopped, started, or paused.
->
-> Lee
+This is running status.  It is used with all status bytes, not only
+note-on commands.
 
-   Thanks for Lee's answer. Other than start, stop, pause of PCM, are
-there any other events that could be regarded as triggered?
+> This is very annoying because my application expects to receive a
+> command byte each time.
 
-After I started a PCM for capture, I immediately examined the trigger time
-by calling snd_pcm_status_get_trigger_tstamp(). Then I read data by
-calling snd_pcm_readi(). After that I examine the trigger time again by
-calling the same snd_pcm_status_get_trigger_tstamp(). However, these two
-trigger time has a difference of 1108542 us. The first trigger time could
-be the start of PCM, I really have no clue of what the second trigger time
-corresponds to. Please enlighten me on this issue. Thanks a lot in
-advance.
+Running status is a required feature of the MIDI specification.  Your
+application must be able to handle this.
 
-Hanbiao
+> the emu10k1 driver doesn't do that, but snd-virmidi does.
+
+The MIDI device connected to your card doesn't do that.
+
+> Is there any way that I can configure virmidi so that it sends commands
+> the conventional way,
+
+You'd have to insert a call to snd_midi_event_no_status() at the
+appropriate place in virmidi.c.
+
+> using the alsa sequencer interface is not an alternative method
+> that I want to consider for the scope of my applications
+
+Using the sequencer is recommended if you don't want to deal with the
+raw MIDI data.
 
 
->
->
->
-> -------------------------------------------------------
-> This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
-> Use IT products in your business? Tell us what you think of them. Give us
-> Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out more
-> http://productguide.itmanagersjournal.com/guidepromo.tmpl
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
+Regards,
+Clemens
+
 
 
 -------------------------------------------------------
