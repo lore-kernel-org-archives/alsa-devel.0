@@ -1,12 +1,14 @@
-From: Dan Aloni <da-x@colinux.org>
-Subject: Re: ALC658 rev 0 - a problem with Rear Right
-Date: Mon, 7 Mar 2005 14:28:00 +0200
-Message-ID: <20050307122800.GA27123@localdomain>
-References: <20050305153503.GA10747@localdomain> <20050307104214.GA17817@localdomain>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: 2.6: sound/isa/gus/gus_lfo.c is unused (fwd)
+Date: Mon, 7 Mar 2005 13:15:59 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0503071310140.1751__2886.37413546002$1110198383$gmane$org@pnote.perex-int.cz>
+References: <20050306224159.GQ5070@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20050307104214.GA17817@localdomain>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8E7391CD
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2005 13:27:07 +0100 (MET)
+In-Reply-To: <20050306224159.GQ5070@stusta.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,46 +18,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>
+To: Adrian Bunk <bunk@stusta.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 07, 2005 at 12:42:14PM +0200, Dan Aloni wrote:
-> On Sat, Mar 05, 2005 at 05:35:03PM +0200, Dan Aloni wrote:
-> > Hello,
-> > 
-> > Somewhere between 2.6.8 and 2.6.11 my alc658 (rev 0) card stopped 
-> > outputing audio on the Rear Right speaker. Of course I checked the
-> > cables and there's nothing wrong with the speaker.
-> > 
-> [..]
-> > Assuming that I'm a capable kernel hacker, do you have any advice 
-> > about how to debug this?
+On Sun, 6 Mar 2005, Adrian Bunk wrote:
+
+> Hi Jaroslav,
 > 
-> I've isolated the problem to the difference between these two
-> versions:
+> I didn't receive any answer regarding this question.
 > 
->     alsa-driver-1.0.8rc1
->     alsa-driver-1.0.8rc2
->     
-> By experimentation the changes between rc1 and rc2 have caused 
-> the problem.    
+> Any comments or shall I send a patch to remove this file?
 
-After a more few experiments, I was able to further isolate the 
-changes that caused the problem.
+Yes, the file is unused, but it's a library for wavetable stuff which has 
+not been ported from my linux ultra sound project yet.
 
-The problem was introduced in the following changeset, which
-was supposed to cleanup things but accidently broke something.
+I removed this file in our CVS tree, so it will be removed also in ALSA BK 
+tree in next merge.
 
-"[ALSA] Clean up and fix stereo mutes" :
+					Thanks,
+						Jaroslav
 
-http://linus.bkbits.net:8080/linux-2.5/cset@41da4592A-ipuvcg54DHv3jB__kcaA?nav=index.html|src/|src/sound|src/sound/pci|src/sound/pci/ac97|related/sound/pci/ac97/ac97_codec.c
-
-If you need assistance, please tell me.
-
--- 
-Dan Aloni
-da-x@colinux.org
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
