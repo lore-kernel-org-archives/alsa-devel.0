@@ -1,11 +1,10 @@
-From: Adam Hunt <kinema@gmail.com>
-Subject: CMI8738 quit working with recent kernel
-Date: Wed, 29 Sep 2004 20:09:19 -0700
+From: Brad Midgley <bmidgley@xmission.com>
+Subject: bluetooth headset audio
+Date: Wed, 29 Sep 2004 21:41:15 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <b476569a04092920097a33948e@mail.gmail.com>
-Reply-To: Adam Hunt <kinema@gmail.com>
+Message-ID: <415B805B.9040900@xmission.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -19,16 +18,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I just upgraded from a painfully outdated 2.6.0-test6 kernel to
-2.6.8.1 and now my CMI8738 quit working.  All the modules are loaded
-and /proc/asound/cards shows
+Hi
 
-0 [CMI8738        ]: CMI8738 - C-Media PCI CMI8738
-                     C-Media PCI CMI8738 (model 37) at 0xa800, irq 12
+I am working with the group doing bluetooth audio. 
+(http://sourceforge.net/projects/bluetooth-alsa/)
 
-Any thougts?
+Right now we have alsa patches to add a bluetooth alsa device to the 
+kernel. It works in conjunction with a userspace bluetooth daemon. It's 
+not ideal. For one thing, we should be able to support multiple 
+bluetooth headsets at once but that would require more kernel changes.
 
---adam
+Is there any way to have an alsa sound driver that lives mostly in 
+userspace? If there was something like that, we could load up one driver 
+for each headset we wanted to support. We have to route things through 
+userspace anyway to use the bluetooth device. It might also be easier to 
+get patches accepted. :)
+
+Brad
 
 
 -------------------------------------------------------
