@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Am I asking the right people ?
-Date: Wed, 27 Nov 2002 08:24:26 -0500
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: smix plugin available?
+Date: Thu, 28 Nov 2002 00:21:15 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18H27W-0003Oe-00@sc8-sf-list1.sourceforge.net>
-References: <3DE472FA.1060300@tele-ip.com>
+Message-ID: <3DE4C6CB.8020407@superbug.demon.co.uk>
+References: <Pine.LNX.4.21.0211271149000.2146-100000@mailserver.intern.bfad.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 27 Nov 2002 18:23:38 +1100."
-             <3DE472FA.1060300@tele-ip.com>
+In-Reply-To: <Pine.LNX.4.21.0211271149000.2146-100000@mailserver.intern.bfad.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,41 +17,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Bruce Paterson <bruce@tele-ip.com>
-Cc: alsa development <alsa-devel@lists.sourceforge.net>
+To: tomasz motylewski <T.Motylewski@bfad.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, Paul Davis <paul@linuxaudiosystems.com>, Florian Bomers <Florian.Bomers@sun.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->Am I sending these queries about the operation of alsa through the API 
->to the right place ?  I'm trying to use alsa for a real scientific
->application and I'm starting to worry it simply isn't ready yet.
+tomasz motylewski wrote:
 
-the API is ready. the documentation is not. some of us have been using
-ALSA to develop serious audio applications for several years. there
-are no substantive issues with the API at this time.
-
->However, the silence I get in reply to queries is golden (unlike the
->distortion I'm getting from the soundcard) !
-
-the problem with your question is that there's no way to know whether
-its a software issue or hardware issue without getting your code and
-running it ourselves. there are actually very few developers in the
-ALSA team, and all of them are extremely busy. the lack of response to
-your question has nothing to do with the state of the API and
-everything to do with people's workloads and their interest in solving
-yet another common problem with audio software (the problem you're
-describing has happened to me often, and can be caused by several
-different things in your code).
-
->It's possible I'm not using the alsa API in the way intended and 
->bringing the problems upon myself, but please, somebody tell me !
+>Please stop the complication of "available/delay" etc. Just the raw pointer.
+>Each application knows where its application pointer is, so it can easily
+>calculate delay/available and decide for itself whether there was an overrun or
+>not.
 >
->It would be a real blow to the progress of linux in this company if all 
->the alsa work had to be scrapped.
+>  
+>
+I use the delay() function.
+I help write a multi media application that needs to sync audio to video.
+So the question I ask alsa-lib is "If I write() now, how long will it be 
+before those samples come out of the speakers?"
+So, I very much need delay(), but I also use available so that I can 
+program alsa when to exit the snd_pcm_wait() poll. I.E. Only exit the 
+snd_pcm_wait when there are enough free space in the buffer for me to 
+bother with a new write() call.
 
-i would point out that "scrapping ALSA" would be pretty stupid when
-its the standard audio API in the 2.5/2.6 kernel.
+Cheers
+James
 
---p
+
 
 
 -------------------------------------------------------
