@@ -1,12 +1,12 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: read time information
-Date: Fri, 15 Nov 2002 10:03:19 -0500
+From: Robert Spier <rspier@pobox.com>
+Subject: Using alsa-lib for timing
+Date: Fri, 15 Nov 2002 09:36:08 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18Chwc-0003K5-00@sc8-sf-list1.sourceforge.net>
-References: <001201c28c91$cc64f470$461d8481@profi>
+Message-ID: <15829.12424.589673.766811@rls.cx>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Fri, 15 Nov 2002 11:28:53 +0100."
-             <001201c28c91$cc64f470$461d8481@profi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,67 +15,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: men@ife.ee.ethz.ch
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->For synchronization purpose I need the current time of my sound card
->(information on the sample that is currently played out might be
->sufficient / ADAT-Synch timecode) I did anticipate that the functions 
 
-the code to read the ADAT sync timecode is written, but is not
-"exported" to a usable part of the ALSA API. it will likely show up as
-a readable PCM "control".
+[Summary of this message:
+  I want to use alsa for timing of video frames, and want alsa to
+  trigger a wakeup every .01466 seconds.  But the documentation is
+  sparse in this area]
 
->snd_pcm_hwsynch(...)
 
-never heard of that function. you learn something new every day :)
+I'm attempting to use alsa-lib as a timing tool for a specialized
+movie playback engine.  It _must_ tick/wakeup at 24fps (every .04166
+sec) and the input audio will be at 44.1khz/2 channel/16bit per chan.
 
->snd_pcm_delay(...)
->
->must be used to get the current sample positions of the DAC/ADC. But
->these functions do not seem to work on my system (alsa-0.9.0rc5 and an
->RME9652 sound card). Besides that I want to read the ADAT-Synch timecode
->instead of the buffer relative sample offset.
+For legacy reasons we need to use the poll based interface
+(getting the file handle from snd_pcm_poll_descriptors()).  
 
-they are two completely different things. one is not a substitute for
-the other.
+Alsa will tick regularly at .0416 seconds if the period size is set to
+1837[1] samples.  This is suboptimal because:
+    1- this is a weird period size - generally powers of 2 are used
+    (1024,2048,4096)
 
->Therefore I was looking for another solution to get the time. I tried to
->use the ALSA timer interface
->(http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2timer_8c-example.
->html#example_test_timer). But unfortunately I am getting a "timer time
->out!", which means that 
->
->snd_timer_poll_descriptors(...)
->
->did fail. Is the timer interface implemented for the By the RME9652? By
->the way I do not understand how the sample number to the read time do
->correlate with each other.
+    2- for truly accurate 24fps playback we need 1837.5 samples/video
+    frame, which can be approximated by alternating between 1837 and
+    1838 samples/video frame.  (And the period size cannot be changed
+    at runtime.)
 
-the "timer" interface is part of the core of the ALSA drivers, its not
-specific to any particular driver. i have no idea how to use it
-however, and its not documented anywhere except for a few messages in
-the archives of this list and/or alsa-user.
+The general solution to this with other sound libraries (OSS and IRIX)
+is to use a rational period size and set a wakeup point.  In ALSA,
+this is done with snd_pcm_sw_params_set_avail_min, but it doesn't have
+the expected effect. 
 
-but first you need to define what it is that you are trying to
-do. bringing the ADAT sync timecode into the picture greatly confuses
-things because this has nothing to do with the other functions you are
-describing. ADAT sync time can move backwards, can speed up, slow down
-etc. 
+Because it's only a _minimum_ the wakeup can be delayed (usually until
+a multiple of the period size) is reached.  This screws up the
+timing.  I saw something in the alsa-devel archives that wakeup points
+(avail_min) settings can only be powers of two... which is different
+than OSS.)
 
->I would appreciate any help with this because if I cannot solve this
->problem, I have to move to Windows ASIO (what a pitty!) ASIO provides
->the functions
->
->ASIOGetSamplePosition(...)
->bufferSwitchTimeInfo(...) 
->
->which do exactly what I need.
+Am I missing something obvious here?  
+Are there any examples of code (or other tools?) doing similar things?
 
-and what is it that you need? what are you trying to do?
+Please don't recommend I switch to asynchronous ticks, sadly, that
+isn't an option for this code.
 
---p
+Thanks!
+
+-R
+
+
+Footnotes: 
+[1]  24fps = .041666 seconds/video frame
+     44100hz = samples/seconds
+     1837.5 samples/video frame
+     
+     
+
 
 
 
