@@ -1,19 +1,14 @@
-From: Kristof Pelckmans <Kristof.Pelckmans@antwerpen.be>
-Subject: Re: dsnoop, dshare and dmix plugins
-Date: Mon, 24 Mar 2003 22:15:20 +0100
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: RE: volume always 0 ?!?
+Date: Tue, 25 Mar 2003 10:27:03 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1048540520.3e7f75685eb9e@albert.homedns.org>
-References: <Pine.LNX.4.44.0303241115360.6755-100000@pnote.perex-int.cz>
+Message-ID: <XFMail.20030325102703.pochini@shiny.it>
+References: <1048463664.4150.46.camel@Jay>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from yoda.planetinternet.be (anvers-smtp.planetinternet.be [195.95.30.152])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA20100
-	for <alsa-devel@alsa-project.org>; Mon, 24 Mar 2003 22:16:11 +0100
-In-Reply-To: <Pine.LNX.4.44.0303241115360.6755-100000@pnote.perex-int.cz>
-Content-Disposition: inline
+In-Reply-To: <1048463664.4150.46.camel@Jay>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,106 +17,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-Hello again,
+On 23-Mar-2003 Giuliano Pochini wrote:
+>
+> setvolume control callback always get uc->value.integer.value[x]==0. Any
+> ideas ?
 
-Quoting Jaroslav Kysela <perex@suse.cz>:
-> The 32-bit mixing code is not debugged. Please, could you try to change
-> one line in pcm_dmix.c (alsa-lib/src/pcm/pcm_dmix.c) from
-> '#ifdef __i386__' to '#ifdef __i386XX__' and recompile library?
-> We'll see then if it's a problem with the i386 assembler code.
-This works !!! It only plays to the last channel mentioned in the dmix configuration though (so channel 1, but not channel 0).
+Solved. I had to remove .access=SNDRV_CTL_ELEM_ACCESS_READWRITE and .index=0
+from snd_kcontrol_new_t structure init. Strange.
 
-> Can I see the output from 'aplay -v -D plug:dmix_analog tv.wav'?
-aplay -v -D plug:dmix_analog tv.wav
-Playing WAVE 'tv.wav' : Signed 32 bit Little Endian, Rate 48000 Hz, Stereo
-Plug PCM: Route conversion PCM (sformat=S32_LE)
-Transformation table:
-0 <- 0*0.5 + 1*0.5
-Its setup is:
-stream       : PLAYBACK
-access       : RW_INTERLEAVED
-format       : S32_LE
-subformat    : STD
-channels     : 2
-rate         : 48000
-exact rate   : 48000 (48000/1)
-msbits       : 32
-buffer_size  : 6553
-period_size  : 3276
-period_time  : 68250
-tick_time    : 0
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 3276
-xfer_align   : 3276
-start_threshold  : 6552
-stop_threshold   : 6553
-silence_threshold: 0
-silence_size : 0
-boundary     : 1717829632
-Slave: Direct Stream Mixing PCM
 
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S32_LE
-subformat    : STD
-channels     : 1
-rate         : 48000
-exact rate   : nan (0/0)
-msbits       : 0
-buffer_size  : 6553
-period_size  : 3276
-period_time  : 68250
-tick_time    : 0
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 3276
-xfer_align   : 3276
-start_threshold  : 6552
-stop_threshold   : 6553
-silence_threshold: 0
-silence_size : 0
-boundary     : 1717829632
-Hardware PCM card 0 'M Audio Delta 410' device 0 subdevice 0
+Bye.
 
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S32_LE
-subformat    : STD
-channels     : 10
-rate         : 48000
-exact rate   : 48000 (48000/1)
-msbits       : 24
-buffer_size  : 6553
-period_size  : 3276
-period_time  : 68250
-tick_time    : 10000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 3276
-xfer_align   : 3276
-start_threshold  : 1
-stop_threshold   : 1717829632
-silence_threshold: 0
-silence_size : 1717829632
-boundary     : 1717829632
-
-Cheers !
-
-Kristof
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+This SF.net email is sponsored by:
+The Definitive IT and Networking Event. Be There!
+NetWorld+Interop Las Vegas 2003 -- Register today!
+http://ads.sourceforge.net/cgi-bin/redirect.pl?keyn0001en
