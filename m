@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: snd_trident in 2.6.5 doesn't work after suspending
- to disk.
-Date: Fri, 9 Apr 2004 13:18:42 +0200 (CEST)
+From: David Barron <dlbarron@nc.rr.com>
+Subject: Me again
+Date: Fri, 09 Apr 2004 09:21:28 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0404091318200.3733@pnote.perex-int.cz>
-References: <20040409094649.GA19170@localhost>
+Message-ID: <4076A358.3050800@nc.rr.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040409094649.GA19170@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,29 +15,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jakob Lell <jlell@jakoblell.de>
-Cc: Alsa-devel@lists.sourceforge.net
+To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 9 Apr 2004, Jakob Lell wrote:
+Just to see if it was me doing something wrong I've installed Mandrake 
+10 and Alsa, both of which use alsa and neither of which are producing 
+any sound in my speakers.
+Since oss works, I'd have to say there is a problem in the snd-intel8x0 
+that hasn't been resolved since at least 1.0.2.
+I've also done some serious searching on google and it doesn't look like 
+I'm the only person having a problem.  There are hundreds of hits for 
+alsa intel8x0 from people with trouble and no resolution.
 
-> Hi,
-> I'm using Linux 2.6.5 and the driver snd_trident. When I suspend to
-> disk (echo -n 4 > /proc/acpi/sleep) and resume again, the sound driver
-> won't work any more. It will work again after running rmmod
-> snd_trident;modprobe snd_trident. However, to do so I have to kill all
-> programs using sound (i.e. artsd, mplayer,...). Is there any way to
-> make sound work again after suspending without terminating all
-> this programs?
-
-The trident driver does not have suspend/resume code yet.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
