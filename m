@@ -1,14 +1,14 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Re: anybody else OK with current CVS *and* SMP?
-Date: Thu, 7 Aug 2003 09:18:25 +0100 (BST)
+From: juan <jcb@niluge.net>
+Subject: Re: maestro3 driver hangs dell laptop
+Date: Thu, 7 Aug 2003 10:28:06 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030807081825.15599.qmail@web40603.mail.yahoo.com>
-References: <3F31FDB1.8070804@mindcom.fi>
+Message-ID: <20030807082805.GA15465@athena>
+References: <20030803210237.GA1176@zeus.homenet> <s5hr840kxyt.wl@alsa2.suse.de> <20030805140827.GB25707@athena> <s5hptjkkxbt.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F31FDB1.8070804@mindcom.fi>
+Content-Disposition: inline
+In-Reply-To: <s5hptjkkxbt.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,37 +17,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Antti Boman <antti.boman@mindcom.fi>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- --- Antti Boman <antti.boman@mindcom.fi> wrote:
-> Ok, there's a difference compared to my problem. My
-> computer locks up 
-> within a couple of seconds. So, obviously we're not
-> talking about the 
-> same problem. Also, I have to install newer ALSA and
-> JACK to see if the 
-> lock-up is still there.
+On Tuesday 05 August, 2003 ? 04:12:22PM +0200, Takashi Iwai wrote:
+> do you see the LED blinking?
+> if yes, you could see a last kernel dieing message in the log terminal
 
-That's interesting. I use CVS ALSA and SMP (although
-not JACK), and I have been having lock-ups too ever
-since last Sunday evening (3rd August). However, at
-least some of my lock-ups must be hardware related
-because I've had a horrible time fscking my root
-partition afterwards. (But THAT could be caused
-because I can't load my CPUs' microcode until the root
-partition is mounted OK...).
-
-I shall try removing ALSA and seeing if that improves
-thing. It would be just my luck to have multiple
-lock-up problems all at once!
-
-Chris
-
-
-________________________________________________________________________
-Want to chat instantly with your online friends?  Get the FREE Yahoo!
-Messenger http://uk.messenger.yahoo.com/
+no the leds stay on.
 
 
 -------------------------------------------------------
