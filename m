@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000751]: flash in firefox/mozilla/konqeror dies a horrible death taking the brower with it
-Date: Tue, 28 Dec 2004 02:30:19 +0100
-Message-ID: <9ce5fdb54ac0c5fdd5f4cab58cc8c230@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
+Date: Tue, 28 Dec 2004 05:12:11 +0100
+Message-ID: <e16ceff147ca5c2b862e246a23bfb1a2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A919C269
-	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2004 02:30:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8C99F268
+	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2004 05:12:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,89 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=751> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
 ======================================================================
-Reported By:                koni
-Assigned To:                jcdutton
+Reported By:                Q3Man
+Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   751
-Category:                   PCI - ca0106
+Issue ID:                   752
+Category:                   PCI - emu10k1x
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware 10.0 and Slack-current
-Kernel Version:             2.4.28/2.6.9
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
-Date Submitted:             12-28-2004 02:30 CET
-Last Modified:              12-28-2004 02:30 CET
+Date Submitted:             12-28-2004 05:12 CET
+Last Modified:              12-28-2004 05:12 CET
 ======================================================================
-Summary:                    flash in firefox/mozilla/konqeror dies a horrible
-death taking the brower with it
+Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
-For a complete list of hardware in the box you can hit
-http://www.iamnotanerd.com
-Asus a7v
-athlon 1.3 underclocked to 1.0
-sblive! 24bit using ca0106
-nvidia geforce2 w/64mb
-Everything sounds good in games, xine, xmms, but when I open firefox, no
-sound. I checked permissions, were good. I opened flash and flash does ok
-until I hover over something with a sound element.  Then the flash gets
-choppy and halts. I cannot close firefox/mozilla. Kill client leaves a
-zombied process that must be killed. Switched to nv (instead of nvidia)
-drivers same issue.  Pulled firefox/flash from a known working install
-played half a sound then same issue.  Halted artsd  same issue. Removed
-drivers and modded modules.conf to not load, flash works fine.
+I'm having some problems with alsa since 1.0.6a. Previously I just had the
+later versions masked, but now various kde packages require the latest
+alsa, so I'm having to tackle it now. ALSA seems to start normally,
+however I get this error in dmesg: 
+EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
+
+I also get this error when running alsamixer: 
+alsamixer: function snd_ctl_open failed for default: No such device 
+
+And similar ones in other alsa programs. 
+
+Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
+code and it seems that the error is vaguely interrupt related, but I could
+not find the code that produces error -16. I've swapped interrupts around
+and disabled non-essential devices (usb, serial, parallel ports, removed
+network cards and sound cards - although that last one proved slightly
+less than helpful :) I've changed from having my bios manage irq's to
+having the OS handle them with zero success. 
+
+I've looked around for that error code in google for the last few weeks -
+since the release of 1.0.6a with limited success. Nothing relevant to my
+situation. 
+
+Important configs and error messages:
+$ lspci -v |grep audio -A4
+0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
+EMU10k1X
+        Subsystem: Creative Labs: Unknown device 1003
+        Flags: bus master, medium devsel, latency 32, IRQ 12
+        I/O ports at d000
+        Capabilities: [dc] Power Management version 2
+(It is an actual EMU10k1X and not the Dell bastardized version)
+
+$ /etc/init.d/alsasound start; dmesg |tail -n1
+ * Loading ALSA drivers...
+ * Using ALSA OSS emulation
+ * Loading: snd-mixer-oss
+ * Loading: snd-pcm-oss
+ * Loading: snd-seq-oss
+ * Running card-dependent scripts
+ * Restoring Mixer Levels                                                
+[ ok ]
+EMU10K1X: probe of 0000:00:09.0 failed with error -16
+
+$ uname -a
+Linux tobin1 2.6.9-gentoo-r9
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
+2004 i686 AMD
+Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
+
+If anyone needs any other config information, please let me know. Again,
+it works perfectly fine in 1.0.5a, the problems only appear in later
+versions.
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 02:30 koni           New Issue                                    
-12-28-04 02:30 koni           Distribution              => Slackware 10.0 and
-Slack-current
-12-28-04 02:30 koni           Kernel Version            => 2.4.28/2.6.9    
+12-28-04 05:12 Q3Man          New Issue                                    
+12-28-04 05:12 Q3Man          File Added: einfo                            
+12-28-04 05:12 Q3Man          Distribution              => Gentoo          
+12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
 ======================================================================
 
 
