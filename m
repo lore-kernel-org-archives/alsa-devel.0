@@ -1,65 +1,92 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [linux-audio-user] novation remote 25 usb midi controller
-Date: Fri, 01 Aug 2003 09:26:52 +0200 (METDST)
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0308010917360.22186-100000@studcom.urz.uni-halle.de>
-References: <3F29806E.24D0277E@zhevny.com>
+From: "Thomas Charbonnel" <thomas@undata.org>
+Subject: Re: [ANN] hdspmixer-1.1
+Date: Fri, 1 Aug 2003 16:08:07 +0200 (CEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <32930.80.11.13.118.1059746887.squirrel@www.undata.org>
+References: <200307301143.h6UBhgCq019918@localhost.localdomain>
+        <3F291F31.1060603@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-reply-to: <3F29806E.24D0277E@zhevny.com>
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: linux-audio-user@music.columbia.edu
-Cc: alsa user <alsa-user@lists.sourceforge.net>, alsa devel <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3F291F31.1060603@boosthardware.com>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: pshirkey@boosthardware.com
+Cc: thomas@undata.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Eric Dantan Rzewnicki wrote:
-> Jul 31 16:35:27 box1 kernel: hub.c: USB new device connect on bus1/1,
-> assigned device number 3
-> Jul 31 16:35:27 box1 kernel: usb.c: USB device 3 (vend/prod
-> 0x1235/0x4661) is not claimed by any active driver.
-> Jul 31 16:35:30 box1 usb.agent: ... no modules for USB product
-> 1235/4661/101
+> Using a multiface with original firmware rev.
 >
-> box1:~# cat /proc/bus/usb/devices
-> ...
-> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  3 Spd=12  MxCh= 0
-> D:  Ver= 1.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 8 #Cfgs=  1
-> P:  Vendor=1235 ProdID=4661 Rev= 1.01
-> S:  Manufacturer=Novation EMS
-> S:  Product=ReMOTE25 V1.0
-> C:* #Ifs= 1 Cfg#= 1 Atr=20 MxPwr=250mA
-> I:  If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+> I was using the app last night and it seemed to work well except that
+> today we have only a very long blank track.
+>
 
-Class ff is "vendor-specific", so it's not 100% compatible with the
-USB Audio Specification.
+What do you mean ?
 
-> Steve mentioned that i might need the snd-usb-midi driver instead, but
-> if i remember correctly it was merged into the snd-usb-audio driver a
-> while back. Is that true?
+> Testing today with ardour reveals that the mute buttons have no effect
+> on the recorded signal.
+>
 
-Yes, it's true (that the former is not true).
+That's the way it's supposed to work. The app only controls routing. As
+you may know there is no way to control the input level on the hdsp, no
+way to lower thus to mute the input signal. So even if the input is muted,
+there still is audio in the buffer which gets recorded, it's just not
+routed to the outputs.
 
-> I've read about special case quirks being added for specific usb
-> devices, but haven't understood what they are... Could that be possible
-> with the remote 25?
+> How do the mute buttons work? I fond it difficult to distinguish between
+>  on and off. Why is the default color red? Does that mean they are on by
+>  default?
+>
 
-Those are for devices that are almost compatible with the spec. This
-may or may not be the case with the Remote25.
+There are per tracks mute and solo, and global mute and solo buttons. To
+mute a track, you need to enable muting (global button) and then mute the
+particular track you want to mute. When a track gets muted (when muting is
+effective somewhere) all the active mute buttons (per track and global)
+light up.
+The same applies to solo.
 
-Please post the output of "lsusb -v".
+> IMO the default should be no color and when they are on they should be
+> red.
+>
+
+I copied the original app behaviour for this. If you never used Totalmix
+in the past I encourage you to read the Totalmix section in the Multiface
+documentation available in pdf format from RME's website.
+My plans for the future are to keep conforming to the original, and maybe
+add non interfering linux specific extentions (e.g. ladcca support, remote
+control via alsa-seq).
+
+> I also missed a control for the headphone output.
+>
+
+In the last row (outputs), rightmost, you have the AN.L and AN.R tracks.
+These are the line outs. To route signal to the line outs you have to
+raise the level of the line outs (AN.L and AN.R, right mouse button on one
+of them automatically ajusts the level of the other accordingly), and then
+raise the volume of the track you want, checking that the track's
+destination is 'Analog'.
+
+> I also found that aplay could only work at 16 bit. I will update to
+> current cvs soon to check that though.
+>
+
+This is strange. Let me know, or give me more details, please. Using the
+hw alsa interface the hdsp can only be opened using all available
+channels, in non interleaved mode, and with a depth of 24 bits (packed in
+4 bytes). To play a 16 bits soundfile with aplay you should use the plughw
+interface that will convert the signal on the fly to meet the card's
+requirements.
+
+Thomas
 
 
-Regards,
-Clemens
 
 
 
