@@ -1,24 +1,14 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: The ALSA Situation
-Date: Thu, 2 Dec 2004 02:48:35 +0100
-Message-ID: <20041202024835.16d81220@mango.fruits.de>
-References: <200411102113.iAALDLUN001061@localhost.localdomain>
-	<Pine.LNX.4.58.0411101426260.2301@ppc970.osdl.org>
-	<Pine.LNX.4.58.0411110714280.2179@pnote.perex-int.cz>
-	<Pine.LNX.4.58.0411102241240.2301@ppc970.osdl.org>
-	<s5his8cfiot.wl@alsa2.suse.de>
-	<Pine.LNX.4.58.0411110855380.2301@ppc970.osdl.org>
-	<s5hhdnwfgbz.wl@alsa2.suse.de>
-	<Pine.LNX.4.58.0411111021520.2301@ppc970.osdl.org>
-	<s5hekizfo0n.wl@alsa2.suse.de>
-	<Pine.LNX.4.58.0411120741300.2301@ppc970.osdl.org>
-	<20041112230617.41c5073e@mango.fruits.de>
-	<Pine.LNX.4.58.0411131138490.1736@pnote.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000698]: Random beeps, ticks and clicks
+Date: Thu, 2 Dec 2004 02:56:29 +0100
+Message-ID: <01c825664462c5db1466225776ecd083@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0411131138490.1736@pnote.perex-int.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E587023D
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 02:56:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -28,35 +18,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Linus Torvalds <torvalds@osdl.org>, Takashi Iwai <tiwai@suse.de>, Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 13 Nov 2004 11:42:54 +0100 (CET)
-Jaroslav Kysela <perex@suse.cz> wrote:
 
-> On Fri, 12 Nov 2004, Florian Schmidt wrote:
-> 
-> > Sadly i have no idea about how difficult it would be to code up such a
-> > virtual soundcard module, but i suppose some of the
-> > resampling/mixing/conversion code in ALSA-lib can be reused. I have never
-> > attempted to program a module, so i leave judgement about this idea to the
-> > gurus :)
-> 
-> I started coding of the loopback driver which simply makes this:
-> 
-> PCM loopback playback device -> PCM loopback capture device
-> 
-> With this module, we can do easy rerouting for OSS emulation from the 
-> kernel space back to the user space and do all necessary extended 
-> operation via alsa-lib before samples are sent to real sound hardware.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=698> 
+======================================================================
+Reported By:                moonlite
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   698
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             12-02-2004 02:56 CET
+Last Modified:              12-02-2004 02:56 CET
+======================================================================
+Summary:                    Random beeps, ticks and clicks
+Description: 
+Below is what i posted to the gentoo-forums without getting without getting
+help that solved any of my problems.
+ 
+URL:
+http://forums.gentoo.org/viewtopic.php?t=255710&start=0&postdays=0&postorder=asc&highlight=
+---
+I have a problem with alsa and my SBLive-card and kernels newer than
+2.4.19.
+All in all it works without error-messages and the sound is pretty nice
+etc.
+But every now and then the music i listen to is interrupted for a small
+period of time (around 0.5s most of the time) and during this time i can't
+type or move the mouse and an annoying beep comes from my speakers. I am
+pretty sure that it is some sort of interruption because the few times the
+interrupts are long i am sure that the music continues from where it were
+and also, as i said above, i can't type etc during this small period.
+This seems to happen more during heavy load than under normal load but it
+still happens a lot at any given time. 
+---
+This problem happened with these kernels:
+vanilla-sources-2.4.20
+vanilla-sources-2.4.28
+gentoo-sources-2.4.20
+gentoo-sources-2.4.26-r12
+gentoo-dev-sources-2.6.9-r4
 
-Hi, an irc user told me today that artsdsp seems to have an mmap
-emulation that works for games like Enemy Territory (which uses mmap
-with OSS). I haven't looked into the source yet, but maybe we can rip
-some more :)
+(gentoo-sources are gentoo's own patchsets)
 
-flo
+Anyway. Since i posted this i've realized that the beeps (and sometimes
+also clicks/ticks) also happen more frequent during high network-load and
+not only normal load.
+Especially the clicking and ticking noise appear more frequent when
+downloading large amount of data with high transfer-rates.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-02-04 02:56 moonlite       New Issue                                    
+12-02-04 02:56 moonlite       Distribution              => Gentoo          
+12-02-04 02:56 moonlite       Kernel Version            => 2.6.9           
+======================================================================
+
+
 
 
 -------------------------------------------------------
