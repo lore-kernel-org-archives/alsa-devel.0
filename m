@@ -1,11 +1,11 @@
 From: Jeff Muizelaar <muizelaar@rogers.com>
-Subject: [PATCH 1/2] au88x0 eq cleanups
-Date: Thu, 05 Aug 2004 22:00:30 -0400
+Subject: [PATCH 2/2] au88x0 eq cleanups
+Date: Thu, 05 Aug 2004 22:01:22 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4112E63E.1050102@rogers.com>
+Message-ID: <4112E672.40808@rogers.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------010306090107010300030408"
+ boundary="------------020804050604080100050404"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,226 +19,204 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------010306090107010300030408
+--------------020804050604080100050404
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Cleans up the equalizer code by converting some loops to proper for
-loops and fixes the conditions for looping.
-
-Approved by Manuel Jander.
+some other misc eq cleanups
 
 -Jeff
 
 
---------------010306090107010300030408
+--------------020804050604080100050404
 Content-Type: text/x-patch;
- name="vortex-convert-to-for-loops.patch"
+ name="vortex-eq-cleanup.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="vortex-convert-to-for-loops.patch"
+ filename="vortex-eq-cleanup.patch"
 
-diff -urN linux-2.6.7-rc1/sound/pci/au88x0/au88x0_eq.c linux-2.6.7-rc1-vortex/sound/pci/au88x0/au88x0_eq.c
---- linux-2.6.7-rc1/sound/pci/au88x0/au88x0_eq.c	2004-05-09 22:33:19.000000000 -0400
-+++ linux-2.6.7-rc1-vortex/sound/pci/au88x0/au88x0_eq.c	2004-06-27 19:54:30.000000000 -0400
-@@ -50,12 +50,9 @@
- static void vortex_EqHw_SetLeftCoefs(vortex_t * vortex, u16 a[])
+diff -ur linux-2.6.7-rc1-bk5-build-test/sound/pci/au88x0/au88x0_eq.c linux-2.6.7-rc1-bk5-build-test2/sound/pci/au88x0/au88x0_eq.c
+--- linux-2.6.7-rc1-bk5-build-test/sound/pci/au88x0/au88x0_eq.c	2004-07-17 12:56:02.000000000 -0400
++++ linux-2.6.7-rc1-bk5-build-test2/sound/pci/au88x0/au88x0_eq.c	2004-07-17 12:54:13.000000000 -0400
+@@ -40,41 +40,46 @@
+ #include "au88x0_eq.h"
+ #include "au88x0_eqdata.c"
+ 
++#define VORTEX_EQ_BASE	 0x2b000
++#define VORTEX_EQ_DEST   (VORTEX_EQ_BASE + 0x410)
++#define VORTEX_EQ_SOURCE (VORTEX_EQ_BASE + 0x430)
++#define VORTEX_EQ_CTRL   (VORTEX_EQ_BASE + 0x440)
++
+ /* CEqHw.s */
+-static void vortex_EqHw_SetTimeConsts(vortex_t * vortex, u16 a, u16 b)
++static void vortex_EqHw_SetTimeConsts(vortex_t * vortex, u16 gain, u16 level)
+ {
+-	hwwrite(vortex->mmio, 0x2b3c4, a);
+-	hwwrite(vortex->mmio, 0x2b3c8, b);
++	hwwrite(vortex->mmio, 0x2b3c4, gain);
++	hwwrite(vortex->mmio, 0x2b3c8, level);
+ }
+ 
+-static void vortex_EqHw_SetLeftCoefs(vortex_t * vortex, u16 a[])
++static void vortex_EqHw_SetLeftCoefs(vortex_t * vortex, u16 coefs[])
  {
  	eqhw_t *eqhw = &(vortex->eq.this04);
--	int eax, i = 0, n /*esp2c */  = 0;
-+	int eax, i = 0, n /*esp2c */;
+ 	int eax, i = 0, n /*esp2c */;
  
--	if (eqhw->this04 <= n)
--		return;
--
--	do {
-+	for (n = 0; n < eqhw->this04; n++) {
- 		hwwrite(vortex->mmio, 0x2b000 + n * 0x30, a[i + 0]);
- 		hwwrite(vortex->mmio, 0x2b004 + n * 0x30, a[i + 1]);
+ 	for (n = 0; n < eqhw->this04; n++) {
+-		hwwrite(vortex->mmio, 0x2b000 + n * 0x30, a[i + 0]);
+-		hwwrite(vortex->mmio, 0x2b004 + n * 0x30, a[i + 1]);
++		hwwrite(vortex->mmio, 0x2b000 + n * 0x30, coefs[i + 0]);
++		hwwrite(vortex->mmio, 0x2b004 + n * 0x30, coefs[i + 1]);
  
-@@ -81,21 +78,16 @@
+ 		if (eqhw->this08 == 0) {
+-			hwwrite(vortex->mmio, 0x2b008 + n * 0x30, a[i + 2]);
+-			hwwrite(vortex->mmio, 0x2b00c + n * 0x30, a[i + 3]);
+-			eax = a[i + 4];	//esp24;
++			hwwrite(vortex->mmio, 0x2b008 + n * 0x30, coefs[i + 2]);
++			hwwrite(vortex->mmio, 0x2b00c + n * 0x30, coefs[i + 3]);
++			eax = coefs[i + 4];	//esp24;
+ 		} else {
+-			if (a[2 + i] == 0x8000)
++			if (coefs[2 + i] == 0x8000)
+ 				eax = 0x7fff;
+ 			else
+-				eax = ~a[2 + i];
++				eax = ~coefs[2 + i];
+ 			hwwrite(vortex->mmio, 0x2b008 + n * 0x30, eax & 0xffff);
+-			if (a[3 + i] == 0x8000)
++			if (coefs[3 + i] == 0x8000)
+ 				eax = 0x7fff;
+ 			else
+-				eax = ~a[3 + i];
++				eax = ~coefs[3 + i];
+ 			hwwrite(vortex->mmio, 0x2b00c + n * 0x30, eax & 0xffff);
+-			if (a[4 + i] == 0x8000)
++			if (coefs[4 + i] == 0x8000)
+ 				eax = 0x7fff;
+ 			else
+-				eax = ~a[4 + i];
++				eax = ~coefs[4 + i];
  		}
  		hwwrite(vortex->mmio, 0x2b010 + n * 0x30, eax);
  
--		n++;
- 		i += 5;
+@@ -82,34 +87,34 @@
  	}
--	while (n < eqhw->this04);
  }
  
- static void vortex_EqHw_SetRightCoefs(vortex_t * vortex, u16 a[])
+-static void vortex_EqHw_SetRightCoefs(vortex_t * vortex, u16 a[])
++static void vortex_EqHw_SetRightCoefs(vortex_t * vortex, u16 coefs[])
  {
  	eqhw_t *eqhw = &(vortex->eq.this04);
--	int i = 0, n /*esp2c */  = 0, eax;
--
--	if (eqhw->this04 <= n)
--		return;
-+	int i = 0, n /*esp2c */, eax;
+ 	int i = 0, n /*esp2c */, eax;
  
--	do {
-+	for (n = 0; n < eqhw->this04; n++) {
- 		hwwrite(vortex->mmio, 0x2b1e0 + n * 0x30, a[0 + i]);
- 		hwwrite(vortex->mmio, 0x2b1e4 + n * 0x30, a[1 + i]);
+ 	for (n = 0; n < eqhw->this04; n++) {
+-		hwwrite(vortex->mmio, 0x2b1e0 + n * 0x30, a[0 + i]);
+-		hwwrite(vortex->mmio, 0x2b1e4 + n * 0x30, a[1 + i]);
++		hwwrite(vortex->mmio, 0x2b1e0 + n * 0x30, coefs[0 + i]);
++		hwwrite(vortex->mmio, 0x2b1e4 + n * 0x30, coefs[1 + i]);
  
-@@ -121,54 +113,42 @@
+ 		if (eqhw->this08 == 0) {
+-			hwwrite(vortex->mmio, 0x2b1e8 + n * 0x30, a[2 + i]);
+-			hwwrite(vortex->mmio, 0x2b1ec + n * 0x30, a[3 + i]);
+-			eax = a[4 + i];	//*esp24;
++			hwwrite(vortex->mmio, 0x2b1e8 + n * 0x30, coefs[2 + i]);
++			hwwrite(vortex->mmio, 0x2b1ec + n * 0x30, coefs[3 + i]);
++			eax = coefs[4 + i];	//*esp24;
+ 		} else {
+-			if (a[2 + i] == 0x8000)
++			if (coefs[2 + i] == 0x8000)
+ 				eax = 0x7fff;
+ 			else
+-				eax = ~(a[2 + i]);
++				eax = ~(coefs[2 + i]);
+ 			hwwrite(vortex->mmio, 0x2b1e8 + n * 0x30, eax & 0xffff);
+-			if (a[3 + i] == 0x8000)
++			if (coefs[3 + i] == 0x8000)
+ 				eax = 0x7fff;
+ 			else
+-				eax = ~a[3 + i];
++				eax = ~coefs[3 + i];
+ 			hwwrite(vortex->mmio, 0x2b1ec + n * 0x30, eax & 0xffff);
+-			if (a[4 + i] == 0x8000)
++			if (coefs[4 + i] == 0x8000)
+ 				eax = 0x7fff;
+ 			else
+-				eax = ~a[4 + i];
++				eax = ~coefs[4 + i];
  		}
  		hwwrite(vortex->mmio, 0x2b1f0 + n * 0x30, eax);
  		i += 5;
--		n++;
- 	}
--	while (n < eqhw->this04);
- 
- }
- 
+@@ -120,7 +125,7 @@
  static void vortex_EqHw_SetLeftStates(vortex_t * vortex, u16 a[], u16 b[])
  {
  	eqhw_t *eqhw = &(vortex->eq.this04);
 -	int i = 0, ebx = 0;
-+	int i = 0, ebx = 0;
++	int i = 0, ebx;
  
  	hwwrite(vortex->mmio, 0x2b3fc, a[0]);
  	hwwrite(vortex->mmio, 0x2b400, a[1]);
- 
--	if (eqhw->this04 < 0)
--		return;
--
--	do {
-+	for (ebx = 0; ebx < eqhw->this04; ebx++) {
- 		hwwrite(vortex->mmio, 0x2b014 + (i * 0xc), b[i]);
- 		hwwrite(vortex->mmio, 0x2b018 + (i * 0xc), b[1 + i]);
- 		hwwrite(vortex->mmio, 0x2b01c + (i * 0xc), b[2 + i]);
- 		hwwrite(vortex->mmio, 0x2b020 + (i * 0xc), b[3 + i]);
- 		i += 4;
--		ebx++;
- 	}
--	while (eqhw->this04 > ebx);
- }
- 
+@@ -137,7 +142,7 @@
  static void vortex_EqHw_SetRightStates(vortex_t * vortex, u16 a[], u16 b[])
  {
  	eqhw_t *eqhw = &(vortex->eq.this04);
 -	int i = 0, ebx = 0;
-+	int i = 0, ebx = 0;
++	int i = 0, ebx;
  
  	hwwrite(vortex->mmio, 0x2b404, a[0]);
  	hwwrite(vortex->mmio, 0x2b408, a[1]);
- 
--	if (eqhw->this04 < 0)
--		return;
--
--	do {
-+	for (ebx = 0; ebx < eqhw->this04; ebx++) {
- 		hwwrite(vortex->mmio, 0x2b1f4 + (i * 0xc), b[i]);
- 		hwwrite(vortex->mmio, 0x2b1f8 + (i * 0xc), b[1 + i]);
- 		hwwrite(vortex->mmio, 0x2b1fc + (i * 0xc), b[2 + i]);
- 		hwwrite(vortex->mmio, 0x2b200 + (i * 0xc), b[3 + i]);
- 		i += 4;
--		ebx++;
- 	}
--	while (ebx < eqhw->this04);
- }
- 
- #if 0
-@@ -260,60 +240,41 @@
- static void vortex_EqHw_SetLeftGainsTarget(vortex_t * vortex, u16 a[])
+@@ -418,12 +423,12 @@
+ #endif
+ static void vortex_EqHw_Enable(vortex_t * vortex)
  {
- 	eqhw_t *eqhw = &(vortex->eq.this04);
--	int ebx = 0;
-+	int ebx;
- 
--	if (eqhw->this04 < 0)
--		return;
--	do {
-+	for (ebx = 0; ebx < eqhw->this04; ebx++) {
- 		hwwrite(vortex->mmio, 0x2b02c + ebx * 0x30, a[ebx]);
--		ebx++;
- 	}
--	while (ebx < eqhw->this04);
+-	hwwrite(vortex->mmio, 0x2b440, 0xf001);
++	hwwrite(vortex->mmio, VORTEX_EQ_CTRL, 0xf001);
  }
  
- static void vortex_EqHw_SetRightGainsTarget(vortex_t * vortex, u16 a[])
+ static void vortex_EqHw_Disable(vortex_t * vortex)
  {
- 	eqhw_t *eqhw = &(vortex->eq.this04);
--	int ebx = 0;
--
--	if (eqhw->this04 < 0)
--		return;
-+	int ebx;
- 
--	do {
-+	for (ebx = 0; ebx < eqhw->this04; ebx++) {
- 		hwwrite(vortex->mmio, 0x2b20c + ebx * 0x30, a[ebx]);
--		ebx++;
- 	}
--	while (ebx < eqhw->this04);
+-	hwwrite(vortex->mmio, 0x2b440, 0xf000);
++	hwwrite(vortex->mmio, VORTEX_EQ_CTRL, 0xf000);
  }
  
- static void vortex_EqHw_SetLeftGainsCurrent(vortex_t * vortex, u16 a[])
+ /* Reset (zero) buffers */
+@@ -431,16 +436,16 @@
  {
- 	eqhw_t *eqhw = &(vortex->eq.this04);
--	int ebx = 0;
--
--	if (eqhw->this04 < 0)
--		return;
-+	int ebx;
- 
--	do {
-+	for (ebx = 0; ebx < eqhw->this04; ebx++) {
- 		hwwrite(vortex->mmio, 0x2b028 + ebx * 0x30, a[ebx]);
--		ebx++;
- 	}
--	while (ebx < eqhw->this04);
+ 	int i;
+ 	for (i = 0; i < 0x8; i++)
+-		hwwrite(vortex->mmio, 0x2b410 + (i << 2), 0x0);
++		hwwrite(vortex->mmio, VORTEX_EQ_DEST + (i << 2), 0x0);
+ 	for (i = 0; i < 0x4; i++)
+-		hwwrite(vortex->mmio, 0x2b430 + (i << 2), 0x0);
++		hwwrite(vortex->mmio, VORTEX_EQ_SOURCE + (i << 2), 0x0);
  }
  
- static void vortex_EqHw_SetRightGainsCurrent(vortex_t * vortex, u16 a[])
+ static void vortex_EqHw_ZeroA3DIO(vortex_t * vortex)
  {
- 	eqhw_t *eqhw = &(vortex->eq.this04);
--	int ebx = 0;
--
--	if (eqhw->this04 < 0)
--		return;
-+	int ebx;
- 
--	do {
-+	for (ebx = 0; ebx < eqhw->this04; ebx++) {
- 		hwwrite(vortex->mmio, 0x2b208 + ebx * 0x30, a[ebx]);
--		ebx++;
- 	}
--	while (ebx < eqhw->this04);
+ 	int i;
+ 	for (i = 0; i < 0x4; i++)
+-		hwwrite(vortex->mmio, 0x2b410 + (i << 2), 0x0);
++		hwwrite(vortex->mmio, VORTEX_EQ_DEST + (i << 2), 0x0);
  }
  
- #if 0
-@@ -384,26 +345,17 @@
- 	eqhw_t *eqhw = &(vortex->eq.this04);
- 	int ebx;
+ static void vortex_EqHw_ZeroState(vortex_t * vortex)
+@@ -611,11 +616,10 @@
+ 	if (((eq->this10) * 2 != count) || (eq->this28 == 0))
+ 		return 1;
  
--	if (eqhw->this04 < 0)
--		return;
--
--	ebx = 0;
--	do {
-+	for (ebx = 0; ebx < eqhw->this04; ebx++) {
- 		hwwrite(vortex->mmio, 0x2b024 + ebx * 0x30, a[ebx]);
--		ebx++;
+-	if (0 < count) {
+-		for (i = 0; i < count; i++) {
+-			eq->this130[i] = gains[i];
+-		}
++	for (i = 0; i < count; i++) {
++		eq->this130[i] = gains[i];
  	}
--	while (ebx < eqhw->this04);
- 
- 	hwwrite(vortex->mmio, 0x2b3cc, a[eqhw->this04]);
- 	hwwrite(vortex->mmio, 0x2b3d8, a[eqhw->this04 + 1]);
- 
--	ebx = 0;
--	do {
-+	for (ebx = 0; ebx < eqhw->this04; ebx++) {
- 		hwwrite(vortex->mmio, 0x2b204 + ebx * 0x30,
- 			a[ebx + (eqhw->this04 + 2)]);
--		ebx++;
- 	}
--	while (ebx < eqhw->this04);
- 
- 	hwwrite(vortex->mmio, 0x2b3e4, a[2 + (eqhw->this04 * 2)]);
- 	hwwrite(vortex->mmio, 0x2b3f0, a[3 + (eqhw->this04 * 2)]);
++	
+ 	if (eq->this54)
+ 		return 0;
+ 	return vortex_Eqlzr_SetAllBandsFromActiveCoeffSet(vortex);
 
---------------010306090107010300030408--
+--------------020804050604080100050404--
 
 
 -------------------------------------------------------
