@@ -1,60 +1,54 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: ALC650 GPIO bits
-Date: Wed, 03 Mar 2004 15:48:54 +0000
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4045FE66.1040701@superbug.demon.co.uk>
-References: <s5h7jy2lzic.wl@alsa2.suse.de>
+From: Samuel S Chessman <chessman@tux.org>
+Subject: Re: Re: [Alsa-devel] Re: [PATCH] snd_pcm_hw_params_set_rate_near
+ val pointer
+Date: Wed, 3 Mar 2004 11:31:41 -0500 (EST)
+Sender: jackit-devel-admin@lists.sourceforge.net
+Message-ID: <Pine.LNX.4.30.0403031130210.15804-100000@gwyn.tux.org>
+References: <Pine.HPX.4.33n.0403031324170.12080-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7jy2lzic.wl@alsa2.suse.de>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <jackit-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0403031324170.12080-100000@studcom.urz.uni-halle.de>
+Errors-To: jackit-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:jackit-devel@lists.sourceforge.net>
+List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Jack O'Quin <joq@io.com>, "[jackit-devel]" <jackit-devel@lists.sourceforge.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Hi,
-> 
-> it seems that some mobo with ALC650 uses GPIO 0 as the mic bias +5V.
-> 
-> in ac97_patch.c, the GPIO 0 is turned on/off in conjunction with
-> the mic/center sharing switch, but this handling appears only for the
-> old ALC650 revision (D or older).
-> 
-> interestingly, there is a report that even a mobo with the newer
-> revision of ALC650 has this GPIO bit.
-> now, the question is why GPIO is not handled with the revision E and
-> F.  i can't remember the reason (google gives no good info) -- does
-> anyone still know?
-> 
-> is there any mobo with a side effect of this GPIO?
-> 
-> 
-> Takashi
-> 
+On Wed, 3 Mar 2004, Clemens Ladisch wrote:
 
-The best source I found for ALC650 info is from the Realtek web site.
-http://www.realtek.com.tw/downloads/dlac97-1.aspx
-1) They have a datasheet for the ALC650, although the datasheets have 
-errors in them.
-http://www.realtek.com.tw/downloads/downloads1-3.aspx?lineid=5&famid=12&series=8&Spec=True&refdesign=True
+> To elaborate on this:  both ALSA 0.9 and 1.0 support both versions of
+> these functions, and allow selecting between them by defining
+> ALSA_PCM_OLD_HW_PARAMS_API or ALSA_PCM_NEW_HW_PARAMS_API.  Without one
+> of these symbols defined, the default would be the old API when
+> compiling with 0.9 headers and the new one with 1.0 headers.  All
+> versions of the library are binary compatible with both old and new
+> applications.
+>
+> > So, maybe this is an ALSA bug in emulating the older interface?
+>
+> In theory, this should not happen.
+>
+> Sam, which version of ALSA are your ALSA headers/libraries from?
+>
 
-2) They have their own version of the alsa-driver, which you can look at 
-to see what they do about things like this. Just download their linux 
-driver. It is alsa-driver source code.
-http://www.realtek.com.tw/downloads/dlac97-2.aspx?lineid=5&famid=12&series=8&Software=True#8Unix%20(Linux)
+> > > This occurs against current CVS of alsa. (2004-03-02)
 
-Cheers
-James
+I will investigate if an old ALSA header is on the machine.
+
+Sam
+
+
+-- 
+   Sam Chessman                                         chessman (a) tux.org
+    First do what's necessary, then what's possible, finally the impossible.
+
 
 
 -------------------------------------------------------
