@@ -1,14 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: help needed on how to autoload snd-usb-midi
-Date: Wed, 16 Oct 2002 13:19:52 +0200 (METDST)
+From: Matt Flax <flatmax@ieee.org>
+Subject: CVSCOMPILE problems
+Date: Thu, 17 Oct 2002 00:17:43 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0210161227530.11784-100000@studcom.urz.uni-halle.de>
-References: <Pine.LNX.4.33.0210160954510.731-100000@pnote.perex-int.cz>
+Message-ID: <20021016141742.GB25933@ee.unsw.edu.au>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <Pine.LNX.4.33.0210160954510.731-100000@pnote.perex-int.cz>
+Received: from thunderbird.comms.unsw.edu.au (thunderbird.comms.unsw.EDU.AU [149.171.96.70])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA14690
+	for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2002 15:50:37 +0200
+Received: from maillationax ([149.171.37.251])
+	by thunderbird.comms.unsw.edu.au (8.11.2/8.11.2) with ESMTP id g9GDoIT23330
+	for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2002 23:50:22 +1000 (EST)
+Received: from flatmax by maillationax with local (Exim 3.36 #1 (Debian))
+	id 181ozX-0006o5-00
+	for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2002 00:17:43 +1000
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,44 +24,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: core sound <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Wed, 16 Oct 2002, Clemens Ladisch wrote:
-> > Takashi, would it be possible/desirable to change snd_rawmidi_hw_open()
-> > to load sequencer drivers if the card driver is loaded but the rawmidi
-> > device doesn't exist?
-> > Something like:
-> > (...)
->
-> It looks ugly.
+Hi there everyone,
 
-Yes.
+In relation to this article/patch, I need to compile the CVS sources
+after 14'th :
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg04810.html
 
-> Wouldn't be better to create a direct rawmidi USB driver?
-> Could you remind me reason, why you parse sequencer events? There's
-> something special for USB?
+I have downloaded them, but am having trouble compiling them.
+There are lots of files with a ',v' extension.
+For example in the alsa-driver directory there is :
+cvscompile,v
 
-USB MIDI is not the same as rawmidi as each MIDI command must be sent as a
-32-bit packet, so the driver must parse the stream somehow. (There is a
-USB MIDI code to send a raw MIDI byte, but there are devices not
-supporting this. (The USB MIDI specification and said device are, of
-course, from the same company.))
+But I need to run cvscompile ?
 
-Well, the real reason why I wrote a sequencer driver was that I wanted to
-decide between a rawmidi and a sequencer driver, but there wasn't any
-sequencer driver supporting input, so I had to write one to find out about
-it.  ;-)
+confused
+Matt
+-- 
+http://mffm.darktech.org
 
-It turns out there isn't any real advantage over a rawmidi driver, so I
-think I'll change the driver to use rawmidi in the next few days.
-
-
-Regards
-Clemens
-
+WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
+FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
+Vector Bass                : http://mffmvectorbass.sourceforge.net/
+Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
 
 
 -------------------------------------------------------
