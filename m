@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000536]: Sound no longer works on IBM ThinkPad 600x after waking from sleep
-Date: Mon, 28 Mar 2005 15:49:43 +0200
-Message-ID: <b6820a71ad996c2962e25d78f511d007@bugtrack.alsa-project.org>
+From: Martin Langer <martin-langer@gmx.de>
+Subject: [RFC] re-queuing usx2y-fw
+Date: Mon, 28 Mar 2005 17:51:51 +0200
+Message-ID: <20050328155151.GA3552@tuba>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DA5361CC
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 15:49:43 +0200 (MEST)
+Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id CF12021F
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 17:52:27 +0200 (MEST)
+Received: from ml by tuba with local (Exim 4.44)
+	id 1DFwWt-0000wi-FF
+	for alsa-devel@alsa-project.org; Mon, 28 Mar 2005 17:51:51 +0200
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,104 +24,41 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=536> 
-======================================================================
-Reported By:                bkendig
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   536
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               FC2
-Kernel Version:             2.6.9-rc2
-======================================================================
-Date Submitted:             09-24-2004 16:23 CEST
-Last Modified:              03-28-2005 15:49 CEST
-======================================================================
-Summary:                    Sound no longer works on IBM ThinkPad 600x after
-waking from sleep
-Description: 
-After booting this laptop, sound works fine; but after putting the system
-to sleep and waking it, sound will no longer work until the system is
-rebooted.  No error messages are displayed.
+long time ago there was a thread about replacing tascam_loader.ihx with 
+an open firmware:
 
-This is an IBM ThinkPad 600x, which has a feature where it will cut power
-to the PCI bus to save battery when the bus is not being used.  I believe
-this is what's killing ALSA.
+http://sourceforge.net/mailarchive/message.php?msg_id=8555003
 
-This system is running Fedora Core 2 with kernel version 2.6.9-rc2, but
-the problem has occurred with every version of 2.6 since its release.
+http://www.langerland.de/audio/usx2y/usx2y-fw-0.1b.tar.bz2
 
-The sound modules can not be unloaded because the system believes they're
-still in use. "/sbin/rmmod snd_cs46xx" returns "ERROR: Module snd_cs46xx
-is in use".
+All results were quite positive and I've had a lot of downloads since 
+them on my site and I never ever got a bugreport about it :)
+
+What about a second attempt of merging it into alsa-firmware? Any new 
+strategies for this step? The code still depends on as31 (8031/8051 
+crosss-assembler) which still isn't available as .rpm or .deb, at least 
+newer versions since 2.1. Should we care about it?
+
+I use it on my US-122 since several months without problems and we have 
+positive results from us224 and us428 owners. Even the size has only 20 
+percent of the size of the original tascam file. Aren't these good 
+reasons for deleting the original closed source file?
+
+Another point is the license note in the README file for those Tascam 
+files. Is it really true for tascam_loader.ihx? I (we?) know that 
+tascam_loader.ihx and MidiSportLoader.ihx (for M-Audio MidiSport's) are 
+100% identical; there's no difference. So I believe that this file is 
+part of the same 3rd party development kit and is not be copyrighted by 
+Tascam? I don't know it, but Tascam should know it better... just my 
+two cents.
 
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000226 Sound hangs after APM resume
-======================================================================
+bye,
+martin
 
-----------------------------------------------------------------------
- jdthood - 01-17-05 11:01 
-----------------------------------------------------------------------
-This is a duplicate of
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305.
-
-> The sound modules can not be unloaded because the system believes
-> they're still in use. "/sbin/rmmod snd_cs46xx" returns "ERROR:
-> Module snd_cs46xx is in use".
-
-You have to kill all applications that have sound devices open.
-
-----------------------------------------------------------------------
- sboehler - 03-28-05 15:49 
-----------------------------------------------------------------------
-I have the same problem with a Thinkpad T22, ACPI and kernel 2.6.11.2. Even
-though reloading the module after ACPI resume works, it is a pain because
-all the applications using sound have to be killed. I'm willing to assist
-in solving this problem, is anybody working on this? Do you guys have data
-books for this soundcard?
-
-Soundcard:
-
-0000:00:05.0 Multimedia audio controller: Cirrus Logic CS 4614/22/24
-[CrystalClear SoundFusion Audio Accelerator] (rev 01)
-        Subsystem: IBM: Unknown device 0153
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64 (1000ns min, 6000ns max)
-        Interrupt: pin A routed to IRQ 11
-        Region 0: Memory at e8122000 (32-bit, non-prefetchable) [size=4K]
-        Region 1: Memory at e8000000 (32-bit, non-prefetchable) [size=1M]
-        Capabilities: [40] Power Management version 2
-                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-24-04 16:23 bkendig        New Issue                                    
-09-24-04 16:23 bkendig        Distribution              => FC2             
-09-24-04 16:23 bkendig        Kernel Version            => 2.6.9-rc2       
-10-01-04 17:07 tiwai          Note Added: 0002002                          
-01-17-05 11:01 jdthood        Note Added: 0003228                          
-03-22-05 15:02 jdthood        Relationship added       has duplicate 0000226
-03-28-05 15:49 sboehler       Note Added: 0004241                          
-======================================================================
-
-
+ 
 
 
 -------------------------------------------------------
