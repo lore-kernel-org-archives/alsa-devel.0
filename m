@@ -1,15 +1,14 @@
-From: Jordi Mallach <jordi@debian.org>
-Subject: Re: Old Debian patches
-Date: Mon, 23 Dec 2002 17:43:45 +0100
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: alsasound init script (Re: possible problems with
+ rc6 aplay )
+Date: Tue, 24 Dec 2002 02:18:33 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021223164345.GA11122@nubol.int.oskuro.net>
-References: <20021221151722.GA26363@nubol.int.oskuro.net> <s5hvg1ku8bk.wl@alsa2.suse.de>
+Message-ID: <3E074569.4050101@boosthardware.com>
+References: <E18PTTN-0004YV-00@sc8-sf-list2.sourceforge.net>	<200212202353.13933.plcl@telefonica.net> <s5h3coovohq.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hvg1ku8bk.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,66 +17,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Pedro Lopez-Cabanillas <plcl@telefonica.net>, alsa-devel@lists.sourceforge.net, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Fri, 20 Dec 2002 23:53:13 +0100,
+> Pedro Lopez-Cabanillas wrote:
+> 
+>>Clemens, I remember that /proc/asound/cards returned this bus/device  
+>>information for USB MIDI devices some time ago (rc3?), like it does for my SB 
+>>128 PCI.
+> 
+> 
+> it would be nice to provide a new generic proc file which shows the
+> low-level hardware information as the card number, the module name and
+> the PCI/ISA-PnP/USB/PCMCIA IDs like:
+> 
+> 0 snd-ens1371 0x0123 0xABCD
+> 1 snd-usb-audio 0xXXXX 0xYYYY
+> 
 
---pf9I7BMVVzbSWLtt
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Could you add to that the irq number?
 
-On Mon, Dec 23, 2002 at 03:19:11PM +0100, Takashi Iwai wrote:
-> thanks for the patches!
 
-Thanks for reviewing :)
 
-> > > After initialisation of ALSA version 0.9b12 the depmod complains about
-> > > problems in snd-isapnp module.
-> > >=20
-> > > The following patch should get rid of the problem:
-> >=20
-> > --- isapnp.c    Sat Feb  9 19:30:13 2002
-> > +++ isapnp.c.fix        Mon Apr  8 11:18:13 2002
-> > @@ -2094,7 +2094,7 @@
-> >  static void isapnp_release_resource(struct resource *res)
-> >  {
-> >         if (res) {
-> > -               release_resource(res);
-> > +               isapnp_release_resource(res);
-> >                 kfree(res);
-> >         }
-> >  }
-> >=20
-> > We never got feedback from the user when we took over ALSA, so it was
-> > never applied. I don't know if it's needed/valid.
-> apparently this will cause an infinite loop, won't it?
-> i haven't seen any isapnp-problems on my 2.2 environment...
-> so, skipped now.
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
-Ok. As I said, I've asked the submitter to check against recent alsa
-verisons and never got new feedback, so we'll just close the bug. If
-it's still there he can always reopen.
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
 
-Jordi
---=20
-Jordi Mallach P=E9rez  --  Debian developer     http://www.debian.org/
-jordi@sindominio.net     jordi@debian.org     http://www.sindominio.net/
-GnuPG public key information available at http://oskuro.net/~jordi/
+Goldie, 8 Nov, 2002
+The Scotsman
 
---pf9I7BMVVzbSWLtt
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.1 (GNU/Linux)
-
-iD8DBQE+Bz1BJYSUupF6Il4RApPYAKC21D5953Ce8xREaRIQURrPszbHtACfa/sk
-026imkIjb9MnulZRpAnmTbE=
-=ajNz
------END PGP SIGNATURE-----
-
---pf9I7BMVVzbSWLtt--
 
 
 -------------------------------------------------------
