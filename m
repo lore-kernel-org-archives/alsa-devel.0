@@ -1,14 +1,15 @@
-From: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
-Subject: Re: alsa driver
-Date: Tue, 6 Apr 2004 17:20:03 +0100 (BST)
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: Re: Tascam US-224 progress report (was:       USB224_usbsnoop1.log captured  on WinXP)
+Date: Tue, 6 Apr 2004 19:28:10 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040406162003.27610.qmail@web25109.mail.ukl.yahoo.com>
-References: <Pine.LNX.4.58.0404061657590.29768@pnote.perex-int.cz>
+Message-ID: <200404061928.10710.annabellesgarden@yahoo.de>
+References: <200404021434.26528.annabellesgarden@yahoo.de> <200404061252.16279.annabellesgarden@yahoo.de> <61208.195.245.190.94.1081256434.squirrel@www.rncbc.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-1029191398-1081268403=:27180"
-Content-Transfer-Encoding: 8bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_qiucAXUjqlUBm4p"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0404061657590.29768@pnote.perex-int.cz>
+In-Reply-To: <61208.195.245.190.94.1081256434.squirrel@www.rncbc.org>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,78 +18,120 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>, ALSA LIST <alsa-devel@lists.sourceforge.net>
+To: Rui Nuno Capela <rncbc@rncbc.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---0-1029191398-1081268403=:27180
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
 
-Jaroslav,
-Busy system cant explain something as consequent as this.
-When the packet size being transmitted is 30 msecs(240bytes) or 32 msecs(240bytes), the OpenH323 app sends packets every 32 msecs.
+--Boundary-00=_qiucAXUjqlUBm4p
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+> >> Now comes the weird part. No, I couldn't get it to work unless I set
+> >> --with-debug=full on configure line. And I've tested several times,
+> >> believe me.
+
+Attached diff fixed it here.
+Please verify.
+
+CU
+
+--Boundary-00=_qiucAXUjqlUBm4p
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="nodebug.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="nodebug.diff"
+
+Index: alsa-driver/usb/usx2y/usbusx2y.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/usb/usx2y/usbusx2y.c,v
+retrieving revision 1.8
+diff -u -r1.8 usbusx2y.c
+--- alsa-driver/usb/usx2y/usbusx2y.c	17 Feb 2004 15:28:31 -0000	1.8
++++ alsa-driver/usb/usx2y/usbusx2y.c	6 Apr 2004 16:51:22 -0000
+@@ -118,7 +118,6 @@
+ static void snd_usX2Y_usb_disconnect(struct usb_device* usb_device, void* ptr);
+ static void snd_usX2Y_card_private_free(snd_card_t *card);
  
-When the packet size is 80 msecs(132 bytes), the OpenH323 app sends packets at alternate intervals of 64 msecs and 96 msecs.Both are multiples of 32 msecs.
-Surely it's to do with the period size being added to the driver sending buffer. The thing is I have got all the info about the period size,no of periods ..etc but it's not adding up yet.
+-#ifdef CONFIG_SND_DEBUG
+ /* 
+  * pipe 4 is used for switching the lamps, setting samplerate, volumes ....   
+  */
+@@ -128,14 +127,15 @@
+ void snd_usX2Y_Out04Int(struct urb* urb)
+ #endif
+ {
++#ifdef CONFIG_SND_DEBUG
+ 	if (urb->status) {
+ 		int 		i;
+ 		usX2Ydev_t*	usX2Y = urb->context;
+ 		for (i = 0; i < 10 && usX2Y->AS04.urb[i] != urb; i++);
+ 		snd_printd("snd_usX2Y_Out04Int() usX2Y->Seq04=%i urb %i status=%i\n", usX2Y->Seq04, i, urb->status);
+ 	}
+-}
+ #endif
++}
  
-Brian.
+ #ifndef OLD_USB
+ void snd_usX2Y_In04Int(struct urb* urb, struct pt_regs *regs)
+@@ -194,7 +194,7 @@
+ 				int j, send = us428ctls->p4outSent + 1;
+ 				if (send >= N_us428_p4out_BUFS)
+ 					send = 0;
+-				for (j = 0; j < URBS_AsyncSeq; ++j)
++				for (j = 0; j < URBS_AsyncSeq  &&  !err; ++j)
+ 					if (0 == usX2Y->AS04.urb[j]->status) {
+ 						us428_p4out_t *p4out = us428ctls->p4out + send;	// FIXME if more then 1 p4out is new, 1 gets lost.
+ 						usb_fill_bulk_urb(usX2Y->AS04.urb[j], usX2Y->chip.dev,
+@@ -204,7 +204,7 @@
+ #ifdef OLD_USB
+ 						usX2Y->AS04.urb[j]->transfer_flags = USB_QUEUE_BULK;
+ #endif
+-						usb_submit_urb(usX2Y->AS04.urb[j], GFP_ATOMIC);
++						err = usb_submit_urb(usX2Y->AS04.urb[j], GFP_ATOMIC);
+ 						us428ctls->p4outSent = send;
+ 						break;
+ 					}
+Index: alsa-driver/usb/usx2y/usbusx2y.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/usb/usx2y/usbusx2y.h,v
+retrieving revision 1.3
+diff -u -r1.3 usbusx2y.h
+--- alsa-driver/usb/usx2y/usbusx2y.h	19 Jan 2004 18:43:28 -0000	1.3
++++ alsa-driver/usb/usx2y/usbusx2y.h	6 Apr 2004 16:51:22 -0000
+@@ -58,10 +58,6 @@
+ void snd_usX2Y_In04Int(struct urb* urb);
+ #endif
+ 
+-#ifndef CONFIG_SND_DEBUG
+-#define snd_usX2Y_Out04Int 0
+-#endif
+-
+ #define NAME_ALLCAPS "US-X2Y"
+ 
+ #endif
+Index: alsa-driver/usb/usx2y/usbusx2yaudio.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/usb/usx2y/usbusx2yaudio.c,v
+retrieving revision 1.9
+diff -u -r1.9 usbusx2yaudio.c
+--- alsa-driver/usb/usx2y/usbusx2yaudio.c	30 Mar 2004 08:27:16 -0000	1.9
++++ alsa-driver/usb/usx2y/usbusx2yaudio.c	6 Apr 2004 16:51:25 -0000
+@@ -1245,7 +1245,7 @@
+ 	    					     snd_dma_continuous_data(GFP_KERNEL),
+ 						     usX2Y_capt_substream->endpoints * 64*1024,
+ 						     usX2Y_capt_substream->endpoints * 128*1024)) ||
+-	    (usX2Y(card)->chip.dev->descriptor.idProduct == USB_ID_US428 &&
++	    (usX2Y(card)->chip.dev->descriptor.idProduct != USB_ID_US122 &&
+ 	     0 > (err = usX2Y_rate_set(usX2Y_stream, 44100)))) {	// Lets us428 recognize output-volume settings, disturbs us122.
+ 		snd_usX2Y_audio_stream_free(usX2Y_stream);
+ 		return err;
 
-Jaroslav Kysela <perex@suse.cz> wrote:
-On Tue, 6 Apr 2004, Brian Furey wrote:
-
-> Hi all,
-> i'm running the alsa-driver-1.0.0. Im using it with
-> the OpenH323 application. Packets are transmitted or
-> received in 32 millisecond intervals or multiples of
-> 32 millisecond intervals.
-> For example using the G711 codec, packets are
-> transmitted every 32 milliseconds. For the GSM-06.10
-> codec, packets are transmitted at alternate intervals
-> of 64 milliseconds or 96 milliseconds.
-> Why is this?
-
-Busy system?
-
-Jaroslav
-
------
-Jaroslav Kysela 
-
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by: IBM Linux Tutorials
-Free Linux tutorial presented by Daniel Robbins, President and CEO of
-GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-		
----------------------------------
-  Yahoo! Messenger - Communicate instantly..."Ping" your friends today! Download Messenger Now
---0-1029191398-1081268403=:27180
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-
-<DIV>Jaroslav,</DIV>
-<DIV>Busy system cant explain something as consequent as this.</DIV>
-<DIV>When the packet size being transmitted is 30 msecs(240bytes) or 32 msecs(240bytes), the OpenH323 app sends packets every 32 msecs.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>When the packet size is 80 msecs(132 bytes), the OpenH323 app sends packets at alternate intervals of 64 msecs and 96 msecs.Both are multiples of 32 msecs.</DIV>
-<DIV>Surely it's to do with the period size being added to the driver sending buffer. The thing is I have got all the info about the period size,no of periods ..etc but it's not adding up yet.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>Brian.<BR><BR><B><I>Jaroslav Kysela &lt;perex@suse.cz&gt;</I></B> wrote:</DIV>
-<BLOCKQUOTE class=replbq style="PADDING-LEFT: 5px; MARGIN-LEFT: 5px; BORDER-LEFT: #1010ff 2px solid">On Tue, 6 Apr 2004, Brian Furey wrote:<BR><BR>&gt; Hi all,<BR>&gt; i'm running the alsa-driver-1.0.0. Im using it with<BR>&gt; the OpenH323 application. Packets are transmitted or<BR>&gt; received in 32 millisecond intervals or multiples of<BR>&gt; 32 millisecond intervals.<BR>&gt; For example using the G711 codec, packets are<BR>&gt; transmitted every 32 milliseconds. For the GSM-06.10<BR>&gt; codec, packets are transmitted at alternate intervals<BR>&gt; of 64 milliseconds or 96 milliseconds.<BR>&gt; Why is this?<BR><BR>Busy system?<BR><BR>Jaroslav<BR><BR>-----<BR>Jaroslav Kysela <PEREX@SUSE.CZ><BR>Linux Kernel Sound Maintainer<BR>ALSA Project, SuSE Labs<BR><BR><BR>-------------------------------------------------------<BR>This SF.Net email is sponsored by: IBM Linux Tutorials<BR>Free Li
- nux tutorial presented by Daniel Robbins, President and CEO of<BR>GenToo technologies. Learn
- everything from fundamentals to system<BR>administration.http://ads.osdn.com/?ad_id=1470&amp;alloc_id=3638&amp;op=click<BR>_______________________________________________<BR>Alsa-devel mailing list<BR>Alsa-devel@lists.sourceforge.net<BR>https://lists.sourceforge.net/lists/listinfo/alsa-devel</BLOCKQUOTE><p>
-		<hr size=1><font face="Arial" size="2"> <a href="http://uk.rd.yahoo.com/mail/tagline_messenger/*http://uk.messenger.yahoo.com"><b> 
-Yahoo! Messenger</b></a> - Communicate instantly..."Ping" your friends 
-today! <a href="http://uk.rd.yahoo.com/mail/tagline_messenger/*http://uk.messenger.yahoo.com/download/index.html"><strong>Download Messenger Now</strong></a></font>
---0-1029191398-1081268403=:27180--
+--Boundary-00=_qiucAXUjqlUBm4p--
 
 
 -------------------------------------------------------
