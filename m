@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000978]: intel8x0 sound does not work on 2.6.10 kernel with alsa 1.0.8
-Date: Thu, 10 Mar 2005 14:39:49 +0100
-Message-ID: <b34bba31479ea1b86a04d12e771d67bf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000973]: Errors in headers
+Date: Thu, 10 Mar 2005 14:49:10 +0100
+Message-ID: <2f30b149343706186a9ff7013a74ddce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 085E91C5
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 14:39:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9C7F51C5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 14:49:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,50 +23,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=978> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=973> 
 ======================================================================
-Reported By:                johnz
-Assigned To:                
+Reported By:                subbia
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   978
-Category:                   PCI - intel8x0
+Issue ID:                   973
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   tweak
 Priority:                   normal
-Status:                     new
-Distribution:               FC3
-Kernel Version:             kernel-2.6.10-1.770_14.rhfc3.at
+Status:                     assigned
+Distribution:               Ubuntu Hoary
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             03-10-2005 06:37 CET
-Last Modified:              03-10-2005 14:39 CET
+Date Submitted:             03-08-2005 03:08 CET
+Last Modified:              03-10-2005 14:49 CET
 ======================================================================
-Summary:                    intel8x0 sound does not work on 2.6.10 kernel with
-alsa 1.0.8
+Summary:                    Errors in headers
 Description: 
-On an ASRock motherboard with SIS 7012 sound controller, the Sound works on
-kernel-2.6.9-1.681_FC3. (The mixer controls don't work. Only the PCM mute
-mixer control works; volume sliders have no effect.)  There is no sound
-when I boot the same system with kernel-2.6.10-1.770_14.rhfc3.at or other
-2.6.10 kernels with 1.0.8 alsa.
+I've tried to make alsa driver, but errors during compiling comes out.
+
+1)on file core.h (sound_core)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=166 error on free_workq:
+incomplete
+statemente 
+
+2)on file aio.h (kernel/include/linux)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=151 same of above
+
+p.s.: I've bypassed the first errore 'cause i'm thinking free_workq is a
+pointer, but in the second error don't goes this solution, so.....I don't
+know
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-10-05 14:39 
+ tiwai - 03-09-05 18:40 
 ----------------------------------------------------------------------
-Try the CVS version.  Some bugs with CM9761 codec have been fixed.
+It's not reproducible here.  Is your kernel likely modified in the relevant
+part?
+
+----------------------------------------------------------------------
+ subbia - 03-10-05 14:49 
+----------------------------------------------------------------------
+No, my kernel is the 2.6.10, and i haven't modified it. I've installed
+kernel's sources directly from ubuntu mirrors, with synaptic, if this can
+be usefull......
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-10-05 06:37 johnz          New Issue                                    
-03-10-05 06:37 johnz          File Added: asound.state                     
-03-10-05 06:37 johnz          Distribution              => FC3             
-03-10-05 06:37 johnz          Kernel Version            =>
-kernel-2.6.10-1.770_14.rhfc3.at
-03-10-05 06:39 johnz          Issue Monitored: johnz                       
-03-10-05 06:43 johnz          File Added: lsmod                            
-03-10-05 14:39 tiwai          Note Added: 0003853                          
+03-08-05 03:08 subbia         New Issue                                    
+03-08-05 03:08 subbia         Distribution              => Ubuntu Hoary    
+03-08-05 03:08 subbia         Kernel Version            => 2.6.10          
+03-09-05 18:40 tiwai          Note Added: 0003833                          
+03-10-05 14:49 subbia         Note Added: 0003854                          
 ======================================================================
 
 
