@@ -1,16 +1,12 @@
-From: Nicos Gollan <gtdev@spearhead.de>
-Subject: Re: Hercules Gamesurround Fortissimo III 7.1
-Date: Sun, 6 Jul 2003 13:11:31 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: usb audio callback questions.
+Date: Sun, 06 Jul 2003 14:21:52 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307061311.31916.gtdev@spearhead.de>
-References: <200306271848.20758.gtdev@spearhead.de> <200307011411.24645.gtdev@spearhead.de> <3F0808C8.40800@cucumelo.org>
+Message-ID: <3F082270.8030605@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F0808C8.40800@cucumelo.org>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,25 +15,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 06 July 2003 13:32, Benny Sjostrand wrote:
-> Maybe the problem is not in the alsa-driver, maybe it's something else
-> related to
-> another comoponent of the kernel, PCI-bridge/ctrl ...
->
-> Is the soundcard the only thing causing problems in your system ??
+I have a question regarding the callbacks in the usbaudio.c driver.
+The callback is defined as: -
 
-Yes, it is. And now that I've changed to a Creative SB Live 5.1, all is 
-working fine.
+/*
+  * complete callback from data urb
+  */
+static void snd_complete_urb(struct urb *urb, struct pt_regs *regs)
 
-Just a thought: could it be a problem with power management sending the card 
-to sleep? If so, how could I avoid this (apart from disabling APM et al. 
-everywhere I see it mentioned)?
 
--- 
-Got Backup?
+The callback is set up with: -
+u->urb->complete = snd_usb_complete_callback(snd_complete_urb);
+
+The issue I have is that urb->complete is of type: -
+struct urb;
+typedef void (*usb_complete_t)(struct urb *);
+
+struct urb
+{
+<snip>
+         usb_complete_t complete;        // pointer to completion routine
+<snip>
+};
+
+So, why is the "struct pt_regs *regs" there ?
+I would think that
+static void snd_complete_urb(struct urb *urb, struct pt_regs *regs)
+should change to
+static void snd_complete_urb(struct urb *urb)
+
+Cheers
+James
 
 
 
