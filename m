@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: asound.conf pcm.tee, anyone know how to use it
-Date: Mon, 13 May 2002 09:57:06 +0200 (CEST)
+From: =?iso-8859-1?Q?J=F6rn?= Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: unresolved symbol udelay with ALSA on PPC
+Date: Mon, 13 May 2002 11:25:19 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <abnroh$o59$2@main.gmane.org>
-References: <20020513004239.56478.qmail@web14108.mail.yahoo.com>
+Message-ID: <3CDF867F.44DA2DAD@folkwang-hochschule.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020513004239.56478.qmail@web14108.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +15,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Dave Andruczyk <djandruczyk@yahoo.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>, ALSA user <alsa-user@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net, "linuxppc-dev@lists.linuxppc.org" <linuxppc-dev@lists.linuxppc.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 12 May 2002, Dave Andruczyk wrote:
+hi !
 
-> Please someone correct me if I am mistaken.  Can the pcm.tee option in alsa.con
-> (/usr/share/alsa/alsa.conf) be setup so that the output of a program that uses
-> alsa natively be monitored by connecting to this "tee" ??
-> 
-> My primary app (eXtace) needs this sort of functionality, The old ALSA 0.5.x
-> called it loopback, can this do the same?  Can anyone offer tips for someone
-> who really doesn't understand the asound.conf syntax to possibly get it to
-> work?
+sorry for crossposting, this one is probably inappropriate for either
+the alsa or the ppc list. the problem is, i don't know which ;)
 
-aplay -D tee:'plughw:0',a.raw ~/audio/audio_10.wav
+this is after successfully compiling 2.4.19-pre8-ben0 for PPC on a
+powerbook g3 (pismo) and installing the alsa drivers from
+alsa-driver-0.9.0rc1.tar.bz2:
 
-All samples should go to 'a.raw' file, but as Paul mentioned, if you use a 
-pipe, the audio process can be blocked (possible underruns).
+ephraim:/usr/src/alsa-driver-0.9.0rc1 # depmod -ae -F
+/boot/System.map-2.4.19-pre8-ben0
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19-pre8-ben0/kernel/sound/ppc/snd-powermac.o
+depmod:         udelay
 
-						Jaroslav
+can anyone clue me in on this ? i grepped for udelay, but it seems it's
+a very popular string in the source tree, so i gave up :( it seems to be
+defined alright for other kernel modules. afaics, snd-powermac is the
+only one that has problems.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+thanks in advance,
 
+j=F6rn
+
+
+
+--
+Watch out where the huskies go and don't you eat
+the yellow snow !
+	- Frank Zappa
 
 _______________________________________________________________
 
