@@ -1,20 +1,16 @@
-From: "eliminate Photo cops" <byulfms@talk21.com>
-Subject: no more tickets from photo cops -id
-Date: Tue, 30 Nov 2004 13:02:10 -0400
-Message-ID: <7zkz31ki98$g1j97rl6$004uwj486lsn920@SOB750918>
+From: Zinx Verituse <zinx@epicsol.org>
+Subject: Re: CMI9739A
+Date: Mon, 29 Nov 2004 20:05:25 -0600
+Message-ID: <20041130020525.GA2591@bliss>
+References: <20041125004649.GA21551@bliss> <s5hact5oqa6.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--083110704834860738"
+Content-Type: multipart/mixed; boundary="SUOF0GtieIMvvwua"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from socket.net (socket.net 169.167.0.215)
-	by socket.net (8.12.10/8.12.9) with ESMTP id ua143QW017
-	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2004 14:00:10 -0300 (EST)
-	(envelope-from byulfms@talk21.com)
-Received: from VH8544047 (modemcable1.74474-7.wc.socket.net 48.20.70.199)
-	(authenticated bits=4)
-	by socket.net (8.12.10/8.12.9) with ESMTP id syz09TN8kt026
-	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2004 22:06:10 +0500 (EST)
-	(envelope-from byulfms@talk21.com)
+Received: from imf19aec.mail.bellsouth.net (imf19aec.mail.bellsouth.net [205.152.59.67])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1CCDD2DF
+	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2004 03:05:27 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <s5hact5oqa6.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,142 +20,257 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel@perex.cz
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-----083110704834860738
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
 
-Introducing Photo-Blocker
-this revolutionay new product makes your licence plate
-COMPLETELY INVISIBLE to ALL FORMS of photo enforcement!
-http://www.bbahostcity.com/index.php?id=3D173&affid=3D4586
+--SUOF0GtieIMvvwua
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-You will NEVER BE CAUGHT by red light cameras or speed
-enforcement cameras, or your money back - 100% GUARANTEED!
+On Thu, Nov 25, 2004 at 05:18:57PM +0100, Takashi Iwai wrote:
+> At Wed, 24 Nov 2004 18:46:49 -0600,
+> Zinx Verituse wrote:
+> > 
+> > I recently purchased a motherboard with an on-board CMI9739A (or so it claims)
+> > 
+> > the id is: 0x434d4983
+> > 
+> > Unfortunately, simply adding the line:
+> > 
+> > { 0x434d4983, 0xffffffff, "CMI9739A",           patch_cm9739,   NULL },
+> > 
+> > causes the card to be muted, reguardless of the mixer, because of the init
+> > code in patch_cm9739 -- the init code apparently isn't compatible.
+> > 
+> > Removing the initialization code, but leaving the ops, gives a few more
+> > functional mixer options (like "Line-In as Surround" and "Mic as Center/LFE")
+> 
+> According to the datasheet, CM9739A is indeed compatible with 9739
+> except for pins.
+> 
+> Could you get the ac97 register dump of the good- and bad-running
+> states (from /proc/asound/card0/codec97#0/* files) ?
+> 
+> I guess the GPIO initialization (for using HP) is wrong there.  Doing
+> the following helps?
+> 
+> 	# echo 72 0001 > /proc/asound/card0/codec97#0/ac97#0-0+regs
 
-http://www.bbahostcity.com/index.php?id=3D173&affid=3D4586
+Sorry it took so long to get back to you -- I've attached the following files:
+cmi9739a-working-ac97.txt       - output from working */codec97#0/ac97#0-0
+cmi9739a-working-ac97-regs.txt  - output from working */codec97#0/ac97#0-0+regs
+cmi9739a-muted-ac97.txt         - output from muted */codec97#0/ac97#0-0
+cmi9739a-muted-ac97-regs.txt    - output from muted */codec97#0/ac97#0-0+regs
 
+attempting to write to ac97#0-0+regs with the following:
+72 0001
+0:72 0001
+72=0001
+72 = 0001
+0:72 = 0001
+met with the error:
+-su: /proc/asound/card1/codec97#0/ac97#0-0+regs: No such device
 
+-- 
+Zinx Verituse                                    http://zinx.xmms.org/
 
-TESTIMONIALS
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-"This is a high gloss spray that even the bakersfield police department ad=
-mits they have a hard time proving whats on your plate." 
+--SUOF0GtieIMvvwua
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="cmi9739a-working-ac97.txt"
 
--CBS news 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D 
-"the product works" 
+0-0/0: C-Media Electronics CMI9739A
 
-"state law makes outlawed plate covers, but the statute doesn't specifical=
-ly address sprays" 
+Revision         : 0x01
+Compat. Class    : 0x03
+Subsys. Vendor ID: 0xffff
+Subsys. ID       : 0xffff
 
--NBC 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D 
-"at the time being australian authorities are powerless to stop its use, l=
-et alone catch those who are using it." 
+Capabilities     :
+DAC resolution   : 16-bit
+ADC resolution   : 16-bit
+3D enhancement   : No 3D Stereo Enhancement
 
--Australian News 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D 
-"This product really does work, as a matter of fact, it works great! I ran=
- a red light, saw the flash, and its been 2 months and still no word, well=
- ya know what they say no news is good news! Thx again photoblocker, for c=
-reating such a great product!!!" 
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=2 AMAP LDAC SDAC CDAC DSA=0 DRA
+Extended status  : SPCV LDAC SDAC CDAC
 
-Mike J.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D 
-"Although i don't run red lights on purpose, I still seem to run them when=
- I am tired, or just have to much on my mind... So when i saw photoblocker=
- I figured, hey why not give it a shot, and already it has paid for its se=
-lf. Thanks for this magnificent little miracle-in-a-bottle!" 
+--SUOF0GtieIMvvwua
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="cmi9739a-working-ac97-regs.txt"
 
-Susan L. 
- 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+0:00 = 0000
+0:02 = 0101
+0:04 = 0000
+0:06 = 0000
+0:08 = 0000
+0:0a = 801e
+0:0c = 0000
+0:0e = 9f1f
+0:10 = 9f1f
+0:12 = 9f1f
+0:14 = 0000
+0:16 = 9f1f
+0:18 = 0808
+0:1a = 0000
+0:1c = 0000
+0:1e = 0000
+0:20 = 0000
+0:22 = 0000
+0:24 = 0000
+0:26 = 000f
+0:28 = 0bc2
+0:2a = 05f0
+0:2c = 0000
+0:2e = 0000
+0:30 = 0000
+0:32 = 0000
+0:34 = 0000
+0:36 = 8080
+0:38 = 0000
+0:3a = 2000
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0004
+0:5e = 0000
+0:60 = 0000
+0:62 = 0000
+0:64 = 1438
+0:66 = 0012
+0:68 = 0000
+0:6a = 0000
+0:6c = 0000
+0:6e = 0000
+0:70 = 0000
+0:72 = 0000
+0:74 = c000
+0:76 = 3833
+0:78 = 0000
+0:7a = 0000
+0:7c = 434d
+0:7e = 4983
 
-Come Here to find out more
-http://www.bbahostcity.com/index.php?id=3D173&affid=3D4586
+--SUOF0GtieIMvvwua
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="cmi9739a-muted-ac97-regs.txt"
 
+0:00 = 0000
+0:02 = 0101
+0:04 = 0000
+0:06 = 0000
+0:08 = 0000
+0:0a = 801e
+0:0c = 0000
+0:0e = 9f1f
+0:10 = 9f1f
+0:12 = 9f1f
+0:14 = 0000
+0:16 = 9f1f
+0:18 = 0808
+0:1a = 0000
+0:1c = 0000
+0:1e = 0000
+0:20 = 0000
+0:22 = 0000
+0:24 = 0000
+0:26 = 000f
+0:28 = 0bc2
+0:2a = 05f0
+0:2c = 0000
+0:2e = 0000
+0:30 = 0000
+0:32 = 0000
+0:34 = 0000
+0:36 = 8080
+0:38 = 0000
+0:3a = 2000
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0004
+0:5e = 0000
+0:60 = 0000
+0:62 = 0000
+0:64 = 5400
+0:66 = 0012
+0:68 = 0000
+0:6a = 0000
+0:6c = 2001
+0:6e = 0000
+0:70 = 0100
+0:72 = 0000
+0:74 = c000
+0:76 = 3833
+0:78 = 0000
+0:7a = 0000
+0:7c = 434d
+0:7e = 4983
 
+--SUOF0GtieIMvvwua
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="cmi9739a-muted-ac97.txt"
 
+0-0/0: C-Media Electronics CMI9739A
 
+Revision         : 0x01
+Compat. Class    : 0x03
+Subsys. Vendor ID: 0xffff
+Subsys. ID       : 0xffff
 
+Capabilities     :
+DAC resolution   : 16-bit
+ADC resolution   : 16-bit
+3D enhancement   : No 3D Stereo Enhancement
 
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=2 AMAP LDAC SDAC CDAC DSA=0 DRA
+Extended status  : SPCV LDAC SDAC CDAC
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Check here if you would not like to receive future mailings.
-http://www.bbahostcity.com/gone.php
-
-sorghum child dutchman testament dour segundo apace bayed amazon marco fix=
-ate bitwise borough prosecute sus ardency emerson alden allegiant vegetate=
- chassis tune crossbill cauldron pigmentation intimate bonnet immigrate cl=
-ever stable liven concussion militant combat dreamlike wolve gangway gegen=
-schein tiresome snell elliptic countersink aforesaid mario bowline load mu=
-slim consumption initiate contretemps cuisine banish inconceivable aau wel=
-ler chrysler pawtucket beseech braniff posseman bookkeep crucifixion concl=
-ude printout alundum horsewomen attic abram expletive cool exhume fortune =
-dire roger division gutsy agony bema judas day chaperone brest spay arccos=
- rime tech concurrent arabia buggy thorough cowman laredo homebound slowdo=
-wn cantle inexplicit emitting tansy allure apostolic slug backtrack mucosa=
- dorado sweater patron hathaway hid uptake grayish hoarfrost con dalzell b=
-icep also garfield while timid contravariant calcine marceau lacerate scie=
-nce lighten possum sol thicket downdraft dwight animadversion madras depre=
-ssive trout compelling worn mohammedan confidential isabel resuscitate doo=
-rmen mattock oaf savage besetting mantic bridle tweak abdominal coke disgu=
-stful bosonic voltaire jacksonville halfhearted apprentice dc hangover gob=
-let duplicable coloratura quartet calliope howl commodore bertie gleeful m=
-ussel invoke foss corrupt befitting event wick schizophrenic nip quadruple=
- irrecoverable smug steadfast damage gadwall ye boutique discoid coven cou=
-ntry buoyant corbett facilitate panel proliferate karp sainthood marc innu=
-endo psychoanalysis typo freakish filet intestine forcible grasp bowie imp=
-elling ordnance hirsute cranium schoolmaster county polity allow chevalier=
- xylene alter diophantine delmarva upstair curia mud dogmatic dip theses c=
-ornmeal droll aisle besiege aldehyde brushlike dysprosium introduce durang=
-o catalytic lamplight expropriate generous volt zucchini metalloid wound a=
-nnoyance winery betony consanguine steeve perihelion bigelow mien lager od=
-ysseus appraisal eaten churchwomen corpulent caliber sling soprano incapac=
-itate dice refuge downtrend audible germane babble bespectacled checkmate =
-warsaw skyline ac coupon radon baltimore crummy coiffure apathetic
-
-----083110704834860738--
-
+--SUOF0GtieIMvvwua--
 
 
 -------------------------------------------------------
