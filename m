@@ -1,12 +1,19 @@
-From: "Gupta, Kshitij" <kshitij@ti.com>
-Subject: RE: Dma query
-Date: Thu, 26 Feb 2004 19:45:04 +0530
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: alsa-lib & oss 1.0.3rc1
+Date: Thu, 26 Feb 2004 15:10:55 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <F509E6111989D311B63700805FA761DA09F29032@DBDE01>
+Message-ID: <Pine.LNX.4.58.0402261510310.13076@pnote.perex-int.cz>
+References: <Pine.LNX.4.58.0402212257000.1870@pnote.perex-int.cz>
+ <1077754003.2680.26.camel@thor.asgaard.local>  <Pine.LNX.4.58.0402261129550.13076@pnote.perex-int.cz>
+ <1077804788.27443.51.camel@thor.asgaard.local>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=iso8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA29655
+	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2004 15:15:47 +0100
+In-Reply-To: <1077804788.27443.51.camel@thor.asgaard.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,70 +22,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 'Jaroslav Kysela' <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-	So does that mean that the __next period__ DMA transfer parameters
-should be set in the interrupt routine(end of transfer of one period).  But
-to set the next DMA transfer params we must know the start address of the
-buffer which the middle layer has filled (and if the middle layer has filled
-up more than one buffers then this buffer should be at the head of the
-list).
-Also one more point is that the hardware provides us the mechanism of
-linking the DMA channels ( linking means that once one dma channel finishes
-the transfer other one starts automatically).  So this feature provides us
-the facility of queuing up the DMA transfers.
-regards
--kshitij
+On Thu, 26 Feb 2004, Michel D=E4nzer wrote:
 
-ps: one more nasty question I wanted to ask on the list was about how much
-time does it take to write a driver(from scratch) with such a complex
-framework ;)...probably just sharing experiences....
+> On Thu, 2004-02-26 at 11:30, Jaroslav Kysela wrote:
+> > On Thu, 26 Feb 2004, Michel D=E4nzer wrote:
+> >=20
+> > > > LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so bzflag
+> > > zsh: segmentation fault=20
+>=20
+> [...]
+>=20
+> > > How can I debug this?
+> >=20
+> > Define this:
+> >=20
+> > export ALSA_OSS_DEBUG=3D1
+> >=20
+> > and run the application again.
+>=20
+> No more information unfortunately:
+>=20
+> > ALSA_OSS_DEBUG=3D1
+> LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so bzflag
+> zsh: segmentation fault  ALSA_OSS_DEBUG=3D1
+> LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so
+>=20
+> This is on PPC, could it be an endianness or similar portability
+> problem?
 
-regards
--kshitij
+I don't know. Can you try with the mpg123 program? It works on x86.
 
------Original Message-----
-From: Jaroslav Kysela [mailto:perex@suse.cz]
-Sent: Thursday, February 26, 2004 4:57 PM
-To: Gupta, Kshitij
-Cc: alsa-devel@lists.sourceforge.net
-Subject: RE: [Alsa-devel] Dma query
-
-
-On Thu, 26 Feb 2004, Gupta, Kshitij wrote:
-
-> hi ,
-> 	That's correct the pages will be in whole meory space and I will be
-> using snd_pcm_lib_preallocate_pages_for_all api for allocating the space.
-> There are some DMA apis (for our dma framework) like 
-> 
-> set_dma_transfer_params(srcaddr, destaddr, mode ...)
-> 
-> Now I need to call this API whenever the transmit for one of the buffers
-is
-> complete.  Or is it like, these things should be done just once upfront.
-> But that means we need n channels if we want n buffers to be ring buffers.
-
-
-The ALSA midlevel expects if trigger callback is called, then the data
-starts the transfer from the allocated ring buffer (which is filled by the
-ALSA midlevel code or application - mmap mode). It's not necessary that
-ring buffer is continous from the physical memory perspective, but it must
-be continuous from the user space perspective (using MMU and page
-mapping).
-
-Then after one period transfer is finished, you need to call
-period_elapsed() callback from the interrupt to notify ALSA midlevel code
-about this situation and continue with the DMA transfer (next period).  
-Note that the pointer callback must give the actual pointer in the ring
-buffer at this point.
-
-I hope this helps.
-
-						Jaroslav
+=09=09=09=09=09=09Jaroslav
 
 -----
 Jaroslav Kysela <perex@suse.cz>
