@@ -1,12 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Using specific code for midi/gameport instead of
- generic one.
-Date: Mon, 7 Feb 2005 10:35:01 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0502071024410.3379-100000@studcom.urz.uni-halle.de>
-References: <4203CEEC.9000700@free.fr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000813]: Terratec USB surround broken
+Date: Mon, 7 Feb 2005 10:40:31 +0100
+Message-ID: <a83cd635c149cacbdf9253e99879deca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <4203CEEC.9000700@free.fr>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CBE5B20B
+	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2005 10:40:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,30 +17,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: matthieu castet <castet.matthieu@free.fr>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-matthieu castet wrote:
-> what's the advantage of using specific code (via82xx.c for example) for
-> managing midi/gameport instead of the generic module mpu401 and ns558 ?
 
-The MPU-401 code in via82xx.c is used only for VT82C686 chips where
-the MIDI port shares an interrupt with the AC'97 controller.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=813> 
+======================================================================
+Reported By:                ilikejam
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   813
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10 (ALSA compiled in)
+======================================================================
+Date Submitted:             01-12-2005 19:41 CET
+Last Modified:              02-07-2005 10:40 CET
+======================================================================
+Summary:                    Terratec USB surround broken
+Description: 
+I'm using a Terratec USB 5.1 card. The 6 channels test correctly using
+'./speaker-test -c6', but any attempt to use 5.1 channel in Xine, or using
+'aplay -Dsurround51 file.wav' results in errors e.g.
+-----
+ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
+definition (id: surround51, value: cards.pcm.surround51)
+aplay: main:508: audio open error: Invalid argument
+-----
+Xine similarly fails saying the sound card is in use. Xine works fine for
+stereo audio, even when configured to use 5.1 channel sound.
+======================================================================
 
-There is no reason for the gameport code, except that it would work
-even if PnP happens to be disabled.
+----------------------------------------------------------------------
+ ilikejam - 01-31-05 20:52 
+----------------------------------------------------------------------
+I forgot to mention, I'm recording through the digital (optical) input from
+a 44.1kHz source (a MiniDisc deck).
 
-> These modules should be able to use pnp layer, so they should be able to
-> know/change the io ports in use without writing directly in LPC pci device.
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-07-05 10:40 
+----------------------------------------------------------------------
+The contents of the stream0 file indicate that your device doesn't support
+any other sample rate than 48 kHz.  So, when recording from a digital
+44.1kHz source, the data still gets labeled as "48kHz".
 
-There is no driver that changes I/O ports by writing to the LPC bridge
-device.  This wouldn't work anyway because the driver wouldn't know
-how to reconfigure the SuperIO chip behind the bridge.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-12-05 19:41 ilikejam       New Issue                                    
+01-12-05 19:41 ilikejam       Distribution              => Fedora Core 3   
+01-12-05 19:41 ilikejam       Kernel Version            => 2.6.10 (ALSA compiled
+in)
+01-26-05 09:02 ilikejam       Note Added: 0003413                          
+01-26-05 10:40 Clemens LadischNote Added: 0003414                          
+01-26-05 11:11 ilikejam       Note Added: 0003415                          
+01-31-05 20:52 ilikejam       Note Added: 0003458                          
+02-07-05 10:40 Clemens LadischNote Added: 0003528                          
+======================================================================
 
-
-Best regards,
-Clemens
 
 
 
