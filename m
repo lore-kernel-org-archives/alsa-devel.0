@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000610]: Abit AV8 entry required for programs that do not use 48k (Fix inside)
-Date: Thu, 16 Dec 2004 18:11:44 +0100
-Message-ID: <97cd94476b4e85cf5132cbcb81ee2953@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000537]: VIA VT8237: rear L/R switched with Center/LFE
+Date: Thu, 16 Dec 2004 18:16:01 +0100
+Message-ID: <adbc1f3b549e45940d40809722e73094@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 171F5245
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:11:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E65D6173
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:16:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,96 +24,76 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=610> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=537> 
 ======================================================================
-Reported By:                badbunny
+Reported By:                gertverv
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   610
+Issue ID:                   537
 Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 3 X86_64
-Kernel Version:             2.6.9
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.8.1
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-27-2004 01:37 CEST
-Last Modified:              12-16-2004 18:11 CET
+Date Submitted:             09-24-2004 19:41 CEST
+Last Modified:              12-16-2004 18:16 CET
 ======================================================================
-Summary:                    Abit AV8 entry required for programs that do not use
-48k (Fix inside)
+Summary:                    VIA VT8237: rear L/R switched with Center/LFE
 Description: 
-For programs such as Doom 3 or aplay (that use 41k channels)...This card in
-it's current state of only accepting 48k streams is not working out for
-these type programs. Adding the following to the whitelist[] in via82xx.c
-resolves this problem:
+While playing back 5.1 audio, it looks like the rear L/R channels are
+swapped with the Center/LFE channels. The rear L/R and Center/LFE are
+connected via Gigabyte Surround-Kit.
 
-{ .vendor = 0x147b, .device = 0x1415, .action = VIA_DXS_NO_VRA }, /* Abit
-AV8 */
-
-I have have fully tested this. I also ran using VIA_DXS_ENABLE, but it
-causes a hiss in the sound. So this works the best. Without this users
-whould just have to know to set "dxs_support=4"...I think it's best this
-be in the driver.
-
-Below is lspci output:
-lspci -nvs 00:11.5
-00:11.5 Class 0401: 1106:3059 (rev 60)
-        Subsystem: 147b:1415
-        Flags: medium devsel, IRQ 177
-        I/O ports at e400 [size=256]
-        Capabilities: [c0] Power Management version 2
-
-lspci -vs 00:11.5
-00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-        Subsystem: ABIT Computer Corp.: Unknown device 1415
-        Flags: medium devsel, IRQ 177
-        I/O ports at e400 [size=256]
-        Capabilities: [c0] Power Management version 2
 
 ======================================================================
 
 ----------------------------------------------------------------------
- badbunny - 11-09-04 01:11 
+ tiwai - 10-14-04 12:28 
 ----------------------------------------------------------------------
-Summary: Fixed issues with Abit AV8
-
- Added Abit AV8 sound card to the white list to use
- VIA_DXS_NO_VRA by default. This resolves issues with
- programs wanting to use 41k streams. It also fixes
- gstreamer issue with alsasink module interaction.
-
-Signed-off-by: Jerone Young <jerone@gmail.com>
+Then we need a software routing.
+Please try the attached patch for the driver.  Then, copy
+the attached VIA8237.conf to /usr/share/alsa/cards.
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 18:44 
+ gertverv - 10-14-04 18:51 
 ----------------------------------------------------------------------
-Thanks, the patch was applied to CVS now.
+Thanks, now it seems to work. I tested the patch and config file with the
+speaker-test program and playing back a DVD with xine.
+
+I noticed with alsamixer that when I was running the speaker-test program,
+that the Line-In was switched to surround (also the sound of the TV card
+connected to line-in disappeared).
+In the VIA8237.conf, I changed the value of "Line-In As Surround" and "Mic
+As Center/LFE" to off. Because I have the rear L/R and Center/LFE
+connected via the Gigabyte Surround kit, so I don't have to use the
+Line-In and Mic connectors for this.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-27-04 01:37 badbunny       New Issue                                    
-10-27-04 01:37 badbunny       Distribution              => Fedora Core 3 X86_64
-10-27-04 01:37 badbunny       Kernel Version            => 2.6.9           
-10-27-04 03:06 badbunny       Note Added: 0002271                          
-10-27-04 04:23 badbunny       Note Added: 0002272                          
-11-02-04 21:59 badbunny       Note Added: 0002300                          
-11-08-04 03:32 badbunny       Note Added: 0002308                          
-11-08-04 09:02 Clemens LadischNote Added: 0002309                          
-11-09-04 01:07 badbunny       File Added: via82xx_abit_av8.patch                
-   
-11-09-04 01:11 badbunny       Note Added: 0002315                          
-11-09-04 18:44 tiwai          Status                   new => resolved     
-11-09-04 18:44 tiwai          Resolution               open => fixed       
-11-09-04 18:44 tiwai          Assigned To               => tiwai           
-11-09-04 18:44 tiwai          Note Added: 0002332                          
-12-16-04 18:11 tiwai          Status                   resolved => closed  
+09-24-04 19:41 gertverv       New Issue                                    
+09-24-04 19:41 gertverv       Distribution              => Fedora Core 2   
+09-24-04 19:41 gertverv       Kernel Version            => 2.6.8.1         
+09-24-04 19:50 gertverv       Note Added: 0001903                          
+10-12-04 15:06 tiwai          Note Added: 0002104                          
+10-12-04 18:21 gertverv       Note Added: 0002106                          
+10-13-04 16:20 tiwai          Note Added: 0002125                          
+10-13-04 16:20 tiwai          File Added: via-6ch-slot.diff                    
+10-13-04 19:21 gertverv       Note Added: 0002133                          
+10-14-04 12:28 tiwai          Note Added: 0002140                          
+10-14-04 12:29 tiwai          File Added: via8237.diff                     
+10-14-04 12:29 tiwai          File Added: VIA8237.conf                     
+10-14-04 18:51 gertverv       Note Added: 0002158                          
+11-10-04 14:01 tiwai          Status                   new => resolved     
+11-10-04 14:01 tiwai          Resolution               open => fixed       
+11-10-04 14:01 tiwai          Assigned To               => tiwai           
+12-16-04 18:16 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
