@@ -1,13 +1,12 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: IEEE 1394 devices and ALSA
-Date: Mon, 24 Jan 2005 00:42:09 -0800 (PST)
-Message-ID: <20050124084209.65949.qmail@web60809.mail.yahoo.com>
-References: <20050124031234.9420312E3B@sc8-sf-spam2.sourceforge.net>
-Reply-To: tsw@johana.com
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: alsa-lib plugin devel
+Date: Mon, 24 Jan 2005 10:24:34 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0501241023030.2256@pnote.perex-int.cz>
+References: <41F4AF11.2090109@xmission.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050124031234.9420312E3B@sc8-sf-spam2.sourceforge.net>
+In-Reply-To: <41F4AF11.2090109@xmission.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,28 +16,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Brad Midgley <bmidgley@xmission.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Yesterday I saw a Metric Halo Mobile I/O 2882 connected to a Mac (Laptop, but
-that's irrelevant).  It has a firewire (IEEE-1394) interface.  Has anyone
-thought about getting this magic box working on Linux?  It looks like a nice
-box to "have around the house".  It has 8 analog in/8 analog out along with a
-bunch of digital I/O's.  It has a full matrix to interconnect things.
+On Mon, 24 Jan 2005, Brad Midgley wrote:
 
-Further thoughts??
+> Hi
+> 
+> I've started working on an alsa-lib plugin to send audio to a bluetooth 
+> device (see http://bluetooth-alsa.sf.net)
+> 
+> I stubbed it out so I can see that it gets invoked when I address it 
+> directly with
+> 
+> 	aplay -B 1000000 -D pcm.a2dp sound.wav
+> 
+> And I can see it is invoking the plugin code (just filled in with a 
+> bunch of printf's). What I'm struggling with is how to make this driver 
+> appear to clients that use alsa-lib. In the simplest case,
+> 
+> 	aplay --list-devices
 
-=====
--- 
-Tom Watson
-tsw@johana.com
+The control interface is used here (alsa-lib/src/control/).
 
+						Jaroslav
 
-		
-__________________________________ 
-Do you Yahoo!? 
-All your favorites on one personal page – Try My Yahoo!
-http://my.yahoo.com 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
