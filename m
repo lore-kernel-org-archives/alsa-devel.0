@@ -1,11 +1,10 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: usbaudio won't do 24-bit or 32-bit i/o...
-Date: Tue, 24 Dec 2002 03:58:07 +0900
+From: "Jan \"Evil Twin\" Depner" <eviltwin69@cableone.net>
+Subject: 0.9.0rc6 envy24control problem
+Date: 23 Dec 2002 19:02:21 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E075CBF.30107@boosthardware.com>
-References: <Pine.HPX.4.33n.0212051549290.19058-100000@studcom.urz.uni-halle.de>	<3DF0482E.8010109@boosthardware.com>	<s5hd6o5u6hw.wl@alsa2.suse.de>	<3DFB0C79.7010000@boosthardware.com>	<s5hvg1tswyq.wl@alsa2.suse.de>	<3DFE2295.2020502@boosthardware.com>	<s5hlm2ou0k9.wl@alsa2.suse.de>	<3E03930D.8040908@boosthardware.com> <s5h65tkvoxi.wl@alsa2.suse.de>
+Message-ID: <1040691742.26027.27.camel@eviltwin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,62 +15,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Sat, 21 Dec 2002 07:00:45 +0900,
-> Patrick Shirkey wrote:
-> 
->>Takashi Iwai wrote:
->>
->>>hmmm, it seems that the problem is on usb-uhci driver.
->>>mysteriously, the midi part of quattro causes the kernel panic.  the
->>>audio part seems ok.
->>>you can avoid this either by using uhci driver or by commenting out
->>>the entry for quattro in alsa-kernel/usb/usbquirks.h.
->>>
->>
->>I am trying it out on my ohci machine too and the latest driver has 
->>fixed the problem with not being able to capture from all the input.
->>
->>Thanks.
->>
->>I have commented out the midi quirk though in alsa-kernel/usb/usbquirk.h
->>
->>I will be saving this cvs for sure.
->>
->>The 24_3le support in arecord still captures the left channel maxed and 
->>the right at normal volume on pcm0 and pcm1.
-> 
-> 
-> did you update the alsa-lib, too?
-> there was a bug regarding 24bit conversion both on alsa-driver and
-> alsa-lib.
-> 
 
-I updated all the cvs files and recompiled alsa-driver, alsa-lib and 
-alsa-utils.
+	I am running alsa 0.9.0rc6.  Apparently Jaroslav Kysela has made
+changes to envy24control from rc5 allowing the user to set the internal
+clock rate.  I am using a Hoontech ST Audio DSP24 card.  I have found
+that in order to change the master clock setting I have to first switch
+to S/PDIF In and then to another setting.  If I just switch between
+settings (ie 44100 to 48000) the radio buttons change but the change is
+not saved.  Obviously the workaround is to always switch to S/PDIF In
+prior to switching to another mode but this is not an ideal situation. 
+On trying to debug the code I found that changing to or from S/PDIF In
+mode causes a call to control_input_callback which then calls
+master_clock_update.  Merely calling master_clock_update from
+internal_clock_set does not alleviate this problem.  Checking on the
+reasons I have found that the call to snd_ctl_elem_read(ctl,
+internal_clock) in master_clock_update resets the value returned by
+snd_ctl_elem_value_get_enumerated(internal_clock, 0) to the previous
+setting.  That is, if the enumerated value is 8 then a call to
+internal_clock_set(int xrate) with xrate set to 9 will change the value
+returned by snd_ctl_elem_value_get_enumerated(internal_clock, 0) to 9. 
+A subsequent call to snd_ctl_elem_read(ctl, internal_clock) will cause
+the value returned by snd_ctl_elem_value_get_enumerated(internal_clock,
+0) to be 8.  To get down to brass tacks a call to snd_ctl_elem_read
+immediately following a call to snd_ctl_elem_write seems to reset the
+master clock value to what it was prior to the call to
+snd_ctl_elem_write.
 
-I will try again soon.
+As I said, I have a workaround but I'm sure that someone with more
+experience in this code (I just started an hour ago) would be able to
+fix this one fairly quickly.  Sorry if the above is a bit confusing.
+
+V/R
+Jan Depner
 
 
 
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
 
 
 
