@@ -1,10 +1,10 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Status of ALSA documentation?
-Date: Tue, 12 Feb 2002 20:57:09 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202122053120.612-100000@pnote.perex-int.cz>
+Subject: Re: Hoontech Audio DSP24 Value (+bracket)
+Date: Tue, 12 Feb 2002 21:08:43 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202121842150.510-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <Pine.GSO.3.96.1020212122334.26439A-100000@yin.interaccess.com>
+In-Reply-To: <0000723B.3C693976@oz.ridi.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,40 +13,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: "kevin@kevindumpscore.com" <kevin@kevindumpscore.com>
-Cc: Kai Vehmanen <kai.vehmanen@wakkanet.fi>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: "claus@ridi.com" <claus@ridi.com>
+Cc: "alsa-devel@alsa.alsa-project.org" <alsa-devel@alsa.alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 12 Feb 2002, Kevin Conder wrote:
+On 12 Feb 2002, claus@ridi.com wrote:
 
-> On Tue, 12 Feb 2002, Kai Vehmanen wrote:
+> Hi,
 >
-> > On Tue, 12 Feb 2002, Kevin Conder wrote:
-> > > The
-> > > last time I checked, the ALSA developers were adding doxygen comments to
-> > > the source code.
+> > > Since your card was recognized as STDSP24, it means that both cards
+> > > have the same sub vendor/device id.  Thus it's difficult to guess
+> > > which chip is.  Perhaps trying to detect ak4524 at first, then one
+> > > can recognize it as DSP24 Value or not.
 > >
-> > The best part of javadoc is that it adds very little overhead.
+> > I asked Hoontech about that too.
 >
-> 	I'm confused. Is the ALSA project using javadoc or doxygen?
-
-doxygen, but the core of both systems is same, although doxygen is a bit
-more enhanced.
-
-> > This may sound pessimistic, but a fact is that lots of time went to
-> > writing API docs for ALSA 0.3, 0.4 and 0.5. That time could have been
-> > instead spent on working on the code.
+> It is not possible to distinguish between a DSP24 Value and a DSP24 card in
+> software. Also you cannot detect the converter on the card (as it is not
+> needed).
 >
-> 	Are you implying that writing documentation is a waste of time?
+> The DSP24 PCI card provides a interface that is called "H-BUS" and allows you
+> to connect several external boxes (ADC, DAC, Digital I/O interfaces, etc.) to
+> one card. Via GPIO you can (and need to) controll this interface. Up to four
+> external boxes with up to 4 stereo input channels on each box can be adressed
+> at the same time. You can patch any of these stereo inputs to the Envy24 input
+> by GPIO during runtime. This allows you for example to use a DS2000 (ADAT/TDIF
+> interface) and a ADC&DAC2000 (analog I/O) at the same time and to switch
+> between the inputs when needed. An introduction to this can be found on our
+> website: check www.staudio.com -> Service -> Knowledge Base -> DSP24 -> H-BUS.
+>
+> The DSP24 Value simulates this by connecting the ADC on the card virtually as
+> box number 1, input 1/2.
 
-We all know that it's not wasting time. Unfortunately, our group is not
-very big and documentation process is not very quick at the moment. We
-welcome any patches / additions / corrections regarding alsa-lib
-documentation. I think that I put my ideas about documentation structure
-to our current sources (the result is available at
-http://www.alsa-project.org/alsa-doc/alsa-lib/)
+Box number 1 means the first from four? (Sorry, but addressing is from 0
+to 3). Currently, ALSA initializes only first box at address zero.
 
-We welcome any real documetation volunteers.
+> > The DAC & ADC volume
+> > don't seem to work though.
+>
+> The hardware does not provide any function to change the input or output level
+> of the analog I/O.
+
+Thanks for clarification.
 
 						Jaroslav
 
@@ -54,6 +62,7 @@ We welcome any real documetation volunteers.
 Jaroslav Kysela <perex@suse.cz>
 SuSE Linux    http://www.suse.com
 ALSA Project  http://www.alsa-project.org
+
 
 
 _______________________________________________
