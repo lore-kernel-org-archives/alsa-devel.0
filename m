@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000847]: alsa-tools 1.0.8 fail to compile on ppc64
-Date: Tue, 25 Jan 2005 15:17:03 +0100
-Message-ID: <4d3763038a223a3aa866ab98e445f38d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000750]: no sound since 2.6.8.1
+Date: Tue, 25 Jan 2005 15:22:41 +0100
+Message-ID: <31b1e5422d8e094266705d475b5ca4d4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E9062263
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 15:17:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 649321AF
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 15:22:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=847> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=750> 
 ======================================================================
-Reported By:                Markus Rothe
-Assigned To:                perex
+Reported By:                aquarichy
+Assigned To:                
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   847
-Category:                   ac3dec
+Project:                    ALSA - driver
+Issue ID:                   750
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 won't fix
-Fixed in Version:           
+Status:                     new
+Distribution:               Slackware 10
+Kernel Version:             2.6.9+
 ======================================================================
-Date Submitted:             01-24-2005 21:09 CET
-Last Modified:              01-25-2005 15:17 CET
+Date Submitted:             12-28-2004 02:20 CET
+Last Modified:              01-25-2005 15:22 CET
 ======================================================================
-Summary:                    alsa-tools 1.0.8 fail to compile on ppc64
+Summary:                    no sound since 2.6.8.1
 Description: 
-Hi,
-
-I'm just trying to compile alsa-tools 1.0.8 on my G5, which runs Gentoo
-Linux.
-
-Here comes the output:
-
-checking for ALSA CFLAGS... 
-checking for ALSA LDFLAGS...  -lasound -lm -ldl -lpthread
-checking for libasound headers version >= 1.0.0... found.
-checking for snd_ctl_open in -lasound... yes
-configure: creating ./config.status
-config.status: creating Makefile
-config.status: executing depfiles commands
-if powerpc64-unknown-linux-gnu-gcc -DPACKAGE_NAME=\"\"
--DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\"
--DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"cspctl\" -DVERSION=\"0.2.0\"
--DSTDC_HEADERS=1 -DHAVE_LIBASOUND=1  -I. -I.   -I/usr/include/fltk-1.1 
--mcpu=G5 -O3 -pipe -fsigned-char -mabi=altivec  -MT cspctl.o -MD -MP -MF
-".deps/cspctl.Tpo" \
-  -c -o cspctl.o `test -f 'cspctl.c' || echo './'`cspctl.c; \
-then mv -f ".deps/cspctl.Tpo" ".deps/cspctl.Po"; \
-else rm -f ".deps/cspctl.Tpo"; exit 1; \
-fi
-powerpc64-unknown-linux-gnu-gcc  -mcpu=G5 -O3 -pipe -fsigned-char
--mabi=altivec   -L/usr/lib/fltk-1.1  -lasound -lm -ldl -lpthread -o cspctl
- cspctl.o  -lasound -lm -ldl -lpthread
-cspctl.o(.toc+0xe8): undefined reference to
-`__invalid_size_argument_for_IOC'
-collect2: ld returned 1 exit status
-make: *** [cspctl] Error 1
-
+Sound using a kernel.org 2.6.8.1 kernel with ALSA built-in worked.  When I
+compile  any newer stable kernel, there is no sound.  Compilation executes
+without complaints.  No Sound related options change.  I have even tried
+saying No to all the new options 2.6.9 and .10 provided in fear that one
+of those might be interfering, but nada.  
 ======================================================================
 
 ----------------------------------------------------------------------
- Markus Rothe - 01-24-05 21:11 
+ FrankS - 01-24-05 04:10 
 ----------------------------------------------------------------------
-sorry, Category is wrong..
+I have the same system, and am seeing the same problem on debian
+distributions.  If I add a file to my /etc/modprobe.d that sets the
+ac97_quirk=0 option, life is wonderful and there is sound.  I searched for
+other files setting this option and found none.  I downloaded and compiled
+other versions of the alsa drivers, for me  it broke between 1.0.5a and
+1.0.6rc1 (kernel 2.6.7 ). I did not verify the fix on .6rc1, but I did on
+.6a.  The fix worked on both MEPIS and Ubuntu beta releaes.  I have
+several test partitions setup, and would be more than willing to test any
+potential fixes and or run experiments.
+
+Frank
 
 ----------------------------------------------------------------------
- tiwai - 01-25-05 15:17 
+ tiwai - 01-25-05 15:22 
 ----------------------------------------------------------------------
-This probleam happens because the available ioctl size is only 13bits on
-PPC64 while it's 14bit on x86.
+Looks like the PCI sub ID confliction.  There is already the quirk entry
+for ECS L7VMM2.  The h/w vendor assigned the identical ID without deep
+consideration...
 
-Don't compile this program for PPC64.  It's only for ISA SB16 boards.
+Sorry, no way to avoid this as default as the system appears identical
+from the driver side.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-24-05 21:09 Markus Rothe   New Issue                                    
-01-24-05 21:10 Markus Rothe   Issue Monitored: Markus Rothe                    
-01-24-05 21:11 Markus Rothe   Note Added: 0003397                          
-01-25-05 15:17 tiwai          Status                   assigned => resolved
-01-25-05 15:17 tiwai          Resolution               open => won't fix   
-01-25-05 15:17 tiwai          Note Added: 0003401                          
+12-28-04 02:20 aquarichy      New Issue                                    
+12-28-04 02:20 aquarichy      Distribution              => Slackware 10    
+12-28-04 02:20 aquarichy      Kernel Version            => 2.6.9+          
+12-29-04 08:23 aquarichy      Note Added: 0002993                          
+12-29-04 14:12 tiwai          Note Added: 0002996                          
+12-29-04 19:02 aquarichy      Note Added: 0003007                          
+12-29-04 19:17 aquarichy      Note Added: 0003008                          
+12-29-04 19:37 aquarichy      Note Added: 0003009                          
+12-29-04 20:39 aquarichy      Note Added: 0003011                          
+12-29-04 20:46 rlrevell       Note Added: 0003012                          
+12-30-04 00:07 aquarichy      Note Added: 0003015                          
+12-30-04 06:05 aquarichy      Note Edited: 0003015                         
+12-30-04 06:36 aquarichy      Note Added: 0003017                          
+12-30-04 13:02 tiwai          Note Added: 0003018                          
+12-31-04 06:30 aquarichy      Note Added: 0003024                          
+01-03-05 12:07 tiwai          Note Added: 0003053                          
+01-03-05 20:30 aquarichy      Note Added: 0003074                          
+01-24-05 04:10 FrankS         Note Added: 0003389                          
+01-25-05 15:22 tiwai          Note Added: 0003403                          
 ======================================================================
 
 
