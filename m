@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Wed, 20 Oct 2004 00:38:01 +0200 (CEST)
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: [PATCH]snd-usb-usx2y 0.8.1 against alsa-kernel cvshead: OHCI doesn't crash anymore
+Date: Wed, 20 Oct 2004 02:28:15 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041019223801.96B9B18009@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200410200228.16228.annabellesgarden@yahoo.de>
+References: <200409302046.29798.annabellesgarden@yahoo.de> <200410181406.43903.annabellesgarden@yahoo.de> <s5hlle2j0hz.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 01430327
-	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 00:38:01 +0200 (MEST)
+In-Reply-To: <s5hlle2j0hz.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,102 +19,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, Rui Nuno Capela <rncbc@rncbc.org>
 List-Id: alsa-devel@alsa-project.org
 
+Am Dienstag 19 Oktober 2004 15:33 schrieb Takashi Iwai:
+>
+> I'm afraid it's still racy.
+> In usX2Y_urbs_start(), the complete callback may be called between
+> usb_submit_urb() and the loop of schedule_timeout().
+> So, the loop should check at first the condition before sleeping like
+> below:
+>
+> 	while (atomic_read(&subs->state) != state_PREPARED) {
+> 		timeout = schedule_timeout(timeout);
+> 		if (signal_pending(current))
+> 			...
+> 		if (! timeout)
+> 			...
+> 	}
+>
+<click, beep, ring> ok, thanks!
+But there is still a small race window between 
+	while (atomic_read(&subs->state) != state_PREPARED) {
+and   /* right here  the complete callback may be called */
+		timeout = schedule_timeout(timeout);
+no?
+Is there a trick to avoid even this small race window?
+>
+> Regarding the new config stuff:
+> Let's kill CONFIG_SND_USB_USX2Y_NRPACKS_VARIABLE option.
+> No one will want to disable such a module option.
+>
+Well, me wants to disable it as it works best with nrpacks=1 here and I'd like 
+the machine code to not contain the unneeded loops then...
+(gcc optimizes those loops away if it reads "#define nrpacks 1")
+Can I keep some (commented out?) define switch inside the source (invisible to 
+KConfig) to suit my needs?
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000306
-======================================================================
-Reported By:                Quietti
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     306
-Category:                   PPC - powermac
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             self-compiled 2.6.6 vanilla.
-======================================================================
-Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              10-20-2004 00:38 CEST
-======================================================================
-Summary:                    compiles, but no sound comes out
-Description: 
-This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
+> Also, please avoid the Kconfig int value as much as possible if you
+> want to support the driver for 2.2/2.4 kernels, too.  I believe it's
+> ok to put a hardcoded value 4 like usbaudio.c if you describe the
+> module option properly in the document.
+>
+Erm, which document?
+And I'm not too keen to do the driver (sup/back)port for 2.2/2.4 kernels 
+myself. I'll avoid the Kconfig int value, making it simpler for volunteers.
 
-The kernel compiles fine, the snd_powermac module loads without any error,
-but no sound comes up.
-
-Running alsamixer gives me a mixer screen where none of the sliders can be
-moved.
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 05-28-2004 21:18 CEST 
-----------------------------------------------------------------------
-to be sure: the mixer value cannot be changed via amixer program?
-
-----------------------------------------------------------------------
- Quietti - 05-28-2004 21:37 CEST 
-----------------------------------------------------------------------
-Yes, that fails too.  For example:
-
-root@omena:/home/q-funk# amixer set CD 80%
-Simple mixer control 'CD',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 100
-  Front Left: Playback 80 [80%]
-  Front Right: Playback 80 [80%]
-root@omena:/home/q-funk# amixer get CD
-Simple mixer control 'CD',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 100
-  Front Left: Playback 0 [0%]
-  Front Right: Playback 0 [0%]
-root@omena:/home/q-funk#
-
-That has always failed on this hardware using ALSA.  
-
-However, the old OSS driver dmasound_pmac produces sounds, so I know that
-the hardware is not at fault. Then again, since OSS is being deprecated, I
-cannot afford to continue using it for too long.
-
-----------------------------------------------------------------------
- Quietti - 07-25-2004 20:16 CEST 
-----------------------------------------------------------------------
-I would just like to point out that this is still broken in kernel 2.6.7.
-
-----------------------------------------------------------------------
- Quietti - 09-08-2004 06:32 CEST 
-----------------------------------------------------------------------
-Still broken in kernel 2.6.8.1 also.
-
-----------------------------------------------------------------------
- Quietti - 10-20-2004 00:38 CEST 
-----------------------------------------------------------------------
-Still broken in kernel 2.6.9 as well.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-25-04 20:35 Quietti        New Bug                                      
-05-25-04 20:35 Quietti        File Added: asound.state                     
-05-25-04 20:35 Quietti        Distribution              => Debian          
-05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6 vanilla.
-05-25-04 20:38 Quietti        Bug Monitored: Quietti                       
-05-28-04 21:18 tiwai          Bugnote Added: 0001274                       
-05-28-04 21:37 Quietti        Bugnote Added: 0001275                       
-07-25-04 20:16 Quietti        Bugnote Added: 0001473                       
-09-08-04 06:32 Quietti        Bugnote Added: 0001726                       
-10-20-04 00:38 Quietti        Bugnote Added: 0002209                       
-======================================================================
+Karsten
 
 
 -------------------------------------------------------
