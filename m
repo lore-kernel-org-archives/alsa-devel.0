@@ -1,15 +1,12 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000264]: Can not set recording source & twick line in volume
-Date: Sun, 13 Jun 2004 13:11:38 +0200
+From: "Michele Spinolo" <michele.spinolo@tin.it>
+Subject: Envy24Control and wordclock
+Date: Sun, 13 Jun 2004 18:38:35 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <85694d65b294ac704a4a8386a9966d12@bugtrack.alsa-project.org>
+Message-ID: <012401c45164$df651660$f7143052@cfd86qjdqauxzj>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0121_01C45175.A2AC2270"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B934525E
-	for <alsa-devel@alsa-project.org>; Sun, 13 Jun 2004 13:11:38 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,100 +15,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0264
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                teras
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     264
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.6.2
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             05-08-2004 21:28 CEST
-Last Modified:              06-13-2004 13:11 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Can not set recording source & twick line in =
-volume
-Description:=20
-This problem is strange, because it does not appear in stock kernel 2.6.2
-but it started to appear in later kernels, 2.6.3 up to 2.6.5 (and also in
-alsa driver 1.0.4).
+------=_NextPart_000_0121_01C45175.A2AC2270
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I am using both my PCI SB Audigy card and my on-board Intel AC'97
-controller, with the modules snd-emu10k1 and snd-intel8x0. The onboard
-card is wired to the line in of the SB card. WIth kernel 2.6.2 everything
-works fine. I can hear the sound of the intel card through the SB card an=
-d
-also increase/decrease the line in volume of the SB card.
+Hi guys,
 
-On later kernels, as well as alsa 1.0.4 I can not longer see the selectio=
-n
-of the "record source" for the SB, in ANY mixer. Moreover the default
-input is the microphone (which is something I don't want to. The selectio=
-n
-of the "recording source" for the intel card does appear.
+I installed 3 Terratec EWS88D in my system, which are properly =
+recognized
+and now, after some work, work fine.
 
-Also the volume slider for the microphone does not work. No matter what I
-do, the volume remain constant. Of course I can controll it with other
-means, but this is not the point.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Using the command envy24control -c x (x=3D0,1,2) I can manage HW =
+settings of
+different soundcards, bun under "hardware settings", "master clock" I =
+can't
+find "wordclock" option which permits to sync the different boards.
+The boards are connected by their internal wordclock propetary cable, =
+the
+problem seems the driver or envy24control do not recognize this option =
+the
+soundcard has.
 
-----------------------------------------------------------------------
- teras - 06-13-2004 13:11 CEST=20
-----------------------------------------------------------------------
-Just for reference, this is the lspci for this card:
+Thanks!
+Michele
 
-0000:02:04.0 Multimedia audio controller: Creative Labs SB Audigy (rev
-03)
+P.S. Sorry If I double posted, but I had a problem with my mail =
+server!:-(
 
-or (in -n mode)
-0000:02:04.0 Class 0401: 1102:0004 (rev 03)
+------=_NextPart_000_0121_01C45175.A2AC2270
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-05-08-04 21:28 teras          New Bug                                    =
- =20
-05-08-04 21:28 teras          Distribution              =3D> Debian unsta=
-ble=20
-05-08-04 21:28 teras          Kernel Version            =3D> 2.6.2       =
-   =20
-05-09-04 12:40 teras          Bug Monitored: teras                       =
- =20
-06-13-04 13:11 teras          Bugnote Added: 0001304                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT size=3D3>
+<P>Hi guys,<BR><BR>I installed 3 Terratec EWS88D in my system, which are =
 
+properly recognized<BR>and now, after some work, work fine.<BR><BR>Using =
+the=20
+command envy24control -c x (x=3D0,1,2) I can manage HW settings =
+of<BR>different=20
+soundcards, bun under "hardware settings", "master clock" I =
+can't<BR>find=20
+"wordclock" option which permits to sync the different boards.<BR>The =
+boards are=20
+connected by their internal wordclock propetary cable, the<BR>problem =
+seems the=20
+driver or envy24control do not recognize this option the<BR>soundcard=20
+has.<BR><BR>Thanks!<BR>Michele<BR><BR>P.S. Sorry If I double posted, but =
+I had a=20
+problem with my mail server!:-(</P></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0121_01C45175.A2AC2270--
 
 
 
