@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000919]: Master volume doesn't control rear speakers...
-Date: Fri, 18 Feb 2005 14:32:42 +0100
-Message-ID: <93c6abe67cc9414d3b65165c32e29216@bugtrack.alsa-project.org>
+Date: Fri, 18 Feb 2005 14:41:23 +0100
+Message-ID: <b9c5dcd7a0fbafffce67202a383c90f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 847BA248
-	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 14:32:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 860C4248
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 14:41:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-18-2005 12:41 CET
-Last Modified:              02-18-2005 14:32 CET
+Last Modified:              02-18-2005 14:41 CET
 ======================================================================
 Summary:                    Master volume doesn't control rear speakers...
 Description: 
@@ -49,16 +49,16 @@ affected at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- adamk75 - 02-18-05 13:06 
-----------------------------------------------------------------------
-Having a master volume control that doesn't actually control the master
-volume is a feature?
-
-----------------------------------------------------------------------
  tiwai - 02-18-05 14:32 
 ----------------------------------------------------------------------
 Yes.  The AC97 master volume register doesn't affect the volume of
 surrounds.
+
+----------------------------------------------------------------------
+ adamk75 - 02-18-05 14:41 
+----------------------------------------------------------------------
+Then shouldn't "master" be renamed?  A master volume control implies that
+it will control the volume of all output.  Clearly this isn't the case.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -67,6 +67,7 @@ Date Modified  Username       Field                    Change
 02-18-05 13:00 tiwai          Note Added: 0003650                          
 02-18-05 13:06 adamk75        Note Added: 0003651                          
 02-18-05 14:32 tiwai          Note Added: 0003652                          
+02-18-05 14:41 adamk75        Note Added: 0003653                          
 ======================================================================
 
 
