@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000918]: Behringer BCA-2000
-Date: Fri, 18 Feb 2005 00:43:09 +0100
-Message-ID: <2697283b220581b51780128e52b2ccb1@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: patch for speaker-test to support 8 channels
+Date: Thu, 17 Feb 2005 23:45:00 +0000
+Message-ID: <42152C7C.7000404@superbug.co.uk>
+References: <92C0412E07F63549B2A2F2345D3DB515F7D640@cm-msg-02.cmedia.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 18F4126D
-	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 00:43:09 +0100 (MET)
+Content-Type: text/plain; charset=Big5
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <92C0412E07F63549B2A2F2345D3DB515F7D640@cm-msg-02.cmedia.com.tw>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,51 +16,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?Big5?B?IlRpZW4sIEMuTC4gLSCl0KnTwqci?= <cltien@cmedia.com.tw>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Tien, C.L. - =A5=D0=A9=D3=C2=A7 wrote:
+> Hi,
+>=20
+> During testing cm8768 for 8 channels playback. I found the speaker-test
+> can show up to 6 speakers name correcly, so I made following patch to a=
+dd 8 channels support:
+>=20
+> --- alsa-utils-1.0.8/speaker-test/speaker-test.c	Sun May 16 09:43:29 20=
+04+++ alsa-utils-1.0.8-update/speaker-test/speaker-test.c	Wed Feb 16 20:0=
+7:10 2005@@ -55,7 +55,9 @@
+>    "Rear Left" ,
+>    "Rear Right" ,
+>    "Center" ,
+> -  "LFE"=20
+> +  "LFE",
+> +  "Side Left",
+> +  "Side Right"
+>  };
+> =20
+>  static void generate_sine(signed short *samples, int channel, int coun=
+t, double *_phase) {
+>=20
+> Sincerely,
+> ChenLi Tien
+>=20
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=918> 
-======================================================================
-Reported By:                billwest00
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   918
-Category:                   USB - usb-audio
-Reproducibility:            N/A
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Demudi 1.2.1
-Kernel Version:             2.4
-======================================================================
-Date Submitted:             02-18-2005 00:43 CET
-Last Modified:              02-18-2005 00:43 CET
-======================================================================
-Summary:                    Behringer BCA-2000
-Description: 
-My appologies if this is not the correct forum.  I use Agnula Demudi 1.2.1.
- I recently purchased Behringer's new usb2.0 interface.  I added
-snd-usb-audio to the /etc/modules file.  The device is not claimed by any
-driver on restart.  I actually did not expect it to work, being so new.  I
-just wanted to let you know that this device does not appear to work with
-Demudi.
-
---Thanks!
-Bill West
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-18-05 00:43 billwest00     New Issue                                    
-02-18-05 00:43 billwest00     Distribution              => Demudi 1.2.1    
-02-18-05 00:43 billwest00     Kernel Version            => 2.4             
-======================================================================
-
+Did you look at http://www.alsa-project.org/~james/speaker-test/
 
 
 
@@ -69,4 +54,4 @@ Date Modified  Username       Field                    Change
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
