@@ -1,12 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] Roland UA-100 PCM support
-Date: Thu, 24 Oct 2002 09:19:56 +0200 (METDST)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: Re: [linux-audio-user] Evolution UC16 problems, modules.conf for usb-midi and usb-audio together
+Date: Wed, 23 Oct 2002 13:44:10 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0210240907400.23677-100000@studcom.urz.uni-halle.de>
+Message-ID: <20021023114410.GA11929@tuba.home>
+References: <20021023110337.GB515@tuba.home> <Pine.LNX.4.33.0210231302070.5772-100000@pnote.perex-int.cz> <s5hwuo91jl0.wl@alsa2.suse.de>
+Reply-To: martin-langer@gmx.de
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <s5hwuo91jl0.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,173 +18,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, perex@suse.cz, clemens@ladisch.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Oct 23, 2002 at 01:27:23PM +0200, Takashi Iwai wrote:
+> At Wed, 23 Oct 2002 13:02:28 +0200 (CEST),
+> Jaroslav wrote:
+> > 
+> > On Wed, 23 Oct 2002, Martin Langer wrote:
+> > 
+> > > On Wed, Oct 23, 2002 at 11:50:37AM +0200, Clemens Ladisch wrote:
+> > > > And you need to say which driver to use for snd-card-1. For the UC16 with
+> > > > 0.9.0rc3, it would be
+> > > > 	alias snd-card-1 snd-usb-midi
+> > > > For 0.9.0rc4, it would be
+> > > > 	alias snd-card-1 snd-usb-audio
+> > > > 
+> > > 
+> > > 
+> > > It would be better to add this module name change to the rc4 announce lines on
+> > > www.alsa-project.org !
+> > 
+> > It's not possible to comment changes for all drivers in the news 
+> > section...
+> 
+> but the change of driver names is actually very important for users,
+> and there are only few:
+> 
+> 	snd-via686, snd-via8233 ==> snd-via82xx
+> 	snd-usb-midi ==> snd-usb-audio
 
-The UA-100 doesn't have any class-specific descriptors, so the PCM format
-information has to be supplied by the driver as well.
+What about a linked changelog or announce file?
 
+martin
 
-Index: usb/usbaudio.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/usb/usbaudio.c,v
-retrieving revision 1.21
-diff -u -r1.21 usbaudio.c
---- usb/usbaudio.c	22 Oct 2002 10:14:19 -0000	1.21
-+++ usb/usbaudio.c	24 Oct 2002 07:06:41 -0000
-@@ -1891,12 +1891,94 @@
- 	return 0;
- }
+> 
+> 
+> Takashi
+> 
+> 
 
--static inline int snd_usb_create_quirk(snd_usb_audio_t *chip,
--				       struct usb_interface *iface,
--	       			       const snd_usb_audio_quirk_t *quirk)
-+static int snd_usb_roland_ua100_hack_intf(snd_usb_audio_t *chip, int ifnum)
- {
--	/* in the future, there may be quirks for PCM devices */
--	return snd_usb_create_midi_interface(chip, iface, quirk);
-+	struct audioformat *fp;
-+	int err;
-+
-+	fp = kmalloc(sizeof(*fp), GFP_KERNEL);
-+	if (! fp) {
-+		snd_printk(KERN_ERR "cannot malloc\n");
-+		return -ENOMEM;
-+	}
-+	memset(fp, 0, sizeof(*fp));
-+	fp->format = SNDRV_PCM_FORMAT_S16_LE;
-+	fp->channels = ifnum == 0 ? 4 : 2;
-+	fp->iface = ifnum;
-+	fp->altsetting = 1;
-+	fp->altset_idx = 1;
-+	fp->attributes = ifnum == 0 ? 0 : EP_CS_ATTR_FILL_MAX;
-+	fp->endpoint = ifnum == 0 ? 0x01 : 0x81;
-+	fp->ep_attr = ifnum == 0 ? 0x09 : 0x05;
-+	fp->rates = SNDRV_PCM_RATE_CONTINUOUS;
-+	fp->rate_min = fp->rate_max = 44100;
-+
-+	err = add_audio_endpoint(chip, ifnum == 0 ? SNDRV_PCM_STREAM_PLAYBACK
-+				 : SNDRV_PCM_STREAM_CAPTURE, fp);
-+	if (err < 0) {
-+		kfree(fp);
-+		return err;
-+	}
-+	usb_set_interface(chip->dev, ifnum, 0);
-+	return 0;
-+}
-+
-+static int snd_usb_roland_ua100_hack(snd_usb_audio_t *chip)
-+{
-+	static const snd_usb_audio_quirk_t midi_quirk = {
-+		.vendor_name = "Roland",
-+		.product_name = "UA-100",
-+		.ifnum = 2,
-+		.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+		.data = & (const snd_usb_midi_endpoint_info_t) {
-+			.epnum = -1,
-+			.out_cables = 0x0007,
-+			.in_cables  = 0x0007
-+		}
-+	};
-+	struct usb_config_descriptor *cfg = chip->dev->actconfig;
-+	struct usb_interface *iface;
-+	int err;
-+
-+	if (cfg->bNumInterfaces != 3) {
-+		snd_printdd(KERN_ERR "invalid UA-100 descriptor\n");
-+		return -ENXIO;
-+	}
-+	/* if 0: output */
-+	if ((err = snd_usb_roland_ua100_hack_intf(chip, 0)) < 0)
-+		return err;
-+	/* if 1: input */
-+	iface = &cfg->interface[1];
-+	if (! usb_interface_claimed(iface)) {
-+		if ((err = snd_usb_roland_ua100_hack_intf(chip, 1)) < 0)
-+			return err;
-+		usb_driver_claim_interface(&usb_audio_driver, iface, (void*)-1);
-+	}
-+	/* if 2: MIDI */
-+	iface = &cfg->interface[2];
-+	if (! usb_interface_claimed(iface)) {
-+		if ((err = snd_usb_create_midi_interface(chip, iface, &midi_quirk)) < 0)
-+			return err;
-+		usb_driver_claim_interface(&usb_audio_driver, iface, (void*)-1);
-+	}
-+	return 0;
-+}
-+
-+static int snd_usb_create_quirk(snd_usb_audio_t *chip,
-+				struct usb_interface *iface,
-+				const snd_usb_audio_quirk_t *quirk)
-+{
-+	switch (quirk->type) {
-+	case QUIRK_MIDI_FIXED_ENDPOINT:
-+	case QUIRK_MIDI_YAMAHA:
-+	case QUIRK_MIDI_MIDIMAN:
-+		return snd_usb_create_midi_interface(chip, iface, quirk);
-+	case QUIRK_ROLAND_UA100:
-+		return snd_usb_roland_ua100_hack(chip);
-+	default:
-+		snd_printd(KERN_ERR "invalid quirk type %d\n", quirk->type);
-+		return -ENXIO;
-+	}
- }
-
-
-Index: usb/usbaudio.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/usb/usbaudio.h,v
-retrieving revision 1.5
-diff -u -r1.5 usbaudio.h
---- usb/usbaudio.h	22 Oct 2002 10:14:19 -0000	1.5
-+++ usb/usbaudio.h	24 Oct 2002 07:06:41 -0000
-@@ -149,6 +149,7 @@
- #define QUIRK_MIDI_FIXED_ENDPOINT	0
- #define QUIRK_MIDI_YAMAHA		1
- #define QUIRK_MIDI_MIDIMAN		2
-+#define QUIRK_ROLAND_UA100		3
-
- typedef struct snd_usb_audio_quirk snd_usb_audio_quirk_t;
- typedef struct snd_usb_midi_endpoint_info snd_usb_midi_endpoint_info_t;
-@@ -171,6 +172,8 @@
- /* for QUIRK_MIDI_YAMAHA, data is NULL */
-
- /* for QUIRK_MIDI_MIDIMAN, data is the number of ports */
-+
-+/* for QUIRK_ROLAND_UA100, data is NULL */
-
- /*
-  */
-Index: usb/usbquirks.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/usb/usbquirks.h,v
-retrieving revision 1.5
-diff -u -r1.5 usbquirks.h
---- usb/usbquirks.h	23 Oct 2002 10:00:31 -0000	1.5
-+++ usb/usbquirks.h	24 Oct 2002 07:06:41 -0000
-@@ -179,13 +179,8 @@
- 	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
- 		.vendor_name = "Roland",
- 		.product_name = "UA-100",
--		.ifnum = 2,
--		.type = QUIRK_MIDI_FIXED_ENDPOINT,
--		.data = & (const snd_usb_midi_endpoint_info_t) {
--			.epnum = -1,
--			.out_cables = 0x0007,
--			.in_cables  = 0x0007
--		}
-+		.ifnum = 0,
-+		.type = QUIRK_ROLAND_UA100
- 	}
- },
- {
-
+-- 
+"2b|!2b"
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by: Influence the future 
+This sf.net emial is sponsored by: Influence the future 
 of Java(TM) technology. Join the Java Community 
 Process(SM) (JCP(SM)) program now. 
-http://ad.doubleclick.net/clk;4729346;7592162;s?http://www.sun.com/javavote
+http://ads.sourceforge.net/cgi-bin/redirect.pl?sunm0002en
