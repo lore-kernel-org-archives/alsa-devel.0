@@ -1,14 +1,11 @@
 From: "55.11.6841.2689" <itn_info2001@yahoo.com.br>
 Subject: Voip Solutions
-Date: Mon, 13 Dec 2004 08:02:46 -0200
-Message-ID: <20041213100240.587BE183@alsa.alsa-project.org>
+Date: Mon, 13 Dec 2004 08:03:05 -0200
+Message-ID: <E1Cdn2o-00088f-R4@sc8-sf-mx2.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="= Multipart Boundary 1213040802"
+	boundary="= Multipart Boundary 1213040803"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 201.6.32.137 (c9062089.virtua.com.br [201.6.32.137])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 587BE183
-	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2004 11:02:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,49 +15,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multipart MIME message.
 
---= Multipart Boundary 1213040802
+--= Multipart Boundary 1213040803
 Content-Type: text/plain;
 	charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi=20
+Hi 
 
 We are from Uniglobe ITSP based in Brazil
 
-We are searching =20
+We are searching  
 
-- Rates for SIP or H323 to brazil lower than=20
+- Rates for SIP or H323 to brazil lower than 
 
-  Brazil proper US$ 3.7c=20
+  Brazil proper US$ 3.7c 
 
   Sao Paulo and Rio US$1.3c
-=20
+ 
 - USB Phones
 
 - SIP and H323 Analog Gateways (1, 2, 4 or 8 ports)
 
 - Softswitch, billing and Gatekeeper solutions (hosted, rented or selled)
 
-In any of those aspects if you have good cost/benefit solutions pls send =
-an email=20
+In any of those aspects if you have good cost/benefit solutions pls send an email 
 
 to newton@uniglobe.info or call 55.11.6841.2689
 
---= Multipart Boundary 1213040802
+--= Multipart Boundary 1213040803
 Content-Type: text/html;
 	charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1=
-252">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252">
+<META content="MSHTML 6.00.2800.1106" name=GENERATOR>
 <STYLE>BODY {
 	FONT-FAMILY: arial
 }
@@ -83,21 +78,18 @@ Content-Transfer-Encoding: quoted-printable
 <DIV>&nbsp;</DIV>
 <DIV>- SIP and H323 Analog Gateways (1, 2, 4 or 8 ports)</DIV>
 <DIV>&nbsp;</DIV>
-<DIV>- Softswitch, billing&nbsp;and Gatekeeper solutions (hosted, rented =
-or=20
+<DIV>- Softswitch, billing&nbsp;and Gatekeeper solutions (hosted, rented or 
 selled)</DIV>
 <DIV>&nbsp;</DIV>
-<DIV>In any of those aspects if you have good cost/benefit solutions pls =
-send an=20
+<DIV>In any of those aspects if you have good cost/benefit solutions pls send an 
 email </DIV>
 <DIV>&nbsp;</DIV>
-<DIV>to <A href=3D"mailto:newton@uniglobe.info">newton@uniglobe.info</A> =
-or call=20
+<DIV>to <A href="mailto:newton@uniglobe.info">newton@uniglobe.info</A> or call 
 55.11.6841.2689</DIV>
 <DIV>&nbsp;</DIV>
 <DIV>&nbsp;</DIV></BODY></HTML>
 
---= Multipart Boundary 1213040802--
+--= Multipart Boundary 1213040803--
 
 
 
