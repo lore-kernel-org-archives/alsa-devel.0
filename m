@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Peter Zubaj <pzad@pobox.sk>
 Subject: Re: Is there plans to support SiS7019?
-Date: Thu, 19 Aug 2004 13:54:15 +0200 (CEST)
+Date: Thu, 19 Aug 2004 15:14:14 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408191353210.1779@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0408191306530.11486-100000@studcom.urz.uni-halle.de>
+Message-ID: <200408191314.i7JDEEAK015224@www4.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0408191306530.11486-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,33 +16,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Vrihad Shoonya <vrihad@softhome.net>, alsa-devel@lists.sourceforge.net
+To: vrihad@softhome.net
+Cc: clemens@ladisch.de, alsa-devel@lists.sourceforge.net, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 19 Aug 2004, Clemens Ladisch wrote:
+>It looks that the driver must be written from scratch, because
+hardware is=20
+>different from SI7018 and SI7012.
 
-> Vrihad Shoonya wrote:
-> > > For me looks like 7019 is diffrent from 7018. :-(
-> >
-> > Now how much effort is required to support it in alsa if we have the
-> > register guide with us? We also have an OSS implementation with
-> > some bugs related to blocking read of the device.
-> 
-> It might help if we can take a look at the source.
-> 
-> Google finds a NetBSD patch at
-> <http://www.yasuoka.net/~yasuoka/sis7019.html>, so it's possible.
+I don't expect alsa driver for this soon, because this is not common
+hardware.
+This means, this is not standard pc soundcard (or chipset). This is
+used in STB, PDA, embeded systems... .
 
-It looks that the driver must be written from scratch, because hardware is 
-different from SI7018 and SI7012.
+For this is more used OSS drivers, because of alsa-lib size.
 
-						Jaroslav
+PS: I wonder about existence of NetBSD patch, because I found this:
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Released under NDA. List of all registers of SiS55x includeing those
+for core logic, graphics, PCI IDE configuration, legacy device, LPC
+bus, USB, AC97, ACPI, SMBUS, etc; an inportant document for BIOS porting.
+Peter Zubaj
+=0A____________________________________=0Ahttp://www.pobox.sk/ - najvacsi s=
+lovensky freemail=0A=0A=0A
 
 
 -------------------------------------------------------
