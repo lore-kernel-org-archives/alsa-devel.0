@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000880]: ALSA lib pcm_hw.c:370:(snd_pcm_hw_hw_free) SNDRV_PCM_IOCTL_HW_FREE failed: File descriptor in bad state
-Date: Thu, 3 Feb 2005 09:20:14 +0100
-Message-ID: <75a742d288d78fad8bffe0ed46d45cdd@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
+Date: Thu, 3 Feb 2005 12:25:59 +0100
+Message-ID: <99e4c50123423e458b856d119090888f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4E5DB1C0
-	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2005 09:20:15 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B919A1E4
+	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2005 12:25:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,38 +23,34 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=880> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
 ======================================================================
-Reported By:                runtema
+Reported By:                yure
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   880
+Issue ID:                   881
 Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             02-03-2005 09:20 CET
-Last Modified:              02-03-2005 09:20 CET
+Date Submitted:             02-03-2005 12:25 CET
+Last Modified:              02-03-2005 12:25 CET
 ======================================================================
-Summary:                    ALSA lib pcm_hw.c:370:(snd_pcm_hw_hw_free)
-SNDRV_PCM_IOCTL_HW_FREE failed: File descriptor in bad state
+Summary:                    Distorted sound with enabled dmix plugin
 Description: 
-When accesing ALSA lib/module pcm trough application ogle (see
-http://www.dtek.chalmers.se/groups/dvd/) it breaks down to the error given
-in the summary.
-
-Details for system/version/error:
-
-see http://forums.gentoo.org/viewtopic.php?p=2050504
+After 10-20 minutes listening music with xmms or beep-media-player I hear
+distorted sound. Appear noise.
+This problem is appear when enabled dmix plugin through configuration file
+~/.asoundrc.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 09:20 runtema        New Issue                                    
+02-03-05 12:25 yure           New Issue                                    
 ======================================================================
 
 
