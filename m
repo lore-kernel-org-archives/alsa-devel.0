@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000921]: 15_alsaconf_fix_opt: Fix typo in 'modinfo' option
-Date: Tue, 22 Feb 2005 14:42:56 +0100
-Message-ID: <114d5c27d566a5f7065eaccaeee825eb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000912]: MORE Support for SB live 24bit
+Date: Tue, 22 Feb 2005 14:47:09 +0100
+Message-ID: <66100ea535889600ff6a963c7e662055@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 940FA162
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:42:56 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B212D17A
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:47:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,49 +21,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=921> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=912> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                hawes
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   921
-Category:                   alsaconf
-Reproducibility:            always
-Severity:                   minor
+Project:                    ALSA - driver
+Issue ID:                   912
+Category:                   PCI - ca0106
+Reproducibility:            N/A
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-18-2005 22:10 CET
-Last Modified:              02-22-2005 14:42 CET
+Date Submitted:             02-16-2005 17:52 CET
+Last Modified:              02-22-2005 14:47 CET
 ======================================================================
-Summary:                    15_alsaconf_fix_opt: Fix typo in 'modinfo' option
+Summary:                    MORE Support for SB live 24bit
 Description: 
-    Summary: Fix typo in alsaconf "modinfo" option
+Im wishing there will be more support for the Sb live! 24bit card...
 
-    Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+I have it working right now using the cvs method. It has only limited
+funtion though.. no capture/recording, only stereo sound...etc....
 
+Please help.....
+
+Hawes
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-22-05 14:42 
+ jcdutton - 02-22-05 14:47 
 ----------------------------------------------------------------------
-Thanks, applied to CVS.
+The current driver fully supports 5.1 Audio output. Just send 6 audio
+channels to the card and open it with "plug:surround51"
+Make sure that alsa-driver and alsa-lib versions match otherwise the
+config files in alsa-lib will not match the alsa-driver capabilities.
+
+Capture/recording cannot currently be supported. There is not datasheet
+regarding how to get them working, and also no one has reverse engineered
+the windows drivers enough to find out. Conclusion, support not expected
+any time soon.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-18-05 22:10 jdthood        New Issue                                    
-02-18-05 22:10 jdthood        File Added: 15_alsaconf_fix_opt.patch             
-      
-02-22-05 14:42 tiwai          Status                   new => resolved     
-02-22-05 14:42 tiwai          Resolution               open => fixed       
-02-22-05 14:42 tiwai          Assigned To               => tiwai           
-02-22-05 14:42 tiwai          Note Added: 0003703                          
+02-16-05 17:52 hawes          New Issue                                    
+02-22-05 09:28 perex          Assigned To              perex => jcdutton   
+02-22-05 09:28 perex          Category                 0_compilation problem_!!!
+=> PCI - ca0106
+02-22-05 14:47 jcdutton       Note Added: 0003704                          
 ======================================================================
 
 
