@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Please do not release ALSA 0.9.0 final yet
-Date: Tue, 11 Mar 2003 19:30:57 +0100 (CET)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Quattro woes or: What does "SNDRV_PCM_IOCTL_START failed" mean?
+Date: Tue, 11 Mar 2003 13:44:12 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303111929130.1352-100000@pnote.perex-int.cz>
-References: <200303111800.SAA05928@koyuki.liam2.demon.co.uk>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <E18sogB-0008BY-00@sc8-sf-list1.sourceforge.net>
+References: <20030311180209.GC1812@fliwatut.scifi>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200303111800.SAA05928@koyuki.liam2.demon.co.uk>
+In-reply-to: Your message of "Tue, 11 Mar 2003 19:02:10 +0100."
+             <20030311180209.GC1812@fliwatut.scifi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +15,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Will <walsac@liam2.demon.co.uk>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "tiwai@suse.de" <tiwai@suse.de>
+To: Frank Barknecht <fbar@footils.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 11 Mar 2003, Will wrote:
+>But this doesn't work with Pd, which expects powers of 2...
 
-> Jaroslav and Iwai,
-> 
-> I would really like to know your thoughts on the bug I highlighted
-> in my earlier messages.  Have either of you got a MIDI keyboard so you
-> can verify the bug?  If not, is there anyone at Suse or locally
-> who might consider lending you a MIDI keyboard?
-> 
-> I'm sorry to go on about this but this bug has not been addressed
-> for months yet aim #5 of the Alsa Project is to give
-> "support for the older OSS API, providing binary compatibility
-> for most OSS programs."
+i suggest you try to find an "ALSA-native" configuration that Pd and
+your quattro *do* work with, then we can map that to JACK.
 
-I'm working on it. I solved the "timestamp" problem (/dev/sequencer MIDI 
-input) and the reset problem for /dev/sequencer. I'm going to test the 
-"output silence" problem ASAP.
+--p
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 
