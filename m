@@ -1,20 +1,11 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: HDSP -- snd-hdsp.o: init_module: No such device
-Date: Thu, 16 May 2002 12:37:52 +0200
+From: pavelni@volny.cz
+Subject: AUDIOPHILE 2496 RECORDING (fullduplex)
+Date: Fri, 17 May 2002 18:42:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E178Ifc-0001pW-00@satellite>
-Reply-To: thomas@undata.org
+Message-ID: <38f0e7c6c49e8de0c229321c70048714@www1.mail.volny.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/plain; charset=iso-8859-2
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from satellite (ALyon-101-1-6-151.abo.wanadoo.fr [217.128.18.151])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA30334
-	for <alsa-devel@alsa-project.org>; Thu, 16 May 2002 12:48:14 +0200
-Received: from toma by satellite with local (Exim 3.35 #1 (Debian))
-	id 178Ifc-0001pW-00
-	for <alsa-devel@alsa-project.org>; Thu, 16 May 2002 12:39:40 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,43 +14,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net, linux-audio-dev@music.columbia.edu, Lenka Stejskalova <leila_ste@hotmail.com>, Jaroslav Kysela <perex@suse.cz>, Petr Olivka <petr.olivka@vsb.cz>alsa-devel@lists.sourceforge.netalsa-devel@lists.sourceforge.netPetr Olivka <petr.olivka@vsb.cz>Jaroslav Kysela <perex@suse.cz>Lenka Stejskalova <leila_ste@hotmail.com>linux-audio-dev@music.columbia.edu, music-dsp@shoko.calarts.edu, Petr Krkavec <petrkrkavec@dsound1.com>Petr Olivka <petr.olivka@vsb.cz>Jaroslav Kysela <perex@suse.cz>alsa-devel@lists.sourceforge.netmusic-dsp@shoko.calarts.edulinux-audio-dev@music.columbia.eduPetr Krkavec <petrkrkavec@dsound1.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I was very excited and pleased to see hdsp driver had reached cvs (thank you 
-Paul !) , so I gave it a try. Here are the results.
-I manage to insmod everything needed except the snd-hdsp module. I get the 
-following in syslog:
-May 16 12:11:18 satellite kernel: RME Hammerfall-DSP: no cards found
-May 16 12:15:36 satellite kernel: ALSA 
-../../alsa-kernel/pci/rme9652/hdsp.c:455: Hammerfall-DSP: no Digiface or 
-Multiface connected!
-May 16 12:15:36 satellite kernel: RME Hammerfall-DSP: no cards found
+Hello,
+I would like to ask someone how to setup the card Audiophile 2496 to
+be able to record. 
 
-I'm using a cardbus hdsp + multiface on a toshiba satellite notebook, with 
-kernel 2.4.18. The computer fails to boot with the card inserted, but accepts 
-the card afterwards, and the host led on the multiface switches down.
+I tryed Envy Control Panel which
+is included with ALSA, but I did not find there any controlers for
+INs.  (I think this panel is simulation of 
+M Audio Control panel from WIN and I know how to setup in Windows -
+there is contorler for H/W IN 1/2.)
 
-cat /proc/pci outputs
-Bus  3, device   0, function  0:
-    Multimedia audio controller: PCI device 10ee:3fc5 (rev 10).
-      IRQ 10.
-      Master Capable.  Latency=64.
-      Non-prefetchable 32 bit memory at 0xd2400000 [0xd20fffff].
-but syslog shows
-May 16 09:54:57 satellite kernel: cs: cb_alloc(bus 3): vendor 0x10ee, device 
-0x3fc5
-May 16 09:54:57 satellite kernel: PCI: Failed to allocate resource 
-0(d2400000-d20fffff) for 03:00.0
-May 16 09:54:57 satellite kernel: PCI: Enabling device 03:00.0 (0080 -> 0082)
-May 16 09:54:57 satellite cardmgr[258]: socket 0: CardBus hotplug device
+(The graphical mixer which I used with SBLive did not work for my
+AUDIOPHILE to be able to setup it from mixer.).
 
-Any idea?
-
-Regards,
-Thomas
-
+                                Thanks very
+                                Pavel Nikitenko
+                                http://mrpiano.has.it
 
 _______________________________________________________________
 
