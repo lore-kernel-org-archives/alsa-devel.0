@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Sat, 23 Oct 2004 01:09:21 +0200
+Subject: [ALSA - driver 0000579]: multi+route distort sound
+Date: Fri, 22 Oct 2004 16:56:50 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40f2593e3f4fd6ab62102f4c34902adf@bugtrack.alsa-project.org>
+Message-ID: <8c73906bf83c351c4fad52b1353f8d8f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD0E12B3
-	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2004 01:09:21 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 84CC42AA
+	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:56:50 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,123 +22,121 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+A new RELATIONSHIP has been added to the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=579> 
 ======================================================================
-Reported By:                wzzrd
-Assigned To:                perex
+Reported By:                ramendik
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   154
-Category:                   mixer
+Project:                    ALSA - driver
+Issue ID:                   579
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               ASP Linux, RH9-based
+Kernel Version:             2.6.8.1-ck8 , with alsa 1.0.7rc1 stuck in and
+patches from bug 505 put on top
 ======================================================================
-Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              10-23-2004 01:09 CEST
+Date Submitted:             10-11-2004 20:45 CEST
+Last Modified:              10-12-2004 13:10 CEST
 ======================================================================
-Summary:                    Master volume only controls front output (emu10k1)
+Summary:                    multi+route distort sound
 Description: 
-Setting the alsamixer Master Volume slider only controls the front two
-speakers. The rear speakers have to be controlled with the Wave Surround
-setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
-bug. If I'm wrong putting it here, sorry.
+I have Intel ICH5, with both analog and spdif output.
 
-It would be very convenient to be able to control all four speakers with
-the Master Volume setting and to have a Front and Rear slider to control
-the front and rear speakers individually.
+I have made up /etc/asound.conf to route to both hw:0,0 and hw:0,4; I am
+listening on spdif (hw:0,4). (tiwai: I will try the new patch that may
+make this redundant, but what we have here seems to be another bug and
+might happen in other cases too).
+
+Here's my /etc/asound.conf in its entirety:
+
+pcm.analog {
+    type hw
+    card 0
+    device 0
+}
+
+pcm.digit {
+    type hw
+    card 0
+    device 4
+}
+
+pcm.whole {
+    type multi
+    slaves.a.pcm "hw:0,0"
+    slaves.a.channels 2
+    slaves.b.pcm "hw:0,4"
+    slaves.b.channels 2
+    bindings.0.slave a
+    bindings.0.channel 0
+    bindings.1.slave a
+    bindings.1.channel 1
+    bindings.2.slave b
+    bindings.2.channel 0
+    bindings.3.slave b
+    bindings.3.channel 1
+}
+
+pcm.rt {
+    type route
+    slave.pcm whole
+    slave.channels 4
+    ttable.0.0 1
+    ttable.1.1 1
+    ttable.0.2 1
+    ttable.1.3 1
+}
+pcm.!default {
+    type copy
+    slave.pcm rt
+}
+
+ctl.!default {
+    type hw
+    card 0
+}
+
+When I play to hw:0,4 or "analog", the sound is OK. When I play to "rt",
+it is distorted. Not noisy this time; instead, the pitch is shifted
+somewhat lower. 
+
+Checked with alsaplayer and xmms 1.2.10 . (XMMS 1.2.8 also caused high CPU
+use when playing to "rt", but this may be a CPU bug). Checked with both
+44100 Hz and 48000 Hz files.
+
+This may have something to do with a strange fact. When I play a 48k file,
+iecset still reports a rate of 44100 Hz. And in fact, if I set it to 48000
+Hz manualy and start a 48k file in alsaplayer, it still shifts to 44100 !
+This is true for both playing to hw:0,4 and to "rt". (Not tested with
+XMMS, can test if needed)
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0000176 Master volume does not alters center, L...
-related to          0000172 Master volume control only controls fro...
+related to          0000569 Software mixing to rear channel
 ======================================================================
 
 ----------------------------------------------------------------------
- delmonico - 05-24-04 22:51 
+ tiwai - 10-12-04 13:10 
 ----------------------------------------------------------------------
-I wrote this little, dirty workaround-script that works just fine for me.
-Anyway I would love to see a really working Master-Slider in a new
-alsa-version :)
-
-File uploading didn't work so i'll just post it:
-#!/bin/sh
-#SB Live! global volume control by Christoph 'delmonico' Neuroth
-#License: GNU General Public License
-#PCM will not go over 75% because higher values sound crappy.
-
-PCM=`amixer get PCM | grep "Front Left: Playback" | awk '{print $5 }' | tr
- -d '\[' | tr -d '%\]'`
-
-case "$1" in
-up)
-        amixer -q set 'Master' 5%+
-        if test $PCM -lt 75
-                then amixer -q set 'PCM' 5%+
-        fi
-        amixer -q set 'Wave Center' 5%+
-        amixer -q set 'Wave LFE' 5%+
-        amixer -q set 'Wave Surround' 5%+
-        amixer -q set 'EMU10K1 PCM' 5%+
-;;
-
-down)
-        amixer -q set 'Master' 5%-
-        amixer -q set 'PCM' 5%-
-        amixer -q set 'Wave Center' 5%-
-        amixer -q set 'Wave LFE' 5%-
-        amixer -q set 'Wave Surround' 5%-
-        amixer -q set 'EMU10K1 PCM' 5%-
-;;
-
-mute)
-        amixer -q set 'Master' 0
-        amixer -q set 'PCM' 0
-        amixer -q set 'Wave Center' 0
-        amixer -q set 'Wave LFE' 0
-        amixer -q set 'Wave Surround' 0
-        amixer -q set 'EMU10K1 PCM' 0
-;;
-
-
-*)
-        amixer -q set 'Master' $1%
-        if test $1 -lt 75
-                then amixer -q set 'PCM' $1%
-                else amixer -q set 'PCM' 75%
-        fi
-        amixer -q set 'Wave Center' $1%
-        amixer -q set 'Wave LFE' $1%
-        amixer -q set 'Wave Surround' $1%
-        amixer -q set 'EMU10K1 PCM' $1%
-;;
-esac
-
-----------------------------------------------------------------------
- djtm - 10-23-04 01:09 
-----------------------------------------------------------------------
-An improved script based on delmonico's but with function and variable
-channel names. PCM volume restriction does not yet work though. I'd
-appreciate if someone finds the bug. and thanks to delmonico!
+No clue yet.  To make the test consistent, use aplay for testing.
+Run aplay with -v option.  This will show the hw/sw setting.
+In addition, iecset output and /proc/asound/card0/codec97#0/* files
+would be helpful as usual.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-23-04 17:31 wzzrd          New Issue                                    
-03-23-04 18:42 perex          View Status              @0@ => public       
-03-23-04 18:42 perex          Description Updated                          
-03-23-04 18:42 perex          Additional Information Updated                    
-03-23-04 18:43 perex          Status                   new => assigned     
-03-23-04 18:43 perex          Assigned To               => perex           
-03-26-04 20:21 djtm           Note Added: 0000708                          
-04-19-04 02:47 tarball        Issue Monitored: tarball                     
-04-19-04 21:23 perex          Relationship added       has duplicate 0000176
-05-24-04 22:51 delmonico      Note Added: 0001199                          
-10-22-04 16:44 perex          Relationship added       related to 0000172  
-10-23-04 01:09 djtm           Note Added: 0002253                          
+10-11-04 20:45 ramendik       New Issue                                    
+10-11-04 20:45 ramendik       Distribution              => ASP Linux, RH9-based
+10-11-04 20:45 ramendik       Kernel Version            => 2.6.8.1-ck8 , with
+alsa 1.0.7rc1 stuck in and patches from bug 505 put on top
+10-12-04 13:10 tiwai          Note Added: 0002091                          
+10-22-04 16:56 perex          Relationship added       related to 0000569  
 ======================================================================
 
 
