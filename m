@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000361]: Latest alsa-driver from CVS will not compile on Linux 2.4 (perhaps RH EL specific)
-Date: Sun, 4 Jul 2004 12:54:31 +0200
+Subject: [ALSA - driver 0000352]: cracks and blibs when playing Quake 1
+Date: Sun, 4 Jul 2004 13:07:03 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <7079e1f64678d6d23e98fe2793a10755@bugtrack.alsa-project.org>
+Message-ID: <9c8482c9f580071626af63b4f73b590c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -24,58 +24,56 @@ The following bug has been RESOLVED.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug=
-_id=3D0000361
+_id=3D0000352
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                elklein
+Reported By:                maps4711
 Assigned To:                perex
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     361
-Category:                   0_compilation problem_!!!
+Bug ID:                     352
+Category:                   PCI - es1938
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Red Hat Enterprise Linux
-Kernel Version:             2.4.21-15.0.2
-Resolution:                 duplicate
-Duplicate:                  358
+Distribution:               Debian
+Kernel Version:             2.6.7
+Resolution:                 fixed
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-02-2004 16:53 CEST
-Last Modified:              07-04-2004 12:54 CEST
+Date Submitted:             06-30-2004 13:34 CEST
+Last Modified:              07-04-2004 13:07 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Latest alsa-driver from CVS will not compile =
-on
-Linux 2.4 (perhaps RH EL specific)
+Summary:                    cracks and blibs when playing Quake 1
 Description:=20
-I believe this bug was introduced on June 22nd in
-alsa-devel/acore/pcm_native.patch
-
-With the latest code, I get a compile error at line 3175 of pcm_native.c.
-The problem is that io_remap_page_range has too few arguments for my OS
-version (it works with the 2.6 version in the code), however I am using
-Red Hat's latest 2.4.21-15.0.2 kernel.
+Playing Quake1 (quakeforge-flavor with ALSA-driver) I hear cracks and
+blibs. Other apps (xine, mpg321) are fine. The OSS driver in 2.6.7
+produces no cracks (but reverses stereo BTW).
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- elklein - 07-02-2004 16:54 CEST=20
+ maps4711 - 07-03-2004 15:32 CEST=20
 ----------------------------------------------------------------------
-I feel like an idiot. I just noticed that this bug had already been
-reported a bit ago. The first bug is:
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0358
+I fixed it, i.e. it works for me.
 
-My appologies.
+*No swapping of stereo channels
+*no cracks
+
+See the patch for details.
+
+----------------------------------------------------------------------
+ perex - 07-04-2004 13:07 CEST=20
+----------------------------------------------------------------------
+Applied to CVS. Thanks.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -83,21 +81,25 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-02-04 16:53 elklein        New Bug                                    =
+06-30-04 13:34 maps4711       New Bug                                    =
  =20
-07-02-04 16:53 elklein        Distribution              =3D> Red Hat Ente=
-rprise
-Linux
-07-02-04 16:53 elklein        Kernel Version            =3D> 2.4.21-15.0.=
-2  =20
-07-02-04 16:54 elklein        Bugnote Added: 0001375                     =
- =20
-07-04-04 12:54 perex          duplicate_id             0 =3D> 358        =
+06-30-04 13:34 maps4711       Distribution              =3D> Debian      =
    =20
-07-04-04 12:54 perex          Resolution               open =3D> duplicat=
-e  =20
-07-04-04 12:54 perex          Status                   assigned =3D> reso=
-lved
+06-30-04 13:34 maps4711       Kernel Version            =3D> 2.6.7       =
+   =20
+07-03-04 15:32 maps4711       File Added: alsa-driver-2.6.7-es1938.diff  =
+      =20
+         =20
+07-03-04 15:32 maps4711       Bugnote Added: 0001378                     =
+ =20
+07-04-04 13:07 perex          Bugnote Added: 0001379                     =
+ =20
+07-04-04 13:07 perex          Assigned To               =3D> perex       =
+   =20
+07-04-04 13:07 perex          Resolution               open =3D> fixed   =
+   =20
+07-04-04 13:07 perex          Status                   new =3D> resolved =
+   =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
