@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000397]: Bad sound quality on Asus K8V SE Deluxe (VIA8237 + AD1980)
-Date: Sat, 25 Sep 2004 08:55:42 +0200 (CEST)
+Subject: [ALSA - driver 0000540]: alsa driver will no longer function
+Date: Sat, 25 Sep 2004 15:03:36 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040925065542.D1835101E1@server.perex-int.cz>
+Message-ID: <20040925130336.2AE072014E@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0F05D29A
-	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 08:55:43 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7AF912AB
+	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 15:03:36 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 39FE225ED0
+	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 15:03:36 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,86 +23,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000397
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000540
 ======================================================================
-Reported By:                durval
+Reported By:                wolftech
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     397
-Category:                   PCI - via82xx
+Bug ID:                     540
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               My own, based on Redhat 6.2
-Kernel Version:             2.4.26
+Distribution:               Fedora Core
+Kernel Version:             2.6.5-1.3
 ======================================================================
-Date Submitted:             07-18-2004 16:41 CEST
-Last Modified:              09-25-2004 08:55 CEST
+Date Submitted:             09-25-2004 15:03 CEST
+Last Modified:              09-25-2004 15:03 CEST
 ======================================================================
-Summary:                    Bad sound quality on Asus K8V SE Deluxe (VIA8237 + AD1980)
+Summary:                    alsa driver will no longer function
 Description: 
-Sound quality is noticiably bad; even someone with not-so-sensitive ears as
-me perceives the low-frequency and high-frequency components of sound
-getting mixed up and losing definition. I thought it could be a problem
-with my hardware or speaker system, but rebooting the machine under
-Windows2000 and playing the same music showed much better quality. 
+Alsa-1.2.10
+
+lsmod 
+
+snd_mixer_oss          13824  0
+snd_intel8x0           26280  0
+snd_ac97_codec         50436  1 snd_intel8x0
+snd_pcm                68872  1 snd_intel8x0
+snd_timer              17156  1 snd_pcm
+snd_page_alloc          7940  2 snd_intel8x0,snd_pcm
+gameport                3328  1 snd_intel8x0
+snd_mpu401_uart         4864  1 snd_intel8x0
+snd_rawmidi            17184  1 snd_mpu401_uart
+snd_seq_device          6152  1 snd_rawmidi
+snd                    38372  8
+snd_mixer_oss,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
+soundcore               6112  1 snd
+
+
+
+How reproducible:
+in XMMS, select Alsa driver, attempt to play an mp3/cd, get:
+
+Please check that the sound card is configured properly and You have the
+correct output plugin selected and no other program is blocking the
+soundcard.
+
 ======================================================================
-
-----------------------------------------------------------------------
- durval - 07-18-2004 16:43 CEST 
-----------------------------------------------------------------------
-My email in case you need to contact me: jm81 <AT> tmp.com.br
-
-----------------------------------------------------------------------
- durval - 07-18-2004 17:16 CEST 
-----------------------------------------------------------------------
-Update: I also tried to load snd-via82xx with the parameter "dxs_support"
-equal to 1, 2 and 4, and got the same behavior as above in all three
-attempts.
-
-----------------------------------------------------------------------
- tiwai - 07-30-2004 17:32 CEST 
-----------------------------------------------------------------------
-Hmm, usually this kind of problem is solved either by specifying
-a proper dxs_support option (1 or 4), or by tuning ACPI.
-
-----------------------------------------------------------------------
- fangel - 09-25-2004 08:54 CEST 
-----------------------------------------------------------------------
-I have the same problem :'( My sound skips and sometimes artsd just stops
-and I have to kill artsd and player to restart sound... when starting
-artsd I get the following error
-
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-
-(I don't know how to fiddle with the module params, but I somebody explain
-how I will glady try)
-
-Morten Fangel
-  morten_fangel@tdcadsl.dk
-
-----------------------------------------------------------------------
- fangel - 09-25-2004 08:55 CEST 
-----------------------------------------------------------------------
-(ups, forgot to add that I'm using 2.6.8 kernel...)
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-18-04 16:41 durval         New Bug                                      
-07-18-04 16:41 durval         Distribution              => My own, based on Redhat 6.2
-07-18-04 16:41 durval         Kernel Version            => 2.4.26          
-07-18-04 16:43 durval         Bugnote Added: 0001457                       
-07-18-04 17:16 durval         Bugnote Added: 0001458                       
-07-18-04 17:17 durval         Bug Monitored: durval                        
-07-30-04 17:32 tiwai          Bugnote Added: 0001502                       
-09-25-04 08:54 fangel         Bugnote Added: 0001908                       
-09-25-04 08:55 fangel         Bugnote Added: 0001909                       
+09-25-04 15:03 wolftech       New Bug                                      
+09-25-04 15:03 wolftech       Distribution              => Fedora Core     
+09-25-04 15:03 wolftech       Kernel Version            => 2.6.5-1.3       
 ======================================================================
 
 
