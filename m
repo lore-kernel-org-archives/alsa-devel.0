@@ -1,71 +1,53 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: XILINX FPGA firmware loader
-Date: Sun, 17 Aug 2003 13:46:53 +0200
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030817114653.GB971@tuba.home>
-References: <20030817081333.GA971@tuba.home> <32942.81.53.22.35.1061117222.squirrel@www.undata.org>
+From: Francesco Sportolari <francesco@unipg.it>
+Subject: [bug 1080] [PATCH] 2.6.0-t3: alsa driver snd-powermac doesn't work with tumbler chip on ibook2
+Date: Sun, 17 Aug 2003 23:54:06 +0200
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <200308172354.06944.francesco@unipg.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <32942.81.53.22.35.1061117222.squirrel@www.undata.org>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: linux-kernel@vger.kernel.org
+Cc: DiegoCG@teleline.es, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 17, 2003 at 12:47:02PM +0200, Thomas Charbonnel wrote:
-> >
-> > Any documents available about downloading bitstreams into XILINX FPGA's?
-> >
-> > - vxloader uses it. Which XILINX chip is it?
-> > - RME uses XILINX FPGA's since years. I suppose hdsploader is for
-> > loading
-> >   bits into such a Xilinx FPGA.
-> >   Anybody there who saw a Xilinx FPGA on/in his hdsp card?
-> >   Which chip is there?
-> >
-> 
-> Hdsploader doesn't really upload a firmware. It uploads configuration data
-> to an already initialized card. RME sent me informations to implement a
-> firware updater for linux, I didn't take a close look at it yet, but I'll
-> let you know.
+During the insmod of the snd-powermac module this msg is printed to the 
+console:
 
-that sounds interesting.
+tumbler: cannot initialize the MCS
 
-> 
-> hdsp 9652 has a Spartan-II xc2s200 chip
-> hdsp 9632 has a Spartan-II xc2s150
->
-> I don't know which chip's on the Digiface and Multiface.
+After that, even if the module is loaded correctly, the sound doesn't work at 
+all.
 
-Thanks, that spartan chip is the most intersting point for me. I don't need
-further information about your *face hardware.
+I've noticed that removing and inserting again the 'i2c-keywest' module solves 
+the problem. The following patch fixes this issue related to early 
+initialization of the i2c client in the driver.
 
-Tascam US122 has a Spartan xc2s15 (if anybody might be interested)
+Bye,
+-- Francesco
 
-... and I just found some linux driver for an USB device with EZUSB and
-Xilinx Spartan :-)
-http://www.johann-glaser.at/projects/X2S_USB/
-https://sourceforge.net/projects/x2susbsfwkit
+--- orig/sound/ppc/tumbler.c    2003-08-16 17:18:35.000000000 +0200
++++ linux-2.6.0-test3/sound/ppc/tumbler.c       2003-08-16 17:18:55.000000000 
++0200
+@@ -996,9 +996,6 @@
+                chipname = "Snapper";
+        }
 
-What about a common format for the configuration data? In my case it should
-be extractable from a binary. Does the Spartan reads a special binary format?
+-       if ((err = snd_pmac_keywest_init(&mix->i2c)) < 0)
+-               return err;
+-
+        /*
+         * build mixers
+         */
+@@ -1025,6 +1022,9 @@
+        if ((err = tumbler_init(chip)) < 0)
+                return err;
 
-
-Thanks, 
-martin
-
-
--------------------------------------------------------
-This SF.Net email sponsored by: Free pre-built ASP.NET sites including
-Data Reports, E-commerce, Portals, and Forums are available now.
-Download today and enter to win an XBOX or Visual Studio .NET.
-http://aspnet.click-url.com/go/psa00100003ave/direct;at.aspnet_072303_01/01
++       if ((err = snd_pmac_keywest_init(&mix->i2c)) < 0)
++               return err;
++
+ #ifdef CONFIG_PMAC_PBOOK
+        chip->resume = tumbler_resume;
+ #endif
