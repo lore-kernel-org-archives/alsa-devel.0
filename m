@@ -1,14 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: OSS emulation buffer size
-Date: Mon, 31 Jan 2005 17:21:45 +0100
-Message-ID: <1107188505.41fe5b191c972@webmail.uni-halle.de>
-References: <20050131041531.5A33988479@sc8-sf-spam1.sourceforge.net>
- <1107176873.6815.40.camel@andys_dellm60.ss82amr.net>
+From: "Katida Devore" <Norbert@ixtens.com>
+Subject: WWW Pharmmacy u can trust
+Date: Mon, 31 Jan 2005 17:43:19 -0400
+Message-ID: <E1Cvf2d-0004zN-K5@sc8-sf-mx1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_0E5E2D45.2E8AE1EC"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1107176873.6815.40.camel@andys_dellm60.ss82amr.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,31 +15,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andy Robinson <andy@seventhstring.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Renzo Olsen <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Andy Robinson wrote:
-> Hello, I'm trying to find out how to change the size of the buffer which
-> ALSA provides for its OSS emulation.
-> Where is this controlled from?
+This is a multi-part message in MIME format.
 
-AFAIK ALSA uses the maximum size supported by the device, and rounds it
-down to a power of two.
+------=_NextPart_000_0001_0E5E2D45.2E8AE1EC
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-> In the app (which I write) which is using OSS I can
-> SNDCTL_DSP_SETFRAGMENT but this won't increase the total size.
-
-This can only decrease the buffer size.
-
-
-What sound card do you have?
-What are the contents of /proc/asound/card0/pcm0p/sub0/prealloc?  Try
-changing it.
+"Five million."
+"Five million!" Butler sat up.  "Man, what are you talking about?
+That's a good deal of .  Where are you going to sell all tha
+"I want to bid for five million," assuaged Cowperwood, softly.  "
+only want one million but I want the prestige of putting in a bon.
+fide bid for five million.  It will do me good on the street."
+Butler sank back somewhat relieved.
 
 
-HTH
-Clemens
+Have a nice day!
+
+------=_NextPart_000_0001_0E5E2D45.2E8AE1EC
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1441" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Hello, Welcome to Health =
+Suite!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
+  <TBODY>
+  <TR vAlign=3Dbottom>
+    <TD rowSpan=3D2><FONT size=3D4>Vi</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD>
+    <TD rowSpan=3D2><FONT size=3D4>ra&nbsp;</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD>
+    <TD rowSpan=3D2><FONT size=3D4>al</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD>
+    <TD rowSpan=3D2><FONT size=3D4>Xa</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD>
+    <TD rowSpan=3D2><FONT size=3D4>x&nbsp;</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD>
+    <TD rowSpan=3D2><FONT size=3D4>cod</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD></TR>
+  <TR vAlign=3Dbottom>
+    <TD><FONT size=3D4>ag</FONT></TD>
+    <TD><FONT size=3D4>Ci</FONT></TD>
+    <TD><FONT size=3D4>is&nbsp;</FONT></TD>
+    <TD><FONT size=3D4>na</FONT></TD>
+    <TD><FONT size=3D4>Vi</FONT></TD>
+    <TD><FONT size=3D4>in</FONT></TD></TR></TBODY></TABLE></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>And many other at&nbsp;<A=20
+href=3D"http://www.blackhearted.thescientistssaid.com"=
+>http://www.blackhearted</A></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D3>Save Yourself a Huge 70% Off =
+All 0rders With us.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Have a nice =
+day!</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0001_0E5E2D45.2E8AE1EC--
+
 
 
 -------------------------------------------------------
