@@ -1,15 +1,17 @@
-From: juan <jcb@niluge.net>
-Subject: Re: alsa => hardware freeze on laptop
-Date: Tue, 9 Sep 2003 22:53:10 +0200
+From: David Parker <david@neongoat.com>
+Subject: Re: Trident problems.
+Date: Tue, 9 Sep 2003 14:32:29 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030909205308.GA17854@zeus.homenet>
-References: <20030905072618.GB3567@athena> <s5h4qzlu8u5.wl@alsa2.suse.de>
+Message-ID: <20030909143229.6858d04a.david@neongoat.com>
+References: <20030828005741.162b0565.david@neongoat.com>
+	<873cfj82bq.fsf@sycorax.lbl.gov>
+	<20030909133550.0d325254.david@neongoat.com>
+	<87llsx4red.fsf@sycorax.lbl.gov>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h4qzlu8u5.wl@alsa2.suse.de>
+In-Reply-To: <87llsx4red.fsf@sycorax.lbl.gov>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,34 +20,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: Alex Romosan <romosan@sycorax.lbl.gov>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 09 September, 2003 � 08:15:30PM +0200, Takashi Iwai wrote:
-> At Fri, 5 Sep 2003 09:26:18 +0200,
-> juan wrote:
-> > 
-> > hi,
-> > 
-> > i have a dell c600 and it randmonly freezes when i load the maestro3
-> > driver. my only choice is to reboot.
-> 
-> at which stage does it freeze?  immediately after loading the module?
+On Tue, 09 Sep 2003 13:51:22 -0700, Alex Romosan wrote:
 
-something like 2 seconds after i load the modules.
-again, it does not happened every time. it can happened 10 times in a
-row, and then no problemes for a few days.
+> well, i had the card working yesterday but it got noisier over time
+> and then today after i tried to remove the modules and then reinsert
+> them i couldn't do it anymore. i wasn;t able to get the oss modules
+> working (it's been many years since i used oss) so maybe the card is
+> at fault.
 
-i really don't understand, i guess some irq problem somewhere
+Strange, did you do anything special to get ALSA working with the trident
+again or did it just happen to work on the first try?
 
-> > i have no idea what can be the cause and how i can track the problem.
-> > 
-> > i tried inserting printks in maestro3.c but they are not great help .
-> 
-> can you get alt+sysrq control at panic?
+David
 
-no i can't. even the fn+f1 (for dell bios) does not work
+-------
+David Parker <david@neongoat.com>
+Neon Goat Productions
+http://www.neongoat.com
+0xF90FFFE5 / F362 51F7 6D51 85EB AF68 75B9 D29B 1AFC F90F FFE5
+-------
+
 
 
 -------------------------------------------------------
