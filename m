@@ -1,16 +1,21 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: via82xx: problem with distorted sound
-Date: Mon, 19 Jan 2004 21:50:51 +0100
+From: James Wright <james@jigsawdezign.com>
+Subject: Re: SND_PCM_ASYNC - why???
+Date: Mon, 19 Jan 2004 20:47:26 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040119215051.56869926.mista.tapas@gmx.net>
-References: <400AE538.4050306@t-online.de>
-	<20040119.9110400.4016306759@linux.local>
-	<400C408B.1040807@t-online.de>
+Message-ID: <20040119204726.65062e67.james@jigsawdezign.com>
+References: <20040117112645.1c9dce19.james@jigsawdezign.com>
+	<s5hisj792pk.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <400C408B.1040807@t-online.de>
+Received: from loki.a-q.co.uk (loki.a-q.co.uk [195.224.50.15])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA03117
+	for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2004 21:48:55 +0100
+Received: from neutrino.jigsawdezign.int (cpc1-hatf2-6-0-cust204.lutn.cable.ntl.com [81.109.147.204])
+	by loki.a-q.co.uk (Custom (aq) mailer/8.9.3) with SMTP id i0JKfqp19683
+	for <alsa-devel@alsa-project.org>; Mon, 19 Jan 2004 20:41:52 GMT
+In-Reply-To: <s5hisj792pk.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,40 +24,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Detlef Grittner <detlef.grittner@t-online.de>
-Cc: alsa-devel@lists.sourceforge.net, gustavo@compunauta.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 19 Jan 2004 21:39:39 +0100
-detlef.grittner@t-online.de (Detlef Grittner) wrote:
+On Mon, 19 Jan 2004 20:07:51 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-> BUT:
-> The problem that the sound stops when minimizing and maximizing
-> windows prevails.
-
-Interestig that you mention that. I have found that with mplayer, the
-behaviour is different for sound files and video playback. I use xfce4
-but i experienced this behaviour with different wm's.
-
-soundfiles: moving, resizing windows, etc, has no effect on mplayer. the
-updating of the time in the term stops, but sound playback just moves
-on. same with xmms, display doesn't get updated while moving resizing
-windows, but sound playback is fine.
-
-videos: when playing back a video file with mplayer and i move/resize a
-window, playback of video and sound stops until resize/move operation of
-any window is finished..
-
-I don't know what the reason for this is. Maybe the wm sends X some
-message about stopping all video updates during size/move operations..
-very funny..
-
-Flo
+> At Sat, 17 Jan 2004 11:26:45 +0000,
+> James Wright wrote:
+> > 
+> > Hello,
+> > 
+> >   I'm doing much better with ALSA now that i spent a coule of days messing with code. I've got both direct
+> > MMAP PCM playback and a fallback using normal write access with no problems. However, i've
+> > just written in asyncronous notification support and found that if i use the SND_PCM_ASYNC flag in snd_pcm_open()
+> > and then setup my callback function with snd_async_add_pcm_handler(), then the callback function is not called!
+> > When i remove the SND_PCM_ASYNC flag it works fine, so is this flag/mode redundant? 
+> 
+> snd_async_add_pcm_handler() sets/resets the O_ASYNC flag by itself, so
+> basically you don't need to open the pcm with SND_PCM_ASYNC.
+> 
+> 
+> Takashi
 
 
--- 
-http://www.soundclick.com/bands/9/florianschmidt.htm
-http://www.arted.biz/mista.tapas
+Be nice if the docs mentioned this! Surely anyone that wants to use asynchornous notification will call
+snd_async_add_pcm_handler() at some point, so there is no real need for the SND_PCM_ASYNC flag...
+
+
+
+> 
+> 
+> -------------------------------------------------------
+> The SF.Net email is sponsored by EclipseCon 2004
+> Premiere Conference on Open Tools Development and Integration
+> See the breadth of Eclipse activity. February 3-5 in Anaheim, CA.
+> http://www.eclipsecon.org/osdn
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
 
 
 -------------------------------------------------------
