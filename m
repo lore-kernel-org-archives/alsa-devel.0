@@ -1,122 +1,64 @@
-From: Francois Gouget <fgouget@codeweavers.com>
-Subject: Division by zero in snd_pcm_rate_sw_params()
-Date: Sat, 24 Jul 2004 03:30:06 +0200
-Sender: wine-devel-admin@winehq.org
-Message-ID: <4101BB9E.8010207@codeweavers.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Mozilla Bug #252851 - Mozilla should use ALSA for sound rather
+ than OSS
+Date: Sat, 24 Jul 2004 00:33:04 -0400
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <1090643583.956.2.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------030302090900080801070704"
-Return-path: <wine-devel-admin@winehq.org>
-Errors-To: wine-devel-admin@winehq.org
-List-Unsubscribe: <http://www.winehq.org/mailman/listinfo/wine-devel>,
-	<mailto:wine-devel-request@winehq.org?subject=unsubscribe>
-List-Post: <mailto:wine-devel@winehq.org>
-List-Help: <mailto:wine-devel-request@winehq.org?subject=help>
-List-Subscribe: <http://www.winehq.org/mailman/listinfo/wine-devel>,
-	<mailto:wine-devel-request@winehq.org?subject=subscribe>
-List-Archive: <http://www.winehq.org/hypermail/wine-devel/>
-To: alsa-devel@lists.sourceforge.net
-Cc: Wine Devel <wine-devel@winehq.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------030302090900080801070704
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Just FYI, I filed the following bug today after noticing that Mozilla
+was opening the sound device in OSS emulation mode, rather than using
+ALSA native funcitons:
 
-Hi,
+http://bugzilla.mozilla.org/show_bug.cgi?id=252851
 
-I am working on Wine and lately I have been tracking various sound 
-related issues. One issue I noticed is a crash in Wine's winmm wave test 
-when using the Alsa sound backend.
+This causes the following XRUN on my system:
 
-More precisely:
-  * if Wine's winmm wave test is the only application using the sound 
-device, then it works
-  * but if another application is already using the sound device (e.g. 
-xmms), then Wine's winmm wave test crashes when trying to play the 96kHz 
-test.
+Jul 24 00:21:41 mindpipe kernel: ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/pcm_lib.c:169: XRUN: pcmC0D2c
+Jul 24 00:21:41 mindpipe kernel:  [dump_stack+23/32] dump_stack+0x17/0x20
+Jul 24 00:21:41 mindpipe kernel:  [__crc_open_exec+6091194/6092646] snd_pcm_period_elapsed+0x2c7/0x400 [snd_pcm]
+Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+61783/3197748] snd_emu10k1_interrupt+0xd1/0x3c0 [snd_emu10k1]
+Jul 24 00:21:41 mindpipe kernel:  [handle_IRQ_event+51/96] handle_IRQ_event+0x33/0x60
+Jul 24 00:21:41 mindpipe kernel:  [do_IRQ+165/368] do_IRQ+0xa5/0x170
+Jul 24 00:21:41 mindpipe kernel:  [common_interrupt+24/32] common_interrupt+0x18/0x20
+Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+908343/3197748] snd_pcm_oss_change_params+0x5a1/0x850 [snd_pcm_oss]
+Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+909148/3197748] snd_pcm_oss_get_active_substream+0x76/0x90 [snd_pcm_oss]
+Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+912967/3197748] snd_pcm_oss_get_channels+0x11/0x30 [snd_pcm_oss]
+Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+919229/3197748] snd_pcm_oss_ioctl+0x447/0x740 [snd_pcm_oss]
+Jul 24 00:21:41 mindpipe kernel:  [sys_ioctl+256/608] sys_ioctl+0x100/0x260
+Jul 24 00:21:41 mindpipe kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+Jul 24 00:21:41 mindpipe kernel: ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/pcm_lib.c:169: XRUN: pcmC0D2c
+Jul 24 00:21:41 mindpipe kernel:  [dump_stack+23/32] dump_stack+0x17/0x20
+Jul 24 00:21:41 mindpipe kernel:  [__crc_open_exec+6091194/6092646] snd_pcm_period_elapsed+0x2c7/0x400 [snd_pcm]
+Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+61783/3197748] snd_emu10k1_interrupt+0xd1/0x3c0 [snd_emu10k1]
+Jul 24 00:21:41 mindpipe kernel:  [handle_IRQ_event+51/96] handle_IRQ_event+0x33/0x60
+Jul 24 00:21:41 mindpipe kernel:  [do_IRQ+165/368] do_IRQ+0xa5/0x170
+Jul 24 00:21:41 mindpipe kernel:  [common_interrupt+24/32] common_interrupt+0x18/0x20
+Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+908343/3197748] snd_pcm_oss_change_params+0x5a1/0x850 [snd_pcm_oss]
+Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+909148/3197748] snd_pcm_oss_get_active_substream+0x76/0x90 [snd_pcm_oss]
+Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+912823/3197748] snd_pcm_oss_get_rate+0x11/0x30 [snd_pcm_oss]
+Jul 24 00:21:41 mindpipe kernel:  [__crc_totalram_pages+919694/3197748] snd_pcm_oss_ioctl+0x618/0x740 [snd_pcm_oss]
+Jul 24 00:21:41 mindpipe kernel:  [sys_ioctl+256/608] sys_ioctl+0x100/0x260
 
-The crash occurs when calling snd_pcm_sw_params():
-
-     EXIT_ON_ERROR( snd_pcm_sw_params(pcm, sw_params), MMSYSERR_ERROR, 
-"unable to set sw params for playback");
-
-See this URL for the exact source:
-http://source.winehq.org/source/dlls/winmm/winealsa/audio.c#L1602
-
-Digging some more I found out that the division by zero happens in the 
-snd_pcm_rate_sw_params() function pcm_rate.c. Here's why:
-
-  * Wine sets xfer_align to 1:
-    EXIT_ON_ERROR(snd_pcm_sw_params_set_xfer_align(pcm, sw_params, 1),
-                  MMSYSERR_ERROR, "unable to set xfer align");
-
-  * then it calls snd_pcm_sw_params() as shown above
-
-  * eventually we get to snd_pcm_rate_sw_params() in src/pcm/pcm_rate.c. 
-(http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/pcm/pcm_rate.c?rev=1.83&view=markup)
-
-  * There we call recalc():
-
-    recalc(pcm, &sparams->xfer_align);
-
-  * when more than one application uses the soundcard, recalc() ends up 
-doing:
-
-    *val = muldiv_near(*val, slave->period_size, pcm->period_size);
-
-  * however in my case slave->period_size is less than half of 
-pcm->period_size so I end up with xfer_align == *val == 0.
-
-  * then, a few lines later in snd_pcm_rate_sw_params() we do:
-
-     if (sparams->start_threshold > (slave->buffer_size /
-             sparams->xfer_align) * sparams->xfer_align)
-         sparams->start_threshold = (slave->buffer_size /
-             sparams->xfer_align) * sparams->xfer_align;
-
-    And we crash with a division by zero because now sparams->xfer_align==0.
-    (these lines were added in CVS revision 1.83 of this file)
-
-Simply resetting xfer_align to 1 is it is zero after the call to 
-recalc() (see attached patch) fixes the problem for me (no crash and the 
-test tone plays correctly). However I don't know if this is the right 
-fix, hence the following questions:
-
-Does my patch look ok? What is the proper procedure to get it applied? 
-Is there further information I can provide to resolve this issue?
-
-My configuration:
-  * Up to date Debian testing
-  * Alsa 1.0.5a
-  * cat /proc/asound/cards
-0 [V8235          ]: VIA8233 - VIA 8235
-                      VIA 8235 at 0xbc00, irq 5
+Lee
 
 
--- 
-Francois Gouget
-fgouget@codeweavers.com
 
-
---------------030302090900080801070704
-Content-Type: text/plain;
- name="pcm_rate.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="pcm_rate.diff"
-
---- pcm_rate.c.orig	2004-07-24 03:19:41.000000000 +0200
-+++ pcm_rate.c	2004-07-24 03:20:41.000000000 +0200
-@@ -630,6 +638,8 @@
- 	recalc(pcm, &sparams->avail_min);
- 	rate->orig_avail_min = sparams->avail_min;
- 	recalc(pcm, &sparams->xfer_align);
-+	if (sparams->xfer_align==0)
-+		sparams->xfer_align=1;
- 	recalc(pcm, &sparams->start_threshold);
- 	if (sparams->start_threshold <= slave->buffer_size) {
- 		if (sparams->start_threshold > (slave->buffer_size / sparams->avail_min) * sparams->avail_min)
-
---------------030302090900080801070704--
+-------------------------------------------------------
+This SF.Net email is sponsored by BEA Weblogic Workshop
+FREE Java Enterprise J2EE developer tools!
+Get your free copy of BEA WebLogic Workshop 8.1 today.
+http://ads.osdn.com/?ad_id=4721&alloc_id=10040&op=click
