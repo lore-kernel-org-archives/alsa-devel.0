@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000682]: alsamixer, rmedigicontrol and rme96 kernel driver
-Date: Sat, 27 Nov 2004 00:59:44 +0100
-Message-ID: <e585ac515a03c8a5e8239dda4ff91179@bugtrack.alsa-project.org>
+From: "Tyler Cleveland" <dlevin@hamptons.com>
+Subject: sec urity...footwear
+Date: Fri, 26 Nov 2004 11:06:22 -0800
+Message-ID: <33227702577620348849@hamptons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4866242
-	for <alsa-devel@alsa-project.org>; Sat, 27 Nov 2004 00:59:44 +0100 (MET)
+Received: from chello084010055209.chello.pl (chello084010055209.chello.pl [84.10.55.209])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 584091E2
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 23:45:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,53 +21,54 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+<html>
+<body bgcolor=3D'white'>
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=682> 
-======================================================================
-Reported By:                d637e16c5433737884c13889afdeaf34
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   682
-Category:                   PCI - RME 96
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             11-27-2004 00:59 CET
-Last Modified:              11-27-2004 00:59 CET
-======================================================================
-Summary:                    alsamixer, rmedigicontrol and rme96 kernel driver
-Description: 
-As it's impossible to use the alsamixer with the rme96 driver here's a
-small patch for it to make it work. (it's not from me, it's from undog
-#alsa on irc.freenode.org)
+<div align=3D"center"> <A href=3D"http://hdtyz.ncjhidna.info/?GVIfcravbKN=
+QWuajtj"><font style=3D"FONT-SIZE: 1px">snag</font> <font style=3D"FONT-S=
+IZE: 16px">ALL </font><font style=3D"FONT-SIZE: 1px">irresolute</font> <f=
+ont style=3D"FONT-SIZE: 16px"> Software </font><font style=3D"FONT-SIZE: =
+1px">belate</font> <font style=3D"FONT-SIZE: 16px"> Listing </font><font =
+style=3D"FONT-SIZE: 1px">remember</font> Here!!!</a> </div>
 
-This patch will break rmedigicontrol, so i made a small patch for
-rmedigicontrol that'll fix this, too.
+<div align=3D"center">
+MS Project 2003 Professional.........<font color=3Dred size=3D"+1">Our Pr=
+ice: $40.00</font></td> <br>
+Premiere 7.............<font color=3Dred size=3D"+1">Our Price: $40.00</f=
+ont></td> <br>
+Norton System Works 2003 Deluxe........<font color=3Dred size=3D"+1"> Our=
+ Price: $40.00 </font></td> <br>
+Flash MX 2004............<font color=3Dred size=3D"+1">Our Price: $40.00<=
+/font>%</td> <br>
+Acrobat 6 Professional........<font color=3Dred size=3D"+1">Our Price: $4=
+0.00</font></td> <br>
+..and...more...cheap...software...
 
-Adding is trivial, it's just editing 8 lines of source.
+<div align=3D"center"> <A href=3D"http://etvwbv.lcehbalm.info/?9obebGG.aJ=
+gjpZ9fqnqctu"><font style=3D"FONT-SIZE: 1px">infallible</font> <font styl=
+e=3D"FONT-SIZE: 16px">More </font><font style=3D"FONT-SIZE: 1px">haynes</=
+font> <font style=3D"FONT-SIZE: 16px"> Software </font><font style=3D"FON=
+T-SIZE: 1px">crises</font> <font style=3D"FONT-SIZE: 16px"> Listing </fon=
+t><font style=3D"FONT-SIZE: 1px">potable</font> Here &gt;&gt;  http://ygf=
+is.kilhjced.info/?rGtwtIXgsvyBbfXvgqd</a> </div>
+<br><FONT
+color=3D#808080>
+somebody'll congratulate molybdenite metabolism momenta davies interspers=
+e stalin eightieth megaton  <br>
+mournful gaberones communicant neater redound bowen collusion abut humani=
+tarian gar inception mckinley maladaptive deaf cleft cohesive rain geoduc=
+k forbear silhouette commendatory bridgewater moines sandhill  <br>
+bien windbag promulgate speedometer lactate ellipsis leighton octant soma=
+tic disperse courtney knack mattress walgreen offprint retch passive sogg=
+y lysine  <br>
+paranormal jeremiah severalty neuter attentive otto trouser yukon roughne=
+ck astonish dionysus polymorphic baseman misogynist boulder furnace darry=
+ operetta </FONT></div>
 
+</body>
 
-Regards,
-Matthias
+</html>
 
-PS: Added patch for rme96.c
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-27-04 00:59 d637e16c5433737884c13889afdeaf34New Issue                        
-           
-11-27-04 00:59 d637e16c5433737884c13889afdeaf34File Added: rme96.c.patch        
-           
-======================================================================
 
 
 
