@@ -1,15 +1,14 @@
-From: Ville =?iso-8859-1?Q?P=E4tsi?= <drc@gimp.org>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: Miditech Midistart-2 USB keyboard
-Date: Mon, 9 Aug 2004 11:19:25 +0300
+Date: Mon, 09 Aug 2004 12:50:07 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040809081925.GA2203@torni>
-References: <20040806231819.GB2309@torni> <Pine.HPX.4.33n.0408090953400.11985-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0408091246300.26596-100000@studcom.urz.uni-halle.de>
+References: <20040809081925.GA2203@torni>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0408090953400.11985-100000@studcom.urz.uni-halle.de>
+In-reply-to: <20040809081925.GA2203@torni>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,25 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
+To: Ville =?iso-8859-1?Q?P=E4tsi?= <drc@gimp.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-These 0.8K bytes were from Clemens Ladisch,
-> Ville Pätsi wrote:
-> > What is needed to get snd-usb-audio to support this?
+Ville P=E4tsi wrote:
+> These 0.8K bytes were from Clemens Ladisch,
+> > Ville P=E4tsi wrote:
+> > >   idVendor           0x7104
 > >
-> >   idVendor           0x7104
-> >       bInterfaceClass         2 Communications
-> >       bInterfaceSubClass      1 Direct Line
-> 
-> This is a modem made by Philips.  I'm not really sure if snd-usb-audio
-> should support this device ...  ;-)
-> 
-> Miditech's vendor ID is 0x4752.
+> > Miditech's vendor ID is 0x4752.
+>
+> Well then something fishy is going on, since the keyboard is report=
+ing
+> that on both computers I have,
 
-Well then something fishy is going on, since the keyboard is reporting
-that on both computers I have, and the windows driver has no problems.
+Are you sure that this is the data of the keyboard?  Aren't there any
+other devices in the lsusb output?
+
+> and the windows driver has no problems.
+
+mstart-2.inf from the miditech.de driver package says:
+%USB\VID_4752&PID_0011.DeviceDesc%=3DMIDUSB.Dev, USB\VID_4752&PID_001=
+1
+
+
+Regards,
+Clemens
+
+
+
 
 
 -------------------------------------------------------
