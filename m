@@ -1,13 +1,15 @@
-From: Pavel Roskin <proski@gnu.org>
-Subject: Re: Re: pkg-config
-Date: Wed, 18 Sep 2002 15:46:16 -0400 (EDT)
+From: Anders Torger <torger@ludd.luth.se>
+Subject: Re: Why do I get broken pipe on write to a pcm in statePREPARED?
+Date: Wed, 18 Sep 2002 21:57:28 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0209181532150.6236-100000@marabou.research.att.com>
-References: <20020918212600.T19700@thot.informatik.uni-kl.de>
+Message-ID: <200209181957.g8IJvS008300@d1o87.telia.com>
+References: <Pine.HPX.4.33n.0209171615490.1084-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020918212600.T19700@thot.informatik.uni-kl.de>
+In-Reply-To: <Pine.HPX.4.33n.0209171615490.1084-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,35 +18,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Joerg Mayer <jmayer@loplof.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+On Tuesday 17 September 2002 16.40, Clemens Ladisch wrote:
+> > I feel that one can interpret both ways, so it is a quite open
+> > choice. Either way, one can state POSIX behaviour. Then the
+> > question becomes: what is the most usable behaviour?
+>
+> I think we have only two choices for POSIX-compliant write()
+> behaviour in the prepared state:
+>
+> 1) Don't allow any writes. Always return EPIPE.
+>    (my interpretation above)
+>
+> 2) Allow writes until the buffer is full, then block.
+>    (Takashi's second interpretation)
+>
+> The current ALSA implementation is an inconsistent mixture of both:
+> returning EPIPE means that it is impossible to write, but then it
+> should not have been possible for the first bufferfull to succeed.
+>
+> And we want to be able to fill the first buffer, so IMHO 2) is the
+> way to go.
 
-> I don't think forcing people to install pkg-config is the right thing
-> to do. Move that off for a year or so as pgk-config is pretty new
-> (AFAIK, glib (v1) and gtk (v1) haven't removed thei .m4 files either
-> when they added pkg-config files. Once gtk2 and glib2 are in more
-> common use, many developers will have pkg-config installed. Do not
-> add this problem to the current distribution.
+So, are we going to see a change in behaviour here? It seems like 
+everyone which has discussed this, except Abramo, wants to see a change 
+to the second interpretation which is:
 
-For your information, even the CVS version of glib (head branch) includes
-two macro files glib-2.0.m4 (which is a wrapper around pkgconfig) and
-glib-gettext.m4.  Macro files are not dead and not obsoleted by pkgconfig.
+* write() blocks on blocking mode when output buffer is full, and 
+  returns EAGAIN when in non-blocking mode.
 
-Consider that the latest version is 0.12.0.  Consider that it's not 
-widely used.  Consider that pkgconfig is implemented in C, so you cannot 
-distribute it in tarballs like libtool or install-sh.
+* poll/select blocks when output buffer is full
 
-It's great that we have a pkgconfig file for alsa-lib.  Let's see how well
-it works for ALSA.  But it's too early to remove or obsolete anything else
-_because_ pkgconfig is supported.
+...with no difference if the card is running or not. Today, it is a 
+different behaviour when the card is not running, where write returns 
+EPIPE (both blocking/non-blocking) and poll/select does not block.
 
--- 
-Regards,
-Pavel Roskin
+The arguments for keeping the current behaviour is according to its 
+supporter(s?):
 
+ * It is easier to detect bugs which else would dead-lock the program
+ * It is more logical, like a pipe with the hardware in the read end
+
+The arguments for changing to the new are:
+
+ * It is sometimes used in multi-threaded programs (fill buffer in one 
+   thread, start from another).
+ * The current behaviour has no use apart from detection of a trivial 
+   dead-lock bug.
+ * Especially in multi-threaded programs, the current behaviour with
+   EPIPE can be confused with underruns or overflows, making the 
+   "easier-to-detect-bug" feature to have the opposite effect.
+ * It is a POSIX-compliant behaviour which the current is not
+ * It is more logical, always same behaviour, no special case for cards
+   not running
+ * It seems to be the more popular choice, and would break very little
+   if any if implemented.
+
+Ok, I said I would stop argue about this, so sue me.
+
+/Anders Torger
 
 
 -------------------------------------------------------
