@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000214]: ac3 passthrough not working
-Date: Sat, 18 Sep 2004 16:52:07 +0200 (CEST)
+From: Martin Habets <errandir_news@mph.eclipse.co.uk>
+Subject: snd_card_new() and snd_magic
+Date: Sat, 18 Sep 2004 16:12:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040918145207.C778413002@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040918151205.GA31441@palantir8>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2597A30E
-	for <alsa-devel@alsa-project.org>; Sat, 18 Sep 2004 16:52:08 +0200 (MEST)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,136 +15,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I just figured out I can't use the last parameter on snd_card_new()
+if I want to use the snd_magic stuff. But that leaves me with some
+questions:
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000214
-======================================================================
-Reported By:                m_stolle
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     214
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.4.25
-======================================================================
-Date Submitted:             04-16-2004 05:06 CEST
-Last Modified:              09-18-2004 16:52 CEST
-======================================================================
-Summary:                    ac3 passthrough not working
-Description: 
-I have a Dell Inspiron 8200 with an Intel ICH3/Cirrus Logic CS4205 sound
-card.  Unfortunately, the hardware AC3 passthrough does not work. 
-Instead, I only get a high-pitched funny noise.
+1) Why can't/won't snd_card_new() call snd_magic_kcalloc()?
+2) Why would a driver NOT want to support snd_magic? Seems to me it's
+completely benign if you turn off the kernel option.
 
-The symptoms are the same in mplayer as well as in xine.  Verbose output
-of mplayer provided below:
-======================================================================
-
-----------------------------------------------------------------------
- m_stolle - 09-11-2004 05:25 CEST 
-----------------------------------------------------------------------
-This bug is still present in 2.6.8.1  Am I the only one with this bug?
-
-----------------------------------------------------------------------
- tiwai - 09-13-2004 15:41 CEST 
-----------------------------------------------------------------------
-How about ALSA-1.0.7rc1?  2.6.8.1 includes the older version.
-
-----------------------------------------------------------------------
- m_stolle - 09-17-2004 05:05 CEST 
-----------------------------------------------------------------------
-I just recompiled alsa 1.0.7rc1
-
-still same problem 8-(
-
-----------------------------------------------------------------------
- stoffel - 09-17-2004 10:45 CEST 
-----------------------------------------------------------------------
-I have the same notebook and the same problem with SuSE 9.0 and alsa 1.06a
-(kernel 2.4.27). So, any solution for that problem ?
-
- The 5.1 sound works without passthrough with following entry in
-.xine/config
-
-audio.alsa_a52_device:iec958:AES0=0x4,AES1=0x82,AES2=0x0,AES3=0x2.
-
-First I start mplayer with
-
-#mplayer -ao alsa1x:spdif dvd://
-.
-
-After that I could start xine and my 5.1 Soundsystem works (without
-passthrough !!!)
- 
-I don't know how I get the information for the xine entry. I still probe
-many tools for alsa & co and so I've got the information. Where ? I don't
-know, sorry.
-
-edited on: 09-17-04 10:43
-
-edited on: 09-17-04 10:45
-
-----------------------------------------------------------------------
- m_stolle - 09-17-2004 14:12 CEST 
-----------------------------------------------------------------------
-I have tried recreating those steps, but it still doesn't work.  I first
-start mplayer with exactly the options you describe (no sound though?). 
-Then I edited .xine/config, started xine, switched to 5.1 surround
-(instead of stereo 2.0), restart xine, no more sound.  Redid the mplayer
-command, started xine again, still no sound.
-
-Which version of xine/mplayer are you using?  AFAIK, the alsa1x driver for
-mplayer is not used anymore, it's just alsa ?  My Xine version is 0.99.1,
-my mplayer version is   1.0pre5-3.3.4.
-
-Thanks,
-  Martin
-
-----------------------------------------------------------------------
- stoffel - 09-18-2004 16:52 CEST 
-----------------------------------------------------------------------
-Hello m_stolle,
-
-my mplayer version is  1.0pre4-3.3.1 and it works fine with mplayer and
-the alsa1x:spdif option. With xine (since version 0.98, I beleave) I must
-probe something. Most of the time it will be work, sometime it doesn*t
-;-(. But anytime with mplayer. 
-The 5.1 output by the laptop is on the left side (video and audio). This
-output I connect with a 5.1 System (loudspeaker with an internal 5.1
-decoder). Because the passthrough don't work the 5.1 system play 5.1 sound
-from the laptop (notebook). The internal decoder will not be use.
-
-Sorry, for the bad english. I need a new course in english.I hope you
-understand me ;-).
-
-stefan
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-16-04 05:06 m_stolle       New Bug                                      
-04-16-04 05:06 m_stolle       Distribution              => Debian          
-04-16-04 05:06 m_stolle       Kernel Version            => 2.4.25          
-09-11-04 05:25 m_stolle       Bugnote Added: 0001744                       
-09-13-04 15:41 tiwai          Bugnote Added: 0001747                       
-09-17-04 05:05 m_stolle       Bugnote Added: 0001775                       
-09-17-04 10:21 stoffel        Bugnote Added: 0001776                       
-09-17-04 10:42 stoffel        Bugnote Added: 0001778                       
-09-17-04 10:43 stoffel        Bugnote Edited: 0001776                      
-09-17-04 10:43 stoffel        Bugnote Deleted: 0001778                     
-09-17-04 10:45 stoffel        Bugnote Edited: 0001776                      
-09-17-04 14:12 m_stolle       Bugnote Added: 0001779                       
-09-18-04 16:52 stoffel        Bugnote Added: 0001782                       
-======================================================================
+A bit confused, but getting there...
+-- 
+Martin
 
 
 -------------------------------------------------------
