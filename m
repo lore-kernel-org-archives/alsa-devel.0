@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Complex mixer questions
-Date: Sat, 29 Mar 2003 09:14:48 -0500
+From: Gregoire Favre <greg@ulima.unil.ch>
+Subject: Re: SPDIF and cs46xx ?
+Date: Sat, 29 Mar 2003 15:20:36 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18zH1M-00046X-00@sc8-sf-list1.sourceforge.net>
-References: <1048949817.18635.35.camel@Jay>
+Message-ID: <20030329142035.GA16590@ulima.unil.ch>
+References: <14a4584ea6cb4a6894e70d84e717abc6.peter599@gotnet.net> <3E75075E.7030401@cucumelo.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "29 Mar 2003 15:00:27 GMT."
-             <1048949817.18635.35.camel@Jay>
+Content-Disposition: inline
+In-Reply-To: <3E75075E.7030401@cucumelo.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,51 +18,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Benny Sjostrand <gorm@cucumelo.org>
+Cc: Peter Heatwole <peter599@gotnet.net>, alsa-devel@lists.sourceforge.net, werner@suse.de
 List-Id: alsa-devel@alsa-project.org
 
->Please give me some suggestions about how to build a control interface
->for this thing. The card has Ni inputs and No ouputs. It can route any
->input to any number of outputs and each connection have a different
->gain. e.g:
->
->    ---50%----- Out0
->   /
->In0 ---30%----- Out3
->   \         /
->    \ -60%---
->     X 
->    / -100%---- Out4
->   /          /
->In5----10%----
+On Mon, Mar 17, 2003 at 12:23:10AM +0100, Benny Sjostrand wrote:
 
-the hammerfall HDSP series are the same.
+> Sounds like your receiver don't detect the AC3 stream, and inteprets it
+> like PCM instead. There can be many reasons why this hapen, right now I=
+=20
+> can mention:
+> - The AC3 is altered in some how, DSP applies gain's, roundings, while=20
+> procesing stream (operation that are audible while playing PCM, and=20
+> probably improbes sound),  then when the data reach the receiver it's=20
+> not detected as AC3 anymore. In the current cs46xx driver there's a=20
+> special treatment for 48khz streams through IEC958, to prevent the DSP=20
+> process the stream in any way.
+> - The magic status bit's, I'm not sure if the current implementation in=
+=20
+> the cs46xx that
+> set's the IEC958 is correct. I have not found any way to verify ...
 
-there are 2 questions:
+And is there any hope of any enhancement?
+I "need" the SPDIF of my Digifire 7.1 to be able to use the bitstreamout
+plugin of VDR made by Dr. Werner Fink
+(https://sourceforge.net/projects/bitstreamout/) because as he wrote the
+SPDIF out of my DVB card is not "good":
 
-   1) what ALSA API to use, and how to use it?
-   2) what would a GUI look like?
+"As long as the hardware on the DVB cards are not able to put
+the 16bit none audio PCM data stream into a 32bit none audio
+S/P-DIF transport stream all receivers which uses the bit flags
+of the S/P-DIF transport stream for identifying none audio
+loose.  All S/P-DIF data get from the DVB card to not have the
+none audio bit set.  AFAIK this is a hardware bug (or better
+this is the information I've got from TT) ..."
 
-for (2), i suggest you *carefully* study RME's totalmix application, a
-version of which will soon be available for linux.
+But when I try the plugin I got:
 
-for (1), we use the control API but use it in a slightly unorthodox
-way. the control API normally is used to set control values in a
-simple 1:1 mapping between a control parameter and its new
-value. instead, we use 2 parameters (the source and the destination)
-and 1 value (the gain level). this does mean that alsactl can't handle
-it correctly, but so far no better suggestion has arisen. the hdsp
-series would have 1500+ control elements if we used the 1:1 method.
+Mar 29 15:15:17 localhost vdr[9090]: S/P-DIF: Period size not available: =
+Invalid argument
+Mar 29 15:15:17 localhost vdr[9090]: S/P-DIF: unable to establish BitStre=
+amOut for none audio PCM=20
+Mar 29 15:15:17 localhost vdr[9090]: REPLAY: can't open spdif interface
 
->How have I to call a switch that selects SPDIFCoax/SPDIFOpt/ADAT ?
+I am using CVS of driver/lib/utils from yesterday...
 
-just use the control API. there is no standard name for such a switch.
+Any suggestion?
 
-btw, what h/w is this?
+Thank you very much,
 
-
-
+	Gr=E9goire
+________________________________________________________________
+http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
 
 
 -------------------------------------------------------
