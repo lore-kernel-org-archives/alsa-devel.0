@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000445]: 1.0.6 breaks redhat alsasound script
-Date: Fri, 24 Sep 2004 13:40:58 +0200 (CEST)
+Subject: [ALSA - driver 0000459]: PC Speaker doesn't produce any sound
+Date: Fri, 24 Sep 2004 13:39:34 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924114058.9BB9A101DF@server.perex-int.cz>
+Message-ID: <20040924113934.BB377101DF@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D8BEF288
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:40:58 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0FCD7288
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:39:35 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,71 +22,57 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000445
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000459
 ======================================================================
-Reported By:                deathpudding
-Assigned To:                perex
+Reported By:                ncrfgs
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     445
-Category:                   CORE - sequencer
+Bug ID:                     459
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               redhat
-Kernel Version:             
+Distribution:               CruxPPC http://cruxppc.sunsite.dk/
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             08-15-2004 19:25 CEST
-Last Modified:              09-24-2004 13:40 CEST
+Date Submitted:             08-21-2004 18:32 CEST
+Last Modified:              09-24-2004 13:39 CEST
 ======================================================================
-Summary:                    1.0.6 breaks redhat alsasound script
+Summary:                    PC Speaker doesn't produce any sound
 Description: 
-I compiled the driver with sequencer support. The alsasound script uses the
-content of /proc/asound/seq/drivers to know which sequencer drivers to
-load. But, since installing the 1.0.6 driver, the seq/drivers file repeats
-the list of drivers infinitely, for example:
-
-snd-emu10k1-synth,loaded,requested,1
-snd-seq-midi,loaded,requested,1
-snd-seq-oss,loaded,requested,1
-snd-emu10k1-synth,loaded,requested,1
-snd-seq-midi,loaded,requested,1
-snd-seq-oss,loaded,requested,1
-...
-
-and therefore the alsasound script gets stuck in an infinite loop,
-printing out this:
-
-FATAL: Module snd_emu10k1_synth already in kernel.
-FATAL: Module snd_seq_midi already in kernel.
-FATAL: Module snd_emu10k1_synth already in kernel.
-FATAL: Module snd_seq_midi already in kernel.
-...
+PC Speaker doesn't produce any sound.
+System beep doesn't work.
 ======================================================================
 
 ----------------------------------------------------------------------
- c0ff - 08-15-2004 23:13 CEST 
+ ncrfgs - 08-22-2004 03:28 CEST 
 ----------------------------------------------------------------------
-It's a bug in alsa /proc read function (core/info.c). 2.6.8-rc4 kernel does
-not have this bug, but alsa-driver-1.0.5a has.
+http://lists.debian.org/debian-powerpc/2004/06/msg00552.html
 
 ----------------------------------------------------------------------
- perex - 08-16-2004 12:06 CEST 
+ tiwai - 08-23-2004 15:23 CEST 
 ----------------------------------------------------------------------
-Fixed in 1.0.6a.
+Already fixed in the recent version.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-15-04 19:25 deathpudding   New Bug                                      
-08-15-04 19:25 deathpudding   Distribution              => redhat          
-08-15-04 23:13 c0ff           Bugnote Added: 0001568                       
-08-16-04 12:06 perex          Bugnote Added: 0001570                       
-08-16-04 12:06 perex          Assigned To               => perex           
-08-16-04 12:06 perex          Resolution               open => fixed       
-08-16-04 12:06 perex          Status                   new => resolved     
-09-24-04 13:40 tiwai          Status                   resolved => closed  
+08-21-04 18:32 ncrfgs         New Bug                                      
+08-21-04 18:32 ncrfgs         Distribution              => CruxPPC http://cruxppc.sunsite.dk/
+08-21-04 18:32 ncrfgs         Kernel Version            => 2.6.8.1         
+08-22-04 03:00 ncrfgs         Bug Monitored: ncrfgs                        
+08-22-04 03:08 ncrfgs         Bug End Monitor: ncrfgs                      
+08-22-04 03:25 ncrfgs         Bugnote Added: 0001604                       
+08-22-04 03:26 ncrfgs         Bugnote Deleted: 0001604                     
+08-22-04 03:28 ncrfgs         File Added: patch                            
+08-22-04 03:28 ncrfgs         Bugnote Added: 0001605                       
+08-23-04 09:17 ncrfgs         Bug Monitored: ncrfgs                        
+08-23-04 15:23 tiwai          Bugnote Added: 0001612                       
+08-23-04 15:23 tiwai          Resolution               open => fixed       
+08-23-04 15:23 tiwai          Status                   assigned => resolved
+09-24-04 13:39 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
