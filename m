@@ -1,13 +1,16 @@
-From: Rusty Phillips <rustyp@freeshell.org>
-Subject: Re: Omnistudio USB
-Date: Fri, 14 Jan 2005 15:07:05 -0500
-Message-ID: <1105733225.1897.37.camel@localhost.localdomain>
-References: <Pine.HPX.4.33n.0501141230020.25187-100000@studcom.urz.uni-halle.de>
+From: George Socker <george.socker@verizon.net>
+Subject: Re: Audigy 2 NX USB
+Date: Fri, 14 Jan 2005 19:33:09 -0500
+Message-ID: <200501141933.23832.george.socker@verizon.net>
+References: <d27697d605011308157a93b066@mail.gmail.com> <41E6C1FF.7010404@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed;
+  boundary="nextPart4713307.23BtLlaUsO";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0501141230020.25187-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <41E6C1FF.7010404@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,44 +20,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Excellent work, and great turnaround!  Not only did that fix the problem
-I was having with the first two channels, but now that part of the card
-works in full duplex mode!
+--nextPart4713307.23BtLlaUsO
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-This means that I have now gotten all the functionality that the card
-offers - I can do 4x2 or 2x4 capture/send with Jack.
-
-The only claimed functionality that is missing is sending on 3 and 4
-while capturing on 1-4 (in other words, using channels 3 and 4 in full
-duplex mode.  I couldn't even get this to work in windows...it could be
-a physical limitation (does the Quattro have this problem?)
-
-Strangely, each input channel is returning a different gain even with
-the same settings.  Also, the preamps are absolutely horrible.  If
-anyone is thinking of purchasing this thing because it of the built-in
-mixer functionality, don't.
-
-On Fri, 2005-01-14 at 12:34 +0100, Clemens Ladisch wrote:
-> Rusty Phillips wrote:
-> > Okay, I've been trying most of my testing with the first two channels.
+On Thursday, January 13 2005 01:46 pm, James Courtier-Dutton wrote:
+> Vlad - Andrei Lazar wrote:
+> > Hello,
 > >
-> > However, I just figured out that recording and playback works on
-> > channels #3 and #4 at 96000.
-> 
-> The first two channels use an additional 16-bit interface, probably
-> for compatibility with the Windows USB Audio driver.
-> 
-> Please try the patch below.
-> 
-> 
-> HTH
-> Clemens
-> 
--- 
+> > Before I asked about an Audicy ZS PCMCIA and sadlly figured out
+> > that it has no (and will never have) support for linux.
+> >
+> > Is there or will there be any support for the Audigy 2 NX USB
+> > soundcard? If not, what is the latest SB card that is supported.
+> >
+> > Best,
+> > Vlad
+>
+> There might be Audigy ZS PCMCIA support if someone donates a card to
+> me.
+I've got one. It has the same PCI ID as an Audigy 2 Value, but the=20
+kernel locks up hard when 1.0.8rc1 is loaded with no log messages. If=20
+someone can give me some tips on how to debug I'll be happy to test.
+> -------------------------------------------------------
+> The SF.Net email is sponsored by: Beat the post-holiday blues
+> Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
+> It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
+--nextPart4713307.23BtLlaUsO
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
+
+iD8DBQBB6GTTlxdfGBfraWIRArOiAKCLUN2D4GV0rzPvVKtWl4ECx6bvhwCdEAJu
+QhGFB3/czDOR95IQJkMxzQw=
+=SMhU
+-----END PGP SIGNATURE-----
+
+--nextPart4713307.23BtLlaUsO--
 
 
 -------------------------------------------------------
