@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
-Date: Fri, 12 Nov 2004 12:25:22 +0100
-Message-ID: <dd5c109bd7876894bdaf1cb8b5fab392@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000414]: sb cant grab irq 65535
+Date: Fri, 12 Nov 2004 12:25:47 +0100
+Message-ID: <a30ae153a41bfbde88636794908ad40c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 628D4280
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 12:25:22 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9259A280
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 12:25:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,86 +24,76 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=453> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=414> 
 ======================================================================
-Reported By:                Andrew
+Reported By:                montjoie
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   453
-Category:                   PCI - ice1724
+Issue ID:                   414
+Category:                   ISA - sb8
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
+Distribution:               Debian Testing
+Kernel Version:             2.6.7
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-18-2004 13:16 CEST
+Date Submitted:             07-30-2004 11:20 CEST
 Last Modified:              11-12-2004 12:25 CET
 ======================================================================
-Summary:                    it is impossible to select spdif as capture source
+Summary:                    sb cant grab irq 65535
 Description: 
-There are no anything spdif-input-related among
-capture source enumeration.
+Laptop toshiba satelitte CD2520CDS
+Soundcard WSS & sb built in
+
+Alsa say when loading sb driver:
+"sb cant grab irq 65535" three times
+I try both to make sb module and to built in sb in the kernel(no modules)
+but it make the same.
+I compile alsaconf ant try but no change.(on a kernel discution i saw a
+man that say to do that).
+I change all hardware config (irq dma etc..) but no change.
+I try to force irq= when loading module but no change
+
 ======================================================================
 
 ----------------------------------------------------------------------
- ungod - 09-29-04 05:28 
+ montjoie - 10-01-04 12:21 
 ----------------------------------------------------------------------
-I've looked a bit closer on the Aureon card. Apparently RXP0 is the digital
-CD input and RXP1 is optical on the Space model. On the universe it seems
-that RXP1 is used for both optical and coax and some additional chip (on
-the 5.25" bay) does the the Optical/Coax choice.
-
-I personally only have the Space card, but if you have the Universe model,
-this is most likely the reason why you will get no sound.
-
-I've been working on adding S/PDIF input settings (So far a mute and a
-Optical/CD in selection), but I don't really want to publish anything
-until I know how it works on the Universe model.
+Oups excuse me i forgot to speak about the new fact.
+With yamaha, the sound module load with no problem but i haven't any
+sound.
+The problem is that my friend has (temporarely) put win98, so i cant make
+any more test for the moment.
 
 ----------------------------------------------------------------------
- tiwai - 10-12-04 14:54 
+ tiwai - 10-12-04 15:01 
 ----------------------------------------------------------------------
-I assume it's fixed.
+I guess the volume was simply muted.
+
+Anyway, I close this bug now.  If you get the linux system working 
+again and still see the same bug, please reopen this.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 13:16 Andrew         New Issue                                    
-08-25-04 19:55 tiwai          Note Added: 0001625                          
-08-25-04 23:47 Andrew         Note Added: 0001628                          
-08-27-04 19:39 tiwai          Note Added: 0001648                          
-09-07-04 10:33 Andrew         Note Added: 0001706                          
-09-08-04 17:16 tiwai          Note Added: 0001734                          
-09-08-04 17:55 Andrew         Note Added: 0001737                          
-09-23-04 18:48 tiwai          Note Added: 0001832                          
-09-23-04 20:34 ungod          Note Added: 0001847                          
-09-23-04 20:35 ungod          Note Edited: 0001847                         
-09-23-04 20:38 ungod          Note Edited: 0001847                         
-09-23-04 20:39 ungod          Note Edited: 0001847                         
-09-23-04 20:40 ungod          Note Edited: 0001847                         
-09-24-04 04:10 ungod          File Added: ice1724-spdif.diff                    
-09-24-04 04:14 ungod          Note Added: 0001854                          
-09-24-04 10:11 Andrew         Note Added: 0001859                          
-09-24-04 11:10 tiwai          Note Added: 0001860                          
-09-24-04 13:44 ungod          Note Added: 0001883                          
-09-24-04 13:51 ungod          Note Added: 0001884                          
-09-24-04 14:32 tiwai          Note Added: 0001885                          
-09-24-04 14:36 ungod          Note Added: 0001887                          
-09-24-04 14:36 ungod          File Added: ice1724-spdif2.diff                   
-
-09-24-04 14:42 tiwai          Note Added: 0001888                          
-09-24-04 15:02 ungod          Note Edited: 0001887                         
-09-25-04 01:13 ungod          Note Added: 0001907                          
-09-29-04 05:28 ungod          Note Added: 0001966                          
-10-12-04 14:54 tiwai          Status                   new => resolved     
-10-12-04 14:54 tiwai          Resolution               open => fixed       
-10-12-04 14:54 tiwai          Assigned To               => tiwai           
-10-12-04 14:54 tiwai          Note Added: 0002100                          
+07-30-04 11:20 montjoie       New Issue                                    
+07-30-04 11:20 montjoie       Distribution              => Debian Testing  
+07-30-04 11:20 montjoie       Kernel Version            => 2.6.7           
+08-02-04 18:12 montjoie       Issue Monitored: montjoie                    
+08-02-04 18:13 montjoie       Note Added: 0001520                          
+08-02-04 18:18 tiwai          Note Added: 0001522                          
+08-18-04 16:23 montjoie       Note Added: 0001585                          
+08-18-04 16:25 montjoie       Note Added: 0001586                          
+08-18-04 16:41 Clemens LadischNote Added: 0001588                          
+10-01-04 12:21 montjoie       Note Added: 0001997                          
+10-12-04 15:01 tiwai          Status                   new => resolved     
+10-12-04 15:01 tiwai          Resolution               open => not an issue
+10-12-04 15:01 tiwai          Assigned To               => tiwai           
+10-12-04 15:01 tiwai          Note Added: 0002103                          
 11-12-04 12:25 tiwai          Status                   resolved => closed  
 ======================================================================
 
