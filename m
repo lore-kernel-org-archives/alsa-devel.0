@@ -1,15 +1,16 @@
-From: "Martijn Sipkema" <msipkema@sipkema-digital.com>
-Subject: Re: more sample formats?  too little place left.
-Date: Mon, 3 Jun 2002 16:00:25 +0100
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: snd_pcm_close hangs
+Date: Mon, 3 Jun 2002 16:47:41 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <002201c20b0f$6b7e75e0$0400a8c0@martijn>
-References: <s5h3cw8gzvo.wl@alsa2.suse.de><007e01c208d2$31938120$0400a8c0@martijn> <s5hlm9wfper.wl@alsa2.suse.de>
-Reply-To: "Martijn Sipkema" <msipkema@sipkema-digital.com>
+Message-ID: <Pine.LNX.4.21.0206031646400.761-100000@summer.quitte>
+References: <s5hn0ucfpra.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from post.webmailer.de (natpost.webmailer.de [192.67.198.65])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA23041
+	for <alsa-devel@alsa-project.org>; Mon, 3 Jun 2002 16:47:40 +0200
+In-Reply-To: <s5hn0ucfpra.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,45 +20,118 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> > > it seems that USB audio supports 24 bit sample in 3 bytes format.
-> > > and additionally i've found there are 20bit and 18bit sample formats.
-> > > the world is large...
-> > >
-> > > an arising problem is that the number of formats is limited to 32.
-> > > already 26 format types are used.  the rest are only 6, and not enough
-> > > if we put BE/LE and signed/unsigned for new formats, too.
-> > >
-> > > how can we solve this?  extend to 64bit?  no, it has too overhead.
-> > > add a new field for special formats?
-> > >
-> > > perhaps we don't need all of them for such special formats.
-> > > there are no unsigned types for such formats.
-> > > but anyway the left resource is too small.
-> >
-> > are formats currently a bit in a 'supported formats' flag?
+Takashi Iwai wrote:
+
+>At Sat, 1 Jun 2002 01:49:00 +0200 (CEST),
+>Tim Goetze wrote:
+>> 
+>> me wrote:
+>> 
+>> >Takashi Iwai wrote:
+>> >
+>> >>At Thu, 30 May 2002 17:14:03 +0200 (CEST),
+>> >>Tim Goetze wrote:
+>> >>> 
+>> >>> hi all,
+>> >>> 
+>> >>> both emu8k and ice1712 pcm drivers hang forever in ioctl(2) when
+>> >>> closing a playback stream if the stream has been linked to the 
+>> >>> same card's capture, has been prepared and written data to, but was
+>> >>> never started:
+>> >>> 
+>> >>> Program received signal SIGINT, Interrupt.
+>> >>> 0x403b8fa4 in ioctl () from /lib/libc.so.6
+>> >>> (gdb) bt
+>> >>> #0  0x403b8fa4 in ioctl () from /lib/libc.so.6
+>> >>> #1  0x40580abc in __DTOR_END__ () from /usr/lib/libasound.so.2
+>> >>> #2  0x4053bde9 in snd_pcm_drain (pcm=0x81c6ae8) at pcm.c:813
+>> >>> #3  0x4053b649 in snd_pcm_close (pcm=0x81c6ae8) at pcm.c:552
+>> >>> #4  0x40462d79 in AlsaStream::~AlsaStream (this=0x81bf6a8,
+>> >>> __in_chrg=0)
+>> >>>     at AlsaStream.cc:41
+>> >>> #5  0x4049ef01 in AlsaOut::~AlsaOut (this=0x81bf6a8, __in_chrg=3)
+>> >>>     at PyType.h:110
+>> >>
+>> >>it seems stalling at drain ioctl.  can you figure out which stream is?
+>> >
+>> >playback. 
+>> 
+>> a playback stream not linked to any other stream behaves the same.
+>> 
+>> before calling snd_pcm_close(), i get
+>> 
+>> [~] cat /proc/asound/ice/pcm0p/sub0/status 
+>> state: PREPARED
+>> trigger_time: 0.000000
+>> tstamp      : 1022886544.305384
+>> delay       : -1053620964
+>> avail       : 0
+>> avail_max   : 0
+> 
+>hmm, delay value is bogus, but it's a minor bug of the driver.
+>should be zero cleared there.
 >
-> yes.
+>> this is what happens in snd_pcm_playback_drain() when i call
+>> snd_pcm_close() now:
+>> 
+>> the stream is started ok. the stream state is then switched to
+>> SNDRV_PCM_STATE_DRAINING and then the interruptible loop waiting for
+>> the stream to go to a different state is running forever because
+>> stream->state remains 5 = SNDRV_PCM_STATE_DRAINING. 
+>> 
+>> at this point, i get
+>> 
+>> [~] cat /proc/asound/ice/pcm0p/sub0/status 
+>> state: <NULL>
+>> trigger_time: 1022886587.196499
+>> tstamp      : 1022886605.224624
+>> delay       : -790953
+>> avail       : 795049
+>> avail_max   : 795049
+> 
+>apparently the avail value is incorrect.
+>is the buffer_size set to 4096?
 >
-> the problem is that the bitmask is defined as unsigned int, und
-> limitied to 31 bits.
+>> and a little later
+>> 
+>> [~] cat /proc/asound/ice/pcm0p/sub0/status 
+>> state: <NULL>
+>> trigger_time: 1022886587.196499
+>> tstamp      : 1022886607.877699
+>> delay       : -907955
+>> avail       : 912051
+>> avail_max   : 912051
+>> 
+>> and so on, so the card is firing irqs (a fact cat /proc/interrupts
+>> confirms). 
+>> 
+>> if i haven't run my code under gdb i then need to reboot the box to
+>> work with the card because the module is claimed 'busy'.
 >
-> if it's only in alsa driver, then it wouldn't be serious.
-> but apparently alsa-lib defines also mask as an integer.
-> theoretically, redefining this type won't cause any compatibility
-> problems, though, as long as you link alsa-lib dynamically.
-> (it's an obvious advantage of "complicated" alsa api :)
+>hmm, it sounds like a similar problem i fixed once ago...
+>(although in my case it didn't fire up irqs).
+>
+>
+>> 
+>> ps: i think "state: <NULL>" in the output from /proc above suggests
+>> that "char * snd_pcm_state_names[]" (in kernel/pcm.c:139) needs a
+>> revision. a patch is attached.
+>
+>strange, this has to be fixed already.
+>and the filename in the patch you attached seems invalid.
+>could you check whether all the sources are updated?
+>the latest versions are:
+>
+>	alsa-kernel/core/pcm.c 		rcs rev. 1.12
+>	alsa-kernel/core/pcm_nativ.c	rcs rev. 1.13
+>	alsa-kernel/core/pcm_lib.c	rcs rev. 1.12
 
-perhaps not using a bitmask, but having two ioctls, one giving
-the number of supported formats, the other returning the format
-description taking an index argument, not unlike the EASI interface
-, might be better.
+doing a fresh checkout now, stay tuned.
 
---martijn
-
-
+tim
 
 
 _______________________________________________________________
