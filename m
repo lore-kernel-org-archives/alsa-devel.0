@@ -1,12 +1,14 @@
-From: Arve Knudsen <aknuds-1@broadpark.no>
-Subject: Problem with __OLD_GET
-Date: Thu, 15 Jan 2004 15:23:06 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: No sound with alsa and intel8x0 on Intel ICH5R
+Date: Thu, 15 Jan 2004 17:08:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <opr1tl8sroq1sf88@mail.broadpark.no>
+Message-ID: <Pine.HPX.4.33n.0401151705460.14174-100000@studcom.urz.uni-halle.de>
+References: <1074170953.17555.10.camel@p4>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <1074170953.17555.10.camel@p4>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,44 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Joel Metelius <joel.metelius@home.se>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Joel Metelius wrote:
+> I have a Gigabyte GA-8IK1100 motherboard with an onboard ICH5R chip and
+> the AC97 CODEC.
 
-Like I explained in a post some time back, I've been having problems with=
-=20
-not getting correct values from snd_pcm_hw_params functions (specifically=
-=20
-snd_pcm_hw_params_get_channels_max). I never got an answer though, and th=
-e=20
-problem disappeared for a while. However it has reappeared, so I decided=20
-to find the source (no pun intended) of the problem. It turns out for som=
-e=20
-reason the deprecated symbols are getting called (__OLD_GET), so when I=20
-expect to have the passed value pointer filled in, all that happens is it=
-=20
-gets zeroed. I'm afraid I don't understand all the preprocessor magic, so=
-=20
-I don't completely understand why this happens. That is, the correct=20
-versions of these functions have been called correctly, but suddenly the=20
-old ones are used instead.
+What codec? (see first line of /proc/asound/card0/codec97#0/ac97#0-0)
 
-Maybe its down to some weird linking problem, it only happens with a=20
-dynamically loaded PortAudio plugin I've written for an xmms fork called=20
-beep-media-player. If anyone could come up with a likely explanation as t=
-o=20
-what's going on here, I'd be grateful. Is there some mechanism that=20
-figures my lib is linked against an old version of ALSA-lib? Btw, I'm=20
-using ALSA-lib 1.0.1, and drivers compiled into 2.6.1-mm2.
+> With ALSA I get no sound at all and with OSS I get sound but at
+> wrong frequency (playing too slow).
 
-Thanks
+ALSA has a bug in connection with ALC655/658 codecs.
+Please try to reconfigure the audio jacks with alsamixer.
 
-Arve Knudsen
+> When trying to compile alsa-drivers separately it complains about
+> linux/arch/x86 not existing (and it doesn't).
+
+You need the kernel sources to compile ALSA.  See the --with-kernel
+option of configure.
+
+
+HTH
+Clemens
+
+
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: Perforce Software.
-Perforce is the Fast Software Configuration Management System offering
-advanced branching capabilities and atomic changes on 50+ platforms.
-Free Eval! http://www.perforce.com/perforce/loadprog.html
+The SF.Net email is sponsored by EclipseCon 2004
+Premiere Conference on Open Tools Development and Integration
+See the breadth of Eclipse activity. February 3-5 in Anaheim, CA.
+http://www.eclipsecon.org/osdn
