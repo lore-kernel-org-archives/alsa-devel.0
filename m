@@ -1,15 +1,12 @@
-From: Henry Walpool <apkennedy@firstlinux.net>
-Subject: Re: [PATCH] envy24control.[ch] update for hoontech
-    cards.
-Date: Sun, 15 Dec 2002 16:15:16 -0800 (PST)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: possible problems with rc6 aplay
+Date: Sun, 15 Dec 2002 22:13:45 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021216001517.2A6C93A9D@sitemail.everyone.net>
-Reply-To: apkennedy@firstlinux.net
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <E18NleD-0004xk-00@sc8-sf-list1.sourceforge.net>
+References: <3DFCFB5A.9B34D27C@earthlink.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-reply-to: Your message of "Sun, 15 Dec 2002 15:59:54 CST."
+             <3DFCFB5A.9B34D27C@earthlink.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,40 +15,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>, Henry Walpool <apkennedy@firstlinux.net>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: patrick reardon <swpatrick@earthlink.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The Hoontech Media 7.1 card has a consumer/professional option at least under windows. I would assume that with the correct information from hoontech one could program this under alsa. Of course I don't have a clue, I'm just guessing here.
-
-Thanks for the information.
-
---- Jaroslav Kysela <perex@suse.cz> wrote:
->On Sat, 14 Dec 2002, Henry Walpool wrote:
+>Latency: 4096 samples (2 periods of 16384 bytes)
+>Hardware pointer (frames): 0
+>Passthru: no
+>Clock mode: autosync
+>Pref. sync source: ADAT1
 >
->> Added some code to block out the error messages for the hoontech cards
->> when someone tries to access the professional/consumer option. I tried
->> to get the information from hoontech but no luck. I don't think it would
->> be that hard to add the correct code to enable these functions but
->> hoontech is not talking unfortunately. Hoontech even stopped responding
->> to my e-mails. The last response I got was "e-mail the alsa-developers".
->> "They have all the information about hoontech cards already."
+>IEC958 input: Coaxial
+>IEC958 output: Coaxial only
+>IEC958 quality: Consumer
+>IEC958 emphasis: off
+>IEC958 Dolby: off
+>IEC958 sample rate: error flag set
 >
->The original hoontech cards have hardwired support (in hardware) for 
->consumer mode only.
->
->						Jaroslav
->
->-----
->Jaroslav Kysela <perex@suse.cz>
->Linux Kernel Sound Maintainer
->ALSA Project, SuSE Labs
+>ADAT Sample rate: 44100Hz
 
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
+if you're hammerfall is configured as shown above (and no, the name
+change makes no difference), then the SR that it uses will be
+determined by your external converter connected to the first ADAT
+port. nothing that ALSA does (or any program using ALSA does) will
+alter the SR. thats because you are synced to ADAT1, not the card's
+internal clock, thus the SR is determined by the clock signal arriving
+at ADAT1, which presumably comes from a converter somewhere back up
+the ADAT chain.
 
-_____________________________________________________________
-Select your own custom email address for FREE! Get you@yourchoice.com w/No Ads, 6MB, POP & more! http://www.everyone.net/selectmail?campaign=tag
+its been on my to-do list for some time to make "master" the default
+clock mode on the hammerfall, which avoids any ambiguity about the
+sample rate used by the card. i've held back because its really not
+the right option for most studio-ish users, who have external
+converters that probably have rate switches on them and they expect
+the hammerfall to follow the switch setting.
+
+does any of this make it any clearer? its really a bit of problem that
+the rate setting code doesn't do a full 100% check on all this
+stuff. an app can set the rate to 44100, and appear to have succeeded,
+but it will have no difference on the actual rate if the sync source
+is not the clock's internal clock. this is true, btw, for most digital
+cards. if you tried to record at 44100, but your external converters
+were running at 48kHz (as you suggest they have been), then the
+recordings will be at 48kHz with the sync source set as shown above.
+
+--p
+
+
 
 
 -------------------------------------------------------
