@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000626]: Oops on cat /dev/urandom > /dev/dsp
-Date: Tue, 9 Nov 2004 19:22:22 +0100
-Message-ID: <72686cfddeeb151c24b57345a210afb6@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000601]: Getting error while trying to insert the modules into the kernel>>cannot proceede further
+Date: Tue, 9 Nov 2004 19:24:46 +0100
+Message-ID: <c5b1f78916e64da2284e0dfaddb7c7b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8DFEE2B6
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 19:22:22 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 40A682B6
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 19:24:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,66 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=626> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=601> 
 ======================================================================
-Reported By:                Luke-Jr
-Assigned To:                tiwai
+Reported By:                djcobra
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   626
-Category:                   PPC - powermac
+Project:                    ALSA - utils
+Issue ID:                   601
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
 ======================================================================
-Date Submitted:             11-03-2004 15:14 CET
-Last Modified:              11-09-2004 19:22 CET
+Date Submitted:             10-24-2004 21:16 CEST
+Last Modified:              11-09-2004 19:24 CET
 ======================================================================
-Summary:                    Oops on cat /dev/urandom > /dev/dsp
+Summary:                    Getting error while trying to insert the modules
+into the kernel>>cannot proceede further
 Description: 
-Oops: kernel access of bad area, sig: 11
-[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-NIP: D253BD20 LR: D253C634 SP: CE547DB0 REGS: ce547d00 TRAP: 0300    Not
-tainted
-MSR: 00009032 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
-DAR: D254203C, DSISR: 40000000
-TASK = c07c77d0[7282] 'cat' THREAD: ce546000Last syscall: 4
-GPR00: 000007FC CE547DB0 C07C77D0 CF7B7B40 CFC38980 C063C8E0 00000200
-00000B03
-GPR08: 00000001 D2541840 000007FC D2541880 CF7B7B24 1001C140 00000000
-00000000
-GPR16: 00000001 CFC38980 C063C8E0 00000000 00000000 10015080 00000001
-00000000
-GPR24: 00000000 CFC400A0 CFC38980 D253BCD8 CFC38980 CF7B7BB0 CF7B7B40
-00000B03
-NIP [d253bd20] resample_expand+0x48/0x3a8 [snd_pcm_oss]
-LR [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
-Call trace:
- [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
- [d2539020] snd_pcm_plug_write_transfer+0x1cc/0x2a0 [snd_pcm_oss]
- [d2534518] snd_pcm_oss_write2+0xb4/0x12c [snd_pcm_oss]
- [d2536c94] snd_pcm_oss_write+0x220/0x26c [snd_pcm_oss]
- [c0058320] vfs_write+0x114/0x13c
- [c0058424] sys_write+0x4c/0x90
- [c00063a0] ret_from_syscall+0x0/0x44
+sir,
+i have followed the installation instructions of the above mentioned
+driver to the letter according to what is given in the link :
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI128+%28earlier+model+CT4700%29.&chip=ES1370&module=ens1370
+but unfortunatly>>i am not able to proceed further after the step where i
+am supposed to insert the modules into the keranl>>as when i try to run
+the given comand :
 
+modprobe snd-ens1370;modprobe snd-pcm-oss;modprobe snd-mixer-oss;modprobe
+snd-seq-oss
+
+i get an error : 
+
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o:
+init_module: No such device
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO or IRQ parameters.
+      You may find more information in syslog or the output from dmesg
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o: insmod
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o failed
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o: insmod
+snd-ens1370 failed
+
+
+Kindly help me solve this problem so that i too can listen to wonderful
+music in the eccelent quality provided by this awesome driver that u have
+created
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 18:51 
+ tiwai - 11-09-04 19:24 
 ----------------------------------------------------------------------
-Hmm, I remember that this function has had problems with the old gcc.
-Which gcc version are you using?
-
-----------------------------------------------------------------------
- Luke-Jr - 11-09-04 19:22 
-----------------------------------------------------------------------
-gcc (GCC) 3.4.1 20040803 (Gentoo Linux 3.4.1-r3, ssp-3.4-2, pie-8.7.6.5)
+Are you sure that snd-ens1370 is the driver for your card?
+The driver for SB Live is usually snd-emu10k1.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-03-04 15:14 Luke-Jr        New Issue                                    
-11-09-04 18:51 tiwai          Note Added: 0002334                          
-11-09-04 19:22 Luke-Jr        Note Added: 0002345                          
+10-24-04 21:16 djcobra        New Issue                                    
+10-26-04 22:19 djcobra        Issue Monitored: djcobra                     
+11-09-04 19:24 tiwai          Note Added: 0002347                          
 ======================================================================
 
 
