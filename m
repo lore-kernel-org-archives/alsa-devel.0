@@ -1,17 +1,12 @@
-From: "Matt" <mattea@pacbell.net>
+From: "Alyson Holley" <egspvws@yahoo.com>
 Subject: (no subject)
-Date: Sun, 24 Oct 2004 20:00:30 -0500
+Date: Thu, 14 Oct 2004 15:23:38 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041025075455.88F3235494@mail.perex.cz>
+Message-ID: <200410031464.i93YboTw008147__46487.0650590912$1098691879$gmane$org@www6.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 04AEA2E4
-	for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2004 09:55:05 +0200 (MEST)
-Received: from pacbell.net (unknown [61.248.111.244])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 88F3235494
-	for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2004 09:54:55 +0200 (MEST)
+Message-Id: <200410031464.i93YboTw008147@www6.gmail.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,11 +15,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: abramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Do you want a cheap Rolex Watch?
-http://pvc.beud.com/r/giggles/
+Hi again,
+
+Here is Alyson Holley. I write to you because we are accepting your mortga=
+ge application.
+Our office confirms you can get a $220.000 lo=C0n for a $252.00 per month =
+payment.
+Approval process will take 1 minute, so please fill out the form on our we=
+bsite:
+
+
+http://adjoint-synagogue.refi-web.com
+
+
+Thank you.
+
+Best Regards Alyson Holley
+First Account Manager
+
 
 
 
