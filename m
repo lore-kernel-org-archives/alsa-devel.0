@@ -1,72 +1,34 @@
-From: "Stephen Warren" <SWarren@nvidia.com>
-Subject: [PATCH] azx/realtek: Cleanup of the W810 system support.
-Date: Wed, 5 Jan 2005 12:39:07 -0800
-Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B003CE102B@hqemmail02.nvidia.com>
+From: Andrew Morton <akpm@osdl.org>
+Subject: Re: [PATCH] deprecate (un)register_ioctl32_conversion
+Date: Wed, 5 Jan 2005 13:34:48 -0800
+Message-ID: <20050105133448.59345b04.akpm@osdl.org>
+References: <20041215065650.GM27225@wotan.suse.de>
+	<20041217014345.GA11926@mellanox.co.il>
+	<20050103011113.6f6c8f44.akpm@osdl.org>
+	<20050105144043.GB19434@mellanox.co.il>
+	<s5hd5wjybt8.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262603AbVAEVgU@vger.kernel.org>
+In-Reply-To: <s5hd5wjybt8.wl@alsa2.suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: mst@mellanox.co.il, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
 List-Id: alsa-devel@alsa-project.org
 
-Clean-ups of the W810 support in azx/patch_realtek.c
+Takashi Iwai <tiwai@suse.de> wrote:
+>
+> At Wed, 5 Jan 2005 16:40:43 +0200,
+>  Michael S. Tsirkin wrote:
+>  > 
+>  > Hello, Andrew, all!
+>  > 
+>  > Since in -mm1 we now have a race-free replacement (that being ioctl_compat),
+>  > here is a patch to deprecate (un)register_ioctl32_conversion.
+> 
+>  Good to see that ioctl_native and ioctl_compat ops are already there!
+> 
+>  Will it be merged to 2.6.11?
 
-* Correctly size a couple of static data arrays.
-
-* Fix alc880_ch_mode_get so it only accesses index 0 of
-spec->channel_mode,
-  in case there's only one entry.
-
-* Add separate mute switch for headphone/speaker output pin of the W810
-
-* Set all amps to be zero-volume, and pins to be muted, in the
-initialization
-  verb sequence, like a standard ALSA driver.
-
-* Enable SPDIF object creation (set dig_out_nid)
-
-* Fix a lot of W810-specific comments to be more accurate.
-
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
-
-Notes:
-
-I hadn't realized that I'd included W810 support in my previous patch -
-I'd meant to send that in later! This patch cleans up some of the
-work-in-progress.
-
-SPDIF output doesn't work on this system. The IEC958 muting control does
-show up in alsamixer. This may be our application problem - I think
-what's happening is that we can't open plug:iec958:... and just fall
-back to analog mode.
-
-DAC NID 0x02 is routed to both pin NID 0x14 (rear jack named "front")
-and to pin NID 0x1b (connected to internal speakers, and headphone
-jack). I've created a mixer element named "Headphone Playback Switch" to
-allow the control of the mute for pin NID 0x1b. Is this the right way to
-do this? Thanks for feedback.
-
-Sorry about creating that bug in hda_codec.c!
-
---=20
-Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
-swarren@nvidia.com        http://www.nvidia.com/
-swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
-
-
--------------------------------------------------------
-The SF.Net email is sponsored by: Beat the post-holiday blues
-Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
-It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
+It should be, unless there's some problem.  In maybe a week or so.
