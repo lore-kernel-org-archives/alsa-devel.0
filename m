@@ -1,17 +1,23 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: gmplayer ALSA bug [was Re: [ALSA - driver 0000475]:
-	multiple input streams]
+Subject: [MPlayer-users] gmplayer ALSA bug [was Re: [ALSA -
+	driver 0000475]: multiple input streams]
 Date: Fri, 03 Sep 2004 20:21:17 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1094257277.6575.127.camel__37589.6404417746$1094257916$gmane$org@krustophenia.net>
+Message-ID: <1094257277.6575.127.camel__12336.2394435846$1094258214$gmane$org@krustophenia.net>
 References: <20040903171836.F159C2D0C0@server.perex-int.cz>
+Reply-To: "MPlayer usage questions, features,  bugreports" <mplayer-users@mplayerhq.hu>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 81473260
-	for <alsa-devel@alsa-project.org>; Sat,  4 Sep 2004 02:21:18 +0200 (MEST)
+Received: from teamsearchmr.co.uk (teamsearchmr.plus.com [80.229.42.233])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A4E502C9
+	for <alsa-devel@alsa-project.org>; Sat,  4 Sep 2004 02:23:28 +0200 (MEST)
+Received: from 212.85.249.130 ([212.85.249.130])
+	by teamsearchmr.co.uk (teamsearchmr.co.uk)
+	(MDaemon.PRO.v7.1.1.R)
+	with DomainPOP id md50000068747.msg
+	for <alsa-devel@alsa-project.org>; Sat, 04 Sep 2004 01:26:00 +0100
 In-Reply-To: <20040903171836.F159C2D0C0@server.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -62,6 +68,11 @@ problem only occurs in gmplayer, and that regular mplayer works fine.
 Is this fixed in a more recent release?
 
 Lee
+
+_______________________________________________
+MPlayer-users mailing list
+MPlayer-users@mplayerhq.hu
+http://mplayerhq.hu/mailman/listinfo/mplayer-users
 
 
 
