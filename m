@@ -1,12 +1,20 @@
-From: Jeff Muizelaar <muizelaar@rogers.com>
-Subject: [PATCH] move a bit more old stuff into alsa-driver
-Date: Sat, 24 May 2003 18:46:13 -0400
+From: Arcady Genkin <agenkin-lst-alsa-devel@thpoon.com>
+Subject: Re: Re: Audigy 2 support - update
+Date: Sat, 24 May 2003 22:13:40 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3ECFF635.4080405@rogers.com>
+Message-ID: <863cj3vkmj.fsf@tea.thpoon.com>
+References: <20030523051240.GA10831@www.angiotech.com>
+	<1053675028.18540.70.camel@rivendell.home.local>
+	<yw1xznlevz8l.fsf@zaphod.guide>
+	<1053747556.6906.4.camel@rivendell.home.local>
+	<20030524165935.GB17884@www.angiotech.com>
+	<86el2ouqq4.fsf@tea.thpoon.com>
+	<3ECFD2BC.1000307@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070506010808020002000507"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3ECFD2BC.1000307@superbug.demon.co.uk> (James
+	Courtier-Dutton's message of "Sat, 24 May 2003 21:14:52 +0100")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,79 +23,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070506010808020002000507
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+James Courtier-Dutton <James@superbug.demon.co.uk> writes:
 
-The attached patches move snd_info_entry_inode_operations out of 
-alsa-kernel/core/info.c into alsa-driver/acore/info.c
+> As you can see, 0x1102, 0x0002 is my SB Live.
+> Add a extra line for your Audigy 2 platinum ex.
+>
+> and recompile, and see if that helps.
 
--Jeff
+It seems that there already is a line for my card:
 
---------------070506010808020002000507
-Content-Type: text/plain;
- name="info-cleanup-driver.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="info-cleanup-driver.diff"
+,----[ lspci output ]
+| 02:05.0 Multimedia audio controller: Creative Labs SB Audigy (rev 04)
+| 02:05.1 Input device controller: Creative Labs SB Audigy MIDI/Game port (rev 04)
+| 02:05.2 FireWire (IEEE 1394): Creative Labs SB Audigy FireWire Port (rev 04)
+`----
 
-Index: acore/info.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/acore/info.c,v
-retrieving revision 1.3
-diff -u -r1.3 info.c
---- acore/info.c	14 May 2003 15:31:48 -0000	1.3
-+++ acore/info.c	24 May 2003 22:40:47 -0000
-@@ -88,6 +88,12 @@
- 		proc_unregister(parent, de->low_ino);
- 	}
- }
-+
-+static struct inode_operations snd_info_entry_inode_operations =
-+{
-+	        &snd_info_entry_operations,     /* default sound info directory file-ops */
-+};
-+
- #endif /* LINUX_VERSION_CODE < 2.4.0 */
- 
- #include "../alsa-kernel/core/info.c"
+,----[ lspci -r output ]
+| 02:05.0 Class 0401: 1102:0004 (rev 04)
+| 02:05.1 Class 0980: 1102:7003 (rev 04)
+| 02:05.2 Class 0c00: 1102:4001 (rev 04)
+`----
 
---------------070506010808020002000507
-Content-Type: text/plain;
- name="info-cleanup-kernel.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="info-cleanup-kernel.diff"
+So, according to your instructions, my card should be identified by
+"Class 0401: 1102:0004", but there already is a line for that in
+alsa-kernel/pci/emu10k1/emu10k1.c:
 
-Index: core/info.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/core/info.c,v
-retrieving revision 1.36
-diff -u -r1.36 info.c
---- core/info.c	14 May 2003 15:30:58 -0000	1.36
-+++ core/info.c	24 May 2003 22:42:09 -0000
-@@ -508,13 +508,6 @@
- 	.release =	snd_info_entry_release,
- };
- 
--#ifdef LINUX_2_2
--static struct inode_operations snd_info_entry_inode_operations =
--{
--	&snd_info_entry_operations,	/* default sound info directory file-ops */
--};
--#endif	/* LINUX_2_2 */
--
- /**
-  * snd_create_proc_entry - create a procfs entry
-  * @name: the name of the proc file
+{ 0x1102, 0x0004, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 1 },    /* Audigy */
 
---------------070506010808020002000507--
+Am I missing something?  Thanks a lot for your reply!
+-- 
+Arcady Genkin
 
+guilt is the cause of more disauders
+than history's most obscene marorders (E.E. Cummings)
 
 
 -------------------------------------------------------
