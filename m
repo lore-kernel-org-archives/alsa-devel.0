@@ -1,16 +1,12 @@
-From: Andrew de Quincey <adq_dvb@lidskialf.net>
-Subject: Re: Patch to fix LIN_OUT1 on Audigy2 cards (+ others)
-Date: Wed, 12 Mar 2003 22:16:33 +0000
+From: Manuel Jander <mjander@embedded.cl>
+Subject: Aureal VOrtex update and MPU401 survey
+Date: Thu, 13 Mar 2003 00:28:39 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200303122216.33901.adq_dvb@lidskialf.net>
-References: <200303120648.HAA27496@www1.pobox.sk>
+Message-ID: <3E7008F7.1090207@embedded.cl>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-2"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200303120648.HAA27496@www1.pobox.sk>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,28 +15,83 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: p z oooo <pzad@pobox.sk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi everyone.
 
-Please ignore the disable-AC97 mixer part of my Audigy2 patch. it isn't that 
-simple...
+Aurela Vortex:
+I'm pleased to announce that the Vortex driver PCM is working.
+Its not 100% perfect yet, sometimes it skips, but that will be done
+in the next week (i'll try to add Scatter Gather support).
 
-It seems the AC97 is only used for capture on the Audigy2.. As you said, you 
-need it to control capturing from mike, line in etc. 
+MPU401 survey:
+I though about a modification for the mpu401_uart driver, to allow
+a more versatil handling of different IO types. I observed that
+at least the SBLive, appart from the Vortex have a standart MPU401 port, 
+but the hardware IO is slighdely different enough to prevent the usage 
+of the existing MPU401 driver. That means the driver is copy pasted and 
+only the Register access (inb and outb) calls are modified.
 
-However, it also seems that the microphone input is routed through the FX 
-processor and the AC97 in serial.... To adjust the mike volume, you have to 
-mess with: (from AC97) "Master", "Mic", "Mic Boost", and (from the EMUFX?) 
-"Capture", and "AC97" (Note: NOT "AC97 Capture"... that does nothing!). 
-"AC97" has the most effect on the volume, so I assume it must be first in the 
-chain... but all the others have a cumulative effect on the recorded volume.
+Know there are too options: allow replacement functions for inb and 
+outb, or to use wrappers that accept the mpu type as parameter so that a 
+more sophisticated IO handling can be done. THat means:
 
-Oh for "Line in": only "Master", and "Line" work, which actually makes sense.
+case 1
 
--- 
-adq
+typedef mpu401_t {
+   ....
+   void (*write) (u8 data, u32 addr);
+   u8 (*write) (u32 addr);
+   ....
+}
+.....
+
+mpu->write = outb;
+mpu->read = inb;
+
+
+----------- < OR >-------------------
+case 2
+
+typedef mpu401_t {
+   ....
+   void (*write) (mpu401_t *mpu, u8 data, u32 addr);
+   u8 (*write) (mpu401_t *mpu, u32 addr);
+   ....
+}
+
+...
+
+mpu->write = mpu_write;
+mpu->read = mpu_read;
+
+
+... and implemented in the specific card driver:
+
+void mpu_write(mpu401_t *mpu, u8 data, u32 addr) {
+     some_iohardware_write(mpu->private_data, data, addr);
+}
+
+void mpu_write(mpu401_t *mpu, u8 data, u32 addr) {
+     return some_iohardware_read(mpu->private_data, addr);
+}
+
+
+The question is: Can anyone take advantage of having the "mpu" object 
+avaiable inside a IO wrapper ? The SBLive should, but are the 
+maintainers of the SBLive in the mood to actually make use of that ?
+
+-If the mpu401_uart driver assigns per default the apropiate functions 
+to mpu->write and mpu->read, -no change in the API is needed-.
+-At least case 1 is needed to avoid having to copy paste the driver for 
+the Aureal Vortex since it uses mmio instead of port io.
+
+Best Regards
+
+Manuel Jander.
+
+
 
 
 -------------------------------------------------------
