@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
-Date: Fri, 11 Mar 2005 12:13:19 +0100
-Message-ID: <61f9eb2de161841ed7e9902698f71c63@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
+Date: Fri, 11 Mar 2005 12:15:58 +0100
+Message-ID: <561f5e9d53c2692b7e28a3b6d6f5962b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 98B3B1CA
-	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 12:13:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 815E215A
+	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 12:15:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,100 +21,105 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
 ======================================================================
-Reported By:                jbrsubscribe
+Reported By:                vaxen
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   836
-Category:                   PCI - azx
+Issue ID:                   914
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               Suse
-Kernel Version:             2.6.8-24.10-smp
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.9 2.6.10
 ======================================================================
-Date Submitted:             01-19-2005 18:19 CET
-Last Modified:              03-11-2005 12:13 CET
+Date Submitted:             02-16-2005 20:39 CET
+Last Modified:              03-11-2005 12:15 CET
 ======================================================================
-Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
-slider control for Surround/Center/LFE/Side
+Summary:                    nm256 causes kernel to hard freeze
 Description: 
-Unable to set volume control for Surround/Center/LFE/Side due to the fact
-that the sliders for these entities do not function in alsamixer and
-gamix. The sliders cannot be manipulated. The only functional sliders are
-PCM, PC Speaker and the two (2) Capture sliders.
-In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
-appear at all.
+Hi, here is my specs:
+
+Gateway solo 3300
+http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
+Audio chipset NM2200 interface to AC97 CODEC
+
+pegasos vaxen # lspci -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
+      +-0a.0  Texas Instruments PCI1211
+      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
+      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
+
+I am using a custom patched kernel at
+http://morph-sources.sourceforge.net/?q=node/27 
+
+It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
+alsa-bk-2005-01-14.patch.
+
+I compiled the drivers into the kernel, the kernel hard freezes after
+displaying these message:
+nm256:found card signature in video RAM: 0x27ec00
+nm256:Mapping port 1 from 0x2709a0-0x27ec00
+I have to switch off the laptop as it does not respond to any inputs.
+
+I also tried compiling the drivers as modules, when I tried to modprobe
+snd-nm256, the kernel hard freezes without any warning message.
+
+I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
+like 2.6.10.
+
+I have not tried alsa 1.0.7 driver.
+
+Please let me know if you need more diagnostic information to fix this
+problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-11-05 00:50 
+ vaxen - 03-10-05 19:57 
 ----------------------------------------------------------------------
-Can this be closed now?
+Tested on 2.6.11 final. kernel hardlocks.
 
 ----------------------------------------------------------------------
- tiwai - 03-11-05 12:13 
+ tiwai - 03-11-05 12:15 
 ----------------------------------------------------------------------
-Yes, let's close this.
+Don't forget to add reset_workaround=1 option.  Also, load the driver
+before X starts.  If X was already running, reboot once.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-19-05 18:19 jbrsubscribe   New Issue                                    
-01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
-01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
-01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
-01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-19-05 18:36 tiwai          Status                   new => resolved     
-01-19-05 18:36 tiwai          Resolution               open => not an issue
-01-19-05 18:36 tiwai          Assigned To               => tiwai           
-01-19-05 18:36 tiwai          Note Added: 0003311                          
-01-19-05 18:36 tiwai          Assigned To              tiwai =>            
-01-20-05 01:07 jbrsubscribe   Status                   resolved => feedback
-01-20-05 01:07 jbrsubscribe   Resolution               not an issue => reopened
-01-20-05 01:07 jbrsubscribe   Note Added: 0003320                          
-01-20-05 01:51 jbrsubscribe   Note Added: 0003321                          
-01-20-05 11:52 1g0R           Note Added: 0003325                          
-01-20-05 18:42 jbrsubscribe   Note Added: 0003328                          
-01-20-05 19:11 tiwai          Note Added: 0003331                          
-01-21-05 00:30 jbrsubscribe   Note Added: 0003335                          
-01-21-05 05:56 1g0R           Note Added: 0003338                          
-01-21-05 08:16 mab            Note Added: 0003339                          
-01-21-05 11:08 1g0R           Note Added: 0003340                          
-01-21-05 12:04 tiwai          Note Added: 0003343                          
-01-21-05 12:05 tiwai          Note Added: 0003344                          
-01-21-05 16:55 mab            Note Added: 0003348                          
-01-21-05 17:26 tiwai          Note Added: 0003349                          
-01-21-05 22:08 1g0R           Note Added: 0003370                          
-01-22-05 09:04 mab            Note Added: 0003373                          
-01-22-05 09:06 mab            Note Edited: 0003373                         
-01-22-05 12:33 1g0R           Note Added: 0003374                          
-01-22-05 21:30 mab            Note Added: 0003378                          
-01-22-05 21:43 mab            Note Edited: 0003378                         
-01-23-05 02:43 1g0R           Note Added: 0003385                          
-01-23-05 11:52 1g0R           Note Added: 0003387                          
-01-24-05 12:18 tiwai          Note Added: 0003391                          
-01-24-05 13:46 1g0R           Note Added: 0003392                          
-01-24-05 14:40 jbrsubscribe   Note Added: 0003393                          
-01-24-05 18:36 jbrsubscribe   Note Added: 0003394                          
-01-24-05 18:55 1g0R           Note Added: 0003395                          
-01-24-05 20:04 1g0R           Note Added: 0003396                          
-01-25-05 12:19 1g0R           Note Added: 0003398                          
-01-25-05 15:07 tiwai          Note Added: 0003399                          
-01-25-05 15:11 tiwai          Note Added: 0003400                          
-01-25-05 15:29 1g0R           Note Added: 0003406                          
-03-11-05 00:50 jdthood        Note Added: 0003877                          
-03-11-05 12:13 tiwai          Status                   feedback => resolved
-03-11-05 12:13 tiwai          Resolution               reopened => fixed   
-03-11-05 12:13 tiwai          Assigned To               => tiwai           
-03-11-05 12:13 tiwai          Note Added: 0003885                          
+02-16-05 20:39 vaxen          New Issue                                    
+02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
+02-16-05 21:36 vaxen          Note Added: 0003626                          
+02-16-05 21:38 vaxen          Note Edited: 0003626                         
+02-16-05 21:56 vaxen          Note Edited: 0003626                         
+02-17-05 18:31 tiwai          Note Added: 0003632                          
+02-17-05 20:44 vaxen          Note Added: 0003638                          
+02-17-05 20:45 vaxen          Note Edited: 0003638                         
+02-17-05 21:28 vaxen          Note Added: 0003641                          
+02-17-05 22:40 vaxen          Note Added: 0003644                          
+02-24-05 03:55 vaxen          Note Added: 0003717                          
+02-24-05 04:01 vaxen          Note Added: 0003718                          
+02-24-05 22:04 tiwai          Note Added: 0003727                          
+02-25-05 16:29 vaxen          Note Added: 0003735                          
+03-10-05 12:50 interfaSys     Note Added: 0003849                          
+03-10-05 14:38 tiwai          Note Added: 0003852                          
+03-10-05 14:38 tiwai          File Added: nm256-test.diff                    
+03-10-05 18:56 vaxen          Note Added: 0003870                          
+03-10-05 19:57 vaxen          Note Added: 0003871                          
+03-11-05 12:15 tiwai          Note Added: 0003886                          
 ======================================================================
 
 
