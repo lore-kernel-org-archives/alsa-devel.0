@@ -1,16 +1,13 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: OSS vs ALSA war :-)
-Date: Wed, 11 Aug 2004 09:12:55 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000434]: System hang after playing
+Date: Wed, 11 Aug 2004 10:56:05 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408110712.i7B7CtAo003552@www4.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
-Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Message-ID: <20040811085605.EDA9F1102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www4.pobox.sk (www4.pobox.sk [212.5.216.14])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EB5E31FA
-	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2004 09:12:55 +0200 (MEST)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DA1DC227
+	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2004 10:56:06 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,36 +16,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: geeceezee@free.fr
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Maybe:
 
-1 user of 10 000 bought same soundcard as you have.
-1 of 1000 these users uses linux.
-1 of 100 these linux users is developer.
-1 of 10 these developers can fix and want fix problem in your
-soundcard driver.
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000434
+======================================================================
+Reported By:                crsw
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     434
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora core 2
+Kernel Version:             2.6.7-1.494.2.2custom
+======================================================================
+Date Submitted:             08-11-2004 10:56 CEST
+Last Modified:              08-11-2004 10:56 CEST
+======================================================================
+Summary:                    System hang after playing
+Description: 
+After playing a sound file the system hang whitout any message. It hang
+even if you send a kill -1 signal to the process reproducing the sound
+file
+======================================================================
 
-Result: you must search for 1 from 10 000 000 000 (are there so many
-people on the world) :-)
-
-In real:
-If one from alsa developers doesn't have information from card
-manufacturer about internal things on card it will be very hard to
-find where problem is (and he must have card).
-
-You can use OSS driver, you always have choice.
-I prefer hardware, where I exactly know it is supported under linux
-(open source drivers or closed source drivers, but free on cost). If
-it is not fully suported, but basically works, I am able most of time
-add others feature I need (if informations are available from
-manufacturer).
-
-Peter Zubaj
-=0A____________________________________=0Ahttp://www.pobox.sk/ - najvacsi s=
-lovensky freemail=0A=0A=0A
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-11-04 10:56 crsw           New Bug                                      
+08-11-04 10:56 crsw           Distribution              => Fedora core 2   
+08-11-04 10:56 crsw           Kernel Version            => 2.6.7-1.494.2.2custom
+======================================================================
 
 
 -------------------------------------------------------
