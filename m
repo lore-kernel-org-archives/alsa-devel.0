@@ -1,13 +1,16 @@
-From: "Eileen Montgomery" <eileenmontgomery_pl@askic.kic.ritsumei.ac.jp>
-Subject: Get meds online
-Date: Mon, 25 Oct 2004 04:53:57 +0700
+From: Jose Alberto Reguero <jareguero@telefonica.net>
+Subject: Re: AD1980 problem
+Date: Mon, 25 Oct 2004 09:03:57 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <84dd01c4ba13$46252792$061f17ab@mickey.cariboo.bc.ca>
+Message-ID: <200410250903.57435.jareguero@telefonica.net>
+References: <200410241725.47371.jareguero@telefonica.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200410241725.47371.jareguero@telefonica.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,16 +19,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-announce@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Get Prescription medications delivered to your doorstep overnight.
-No more doctor visits no more doctor fee's.
-Stop paying expensive medical bills. Buy online and save.
+With the driver
+default
+it works, but with the driver
+plug:surround51:0
+it has the problem.
+Thanks.
+Jose Alberto
 
-Visit us here: http://demerc.com/?refid=3D12
-
-
+El Domingo, 24 de Octubre de 2004 17:25, Jose Alberto Reguero escribi=F3:
+> Soundcard VIA8233 AD1980
+> module snd-via82xx
+> alsa 1.0.6
+> When playing xine with Sorround 5.1 the right rear speaker don't play
+> nothing. Thanks.
+> Jose Alberto
+>
+>
+> -------------------------------------------------------
+> This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
+> Use IT products in your business? Tell us what you think of them. Give us
+> Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out mo=
+re
+> http://productguide.itmanagersjournal.com/guidepromo.tmpl
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 -------------------------------------------------------
