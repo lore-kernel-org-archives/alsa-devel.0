@@ -1,14 +1,16 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: mixer device
-Date: Thu, 13 May 2004 18:28:17 +0200 (CEST)
+From: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
+Subject: Re: status of powermac sound?
+Date: Thu, 13 May 2004 19:46:11 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20040513182817.pochini@shiny.it>
-References: <20040513153457.GE6913@sunrise.pg.gda.pl>
+Message-ID: <1084470370.3032.123.camel@thor.asgaard.local>
+References: <200405121138.09878.bergtroll@gmx.li>
+	 <1084357911.3034.11.camel@thor.asgaard.local>
+	 <s5h8yfxewvs.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040513153457.GE6913@sunrise.pg.gda.pl>
+In-Reply-To: <s5h8yfxewvs.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,44 +19,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adam Tla/lka <atlka@pg.gda.pl>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Niklas Werner <bergtroll@gmx.li>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2004-05-12 at 12:57, Takashi Iwai wrote:
+> At Wed, 12 May 2004 12:31:54 +0200,
+> Michel Dänzer wrote:
+> > 
+> > The only thing that bothers me is
+> > https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000057, but I can live with it.
+> 
+> sorry, forgot to answer BTS.
+> this bug might have been fixed in the recent CVS version (might be not
+> :)
+> 
+> please give a try.
 
-On 13-May-2004 Adam Tla/lka wrote:
-
->> What do you want to do with the mixer?
-> Hmm - typically people just want to control PCM volume.
-> When using OSS you can just do mixer ioctl's on the opened PCM fd.
-> Simple and clear.
-
-No, it's not simple, unless the driver makes it simple
-removing some capabilities of the card. For example the
-Echoaudio Mia hasn't a PCM volume control. It has a mixer
-that mixes 8 PCM channels into 4 physical channels. In
-order to change the PCM volume of one of the eight
-channels you have to change the levels of a whole row of
-the mixer. Similarly, all other Echoaudio cards don't
-have a line-out volume control and to change the volume
-of one output channel you have to change the PCM volume
-of that channel *and* a whole column of the monitor mixer.
-I guess there are some cards that are more complex than
-those. I exported the raw controls and I handle everything
-in user-space with a dedicated "console" program similar
-to the one shipped with the windos drivers.
+Still the same problem unfortunately (I assume the potential fix was in
+the alsa-kernel or alsa-driver CVS module?).
 
 
-> So how a program could in a simple way obtain information which
-> control to use to set the volume level of particular stream?
+-- 
+Earthling Michel Dänzer      |     Debian (powerpc), X and DRI developer
+Libre software enthusiast    |   http://svcs.affero.net/rm.php?r=daenzer
 
-Good question. The current approach is based on the control
-names but sometimes they're not enough. What do you suggest ?
-
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
