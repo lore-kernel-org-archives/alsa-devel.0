@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000245]: Intel 82801DB (ICH4) AC'97 broken in Linux kernel 2.6.5 and above.
-Date: Fri, 16 Jul 2004 12:51:28 +0200 (CEST)
+Subject: [ALSA - lib 0000180]: cant play multiple streams to rear on emu10k1
+Date: Fri, 16 Jul 2004 12:55:09 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716105128.2D03D26005@server.perex-int.cz>
+Message-ID: <20040716105509.27A6C26008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2992255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:51:28 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E0B0244
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:55:09 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,75 +22,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000245
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000180
 ======================================================================
-Reported By:                mooky
-Assigned To:                tiwai
+Reported By:                pwk
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     245
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Bug ID:                     180
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Slackware
-Kernel Version:             2.6
 ======================================================================
-Date Submitted:             04-28-2004 22:03 CEST
-Last Modified:              07-16-2004 12:51 CEST
+Date Submitted:             04-03-2004 06:47 CEST
+Last Modified:              07-16-2004 12:55 CEST
 ======================================================================
-Summary:                    Intel 82801DB (ICH4) AC'97 broken in Linux kernel 2.6.5 and above.
+Summary:                    cant play multiple streams to rear on emu10k1
 Description: 
-I had AlSA working in kernel 2.6.3 and 2.6.4, but sometime after 2.6.4 it
-broke.   Even the most recent 2.6.6rc3, sound is broken.
+Since my first try to bug report cant be found by me anywhere, I post
+again...sorry if its a duplicate and I am to stupid to see my first
+report.
+
+The problem is, that I cant play multiple streams to "rear" with my
+emu10k1 chipset. I got a fix for this issue long ago on the #alsa irc
+channel, but I noticed it never made it into alsa lib...so I guess you
+dont know about the problem, it was described as:
+
+"When playing the rear channel, it was locking the Wave Surround mixer
+slider, so that when the next was played, the lock could not happen."
+
+the fix was (and still is in alsa-lib-1.0.3b)
+
+Oct 08 00:06:17 <jcdutton>      edit /usr/share/alsa/cards/EMU10K1.conf
+Oct 08 00:07:02 <jcdutton>      backup the file, then, lines 33 - 38.
+Delete them.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-30-2004 10:37 CEST 
+ perex - 04-03-2004 13:55 CEST 
 ----------------------------------------------------------------------
-make sure that intel8x0m (modem) module is not loaded via hotplug.
-hotplug tends to load it automatically, and it breaks the preferred
-order of modules.
-
-you can avoid hotplugging of intel8x0m by adding snd-intel8x0m
-and snd_intel8x0m to /etc/hotplug/blacklist.  the file may be dependent
-on the distribution.
-
-----------------------------------------------------------------------
- mooky - 05-01-2004 10:03 CEST 
-----------------------------------------------------------------------
-Fixed.  The exclusion name is actually:     snd-intel8x0m
-
-Is this a bug known kernel bug?  I hope they get that fixed sometime, oh
-well, it's unbroken now. Cheers.
-
-edited on: 05-01-04 10:03
-
-----------------------------------------------------------------------
- tiwai - 05-01-2004 10:30 CEST 
-----------------------------------------------------------------------
-sorry, i added mistakenly a wrong reply (deleted now).
-
-this the problem of hotplug, not of the kernel nor the ALSA.
-the hotplug must be fixed.
+Duplicated.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-28-04 22:03 mooky          New Bug                                      
-04-28-04 22:03 mooky          Distribution              => Slackware       
-04-28-04 22:03 mooky          Kernel Version            => 2.6             
-04-30-04 10:37 tiwai          Bugnote Added: 0000971                       
-05-01-04 10:02 mooky          Bugnote Added: 0000990                       
-05-01-04 10:03 mooky          Bugnote Edited: 0000990                      
-05-01-04 10:28 tiwai          Bugnote Added: 0000991                       
-05-01-04 10:29 tiwai          Bugnote Deleted: 0000991                     
-05-01-04 10:30 tiwai          Bugnote Added: 0000992                       
-05-01-04 10:30 tiwai          Assigned To               => tiwai           
-05-01-04 10:30 tiwai          Resolution               open => fixed       
-05-01-04 10:30 tiwai          Status                   new => resolved     
-07-16-04 12:51 tiwai          Status                   resolved => closed  
+04-03-04 06:47 pwk            New Bug                                      
+04-03-04 13:55 perex          duplicate_id             0 => 178            
+04-03-04 13:55 perex          Assigned To               => perex           
+04-03-04 13:55 perex          Resolution               open => duplicate   
+04-03-04 13:55 perex          Status                   new => resolved     
+04-03-04 13:55 perex          Bugnote Added: 0000734                       
+07-16-04 12:55 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
