@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Fri, 26 Nov 2004 08:26:56 +0100
-Message-ID: <3941a1de08bdef39c300d64555c4b112@bugtrack.alsa-project.org>
+Date: Fri, 26 Nov 2004 09:22:50 +0100
+Message-ID: <e1661eac96b6797ddbef41a451571c65@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C2BD1C8
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 08:26:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C63FB233
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 09:22:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian/unstable
 Kernel Version:             linux-2.6.4+
 ======================================================================
 Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-26-2004 08:26 CET
+Last Modified:              11-26-2004 09:22 CET
 ======================================================================
 Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
@@ -60,19 +60,29 @@ So I suspect a problem in the ioctl32 wrapper.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-25-04 12:22 
-----------------------------------------------------------------------
-copy_in_user() is available on other architectures (at least x86-64 and
-ppc64) with 2.6.7, either exported or inlined.
-
-I found some thinkos in the last patch.  The new patch is attached.
-If this still doesn't work, please check via strace which ioctl fails.
-
-----------------------------------------------------------------------
  eradicator - 11-26-04 08:26 
 ----------------------------------------------------------------------
 ok... your patch is now letting me use the mixer, but playback causes a
 system lockup...
+
+----------------------------------------------------------------------
+ eradicator - 11-26-04 09:22 
+----------------------------------------------------------------------
+On a hunch, I reverted pcm_hw_params changes to
+DEFINE_ALSA_IOCTL_BIG(pcm_hw_params) (see the patch for what I did
+exactly...)
+
+This didn't fix it, but it no longer locks up the system... when I try to
+aplay a file, I get this now:
+
+aplay /usr/kde/3.3/share/sounds/pop.wav 
+Playing WAVE '/usr/kde/3.3/share/sounds/pop.wav' : Signed 16 bit Little
+Endian, Rate 44100 Hz, Mono
+ALSA lib pcm_params.c:2096:(snd_pcm_hw_refine_slave) Slave PCM not usable
+aplay: set_params:835: Broken configuration for this PCM: no
+configurations available
+
+the strace attached is for the command above
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -129,6 +139,10 @@ Date Modified  Username       Field                    Change
 11-25-04 12:23 tiwai          File Added: ioctl32-user-alloc-hack2.diff         
           
 11-26-04 08:26 eradicator     Note Added: 0002594                          
+11-26-04 08:59 eradicator     File Added: revert-pcm_hw_params.patch            
+       
+11-26-04 09:22 eradicator     File Added: alsa.strace                      
+11-26-04 09:22 eradicator     Note Added: 0002595                          
 ======================================================================
 
 
