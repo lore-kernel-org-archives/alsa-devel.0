@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000983]: alsamixer and amixer can't control "Capture Volume" and "Capture Switch" on azx, whereas gamix can
-Date: Mon, 28 Mar 2005 04:04:36 +0200
-Message-ID: <f20c5994784284a06963f43d6e1f4706@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0000710]: Alsa-oss works with mpg123 too...fast!!!
+Date: Mon, 28 Mar 2005 04:06:55 +0200
+Message-ID: <1b7ed0329d95194cfd010d9b8d3f6502@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1BBB7253
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 04:04:37 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8170C253
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 04:06:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,59 +21,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=983> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=710> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                booxter
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   983
-Category:                   alsamixer
+Project:                    ALSA - liboss
+Issue ID:                   710
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
+Status:                     closed
+Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-12-2005 12:54 CET
-Last Modified:              03-28-2005 04:04 CEST
+Date Submitted:             12-05-2004 20:22 CET
+Last Modified:              03-28-2005 04:06 CEST
 ======================================================================
-Summary:                    alsamixer and amixer can't control "Capture Volume"
-and "Capture Switch" on azx, whereas gamix can
+Summary:                    Alsa-oss works with mpg123 too...fast!!!
 Description: 
-This bug was reported at http://bugs.debian.org/297624 and has been
-discussed there at some length.
+When I run
+aoss mpg123 some.mp3,
+I hear all the sound, but too fast (about a 3-5 seconds for a 4minutes
+mp3). Other programs that works primarily through OSS (I tested with
+mp3blaster and mplayer with -o oss) works with aoss fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-16-05 12:59 
+ jdthood - 03-20-05 23:58 
 ----------------------------------------------------------------------
-Already fixed in the recent ersion.
+Submitter: Is this still a problem in ALSA 1.0.8?
 
 ----------------------------------------------------------------------
- jdthood - 03-16-05 13:09 
+ jdthood - 03-28-05 04:06 
 ----------------------------------------------------------------------
-For the record, the Debian bug report number is now
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=299458.
-No further action needed.
+Not confirmed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 12:54 jdthood        New Issue                                    
-03-16-05 12:59 tiwai          Status                   new => resolved     
-03-16-05 12:59 tiwai          Resolution               open => fixed       
-03-16-05 12:59 tiwai          Assigned To               => tiwai           
-03-16-05 12:59 tiwai          Note Added: 0003951                          
-03-16-05 12:59 tiwai          Assigned To              tiwai =>            
-03-16-05 13:09 jdthood        Status                   resolved => feedback
-03-16-05 13:09 jdthood        Resolution               fixed => reopened   
-03-16-05 13:09 jdthood        Note Added: 0003954                          
-03-28-05 04:04 jdthood        Status                   feedback => resolved
-03-28-05 04:04 jdthood        Resolution               reopened => fixed   
+12-05-04 20:22 booxter        New Issue                                    
+12-05-04 20:42 booxter        Note Added: 0002723                          
+12-05-04 22:14 eradicator     Issue Monitored: eradicator                    
+03-20-05 23:58 jdthood        Note Added: 0004103                          
+03-28-05 04:06 jdthood        Status                   new => closed       
+03-28-05 04:06 jdthood        Note Added: 0004230                          
 ======================================================================
 
 
