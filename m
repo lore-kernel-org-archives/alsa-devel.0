@@ -1,13 +1,14 @@
-From: "Martin Langer" <martin-langer@gmx.de>
-Subject: Re: [ALSA - driver 0000454]: cvs site is down
-Date: Wed, 18 Aug 2004 17:37:47 +0200 (MEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: help with driver
+Date: Wed, 18 Aug 2004 16:23:52 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <17402.1092843467@www19.gmx.net>
-References: <s5hsmakv6dq.wl@alsa2.suse.de>
+Message-ID: <Pine.HPX.4.33n.0408181620170.1109-100000@studcom.urz.uni-halle.de>
+References: <20040816131140.E996B101D9@ws1-3.us4.outblaze.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <20040816131140.E996B101D9@ws1-3.us4.outblaze.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,48 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: Ash Willis <ashwillis@programmer.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> At Wed, 18 Aug 2004 16:35:44 +0200 (CEST),
-> bugtrack@alsa-project.org wrote:
-> > 
-> > 
-> > Description: 
-> > cvs -z3 update -dP now gives:
-> > 
-> > cvs [update aborted]: unrecognized auth response from
-> cvs.sourceforge.net:
-> > M PserverBackend::PserverBackend() Connect (Connection refused)
-> > 
-> > It started a few days ago, and had been working properly for months
-> > before.
-> > 
-> > ======================================================================
-> > 
-> > ----------------------------------------------------------------------
-> >  pzad - 08-18-2004 16:35 CEST 
-> > ----------------------------------------------------------------------
-> > And what about this too:
-> > ftp://ftp.alsa-project.org/pub/cvsexport/
-> > For me this was useful, but it is not up to date too. :-(
-> > (last is from 2004/06/02)
-> 
-> Oh that hits again...
-> 
-> I believe we really consider seriously moving from sourceforge to
-> another host.  At least the cvs service has been down too many times.
-> ML seems working fine, though.
+Ash Willis wrote:
+> I can get the card playing sound but it plays with gaps and at the
+> wrong speed.
+>
+> The problem, I think, is to do with interrupts. The card
+> interrupts when a chunk of data has been transfered and not when
+> the period boundary is crossed. When you get the pointer from the
+> card, it returns a number ranging from 0 to period_size. The
+> number in this regsiter decreases by 1 for every byte recieved
+> (from the card's p.o.v).
+>
+> The way I had the interrupt routine working was that it was
+> calling period_elapsed everytime....this of course is wrong and
+> now I'm looking to fix it so it works in the way described above.
 
-Except moving new mails to the archive on mail-archive.com. It stopped
-working, too. I guess it was even at the same day (server update).
+Add up the number of bytes or frames played, and call _elapsed when
+the value reaches one period.
 
-martin
+> Is there an already existing driver for a card that works in a
+> similar way?
 
--- 
-NEU: WLAN-Router für 0,- EUR* - auch für DSL-Wechsler!
-GMX DSL = supergünstig & kabellos http://www.gmx.net/de/go/dsl
+ymfpci, usb-audio
+
+
+HTH
+Clemens
+
 
 
 
