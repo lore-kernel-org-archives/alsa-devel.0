@@ -1,17 +1,14 @@
-From: Mathieu Rondonneau <mathieu.rondonneau@polymtl.ca>
-Subject: Re: period_size, periods, count parameters
-Date: Thu, 26 Feb 2004 20:05:57 -0500
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Re: Attempts on the ESS-1869 card
+Date: Thu, 26 Feb 2004 18:34:33 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1077843957.403e97f588b44@www.imp.polymtl.ca>
-References: <Pine.HPX.4.33n.0402261735200.25586-100000@studcom.urz.uni-halle.de>
+Message-ID: <20040227023433.64429.qmail@web60808.mail.yahoo.com>
+References: <403e519e.johana@johana.com>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp.polymtl.ca (IDENT:0@smtp.polymtl.ca [132.207.4.11])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id CAA15220
-	for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2004 02:06:03 +0100
-In-Reply-To: <Pine.HPX.4.33n.0402261735200.25586-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <403e519e.johana@johana.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,35 +17,84 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Selon Clemens Ladisch <clemens@ladisch.de>:
+The documentation seems to imply sound blaster compatable as well.  So
+I tried that driver, as suggested (thanks!) and got a similar result:
+"...snd-sb16.o: init_module: No such device"
+"Hint..."
 
-> Mathieu Rondonneau wrote:
-> > I don't understand why count is 1024 ?
-> > why count is not equal to runtime->period_size (i.e. 16*1024)?
+Oh, well.  Any new ideas??  Does anyone have experience with this
+laptop and its sound card??
+
+...Thanks again
+--- James Courtier-Dutton <James@superbug.demon.co.uk> wrote:
+> Looks like a Sound Blaster compatible.
+> Try
+> modprobe snd-sb16 enable=1 isapnp=0 port=0x0220 mpu_port=0x330 irq=5 
+> dma8=1 dma16=5
 > 
-> If your frame size is 4, this is the size of a memory page.  I guess
-> ALSA wants to copy the data one page at a time, and this is required
-> if the buffer isn't contiguous.
+> Cheers
+> James
+> 
+> 
+> Tom Watson wrote:
+> > Ah, a new card to try...
+> > This time it is an Ensonic ESS-1869 that is built into an older
+> Compaq
+> > laptop (Armada 3500).  When I put in the "setup" disk, it reports
+> that
+> > the sound card has the following I/O stuff:
+> > IRQ 5
+> > DMA 1
+> > DMA 5
+> > ports at 0x0220 thru 0x022F   (16 ports)
+> > ports at 0x0388 thru 0x038B   (4 ports)
+> > ports at 0x0330 thru 0x0331   (2 ports)
+> > some other port range at 0x0250 thru 0x0257   (8 ports).
+> > 
+> > In reading the driver I see that "port" reserves 16, "fm_port"
+> reserves
+> > 4, and "mpu_port" reserves 2.
+> > 
+> > Being a "nice guy" I attempt to load the module with insmod, and
+> the
+> > file "modules.conf" has:
+> > ...
+> > alias snd-card-0 snd-es18xx
+> > options snd-es18xx id="first" enable=1 dma1=1 dma2=5 irq=5
+> port=0x220 \
+> >    fm_port=0x338 mpu_port=0x330
+> > ...
+> > 
+> > But all is not well as I get an error upon doing an insmod:
+> > .../es18xx.c:2256: ESS AudioDrive ES18xx soundcard not found or
+> device
+> > busy.
+> > 
+> > Am I missing something simple to get this thing working??  From the
+> > look of things, I should have all the stuff working.  I even
+> attempted
+> > to try an ISAPNP, but that didn't appear to work either.
+> > 
+> > Any better ideas from the group.
+> > 
+> > ...Thanks
+> > 
+> > =====
 
 
-How do i know the frame size?
-Is it the runtime->frame_bits value?
-the frame_bits is 16.
+=====
+-- 
+Tom Watson
+tsw@johana.com
 
-I'm using snd_pcm_lib_preallocate_pages_for_all api for memory space allocation.
-Does it mean the buffer isn't contiguous?
-
-Thank you for your help.
-
-Mathieu
-
-
-
-
+__________________________________
+Do you Yahoo!?
+Get better spam protection with Yahoo! Mail.
+http://antispam.yahoo.com/tools
 
 
 -------------------------------------------------------
