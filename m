@@ -1,13 +1,19 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: digital fx support for cs4205
-Date: Sat, 15 Feb 2003 16:04:13 +0100 (CET)
+From: Allan Klinbail <allank@labyrinth.net.au>
+Subject: Re: MTP-AV problems (Re: intel8x0 sequencer & MTP-AV) - success
+Date: 16 Feb 2003 20:58:23 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302151602490.1282-100000@pnote.perex-int.cz>
-References: <20030212113747.GB4745@valsheda.taprogge.wh>
+Message-ID: <1045389509.6765.21.camel@littlewolf2.littlewolf>
+References: <1044258789.30428.61.camel@littlewolf2.littlewolf>
+	<s5h3cn5ino4.wl@alsa2.suse.de>
+	<1044273602.2013.6.camel@littlewolf2.littlewolf>
+	<s5hheb8l05o.wl@alsa2.suse.de>
+	<1045193186.10268.392.camel@littlewolf2.littlewolf>
+	<s5h4r77jdmm.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030212113747.GB4745@valsheda.taprogge.wh>
+In-Reply-To: <s5h4r77jdmm.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,38 +22,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jens Taprogge <ln@idg.rwth-aachen.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 12 Feb 2003, Jens Taprogge wrote:
+Okay Finally I am very very happy.. 
 
-> I sent this a while ago. Since I did not get any replies yet I am
-> resending it.
+SO far I have only been able to test output (need to setup MIDI hardware
+again after a gig) 
 
-It would be better to create mixer controls. It's bad to enable some cool 
-feature without having possibility to disable it.
+>From output using MusE CVS version. 
 
-						Jaroslav
+I have been able to send MIDI output to:
 
-> On Sat, Feb 01, 2003 at 02:21:34AM +0100, Jens Taprogge wrote:
-> > I read through the specs for the cs4205 and created a small patch to
-> > enable the digital fx engine (bass, treble, 3d) for pcm output.
+individual ports 
+multiple ports relaying different information... 
+timecode... MIDI CLOCK, worked , MMC still to be tested
+
+I did not get a good SMPTE lock and the time display on the MTP-AV only
+aligned itself properly on stop.. (typical when a sync lock isn't
+established properly) both the PC and the MTP-AV were set to a SMTPE
+rate of 25 frames per second. 
+
+(I remember we once tested this with a commandline app, I don't have
+them anymore .. do you still have them or links to them and we can check
+with that rather than MusE as SMPTE probably isn't fully implemented
+yet) 
+
+
+One glitch I noticed was that the driver seemed to send the note
+information to all ports when the sequence I had only sent to one of the
+MTPAV ports... When I assigned a second to a different port it began
+behaving correctly.
+
+This is all however fantastic progress. 
+
+cheers
+
+Allan 
+
+
+
+
+
+On Fri, 2003-02-14 at 22:38, Takashi Iwai wrote:
+> Hi Allan,
+> 
+> At 14 Feb 2003 14:26:19 +1100,
+> Allan Klinbail wrote:
 > > 
-> > It would be possible to first digitize analog input (cd, speaker, etc.)
-> > and run it through the fx engine as well. That would requiere changes to
-> > mixer code though. (Would hva to use extra mixers that are not available
-> > through the ac97 interface.)
-> > 
-> > Jens
-> > 
-> > ps: I am not subscribed to the list.
-> > -- 
+> > The device stopped seeing all messages when attempts at sending MIDI
+> > output to more than one port occured.(this is where the initialisation
+> > SYSEX probably comes into play)  
+> 
+> this problem may have been fixed (not perfect but works in most
+> cases) on cvs recently.   if you have time, please try the cvs
+> version.
+> 
+> 
+> ciao,
+> 
+> Takashi
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 
