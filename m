@@ -1,15 +1,16 @@
-From: Paul Davis <pbd@op.net>
-Subject: patch to get hdsp recognized as a card
-Date: Wed, 15 May 2002 23:12:49 -0400
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: hdsp driver changes: something has broken
+Date: Wed, 15 May 2002 22:28:13 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205160312.g4G3Cn413115@op.net>
+Message-ID: <Pine.LNX.4.44.0205152226450.7094-100000@cmn37.stanford.edu>
+References: <200205160247.g4G2ldB04725@op.net>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from post2.fast.net (post2.fast.net [209.92.1.22])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id FAA25376
-	for <alsa-devel@alsa-project.org>; Thu, 16 May 2002 05:12:21 +0200
-Received: from op.net (maxtnt02-113.phlpa.fast.net [209.92.227.113])
-	by post2.fast.net (8.11.2/8.9.3) with ESMTP id g4G3CET21901
-	for <alsa-devel@alsa-project.org>; Wed, 15 May 2002 23:12:15 -0400 (EDT)
+Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id HAA26712
+	for <alsa-devel@alsa-project.org>; Thu, 16 May 2002 07:28:46 +0200
+In-Reply-To: <200205160247.g4G2ldB04725@op.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,37 +19,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Paul Davis <pbd@op.net>
+Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I don't know how to force this change to cause a rebuild of
-acinclude.m4, but when that happens (e.g. c/o cvscompile), "hdsp"
-becomes a valid card option.
+> as fernando reported:
+> 
+> depmod: *** Unresolved symbols in /lib/modules/2.4.19-pre6/kernel/sound/pci/rme9652/snd-hammerfall-mem.o
+> depmod:         pci_free_consistent
+> depmod:         pci_alloc_consistent
+> depmod:         pci_devices
+> depmod:         mem_map
+> depmod:         printk
+> depmod: *** Unresolved symbols in /lib/modules/2.4.19-pre6/kernel/sound/pci/rme9652/snd-hdsp.o
+> de
+> 
+> these errors did not occur on the builds that i did before jaroslav
+> committed my changes. jaroslav - can you please review what you did to
+> see if there is something that may have caused this? 
+> 
+> in addition, i noted that rme9652_mem.c should be removed from
+> CVS. the one in alsa-kernel has been, but the one in alsa-driver is
+> still there. this has caused a number of problems for several people...
 
-The problem with missing symbols does not go away, however.
+I did not check if rme9652_mem was still there but I managed to compile 
+cvs today with no missing symbols so somebody must have fixed something. 
 
---p
+-- Fernando
 
-
-Index: Modules.dep
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/scripts/Modules.dep,v
-retrieving revision 1.13
-diff -u -r1.13 Modules.dep
---- Modules.dep 17 Apr 2002 07:48:53 -0000      1.13
-+++ Modules.dep 16 May 2002 03:10:50 -0000
-@@ -184,8 +184,9 @@
- |snd-nm256 snd-pcm snd-ac97-codec
- 
- %dir linux/sound/pci/rme9652
--snd-rme9652-mem
--|snd-rme9652 snd-pcm snd-rme9652-mem
-+snd-hammerfall-mem
-+|snd-rme9652 snd-pcm snd-hammerfall-mem
-+|snd-hdsp snd-pcm snd-hammerfall-mem
- 
- %dir linux/sound/pci/trident
- snd-trident-synth @if_sequencer snd-seq-midi-emul snd-ainstr-simple
 
 _______________________________________________________________
 
