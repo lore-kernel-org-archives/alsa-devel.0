@@ -1,14 +1,14 @@
-From: =?iso-8859-1?q?karsten=20wiese?= <annabellesgarden@yahoo.de>
-Subject: Re: help for a levelmeter
-Date: Wed, 16 Oct 2002 00:40:39 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: help needed on how to autoload snd-usb-midi
+Date: Wed, 16 Oct 2002 09:34:42 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021015224039.59921.qmail@web12207.mail.yahoo.com>
-References: <3DAC8580.7010004@club-internet.fr>
+Message-ID: <Pine.HPX.4.33n.0210160851001.2959-100000@studcom.urz.uni-halle.de>
+References: <20021015172751.82908.qmail@web12208.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DAC8580.7010004@club-internet.fr>
+In-reply-to: <20021015172751.82908.qmail@web12208.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,46 +17,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Laurent Georget <lgeorget2@club-internet.fr>
-Cc: Devel Alsa <alsa-devel@lists.sourceforge.net>
+To: =?iso-8859-1?q?karsten=20wiese?= <annabellesgarden@yahoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Laurent Georget: 
->   Hello,
-> 
-> I 'd like to make a levelmeter program which would
-> display sound card
-> input/output
-> while the audio device is opened by another program.
-> I tried to use copy
-> plugin  , but now (since 0.9.0rc3 ) the
-> "snd_pcm_copy_open" give a "implicit
-> declaration of function"
-hmm, it is still declared in
-alsa-lib/include/pcm_plugin.h ...?
-> message . (Anyway, i don't know if using this plugin
-> was correct for
-> that purpose)
-> 
-> So, would you know a way to read audio data going to
-> (or coming from)
-> the device , when it is opened by another program ?
-> 
-> Thanks for any help!
-> 
-> Laurent
+karsten wiese wrote:
+> here is the routine that is used in snd-usb-us428:
+> ...
+> its a copy-change of usb-audio. something wrong here ?
 
-(there is a jack meter client @
-http://plugin.org.uk/meterbridge/)
+No, it's fine. The problem is elsewhere.
+
+> > IMHO the "best" solution would be to add a quirk to
+> > usbaudio.c, (...) (I'm sure I've missed something.
+> > :)
+> the us-428 audio is very nonstandard:
+> it is necessary to know how many frames are just
+> recorded to be able to playback without unwanted
+> crackles.
+
+I.e. an asynchronous endpoint without frequency feedback? :-(
+There isn't a second endpoint in the playback interface?
+
+> furthermore there are the hardware knobs, sliders and lights,
+> the digital in switch....
+
+... and I guess those aren't in any way compatible with USB audio mixer
+controls.
+
+> > Autoloading happens if there is an alias for
+> > snd-card-x (x derived from
+> > the client number) in modules.conf, ...
+>
+> I put a line
+> "alias snd-card-1 snd-usb-midi"
+> (the us-428 is my second card)
+> into modules.conf. is it this what you suggest?
+
+No, the alias should be for the card driver:
+  alias snd-card-1 snd-usb-us428
+
+> unfortunately the autoload still does not happen.
+
+Autoloading works for sequencer ports and for "real" rawmidi devices,
+but not for rawmidi devices emulated on top of a sequencer port.
+
+Takashi, would it be possible/desirable to change snd_rawmidi_hw_open()
+to load sequencer drivers if the card driver is loaded but the rawmidi
+device doesn't exist?
+Something like:
+
+	if ((fd = open(filename, fmode)) < 0) {
+-		snd_card_load(card);
++		card_loaded = snd_card_load(card) == 0; // 0 or 1?
+-		if ((fd = open(filename, fmode)) < 0) {
++		fd = open(filename, fmode);
++		if (card_loaded && fd < 0) {
++			load_seq_dev(...); // hw_open, get_client_info ?
++			fd = open(filename, fmode);
++		}
++		if (fd < 0) {
+			snd_ctl_close(ctl);
+			SYSERR("open %s failed", filename);
+			return -errno;
+		}
+	}
 
 
-regards, karsten
+Regards
+Clemens
 
-
-__________________________________________________________________
-
-Gesendet von Yahoo! Mail - http://mail.yahoo.de
-Möchten Sie mit einem Gruß antworten? http://grusskarten.yahoo.de
 
 
 -------------------------------------------------------
