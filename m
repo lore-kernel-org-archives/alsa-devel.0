@@ -1,13 +1,18 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ALSA + jack + xrun = kernel crash
-Date: Wed, 21 May 2003 14:54:19 +0200 (CEST)
+From: John covici <covici@ccs.covici.com>
+Subject: Re: modprobe fails for via82xx in alsa-0.9.3a
+Date: Wed, 21 May 2003 09:29:13 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305211452070.1480-100000@pnote.perex-int.cz>
-References: <s5h65o4v7sm.wl@alsa2.suse.de>
+Message-ID: <16075.32553.785487.478126@ccs.covici.com>
+References: <m3smr8vasr.fsf@ccs.covici.com>
+	<s5hfzn8va58.wl@alsa2.suse.de>
+	<16075.25666.840544.292981@ccs.covici.com>
+	<s5h7k8kv7xd.wl@alsa2.suse.de>
+Reply-To: covici@ccs.covici.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h65o4v7sm.wl@alsa2.suse.de>
+In-Reply-To: <s5h7k8kv7xd.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,55 +22,62 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa dev list <alsa-devel@lists.sourceforge.net>
+Cc: covici@ccs.covici.com, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 21 May 2003, Takashi Iwai wrote:
+Here is what I got when I tried to install-- note the page-alloc
+module is there:
 
-> At Wed, 21 May 2003 13:35:39 +0200 (CEST),
-> Jaroslav wrote:
-> > 
-> > On Wed, 21 May 2003, Takashi Iwai wrote:
-> > 
-> > > At Wed, 21 May 2003 02:32:02 +0200,
-> > > Pieter Palmers wrote:
-> > > > 
-> > > >   Ok, second try:
-> > > > 
-> > > > alsa 0.9.3c fresh from CVS
-> > > >    ---------------------------------------
-> > > >     /proc/asound/version:
-> > > >    Advanced Linux Sound Architecture Driver Version 0.9.3c.
-> > > >    Compiled on May 21 2003 for kernel 2.4.20-LL with versioned symbols.
-> > > > 
-> > > >     /proc/asound/cards:
-> > > >    0 [AudioPCI       ]: ENS1371 - Ensoniq AudioPCI
-> > > >                         Ensoniq AudioPCI ENS1371 at 0xb000, irq 5
-> > > > 
-> > > >    ---------------------------------------
-> > > 
-> > > how about this one?  this should fix another deadlock
-> > > (including the simplified expression of stream lock)
-> > 
-> > Takashi, the self_group is designed to avoid mess in the lowlevel drivers. 
-> 
-> which mess do you mean?
-> as far as i see, only self_group.lock is used in the code.
-> (so i replaced self_group with a single spinlock.)
+Starting sound driver: snd-via82xx /lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_free_reserved_Rd027fa8d
+/lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_free_pages_Rce5f2dfe
+/lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_get_reserved_R3761189e
+/lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_set_reserved_Rd569b169
+/lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_alloc_pages_Rfc708157
+/lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: insmod /lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o failed
+/lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: insmod snd-via82xx failed
+done
+Module                  Size  Used by    Not tainted
+snd-page-alloc          5932   0 
+w83781d                20464   0  (unused)
+eeprom                  3636   0  (unused)
+i2c-proc                7472   0  [w83781d eeprom]
+i2c-isa                 1192   0  (unused)
+i2c-viapro              3984   0  (unused)
+i2c-core               15848   0  [w83781d eeprom i2c-proc i2c-isa i2c-viapro]
+3c59x                  27152   2  (autoclean)
+nls_iso8859-1           2876   4  (autoclean)
+advansys               86400   0  (unused)
+scsi_mod               95476   1  [advansys]
+ipt_MARK                 792   4  (autoclean)
+iptable_mangle          2168   1  (autoclean)
+iptable_filter          1740   1 
+ipt_LOG                 3416   1 
+ipt_limit                920   1 
+ip_nat_ftp              3088   0  (unused)
+iptable_nat            15576   2  [ip_nat_ftp]
+ip_conntrack_ftp        4080   1 
+ip_conntrack           18976   2  [ip_nat_ftp iptable_nat ip_conntrack_ftp]
+ip_tables              11896   8  [ipt_MARK iptable_mangle iptable_filter ipt_LOG ipt_limit iptable_nat]
+8139too                15208   1  (autoclean)
+mii                     2512   0  (autoclean) [8139too]
 
-See: snd_pcm_group_for_each()
+on Wednesday 05/21/2003 Takashi Iwai(tiwai@suse.de) wrote
+ > At Wed, 21 May 2003 07:34:26 -0400,
+ > John covici wrote:
+ > > 
+ > > Should I delete it from the module tree, or if not, when should I do
+ > > an rmmod -- seems that the script would just reload it again as it
+ > > loads everything with snd if I remember correctly.
+ > 
+ > just make sure that you really reloaded snd-page-alloc.
+ > as said, the script was changed not to reload snd-page-alloc module.
+ > 
+ > 
+ > Takashi
 
-If you remove self_group then you must use some condition in lowlevel 
-drivers to distinct standalone and linked streams. I want to avoid this
-condition.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
+-- 
+         John Covici
+         covici@ccs.covici.com
 
 
 -------------------------------------------------------
