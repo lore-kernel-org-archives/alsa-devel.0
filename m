@@ -1,16 +1,15 @@
-From: "Jack O'Quin" <joq@io.com>
-Subject: Re: Why do I get broken pipe on write to a pcm in  statePREPARED?
-Date: 09 Oct 2002 13:13:05 -0500
+From: Peter L Jones <peter@drealm.org.uk>
+Subject: Re: snd_ prefix for module options
+Date: Wed, 9 Oct 2002 19:37:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87ofa3mqfi.fsf@sulphur.joq.us>
-References: <Pine.HPX.4.33n.0209171615490.1084-100000@studcom.urz.uni-halle.de>
-	<200209181957.g8IJvS008300@d1o87.telia.com>
-	<200210040814.g948E9015465@d1o87.telia.com>
-	<s5hy99e4ayc.wl@alsa2.suse.de> <3D9DD810.7C3960C4@libero.it>
+Message-ID: <200210091937.05652@advent.drealm.org.uk>
+References: <s5hfzvh2fid.wl@alsa2.suse.de> <DAELIEGDPLDDCIJPAICBEENLCDAA.annabellesgarden@yahoo.de> <s5hwuor29tv.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D9DD810.7C3960C4@libero.it>
+In-Reply-To: <s5hwuor29tv.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,43 +18,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Abramo Bagnara <abramo.bagnara@libero.it>
-Cc: Takashi Iwai <tiwai@suse.de>, Anders Torger <torger@ludd.luth.se>, Jaroslav Kysela <perex@suse.cz>, Tim Goetze <tim@quitte.de>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Abramo Bagnara <abramo.bagnara@libero.it> writes:
+On Wednesday 09 Oct 2002 11:19, Takashi Iwai wrote:
+> At Wed, 9 Oct 2002 12:15:17 +0200,
+>
+[snip]
+>
+> a convenient method is to check and rewrite /etc/modules.conf
+> automatically when alsa-driver is installed.  (btw, in the case of
+> debian, do we need to check another path, too?)
 
-> For what it worths my objections are still there.
-> 
-> I'm strongly convinced that to have poll waiting for something that
-> cannot happens is a big mistake (also as an optional behaviour).
+Yes.
+/etc/modutils/alsa -> /etc/alsa/modutils/0.9
+And then run update-modules.
 
-The poll is waiting on some thread to start the PCM.  It is incorrect
-to say that this "cannot happen".
+This would normally be done when upgrading the .deb to the new version, so it 
+shouldn't be something the driver or init.d file should worry about.
 
-> That apart I'm sure that to make a change in actual behaviour between
-> rcX and 1.0 is a professional suicide. However it's _your_ professional
-> suicide so... ;-)))
+(My opinion only...)
 
-I am an advocate for high standards of compatibility.  But, this is
-not a compatibility issue.
+>
+> i'm not sure whether it's good manner or not, though.
 
-The current behavior fails in the case being discussed.  At worst, a
-program that does not work under the current implementation will fail
-differently after the change.  Some argue that the new failure symptom
-is actually easier to debug, so even this may be an improvement.
+I think it's not so nice.  Anyone running ALSA 0.9 should know it's not a 
+"release" version and be happy to have (some breakage).  If all that's needed 
+is a quick edit of modules.conf, it shouldn't cause too many power-users 
+grief.  Those using distro upgrade tools should let their distro maintainer 
+sort it out for them.
 
-The proposal permits appropriately programmed applications to do
-something useful.  This behavior conforms to both the letter and
-spirit of the X/Open standard, as far as I can see.
+I don't think it's an ALSA developer problem.
 
-So, I think the change *should* be made, even at this late stage of
-the release schedule.  (votes++)
-
-Regards,
--- 
-  Jack O'Quin
-  Austin, Texas, USA
+>
+>
+> Takashi
+>
+>
+> -------------------------------------------------------
+> This sf.net email is sponsored by:ThinkGeek
+> Welcome to geek heaven.
+> http://thinkgeek.com/sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 
