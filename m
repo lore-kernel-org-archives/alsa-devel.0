@@ -1,17 +1,12 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: .hw_free() while audio is running ??
-Date: Wed, 11 Aug 2004 18:28:10 +0200
+From: K.Fetscher@t-online.de (Klaus Fetscher)
+Subject: ALSA Driver for ARM-Linux 2.6
+Date: Wed, 11 Aug 2004 22:11:33 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040811182810.17591e8e.pochini@shiny.it>
-References: <20040808172946.43212219.pochini@shiny.it>
-	<Pine.LNX.4.58.0408082235380.1771@pnote.perex-int.cz>
-	<20040810111427.7815ec73.pochini@shiny.it>
-	<Pine.LNX.4.58.0408101124230.1779@pnote.perex-int.cz>
+Message-ID: <411A7D75.3080701@fetron.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0408101124230.1779@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,38 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 Aug 2004 11:25:05 +0200 (CEST)
-Jaroslav Kysela <perex@suse.cz> wrote:
+Hi,
 
-> > > > The call sequence in the logs is:
-> > > >
-> > > > pcm_trigger (start)	- of two synced ss's
-> > > > pcm_hw_free (playback ss)
-> > > > Crash, nothing more in the logs :(
-> > > >
-> > > > trigger(stop) wasn't called before hw_free.
-> > >
-> > > You have an SMP machine? The hw_free is protected with the
-> > > runtime->status->state checking, but the code is not protected with
-> > > spinlock, so I suspect trouble here.
-> >
-> > Yes, this is a dual processor, but I booted with maxcpus=1 and preempt is
-> > not enabled.
->
-> Could you try the attached patch, if it helps?
+we want to program an ALSA driver for a Codec which communicates over an 
+I2S interface with an ARM9 processor.
+I have read several messages regarding ALSA-Drivers, Linux 2.6 and ARM 
+and know I am a little bit confused.
 
-Nope, it freezes the box as soon as I try to play something. Anyway, the
-problem I reported is quite difficult to trigger because I wasn't able to
-make it happen again.
+Is it possible to use ALSA with ARM or need we some patches for the ARM 
+CPU ?
 
+I have read, that the sa11xx-uda1341 driver is not a good starting point 
+for implementing a driver. Which is a better solution ?
 
+Thanks,
 
---
-Giuliano.
+Klaus
 
 
 -------------------------------------------------------
