@@ -1,21 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Bug in emu10k1 multichannel support
-Date: Thu, 10 Feb 2005 22:55:18 -0500
-Message-ID: <1108094119.16799.2.camel@krustophenia.net>
-References: <1106091073.24484.60.camel@krustophenia.net>
-	 <s5hpt01tler.wl@alsa2.suse.de> <1106970885.3051.88.camel@krustophenia.net>
-	 <41FE5838.4060907@glocalnet.net>
-	 <1108073865.11177.6.camel@krustophenia.net>
-	 <420BEF63.60402@machinehasnoagenda.com>
-	 <1108083562.15438.4.camel@krustophenia.net>
-	 <420C0BE5.3060008@machinehasnoagenda.com>
-	 <1108085587.15438.6.camel@krustophenia.net>
-	 <420C18EC.3060706@machinehasnoagenda.com>
+From: Dmitry Torokhov <dtor_core@ameritech.net>
+Subject: [PATCH 0/10] Convert gameport to driver model/sysfs
+Date: Fri, 11 Feb 2005 01:58:47 -0500
+Message-ID: <200502110158.47872.dtor_core@ameritech.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <420C18EC.3060706@machinehasnoagenda.com>
+Received: from smtp817.mail.sc5.yahoo.com (smtp817.mail.sc5.yahoo.com [66.163.170.3])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 98BB41FF
+	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2005 08:05:33 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,37 +20,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Shayne O'Connor <forums@machinehasnoagenda.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: InputML <linux-input@atrey.karlin.mff.cuni.cz>
+Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Vojtech Pavlik <vojtech@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-02-11 at 13:31 +1100, Shayne O'Connor wrote:
-> ok, i did that, but when i try to compile alsa-driver i get the output
-> below ... but just to clear up - with patches before 009, i only had to
-> compile and install the alsa-driver module (i'm using PlanetCCRMA which
-> loads alsa as a kernel module), is that the case here as well?
-> 
-> if not, could you give me a run-through of how i would install the whole
-> pattched alsa package on top of what i've already got there? i realise
-> you're busy, but it would help a great deal in making sure i'm testing
-> these patches correctly :)
-> 
-> here is the ouput from trying to compile alsa-driver:
+Hi,
 
-The procedure is exactly the same.  With all versions of the patch you
-should apply using patch -p1 from the main ALSA directory (the one
-containing the alsa-driver, alsa-kernel, alsa-lib, alsa-tools, etc.
-directories).
+This series of patches adds a new "gameport" bus to the driver model.
+It is implemented very similarly to "serio" bus and also allows
+individual drivers to be manually bound/disconnected from a port
+by manipulating port's "drvctl" attribute.
 
-I don't know what those errors are.  They have nothing to do with my
-patch.  Either you are doing something wrong, or current ALSA CVS just
-does not compile.
+01-gameport-renames1.patch
+- rename gameport->driver to gameport->port_data in preparation
+  to sysfs integration to avoid confusion with real drivers.
 
-Please wait for ALSA 1.0.9 which should have the multichannel support
-included if you can't get it to work.
+02-gameport-renames2.patch
+- more renames in gameport in preparations to sysfs integration,
+  gameport_dev renamed to gameport_driver, gameport_[un]register_device
+  renamed to gameport_[un]register_driver
 
-Lee
+03-gameport-connect-mandatory.patch
+- make connect and disconnect mandatory as these call gameport_open
+  and gameport_close which actually bind driver and port together.
 
+04-gameport-dynalloc-prepare.patch
+- sysfs/kobjects requires objects be allocated synamically. Prepare
+  to dynamic gameport allocation, create gameport_allocate_port and
+  gameport_free_port; dynamically allocated ports are freed by core
+  upon release. Also add gameport_set_name and gameport_set_phys
+  to ease transition.
+
+05-gameport-dynalloc-input.patch
+- convert drivers in input/gameport to dynamic gameport allocation.
+
+06-gameport-dynalloc-sound-oss.patch
+- convert drivers in sound/oss to dynamic gameport allocation.
+
+07-gameport-dynalloc-sound-alsa.patch
+- convert drivers in sound/pci to dynamic gameport allocation.
+
+08-gameport-drivers-sysfs.patch
+- add "gameport" bus and have joystick gameport drivers register
+  themselves on this bus.
+
+09-gameport-devices-sysfs.patch
+- complete gameport sysfs integration. Gameports are registered on
+  the "gameport" bus.
+ 
+10-gameport-drvdata.patch
+- Get rid of gameport->private, use driver-specific data in device
+  structure, access through gameport_get/set_drvdata helpers.
+
+The changes can also be pulled from my tree (which has Vojtech's
+input tree as a parent):
+
+	bk pull bk://dtor.bkbits.net/input 
+
+I am CC-ing ALSA list as the changes touch quite a few sound drivers.
+
+Comments/testing is appreciated.
+
+-- 
+Dmitry
 
 
 -------------------------------------------------------
