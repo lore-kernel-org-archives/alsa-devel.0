@@ -1,9 +1,12 @@
 From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: fatal oops in current CVS confirmed
-Date: Fri, 7 Mar 2003 08:53:49 -0500
+Subject: Re: HDSP + multiface "freezing" patch
+Date: Fri, 07 Mar 2003 09:08:13 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200303071353.h27DrnJ01476@linuxaudiosystems.com>
+Message-ID: <E18rIT5-0001YA-00@sc8-sf-list1.sourceforge.net>
+References: <1047045670.1414.19.camel@lotte>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "07 Mar 2003 14:01:04 GMT."
+             <1047045670.1414.19.camel@lotte>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,49 +15,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Justin Cormack <justin@street-vision.com>
+Cc: Thomas Charbonnel <thomas@undata.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-yesterday, i backed up to gcc 2.95.3, rebuilt kernel 2.4.20 and
-current ALSA CVS. i continued to get the same oops/lockups i have seen when:
+>> We were searching a vicious bug, but it was a trivial one...
+>> Applies on top of Paul's patch version II.
+>> 
+>> Thomas
+>>
+>
+>ok, I am trying to test Paul's patch on the HDSP9652, but I cant get it
+>to play anything. I applied it to 0.9.0rc8b, but aplay just returns
 
-	* using the trident module with arecord
-	* loading the wavefront module and/or
-
-i infrequently get an oops, and when i do, it points at either:
-
-   in the trident case
-	* smp-related code 
-   in the wavefront case
-	* code within the module
-
-i can't identify code within the module because its not possible to
-finish loading the module and thus get the symbol addresses. i believe
-it to be in the module because when i prevent the wavefront module
-from loading (normally the first module to load), the addresses
-correspond to things in the trident module (which becomes my first
-loaded module instead).
-	
-so, i reverted to my "old" ALSA CVS tree, which is quite old at this
-point. i recompiled it all (gcc 2.95.3), and of course, it works
-fine. for me, this conclusively points to a problem in ALSA CVS that
-is not related to kernel version or compiler version, but is just a
-plain and simple bug. the problem is, what is it? the diffs between my
-old tree and the current CVS tree are vast, and the few oops traces i
-have are unrevealing in that they do not have any ALSA related calls
-in them. the only way i can see for us to track this down (unless
-jaroslav or takashi have a sudden inspiration) is for me to do a
-binary search on CVS using a date specification until i find the first
-date that causes the oops.
-
-any other ideas?
-
-i would strongly advise against releasing 0.9.0 final when its so
-trivial to crash a system with it. and incidentally, its precisely
-this kind of waste of 3 days that explains why i haven't updated from
-ALSA CVS in a long time :)
-
---p
+which PCM device are you using?
 
 
 
