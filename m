@@ -1,17 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: "Andreas Kuckartz" <A.Kuckartz@ping.de>
 Subject: Re: mantis - our bugtracking system
-Date: Wed, 28 Jan 2004 11:10:06 +0100 (CET)
+Date: 28 Jan 2004 16:43:24 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401281108130.2015@pnote.perex-int.cz>
-References: <Pine.LNX.4.58.0401271443180.3133@pnote.perex-int.cz>
- <007d01c3e586$a383d450$a501a8c0@computer2>
+Message-ID: <017d01c3e5b5$7838b750$a501a8c0@computer2>
+References: <Pine.LNX.4.58.0401271443180.3133@pnote.perex-int.cz> <007d01c3e586$a383d450$a501a8c0@computer2> <Pine.LNX.4.58.0401281108130.2015@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA07289
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2004 11:09:12 +0100
-In-Reply-To: <007d01c3e586$a383d450$a501a8c0@computer2>
+Received: from lilly.ping.de (IDENT:qmailr@lilly.ping.de [62.72.90.2])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id QAA17572
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2004 16:41:03 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,28 +20,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andreas Kuckartz <A.Kuckartz@ping.de>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 28 Jan 2004, Andreas Kuckartz wrote:
+Jaroslav Kysela wrote:
 
-> Immediately after receiving your mail I have registered two times for mantis
-> accounts using two different account names (andreas and andreas2). I have
-> not yet received the mails with the passwords.
-> 
-> It would be good if everybody could look at the bugs without first
-> registering or logging in.
+> The problem is that your SMTP server does not accept e-mails from my
+> machine because it thinks that it's dial-up.
 
-The problem is that your SMTP server does not accept e-mails from my 
-machine because it thinks that it's dial-up.
+I know that kind of problem from other SMTP servers which do not like to
+accept *my* mails. Sending the mail again once or twice from the same
+IP-address usually works in such situations. And as I wrote before: the
+passwort mail from mantis finally arrived here.
 
-						Jaroslav
+Cheers,
+Andreas
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
