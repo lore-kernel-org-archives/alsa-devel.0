@@ -1,14 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: snd_pcm_delay() bug
-Date: Sun, 16 May 2004 03:06:35 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: preallocate_pages_for_all
+Date: Sun, 16 May 2004 15:55:29 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40A6CCAB.1010907@superbug.demon.co.uk>
-References: <1084648674.15902.0.camel@shrek.bitfreak.net>
+Message-ID: <Pine.LNX.4.58.0405161553300.1776@pnote.perex-int.cz>
+References: <20040515233759.0ea62c06.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1084648674.15902.0.camel@shrek.bitfreak.net>
+In-Reply-To: <20040515233759.0ea62c06.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,29 +16,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Ronald S. Bultje" <R.S.Bultje@students.uu.nl>
-Cc: alsa-devel@lists.sf.net
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Ronald S. Bultje wrote:
-> Hi,
-> 
-> for both my ALI 5451 and my Audigy 2 NX, snd_pcm_delay() sometimes
-> returns (in the second argument pointer) ridiculously high values in the
-> range of 2^32/bytes_per_sample (in my case, 16bitLE/stereo, that comes
-> down to roughly 1,1E9). I'm guessing there's some kind of
-> signed/unsigned or 32/64bit integer bug in this function? Is this a
-> known bug? Is there a fix?
-> 
-> Ronald
-> 
+On Sat, 15 May 2004, Giuliano Pochini wrote:
 
-after calling snd_pcm_delay(), call snd_pcm_state() and make sure it is 
-in RUNNING state, otherwise, values returned from snd_pcm_delay() are 
-meaningless.
+> snd_pcm_lib_preallocate_pages_for_all() preallocates the buffers for the
+> first 4 substreams by default. Can I change that number from the driver ? I
+> would like to preallocate a buffer only for the first subdev, or maybe for
+> the first, the 3rd, the 5th...
 
-Cheers
-James
+Then use snd_pcm_lib_preallocate_pages() function directly in your own 
+loop.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
