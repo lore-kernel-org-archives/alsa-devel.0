@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000837]: Mute LED for the HP/Compaq nc8000
-Date: Tue, 1 Feb 2005 10:16:07 +0100
-Message-ID: <15da998071ea2bd220b9e82a470bed96@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000843]: alsactl does not report error status when it can't restore levels for all cards
+Date: Tue, 1 Feb 2005 10:32:11 +0100
+Message-ID: <bfcbaf24d8e64d335070bf2a9bfa2d92@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1464D1EC
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 10:16:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F10FE24E
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 10:32:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,63 +23,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=837> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=843> 
 ======================================================================
-Reported By:                linus
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   837
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Issue ID:                   843
+Category:                   alsactl
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             01-19-2005 20:15 CET
-Last Modified:              02-01-2005 10:16 CET
+Date Submitted:             01-23-2005 11:23 CET
+Last Modified:              02-01-2005 10:32 CET
 ======================================================================
-Summary:                    Mute LED for the HP/Compaq nc8000
+Summary:                    alsactl does not report error status when it can't
+restore levels for all cards
 Description: 
-I noticed that the quirk introduced for HP/Compaq nc6000 among
-others isn't applied for HP/Compaq nc8000 (most probably because
-you don't have the PCI ID. By the way both the model nc6000
-and nc8000 should be with small letters (not that it matters to
-anyone else than the logo designer)
+# modprobe snd-dummy
+# alsactl restore Dummy
+No state is present for card Dummy
+# echo $?
+0
 
-So I've had a user obtain the PCI ID. The subsystem is: 103c:088c
+It would be helpful if alsactl returned a nonzero status in the event
+that it is unable to restore settings for the specified card (or, in
+case it's just "alsactl restore", for one of the cards).
 
-Long lspci -v and -v -n here:
+It would be especially helpful if this status were other than 1 so
+that "No state is present" could be distinguished from "No such
+device".
 
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM
-(ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 03)
-	Subsystem: Hewlett-Packard Company: Unknown device 088c
-
-0000:00:1f.5 0401: 8086:24c5 (rev 03)
-	Subsystem: 103c:088c
-	Flags: bus master, medium devsel, latency 0, IRQ 11
-	I/O ports at 3000 [size=256]
-	I/O ports at 3880 [size=64]
-	Memory at a0100000 (32-bit, non-prefetchable) [size=512]
-	Memory at a0180000 (32-bit, non-prefetchable) [size=256]
-	Capabilities: <available only to root>
+# alsactl restore 2
+alsactl: set_controls:1119: snd_ctl_open error: No such device
+# echo $?
+1
 ======================================================================
 
 ----------------------------------------------------------------------
- linus - 02-01-05 10:16 
+ jdthood - 02-01-05 10:32 
 ----------------------------------------------------------------------
-I saw this has been fixed in the CVS! Thanks.
+On second thought, it would be even nicer if both "no state" and "no
+device" could be distinguished from other kinds of errors (e.g., illegal
+option).  You could use values 2, 3, ... or you could try to conform to
+the "errno" encodings (/usr/include/asm-generic/errno-base.h on my Debian
+sarge system) so that, e.g., "no device" returned status 19 (ENODEV). 
+(Just a thought.)
+
+What is most important, though, is that we have a distinctive nonzero exit
+status for the case where alsactl fails to restore all mixer levels.  Our
+scripts need to know about this case so that they can know when to fall
+back to using amixer.
+
+-- 
+Thomas
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-19-05 20:15 linus          New Issue                                    
-01-19-05 20:15 linus          Distribution              => Fedora Core 3   
-01-19-05 20:15 linus          Kernel Version            => 2.6.10          
-01-19-05 21:06 orange         Issue Monitored: orange                      
-02-01-05 10:16 linus          Note Added: 0003460                          
+01-23-05 11:23 jdthood        New Issue                                    
+02-01-05 10:32 jdthood        Note Added: 0003461                          
 ======================================================================
 
 
