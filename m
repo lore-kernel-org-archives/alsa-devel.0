@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000899]: Cannot aplay to Sound Galaxy card with alsa-lib 1.0.8: looks for "/usr/share/alsa/cards/Sound Galaxy.conf"
-Date: Wed, 9 Feb 2005 17:56:58 +0100
-Message-ID: <6a41c09acee27265edc0d6bb3e7840c0@bugtrack.alsa-project.org>
+Date: Wed, 9 Feb 2005 17:59:25 +0100
+Message-ID: <be19e8b55f8569e2ed422729db62f629@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F7D926D
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 17:56:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD68B1E5
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 17:59:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,12 +21,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=899> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - lib
 Issue ID:                   899
@@ -34,10 +34,12 @@ Category:                   general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             02-09-2005 17:14 CET
-Last Modified:              02-09-2005 17:56 CET
+Last Modified:              02-09-2005 17:59 CET
 ======================================================================
 Summary:                    Cannot aplay to Sound Galaxy card with alsa-lib
 1.0.8: looks for "/usr/share/alsa/cards/Sound Galaxy.conf"
@@ -71,11 +73,22 @@ message when he uses alsa-lib 1.0.7.
 ----------------------------------------------------------------------
 The attached patch fixes the problem.
 
+----------------------------------------------------------------------
+ tiwai - 02-09-05 17:59 
+----------------------------------------------------------------------
+Fixed on CVS.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-09-05 17:14 jdthood        New Issue                                    
 02-09-05 17:56 tiwai          Note Added: 0003560                          
+02-09-05 17:57 tiwai          File Added: conf-space-fix.diff                   
+
+02-09-05 17:59 tiwai          Status                   new => resolved     
+02-09-05 17:59 tiwai          Resolution               open => fixed       
+02-09-05 17:59 tiwai          Assigned To               => tiwai           
+02-09-05 17:59 tiwai          Note Added: 0003561                          
 ======================================================================
 
 
