@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: midi application subcription lose data.
-Date: Thu, 10 Apr 2003 12:40:03 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: questions about usbmidi
+Date: Thu, 10 Apr 2003 12:47:23 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0304101238340.1192-100000@pnote.perex-int.cz>
-References: <3E954790.7FD6E730@ufh.se>
+Message-ID: <Pine.HPX.4.33n.0304101132150.14279-100000@studcom.urz.uni-halle.de>
+References: <3E951D6D.2040304@drehmoment.org>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E954790.7FD6E730@ufh.se>
+In-reply-to: <3E951D6D.2040304@drehmoment.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,33 +17,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Enderborg <pme@ufh.se>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Thomas Rabe <raven@drehmoment.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 10 Apr 2003, Peter Enderborg wrote:
+Thomas Rabe wrote:
+> Clemens Ladisch wrote:
+> > Thomas Rabe wrote:
+> >>i don't really know if autodetection will work (for the lsusb see
+> >>below).
+> >
+> > All endpoints are in one interface, so it wouldn't work.
+>
+> will i have more luck with snd_usbmidi_create_rawmidi?
 
-> I have two midi applications sending midi to each other with alsa. But
-> every now and then it stop working,
-> but can be up and running with re install the midi binding with
-> aconnect. The connection is still there
-> so it first need to be removed. But after than everything works fine for
-> a day or so. This is on 0.9.2 in 2.4.20 kernel.
-> (The current snapshot dont compile so I can not see if it in cvsexport
-> also) This bug have been there for a long time
-> now. Any ideas ?
+It's only the autodetection that wouldn't work. Using
+snd_usb_create_midi_interface with endpoint 0x06 should work just fine.
 
-Strange. What's the connection status when the communication stops?
-Could you reproduce the bug with some small programs which generates 
-random events (and sends them in random chunks between)? It will help us 
-alot. Thanks.
+> > Well, this may indicate that the MIDI part works and that the error is in
+> > some other part of the driver. Does the oops still happen when you don't
+> > call snd_usb_create_midi_interface?
+>
+> the driver works fine without calling snd_usb_create_midi_interface (no
+> errors, all audiochannels are available).
 
-						Jaroslav
+The initialization code does nothing USB-related except allocing some URBs
+and submitting the input URBs. Please try to remove the call to
+snd_usbmidi_submit_urb at the end of _create_midi_interface.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+
+HTH
+Clemens
+
 
 
 
