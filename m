@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000379]: necessary file backed out in update 3 months ago
-Date: Tue,  7 Sep 2004 16:35:33 +0200 (CEST)
+Subject: [ALSA - driver 0000266]: I receive pages of unresolved symbols when I attempt to load the intel8x0 module.
+Date: Tue,  7 Sep 2004 16:36:40 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907143533.24EF8E01F@server.perex-int.cz>
+Message-ID: <20040907143640.CB737E01F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F70328E
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:35:33 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 16C6428E
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:36:41 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,60 +22,109 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000379
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000266
 ======================================================================
-Reported By:                ndbusek
+Reported By:                malkuth
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     379
+Bug ID:                     266
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2115.nptl
 Resolution:                 fixed
 ======================================================================
-Date Submitted:             07-13-2004 03:38 CEST
-Last Modified:              09-07-2004 16:35 CEST
+Date Submitted:             05-10-2004 05:36 CEST
+Last Modified:              09-07-2004 16:36 CEST
 ======================================================================
-Summary:                    necessary file backed out in update 3 months ago
+Summary:                    I receive pages of unresolved symbols when I attempt to load the intel8x0 module.
 Description: 
-compiling vxp440.c fails with 
-vxpocket.c: File not found
+I had version 0.9.8 and had the problem, so I downloaded and built the
+1.0.4 version. The following is the output from the load of the module.
+Starting sound driver: snd-card-intel8x0 Warning: ignoring snd_major=116,
+no such parameter in this module
+Warning: ignoring snd_cards_limit=1, no such parameter in this module
+Warning: ignoring snd_device_mode=0666, no such parameter in this module
+Warning: ignoring snd_device_gid=0, no such parameter in this module
+Warning: ignoring snd_device_uid=0, no such parameter in this module
+Module snd loaded, with warnings
+Module gameport loaded, with warnings
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_suspend_all_R43c50b57
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_ac97_mixer_Rf5b599af
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_ac97_set_rate_R1be27d60
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_new_Rd565b6d2
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_card_new_Rc2b77688
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_lib_free_pages_Re8dafa0a
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_verbose_printk_R49d4e4d1
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_hw_constraint_integer_R5eb3e8f8
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_ac97_tune_hardware_R94360210
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_ac97_resume_Re12d8194
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_period_elapsed_Re6e6b098
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_lib_preallocate_pci_pages_for_all_Rd644d0aa
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_lib_ioctl_R8482811c
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_card_register_R492d494a
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_free_pci_pages_Ra2184231
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_device_new_R371c74fc
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_set_ops_Rad3c274a
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_malloc_pci_pages_R516d0d40
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_hw_constraint_list_R74cb7c63
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_card_proc_new_Ra82b74c6
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_pcm_lib_malloc_pages_R0407e1db
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_mpu401_uart_new_Ra520c930
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_ac97_update_bits_R2f6d9192
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+unresolved symbol snd_card_free_Rf8b77bec
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+insmod
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o
+failed
+/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
+insmod snd-card-intel8x0 failed
+
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 09-07-2004 16:35 CEST 
+ perex - 09-07-2004 16:36 CEST 
 ----------------------------------------------------------------------
-This patch will solve your problem.
-
-Index: Makefile
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/pcmcia/vx/Makefile,v
-retrieving revision 1.10
-retrieving revision 1.11
-diff -u -r1.10 -r1.11
---- Makefile    7 Apr 2004 17:53:41 -0000       1.10
-+++ Makefile    7 Sep 2004 14:33:48 -0000       1.11
-@@ -14,4 +14,5 @@
- include $(SND_TOPDIR)/Rules.make
- 
- vxpocket.c: vxpocket.patch
-$(SND_TOPDIR)/alsa-kernel/pcmcia/vx/vxpocket.c
-+vxp440.c: vxpocket.c
- vx_entry.c: vx_entry.patch vx_entry.inc vx_entry.inc1
-$(SND_TOPDIR)/alsa-kernel/pcmcia/vx/vx_entry.c
+Too old, please, try latest ALSA version.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-13-04 03:38 ndbusek        New Bug                                      
-09-07-04 16:35 perex          Bugnote Added: 0001709                       
-09-07-04 16:35 perex          Resolution               open => fixed       
-09-07-04 16:35 perex          Status                   assigned => resolved
+05-10-04 05:36 malkuth        New Bug                                      
+05-10-04 05:36 malkuth        Distribution              => Fedora Core 1   
+05-10-04 05:36 malkuth        Kernel Version            => 2.4.22-1.2115.nptl
+05-10-04 05:38 malkuth        Bug Monitored: malkuth                       
+09-07-04 16:36 perex          Bugnote Added: 0001710                       
+09-07-04 16:36 perex          Resolution               open => fixed       
+09-07-04 16:36 perex          Status                   assigned => resolved
 ======================================================================
 
 
