@@ -1,13 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Real-time per-note attenuation on single MIDI
- channel in emu10k1
-Date: Wed, 8 Dec 2004 19:13:10 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0412081909590.21064-100000@studcom.urz.uni-halle.de>
-References: <200412081127.LAA01444@orthoset.com>
+From: "Raj Romano" <Taksin.Teodoro@telcordia.com>
+Subject: Please Complete and Return
+Date: Wed, 08 Dec 2004 14:37:51 -0400
+Message-ID: <20041208184631.361813E15B@mail.perex.cz>
+Reply-To: "Raj Romano" <Taksin.Teodoro@telcordia.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative;
+	boundary="--299188_8946950.EIb774"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200412081127.LAA01444@orthoset.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,21 +16,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: William <walsac3@orthoset.com>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: lsa-devel@alsa-project.org, alsa-conf@alsa-project.org, alsa-devel@alsa-project.org, ramo@alsa-project.org, alsa-user@alsa-project.orguser@alsa-project.orgvel@alsa-project.org, alsa-doc@alsa-project.org, abramo@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-William wrote:
-> Does the emu10k1 driver have any way of doing real-time attenuation
-> for notes that are already playing at particular pitches on one MIDI channel?
+----299188_8946950.EIb774
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7Bit
 
-The MIDI Aftertouch command should do what you want.  See the
-snd_emux_key_press function.
+Dear Applicant,
 
+Your application was processed and approved. You are eligible for $ 400,000 with a 2.1 % rate.
 
-HTH
-Clemens
+Please verify your information here: http://www.get-lower-rate.com/x/loan2.php?id=jrwriter
 
+We look forward to hearing from you.
+
+Raj Romano, Account Manager
+iNet Marketing
+3432 Park Avenue
+New Haven, CT 06501
+
+not interested -> http://www.get-lower-rate.com/x/st.html
+
+----299188_8946950.EIb774--
 
 
 -------------------------------------------------------
