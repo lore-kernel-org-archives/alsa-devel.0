@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
-Date: Sun, 21 Nov 2004 02:55:32 +0100
-Message-ID: <fa2a98fda7bddcde51a6def34ab1f611@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
+Date: Sun, 21 Nov 2004 03:05:32 +0100
+Message-ID: <da17f570d07e11bbb3fcb1409ba5e99c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2E24F262
-	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 02:55:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C5F72236
+	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 03:05:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,154 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=660> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
 ======================================================================
-Reported By:                bji
+Reported By:                bons78
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   660
-Category:                   PCI - intel8x0
+Issue ID:                   167
+Category:                   SPARC - cs4231
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9
+Distribution:               debian/unstable
+Kernel Version:             linux-2.6.4+
 ======================================================================
-Date Submitted:             11-21-2004 02:53 CET
-Last Modified:              11-21-2004 02:55 CET
+Date Submitted:             03-30-2004 00:02 CEST
+Last Modified:              11-21-2004 03:05 CET
 ======================================================================
-Summary:                    No sound output  despite unmuting and maximizing all
-volume settings
+Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
-I get no sound output from any program I have tried (xmms, play, aplay, cat
-> /dev/audio) with no error messages or any other indication that there is
-a problem which would cause sound to not occur.
+alsamixer crashes system hard when snd-ioctl32 is loaded.
+System still responds to some sysrq commands (sync remount boot show) -
+sysrq (term killall) has no effect.
+There's no chance to do any other keyboard input. No logs, no traps, no
+oops. Machine still responds to ping,(even port 22 stays open) but login
+via ssh is not possible. 
 
-I have already run alsamixer many times and tried every combination of
-muted and unmuted settings with all volumes maximized.  With no volume
-settings muted, and all volume settings at maximum level, I still get no
-sound.
+alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
+does not crash the system then.
+So I suspect a problem in the ioctl32 wrapper.
 
-Everything *looks* like it's working - output in the kernel log, xmms's
-display, everything.  But I get no sound out of the built-in speaker or
-the headphone jack.
 
-I have tried the following:
-
-* Default install of Fedora Core 3; it recognized the sound card and
-installed module settings in /etc/modprobe.conf to load snd-intel8x0.  But
-I never got any sound out of this default install no matter what I tried.
-
-* Custom compiled the 2.6.9 kernel with no patches except the software
-suspend 2 patch.  This built the version of the ALSA drivers that come
-with 2.6.9.  Still no sound.
-
-* Downloaded and compiled version 1.0.7 of the ALSA drivers and installed
-them.  Still no sound.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- bji - 11-21-04 02:55 
+ sjoerd - 11-20-04 16:36 
 ----------------------------------------------------------------------
-Oh, I should mention that previously I had been using Debian unstable and
-the sound worked perfectly.  I believe that the kernel version was 2.6.8
-or 2.6.9 (unfortunately I have blown away that installation and can't get
-any information from it).
+With this patch i can get sound out of my U5 :).. Although the quality
+isn't very good, some kind of background noise in alsaplayer. A friend of
+mine told me that he also had that when using alsa's oss emulation, so
+that's probably the driver not the emulation layer..
+
+I've not put #ifdef sparc everywhere like eradicator does.. Using user
+pointers directly from get_fs() == KERNEL_DS is wrong everywhere. It just
+happens to work on some architectures
+
+Also the function  _snd_ioctl32_ctl_elem_value now always returns -EINVAL
+when indirect data is used. I couldn't find out how that works..
+
+----------------------------------------------------------------------
+ eradicator - 11-21-04 03:05 
+----------------------------------------------------------------------
+Just a few comments sjoerd's patch...
+
+The first hunk will result in a kfree(NULL):
+
++  if (image == NULL) {
++    err = -ENOMEM;
++    goto __dsp_image_out;
+...
++
++__dsp_image_out:
++  kfree(image);
+
+---
+
+For the added #includes:
+@@ -24,11 +24,13 @@
+ #include <linux/init.h>
+ #include <linux/time.h>
+ #include <linux/slab.h>
++#include <linux/syscalls.h>
+ #include <linux/fs.h>
+ #include <sound/core.h>
+ #include <sound/control.h>
+ #include <asm/uaccess.h>
+ #include "ioctl32.h"
++#include <sound/control.h>
+
+sound/control.h is included a few lines up, so no need to duplicate... and
+the syscalls.h I am assuming is for this change here:
+
+-       err = file->f_op->ioctl(file->f_dentry->d_inode, file, native_ctl,
+(unsi
+gned long)&data);
++  err = sys_ioctl(fd, native_ctl, (unsigned long) &data);
+
+why was that made?
+
+---
+This change:
+
+-       if (data->indirect) /* FIXME: this is not correct for long arrays
+*/
+-               data->value.integer.value_ptr =
+compat_ptr(data32->value.integer
+.value_ptr);
++       if (data->indirect) { /* FIXME: this is not correct for long
+arrays */
++    /* FIXME Broken because in get_fs() == KERNEL_DS all __user pointers
+should
++     * be in kernel space */
++    err = -EINVAL;
++    goto __end;
++  }
+...
++  kfree(indirect);
+
+will cause -EINVAL to be returned when a workaround is possible... it also
+kfree()s something that was never allocated...
+
+---
+
+Also, I argue that it is best to leave in the #if defined(__sparc__) ...
+#else ... #endif because the code works on other architectures (even
+though it is of bad form) in a more optimized way... perhaps a better
+option would be #if defiled(__x86_64__) || defined (__ppc64__) ... (I
+think those are the right symbols for those archs)... does anyone know if
+it works on mips?
+
+I'll get a "next itteration" of my patch which incorporates the changes to
+pcm32.c and the test for data.count > 0 which I missed (hopefully when I
+get home in about 4 hours)... but please comment on my comments above so I
+know what direction I should take on those issues.
+
+Thanks,
+Jeremy
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-04 02:53 bji            New Issue                                    
-11-21-04 02:53 bji            Distribution              => Fedora Core 3   
-11-21-04 02:53 bji            Kernel Version            => 2.6.9           
-11-21-04 02:55 bji            Note Added: 0002481                          
+03-30-04 00:02 bons78         New Issue                                    
+03-30-04 00:02 bons78         Distribution              => debian/unstable 
+03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
+04-13-04 19:41 tiwai          Note Added: 0000795                          
+07-04-04 22:32 weeve          Note Added: 0001381                          
+07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
+11-19-04 05:45 weeve          Note Added: 0002474                          
+11-19-04 05:46 weeve          Issue Monitored: weeve                       
+11-19-04 05:55 rlrevell       Note Added: 0002475                          
+11-20-04 10:23 eradicator     Note Added: 0002478                          
+11-20-04 11:14 eradicator     Note Added: 0002479                          
+11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
+ 
+11-20-04 16:36 sjoerd         Note Added: 0002480                          
+11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
+11-21-04 03:05 eradicator     Note Added: 0002482                          
 ======================================================================
 
 
