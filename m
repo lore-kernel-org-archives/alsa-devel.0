@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000987]: new chipset
-Date: Sat, 12 Mar 2005 22:55:42 +0100
-Message-ID: <25ca42f3d8871907853390f649cec33d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
+Date: Sat, 12 Mar 2005 23:11:03 +0100
+Message-ID: <074d471706ea7b8599fce7728edfdda2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C63931C3
-	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 22:55:42 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 919571C3
+	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 23:11:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,55 +23,115 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=987> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
 ======================================================================
-Reported By:                mitchix
-Assigned To:                jcdutton
+Reported By:                1g0R
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   987
-Category:                   PCI - ca0106
+Issue ID:                   848
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               debian useing pure64 sid
-Kernel Version:             2.6.10-9-amd64-k8
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.8-ac8
 ======================================================================
-Date Submitted:             03-12-2005 22:49 CET
-Last Modified:              03-12-2005 22:55 CET
+Date Submitted:             01-25-2005 15:28 CET
+Last Modified:              03-12-2005 23:11 CET
 ======================================================================
-Summary:                    new chipset
+Summary:                    Intel HDA (C-Media 9880) SPDIF Out
 Description: 
-Vendor 1462: Micro-Star International Co., Ltd.
-Card model K8N Neo4 Platinum/SLI
-
-On Board Audio
- 	
-Creative sound Bluster Live 24-bit H/W audio
-24-bit / 96KHz audio quality
-100db SNR clarity
-Up to 7.1 CH Surround Sound, Dolby Digital ready
-
-modprobe snd_ca0106
-Model 1009 Rev 00000000 Serial 10091462
-
+When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
+output signal on SPDIF (Coax).
+I try:
+aplay -D hw:0,1 (<--digital out) else.wav
+the command run normally, but no output on spdif out.the same with xmms
+(with ALSA, on hw:0,1).
 
 ======================================================================
 
 ----------------------------------------------------------------------
- mitchix - 03-12-05 22:55 
+ 1g0R - 02-22-05 19:05 
 ----------------------------------------------------------------------
-Sorry this is Dup of 901
+Hi,
+
+I tried out, but no success.
+I need to use Coaxial out, because i havent got optical cables.
+Is the latest cvs working with coaxial spdif out?
+I look the #codec, and i found this:
+Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x01452070: SPDIF Out at Ext Rear
+    Conn = Optical, Color = Grey
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x07
+Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
+  Pincap 0x0830: IN OUT
+  Pin Default 0x01c50000: SPDIF In at Ext Rear
+    Conn = Optical, Color = Unknown
+  Pin-ctls: 0x00:
+Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
+
+
+is this ok?
+then i try aplay:
+Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x01452070: SPDIF Out at Ext Rear
+    Conn = Optical, Color = Grey
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x07
+Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
+  Pincap 0x0830: IN OUT
+  Pin Default 0x01c50000: SPDIF In at Ext Rear
+    Conn = Optical, Color = Unknown
+  Pin-ctls: 0x00:
+Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
+
+but i cant hear any sound from receiver.
+
+Thanks the help.
+Best regards
+1g0R (G)
+
+----------------------------------------------------------------------
+ 1g0R - 03-12-05 23:11 
+----------------------------------------------------------------------
+Hi Tiwai,
+
+I tried the CVS version of alsa-driver,lib,utils, but no success.
+I set the iecset, and alsamixer, but no sound from digital out.
+Any solution?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 22:49 mitchix        New Issue                                    
-03-12-05 22:49 mitchix        Distribution              => debian useing pure64
-sid
-03-12-05 22:49 mitchix        Kernel Version            => 2.6.10-9-amd64-k8
-03-12-05 22:55 mitchix        Note Added: 0003899                          
+01-25-05 15:28 1g0R           New Issue                                    
+01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
+01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
+01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
+01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
+01-28-05 02:56 nc             Issue Monitored: nc                          
+01-28-05 03:07 nc             Note Added: 0003423                          
+01-28-05 19:01 1g0R           Note Added: 0003434                          
+02-04-05 15:02 tiwai          Note Added: 0003507                          
+02-04-05 19:36 1g0R           Note Added: 0003514                          
+02-04-05 19:41 tiwai          Note Added: 0003515                          
+02-05-05 06:06 mab            Issue Monitored: mab                         
+02-05-05 08:46 1g0R           Note Added: 0003518                          
+02-14-05 22:27 1g0R           Note Added: 0003612                          
+02-14-05 22:28 1g0R           Note Added: 0003613                          
+02-18-05 18:55 tiwai          Note Added: 0003658                          
+02-19-05 19:51 1g0R           Note Added: 0003670                          
+02-21-05 19:57 1g0R           Note Added: 0003683                          
+02-22-05 14:29 tiwai          Note Added: 0003699                          
+02-22-05 19:05 1g0R           Note Added: 0003709                          
+03-12-05 23:11 1g0R           Note Added: 0003900                          
 ======================================================================
 
 
