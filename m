@@ -1,10 +1,11 @@
-From: =?Windows-1251?B?3eLl6+jt4CDB8O7t6PHr4OLu4u3g?= <luigi@panhandle.rr.com>
-Subject: Re:
-Date: Sun, 12 Dec 2004 14:27:49 +0000
-Message-ID: <E1CdVh5-0006m6-KD@externalmx-1.sourceforge.net>
+From: "Millard Jarvis" <czlesaxvjf@yahoo.com>
+Subject: Message subject
+Date: Sun, 12 Dec 2004 10:48:18 -0600
+Message-ID: <ZNEJDEHIHLHWLKZFJEZJ@yahoo.com>
+Reply-To: "Millard Jarvis" <czlesaxvjf@yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+	boundary="--296932395718347311"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,18 +16,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: 39a4be3f.c4f69ea9@alsa-project.org, 3aed7b1c.37ba44b0@alsa-project.org, abramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-devel@alsa-project.org, alsa-user@alsa-project.org, andy@alsa-project.org, postmaster@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Внимание акция!
-Закажите до 20 дekaбря Е-маil paccылкy и получи бoнyc(paccылкy no iсq)....
+----296932395718347311
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
+
+The New 2005 United States Healthcare Database.
+
+This complete database includes all hospitals, nursing homes, 
+and physicians in the country.
+
+In a rapidly-changing industry, current healthcare information is an 
+invaluable resource to businesses and organizations.  The United States 
+Healthcare Database includes comprehensive information on more than 
+7,000 hospitals, 25,000 nursing homes and 400,000 doctors.  It is the 
+most extensive and reliable mailing list and database of key decision 
+makers in the health care market.
  
-ambling@3432.cjb.net 
+Each record is indexed by such features as name, address, phone and 
+fax. The database is available in Excel format on CD Rom.  It is 
+designed for mailing lists and merges.  The data can be selected by 
+state or other criteria such as type of practice. It can be used on 
+an unlimited basis.
+
+For the past 14 years, MedCom has maintained the most comprehensive 
+healthcare lists.  Our directories are 100% telephone verified and 
+updated every quarter. MedCom continues to hold the nation's most 
+extensive and reliable databases of key decision-makers in the health 
+care market.
+ 
+Available exclusively on CD-Rom (Excel), the data can be used on an 
+unlimited basis. It is easily exportable to other programs for 
+mailing or faxing purposes.
+
+For a limited time, this extensive database is offered at an introductory =
 
 
+Price of $195 (reg. $745).
+
+To order, please print this e-mail, complete the information below and 
+fax it to 416-765-0029 (tel: 416-765-0028).
+
+NAME:
+    
+TITLE:
+
+ORGANIZATION:
+
+ADDRESS:
+
+CITY:
+
+STATE:
+
+POSTAL:
+
+TEL:
+
+FAX:
+
+EMAIL:
+ 
+
+MedCom
+4410 Massachusettes Ave. NW, #201
+Washington, DC 20016
 
 
-
+----296932395718347311--
 
 
 
