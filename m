@@ -1,13 +1,15 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: The LAD History
-Date: Fri, 16 Jan 2004 17:21:29 +0900
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: snd_seq_port_info_get_client &
+ snd_seq_client_info_get_name
+Date: Fri, 16 Jan 2004 09:48:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40079F09.3000403@boosthardware.com>
-References: <200401140404.49938.holborn@telefonica.net>
+Message-ID: <Pine.HPX.4.33n.0401151953080.14174-100000@studcom.urz.uni-halle.de>
+References: <200401151639.30565.holborn@telefonica.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <200401151639.30565.holborn@telefonica.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,46 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: holborn@telefonica.net
+To: holborn <holborn@telefonica.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 holborn wrote:
-> Sorry i'm new :-) from 2003 .... today is my first visit to linuxaudio.org 
-> home page, i never know about their existence. Then .... can someone explain 
-> here in a few words a little history about when/how LAD and linuxaudio was 
-> born and their dependencies?
-> 
-> 
-> Sorry this kind of discussion is to mutch for my poor English, i need hours to 
-> read it, but i try ...  :-)
-> 
+> 'snd_seq_port_info_get_client' returns always the same value?
 
-There is much information available on the linux audio developers website.
+Clients 0..63 are ALSA system clients, with fixed numbers (0=system
+broadcast/timer, 62=dummy, 63=OSS emulation).
 
-www.linuxdj.org
+Clients 64..127 are devices on sound cards.  There are 8 numbers per
+card: 64..71 = card 0, 72..79 = card 1, etc.
 
-the info for linuxaudio.org can be found on the lad archives and the 
-linuxadudio.org website.
+Clients 128..191 are applications.  An application gets the next free
+number.
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
+> for hardware or software devices even if are not started in the
+> same order? or if the number of devices is different?
+
+Hardware devices retain their number as long as the card number stays
+the same.
+
+Software devices can have a more or less random number; you have to
+identify them by name, or let the user select it.
+
+> I don't checkit ... but if it's not the same number, maybe could
+> be a good thing add some extra info in
+> 'snd_seq_client_info_get_name', card number?
+
+The name of rawmidi sequencer ports already contains the card number.
+
+> because if you have two same cards, client_info is the same for
+> both,
+
+PCI cards are initialized in some fixed order.
+
+> and port can be different each time you restart, if Plug&Play USB
+> cards works (I don't know ... ),
+
+Two _identical_ USB devices cannot be distinguished by the current
+driver, but it's possible if they have different product IDs.
 
 
-  Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
+HTH
+Clemens
 
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
 
 
 
