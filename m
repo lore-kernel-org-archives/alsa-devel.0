@@ -1,14 +1,12 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Re: EMU10K1 - CVS: nasty "click" at end of WAV files, and spurious extra modules.
-Date: Fri, 31 Jan 2003 19:56:51 +0000 (GMT)
+From: Richard Olsson <flame@home.se>
+Subject: RC7 and CS46xx (GTXP)
+Date: Sat, 1 Feb 2003 14:48:58 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030131195651.81705.qmail@web40605.mail.yahoo.com>
-References: <s5hptqdshsi.wl@alsa2.suse.de>
+Message-ID: <20030201144858.0479188a.flame@home.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hptqdshsi.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,36 +15,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- --- Takashi Iwai <tiwai@suse.de> wrote:
-> do you know which version (or date) the driver
-> worked without clicks?
-> there have been not many changes for emu10k1 or pcm
-> stuffs recently.
+Something between CVS 2002-12-18 and RC7 seriously broke the amplifier
+stuff for me on my GTXP - sound is very disorted and volume is very low.
+It's different from the troubles RC6 gave me though.  I'd guess it's
+the recent amplifier patch that was applied to the CS46xx driver.
 
-On a hunch, I downloaded the alsa-lib-0.9.0rc6 and
-alsa-util-0.9.0rc6 packages and tried those against
-the current CVS version of the kernel modules. There
-is no nasty clicking sound using 0.9.0rc6 userspace.
+Only oddity I see is in dmesg:
+ALSA ../../alsa-kernel/pci/cs46xx/cs46xx_lib.c:415: cs46xx: failure waiting for FIFO command to complete
 
-Even more interesting:
+I'll stick to the 2002-12-18 CVS for now:)
 
-alsa-lib 0.9.0rc6 + alsa-utils CVS => CLICK!
-alsa-lib CVS + alsa-utils 0.9.0rc6 => No click.
-
-I'm guessing that the problem lies in aplay.
-
-Chris
-
-
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+-- 
+Richard Olsson
+flame@home.se
+http://www.nyo-box.net/ - http://www.aelia-studios.org/
 
 
 -------------------------------------------------------
