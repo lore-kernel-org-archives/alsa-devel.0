@@ -1,7 +1,7 @@
-From: "Juanita Britt" <juanitabritt_dz@stange.folkebibl.no>
-Subject: (no subject)
-Date: Sat, 25 Dec 2004 09:06:50 +0000
-Message-ID: <f85401c4ea61$fe62d00d$85a17827@100-beste-plakate.de>
+From: "Joanne Downey" <joanne.downey_jm@emailfromspain.es>
+Subject: longlasting erections
+Date: Sat, 25 Dec 2004 08:37:57 +0000
+Message-ID: <28b701c4ea5d$e104f7af$68885983@emandan.freeserve.co.uk>
 Mime-Version: 1.0
 Content-Type: text/html;
 	charset="us-ascii"
@@ -16,22 +16,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
+To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 <html>
-<b>Got a good taste but short of money?<br>
-Cautious about your budget but want some luxury in life?<p></b>
-Treat yourself to this perfect opportunity:<br>
-<b>REAL 18ct. G0LD REPLlCA Watches such as CARTlER/R0 L.EX from $70-$200<=
-/b><br>
-They look so real no one will know the difference.. Money back guarantee!=
-<p>
-<a href=3D"http://jthzqqkagoryd.inkgfdgh.info/?asIccfb0ReNi9Gauwfpceesyvq=
-bt">Press left mouse button here to see our new collection</a>
-<p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br>
-<a href=3D"http://nfbndgdgem.inkgfdgh.info/iqvstqcppudkm?ewMMgPfApOlmJKKh=
-csmtydcju">abort</a>
+New ClALlS softtabs =3D lNSTANT R0CKHARD ERECTl0NS<p>
+Simply disolve HALF A PlLL under your tongue 10min before action,<br>
+for results that last all weekend.<p>
+Normal retail is $19/PlLL<br>
+<a href=3D"http://nxdzesbgoye.gggo4me.com/d/">0rder from us today at the =
+price of $3.20</a>
+<p><br><br><br><br><br><br><br><br><br>
+<a href=3D"http://fghwzrcbfanyn.gggo4me.com/d/o.php">not interested(0pt-0=
+ut)</a>
 </html>
 
 
