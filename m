@@ -1,10 +1,18 @@
-From: "Morten W. Petersen" <morten@nidelven-it.no>
-Subject: Problems recording with CM8738
-Date: Sun, 13 Feb 2005 19:17:05 +0100
-Message-ID: <420F99A1.4090801@nidelven-it.no>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [ALSA - driver 0000901]: The onboard
+	audigyls	chip on msi k8 diamond motherboard not recognized. Path supplied.
+Date: Sun, 13 Feb 2005 14:35:48 -0500
+Message-ID: <1108323348.25912.2.camel@krustophenia.net>
+References: <9d29558e3c3fabff090c6db74666f973@bugtrack.alsa-project.org>
+	 <1108255628.3273.20.camel@krustophenia.net>
+	 <420F3FAE.6010301@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------010503040302030708050406"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 1F134102
+	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 20:35:51 +0100 (MET)
+In-Reply-To: <420F3FAE.6010301@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,83 +22,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sf.net
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------010503040302030708050406
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On Sun, 2005-02-13 at 11:53 +0000, James Courtier-Dutton wrote:
+> Lee Revell wrote:
+> > On Sun, 2005-02-13 at 01:21 +0100, bugtrack@alsa-project.org wrote:
+> > 
+> >>*nods*, seems to be better:
+> >>
+> >>0 [CA0106         ]: CA0106 - CA0106
+> >>                     Live! by MSI [SB0438] at 0xde00 irq 233
+> > 
+> > 
+> > Since it's been established that the CA0106 based devices have basically
+> > nothing in common with the SBLive/emu10k1, can we please, please not
+> > call it "Live!"?  It's obvious from Creative's marketing that they want
+> > to pass those cheap "software soundcards" off as equivalent to an
+> > SBLive/Audigy.  Please, let's not help them.
+> > 
+> > Lee
+> > 
+> 
+> I have made the comment line as exact copy of the Creative marketing as 
+> possible, so that people can provide better feedback.
+> E.g. I see [SB0438] and know exactly which card the user has and the 
+> "Live! by MSI" tells the user exactly what they have, and it should 
+> match the box the sound card came in for easy identification.
+> 
+> In this case, the CA0106 is part of the motherboard.
+> I suppose I could replace "Live! by MSI" with "MSI motherboard XYZ"
+> 
+> I will ask the bug reporter for that information.
 
-Hi,
+OK, makes sense.  Looks like users will be confused for the forseeable
+future, but there's not a lot we can do.
 
-I'm having problems recording sound on Linux, and hopefully I'm now
-asking on the right list.
+Lee
 
-I'm having problems recording simple wav files, using 'rec test.wav'
-on my Linux box.  dmesg says I've got ALSA running:
-
-Advanced Linux Sound Architecture Driver Version 1.0.4 (Mon May 17 
-14:31:44 2004 UTC).
-PCI: Found IRQ 10 for device 0000:00:13.0
-PCI: Sharing IRQ 10 with 0000:00:10.3
-ALSA device list:
- #0: C-Media PCI CMI8738-MC6 (model 55) at 0xe000, irq 10
-
-lspci says:
-
-0000:00:13.0 Multimedia audio controller: C-Media Electronics Inc CM8738 
-(rev 10)
-       Subsystem: Chaintech Computer Co. Ltd: Unknown device 1100
-       Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- 
-ParErr- Stepping- SERR- FastB2B-
-       Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- 
-<TAbort- <MAbort- >SERR- <PERR-
-       Latency: 32 (500ns min, 6000ns max)
-       Interrupt: pin A routed to IRQ 10
-       Region 0: I/O ports at e000 [size=256]
-       Capabilities: [c0] Power Management version 2
-               Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA 
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-               Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-I've checked that the microphone has the right input level.
-Any suggestions would be much appreciated.
-
--Morten
-
--- 
-Regards,
-
-Morten
-
-Tlf:  +47 45 44 00 69
-Blog: http://www.blogologue.com
-
-
---------------010503040302030708050406
-Content-Type: text/x-vcard; charset=utf-8;
- name="morten.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="morten.vcf"
-
-begin:vcard
-fn:Morten Petersen
-n:Petersen;Morten
-org:Nidelven IT
-adr:;;Postboks 923;Trondheim;;7409;Norway
-email;internet:morten@nidelven-it.no
-title:Project Manager
-tel;work:+47 45 44 00 69
-tel;cell:+47 45 44 00 69
-x-mozilla-html:FALSE
-url:http://www.nidelven-it.no
-version:2.1
-end:vcard
-
-
---------------010503040302030708050406--
 
 
 -------------------------------------------------------
