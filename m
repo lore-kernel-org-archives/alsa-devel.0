@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: alsa-lib spamming terminal
-Date: Fri, 28 May 2004 17:45:28 +0200 (METDST)
+Subject: Re: MAYA44 USB audio device doesn't work with   1.0.4.
+Date: Fri, 28 May 2004 17:43:35 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0405281744340.24462-100000@studcom.urz.uni-halle.de>
-References: <yw1xaczs29y6.fsf@kth.se>
+Message-ID: <Pine.HPX.4.33n.0405281740090.24462-100000@studcom.urz.uni-halle.de>
+References: <6.0.0.22.2.20040528082652.01f45930@mail.audioslack.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <yw1xaczs29y6.fsf@kth.se>
+In-reply-to: <6.0.0.22.2.20040528082652.01f45930@mail.audioslack.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,21 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
+To: Luke Yelavich <luke@audioslack.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-M=E5ns Rullg=E5rd wrote:
-> Is there a way to make alsa-lib stop spamming the terminal with err=
-or
-> messages, for instance when a non-blocking open fails?
+Luke Yelavich wrote:
+> usbcore: registered new driver snd-usb-audio
 
-snd_lib_error_set_handler()
+No other message?  There should be at least an error message when the
+driver fails to initialize.  Please try to compile the kernel with
+ALSA's "Debug detection" enabled, or --with-debug=detect when
+configuring the package.
 
 
-HTH
+Regards,
 Clemens
-
 
 
 
