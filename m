@@ -1,22 +1,15 @@
-From: Chip Salzenberg <chip@pobox.com>
-Subject: intel8x0: Prospects for working suspend?
-Date: Thu, 19 Feb 2004 17:22:41 -0500
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Start us224control via hotplug. was: Re: Tascam US-224 support
+Date: Fri, 20 Feb 2004 00:40:32 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040219222241.GB2390@perlsupport.com>
+Message-ID: <200402200040.33176.annabellesgarden@yahoo.de>
+References: <20040216212352.GA566@tuba.home> <20040217214133.GC665@tuba.home> <s5h65e4wdxf.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.topaz.cx (mail@topaz.cx [66.220.6.227])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA11632
-	for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2004 23:23:03 +0100
-Received: from tytlal.hmsonline.com
-	([207.43.94.202] helo=tytlal ident=Debian-exim)
-	by mail.perlsupport.com with asmtp (Exim 3.35 #1 (Debian))
-	id 1AtwZ8-00051t-00
-	for <alsa-devel@alsa-project.org>; Thu, 19 Feb 2004 14:22:42 -0800
-Received: from chip by tytlal with local (Exim 4.30)
-	id 1AtwZ7-0001gR-6g
-	for alsa-devel@alsa-project.org; Thu, 19 Feb 2004 17:22:41 -0500
+In-Reply-To: <s5h65e4wdxf.wl@alsa2.suse.de>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,19 +19,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Martin Langer <martin-langer@gmx.de>
+Cc: alsa-devel@lists.sourceforge.net, David <david@robot-droid.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for creating a working driver for my hardware, it's marvelous.
-However, last I tried to suspend the intel8x0 driver, it didn't work;
-I had to unload and reload it.  What are the prospects for working
-suspend/resume in the intel8x0 driver?
+this is a patch against /alsa-tools/usx2yloader/tascam_fpga.in:
 
-PS: I think the OSS driver handles it OK....
--- 
-Chip Salzenberg               - a.k.a. -               <chip@pobox.com>
-"I wanted to play hopscotch with the impenetrable mystery of existence,
-    but he stepped in a wormhole and had to go in early."  // MST3K
+>>>>>>
+Index: tascam_fpga.in
+===================================================================
+RCS file: /cvsroot/alsa/alsa-tools/usx2yloader/tascam_fpga.in,v
+retrieving revision 1.4
+diff -u -r1.4 tascam_fpga.in
+--- tascam_fpga.in	19 Jan 2004 18:49:21 -0000	1.4
++++ tascam_fpga.in	19 Feb 2004 22:16:04 -0000
+@@ -23,6 +23,9 @@
+ 1604/8001/*)
+ 	CONTROLLER=@bindir@/us428control
+ 	;;
++1604/8005/*)
++	CONTROLLER=@bindir@/us224control
++	;;
+ *)
+ 	;;
+ esac
+<<<<<<
+
+unfortunately this patch is only half of what it should be:
+"us224control" is meant to be created from "ln -s us428control us224control"
+how would we integrate this "ln -s us428control us224control" into Makefile.am 
+? or should we just cp the symbolic link? but then: can you put the symbolic 
+link created by "ln -s us428control us224control" into CVS?
+
+if nobody knows, here is what works out of the box:
+
+>>>>>>
+Index: tascam_fpga.in
+===================================================================
+RCS file: /cvsroot/alsa/alsa-tools/usx2yloader/tascam_fpga.in,v
+retrieving revision 1.4
+diff -u -r1.4 tascam_fpga.in
+--- tascam_fpga.in	19 Jan 2004 18:49:21 -0000	1.4
++++ tascam_fpga.in	19 Feb 2004 22:16:04 -0000
+@@ -23,6 +23,9 @@
+ 1604/8001/*)
+ 	CONTROLLER=@bindir@/us428control
+ 	;;
++1604/8005/*)
++	CONTROLLER=@bindir@/us428control
++	;;
+ *)
+ 	;;
+ esac
+<<<<<<
+
+best regards, Karsten
+
 
 
 -------------------------------------------------------
