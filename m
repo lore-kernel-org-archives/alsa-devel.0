@@ -1,13 +1,12 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: via82xx & acpi -> freeze bug
-Date: Fri, 19 Nov 2004 21:14:11 -0500
-Message-ID: <1100916852.26068.5.camel@krustophenia.net>
-References: <20041120015224.GA1795@prog3>
+From: "Saihin Tse" <stse@kgv.net>
+Subject: alsa driver for audigy 2 value
+Date: Sat, 20 Nov 2004 13:32:13 +0800 (HKT)
+Message-ID: <4448.219.77.137.7.1100928733.squirrel@219.77.137.7>
+Reply-To: stse@kgv.net
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041120015224.GA1795@prog3>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,32 +16,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pavel Kysilka <goldenfish@bsys.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2004-11-20 at 02:52 +0100, Pavel Kysilka wrote:
-> 	Hi all,
-> 
+Dear Sir/Madam,
+               recently, I have purchased a creative audigy 2 value sound
+card. 
+http://www.alsa-project.org/alsa-doc/index.php?vendor=vendor-Creative_Labs#matrix,
+on that site, the audigy 2 zs value link points to the
+audigy 2 value sound card so therefore i supposed that Alsa
+would support it.  But after i purchased it, someone told
+me that alsa did not support it yet.  Is this true?  If so,
+when would the driver be released.
 
-I assume you mean 2.6.10-rc2...
+Thanks
 
-It sounds like the via82xx suspend/resume support may not be
-implemented.  You should file a bug report:
-
-https://bugtrack.alsa-project.org/
-
-Unfortunately the bug tracker is down right now...
-
-> and i have 1 question: how about support emu10k1 chips and acpi ? is
-> this support planned ?
-
-I assume you are talking about suspend/resume support for the emu10k1
-driver.  I might implement this.  However it is not very high priority.
-See the emu10k1 /proc thread from yesterday for an explanation of what
-needs to be done.
-
-Lee
 
 
 
