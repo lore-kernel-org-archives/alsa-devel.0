@@ -1,15 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Ignore this -> 24bit .wav file fails to output to "plug:front"
- device with aplay on Audigy2
-Date: Sun, 16 May 2004 16:18:07 +0100
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: sample rate rule problems
+Date: Sun, 16 May 2004 17:34:42 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40A7862F.9080600@superbug.demon.co.uk>
-References: <40A69854.1080703@superbug.demon.co.uk>
+Message-ID: <20040516173442.32ae71b4.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <40A69854.1080703@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,24 +15,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> I have been doing some tests with 24bit audio.
-> It seems that any 24bit stream is muted if one tries to send it to 
-> alsa-lib.
-> I am going to do further tests, but I just wanted to see if anyone else 
-> has ever tried 24bit sound with the Audigy2?
-> 
-> Cheers
-> James
-> 
-> 
 
-Please ignore.
 
+I'm trying to write a rule for the Layla24. That card supports all standard
+sample rates 8KHz-96KHz and continuous rates only in the range 25KHz-100KHz.
+I wrote this rule, but ALSA gets confused and it sometimes chooses a wrong
+value, sometimes fails. I can't figure out why. This is the rule:
+
+
+{
+	snd_interval_t *rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+	unsigned int rates[] = {8000, 11025, 16000, 22050, 32000, 44100, 48000, 88200, 96000, 0};
+	int r;
+
+	printk("req min=%d max=%d\n",rate->min,rate->max);
+
+	if (rate->max < 25000) {
+		printk("list\n");
+		return snd_interval_list(rate, 4, rates, 0);
+	}
+
+	if (rate->min >= 25000 && rate->min == rate->max) {
+		/* If it's a standard rate, do nothing */
+		for (r = 0; rates[r]; r++)
+			if (rates[r] == rate->min)
+				return(0);
+		printk("cont\n");
+		params->rate_num = LAYLA24_MAGIC_NUMBER;
+		params->rate_den = LAYLA24_MAGIC_NUMBER / rate->min;
+	}
+	return 0;
+}
+
+
+If it is a standard sample rate or it's in the continuous range, it's all
+right. Otherwise snd_pcm_hw_params_set_rate_near() fails:
+
+[Giu@Jay Giu]$ aplay -v -f S32_LE -c 2 -r 11020 -D hw:0,0,2 booo.html
+Playing raw data 'wget' : Signed 32 bit Little Endian, Rate 11020 Hz, Stereo
+aplay: aplay.c:824: set_params: Assertion `err >= 0' failed.
+
+
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
