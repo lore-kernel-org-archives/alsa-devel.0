@@ -1,15 +1,12 @@
-From: Andreas Mohr <andi@rhlx01.fht-esslingen.de>
-Subject: Re: New driver (mjander )
-Date: Wed, 5 Mar 2003 00:39:19 +0100
+From: Bob Ham <rah@bash.sh>
+Subject: pcm_jack and jack chicken-and-egg situation
+Date: 05 Mar 2003 00:02:30 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030304233919.GA5811@rhlx01.fht-esslingen.de>
-References: <E18qLih-0004r2-00@sc8-sf-list2.sourceforge.net>
-Reply-To: andi@rhlx01.fht-esslingen.de
+Message-ID: <1046822550.8620.193.camel@insanity.tek.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <E18qLih-0004r2-00@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,37 +16,22 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: mjander@embedded.cl
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi all,
 
-On Tue, Mar 04, 2003 at 03:20:05PM -0800, alsa-devel-request@lists.sourceforge.net wrote:
-> Message: 2
-> Date: Tue,  4 Mar 2003 19:35:35 -0400
-> From: "mjander " <mjander@embedded.cl>
-> Reply-To: <mjander@embedded.cl>
-> To: <alsa-devel@lists.sourceforge.net>
-> Subject: [Alsa-devel] New driver
-> 
-> Hi,
-> 
-> I started writing a new driver for the Aureal Vortex soundcards.
-Whoa, cool!!!
+The new pcm_jack thing presents a bit of a chicken and egg problem; I
+just compiled alsa-lib twice because jack depends on alsa-lib and if you
+configure alsa-lib with jack support, it depends on jack.  Would it be
+possible for pcm_jack to be distributed seperately?
 
-I've also toyed with the idea of doing that, but with me getting a new
-almost completely unsupported wireless card (ACX100 chip), I turned to
-trying to support that card instead.
+Cheers,
 
-But given this very good news, I guess I'll actually be strongly inclined to
-get that driver to work with my card :-)
+Bob
 
-I've got the Aztech PCI338 A3D w/ 8820 chip, BTW.
+-- 
+Bob Ham <rah@bash.sh>
 
-> What is the "official" procedure to integrate  my driver ?
-Sorry, I guess I'm not the one to comment on that.
-
-Andreas Mohr, azt3328 driver developer
 
 
 -------------------------------------------------------
