@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Major problem with the current alsa mixer.
-Date: Fri, 12 Sep 2003 12:31:32 +0200 (CEST)
+From: Simon Bucher <DocBexter@gmx.net>
+Subject: X-Runs
+Date: Sun, 14 Sep 2003 00:38:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0309121229080.17210@pnote.perex-int.cz>
-References: <3F610FE4.2040009@superbug.demon.co.uk>
- <Pine.LNX.4.53.0309120917540.17210@pnote.perex-int.cz> <s5hd6e6crkn.wl@alsa2.suse.de>
+Message-ID: <19535.1063492706@www15.gmx.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hd6e6crkn.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,33 +15,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 12 Sep 2003, Takashi Iwai wrote:
+Hello,
 
-> > I have plans to extend the mixer interface to pass (and handle) the dB
-> > resolution. But it will be done completely in the user space. The alsa-lib
-> > will analyze information from the driver (hardware components) and then it
-> > will use a predefined expressions for these transformations. I think that
-> > we should not polute the kernel space with these "additional" things.
->
-> agreed.  it's a user-space thing.
->
-> but some additional information like min/max dB would be needed, too?
+Im new to Alsa and my current code basically just uses the simple
+input/output examples for Full Duplex io. It works really well ... the latency is <=
+0.5ms without underruns except in two situations:
 
-I think that we can have this database (including expressions which
-converts hardware range to the dB range) in alsa-lib, too. It was one of
-reasons why I am working on the lisp integration to alsa-lib, because we
-can easy describe mathematic expressions with this language.
+Disk IO:
+Only a small disk access ruins the stream - is there a way to disable disk
+io while the app is running ? I really dont need the disk ( no swap and so on
+... )
 
-						Jaroslav
+Scrolling up in "mcedit" ( == small coloured text editor ) also gives me a
+100% underun.
+How can this be ? Im using sched_fifo @ 99 and a small text editor preempts
+my code ?!
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+greetz
+Simon
+
+-- 
+COMPUTERBILD 15/03: Premium-e-mail-Dienste im Test
+--------------------------------------------------
+1. GMX TopMail - Platz 1 und Testsieger!
+2. GMX ProMail - Platz 2 und Preis-Qualitätssieger!
+3. Arcor - 4. web.de - 5. T-Online - 6. freenet.de - 7. daybyday - 8. e-Post
+
 
 
 -------------------------------------------------------
