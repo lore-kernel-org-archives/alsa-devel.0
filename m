@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Pain and anguish: ALSA CVS and Linux-2.4.20
-Date: Sun, 1 Dec 2002 19:45:56 +0100 (CET)
+From: pdq808@t-online.de (Reiner Klenk)
+Subject: Re: Delta 410 status
+Date: Sun, 1 Dec 2002 22:34:02 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0212011945340.534-100000@pnote.perex-int.cz>
-References: <20021201183314.93948.qmail@web40606.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.44.0212012216320.1488-100000@gin.nowhere.de>
+References: <Pine.LNX.4.44.0212011741360.1314-100000@gin.nowhere.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20021201183314.93948.qmail@web40606.mail.yahoo.com>
+In-Reply-To: <Pine.LNX.4.44.0212011741360.1314-100000@gin.nowhere.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,26 +16,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "tiwai@suse.de" <tiwai@suse.de>
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 1 Dec 2002, [iso-8859-1] Chris Rankin wrote:
+On Sun, 1 Dec 2002, Reiner Klenk wrote:
 
->  --- Jaroslav Kysela <perex@suse.cz> wrote:
-> > Could you try the current CVS? Hopefully, I fixed
-> > the problem.
+> Greetings,
 > 
-> Just one small spelling mistake ;-)
+> I have been fiddling around with a Midiman Delta 410 over the weekend. I
+> get some sort of playback but is is severly clipped. I believe there is a
+> typo in ak4524.c in inits_ak4529[]. Register 0x00 should be initialized to
+> 0x0c for i2s mode according to the data sheet (need to set DIF1 as well as
+> DIF0). I corrected this but that didn't help. My suspicion is that the
+> envy24 chip is not talking to the ak4529 at all (i.e. the control path via
+> the envy24 gpio is not working) since I also can't set or read the Volume
+> Controls with envy24control or amixer, however, the mixer elements that 
+> control the envy24 chip directly (routing, digital mix, meter readout) are 
+> all OK.
+> 
 
-Yep. I discovered it in the verification phase ;-)
+It's working now :-) . I kept the init for register 0 as stated above.  
+However, the chip adress of the 4529 is 0 (CAD1=0, CAD0=0, both pins are
+pulled down to ground with a 10k resistor) unlike the hardwired adress of
+the previous chips (0x02). Also, since the 4529 has 12 registers we cannot
+addr &= 0x07; in snd_ice1712_ak4524_write .
 
-						Jaroslav
+The faders in envy24control are still stuck at 000, but it is
+nevertheless possible to unmute the channels by clicking somewhere close 
+to the bottom of the faders. 
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Regards,
+Reiner
+
+PS: I need a new pair of glasses. Very difficult to contact the envy24 
+pins with my multimeter to verify the envy24 <=> 4529 wiring, hehe.
+
 
 
 
