@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000484]: Hercules MUSE Pocket, channels swapping randomly during playback
-Date: Wed,  8 Sep 2004 11:18:15 +0200 (CEST)
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: ALSA Programming Interface for Kernel 2.6.8
+Date: Wed, 8 Sep 2004 13:31:19 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040908091815.DEC24101DD@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040908133119.2dcfb350@mango.fruits.de>
+References: <20040907130432.4318a5d0@mango.fruits.de>
+	<20040908045325.43180.qmail@web8510.mail.in.yahoo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4143729D
-	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 11:18:16 +0200 (MEST)
+In-Reply-To: <20040908045325.43180.qmail@web8510.mail.in.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,88 +18,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Dinesh Ahuja <mdlinux7@yahoo.co.in>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 8 Sep 2004 05:53:25 +0100 (BST)
+Dinesh Ahuja <mdlinux7@yahoo.co.in> wrote:
 
-The following bug has been RESOLVED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000484
-======================================================================
-Reported By:                jone
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     484
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               Debian unstable
-Kernel Version:             2.4.23-cobalt3
-Resolution:                 not a bug
-======================================================================
-Date Submitted:             09-06-2004 21:32 CEST
-Last Modified:              09-08-2004 11:18 CEST
-======================================================================
-Summary:                    Hercules MUSE Pocket, channels swapping randomly during playback
-Description: 
-When my Hercules MUSE Pocket device is connected via a hub the  sound
-channels swap back and forth randomly during playback.
-======================================================================
+> I am using Red Hat Linux 9.0 and trying to get all the
+> neccessary packages for my Vanilla Kernel 2.6.8 but
+> could not able to find on any site. Could you please
+> guide me where I can these packages for Kernel 2.6.8.
+> 
 
-----------------------------------------------------------------------
- Clemens Ladisch - 09-07-2004 17:44 CEST 
-----------------------------------------------------------------------
-Is this a USB 2.0 hub?
+Ok, since i don't use RH nor have i ever used an rpm based distro i'm
+not too much of a help here. I would suggest getting familiar with your
+distributions package management system and just search for "alsa" and
+"libasound".
 
-----------------------------------------------------------------------
- jone - 09-07-2004 17:54 CEST 
-----------------------------------------------------------------------
-It's just a simple el-cheapo passive 1.1 hub.
+flo
 
-Bus 002 Device 002: ID 05e3:0604 Genesys Logic, Inc. 
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.01
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 Unused
-  bDeviceProtocol         0 
-  bMaxPacketSize0         8
-  idVendor           0x05e3 Genesys Logic, Inc.
-  idProduct          0x0604 
-  bcdDevice            0.12
-  iManufacturer           0 
-  iProduct                1 
-  iSerial                 0 
-  bNumConfigurations      1
-
-----------------------------------------------------------------------
- Clemens Ladisch - 09-08-2004 11:18 CEST 
-----------------------------------------------------------------------
-Channel swapping occurs if the device receives an odd number of audio
-samples.  The snd-usb-audio driver always sends an even number of samples
-(the OSS driver, too), so it seems your hardware loses some data on the
-way.
-
-Apparently, there is an incompatibility between the Cobalt's USB
-controller and the Genesys hub.  (There are many Genesys chips that have,
-er, issues.)
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-06-04 21:32 jone           New Bug                                      
-09-06-04 21:32 jone           Distribution              => Debian unstable 
-09-06-04 21:32 jone           Kernel Version            => 2.4.23-cobalt3  
-09-07-04 17:44 Clemens LadischBugnote Added: 0001721                       
-09-07-04 17:54 jone           Bugnote Added: 0001722                       
-09-08-04 11:18 Clemens LadischBugnote Added: 0001727                       
-09-08-04 11:18 Clemens LadischResolution               open => not a bug   
-09-08-04 11:18 Clemens LadischStatus                   assigned => resolved
-======================================================================
 
 
 -------------------------------------------------------
