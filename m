@@ -1,11 +1,14 @@
-From: Jaroslav Soltys <jaroslavsoltys@yahoo.com>
-Subject: a bug ? sis7012 & snd-intel8x0 & xmms & mmap switched on
-Date: Fri, 2 Jan 2004 10:08:00 -0800 (PST)
+From: Nick Ing-Simmons <nick@ing-simmons.net>
+Subject: Which API to use for simple clients?
+Date: Fri, 02 Jan 2004 18:15:12 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040102180800.29716.qmail@web12307.mail.yahoo.com>
+Message-ID: <20040102181512.9272.3@llama.ing-simmons.net>
+Reply-To: Nick Ing-Simmons <nick@ing-simmons.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,37 +17,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: linux-audio-dev@music.columbia.edu, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hello,
 
-i'm using alsa on my onboard sis7012 (snd-intel8x0
-module). it supports only 48khz. while playing sounds
-in xmms (alsa 1.2.8 output plugin) i've noticed
-ticking sounds repeating in constant time intervals. i
-switched off mmap and everything is fine. could that
-be a bug while resampling 44khz output to 48khz when
-using mmap ? maybe the bug is in xmms, but i've
-heard the sound ticking also in other apps.
+I have two Audio related projects that need updating.
 
-i compile alsa-* (driver/lib/...) from source,
-everything is 1.0.0rc2. kernel is 2.4.23-1-k7 (debian
-sid precompiled)
+1. "rsynth" formant based text-to-speech synthesis
 
-jard
+2. Audio::* Perl modules.
 
-ps: i'm new to mailing list, could anybody answer
-this ? i'm thinking about buying pci soundcard,
-possibly live! or hercules muse, are there any
-possible problems with any of these ? however i'd
-prefer live ;)
- 
+Both have existing /dev/dsp style backends at present, which have been work=
+ing
+fine. But recently (SuSE 9.0 install?) when run under ALSA emulation of=20
+/dev/dsp they both started producing segfaults - "after program had exited",
+(neither valgrind nor gdb can give any info on the fault).
 
-__________________________________
-Do you Yahoo!?
-Find out what made the Top Yahoo! Searches of 2003
-http://search.yahoo.com/top2003
+So I decided it was time to do a native ALSA backend(s).
+I have rsynth backend working, and perl Audio:: one almost working.
+But before going forward I would like to solicit opinions on what=20
+is the "right" API to use.
+
+The Linux audio world seems to be in a state of flux with these options
+(please tell me if I missed any):
+
+1. Venerable OSS stuff
+   - Widely available :-)
+   - Some cards have quasi or truely commecial drivers rather than
+     free / opensource ones :-(
+   - emulation via ALSA (at least as shipped by SuSE) seems broken :-(
+
+2. ALSA
+   - Reasonably widely available :-|, and improving
+   - Opensource :-)
+   - Documentation is lacking :-(
+     Everything hinges on the=20
+     "Configuration Space" concept, but I can't find an explanation of=20
+     how that works. This is the sticking point with perl code - I can't fi=
+nd=20
+     how to change the sample rate / channels, so _seems_ I need to=20
+     close and re-open.=20=20
+
+3. JACK=20
+   - Gets lots of excited "this is cool" kind of coverage :-)
+   - realtime :-)
+   - Callback style not ideal for speech synthesis or play-from-file
+     of my simple apps. complex :-(
+=20=20=20=20
+4. Enlightenment Sound Demon
+   - Seems to be used by KDE etc.
+   - haven't looked into it further.
+
+5. Network Audio System=20
+   - Works on many platforms Linux/Solaris/X Terminals :-)
+   - X-like "imake" style rather than configure :-(
+   - Linux version still seems to be based on OSS - so recurse ;-)
+
+6. Presumably there is some kind of telephony API as well, for sending=20
+   sound to incomming phone calls via modem / ISDN
+
+Complexity and callbacks don't scare me - I do perl/Tk after all!
+But this is a 2nd-string project so I don't want to do a lot of=20
+complex stuff for an API that is vanishing - I would rather either=20
+use a simple stable interface, or pitch in and help on the "comming"
+complex API.
+
+Suggestions anyone? (I just subscribed to both lists - so reply to your
+favourite list.)
+
+=20=20
+
+
+=20
 
 
 -------------------------------------------------------
