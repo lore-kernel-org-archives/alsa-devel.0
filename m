@@ -1,13 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000214]: ac3 passthrough not working
-Date: Fri, 17 Sep 2004 14:12:09 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: SPDIF rate setting.
+Date: Fri, 17 Sep 2004 21:00:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040917121209.2C2F44B011@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <414B4245.50600@superbug.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE300311
-	for <alsa-devel@alsa-project.org>; Fri, 17 Sep 2004 14:12:09 +0200 (MEST)
+Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6EEB1224
+	for <alsa-devel@alsa-project.org>; Fri, 17 Sep 2004 22:00:06 +0200 (MEST)
+Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
+	by anchor-post-35.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 1C8Otp-000DP0-0Z
+	for alsa-devel@alsa-project.org; Fri, 17 Sep 2004 20:00:05 +0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,116 +22,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+It seems that more and more people are using SPDIF digital output at 
+44.1khz. E.g. DTS tracks on CDs.
+Currently, people are having to manually change the SPDIF rate setting 
+using iecset or the application is having to play with AES3 in the 
+"iec958:AES..." at device open.
+How about, when someone opened the device "iec958" and then uses 
+snd_pcm_hw_params_set_rate(), it should automatically set the iecset 
+rate to equal the rate set by the set_rate function call.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000214
-======================================================================
-Reported By:                m_stolle
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     214
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.4.25
-======================================================================
-Date Submitted:             04-16-2004 05:06 CEST
-Last Modified:              09-17-2004 14:12 CEST
-======================================================================
-Summary:                    ac3 passthrough not working
-Description: 
-I have a Dell Inspiron 8200 with an Intel ICH3/Cirrus Logic CS4205 sound
-card.  Unfortunately, the hardware AC3 passthrough does not work. 
-Instead, I only get a high-pitched funny noise.
+Any comments?
 
-The symptoms are the same in mplayer as well as in xine.  Verbose output
-of mplayer provided below:
-======================================================================
-
-----------------------------------------------------------------------
- m_stolle - 09-11-2004 05:25 CEST 
-----------------------------------------------------------------------
-This bug is still present in 2.6.8.1  Am I the only one with this bug?
-
-----------------------------------------------------------------------
- tiwai - 09-13-2004 15:41 CEST 
-----------------------------------------------------------------------
-How about ALSA-1.0.7rc1?  2.6.8.1 includes the older version.
-
-----------------------------------------------------------------------
- m_stolle - 09-17-2004 05:05 CEST 
-----------------------------------------------------------------------
-I just recompiled alsa 1.0.7rc1
-
-still same problem 8-(
-
-----------------------------------------------------------------------
- stoffel - 09-17-2004 10:45 CEST 
-----------------------------------------------------------------------
-I have the same notebook and the same problem with SuSE 9.0 and alsa 1.06a
-(kernel 2.4.27). So, any solution for that problem ?
-
- The 5.1 sound works without passthrough with following entry in
-.xine/config
-
-audio.alsa_a52_device:iec958:AES0=0x4,AES1=0x82,AES2=0x0,AES3=0x2.
-
-First I start mplayer with
-
-#mplayer -ao alsa1x:spdif dvd://
-.
-
-After that I could start xine and my 5.1 Soundsystem works (without
-passthrough !!!)
- 
-I don't know how I get the information for the xine entry. I still probe
-many tools for alsa & co and so I've got the information. Where ? I don't
-know, sorry.
-
-edited on: 09-17-04 10:43
-
-edited on: 09-17-04 10:45
-
-----------------------------------------------------------------------
- m_stolle - 09-17-2004 14:12 CEST 
-----------------------------------------------------------------------
-I have tried recreating those steps, but it still doesn't work.  I first
-start mplayer with exactly the options you describe (no sound though?). 
-Then I edited .xine/config, started xine, switched to 5.1 surround
-(instead of stereo 2.0), restart xine, no more sound.  Redid the mplayer
-command, started xine again, still no sound.
-
-Which version of xine/mplayer are you using?  AFAIK, the alsa1x driver for
-mplayer is not used anymore, it's just alsa ?  My Xine version is 0.99.1,
-my mplayer version is   1.0pre5-3.3.4.
-
-Thanks,
-  Martin
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-16-04 05:06 m_stolle       New Bug                                      
-04-16-04 05:06 m_stolle       Distribution              => Debian          
-04-16-04 05:06 m_stolle       Kernel Version            => 2.4.25          
-09-11-04 05:25 m_stolle       Bugnote Added: 0001744                       
-09-13-04 15:41 tiwai          Bugnote Added: 0001747                       
-09-17-04 05:05 m_stolle       Bugnote Added: 0001775                       
-09-17-04 10:21 stoffel        Bugnote Added: 0001776                       
-09-17-04 10:42 stoffel        Bugnote Added: 0001778                       
-09-17-04 10:43 stoffel        Bugnote Edited: 0001776                      
-09-17-04 10:43 stoffel        Bugnote Deleted: 0001778                     
-09-17-04 10:45 stoffel        Bugnote Edited: 0001776                      
-09-17-04 14:12 m_stolle       Bugnote Added: 0001779                       
-======================================================================
+James
 
 
 -------------------------------------------------------
