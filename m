@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000531]: alsamixer.1: Please explain the display
-Date: Thu, 20 Jan 2005 19:14:56 +0100
-Message-ID: <cbfce3b26f42d3b952d712cef273c149@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000607]: "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >= 0.8.6
+Date: Thu, 20 Jan 2005 19:16:26 +0100
+Message-ID: <61b5e9a65aadd88ad3fcf5b1b57eec59@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 42620141
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 19:14:56 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 21A7B211
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 19:16:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,130 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=531> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=607> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                
+Reported By:                karsten
+Assigned To:                karsten
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   531
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   minor
+Project:                    ALSA - driver
+Issue ID:                   607
+Category:                   USB - usb-usx2y
+Reproducibility:            sometimes
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
+Status:                     resolved
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-24-2004 06:26 CEST
-Last Modified:              01-20-2005 19:14 CET
+Date Submitted:             10-26-2004 21:36 CEST
+Last Modified:              01-20-2005 19:16 CET
 ======================================================================
-Summary:                    alsamixer.1: Please explain the display
+Summary:                    "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >=
+0.8.6
 Description: 
-On the man page describe the display, e.g. the "------" seen over some
-controls means what, etc.
+Its usb's unableness to atomically handle power of 2 period sized data
+chuncs,
+what led to: 
+This usx2y-alsa-jack driver pair uses a hardware dependant alsa-device for
+
+mmaped pcm transport.
+Advantage achieved:
+        The usb_hcd places reads/writes pcm data into dma-memory.
+        That memory is  mmaped by jack's usx2y driver.
+        Jack's usx2y driver is the first/last to read/write pcm data.
+        Read/write is a combination of power of 2 period shaping and
+        float/int conversation.
+        Compared to mainline alsa/jack we leave out power of 2 period
+shaping inside
+        snd-usb-* which needs memcpy() and additional buffers.
+        As a side effect possible unwanted pcm-data coruption resulting of
+        plain alsa's snd-usb-usx2y period shaping scheme falls away.
+        Result is sane jack operation at buffering schemes down to
+128frames,
+        2 periods.
+        plain usx2y alsa mode is able to achieve 64frames, 4periods, but
+only at the
+        cost of easier triggered i.e. aeolus xruns (128 or 256frames,
+        2periods works but is useless cause of crackling).
+
+New functionality would possibly be better integrated into mainlines at
+more 
+apropriate places.
+Target could be: jack mmaping power of 2 period sized float-pcm buffers
+and 
+letting alsa (snd-usb-lib - alsa-lib - plugin) do power of 2 period
+shaping 
+and float/int conversation.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 12-19-04 21:24 
+ rncbc - 12-10-04 23:49 
 ----------------------------------------------------------------------
-Another Debian user has submitted Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=286192 asking
-that the new way of displaying controls be documented.  He writes:
+Just uploaded my own kernel patch
+    linux-2.6.10-rc2-mm3-usx2y-0.8.7.patch.gz
+as for convenience, which should apply against 2.6.10-rc2-mm3, and fit
+with latest Ingo's RT patch(es). It upgrades to the snd-usb-usx2y version
+0.8.7, as current of alsa-kernel CVS HEAD.
 
-> When using alsamixer 1.0.7 for the first time I panicked because I
-> couldn't see my capture devices any more!
->
-> A little googling found the answer, but the man page should mention
-> this, and it should also mention how to switch views.
+My latest tests ran against my custom jack-0.99.28.3usx2y, that includes a
+proper jackd usx2y backend, and went just fine. 
 
+    (see http://www.rncbc.org/usx2y/)
 
-See http://bugs.debian.org/286192 for the full report.
+With that, I could reach a brand new low-latency "record" as with:
+
+    jackd -R -dusx2y -dhw:1,2 -r44100 -p64 -n2
+
+without crackling nor (much) xruns. Tested under
+2.6.10-rc2-mm-RT-V0.7.32-18 on a P4@2.5Ghz laptop. Never though this could
+happen with a USB audio device upon jackd, ever. Am I alone? Thanks
+Karsten, first you solved the ohci horror, now this... :)
+
+Two things to note about using this new interface:
+
+- hw:N,2 (N=0,1,... index of snd-usb-usx2y on the snd stack);
+- nrpacks=1 (e.g. modprobe snd-usb-usx2y nrpacks=1) is mandatory for this
+hwdep pcm interface being up and available.
+
+Take care.
 
 ----------------------------------------------------------------------
- tiwai - 12-20-04 14:39 
+ tiwai - 01-20-05 19:16 
 ----------------------------------------------------------------------
-More detailed description was added to CVS.
+The patch was already in ALSA 1.0.8.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 06:26 jdthood        New Issue                                    
-09-24-04 08:24 pzad           Note Added: 0001856                          
-12-19-04 21:24 jdthood        Note Added: 0002850                          
-12-20-04 14:39 tiwai          Status                   new => resolved     
-12-20-04 14:39 tiwai          Resolution               open => fixed       
-12-20-04 14:39 tiwai          Assigned To               => tiwai           
-12-20-04 14:39 tiwai          Note Added: 0002876                          
-12-20-04 14:39 tiwai          Assigned To              tiwai =>            
-01-20-05 19:14 tiwai          Status                   resolved => closed  
+10-26-04 21:36 karsten        New Issue                                    
+10-26-04 21:36 karsten        File Added:
+snd-usb-usx2y.patch.0.8.6+hwdep_pcm.bz2                    
+10-26-04 21:39 karsten        Note Added: 0002265                          
+10-27-04 02:01 rncbc          File Added: linux-2.6.9-ohci-hcd.patch.gz         
+          
+10-27-04 02:01 rncbc          File Added: linux-2.6.9-usx2y-0.8.6.patch.gz      
+             
+10-27-04 02:02 rncbc          File Added:
+linux-2.6.9-usx2y-0.8.6-rawusb.patch.gz                    
+10-27-04 02:02 rncbc          File Added: linux-2.6.9-mm1_usx2y-0.8.6.patch.gz  
+                 
+10-27-04 02:03 rncbc          File Added:
+linux-2.6.9-mm1_usx2y-0.8.6-rawusb.patch.gz                    
+10-27-04 02:26 rncbc          Note Added: 0002269                          
+11-09-04 19:22 tiwai          Note Added: 0002346                          
+12-02-04 20:19 karsten        Note Added: 0002697                          
+12-03-04 14:06 tiwai          Note Added: 0002710                          
+12-10-04 23:22 rncbc          File Added:
+linux-2.6.10-rc2-mm3-usx2y-0.8.7.patch.gz                    
+12-10-04 23:49 rncbc          Note Added: 0002809                          
+01-20-05 19:16 tiwai          Status                   assigned => resolved
+01-20-05 19:16 tiwai          Resolution               open => fixed       
+01-20-05 19:16 tiwai          Note Added: 0003333                          
 ======================================================================
 
 
