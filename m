@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Oops with snd-ymfpci and ALSA 0.9.3a
-Date: Thu, 12 Jun 2003 12:54:52 +0200 (CEST)
+Subject: Re: problems with rme digi96/8
+Date: Thu, 12 Jun 2003 12:58:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306121253150.1795-100000@pnote.perex-int.cz>
-References: <Pine.LNX.4.44.0306121803560.1298-100000@home.aussec.com>
+Message-ID: <Pine.LNX.4.44.0306121257380.1795-100000@pnote.perex-int.cz>
+References: <1055414161.16597.32.camel@duff>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0306121803560.1298-100000@home.aussec.com>
+In-Reply-To: <1055414161.16597.32.camel@duff>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,21 +16,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tom burkart <alsa@aussec.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Gorm David Lai <lai@daimi.au.dk>
+Cc: Anders Torger <torger@ludd.luth.se>, Martin Langer <martin-langer@gmx.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 12 Jun 2003, tom burkart wrote:
+On 12 Jun 2003, Gorm David Lai wrote:
 
-> Today, Clemens Ladisch wrote:
-> 
-> > tom burkart wrote:
-> > > "aplay something.wav" causes scratchy sounds to be emitted from the
-> > Not on my YMF-754 card. Sorry, I don't know what could cause this.
-> Ok, how can I help debug this?  (Albeit, slowly, as I am fairly busy)
+> I tried your example. Aplay is rather stupid, so it is seems it needs a
 
-If I remember correctly, the card is working with OSS drivers? Isn't?
-In that case, we might compare PCI registers (lspci -s<DEV> -xxx). 
+Not too stupid, but you should use right device (plughw vs. hw) and 
+probably right alsa-lib configuration (~/.asoundrc).
 
 						Jaroslav
 
