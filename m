@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000885]: usx2y is unsupported in v 1.08 builds
-Date: Fri, 11 Feb 2005 17:22:30 +0100
-Message-ID: <230c8f93c495d488885b0614d94f100e@bugtrack.alsa-project.org>
+From: Ron Cococcia <ron.cococcia@request.com>
+Subject: Re: intel8x0 dual codec issue
+Date: Fri, 11 Feb 2005 11:30:49 -0500
+Message-ID: <420CDDB9.6040805@request.com>
+References: <4208437B.3080207@request.com>	<s5h8y5w1g2b.wl@alsa2.suse.de>	<420BB2FC.6070502@request.com> <s5hoeerz9dv.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5C1C1AF
-	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2005 17:22:30 +0100 (MET)
+Content-Type: multipart/mixed;
+ boundary="------------010007000106090006060400"
+In-Reply-To: <s5hoeerz9dv.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,64 +16,114 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------010007000106090006060400
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=885> 
-======================================================================
-Reported By:                hamishtpb
-Assigned To:                karsten
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   885
-Category:                   USB - usb-usx2y
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo 2004.3
-Kernel Version:             2.4.28-Gentoo-r5
-======================================================================
-Date Submitted:             02-06-2005 05:57 CET
-Last Modified:              02-11-2005 17:22 CET
-======================================================================
-Summary:                    usx2y is unsupported in v 1.08 builds
-Description: 
-Whever I try to build any 1.0.8 alsa-driver I get "unsupported card error"
-when I set usb-usx2y as my card. I have manually installed 1.0.7 and the
-compile went smoothly.
-======================================================================
+Takashi Iwai wrote:
+> At Thu, 10 Feb 2005 14:16:12 -0500,
+> Ron Cococcia wrote:
+> 
+>>I had been looking through that block of code, and had made some of my 
+>>own "tweaks".  What I did was make "reg_ok" an array (size 4, all 
+>>initialized to 0).  I used the codec index (cidx) to index into that 
+>>array.  The idea is that there would be a reg_ok for each codec, instead 
+>>of just 1 for all codecs.  This correctly set the output on all codecs 
+>>after making the change.
+> 
+> 
+> Yeah, that's better than my last hack.  Could you create a patch?
 
-----------------------------------------------------------------------
- Clemens Ladisch - 02-11-05 15:42 
-----------------------------------------------------------------------
-Are you using a 64-bit system?
+Attached.  I had a backup copy of the file that I diff'd against.  This 
+is also based off of 1.0.8 files, but from what I could see the 
+ac97_pcm.c file hasn't changed.  You'll also see a few snd_printk's in 
+there that I had for testing/debugging purposes.  You can get rid of 
+them if you want.
 
-----------------------------------------------------------------------
- hamishtpb - 02-11-05 17:22 
-----------------------------------------------------------------------
-No - I am using an Athlon XP 2400+ (2GHz).
+I'm not sure what the implications of changing the rates on all of the 
+codecs are.  Is it possible that, in a multiple codec configuration, 
+there would be a situation where they would want to be handling 
+different rates?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-06-05 05:57 hamishtpb      New Issue                                    
-02-06-05 05:57 hamishtpb      Distribution              => Gentoo 2004.3   
-02-06-05 05:57 hamishtpb      Kernel Version            => 2.4.28-Gentoo-r5
-02-06-05 05:57 hamishtpb      Issue Monitored: hamishtpb                    
-02-06-05 15:53 hamishtpb      Note Added: 0003525                          
-02-09-05 11:55 tiwai          Note Added: 0003545                          
-02-09-05 12:23 hamishtpb      Note Added: 0003549                          
-02-09-05 12:44 hamishtpb      Note Added: 0003551                          
-02-09-05 12:53 hamishtpb      Note Edited: 0003551                         
-02-11-05 15:42 Clemens LadischNote Added: 0003564                          
-02-11-05 17:22 hamishtpb      Note Added: 0003565                          
-======================================================================
+<snip>
 
+> Given that overriding codecs with NCR becomes popular, it might be
+> nice to have a module option to specify the codecs as bitmask.
+> The below is a quick hack.
 
+I think I had tried something similar, but it oops'd the module.  When I 
+did this, however, I knew beforehand that it was likely to not work. 
+Your hack looks safer though.  I'll pop this in when I get some time and 
+play with it and see how it works.
+
+Thanks,
+Ron
+
+--------------010007000106090006060400
+Content-Type: text/x-patch;
+ name="ac97_pcm.c.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ac97_pcm.c.patch"
+
+--- ac97_pcm.c.orig	2005-02-08 15:42:46.000000000 -0500
++++ ac97_pcm.c	2005-02-11 11:03:49.757899504 -0500
+@@ -312,6 +312,7 @@
+ 		return 0;
+ 	if (ac97_is_rev22(ac97) || ac97_can_amap(ac97)) {
+ 		unsigned short slots = 0;
++		/*snd_printk("ac97_is_rev22: %d\n", ac97_is_rev22(ac97));*/
+ 		if (ac97_is_rev22(ac97)) {
+ 			/* Note: it's simply emulation of AMAP behaviour */
+ 			u16 es;
+@@ -553,10 +554,12 @@
+ {
+ 	ac97_bus_t *bus;
+ 	int i, cidx, r, ok_flag;
+-	unsigned int reg_ok = 0;
++	unsigned int reg_ok[4] = {0,0,0,0};
+ 	unsigned char reg;
+ 	int err = 0;
+ 
++	snd_printk("slots: 0x%04X\n", slots);
++
+ 	r = rate > 48000;
+ 	bus = pcm->bus;
+ 	if (cfg == AC97_PCM_CFG_SPDIF) {
+@@ -597,19 +600,23 @@
+ 			continue;
+ 		for (cidx = 0; cidx < 4; cidx++) {
+ 			if (pcm->r[r].rslots[cidx] & (1 << i)) {
++				snd_printk("matching slot: cidx=%d, slot=%d\n", cidx, i);
+ 				reg = get_slot_reg(pcm, cidx, i, r);
+ 				if (reg == 0xff) {
+ 					snd_printk(KERN_ERR "invalid AC97 slot %i?\n", i);
+ 					continue;
+ 				}
+-				if (reg_ok & (1 << (reg - AC97_PCM_FRONT_DAC_RATE)))
++				if (reg_ok[cidx] & (1 << (reg - AC97_PCM_FRONT_DAC_RATE)))
+ 					continue;
+ 				//printk(KERN_DEBUG "setting ac97 reg 0x%x to rate %d\n", reg, rate);
++				snd_printk("setting ac97 reg 0x%x to rate %d (codec %d)\n", reg, rate, cidx);
+ 				err = snd_ac97_set_rate(pcm->r[r].codec[cidx], reg, rate);
+ 				if (err < 0)
+ 					snd_printk(KERN_ERR "error in snd_ac97_set_rate: cidx=%d, reg=0x%x, rate=%d, err=%d\n", cidx, reg, rate, err);
+-				else
+-					reg_ok |= (1 << (reg - AC97_PCM_FRONT_DAC_RATE));
++				else {
++					reg_ok[cidx] |= (1 << (reg - AC97_PCM_FRONT_DAC_RATE));
++					snd_printk("success in snd_ac97_set_rate: cidx=%d, reg=0x%x, rate=%d\n", cidx, reg, rate);
++				}
+ 			}
+ 		}
+ 	}
+
+--------------010007000106090006060400--
 
 
 -------------------------------------------------------
