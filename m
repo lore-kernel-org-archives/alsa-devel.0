@@ -1,11 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Lisp alsa mixer
-Date: Thu, 24 Mar 2005 09:18:52 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0503240914280.1765@pnote.perex-int.cz>
-References: <4241D544.5050508@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001010]: Speaker output does not work.
+Date: Thu, 24 Mar 2005 10:24:36 +0100
+Message-ID: <2bb5d2a1b000a7c6ba973936d775731a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <4241D544.5050508@superbug.co.uk>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 85A26291
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 10:24:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,33 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 23 Mar 2005, James Courtier-Dutton wrote:
 
-> I would like to help complete the work Jaroslav started on the alsa-lib 
-> lisp config file for the mixer. Can you describe to me how far you have 
-> got, and what your plans are with regard to it, so that I can help.
-> It would be nice to finally finish the mixer part of alsa, because that 
-> it what most users complain about.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1010> 
+======================================================================
+Reported By:                sylware
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1010
+Category:                   PPC - powermac
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Hoary
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             03-24-2005 10:24 CET
+Last Modified:              03-24-2005 10:24 CET
+======================================================================
+Summary:                    Speaker output does not work.
+Description: 
+I use a powermac windtunnel newworld with a keywest snapper audio
+controller on the uninorth i2c bus (according to the /sys and /proc
+filesystems). I'm able to get sound from the headphone output at the front
+of the computer(it does automute the computer speaker when I plug the jack
+in) but I'm unable to get sound from the speaker output at the rear of the
+computer.
+======================================================================
 
-I agree. I have a lot of stuff in my notebook, but it's really still in
-very development stage (nothing works and I am not still sure if it's the
-right way), so I propose to create a new branch in alsa-lib to put my
-stuff there.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-24-05 10:24 sylware        New Issue                                    
+03-24-05 10:24 sylware        Distribution              => Ubuntu Hoary    
+03-24-05 10:24 sylware        Kernel Version            => 2.6.10          
+======================================================================
 
-Also, I would like to move discussions / proposals / comments / final 
-directions about APIs to new "official" ALSA Wiki (see to ALSA web for 
-link).
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
