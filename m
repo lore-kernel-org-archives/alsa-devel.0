@@ -1,13 +1,12 @@
-From: Vincent Vanackere <vanackere@cmi.univ-mrs.fr>
+From: Paul Davis <pbd@op.net>
 Subject: Re: GUS driver status : multiple open of /dev/dsp ?
-Date: Fri, 07 Jun 2002 15:41:07 +0200
+Date: Fri, 07 Jun 2002 12:22:02 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D00B7F3.4010805@cmi.univ-mrs.fr>
-References: <3CFF2B90.6050304@cmi.univ-mrs.fr> <20020607024358.A29561@sci.fi>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <E17GMUB-0000Vj-00@usw-sf-list1.sourceforge.net>
+References: <20020607163222.A25401@sci.fi>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: Your message of "Fri, 07 Jun 2002 16:32:22 +0300."
+             <20020607163222.A25401@sci.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,47 +15,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: =?ISO-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
+To: Ville Syrj l <syrjala@sci.fi>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Ville Syrj=E4l=E4 wrote:
-> On Thu, Jun 06, 2002 at 11:29:52AM +0200, Vincent Vanackere wrote:
->=20
->>I'm sorry to ask such a common question here, but I'd like to know if
->>it is possible to configure my (old) Gravis Ultrasound ISA PnP card in=20
->>order to enable multiple open of /dev/dsp with alsa.
->=20
->=20
-> Should be possible. With a GUS PnP you have to use the second pcm devic=
-e.
-> first one is the codec and second is the synth. That would be mapped to
-> /dev/adsp for OSS emulation. You have to pass the snd-interwave module
-> snd_pcm_channels=3Dn parameter where n is from 2 to 16.
+>On Thu, Jun 06, 2002 at 09:20:31PM -0400, Paul Davis wrote:
+>> >The problem with GUS synth is that it uses non-interleaved data layout so
+>> >it's not relly useful for pcm stuff. alsa-lib doesn't want to do
+>> >the required conversion for some reason.
+>> 
+>> i find this very suprising and somewhat hard to believe. the
+>> hammerfall also uses a non-interleaved data layout (as all the best
+>> cards do :), and yet despite the fact that the driver contains no code
+>> to handle an interleaved stream, aplay via plughw:N,0 works just
+>> fine i.e. alsa-lib handles the conversion perfectly. what makes you
+>> think it doesn't work?
+>
+># aplay -D plughw:0,1 stereo.wav
+>aplay: set_params:754: Access type not available
 
+can you try it with the -I option, and also the -m option (in all
+combinations)?
 
-So in that case, does it mean that by simply replacing /dev/dsp with a=20
-symlink to /dev/sound/adsp, I can have 2 different (and up to 16...) oss=20
-applications transparently accessing the sound card ? However, that=20
-sounds too easy to be true... I can't test this right now - I'm at work=20
-- but I'll have a try tonight.
-
-
-> The problem with GUS synth is that it uses non-interleaved data layout =
-so
-> it's not relly useful for pcm stuff. alsa-lib doesn't want to do
-> the required conversion for some reason. Interwave supports also
-> interleaved DMA but the driver doesn't use this feature.
-
-
-I'm a little confused with this: is it related to/does that explain the f=
-act
-that xmms crashes systematically when I set the alsa output to GUS/synth =
-?
-
-Many thanks for your help,
-
-Vincent
+--p
 
 
 _______________________________________________________________
