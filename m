@@ -1,14 +1,13 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: alsa-driver-1.0.6a unresolved symbol
-Date: Sat, 9 Oct 2004 14:59:05 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000574]: bad sound reproduction
+Date: Sat,  9 Oct 2004 15:03:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041009145905.1fcf393a@mango.fruits.de>
-References: <200410091113.32047.loritz@fh-furtwangen.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <20041009130303.942984500E@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200410091113.32047.loritz@fh-furtwangen.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D7DA1D6
+	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 15:03:03 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,21 +16,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mario Loritz <loritz@fh-furtwangen.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 9 Oct 2004 11:13:32 +0200
-Mario Loritz <loritz@fh-furtwangen.de> wrote:
 
-> I think I've seen this error before in an earlier version of alsa.
-> There, it could be fixed...
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000574
+======================================================================
+Reported By:                nicola
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     574
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               fedora core 2
+Kernel Version:             kernel 2.6.5-1.358
+======================================================================
+Date Submitted:             10-09-2004 15:03 CEST
+Last Modified:              10-09-2004 15:03 CEST
+======================================================================
+Summary:                    bad sound reproduction
+Description: 
+Sound isn't reproduced rigth way, sound play and stop, play and stop. I
+can't hear a fluid sound, the only way to hear sound is moving continously
+the mouse. 
+I can't hear system sounds, totem (and xine based programs) doesn't
+reproduce fluid sounds, while mplayer and helix can (but sometimes stream
+is shifted on).
 
-I don't think this is an alsa error. This is rather a module build error.
-Make sure your kernel source tree is in a suitable state for building
-modules against it.
+======================================================================
 
-flo
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-09-04 15:03 nicola         New Bug                                      
+10-09-04 15:03 nicola         Distribution              => fedora core 2   
+10-09-04 15:03 nicola         Kernel Version            => kernel 2.6.5-1.358
+======================================================================
 
 
 -------------------------------------------------------
