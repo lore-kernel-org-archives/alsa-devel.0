@@ -1,111 +1,48 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
-Date: Thu, 10 Mar 2005 18:03:54 +0100
-Message-ID: <98fff87465d1d3895c9b3f698f6445dd@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: doom 3 sounds also messed up
+Date: Thu, 10 Mar 2005 12:09:47 -0500
+Message-ID: <1110474587.12805.23.camel@mindpipe>
+References: <1110473123.6829.3.camel@linux.site>
+	 <1110473496.12805.9.camel@mindpipe>  <1110474067.6829.9.camel@linux.site>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DDE551B4
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 18:03:54 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+In-Reply-To: <1110474067.6829.9.camel@linux.site>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: jpshark <jpomanto@satx.rr.com>
+Cc: alsa list <alsa-user@lists.sourceforge.net>, alsa-devel@sc8-sf-spam1.sourceforge.net, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2005-03-10 at 11:01 -0600, jpshark wrote:
+> Lee, I don't know why Gnome is using 44100 if it's suppose to default to
+> 48000. It's version 2.6 with SuSE 9.2 on a fresh install (yesterday).
+> You said I'll have to use the ALSA plug layer to get 48000. I don't know
+> what you mean. Can you explain? Please make it newb friendly. Thanks.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=846> 
-======================================================================
-Reported By:                Envel
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   846
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.8.1
-======================================================================
-Date Submitted:             01-24-2005 13:44 CET
-Last Modified:              03-10-2005 18:03 CET
-======================================================================
-Summary:                    Can't hear sound from one of the surround speaker,
-while other is working (speakers are functional).
-Description: 
-With options "Line-In as surround" and "Duplicate front" the right surround
-speaker is not working, while others are functional. After uninstalling
-ALSA 1.0.8 and installing againg ALSA 1.0.7 with the same mixer
-configuration the error is not occures. SoundCard: nForce2 Audio Codec,
-Driver: snd-intel8x0, 4 speakers.
-p.s. sorry for my English.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000902 Some channels not working
-======================================================================
+Sorry, though I do use it, I don't know the internals of Gnome well
+enough to comment further.  Maybe someone else can help?
 
-----------------------------------------------------------------------
- slammer - 03-10-05 13:17 
-----------------------------------------------------------------------
-I confirm it too. CVS version fixes my issue reported in 902 so I guess
-it's the same bug ;)
-Great job guys!
+Really, the root cause of all these problems with the Audigy LS driver
+is that it's almost 100% reverse engineered.  It's impressive that James
+got it to work so well.  But apparently people are buying Audigy LS
+hardware and expecting it to work as well as a real SBLive or Audigy.
+That's just not going to happen until Creative gives us some more docs
+(or even better, a driver, but fat chance).  There are some pretty good
+reverse engineers on alsa-devel but a reverse engineered driver will
+just never work as well as one written with proper docs.
 
-----------------------------------------------------------------------
- stephenv - 03-10-05 18:03 
-----------------------------------------------------------------------
-I was reading the howto's off the main page, hadn't occured to me that the
-INSTALL would contain entirely different instructions. Anyhow, as you can
-see, I "did it right" according to the install instruction in INSTALL and
-still have the problem. I am running kernel-2.6.10-1.770 for fc3, looks
-like this may be the problem as those of you reporting it fixed are
-running 2.6.11 of some sort. FC3 hasn't released that yet. I could roll my
-own, I know it "shouldn't" break anything, might do that when I can find
-the time. I have a wife and family though, and they miss me since I
-started this linux thing.
+Maybe we should update the soundcard matrix to make it clear that the
+Audigy LS is not supported on the same level as the emu10k1/2.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-24-05 13:44 Envel          New Issue                                    
-01-24-05 13:44 Envel          Kernel Version            => 2.6.8.1         
-01-25-05 15:18 tiwai          Note Added: 0003402                          
-01-28-05 08:17 ivantheviking  Issue Monitored: ivantheviking                    
-01-28-05 08:19 ivantheviking  File Added: asound.state                     
-01-28-05 08:20 ivantheviking  File Added: ac97#0-0                         
-01-28-05 08:21 ivantheviking  File Added: ac97#0-0+regs                    
-01-28-05 08:30 ivantheviking  Note Added: 0003424                          
-01-29-05 17:13 ivantheviking  Note Added: 0003438                          
-03-01-05 00:03 stephenv       Issue Monitored: stephenv                    
-03-01-05 00:06 stephenv       Note Added: 0003752                          
-03-02-05 01:19 ivantheviking  Note Edited: 0003438                         
-03-04-05 22:53 slammer        Note Added: 0003802                          
-03-04-05 22:55 slammer        Issue Monitored: slammer                     
-03-07-05 00:12 stephenv       File Added: svs.tar                          
-03-08-05 18:43 jor            Issue Monitored: jor                         
-03-08-05 19:03 jor            Note Added: 0003816                          
-03-09-05 18:43 tiwai          Note Added: 0003834                          
-03-09-05 18:43 tiwai          Note Added: 0003835                          
-03-09-05 19:24 jor            Note Added: 0003845                          
-03-10-05 03:27 stephenv       Note Added: 0003847                          
-03-10-05 11:55 slammer        Note Added: 0003848                          
-03-10-05 13:17 slammer        Note Added: 0003850                          
-03-10-05 14:36 tiwai          Relationship added       has duplicate 0000902
-03-10-05 18:03 stephenv       Note Added: 0003869                          
-======================================================================
-
+Lee
 
 
 
