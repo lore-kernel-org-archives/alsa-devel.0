@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000484]: Hercules MUSE Pocket, channels swapping randomly during playback
-Date: Tue, 9 Nov 2004 16:20:11 +0100
-Message-ID: <310a3f59e02c053af765beaac486fce2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000194]: Prodigy 192 -  Eprom incorrect size?
+Date: Tue, 9 Nov 2004 16:19:26 +0100
+Message-ID: <023acefe925bb019d9d9ec78d2075c07@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 00941244
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:20:11 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4ACF4247
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:19:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=484> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=194> 
 ======================================================================
-Reported By:                jone
-Assigned To:                Clemens Ladisch
+Reported By:                jvlake
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   484
-Category:                   USB - usb-audio
+Issue ID:                   194
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian unstable
-Kernel Version:             2.4.23-cobalt3
-Resolution:                 not an issue
+Distribution:               RedHat 9 _ 2.4.20.8
+Kernel Version:             RedHat9 _ 2.4.20.8
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-06-2004 21:32 CEST
-Last Modified:              11-09-2004 16:20 CET
+Date Submitted:             04-07-2004 06:06 CEST
+Last Modified:              11-09-2004 16:19 CET
 ======================================================================
-Summary:                    Hercules MUSE Pocket, channels swapping randomly
-during playback
+Summary:                    Prodigy 192 -  Eprom incorrect size?
 Description: 
-When my Hercules MUSE Pocket device is connected via a hub the  sound
-channels swap back and forth randomly during playback.
+after compiling the driver and rebooting i get a message that the eprom is
+the wrong size for my card (on startup) needless to say, I also get no
+sound. I am assuming this is because this card is not a 'prodigy 7.1' but
+a 'prodigy 192' even though both cards are made by Audiotrak are 24/192khz
+& 7.1. to look at the cards they are almost identical. is there anyway I
+can get the driver to work?
 ======================================================================
 
 ----------------------------------------------------------------------
- jone - 09-07-04 17:54 
+ co2b - 09-07-04 16:37 
 ----------------------------------------------------------------------
-It's just a simple el-cheapo passive 1.1 hub.
+Prodigy192 uses Sigmatel STAC9460 audio codec, so Prodigy7.1 driver does
+not work.
+STAC9460 data sheet is here:
+http://www.sigmatel.com/products/technical_docs.htm#9460
 
-Bus 002 Device 002: ID 05e3:0604 Genesys Logic, Inc. 
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.01
-  bDeviceClass            9 Hub
-  bDeviceSubClass         0 Unused
-  bDeviceProtocol         0 
-  bMaxPacketSize0         8
-  idVendor           0x05e3 Genesys Logic, Inc.
-  idProduct          0x0604 
-  bcdDevice            0.12
-  iManufacturer           0 
-  iProduct                1 
-  iSerial                 0 
-  bNumConfigurations      1
+I wrote a patch for this card (it is against Linux-2.6.8-rc2).
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 09-08-04 11:18 
+ perex - 09-07-04 17:03 
 ----------------------------------------------------------------------
-Channel swapping occurs if the device receives an odd number of audio
-samples.  The snd-usb-audio driver always sends an even number of samples
-(the OSS driver, too), so it seems your hardware loses some data on the
-way.
-
-Apparently, there is an incompatibility between the Cobalt's USB
-controller and the Genesys hub.  (There are many Genesys chips that have,
-er, issues.)
+The patch was applied to CVS. Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-06-04 21:32 jone           New Issue                                    
-09-06-04 21:32 jone           Distribution              => Debian unstable 
-09-06-04 21:32 jone           Kernel Version            => 2.4.23-cobalt3  
-09-07-04 17:44 Clemens LadischNote Added: 0001721                          
-09-07-04 17:54 jone           Note Added: 0001722                          
-09-08-04 11:18 Clemens LadischStatus                   assigned => resolved
-09-08-04 11:18 Clemens LadischResolution               open => not an issue
-09-08-04 11:18 Clemens LadischNote Added: 0001727                          
-11-09-04 16:20 tiwai          Status                   resolved => closed  
+04-07-04 06:06 jvlake         New Issue                                    
+04-07-04 06:06 jvlake         Distribution              => RedHat 9 _ 2.4.20.8
+04-07-04 06:06 jvlake         Kernel Version            => RedHat9 _ 2.4.20.8
+04-07-04 06:09 jvlake         Note Added: 0000760                          
+04-07-04 06:10 jvlake         Issue Monitored: jvlake                      
+04-07-04 19:47 perex          Category                 PCI - ice1712 => PCI -
+ice1724
+04-07-04 19:53 perex          Severity                 major => feature    
+04-07-04 19:53 perex          Status                   new => confirmed    
+04-07-04 19:54 perex          Note Added: 0000763                          
+04-16-04 16:00 tiwai          Note Added: 0000838                          
+06-18-04 17:45 Apostolos DimitromanolakisNote Added: 0001319                    
+     
+06-18-04 18:01 Apostolos DimitromanolakisIssue Monitored: Apostolos
+Dimitromanolakis                    
+09-07-04 16:37 co2b           Note Added: 0001711                          
+09-07-04 16:38 co2b           File Added: linux-2.6.8-rc2-prodigy192.patch      
+             
+09-07-04 17:03 perex          Status                   confirmed => resolved
+09-07-04 17:03 perex          Resolution               open => fixed       
+09-07-04 17:03 perex          Assigned To               => perex           
+09-07-04 17:03 perex          Note Added: 0001719                          
+11-09-04 16:19 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
