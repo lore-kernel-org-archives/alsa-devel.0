@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001009]: NVidia CK8S 8ch: a center speaker is always silent in native alsa mode (through alsa-lib), works with oss emulation though
-Date: Sun, 3 Apr 2005 17:47:23 +0200
-Message-ID: <5027b52a00a388ecb497d08b342cfaba@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001034]: (potential) problems introduced with the " improved stream linking and plugin code cleanups" patch by perex
+Date: Sun, 3 Apr 2005 17:53:58 +0200
+Message-ID: <36ceede94bd4e2f247ca17a088453696@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 351EF1DD
-	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 17:47:24 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D698E1CD
+	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 17:53:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,108 +24,95 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1009> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1034> 
 ======================================================================
 Reported By:                modax
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1009
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1034
+Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.11.5 with self-compiled alsa-driver
-1.0.9rc1
 ======================================================================
-Date Submitted:             03-22-2005 22:34 CET
-Last Modified:              04-03-2005 17:47 CEST
+Date Submitted:             04-03-2005 17:42 CEST
+Last Modified:              04-03-2005 17:53 CEST
 ======================================================================
-Summary:                    NVidia CK8S 8ch: a center speaker is always silent
-in native alsa mode (through alsa-lib), works with oss emulation though
+Summary:                    (potential) problems introduced with the " improved
+stream linking and plugin code cleanups" patch by perex
 Description: 
-A center speaker stays quiet while playing 5.1 audio directly through
-alsa-lib (eg. with kaffeine (xine) or mplayer using alsa plugin). As a
-result, I'm unable to hear what people are speaking in movies because the
-speech is usually sent to the center speaker (correct me if i'm wrong. i'm
-new to all this 5.1 business). Anyway, adjusting the volume,
-muting/unmuting "Center" section, enabling/disabling "Mic As Center/LFE"
-doesn't have any effect on the center speaker. It stays silent. However,
-as I noted in the summary, the center speaker works with oss audio driver
-of xine/mplayer (using oss emulation). However, that mode is not perfect
-as the center speaker plays the role of left surround and vice versa. In
-addition, a right surround speaker stays always silent (i guess that's
-because the RS channel needs to be swapped with LFE; at least I got this
-impression by having a look at
-/usr/share/alsa/cards/NForce.conf:surround51). To sum up, my problem is
-that I can't get the center speaker (which, I guess, is channel 2 on my
-hardware) working with native alsa apps playing ac3/5.1 audio.
+I'm not an alsa developer so I hadn't known anything about alsa internals
+up until I started debugging alsa-lib to fix an annoying bug I was having
+with alsa 1.0.9rc1 and above. I'm not sure whether my patch/suggestions
+are 100% correct or the best way fix to those bugs.
+
+The initial problem I'm refering to is described in bug#1009 note
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0004275. I narrowed my
+search of the regression down to the big patch,
+which was submitted to alsa-lib CVS on 2005-01-20 by perex. The patch
+cleans up plugin code. Unfortunately, some things have been overlooked by
+the author. Firstly, I'll start with my problem and a fix for it.
+
+As I described in note
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0004275, I had problems
+with -Dsurround51 on my
+NFORCE board. The root of the problem was a combination of two plugins -
+route and hooks - used in surround51 configuration. Later I learned, that
+removing one of them helped, but they both wouldn't work. The portion of
+code which is to blame for the regression can be seen in
+hooks-channel-info-fix.patch (attached). Just compare the original
+pcm_hooks.c:snd_pcm_hooks_channel_info() (before "2005-01-20" patch) and
+pcm_generic.c:snd_pcm_generic_channel_info(), which was supposed to
+replace it. They are completely different functions. Other plugins which
+are likely to suffer from the same bug are:
+  * pcm_file.c
+  * pcm_plug.c
+
+However, most other plugins used
+pcm_plugin.c:snd_pcm_plugin_channel_info() before the "2005-01-20" patch.
+It shares the same code with snd_pcm_generic_channel_info(). So this issue
+raises a few question:
+  * Is snd_pcm_generic_channel() as it is now valid? At least pcm_hooks
+and likely pcm_file and pcm_plug don't work with it.
+  * If it's valid, there is a necessity to create another generic
+function, which clones the code previously provided by
+snd_pcm_{hooks,file,plug}_channel_info() functions.
+
+The attached patch solves the problem for me, but it is not an universal
+solution. The patch should be applied against CVS as of 2005-01-21 or
+later.
+
+And now here it comes some other remarks regarding the "2005-01-20"
+patch.
+  * I guess, snd_pcm_plugin_fast_ops.status = snd_pcm_generic_status in
+pcm_plugin.c is incorrect because it makes snd_pcm_plugin_status()
+reduntant and these functions don't share the same code.
+  * Plugins which haven't been "cleaned up" by the "2005-01-20" patch
+include:
+    - pcm_meter.c
+    - pcm_null.c
+    - pcm_share.c
+    - pcm_shm.c
+    The latter two seem to be kinda different beasts whereas the first two
+shouldn't be too difficult to "_generic_"'ize.
 ======================================================================
 
 ----------------------------------------------------------------------
- modax - 03-30-05 23:28 
+ modax - 04-03-05 17:53 
 ----------------------------------------------------------------------
-The patch does not help, i.e. it does not change anything. And the bug
-doesn't seem to be mixer related, because I am sometimes able to hear some
-sound coming with -Dsurround51. That's what I observed:
-
-Firstly, I execute a command:
-
-$ speaker-test -Dfront -c2 -f1000
-
-This one plays continuous 1000Hz tone (sharp) to Front speakers and
-everything works as expected. Next I run a command:
-
-$ speaker-test -Dsurround51 -c6 -f75
-
-This one should play continuous 75Hz tone (bass) to my 5.1 speakers.
-However, I get the same 1000Hz tone (or something near it, but it's
-definitely not 75hz) which I played before instead. In addition, the tone
-is jerky and is *always* played on the Front Left and Rear Surround Left
-speakers, i.e. as speaker-test circles through the Front L/R -> Rear L/R
--> Center -> LFE the tone is always played on Front and Rear Left speakers
-no matter what speaker-test says it should be played on.
-
-To sum up, it seems that alsa-lib 1.0.9rc1+ (I guess it's a fault of the
-library, because downgrading to alsa-lib 1.0.8 helps) with -Dsurround51
-repeats the last tone played (with some disortion) endlessly ignoring the
-sound the application sends to it. This explains why I got no sound at all
-with my previous -Dsurround51 tests. Most audio streams end with silence
-and because -Dsurround51 repeats the last tone (tones) played, it ends up
-with repeating silence.
-
-I performed these tests with alsa-driver & alsa-lib compiled from CVS as
-of 2005-03-29 23:00 UTC with your patch applied (as I state above, your
-patch doesn't have any effect). I used speaker-test from alsa-utils 1.0.8
-but, I guess, that shouldn't matter.
-
-----------------------------------------------------------------------
- modax - 04-03-05 17:47 
-----------------------------------------------------------------------
-The bug I described in note
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0004275 is a completely
-different one. I
-submited a new bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1034
-for it. Let's go back to the original problem as
-it seems it's not fixed in alsa 1.0.9rc2+cvs20050403
+I wonder where my alsa/os info has disappered. The bug applies to alsa-lib
+1.0.8+cvs20050121 and later. I'm running Debian unstable and Linux kernel
+2.6.11.5  with alsa-driver 1.0.9rc2+cvs20050330
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-05 22:34 modax          New Issue                                    
-03-22-05 22:34 modax          Distribution              => Debian unstable 
-03-22-05 22:34 modax          Kernel Version            => vanilla 2.6.11.5 with
-self-compiled alsa-driver 1.0.9rc1
-03-23-05 13:01 tiwai          Note Added: 0004156                          
-03-25-05 00:37 modax          Note Added: 0004204                          
-03-25-05 00:37 modax          File Added: bug-1009.tar.gz                    
-03-30-05 18:22 tiwai          Note Added: 0004268                          
-03-30-05 18:22 tiwai          File Added: nforce-conf-test.diff                 
-  
-03-30-05 23:28 modax          Note Added: 0004275                          
-04-03-05 17:47 modax          Note Added: 0004311                          
+04-03-05 17:42 modax          New Issue                                    
+04-03-05 17:42 modax          File Added: hooks-channel-info-fix.diff           
+        
+04-03-05 17:53 modax          Note Added: 0004312                          
 ======================================================================
 
 
