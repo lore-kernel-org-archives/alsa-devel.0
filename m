@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000648]: aplay -Dspdif produces choppy (beating?) audio from DTS .wav files
-Date: Wed, 17 Nov 2004 18:21:31 +0100
-Message-ID: <a22ebdb0f0f429ec6e024d8fd5e5e537@bugtrack.alsa-project.org>
+From: "Jack O'Quin" <joq@io.com>
+Subject: Re: Lowest latency: JACK, or ALSA directly?
+Date: 17 Nov 2004 11:32:15 -0600
+Message-ID: <87oehwv0tc.fsf@sulphur.joq.us>
+References: <20041111144152.GA12443@stud.ntnu.no>
+	<87mzxozahr.fsf@sulphur.joq.us> <20041112090416.GA3167@stud.ntnu.no>
+	<87oei3xbly.fsf@sulphur.joq.us> <s5hpt2jdmsr.wl@alsa2.suse.de>
+	<87k6srx9wi.fsf@sulphur.joq.us> <s5hd5ycsexu.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9C7A9270
-	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2004 18:21:31 +0100 (MET)
+In-Reply-To: <s5hd5ycsexu.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +19,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: =?iso-8859-1?q?Asbj=F8rn_S=E6b=F8?= <asbjs@stud.ntnu.no>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=648> 
-======================================================================
-Reported By:                duanev
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   648
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake 10.1
-Kernel Version:             Preemptable 2.6.8 kernel
-======================================================================
-Date Submitted:             11-14-2004 04:24 CET
-Last Modified:              11-17-2004 18:21 CET
-======================================================================
-Summary:                    aplay -Dspdif produces choppy (beating?) audio from
-DTS .wav files
-Description: 
-Sound produced by aplay is not smooth - audio is "chopped up" or appears to
-"beat" at about 5Hz.
-======================================================================
+> > Takashi Iwai <tiwai@suse.de> writes:
+> > > I'm asking this because some boards (e.g. RME32/96) have the fixed
+> > > buffer size, and can't take the configuration as two periods per
+> > > buffer.  IIRC, JACK fills all the buffer at the first sequence, and
+> > > this results in the higher latency than necessary.
+> > > 
+> > > Correct me if I'm wrong.
 
-----------------------------------------------------------------------
- duanev - 11-17-04 07:02 
-----------------------------------------------------------------------
-Fixed with patch posted to bug 646.
+> At 12 Nov 2004 11:19:25 -0600,
+> Jack O'Quin wrote:
+> > I believe you are correct about this.  You probably understand it
+> > better than I do.  :-)
+> > 
+> > Is this something we could fix in JACK's ALSA driver backend?
 
-How do I close this?!
+Takashi Iwai <tiwai@suse.de> writes:
+> We can set different values to avail_min for playback and capture
+> directions.  For getting the minimal latency, set
+> (nperiods - 1) * period_size for playback and period_size for
+> capture.
+> 
+> The patch attached adds a new option -f to specify the filling
+> periods.  As default (= 0), it's identical with nperiods, so the old
+> behavior is kept.
 
-----------------------------------------------------------------------
- rlrevell - 11-17-04 18:21 
-----------------------------------------------------------------------
-Hmm good question.  Takashi-san. can we close this, marking it as a
-duplicate of bug 646?
+Thanks for the patch!
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-14-04 04:24 duanev         New Issue                                    
-11-14-04 04:24 duanev         Distribution              => Mandrake 10.1   
-11-14-04 04:24 duanev         Kernel Version            => Preemptable 2.6.8
-kernel
-11-14-04 04:41 rlrevell       Note Added: 0002406                          
-11-14-04 10:02 pzad           Note Added: 0002407                          
-11-17-04 07:02 duanev         Note Added: 0002433                          
-11-17-04 18:21 rlrevell       Note Added: 0002437                          
-======================================================================
+Not sure I completely understand how to document this.  Is -f
+effectively setting the output latency, with -n as the default?
 
-
+Is there some way users could just set the desired latency directly,
+or even request the minimum number of periods?  Is the minimum always
+2?  What happens if the user specifies -f1?
+-- 
+  joq
 
 
 -------------------------------------------------------
