@@ -1,13 +1,13 @@
-From: Niklas Werner <bergtroll@gmx.li>
-Subject: emi 2|6 usb-audio
-Date: Fri, 9 Aug 2002 23:41:55 +0200
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: hdsp driver, digiface, external sync
+Date: Fri,  9 Aug 2002 17:12:57 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200208092141.XAA22116@papaschlumpf.wg>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 8bit
+Message-ID: <200208100012.RAA23381@cmn29.stanford.edu>
+References: <200208092141.XAA22116@papaschlumpf.wg>
+Mime-Version: 1.0 (NeXT Mail 3.3 v148.2.1)
+Content-Type: text/plain
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200208092141.XAA22116@papaschlumpf.wg>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,80 +17,75 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: nando@ccrma.Stanford.EDU
 List-Id: alsa-devel@alsa-project.org
 
-Hi all!
+Hi! Anybody out there has managed to get this combination
+working? The hdsp driver on a Hammerfall DSP works fine with
+"Internal" preferred sync, but chokes when trying to sync the
+card to external sources. This happens using both "ADAT1" and
+"Word" as sync sources - in both cases the front panel LEDs
+for ADAT1 and Word Clock light up solid when the external
+source is connected. Playback fails with weird errors:
 
-Good News (especially to takashi):
+# aplay --verbose -D plughw:1 test-tones-stereo.wav
+Playing WAVE 'test-tones-stereo.wav' : Signed 16 bit Little Endian, Rate 44100  
+Hz, Stereo
+ALSA lib pcm_hw.c:292:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS failed:  
+Operation not permitted
+aplay: set_params:787: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 44100
+PERIOD_TIME: (92879 92880)
+PERIOD_SIZE: 4096
+PERIOD_BYTES: 16384
+PERIODS: 2
+BUFFER_TIME: (185759 185760)
+BUFFER_SIZE: 8192
+BUFFER_BYTES: 32768
+TICK_TIME: 10000
 
-Emagic's emi 2|6 works with 6 channels out using a52dec from dvd!
-unfortunately there seems to be no way of accesing the 6 channels via the 
-.asoundrc-trick from patrick. I can't get any pcmCxD1 or pcmCxD2 device.
-alsamixer only shows 2 channels in and 2 channel out.
+This is what proc has to say about the card:
 
-===============================
-cat /proc/asound/emi/stream0   
-EMAGIC GmbH Emagic EMI 2|6 : USB Audio                                    
-                                                                          
-Playback:
-  Status: Stop
-  Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000, 96000
-  Altset 2
-    Format: S16_LE
-    Channels: 6
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000
-  Altset 3
-    Format: S24_3LE
-    Channels: 6
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 44100, 48000
-  Altset 4
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 10 OUT (ASYNC)
-    Rates: 96000
+# cat /proc/asound/HammerfallDSP/hdsp
+RME Hammerfall DSP (Digiface) (Card #2)
+Buffers: capture cf000000 playback cee00000
+IRQ: 17 Registers bus: 0xf4900000 VM: 0xd09d6000
+Control register: 0x100608c
+Status register: 0x12c40008
+Status2 register: 0xffff0041
+FIFO status: 0
+MIDI1 Output status: 0xffffff00
+MIDI1 Input status: 0xffffff00
+MIDI2 Output status: 0xffffff00
+MIDI2 Input status: 0xffffff00
 
-Capture:
-  Status: Stop
-  Altset 1
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
-  Altset 2
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 12 IN (ASYNC)
-    Rates: 44100, 48000, 96000
+Latency: 4096 samples (2 periods of 16384 bytes)
+Hardware pointer (frames): 0
+Passthru: no
+Line out: on
+Firmware version: 1
+Sync reference: Word/ADAT1
+Sample rate: 44100
 
-========================================
+IEC958 input: Coaxial
+IEC958 output: Coaxial only
+IEC958 quality: Consumer
+IEC958 emphasis: off
+IEC958 NonAudio: off
 
-But:
-cat /proc/asound/devices 
-  0: [0- 0]: ctl
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
- 33:       : timer
- 32: [1- 0]: ctl
- 48: [1- 0]: digital audio playback
- 56: [1- 0]: digital audio capture
+IEC958 sample rate: Error flag set
 
-card0 is my ppc-screamer, card1 is the emi.
+ADAT1: Sync
+ADAT2: No Lock
+ADAT3: No Lock
 
-Does anybody have an idea, how I must tweak my .asoundrc to get a device 
-I can send 6 channels of appropriately formatted data to?
-I'm aware that a52dec seems to send sample1Ch1-sample1Ch2-sample1Ch3 ...
-I'd like to control the channels seperately, but I'm afraid that won't be 
-possible...
-
-Have fun*
-
-Niklas
+-- Fernando
 
 
 -------------------------------------------------------
