@@ -1,83 +1,71 @@
-From: Christian Kujau <evil@g-house.de>
-Subject: Re: Oops in 2.6.10-rc1
-Date: Mon, 08 Nov 2004 14:01:39 +0100
-Message-ID: <418F6E33.8080808@g-house.de>
-References: <4180F026.9090302@g-house.de> <Pine.LNX.4.58.0410281526260.31240@pnote.perex-int.cz> <4180FDB3.8080305@g-house.de> <418A47BB.5010305@g-house.de> <418D7959.4020206@g-house.de> <Pine.LNX.4.58.0411062244150.2223@ppc970.osdl.org> <20041107130553.M49691@g-house.de> <418E4705.5020001@g-house.de> <Pine.LNX.4.58.0411070831200.2223@ppc970.osdl.org> <20041107182155.M43317@g-house.de> <418EB3AA.8050203@g-house.de> <Pine.LNX.4.58.0411071653480.24286@ppc970.osdl.org>
+From: Marcel Holtmann <marcel@holtmann.org>
+Subject: Re: Hardware interface constant for Bluetooth
+Date: Mon, 08 Nov 2004 13:28:12 +0100
+Message-ID: <1099916892.6896.122.camel@pegasus>
+References: <1099877050.6896.70.camel@pegasus>
+	 <Pine.LNX.4.58.0411081152120.2162@pnote.perex-int.cz>
+	 <1099915428.6896.107.camel@pegasus>
+	 <Pine.LNX.4.58.0411081305260.2162@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.58.0411071653480.24286@ppc970.osdl.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: Linus Torvalds <torvalds@osdl.org>, alsa-devel@lists.sourceforge.net, linux-sound@vger.kernel.org, Greg KH <greg@kroah.com>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.58.0411081305260.2162@pnote.perex-int.cz>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hi Jaroslav,
 
-Linus Torvalds schrieb:
+> > this is a little bit tricky. Besides the native support for transporting
+> > PCM data over a Bluetooth SCO channel, the headset/handsfree profile
+> > uses a RFCOMM channel (serial port emulation) for additional settings.
+> > On this channel they use AT commands and actually I don't wanna put a AT
+> > parser into the kernel. It is in somekind possible, but I still think
+> > that it does not belong there, because it is profile specific and a
+> > Bluetooth profile is an application and applications should run in user
+> > space. On the other hand you still need to create that SCO channel from
+> > user space with somekind of ioctl, because the kernel can't know when
+> > this channel must be established. It depends on some AT commands that
+> > are send over the RFCOMM channel.
+> > 
+> > So my plan is to write a kernel module that is reponsible for the SCO
+> > audio traffic. This registers as a soundcard with the ALSA subsystem and
+> > it also registers a Bluetooth HWDEP. There is no initial PCM device
+> > registered with this soundcard. These are only added when a SCO channel
+> > is opened from the peer side or requested through an ioctl on the HWDEP
+> > interface. Besides this the HWDEP would also control the mixer settings,
+> > because these are exchanged over the RFCOMM channel.
+> > 
+> > Do you think this makes sense?
 > 
-> Not your fault. Think of this as a learning experience ;)
-
-it definitely is, yes.
-
-> Anyway, now that the _other_ driver also oopses, and with a very similar 
-> oops too, so it looks like they both depended on some undocumented (or 
-> changed) detail in the PCI layer. Next step would be to see if the thing 
-> that breaks is this merge:
-
-may i ask how you come to this conclusion? by technical knowledge or could
-this be deduced by some bk magic too?
-
+> Yep, the management of PCM devices belongs into the hwdep API - except the
+> mixer controls. You should map the possible mixer and other controls using
+> the universal control API.
 > 
-> 	ChangeSet@1.2463, 2004-11-04 17:07:16-08:00, torvalds@ppc970.osdl.org
-> 	  Merge bk://kernel.bkbits.net/gregkh/linux/driver-2.6
-> 	  into ppc970.osdl.org:/home/torvalds/v2.6/linux
-> 
-> which merges Greg's PCI/driver model changes.
-> 
-> It's all the same steps you took with the ALSA merge, you're a
-> professional by now ;)
+> The SNDRV_HWDEP_IFACE_BLUETOOTH definition was added to the ALSA CVS tree.
 
-i did "bk undo -a1.2463" from a current -BK tree and it oopses:
+I will look at the universal control API when the basics of the PCM
+handling are done. Thanks.
 
-http://www.nerdbynature.de/bits/prinz/2.6.10-rc1/dmesg-debug_oops-a1.2463.txt
+Regards
 
-(i've booted with different boot options this time, because i noticed that
-i always booted with "acpi=force". changing this did not help either.)
+Marcel
 
-next i wanted to do "bk undo -r1.2463" now to see if it does *not* break
-without this ChangeSet (because i already know it *breaks* with this
-ChangeSet) but that would leave some parentless child deltas. i read in
-the BK docs that "bk cset -x<version>" would help here. but "bk cset
-- -x1.2463" aborts:
 
-- ---------------------
-evil@atlant:~/kernel/linux-2.6-BK$ bk changes | head -n3
-ChangeSet@1.2463, 2004-11-04 17:07:16-08:00, torvalds@ppc970.osdl.org
-  Merge bk://kernel.bkbits.net/gregkh/linux/driver-2.6
-  into ppc970.osdl.org:/home/torvalds/v2.6/linux
 
-evil@atlant:~/kernel/linux-2.6-BK$ bk cset -x1.2463
-cset: Merge cset found in revision list: (1.2463).  Aborting. (cset1)
-- ---------------------
 
-i've put everthing on http://www.nerdbynature.de/bits/prinz/2.6.10-rc1/
-the .configs, the oopses are there. i've double checked a kernel built
-from "bk -a a1.2000.7.2" yesterday but the result was the same (no oops)
-
-thank you,
-Christian.
-- --
-BOFH excuse #121:
-
-halon system went off and killed the operators.
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFBj24z+A7rjkF8z0wRAu0tAJ9g7mfG0iz/LvSAafD7LWKNu9qvLQCg3fjW
-1oMRRK8oSqH5oZsudyIQVtw=
-=f8CQ
------END PGP SIGNATURE-----
+-------------------------------------------------------
+This SF.Net email is sponsored by:
+Sybase ASE Linux Express Edition - download now for FREE
+LinuxWorld Reader's Choice Award Winner for best database on Linux.
+http://ads.osdn.com/?ad_id=5588&alloc_id=12065&op=click
