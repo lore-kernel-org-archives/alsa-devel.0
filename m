@@ -1,15 +1,14 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: Is a complete Alsa restart possibly without rebooting?
-Date: Wed, 6 Aug 2003 10:04:00 -0700
+From: "Edward Wildgoose" <Ed@Wildgooses.com>
+Subject: Re: Is a complete Alsa restart possibly without rebooting?
+Date: Wed, 6 Aug 2003 18:37:26 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGIEKKCOAB.mknecht@controlnet.com>
-References: <20030806163009.GA5872@fliwatut.scifi>
+Message-ID: <01de01c35c41$67e0c800$cb40a8c0@FRiskMan.com>
+References: <NDBBLGIKBJENLAMOLFHGIEKKCOAB.mknecht@controlnet.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="US-ASCII"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030806163009.GA5872@fliwatut.scifi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,57 +17,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Frank Barknecht <fbar@footils.org>, Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
+To: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> Debian has an init-script that accepts a "force-[stop|restart]"
-> option. What this does is: It first kills all programs that use ALSA
-> with:
->
-> procs_using_sound="$(echo $({ find /dev -print0 | xargs -0 stat
-> -Lc '%t:%n' | grep -E '^(e|74):' \
-> | cut -d: -f2-; } | while read REPLY; do fuser "$REPLY" || true;
-> done | cut -f2- -d:))"
-> kill $procs_using_sound
-> sleep 2
-> kill -9 $procs_using_sound
->
-> and then rmmods like this:
->
-> rmmod -r $(lsmod | grep ^snd | awk '{print $1}')
->
-> Hope that helps... I could send you the file (or you could get it from
-> debian.org), but basically that's it.
->
-> ciao
-> --
->  Frank Barknecht                               _ ______footils.org__
+>    I don't think you need to send the file. So far this is sort of what
+I'm
+> doing by hand, but it isn't working. I can stop audio apps, then stop
+Alsa,
+> remove everything from memory (I think), and then restart Alsa. Alsa
+starts
+> up cleanly with no error messages, but sound does not return.
 
-Frank,
-   I don't think you need to send the file. So far this is sort of what I'm
-doing by hand, but it isn't working. I can stop audio apps, then stop Alsa,
-remove everything from memory (I think), and then restart Alsa. Alsa starts
-up cleanly with no error messages, but sound does not return.
+Actually perhaps this is the problem that I am seeing as well on a P4P800
+board with a hyperthreaded P4.  I have a dual P3 which starts and stops alsa
+fine, at least up to about alsa 0.9.4.  However, with this board if I do an
+alsa restart, modules reload, but no sound until reboot, and this happens
+with various builds at least as far back as 0.9.2
 
-   As I said earlier, I think there *may* be two other things going on here:
+The main soundcard is an RME 96/8 PAD, but I also have an onboard intel
+compatible thing which seems to suffer the same issues.
 
-1) The sound card hardware is a strange state after the driver does bad
-things to it.
-2) alsasound start does not apparently reset the hardware completely.
+Also in my case I don't get any OSS devices created, /dev/dsp, etc.
 
-   I can understand #2 conceptually since the reboot sets up PCI addressing
-and does other things to the card. If the driver was to mangle the PCI
-address of the card (I'm not suggesting it does, but just for instance) then
-I suppose the driver could not and should not try to fix that. My problem
-right now is I cannot see what's getting messed up, so I do not know how to
-reset it.
-
-   Luckily it's a pretty fast machine and a reboot is only about 45 seconds,
-but it's frustrating to have to shut down email and other things to do it.
-
-Thanks much,
-Mark
-
+Just an extra datapoint I hope...
 
 
 
