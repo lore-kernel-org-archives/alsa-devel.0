@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000782]: Poor digital aidio quality
-Date: Sun, 16 Jan 2005 14:57:34 +0100
-Message-ID: <0b1a86bba08bd9784c3dc4a703c70dcf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
+Date: Sun, 16 Jan 2005 15:38:51 +0100
+Message-ID: <2031b1c44e4de722a4389b56b82ce09f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8C2CD244
-	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2005 14:57:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 92189284
+	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2005 15:38:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=782> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
 ======================================================================
-Reported By:                ddemmer
-Assigned To:                fmoraes
+Reported By:                mr-k
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   782
-Category:                   PCI - emu10k1x
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   761
+Category:                   OTHERS
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core
-Kernel Version:             2.6.9-1.681_FC3.i686
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             01-03-2005 16:20 CET
-Last Modified:              01-16-2005 14:57 CET
+Date Submitted:             12-30-2004 13:13 CET
+Last Modified:              01-16-2005 15:38 CET
 ======================================================================
-Summary:                    Poor digital aidio quality
+Summary:                    Driver and all sound aplications hangs
 Description: 
-Attempting to play MP3 files with RealPlay or xmms using ALSA output
-results in scratchy, erratic, slow (Realplay) or speeded up (xmms) sound.
-I can change the xmms configuration to use libOSS.so instead of libALSA
-which fixes the problem.
+I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
+alsa
+from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
+problems.
 
-The gnome "Detect Sound Card" utility works fine and plays it's sound
-fine.
+Sometimes (up to couple times a day) driver crash and all processes using
+sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
+the
+module by rmmod (it hangs also). When i try to shutdown the system, it
+stops
+when it try to remove the module. ps hangs when it try to get
+informations
+about other hung processes, also when i try to do it manualy (by
+/proc/pid/),
+it hangs. Everything else is working good. 
+There are no messages from the kernel in /var/log/messages and
+/var/log/dmesg or reported to the console. 
 
-The gnome volume control does not affect the output level when using
-libOSS.
 
-I have by now muted everything in the alsamixer except the Master volume.
-
-Playing a CD works fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- fmoraes - 01-16-05 14:57 
+ mr-k - 01-12-05 15:57 
 ----------------------------------------------------------------------
-Can you try with ALSA 1.0.8?
+Well.. i didn't find any regularity. During usual work with computer sound
+stops working (xmms stops playing song or aplay just hang; sometimes even
+direfox hangs). Then i cant close or kill them, can't remove alsa modules
+from kernel and even can't shutdown my system. I really want to help you
+finding solution so tell me what should i do after crash? (i can record
+what is going on to avi file or do enything you need)
+
+----------------------------------------------------------------------
+ mr-k - 01-16-05 15:38 
+----------------------------------------------------------------------
+Nothing changes on alsa 1.0.8.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 16:20 ddemmer        New Issue                                    
-01-03-05 16:20 ddemmer        Distribution              => Fedora Core     
-01-03-05 16:20 ddemmer        Kernel Version            => 2.6.9-1.681_FC3.i686
-01-03-05 16:49 stransky       Issue Monitored: stransky                    
-01-04-05 13:43 ddemmer        Issue Monitored: ddemmer                     
-01-04-05 13:43 ddemmer        Issue End Monitor: ddemmer                    
-01-16-05 14:57 fmoraes        Note Added: 0003217                          
+12-30-04 13:13 mr-k           New Issue                                    
+12-30-04 13:13 mr-k           Distribution              => Gentoo          
+12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
+12-30-04 13:15 mr-k           File Added: alsa-report                      
+12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
+12-30-04 15:09 tiwai          Note Added: 0003022                          
+01-01-05 22:21 mr-k           Note Added: 0003038                          
+01-07-05 22:41 mr-k           Note Added: 0003123                          
+01-11-05 22:11 mr-k           Note Added: 0003158                          
+01-11-05 22:12 mr-k           File Added: alsa.log                         
+01-12-05 15:14 tiwai          Note Added: 0003170                          
+01-12-05 15:57 mr-k           Note Added: 0003173                          
+01-16-05 15:38 mr-k           Note Added: 0003218                          
 ======================================================================
 
 
