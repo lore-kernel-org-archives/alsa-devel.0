@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000410]: Cannot listen to line-in and aux at the same time
-Date: Thu, 30 Sep 2004 22:37:20 +0200 (CEST)
+Date: Thu, 30 Sep 2004 22:40:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040930203720.E2D9518007@server.perex-int.cz>
+Message-ID: <20040930204012.C85DD18007@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4778E293
-	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2004 22:37:21 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 907DC294
+	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2004 22:40:49 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               LFS 5.1.1, BLFS 5.1
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             07-27-2004 18:48 CEST
-Last Modified:              09-30-2004 22:37 CEST
+Last Modified:              09-30-2004 22:40 CEST
 ======================================================================
 Summary:                    Cannot listen to line-in and aux at the same time
 Description: 
@@ -334,6 +334,16 @@ which represents the front channel) while playing back some computer sound
 and some sound on either the line or aux channel, and tell me what the
 result is, we might fix or at least narrow the problem down.
 
+----------------------------------------------------------------------
+ ungod - 09-30-2004 22:40 CEST 
+----------------------------------------------------------------------
+Please not the initial settings too. It should be:
+
+VOUT1 = DAC+AUX
+VOUT2 = DAC
+VOUT3 = DAC
+VOUT4 = DAC (or maybe None)
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -370,6 +380,7 @@ Date Modified  Username       Field                    Change
 09-30-04 16:00 ungod          Bugnote Added: 0001984                       
 09-30-04 22:31 ungod          File Added: aureon-vout.diff                    
 09-30-04 22:37 ungod          Bugnote Added: 0001986                       
+09-30-04 22:40 ungod          Bugnote Added: 0001987                       
 ======================================================================
 
 
