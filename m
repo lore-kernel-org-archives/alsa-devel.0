@@ -1,14 +1,13 @@
-From: ted <ted@2600.COM>
-Subject: Re: No sound output on PowerBook Titanium II (TAS3001c)
- - resend (subscribed now)
-Date: Wed, 6 Aug 2003 16:22:15 -0400 (EDT)
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: anybody else OK with current CVS *and* SMP?
+Date: Thu, 07 Aug 2003 00:20:23 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.NEB.4.44.0308061613140.5288-100000@phalse.2600.com>
-References: <Pine.NEB.4.44.0307221221410.2916-100000@phalse.2600.com>
+Message-ID: <3F317F27.7010702@cucumelo.org>
+References: <200308051417.h75EHwpr020319@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.NEB.4.44.0307221221410.2916-100000@phalse.2600.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,37 +16,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: Paul Davis <paul@linuxaudiosystems.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 22 Jul 2003, ted wrote:
-
-> On Tue, 22 Jul 2003, Takashi Iwai wrote:
 >
-> > > I've been unable to get the latest stable ALSA to produce any sound at
-> > > all.  I even tried the "loading+unloading dmasound_pmac first" trick, but
-> > > to no avail.  Everything looks fine, but applications using ALSA refuse to
-> > > work or crash.  Using OSS emulation appears to work, but there's no sound
-> > > output at all (yes, I've tried maxing out the mixer controls).
-> > >
-> > > Any ideas?
-> > >
-> > > The kernel driver seems to work pretty well, but it only supports a single
-> > > DSP device (which is rather annoying at times, especially since you
-> > > apparently need one for even just console beeps).
-> > >
-> > > System is a PowerBook Titanium II w/ TAS3001c.  Let me know if you need
-> > > more info.  Thanks!
-> >
-> > please tell me the kernel version.  then i can compare the source of
-> > dmasound_pmac to fix the alsa code.
 >
-> I use Ben's stable tree (from http://www.penguinppc.org/dev/kernel.shtml).
-> I'd be happy to test any code changes.  Just let me know.  Thanks!
+>i am having a repeated problem with system lockups using current CVS
+>with JACK running SCHED_FIFO on an SMP system, with the Planet's
+>2.4.21 kernel.
+>
+>can anyone report that a similar configuration is working for them?
+>there is no way to diagnose the situation, because the kernel hangs
+>totally and completely, and its not possible to get the output from
+>either an oops or the magic-request key(s).
+>
+>it seems to be less of a problem when JACK is running without
+>SCHED_FIFO. 
+>  
+>
+A couple of month agoo I've tried to upgrade the ALSA CVS, and I 
+remember that I got
+almost exactly the same sympton that you are describing.
 
-Any luck with this?  If someone could give me a little direction, I'd be
-willing to give it a shot myself.  Thanks.
+Sometimes when running JACK without X, the SysRQ key works, however
+I did not get any useful information from it, I did not get any 
+interactive response
+from the developer list, and I've been very lasy ....
+
+Since that I'm using a very old ALSA CVS version from May 17, that seems
+to work fine with SMP.
+
+/Benny
 
 
 
