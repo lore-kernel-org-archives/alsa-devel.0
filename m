@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000390]: modprobe on snd-cmipci fails
-Date: Fri, 16 Jul 2004 11:57:26 +0200 (CEST)
+Subject: [ALSA - driver 0000391]: Built-in sound card not seen.
+Date: Fri, 16 Jul 2004 11:55:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716095726.7406B26008@server.perex-int.cz>
+Message-ID: <20040716095526.DDE8526008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C760E254
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 11:57:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 39A9F254
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 11:55:27 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,69 +20,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000390
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000391
 ======================================================================
-Reported By:                mudpuppy
-Assigned To:                perex
+Reported By:                PhilTR
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     390
-Category:                   0_compilation problem_!!!
+Bug ID:                     391
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               redhat 7.3
-Kernel Version:             2.4.20-28
-Resolution:                 won't fix
+Status:                     new
+Distribution:               
+Kernel Version:             2.4.20-31.9
 ======================================================================
-Date Submitted:             07-15-2004 20:52 CEST
-Last Modified:              07-16-2004 11:57 CEST
+Date Submitted:             07-16-2004 00:21 CEST
+Last Modified:              07-16-2004 11:55 CEST
 ======================================================================
-Summary:                    modprobe on snd-cmipci fails
+Summary:                    Built-in sound card not seen.
 Description: 
-following the directions on the website;
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=C-Media&card=CMI8738&chip=CMI8738&module=cmipci
-get to the modprobe line and it fails with the following text;
+I can't say that this is really a bug although its got me bugged. I
+installed a new mother board (GA-8IPE 1000 Pro) which has a built-in
+RealTek sound card:
+02:01.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+RTL-8139/8139C/8139
+C+ (rev 10)
+        Subsystem: Realtek Semiconductor Co., Ltd. RT8139
+        Flags: bus master, medium devsel, latency 32, IRQ 5
+        I/O ports at 9000 [size=256]
+        Memory at fb004000 (32-bit, non-prefetchable)       [size=256]
+        Capabilities: [50] Power Management version 2
 
-bash-2.05a# modprobe snd-cmipci 
-/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o:
-unresolved symbol schedule_work
-/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o: insmod
-/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o failed
-/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o: insmod
-snd-cmipci failed
-bash-2.05a#uname -a 
-Linux u66-dsystem1 2.4.20-28.7athalon-new_mobo https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000008 SMP Fri Jul 16 11:09:29
-EDT 2004 i686 unknown.
-bash-2.05a#gcc -v
-Reading specs from /usr/lib/gcc-lib/i386-redhat-linux/2.96/specs
-gcc version 2.96 20000731 (Red Hat Linux 7.3 2.96-110)
+Linux dutifully loaded w/o incident and after loggin in I received the
+following error message: 'Couldn't open mixer device /dev/sound/mixer" 
 
+I've been receiving help at <a
+href="http://www.linuxquestions.org/questions/showthread.php?s=&threadid=203196&perpage=15&pagenumber=1">LinuxQuestions.org<a/>
+but, to get to the point, I'm wondering if anyone here has a fix? I've
+downloaded "alsa-xxxx-1.0.5" (firmware is: 1.0.4) Set-up proceeded w/o
+incident. Running "alsaconf" got me: "No supported PnP or PCI card dound"
+and "No legacy drivers found." 
 
+Your kind patience is appreciated. philtr (rabne@pipeline.com)
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-16-2004 11:57 CEST 
+ tiwai - 07-16-2004 11:55 CEST 
 ----------------------------------------------------------------------
-See alsa-driver/INSTALL.
+You can't find any 'Realtek' sound card from lspci.
+It's an AC97 codec chip, and doesn't appear.
+The 'sound chip' should be an Intel ICH, if the information above
+is correct.
 
-You need to run
-  % touch include/linux/workqueue.h
-on alsa-driver tree before building modules.
+Try alsaconf script.  If it fails, you likely disabled the sound
+support on BIOS.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-15-04 20:52 mudpuppy       New Bug                                      
-07-15-04 20:52 mudpuppy       Distribution              => redhat 7.3      
-07-15-04 20:52 mudpuppy       Kernel Version            => 2.4.20-28       
-07-16-04 11:57 tiwai          Bugnote Added: 0001441                       
-07-16-04 11:57 tiwai          Resolution               open => won't fix   
-07-16-04 11:57 tiwai          Status                   assigned => resolved
+07-16-04 00:21 PhilTR         New Bug                                      
+07-16-04 00:21 PhilTR         Kernel Version            => 2.4.20-31.9     
+07-16-04 11:55 tiwai          Bugnote Added: 0001440                       
 ======================================================================
 
 
