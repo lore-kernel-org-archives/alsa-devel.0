@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000731]: snd-ioctl32 problems on sparc linux
-Date: Tue, 21 Dec 2004 18:44:34 +0100
-Message-ID: <4d0f82d93d16fffd1f9b495ef77a9c5a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000739]: Invalid "AutoSync Reference" value reported using controlers
+Date: Tue, 21 Dec 2004 18:46:56 +0100
+Message-ID: <37cf2914d1a0a02378f09ab51840ff44@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB886246
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 18:44:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3F795245
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 18:46:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,46 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=731> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=739> 
 ======================================================================
-Reported By:                eradicator
-Assigned To:                
+Reported By:                remy
+Assigned To:                charbonnel
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   731
-Category:                   CORE - pcm
+Issue ID:                   739
+Category:                   PCI - RME HDSP
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r10
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-19-2004 13:21 CET
-Last Modified:              12-21-2004 18:44 CET
+Date Submitted:             12-21-2004 18:41 CET
+Last Modified:              12-21-2004 18:46 CET
 ======================================================================
-Summary:                    snd-ioctl32 problems on sparc linux
+Summary:                    Invalid "AutoSync Reference" value reported using
+controlers
 Description: 
-Some 32bit alsa programs fail on sparc64, but when these programs are
-compiled in 64bit mode, they work fine.  Same version of alsa-lib in both
-cases.
-
-
-32bit $ timidity -Os Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mid 
-...
-Text: Reset All Controller
-Now Loading..ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR
-failed: Broken pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-Terminated sig=0x02
-
-The strace can be found in bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167 as I originally
-mentioned it there. 
-When doing this, you hear the first tone, and then the failed ioctl occur
-(so it's not on the first one)...
-
-32bit $ aoss mpg123 Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mp3
-System lockup... I just noticed this one, so I haven't been able to debug,
-but I'm betting it's more get_fs() == KERNEL_DS and accessing __user mem
-problems...
-using alsa-oss version 1.0.7
-
+The value returned by controllers for control number 14 ("AutoSync
+Reference") is incorrect and different from that reported by doing a cat
+/proc/asound/card0/hdsp.
+The value reported is not "AutoSync Reference" but "Preferred Sync
+Reference" instead.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-21-04 18:44 
+ tiwai - 12-21-04 18:46 
 ----------------------------------------------------------------------
-In the CVS version, there is no get_fs() at all in ioctl32 routines.
+Thanks for the patch.
+Could you provide signed-off-by line (as described in News)?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-19-04 13:21 eradicator     New Issue                                    
-12-19-04 13:21 eradicator     Distribution              => Gentoo          
-12-19-04 13:21 eradicator     Kernel Version            => 2.6.9-gentoo-r10
-12-21-04 18:44 tiwai          Note Added: 0002901                          
+12-21-04 18:41 remy           New Issue                                    
+12-21-04 18:41 remy           File Added: hdsp.c.diff                      
+12-21-04 18:46 tiwai          Note Added: 0002902                          
 ======================================================================
 
 
