@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000922]: "make install" should place libasound.so in /usr/lib64
-Date: Tue, 22 Feb 2005 14:37:05 +0100
-Message-ID: <f18db42a24518fb8b2f3c99def8de752@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000921]: 15_alsaconf_fix_opt: Fix typo in 'modinfo' option
+Date: Tue, 22 Feb 2005 14:42:56 +0100
+Message-ID: <114d5c27d566a5f7065eaccaeee825eb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D608D17A
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:37:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 940FA162
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 14:42:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,49 +23,47 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=922> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=921> 
 ======================================================================
-Reported By:                Cus
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   922
-Category:                   general
+Project:                    ALSA - utils
+Issue ID:                   921
+Category:                   alsaconf
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Resolution:                 not an issue
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-19-2005 01:50 CET
-Last Modified:              02-22-2005 14:37 CET
+Date Submitted:             02-18-2005 22:10 CET
+Last Modified:              02-22-2005 14:42 CET
 ======================================================================
-Summary:                    "make install" should place libasound.so in
-/usr/lib64
+Summary:                    15_alsaconf_fix_opt: Fix typo in 'modinfo' option
 Description: 
-In SuSE Linux, the 64-bit versions of the libs are in /usr/lib64 instead of
-in /usr/lib. If the "make install" script put the just compiled
-libasound.so in /usr/lib instead of /usr/lib64, then the programs will
-still use the old version of libasound.so in /usr/lib64. 
-So if the architecture is x86_64, then putting libasound.so in /usr/lib64
-can solve this issue.
+    Summary: Fix typo in alsaconf "modinfo" option
+
+    Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-22-05 14:37 
+ tiwai - 02-22-05 14:42 
 ----------------------------------------------------------------------
-Pass --libdir=/usr/lib64 to configure.
-It's not a bug.  Every lib and app do in this way.
+Thanks, applied to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-19-05 01:50 Cus            New Issue                                    
-02-22-05 14:37 tiwai          Status                   new => resolved     
-02-22-05 14:37 tiwai          Resolution               open => not an issue
-02-22-05 14:37 tiwai          Assigned To               => tiwai           
-02-22-05 14:37 tiwai          Note Added: 0003702                          
+02-18-05 22:10 jdthood        New Issue                                    
+02-18-05 22:10 jdthood        File Added: 15_alsaconf_fix_opt.patch             
+      
+02-22-05 14:42 tiwai          Status                   new => resolved     
+02-22-05 14:42 tiwai          Resolution               open => fixed       
+02-22-05 14:42 tiwai          Assigned To               => tiwai           
+02-22-05 14:42 tiwai          Note Added: 0003703                          
 ======================================================================
 
 
