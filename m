@@ -1,76 +1,83 @@
-From: susanne <deborah@zfree.co.nz>
-Subject: =?Windows-1251?B?7eDr7uPu4u7lIO/r4O3o8O7i4O3o5Q==?=
-Date: Sun, 26 Sep 2004 20:51:36 +0000
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1CBg2j-00056L-G8@sc8-sf-mx1.sourceforge.net>
+From: Fons Adriaensen <fons.adriaensen@skynet.be>
+Subject: Re: jack crackles using ice1712 or es1968 recently intoduced? was: usx2y jack driver
+Date: Sun, 26 Sep 2004 23:47:13 +0200
+Sender: jackit-devel-admin@lists.sourceforge.net
+Message-ID: <20040926214713.GC3519@linux>
+References: <200409222228.38243.annabellesgarden@yahoo.de> <200409251911.44533.annabellesgarden@yahoo.de> <20040926091255.GA3526@linux> <200409261724.53800.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/html; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii
+Return-path: <jackit-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <200409261724.53800.annabellesgarden@yahoo.de>
+Errors-To: jackit-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:jackit-devel@lists.sourceforge.net>
+List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
+To: Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: alsa-devel@lists.sourceforge.net, jackit-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Sep 26, 2004 at 05:24:53PM +0200, Karsten Wiese wrote:
+<alsa and jack readers may skip the first lines>
 
-<HTML><HEAD><TITLE>Налоговое планирование в организации</TITLE>
-<META http-equiv=Content-Type content="text/html; charset=windows-1251">
-<META content="MSHTML 6.00.2800.1106" name=GENERATOR></HEAD>
-<BODY>
-<TABLE cellSpacing=0 cellPadding=0 width=700 align=center border=0>
-  <TBODY>
-  <TR>
-    <TD vAlign=top>
-      <P align=center><FONT face="Geneva, Arial, Helvetica, sans-serif" 
-      color=#466da4 size=3><STRONG>Образовательный Центр</STRONG></FONT><FONT 
-      face="Geneva, Arial, Helvetica, sans-serif" color=#466da4 
-      size=2><BR>предлагает вниманию главных бухгалтеров и налоговых 
-      консультантов,<BR>финансовых директоров и руководителей предприятий 
-      </FONT></P>
-      <HR color=#78a2da>
+> I mean the data calculated at aeolus startup or on retune.
 
-      <P align=center><FONT face="Geneva, Arial, Helvetica, sans-serif" 
-      color=#ef7a1b size=3><STRONG>30 сентября</STRONG></FONT><FONT 
-      face="Geneva, Arial, Helvetica, sans-serif" color=#466da4 
-      size=3><BR>однодневный открытый семинар по теме<BR><STRONG>"Налоговое 
-      планирование в организации"</STRONG></FONT> </P>
-      <HR color=#78a2da>
-      <FONT face="Geneva, Arial, Helvetica, sans-serif" color=#466da4 
-      size=2><STRONG><BR>Стоимость участия в семинаре - 3900 рублей, с учетом 
-      НДС.</STRONG> </FONT><FONT color=#466da4>
-      <P><FONT face="Geneva, Arial, Helvetica, sans-serif" size=2>Форма оплаты 
-      любая (наличная или безналичная). <BR>В стоимость входит: участие в работе 
-      семинара, раздаточный материал, кофе-пауза, обед в ресторане.</FONT></P>
-      <P><FONT face="Geneva, Arial, Helvetica, sans-serif" size=2>Семинар 
-      проходит в Москве (м.Академическая). <BR>Начало - в 10 часов, окончание в 
-      17.00-18.00 . </FONT></P>
-      <P><FONT face="Geneva, Arial, Helvetica, sans-serif" 
-      size=2><STRONG>Регистрация участников обязательна.</STRONG><BR>Для 
-      регистрации необходимо сообщить следующие данные: <STRONG>наименование 
-      организации, ИНН, КПП, юридический адрес, телефон, факс, Ф.И.О. 
-      участников, контактное лицо.</STRONG><BR><BR>Если необходимо бронировать 
-      гостиницу, сообщайте даты приезда-отъезда заранее.</FONT></P></FONT>
-      <HR color=#78a2da>
-      <FONT color=#466da4>
-      <P><FONT face="Geneva, Arial, Helvetica, sans-serif" size=2>При отсутствии 
-      возможности посетить семинар, мы предлагаем приобрести 
-      <STRONG>видеоверсию</STRONG> семинара на DVD\CD дисках или видеокассетах 
-      (прилагается авторский раздаточный материал).<BR><STRONG>Стоимость 
-      видеокурса – 2 600 рублей, с учетом НДС.</STRONG></FONT><BR></P></FONT>
-      <HR color=#78a2da>
+The actual wavetables. These depend on four things:
 
-      <P align=center><FONT face="Geneva, Arial, Helvetica, sans-serif" 
-      color=#466da4 size=2>Чтобы получить подробную программу семинара,<BR>а 
-      также другую дополнительную информацию,<BR>звоните по 
-      телефону:</FONT><FONT face="Geneva, Arial, Helvetica, sans-serif" 
-      size=2><BR><STRONG><FONT color=#ef7a1b size=3>(095) 
-      788-73-28</FONT></STRONG></FONT><BR><BR><BR></P></TD></TR></TBODY></TABLE></BODY></HTML>
+1. stop definitions
+2. tuning
+3. temperament
+4. sample frequency
+
+So there are a lot of possible combinations. Most users will
+use the same one most of the time, so it would make sense to
+cache the wavetables somehow. It's one of the things I may
+implement some rainy day... 
+
+> My setup looks alike, but aeolus still takes its minute to boot,
+> which it shurely deserves ;-)
+
+:-) A real organ takes some time to build up the air pressure :-)
+(agreed, less than a minute)
+
+> Are there some subtle changes in alsa/jack relating ice1712 and es1968 
+> recently introduced?
+> like in alsa pcm device syncing code, which jackd uses to simultaneously 
+> start/stop capture and playback?
+
+I strongly suspect there are, but it's difficult to point out what
+exactly has changed. I recently upgraded to SL9.1. This didn't work
+at all (for audio). After an on-line update of the kernel (now
+2.6.5-7.104-default) and instaling a more recent JACK and qjackctl
+things are usable again. I will upgrade the kernel again when the
+dust settles down.
+
+I think your suspicion of the syncing code is warranted. Also the
+snd-usb-audio remapping from 48 frames to 2^n is suspect, but that's
+of course one of the things usx2y is meant to solve (haven't tried
+it yet).
+
+Besides the Terratec (ice1712) I also have an Edirol UA-5, and this
+actually worked better (with snd-usb-audio) before the upgrade than after.
+
+Meanwhile I found out some more about the xruns reported in my previous
+message. The ones I have when Aeolus is calculating its wavetables with
+-p64 or -p128 are due to memory allocation in a non-RT thread (blocks of
+about one Mbyte at a time). Probably an -mm kernel would fix that. 
+The cracks that remain afterwards are triggered by qjackctl updating its
+connection diplay every 10 seconds. No idea what's the mechanism here.
+
+But all by all, the system I have now works quite well with -p256, and
+that's about all I need ATM.
+
+-- 
+Fons
+
+
 
 
 
