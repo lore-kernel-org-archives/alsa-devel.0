@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000800]: Sound is Corrupted or terribe quality.
-Date: Fri, 18 Mar 2005 18:23:37 +0100
-Message-ID: <b07c701c0d9876e7c67a8d9e93c4e77c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000971]: Compilation Errors - Cannot find specific files during compilation
+Date: Fri, 18 Mar 2005 18:25:28 +0100
+Message-ID: <f45a48b60a5ffd08bd296b2f77fe4020@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9BDCD243
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 18:23:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7EAE8243
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 18:25:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,66 +21,79 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=800> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=971> 
 ======================================================================
-Reported By:                abonilla
-Assigned To:                
+Reported By:                rbechard1
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   800
-Category:                   PCI - azx
+Issue ID:                   971
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.9
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-10-2005 03:20 CET
-Last Modified:              03-18-2005 18:23 CET
+Date Submitted:             03-08-2005 01:50 CET
+Last Modified:              03-18-2005 18:25 CET
 ======================================================================
-Summary:                    Sound is Corrupted or terribe quality.
+Summary:                    Compilation Errors - Cannot find specific files
+during compilation
 Description: 
-Sound goes out just like if the jack was not propperly plugged. bad Sound
-Quality.
+When installing the application using the method described in this link:
+
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI+X+%28Dell+OEM%29.&chip=SB0200&module=emu10k1x
+
+I get error messages during the compilation, yet the process tells me it
+has completed successfully. When I go to configure my sound card it has
+the correct driver loaded but yet there is no sound. When I checked the
+mixer settings nothing is muted. 
+
+There is no option within the sound configuration panel to switch to the
+correct driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-16-05 13:27 
+ rbechard1 - 03-14-05 21:44 
 ----------------------------------------------------------------------
-It seems that this problem persists in 1.0.8.
+I recently found the new alsa 1.0.8 RPM packages for Mandrake 10.2 and
+installed them with RPMDRAKE. This resolved this problem. It was much
+easier as your src code continues to give be problems. I no longer need
+help as this issue has now been resolved.
 
---- Forwarded from http://bugs.debian.org/299459 ---
-
-poor quality problem: When I play any sound file I hear this sound and 
-rustle.
-
-> Can you describe the problem in more detail?  Does changing the output
-> level of the tuner (if you have some way of doing this) make any
-> difference?
-
-Changing volume level only regulated sound and rustle volume.
-This problem as seem re majority of sound file but not all (not all 
-frequency ??).
-
-If this is helpful I can send file, with recording sound with rustle.
+I 'strongly" suggest that your webmaster should put the RPM packages on
+your website for the various distributions, it would save your support
+people alot of time!!!!!!!!!!!!!!!!!
 
 ----------------------------------------------------------------------
- tiwai - 03-18-05 18:23 
+ tiwai - 03-18-05 18:25 
 ----------------------------------------------------------------------
-How about 1.0.9rc1?  Many bugs have been fixed for hda driver.
+Then let's close this one.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-10-05 03:20 abonilla       New Issue                                    
-01-10-05 03:20 abonilla       Distribution              => Debian          
-01-10-05 03:20 abonilla       Kernel Version            => 2.6.9           
-01-10-05 14:56 tiwai          Note Added: 0003134                          
-03-16-05 13:27 jdthood        Note Added: 0003956                          
-03-18-05 18:23 tiwai          Note Added: 0004003                          
+03-08-05 01:50 rbechard1      New Issue                                    
+03-08-05 01:51 rbechard1      Issue Monitored: rbechard1                    
+03-08-05 09:52 rbechard1      Note Added: 0003812                          
+03-09-05 02:10 fmoraes        Note Added: 0003819                          
+03-09-05 03:32 rbechard1      Note Added: 0003825                          
+03-09-05 07:12 rbechard1      File Added: Driver 1.0.8 installation output      
+             
+03-14-05 21:41 rbechard1      Note Added: 0003906                          
+03-14-05 21:44 rbechard1      Issue Monitored: fmoraes                     
+03-14-05 21:44 rbechard1      Note Added: 0003907                          
+03-14-05 21:47 rbechard1      Issue End Monitor: rbechard1                    
+03-18-05 18:25 tiwai          Status                   assigned => resolved
+03-18-05 18:25 tiwai          Resolution               open => unable to
+duplicate
+03-18-05 18:25 tiwai          Note Added: 0004004                          
 ======================================================================
 
 
