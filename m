@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000790]: no sound with azx driver in Realtek integrated sound chip
-Date: Fri, 7 Jan 2005 01:38:07 +0100
-Message-ID: <0b3950d8e05b8bbed68836bab8b23b77@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000779]: SPDIF audio is broken up... stutters
+Date: Fri, 7 Jan 2005 02:22:18 +0100
+Message-ID: <4e2384351371a8ffd0192b4826669a06@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 823A82DF
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 01:38:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 81E052E9
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 02:22:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,89 +22,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=790> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=779> 
 ======================================================================
-Reported By:                theoneandonlysm
+Reported By:                jeffgus
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   790
-Category:                   PCI - azx
+Issue ID:                   779
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 10 (-current)
-Kernel Version:             2.6.10
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.9-ac16
 ======================================================================
-Date Submitted:             01-07-2005 01:38 CET
-Last Modified:              01-07-2005 01:38 CET
+Date Submitted:             01-03-2005 05:50 CET
+Last Modified:              01-07-2005 02:22 CET
 ======================================================================
-Summary:                    no sound with azx driver in Realtek integrated sound
-chip
+Summary:                    SPDIF audio is broken up... stutters
 Description: 
-Using the CVS checkout on 01/05/05 at 8:00 EDT, I compiled the alsa drivers
-with kernel 2.6.10 . Running alsaconf (provided by slackware), it was able
-to detect the azx module as the correct driver and modified by
-/etc/modprobe.conf as needed. Although alsamixer and kmix show all the
-channels and devices for the sound chip, I get no sound output.
+I was previously able to send ac3 audio via the coaxial output to an
+external amp (a Creative 5.1 amp).  At some point after upgrading to FC2
+(not sure when) I noticed that when I played DVDs the AC3 wouldn't come
+out right.  It's all broken up.  The light on the amp blinks.  The light
+comes on when it decodes a segment of audio then goes out with silence.
 
-Dmesg states:
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA /home/sandeep/alsa_cvs/alsa-driver/pci/azx/patch_realtek.c:953:
-hda_codec: Unknown model for ALC880
-
-I'm guessing there is just something specifically not included in the
-driver needed by this chip.
-
-lsmod:
-Module                  Size  Used by
-snd_pcm_oss            59168  0
-snd_mixer_oss          19840  1 snd_pcm_oss
-snd_azx                12640  2
-snd_hda_codec          46208  1 snd_azx
-snd_pcm                96260  4 snd_pcm_oss,snd_azx,snd_hda_codec
-snd_timer              23556  1 snd_pcm
-snd                    58628  9
-snd_pcm_oss,snd_mixer_oss,snd_azx,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8452  2 snd_azx,snd_pcm
-
-lspci:
-00:00.0 Host bridge: Intel Corp.: Unknown device 2580 (rev 04)
-00:02.0 VGA compatible controller: Intel Corp.: Unknown device 2582 (rev
-04)
-00:02.1 Display controller: Intel Corp.: Unknown device 2782 (rev 04)
-00:1b.0 Class 0403: Intel Corp.: Unknown device 2668 (rev 03)
-00:1c.0 PCI bridge: Intel Corp. I/O Controller Hub PCI Express Port 0 (rev
-03)
-00:1d.0 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
-00:1d.1 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
-00:1d.2 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
-00:1d.3 USB Controller: Intel Corp. I/O Controller Hub USB (rev 03)
-00:1d.7 USB Controller: Intel Corp. I/O Controller Hub USB2 (rev 03)
-00:1e.0 PCI bridge: Intel Corp. 82801BA/CA/DB/EB/ER Hub interface to PCI
-Bridge (rev d3)
-00:1f.0 ISA bridge: Intel Corp. I/O Controller Hub LPC (rev 03)
-00:1f.1 IDE interface: Intel Corp. I/O Controller Hub PATA (rev 03)
-00:1f.2 IDE interface: Intel Corp. I/O Controller Hub SATA cc=ide (rev
-03)
-00:1f.3 SMBus: Intel Corp. I/O Controller Hub SMBus (rev 03)
-02:01.0 FireWire (IEEE 1394): VIA Technologies, Inc. IEEE 1394 Host
-Controller (rev 80)
-02:02.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
-RTL-8139/8139C/8139C+ (rev 10)
+The AC3 used to work perfectly with 2.4 kernel.  I'm not sure chance
+caused the problem (upgrade to 2.6?).
 
 ======================================================================
+
+----------------------------------------------------------------------
+ chutzimir - 01-07-05 02:22 
+----------------------------------------------------------------------
+This has been fixed in 1.0.7 of the driver. Search mailing list archives
+for "Broken AC3 on EMU10K1 since July 2-nd"
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-05 01:38 theoneandonlysmNew Issue                                    
-01-07-05 01:38 theoneandonlysmDistribution              => Slackware 10
-(-current)
-01-07-05 01:38 theoneandonlysmKernel Version            => 2.6.10          
+01-03-05 05:50 jeffgus        New Issue                                    
+01-03-05 05:50 jeffgus        Distribution              => Fedora Core 2   
+01-03-05 05:50 jeffgus        Kernel Version            => 2.6.9-ac16      
+01-07-05 02:22 chutzimir      Note Added: 0003100                          
 ======================================================================
 
 
