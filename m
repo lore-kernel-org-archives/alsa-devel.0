@@ -1,16 +1,12 @@
-From: Thomas Fjellstrom <tfjellstrom@strangesoft.net>
-Subject: Re: mixer docs or good examples?
-Date: Wed, 24 Mar 2004 06:18:25 -0700
+From: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
+Subject: Minimum Period-(Fragment) Size
+Date: Wed, 24 Mar 2004 13:56:29 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200403240618.25608.tfjellstrom@strangesoft.net>
-References: <200403240528.19330.tfjellstrom@strangesoft.net>
+Message-ID: <20040324135629.56575.qmail@web25102.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="0-1272237528-1080136589=:56367"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200403240528.19330.tfjellstrom@strangesoft.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,22 +15,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On March 24, 2004 05:28 am, Thomas Fjellstrom wrote:
-> I'm working on a little mixer app for KDE... I can't find any docs on how
-> to use the mixer api.. I've sorta hacked together a bit of stuff, but
-> half/most of the functions in the mixer.h header just don't seem to make
-> sense... The *_joined() functions make no sense, what are they for? And the
-> *_exclusive() function? Also the *_has_common_switch()...
+--0-1272237528-1080136589=:56367
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
-Also, I'd like to know why, and how to use the callback and poll stuff.
+Hi all,
+im using the ALSA driver 1.0.0 on two linux machines that connect a voice-over-ip session.
+I need to know the minimum fragment size that the alsa driver can take from the soundcard and place in the sending/receiving buffer.Does it depend on the speed that the soundcard is operating at?
+ 
+Any help appreciated,
+Brian.
 
--- 
-Thomas Fjellstrom
-tfjellstrom@strangesoft.net
-http://strangesoft.net
+		
+---------------------------------
+  Yahoo! Messenger - Communicate instantly..."Ping" your friends today! Download Messenger Now
+--0-1272237528-1080136589=:56367
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+
+<DIV>Hi all,</DIV>
+<DIV>im using the ALSA driver 1.0.0 on two linux machines that connect a voice-over-ip session.</DIV>
+<DIV>I need to know the minimum fragment size that the alsa driver&nbsp;can take from the soundcard and place in the sending/receiving buffer.Does it depend on the speed that the soundcard is operating at?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Any help appreciated,</DIV>
+<DIV>Brian.</DIV><p>
+		<hr size=1><font face="Arial" size="2"> <a href="http://uk.rd.yahoo.com/mail/tagline_messenger/*http://uk.messenger.yahoo.com"><b> 
+Yahoo! Messenger</b></a> - Communicate instantly..."Ping" your friends 
+today! <a href="http://uk.rd.yahoo.com/mail/tagline_messenger/*http://uk.messenger.yahoo.com/download/index.html"><strong>Download Messenger Now</strong></a></font>
+--0-1272237528-1080136589=:56367--
 
 
 -------------------------------------------------------
