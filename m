@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: How to compile ?
-Date: Sun, 2 Mar 2003 20:24:16 +0100 (CET)
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: Re: hdsp driver
+Date: 02 Mar 2003 21:24:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303022021550.1253-100000@pnote.perex-int.cz>
-References: <1046628444.1023.37.camel@Jay>
+Message-ID: <1046636688.1523.37.camel@satellite.undata.org>
+References: <200302271843.h1RIhYa04397@linuxaudiosystems.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1046628444.1023.37.camel@Jay>
+In-Reply-To: <200302271843.h1RIhYa04397@linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,28 +17,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 2 Mar 2003, Giuliano Pochini wrote:
+On Thu, 2003-02-27 at 19:43, Paul Davis wrote:
+> i haven't had time today to get the patch for the hdsp ready. however,
+> the new source works here (i have some CVS sync issues). i'll get it
+> out to the list on monday (i'm gone for the weekend).
+> 
+Did you sort out the rms register issue ? I'm currently implementing the
+metering part of HDSPMixer and the rms values returned are obviously
+bogus.
 
-> I wrote a very minimal driver that does nothing and I put it
-> in /pci directory. How do I compile it ?
+Thomas
 
-alsa-driver or alsa-kernel ? I recommend using alsa-driver directory for 
-tests.
-
-1) update Makefile (see ALSA extra code section)
-2) add module dependency definition to alsa-driver/utils/Modules.dep
-3) check alsa-driver/acore/Makefile to add missing dependencies
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 
