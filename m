@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000886]: alsactl store = crash
-Date: Sun, 6 Feb 2005 16:01:47 +0100
-Message-ID: <f8e5e05be12f932c736a8eb48235ee5b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000887]: Sound card not detected on XBox 1.6
+Date: Sun, 6 Feb 2005 17:10:39 +0100
+Message-ID: <d77fc1cbf0409e26b333727195786160@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9E13A236
-	for <alsa-devel@alsa-project.org>; Sun,  6 Feb 2005 16:01:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5D83723F
+	for <alsa-devel@alsa-project.org>; Sun,  6 Feb 2005 17:10:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,66 +23,39 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=886> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=887> 
 ======================================================================
-Reported By:                udasoft
+Reported By:                Marnix
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   886
-Category:                   PCI - azx
+Issue ID:                   887
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               Gentoo
 Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-06-2005 16:01 CET
-Last Modified:              02-06-2005 16:01 CET
+Date Submitted:             02-06-2005 17:10 CET
+Last Modified:              02-06-2005 17:10 CET
 ======================================================================
-Summary:                    alsactl store = crash
+Summary:                    Sound card not detected on XBox 1.6
 Description: 
-I have a Intel D915PBL Motherboard with High Definition Audio Controller
-(ICH6 Family).
+alsa-1.0.8 builds fine now on my Xbox. However, when I load the alsa module
+(see
+below for my modules.d/alsa), no sound card is detected. It may be
+important to note that my XBox is a newer model (1.6).
 
-When I save the state of mixer with alsactl, receive this error:
-
-udasoftware root # alsactl  store
-Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-PREEMPT SMP
-Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
-snd_seq_midi_event snd_seq snd_seq_device snd_azx snd_hda_codec snd_pcm
-snd_timer snd snd_page_alloc nvidia
-CPU:    0
-EIP:    0060:[<00000000>]    Tainted: P      VLI
-EFLAGS: 00010282   (2.6.10-gentoo-r6)
-EIP is at 0x0
-eax: f2264580   ebx: f705a400   ecx: 00000023   edx: ee59fe4c
-esi: f2264580   edi: ffffffe7   ebp: f705a54c   esp: ee59fe30
-ds: 007b   es: 007b   ss: 0068
-Process alsactl (pid: 16709, threadinfo=ee59f000 task=c191f020)
-Stack: f8b2efca f2264580 ee59fe4c 00000110 f2264600 00000000 f2264664
-00000022
-       00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-              00000000 00000000 00000000 00000000 00000000 00000000
-00000000 00000000
-              Call Trace:
-               [<f8b2efca>] snd_ctl_elem_info+0x7a/0x190 [snd]
-                [<f8b2fffa>] snd_ctl_ioctl+0x25a/0x390 [snd]
-                 [<c016f8ba>] sys_ioctl+0xca/0x230
-                  [<c01031af>] syscall_call+0x7/0xb
-                  Code:  Bad EIP value.
-                   Segmentation fault
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-06-05 16:01 udasoft        New Issue                                    
-02-06-05 16:01 udasoft        Distribution              => Gentoo          
-02-06-05 16:01 udasoft        Kernel Version            => 2.6.10          
+02-06-05 17:10 Marnix         New Issue                                    
+02-06-05 17:10 Marnix         Distribution              => Gentoo          
+02-06-05 17:10 Marnix         Kernel Version            => 2.6.10          
 ======================================================================
 
 
