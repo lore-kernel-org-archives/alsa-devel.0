@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Sun, 20 Mar 2005 08:00:10 +0100
-Message-ID: <1b089d7755df8fe24ab2ce2178ebf4fe@bugtrack.alsa-project.org>
+Date: Sun, 20 Mar 2005 08:17:52 +0100
+Message-ID: <4b75a374b3080af973d8c946c05d94a8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 27E9514F
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 08:00:11 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 49E5522B
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 08:17:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
 Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-20-2005 08:00 CET
+Last Modified:              03-20-2005 08:17 CET
 ======================================================================
 Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
@@ -100,21 +100,6 @@ versions.
 ======================================================================
 
 ----------------------------------------------------------------------
- fmoraes - 03-19-05 21:00 
-----------------------------------------------------------------------
-Add this code before the call that fails. If it works, can you attach the
-output of the /proc/snd/ac97/* files? I wonder if you have a different
-AC97 codec than mine and that's causing that mixer control to be already
-defined.
-
-	if ((kctl = ctl_find(card, SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT)))
-!= NULL) {
-		/* already defined by ac97, remove it */
-		/* FIXME: or do we need both controls? */
-		remove_ctl(card, SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT));
-	}
-
-----------------------------------------------------------------------
  Q3Man - 03-20-05 08:00 
 ----------------------------------------------------------------------
 I'm getting a couple unknown symbol errors when I load that. They are:
@@ -123,6 +108,31 @@ snd_emu10k1x: Unknown symbol remove_ctl
 snd_emu10k1x: Unknown symbol ctl_find
 
 Do I need to include another file?
+
+----------------------------------------------------------------------
+ Q3Man - 03-20-05 08:17 
+----------------------------------------------------------------------
+Ok.. more checking. I found what I think are the functions you meant. I've
+ended up with this:
+
+if ((kctl =
+snd_ctl_find_numid(card,SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT))) !=
+NULL) {
+        /* already defined by ac97, remove it */
+        /* FIXME: or do we need both controls? */
+        snd_ctl_remove(card, SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT));
+}
+if ((err = snd_ctl_add(card, kctl)))
+                return err;
+snd_printk(KERN_ERR "returning 0\n");
+return 0;
+
+I've tried both snd_ctl_find_numid() and snd_ctl_find_id(), and in both
+cases the module dies with the following error in dmesg:
+EMU10K1X: probe of 0000:00:0a.0 failed with error -22
+
+I suppose that's relatively good, as we're no longer getting the error
+-16. I'll do some digging and see if I can determine what error -22 is.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -159,6 +169,7 @@ Date Modified  Username       Field                    Change
 03-18-05 23:48 Q3Man          Note Added: 0004007                          
 03-19-05 21:00 fmoraes        Note Added: 0004069                          
 03-20-05 08:00 Q3Man          Note Added: 0004073                          
+03-20-05 08:17 Q3Man          Note Added: 0004074                          
 ======================================================================
 
 
