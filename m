@@ -1,17 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: emu10k1 multichannel playback design (was Re: [PATCH] emu10k1:
- add interval timer support)
-Date: Mon, 27 Sep 2004 08:48:30 +0200 (CEST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000547]: Outdated pmac.patch
+Date: Mon, 27 Sep 2004 09:24:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0409270848040.1733@pnote.perex-int.cz>
-References: <Pine.LNX.4.58.0409241546570.2289@pnote.perex-int.cz>
- <200409241453.i8OErtVR029650@localhost.localdomain>  <s5hk6uj3dko.wl@alsa2.suse.de>
- <1096059735.11589.45.camel@krustophenia.net>  <Pine.LNX.4.58.0409261335020.1744@pnote.perex-int.cz>
- <1096245611.7203.66.camel@krustophenia.net>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20040927072454.3A83815007@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1096245611.7203.66.camel@krustophenia.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9412E2BA
+	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 09:24:54 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,24 +16,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 26 Sep 2004, Lee Revell wrote:
 
-> Yes, I agree.  Right now I have the first 16 voices reserved for the
-> multichannel device.  For the default playback device voice allocation
-> starts at 16. 
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000547
+======================================================================
+Reported By:                jdthood
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     547
+Category:                   PPC - powermac
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             09-26-2004 22:17 CEST
+Last Modified:              09-27-2004 09:24 CEST
+======================================================================
+Summary:                    Outdated pmac.patch
+Description: 
+Build fails because alsa-driver/ppc/pmac.patch doesn't apply to
+alsa-kernel/ppc/pmac.c any more.
 
-I would prefer dynamic voice allocations.
+I include an updated patch which does apply.
+======================================================================
 
-						Jaroslav
+----------------------------------------------------------------------
+ jdthood - 09-27-2004 09:24 CEST 
+----------------------------------------------------------------------
+Summary: Fix pmac.patch
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-26-04 22:17 jdthood        New Bug                                      
+09-26-04 22:17 jdthood        File Added: pmac_jdth1.patch                    
+09-27-04 09:24 jdthood        Bugnote Added: 0001932                       
+======================================================================
 
 
 -------------------------------------------------------
