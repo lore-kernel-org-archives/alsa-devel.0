@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
-Date: Mon, 28 Feb 2005 15:00:55 +0100
-Message-ID: <e50889c624d217b574b56dc808223819@bugtrack.alsa-project.org>
+Date: Mon, 28 Feb 2005 15:22:03 +0100
+Message-ID: <01fd72f56e5837f8f775de9bd70c5479@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F2635226
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 15:00:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B742A226
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 15:22:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -37,7 +37,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             02-03-2005 12:25 CET
-Last Modified:              02-28-2005 15:00 CET
+Last Modified:              02-28-2005 15:22 CET
 ======================================================================
 Summary:                    Distorted sound with enabled dmix plugin
 Description: 
@@ -48,17 +48,28 @@ This problem is appear when enabled dmix plugin through configuration file
 ======================================================================
 
 ----------------------------------------------------------------------
- yure - 02-25-05 10:36 
-----------------------------------------------------------------------
-Thanks. I tested this issue only on xmms and bmp. I will check this
-evening:
-1) patch for bmp;
-2) test this issue on aplay.
-
-----------------------------------------------------------------------
  tvignaud - 02-28-05 15:00 
 ----------------------------------------------------------------------
 i got a similar report from an xmms user on intel i865 with an HT cpu
+
+----------------------------------------------------------------------
+ yure - 02-28-05 15:22 
+----------------------------------------------------------------------
+Patch bmp-0.9.7-alsa-fixes.patch (34,761 bytes) doesn't fix problem.
+I performed 3 tests: 
+1. 8 instances of bmp player. One of them periodically has distorted
+sound.
+2. From xmms I have same problem.
+3. 8 instances of aplay. I don't have any problem with sound. But I have
+warnings:
+Playing WAVE '01.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+underrun!!! (at least 0.028 ms long)
+underrun!!! (at least 0.008 ms long)
+underrun!!! (at least 0.004 ms long)
+underrun!!! (at least 0.007 ms long)
+
+While I perform all tests I started archive operation.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -80,6 +91,7 @@ Date Modified  Username       Field                    Change
        
 02-25-05 10:36 yure           Note Added: 0003732                          
 02-28-05 15:00 tvignaud       Note Added: 0003744                          
+02-28-05 15:22 yure           Note Added: 0003745                          
 ======================================================================
 
 
