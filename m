@@ -1,13 +1,12 @@
-From: Josh Huber <huber+keyword+alsa.9c0e1c@alum.wpi.edu>
-Subject: Re: snd-powermac in CVS busted?
-Date: Fri, 20 Sep 2002 16:30:56 -0400
+From: Zinx Verituse <zinx@epicsol.org>
+Subject: Thinkpad 600E + alsa 0.9.0rc3/CVS, NULL pointer dereference
+Date: Fri, 20 Sep 2002 15:45:56 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87k7lg2ykf.fsf@mail.paradoxical.net>
-References: <87it11icm2.fsf@mail.paradoxical.net> <s5hr8fpouks.wl@alsa2.suse.de>
-Reply-To: Josh Huber <huber+dated+1032985838.e08061@alum.wpi.edu>
+Message-ID: <20020920204556.GA4501@bliss>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,17 +18,38 @@ List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
+I was getting NULL pointer derefs with ALSA 0.9.0rc3 and CVS, and my
+Thinkpad 600E..
 
-> could you change 'Mic Boost' once to another value?
-> i got reports that this affects even on the pcm playback...
+After much trying of different versions, and a bit of poking in to
+the source, I figured out it was because ALSA is not including
+linux/autoconf.h at all, so it's not getting the CONFIG_PM define,
+and thus not filling in some _much needed_ function pointers.
 
-Okay, thanks.  I'll try this tonight after I get home from work!
+Simple [verified] solution is to #include "linux/autoconf.h"
+
+I should note that I'm using Linux 2.4.x, and compiling ALSA
+separately (is there any way to patch 2.4.x with ALSA?)
+
+ -and now for something completely different-
+
+I also noticed that ALSA requires the kernel's soundcore.o in
+this setup, which does not create proper devfs devices (on my
+desktop, with two sound cards, it tries to create lots and lots
+of devices with the same name -- bad mojo.)
+
+Editing alsa-kernel/core/oss/Makefile,
+alsa-kernel/core/oss/sound_oss.c, and soft linking a few files
+provides a workaround by using ALSA's soundcore.o, but it's
+far from elegant..
+
+Is there a reason I shouldn't be using ALSA's soundcore.o with
+2.4.x?  and are there patches for Linux 2.4.x's soundcore.o to
+make it create proper devfs names with ALSA?
+
 
 -- 
-Josh Huber
-
-
+Zinx Verituse
 
 
 -------------------------------------------------------
