@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000780]: More laptops with LEDs (from: 0000667- How to integrate turning on and off LED:s on laptops)
-Date: Fri, 7 Jan 2005 19:45:36 +0100
-Message-ID: <b75564402cbb68813c8daac42d04848d@bugtrack.alsa-project.org>
+Date: Fri, 7 Jan 2005 19:49:55 +0100
+Message-ID: <9ee01ed77ef1da576fdb73e81d784975@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4F5F0A0
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 19:45:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C162E275
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 19:49:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=780> 
 ======================================================================
 Reported By:                piesis
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   780
@@ -35,12 +35,14 @@ Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r9
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             01-03-2005 12:39 CET
-Last Modified:              01-07-2005 19:45 CET
+Last Modified:              01-07-2005 19:49 CET
 ======================================================================
 Summary:                    More laptops with LEDs (from: 0000667- How to
 integrate turning on and off LED:s on laptops)
@@ -81,27 +83,6 @@ as well?
 ======================================================================
 
 ----------------------------------------------------------------------
- piesis - 01-04-05 00:17 
-----------------------------------------------------------------------
-Sorry for my unpolite first line.
-It really isn't a good idea to keep old unclosed bugs.
-
-Here are those subsystem IDs:
-103c:006d
-
-About the EAPD thing - I understand that it controls an output pin of the
-chip - I was wondering what use is beeing made of this control in real
-life - like on other laptops and so on.
-Well, I don't suppose you know (everything), but ..
-
-A reverse approach: if this pin gets hardcoded to master mute, do any
-usage cases suffer - is there a ground for it not to be linked to master
-mute?
-
-(perhaps this could be so for specific controllers/codecs, like the
-AD1981, not just separate machines, like this HP zv5000)
-
-----------------------------------------------------------------------
  tiwai - 01-07-05 19:45 
 ----------------------------------------------------------------------
 On some machines (e.g. Dell), EAPD really turns on/off the amplifier.
@@ -112,6 +93,14 @@ amplifier" mixer switch is removed indeed.
 
 And, no, it's not specific to codecs.  It's specific to laptops.
 
+----------------------------------------------------------------------
+ tiwai - 01-07-05 19:49 
+----------------------------------------------------------------------
+The quirk is added to CVS now.  It'll appear in 1.0.8-final.
+
+Now resolving this issue to FIXED.  If you find out the PCI sub IDs for
+other laptops, please open another entry.  Thanks.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -121,6 +110,10 @@ Date Modified  Username       Field                    Change
 01-03-05 14:23 tiwai          Note Added: 0003061                          
 01-04-05 00:17 piesis         Note Added: 0003077                          
 01-07-05 19:45 tiwai          Note Added: 0003117                          
+01-07-05 19:49 tiwai          Status                   new => resolved     
+01-07-05 19:49 tiwai          Resolution               open => fixed       
+01-07-05 19:49 tiwai          Assigned To               => tiwai           
+01-07-05 19:49 tiwai          Note Added: 0003118                          
 ======================================================================
 
 
