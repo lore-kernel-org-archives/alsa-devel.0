@@ -1,11 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Repost about fm801 tea575x_tuner in 2.6 kernels
-Date: Tue, 15 Feb 2005 11:16:39 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0502151115120.1756@pnote.perex-int.cz>
-References: <4211C5E9.5010708@list.ru>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000891]: Wrong settings in NFORCE.conf
+Date: Tue, 15 Feb 2005 11:29:15 +0100
+Message-ID: <8ba6482d6f1c89f9d80ddd990b5b0ca5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <4211C5E9.5010708@list.ru>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D86F6278
+	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2005 11:29:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,63 +17,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Kovalyev Sergey <randoman@list.ru>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 15 Feb 2005, Kovalyev Sergey wrote:
 
-> Hello all!
-> 
-> When I trying to do
-> 
-> #modprobe snd_fm801 tea575x_tuner=1
-> 
-> I see this thing in my syslog:
-> 
-> kernel: videodev: "TEA5757 radio" has no release callback. Please fix 
-> your driver for proper sysfs
-> support, see http://lwn.net/Articles/36850/
-> 
-> As far as I understand, this module is not compatible with linux-2.6 
-> kernels, so, how to fix this problem?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=891> 
+======================================================================
+Reported By:                slammer
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   891
+Category:                   hw specific configuration
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-08-2005 14:51 CET
+Last Modified:              02-15-2005 11:29 CET
+======================================================================
+Summary:                    Wrong settings in NFORCE.conf
+Description: 
+I have an NForce2 chipset with intel8x0 on my ABIT NF7-S and i have
+separate sockets for Line-In, Mic, Center/LFE and Surround and i think
+there is a lot of other motherboards that have it. Therefore i don't
+understand why you force the "Mic As Center/LFE" and "Line-In As Surround"
+true, whenever someone whants to use the surround51 and surround4 pcm by
+the corresponding hooks. I think that you should leave it as an option and
+if it is common that many people use those triggers on, just enable it by
+default, but don't force it.
 
-Nope. This message is only warning and completely harmless. The driver
-should work. This patch will remove the warning:
+======================================================================
 
-Index: tea575x-tuner.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/i2c/other/tea575x-tuner.c,v
-retrieving revision 1.3
-diff -u -r1.3 tea575x-tuner.c
---- tea575x-tuner.c	3 Aug 2004 19:03:02 -0000	1.3
-+++ tea575x-tuner.c	15 Feb 2005 10:20:58 -0000
-@@ -168,6 +168,10 @@
- 	}
- }
- 
-+static void snd_tea575x_release(struct video_device *vfd)
-+{
-+}
-+
- /*
-  * initialize all the tea575x chips
-  */
-@@ -186,6 +190,7 @@
- 	strcpy(tea->vd.name, tea->tea5759 ? "TEA5759 radio" : "TEA5757 radio");
- 	tea->vd.type = VID_TYPE_TUNER;
- 	tea->vd.hardware = VID_HARDWARE_RTRACK;	/* FIXME: assign new number */
-+	tea->vd.release = snd_tea575x_release;
- 	video_set_drvdata(&tea->vd, tea);
- 	tea->vd.fops = &tea->fops;
- 	tea->fops.owner = tea->card->module;
+----------------------------------------------------------------------
+ tiwai - 02-09-05 11:33 
+----------------------------------------------------------------------
+Well, there were no machines with independent surround outputs former time.
+ A patch to control automatically both cases is welcome.
 
-						Jaroslav
+----------------------------------------------------------------------
+ slammer - 02-15-05 11:29 
+----------------------------------------------------------------------
+I'm not sure it is detectable, since for example Epox 8RDA+ has the same
+NForce2 with intel8x0 - litereally the same hardware but it has those
+sockets shared. However in Windows once there used to be a wizard in
+nVMixer wich asked you which variant you have, and now - with the new
+nVMixer it doesn't and seems to play correctly out of the box, but I have
+no idea how it detects it.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-08-05 14:51 slammer        New Issue                                    
+02-08-05 15:07 slammer        Issue Monitored: slammer                     
+02-09-05 11:33 tiwai          Note Added: 0003538                          
+02-15-05 11:29 slammer        Note Added: 0003620                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
