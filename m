@@ -1,13 +1,16 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: [PATCH] cs46xx update SMP fixes
-Date: Thu, 22 Aug 2002 16:13:07 +0200
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: rc3 doesn't compile
+Date: Thu, 22 Aug 2002 22:50:35 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D64F173.509@cucumelo.org>
-References: <3D64B60D.5070907@cucumelo.org>	<s5hit23t65p.wl@alsa2.suse.de>	<3D64E811.30005@cucumelo.org> <s5h65y3t3j8.wl@alsa2.suse.de>
+Message-ID: <3D64EC2B.1080608@boosthardware.com>
+References: <20020821194353.77069.qmail@web11507.mail.yahoo.com>	<20020821234207.6be1df05.ketelaars@wanadoo.nl>	<3D62C760.5080209@claudia.daemon.sh> <s5hhehnt61w.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from www7.networkshosting.com (www7.networkshosting.com [66.96.128.106])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id PAA17728
+	for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2002 15:47:06 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,31 +19,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Pete Black <pete@claudia.daemon.sh>
 List-Id: alsa-devel@alsa-project.org
 
->
->
->how about to do pcm_link/unlink in open/close or prepare callback?
->they are definitely not called from interrupts.
->
-The idea of calling  pcm_unlink in trigger (PLAYBACK_STOP) function is 
-to stop the DMA tranfers,
-and so on stop the  DSP from requesting interrupts, and still have the 
-channel prepared
-to be quickly started again on trigger (PLAYBACK_START/RESUME).
+Takashi Iwai wrote:
+> At Wed, 21 Aug 2002 10:49:04 +1200,
+> Pete Black wrote:
+> 
+>>Or at least put a big, blinking (ok, maybe not blinking) notice on the 
+>>ALSA home-page stating that RC3 is broken and will not compile without 
+>>this fix.
+>>
+>>It will save many people a lot of frustration.
+> 
+> 
+> yes...
+> 
+> Patrick, could you add a small note on the news?
+> 
 
-Another idea  that I have in mind is to use in_interrupt() && 
-schedule_task() functions, then if _trigger
-function is called from interrupt context, mute/unmute pcm channel,  use 
-schedule_task() to
-indirectly invoke pcm_link/unlink. Otherwise if not in interrupt context 
-call pcm_link/unlnk
-directly using mutexes.
-What do you think ?
+Done.
 
-/Benny
 
+
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
 
 
