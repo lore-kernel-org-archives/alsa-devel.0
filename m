@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000408]: Volume control is chaotic
-Date: Wed, 18 Aug 2004 15:20:44 +0200 (CEST)
+Date: Wed, 18 Aug 2004 15:32:42 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040818132044.EEE921102F@server.perex-int.cz>
+Message-ID: <20040818133242.A07CA1102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 56AB9218
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 15:20:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E36FA273
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 15:32:42 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000408
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000408
 ======================================================================
 Reported By:                skamp
 Assigned To:                tiwai
@@ -38,7 +38,7 @@ Distribution:               LFS 5.1.1, BLFS 5.1
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             07-27-2004 18:40 CEST
-Last Modified:              08-18-2004 15:20 CEST
+Last Modified:              08-18-2004 15:32 CEST
 ======================================================================
 Summary:                    Volume control is chaotic
 Description: 
@@ -74,12 +74,18 @@ Could you try the attached patch?
  skamp - 08-18-2004 15:20 CEST 
 ----------------------------------------------------------------------
 patching file pci/ice1712/aureon.c
-Hunk https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000001 FAILED at 273.
-Hunk https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000002 FAILED at 305.
+Hunk https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001 FAILED at 273.
+Hunk https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000002 FAILED at 305.
 2 out of 2 hunks FAILED -- saving rejects to file
 pci/ice1712/aureon.c.rej
 
 I installed version 1.0.6 when it got out.
+
+----------------------------------------------------------------------
+ tiwai - 08-18-2004 15:32 CEST 
+----------------------------------------------------------------------
+It's a patch to alsa-kernel tree (in alsa-driver).  You'll likely
+need to pass an appropriate -p option.
 
 Bug History
 Date Modified  Username       Field                    Change              
@@ -95,6 +101,7 @@ Date Modified  Username       Field                    Change
 08-18-04 13:47 tiwai          Bugnote Added: 0001578                       
 08-18-04 13:48 tiwai          File Added: aureon-volfix3.dif                    
 08-18-04 15:20 skamp          Bugnote Added: 0001579                       
+08-18-04 15:32 tiwai          Bugnote Added: 0001580                       
 ======================================================================
 
 
