@@ -1,26 +1,19 @@
-From: "Rao, Nikhil" <nikhil.rao@intel.com>
-Subject: Driver/ALSA  instrumentation
-Date: Sat, 7 Aug 2004 08:57:59 -0700
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: [PATCH] pcm_rate.c  fixes.
+Date: Sun, 08 Aug 2004 16:07:03 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <012676D607FCF54E986746512C22CE7DE40C53@orsmsx407>
+Message-ID: <41164197.4050001@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed;
+ boundary="------------080608000507030506040300"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from caduceus.jf.intel.com (fmr06.intel.com [134.134.136.7])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D9A511F4
-	for <alsa-devel@alsa-project.org>; Sat,  7 Aug 2004 17:58:02 +0200 (MEST)
-Received: from petasus.jf.intel.com (petasus.jf.intel.com [10.7.209.6])
-	by caduceus.jf.intel.com (8.12.9-20030918-01/8.12.9/d: major-outer.mc,v 1.15 2004/01/30 18:16:28 root Exp $) with ESMTP id i77Fv4Bq020493
-	for <alsa-devel@alsa-project.org>; Sat, 7 Aug 2004 15:57:04 GMT
-Received: from orsmsxvs040.jf.intel.com (orsmsxvs040.jf.intel.com [192.168.65.206])
-	by petasus.jf.intel.com (8.12.9-20030918-01/8.12.9/d: major-inner.mc,v 1.11 2004/07/29 22:51:53 root Exp $) with SMTP id i77G0266022507
-	for <alsa-devel@alsa-project.org>; Sat, 7 Aug 2004 16:00:14 GMT
-Received: from orsmsx331.amr.corp.intel.com ([192.168.65.56])
- by orsmsxvs040.jf.intel.com (SAVSMTP 3.1.2.35) with SMTP id M2004080708575919596
- for <alsa-devel@alsa-project.org>; Sat, 07 Aug 2004 08:57:59 -0700
-Content-class: urn:content-classes:message
+Received: from anchor-post-30.mail.demon.net (anchor-post-30.mail.demon.net [194.217.242.88])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7691D247
+	for <alsa-devel@alsa-project.org>; Sun,  8 Aug 2004 17:07:04 +0200 (MEST)
+Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
+	by anchor-post-30.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 1BtpGJ-000CT8-0U
+	for alsa-devel@alsa-project.org; Sun, 08 Aug 2004 15:07:03 +0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -32,32 +25,253 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------080608000507030506040300
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi All,
+This should be the final patch required to pcm_rate.c. The patch is 
+against the current alsa-lib CVS.
 
-I have an audio decoder application that plays out to the soundcard. I
-want to measure any underruns that occur as the application is playing
-out to the soundcard. I suppose the interrupt handler for DMA sets up
-the transfer from the=20
-driver buffer to the hardware. If I record a time stamp whenever the DMA
-is unable to set up a transfer because
-there is no data available (dma_timestamp) and then also record a
-timestamp when the application does a write()..
-(write_timestamp). The difference (write_timestamp-dma_timestamp) will
-provide me with the underrun duration.
+This patch fixes a number of different bugs in pcm_rate.c.
+1) Resampling now works for rate 192000 -> 8000.
+2) zero samples are not accidentally inserted into the stream any more.
+3) Corrects period size calculations.
+4) Prevents avail_min and xfer_align being less than 1.
 
-If this technique sounds reasonable, In the ALSA code, how do I measure
-the amount of data(no of frames) available for the DMA transfer ? I have
-looked at the code, I haven't been able to figure out the details!
+This should improve the sound quality. Further improvements can be made 
+by implementing polyphase filters, thereby removing aliases generally 
+caused by any resampling algorithm that does not include a low pass 
+filter before changing the number of samples.
 
-Looks like the relevant code starts somewhere here=20
+Cheers
 
-snd_pcm_update_hw_ptr()..
+James
 
-Please let me if you any suggestions/pointers.
 
-Thanks,
--Nikhil
+--------------080608000507030506040300
+Content-Type: text/plain;
+ name="alsa-lib-pcm-rate.c-fixes.diff.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa-lib-pcm-rate.c-fixes.diff.txt"
+
+Index: alsa-lib/src/pcm/pcm_rate.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_rate.c,v
+retrieving revision 1.84
+diff -u -r1.84 pcm_rate.c
+--- alsa-lib/src/pcm/pcm_rate.c	26 Apr 2004 07:40:13 -0000	1.84
++++ alsa-lib/src/pcm/pcm_rate.c	8 Aug 2004 14:50:29 -0000
+@@ -27,8 +27,7 @@
+  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+  *
+  */
+-  
+-#include <limits.h>
++#include <inttypes.h>
+ #include <byteswap.h>
+ #include "pcm_local.h"
+ #include "pcm_plugin.h"
+@@ -45,7 +44,8 @@
+ 
+ #ifndef DOC_HIDDEN
+ 
+-#define LINEAR_DIV (1<<16)
++/* LINEAR_DIV needs to be large enough to handle resampling from 192000 -> 8000 */
++#define LINEAR_DIV (1<<19)
+ 
+ enum rate_type {
+ 	RATE_TYPE_LINEAR,		/* linear interpolation */
+@@ -58,7 +58,7 @@
+ 		struct {
+ 			int init;
+ 			int16_t old_sample, new_sample;
+-			int sum;
++			int64_t sum;
+ 		} linear;
+ 	} u;
+ } snd_pcm_rate_state_t;
+@@ -168,6 +168,9 @@
+ 				assert(src_frames1 <= src_frames);
+ 			}
+ 		} 
++		if ((dst_frames != dst_frames1) || (src_frames != src_frames1)) {
++			SNDERR("dst_frames %lu, dst_frames1 %lu, src_frames %lu, src_frames1 %lu\n", dst_frames, dst_frames1, src_frames, src_frames1);
++		}
+ 		states->u.linear.old_sample = old_sample;
+ 		states->u.linear.new_sample = new_sample;
+ 		states++;
+@@ -194,17 +197,18 @@
+ 	snd_pcm_uframes_t src_frames1 = 0;
+ 	snd_pcm_uframes_t dst_frames1 = 0;
+ 	int16_t sample = 0;
++	unsigned int pos = 0;
+ 
+ 	for (channel = 0; channel < channels; ++channel) {
+ 		const snd_pcm_channel_area_t *src_area = &src_areas[channel];
+ 		const snd_pcm_channel_area_t *dst_area = &dst_areas[channel];
+-		unsigned int pos;
+-		int sum;
++		int64_t sum;
+ 		const char *src;
+ 		char *dst;
+ 		int src_step, dst_step;
+ 		sum = states->u.linear.sum;
+-		pos = 0;
++		//int16_t old_sample = states->u.linear.old_sample;
++		pos = LINEAR_DIV/2; /* Start at 0.5 */
+ 		states->u.linear.init = 0;
+ 		src = snd_pcm_channel_area_addr(src_area, src_offset);
+ 		dst = snd_pcm_channel_area_addr(dst_area, dst_offset);
+@@ -223,26 +227,25 @@
+ 			src_frames1++;
+ 			pos += get_increment;
+ 			if (pos >= LINEAR_DIV) {
+-				int s = sample;
+ 				pos -= LINEAR_DIV;
+-				sum += s * (get_increment - pos);
+-				sum /= LINEAR_DIV;
+-				sample = sum;
+ 				goto *put;
+ #define PUT16_END after_put
+ #include "plugin_ops.h"
+ #undef PUT16_END
+ 			after_put:
+ 				dst += dst_step;
+-				sum = s * pos;
+ 				dst_frames1++;
+ 				assert(dst_frames1 <= dst_frames);
+-			} else
+-				sum += sample * get_increment;
++			}
+ 		}
++
+ 		states->u.linear.sum = sum;
++		states->u.linear.old_sample = sample;
+ 		states++;
+ 	}
++	if ((dst_frames != dst_frames1) || (src_frames != src_frames1)) {
++		SNDERR("dst %lu, dst1 %lu, src %lu, src1 %lu pos = %u\n", dst_frames, dst_frames1, src_frames, src_frames1, pos );
++	}
+ }
+ 
+ #endif /* DOC_HIDDEN */
+@@ -254,9 +257,9 @@
+ 		return 0;
+ 	/* Round toward zero */
+ 	if (pcm->stream == SND_PCM_STREAM_PLAYBACK)
+-		return muldiv_down(frames, LINEAR_DIV, rate->pitch);
++		return muldiv_near(frames, LINEAR_DIV, rate->pitch);
+ 	else
+-		return muldiv_down(frames, rate->pitch, LINEAR_DIV);
++		return muldiv_near(frames, rate->pitch, LINEAR_DIV);
+ }
+ 
+ static snd_pcm_sframes_t snd_pcm_rate_slave_frames(snd_pcm_t *pcm, snd_pcm_sframes_t frames)
+@@ -264,9 +267,9 @@
+ 	snd_pcm_rate_t *rate = pcm->private_data;
+ 	/* Round toward zero */
+ 	if (pcm->stream == SND_PCM_STREAM_PLAYBACK)
+-		return muldiv_down(frames, rate->pitch, LINEAR_DIV);
++		return muldiv_near(frames, rate->pitch, LINEAR_DIV);
+ 	else
+-		return muldiv_down(frames, LINEAR_DIV, rate->pitch);
++		return muldiv_near(frames, LINEAR_DIV, rate->pitch);
+ }
+ 
+ static int snd_pcm_rate_hw_refine_cprepare(snd_pcm_t *pcm ATTRIBUTE_UNUSED, snd_pcm_hw_params_t *params)
+@@ -488,7 +491,7 @@
+ 		rate->func = snd_pcm_rate_shrink;
+ 		/* pitch is get_increment */
+ 	}
+-	rate->pitch = (((u_int64_t)dst_rate * LINEAR_DIV) + src_rate - 1) / src_rate;
++	rate->pitch = (((u_int64_t)dst_rate * LINEAR_DIV) + (src_rate / 2)) / src_rate;
+ 	assert(!rate->states);
+ 	assert(!rate->pareas);
+ 	rate->states = malloc(channels * sizeof(*rate->states));
+@@ -581,56 +584,60 @@
+ 	params->boundary = boundary1;
+ 	sparams->boundary = boundary2;
+ 	if (pcm->stream == SND_PCM_STREAM_PLAYBACK) {
+-		rate->pitch = (((u_int64_t)slave->period_size * LINEAR_DIV) + pcm->period_size - 1) / pcm->period_size;
++		rate->pitch = (((u_int64_t)slave->period_size * LINEAR_DIV) + (pcm->period_size/2) ) / pcm->period_size;
+ 		do {
+-			snd_pcm_uframes_t cframes;
++			snd_pcm_uframes_t cframes,cframes_test;
+ 			
+-			cframes = snd_pcm_rate_client_frames(pcm, slave->period_size - 1);
+-			if (cframes == pcm->period_size - 1)
++			cframes = snd_pcm_rate_client_frames(pcm, slave->period_size );
++			if (cframes == pcm->period_size )
+ 				break;
+-			if (cframes > pcm->period_size - 1) {
++			if (cframes > pcm->period_size ) {
+ 				rate->pitch++;
+-				if ((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size - 1) < pcm->period_size - 1) {
+-					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size - 1, pcm->period_size - 1);
++				cframes_test = snd_pcm_rate_client_frames(pcm, slave->period_size );
++				if (cframes_test < pcm->period_size ) {
++					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size, pcm->period_size);
+ 					return -EIO;
+ 				}
+ 			} else {
+ 				rate->pitch--;
+-				if ((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size - 1) > pcm->period_size - 1) {
+-					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size - 1, pcm->period_size - 1);
++				cframes_test = snd_pcm_rate_client_frames(pcm, slave->period_size );
++				if (cframes_test > pcm->period_size) {
++					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size, pcm->period_size);
+ 					return -EIO;
+ 				}
+ 			}
+ 		} while (1);
+-		assert((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size - 1) == pcm->period_size - 1);
++		assert((snd_pcm_uframes_t)snd_pcm_rate_client_frames(pcm, slave->period_size ) == pcm->period_size );
+ 	} else {
+-		rate->pitch = (((u_int64_t)pcm->period_size * LINEAR_DIV) + slave->period_size - 1) / slave->period_size;
++		rate->pitch = (((u_int64_t)pcm->period_size * LINEAR_DIV) + (slave->period_size/2) ) / slave->period_size;
+ 		do {
+ 			snd_pcm_uframes_t cframes;
+ 			
+-			cframes = snd_pcm_rate_slave_frames(pcm, pcm->period_size - 1);
+-			if (cframes == slave->period_size - 1)
++			cframes = snd_pcm_rate_slave_frames(pcm, pcm->period_size );
++			if (cframes == slave->period_size )
+ 				break;
+-			if (cframes > slave->period_size - 1) {
++			if (cframes > slave->period_size ) {
+ 				rate->pitch++;
+-				if ((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size - 1) < slave->period_size - 1) {
+-					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size - 1, pcm->period_size - 1);
++				if ((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size ) < slave->period_size ) {
++					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size, pcm->period_size);
+ 					return -EIO;
+ 				}
+ 			} else {
+ 				rate->pitch--;
+-				if ((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size - 1) > slave->period_size - 1) {
+-					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size - 1, pcm->period_size - 1);
++				if ((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size) > slave->period_size ) {
++					SNDERR("Unable to satisfy pitch condition (%i/%i - %li/%li)\n", slave->rate, pcm->rate, slave->period_size , pcm->period_size );
+ 					return -EIO;
+ 				}
+ 			}
+ 		} while (1);
+-		assert((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size - 1) == slave->period_size - 1);
++		assert((snd_pcm_uframes_t)snd_pcm_rate_slave_frames(pcm, pcm->period_size ) == slave->period_size );
+ 	}
+ 	recalc(pcm, &sparams->avail_min);
+ 	rate->orig_avail_min = sparams->avail_min;
+ 	recalc(pcm, &sparams->xfer_align);
+ 	recalc(pcm, &sparams->start_threshold);
++	if (sparams->avail_min < 1) sparams->avail_min = 1;
++	if (sparams->xfer_align < 1) sparams->xfer_align = 1;
+ 	if (sparams->start_threshold <= slave->buffer_size) {
+ 		if (sparams->start_threshold > (slave->buffer_size / sparams->avail_min) * sparams->avail_min)
+ 			sparams->start_threshold = (slave->buffer_size / sparams->avail_min) * sparams->avail_min;
+
+--------------080608000507030506040300--
 
 
 -------------------------------------------------------
