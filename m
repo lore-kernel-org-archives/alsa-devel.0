@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Fri, 1 Apr 2005 04:47:36 +0200
-Message-ID: <2533659192c060a29b3aefeb9df1d44d@bugtrack.alsa-project.org>
+Date: Fri, 1 Apr 2005 05:56:30 +0200
+Message-ID: <562e7053b953285a9bae5bd1096dd59e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 52FEC239
-	for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2005 04:47:36 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 867FB21D
+	for <alsa-devel@alsa-project.org>; Fri,  1 Apr 2005 05:56:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - emu10k1x
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r9
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              04-01-2005 04:47 CEST
+Last Modified:              04-01-2005 05:56 CEST
 ======================================================================
 Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
@@ -101,19 +103,6 @@ versions.
 ======================================================================
 
 ----------------------------------------------------------------------
- jbedwani - 04-01-05 00:19 
-----------------------------------------------------------------------
-Just to let you know:
-
-I tracked the same problem with a different sound card: the Creative Labs
-Live 24bit. I tested ALSA 1.0.8 and 1.0.9rc1. Did not tried 1.0.9rc2 yet.
-
-I am using slackware 10.1, kernel 2.6.10-ac2, also tested with Fedora Core
-3.
-
-ASUS motherboard, with intel P4 processor.
-
-----------------------------------------------------------------------
  Q3Man - 04-01-05 04:47 
 ----------------------------------------------------------------------
 Well, looks like you did it!
@@ -125,6 +114,11 @@ ones were loading. I removed the older modules and updated the module
 cache and everything works perfectly. 
 
 Looks like this can finally be closed as fixed.
+
+----------------------------------------------------------------------
+ fmoraes - 04-01-05 05:56 
+----------------------------------------------------------------------
+Fixed in ALSA 1.09rc2
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -176,6 +170,9 @@ Date Modified  Username       Field                    Change
 03-31-05 18:40 fmoraes        Note Added: 0004283                          
 04-01-05 00:19 jbedwani       Note Added: 0004288                          
 04-01-05 04:47 Q3Man          Note Added: 0004289                          
+04-01-05 05:56 fmoraes        Status                   assigned => resolved
+04-01-05 05:56 fmoraes        Resolution               open => fixed       
+04-01-05 05:56 fmoraes        Note Added: 0004290                          
 ======================================================================
 
 
