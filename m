@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000712]: Setting <4 channels in surround40 fails
-Date: Tue, 7 Dec 2004 18:51:54 +0100
-Message-ID: <3bf228aebbb877352433a49d377d0e02@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000706]: SERR: Status=4210 followed by NMI reason 34 leading to reboot
+Date: Tue, 7 Dec 2004 18:52:39 +0100
+Message-ID: <357a56521e102cef215de187e43e4436@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2A6238A
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 18:51:54 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A785A3AD
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 18:52:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=712> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=706> 
 ======================================================================
-Reported By:                darkbrain
+Reported By:                dlc
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   712
-Category:                   PCI - cs46xx
+Issue ID:                   706
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               DeMuDi1.2.0
+Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             12-07-2004 18:36 CET
-Last Modified:              12-07-2004 18:51 CET
+Date Submitted:             12-04-2004 00:36 CET
+Last Modified:              12-07-2004 18:52 CET
 ======================================================================
-Summary:                    Setting <4 channels in surround40 fails
+Summary:                    SERR: Status=4210 followed by NMI reason 34 leading
+to reboot
 Description: 
-If you try
-alsa-lib/test/pcm -D surround40:0
-You obtain: Channels count (1) not available for playbacks: Invalid
-argument
-But we have 4 channels!
-I've tried to find the problem into the sources without luck :(
+System reboots when attempting to install a game under Wine.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-07-04 18:42 
+ tiwai - 12-07-04 18:52 
 ----------------------------------------------------------------------
-This is not a bug.
-surround40 is for 4 seprated channels.
+Too little information: Which sound card, which ALSA version?
 
-If you want to duplicate 2-channel stereo signal to 4-channels, try the
-CVS version.  It can have a new mixer control 'Duplicate Front'. 
-Otherwise, you can do it via asoundrc (see bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617).
-
-----------------------------------------------------------------------
- darkbrain - 12-07-04 18:51 
-----------------------------------------------------------------------
-BTW with cmipci driver it's possible. There is an incompatibility with
-openal witch try to open 2 channels without luck.
+Try to use snd-dummy driver instead of snd-ice1712, and see whether the
+same problem occurs.  If it happens, the problem should be in others.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-07-04 18:36 darkbrain      New Issue                                    
-12-07-04 18:42 tiwai          Note Added: 0002757                          
-12-07-04 18:51 darkbrain      Note Added: 0002759                          
+12-04-04 00:36 dlc            New Issue                                    
+12-04-04 00:36 dlc            Distribution              => DeMuDi1.2.0     
+12-04-04 00:36 dlc            Kernel Version            => 2.4.25          
+12-07-04 18:52 tiwai          Note Added: 0002760                          
 ======================================================================
 
 
