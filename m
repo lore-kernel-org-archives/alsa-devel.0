@@ -1,12 +1,14 @@
-From: John Paul Lorenti <jpl31@columbia.edu>
-Subject: Patch to get ali5451 to work on the Sharp MM10
-Date: Sun, 18 May 2003 06:53:57 -0400
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: ALSA 0.9.3a sequencer/rawmidi oops
+Date: Sun, 18 May 2003 21:31:40 +0930 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EC76645.2010303@columbia.edu>
+Message-ID: <200305181201.h4IC1eY24870@mercury.physics.adelaide.edu.au>
+References: <s5hk7crduqr.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070002030802060302010106"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hk7crduqr.wl@alsa2.suse.de> from "Takashi Iwai" at May 16, 2003 12:57:32 
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,224 +17,257 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070002030802060302010106
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi takashi
 
-I have a Sharp MM10 laptop and it freezes when I try to load the ali5451 
-driver. After no solutions were found on alsa-user, I spent some time 
-hacking the driver, and found that commenting out the spdif support 
-stopped the freezing without losing any functionality. The laptop has no 
-jacks to take advantage of spdif. Attached is a quick and dirty patch 
-against  alsa-driver-0.9.3a/alsa-kernel/pci/ali5451/ali5451.c from 
-alsa-driver-0.9.3a.tar.bz2 which makes the driver run perfectly for me. 
-Maybe one of the developers can clean it up and make some load time 
-option out of it.
+> > > > > > Over the weekend I thought I'd give ALSA 0.9.3a a go.  For the most part it
+> > > > > > worked fine.  However, there seems to be a bug in the sequencer or rawmidi
+> > > > > > components.
+> > > > > > 
+> > > > > > If any application connects to a sequencer port, a oops results and the
+> > > > > > machine is locked solid. ... ALSA 0.9.2 gives no trouble at all.
+> > > > > > 
+> > > > > > The soundcard in use is an Ensoniq AudioPCI (ens1370).
+> > > > > > 
+> > > > > > Does anyone have any ideas here?
+> > > > > 
+> > > > > does this still happen on the cvs version?
+> > > > 
+> > > > The current CVS version is worse.  I grabbed a version at around 0900
+> > > > UT+0930 today (Wed 14 May).  I have just compiled this and loaded it.  When 
+> > > >   pmidi -l
+> > > > or
+> > > >   pmidi -p 64:0
+> > > > is run, we now get an error about being unable to open the sequencer.  Then
+> > > > when 
+> > > >   ls /proc/asound
+> > > > is executed the kernel oopses.  It's not a hard lock - the machine keeps
+> > > > going - but it's an oops non-the-less which clearly shouldn't happen.  It
+> > > > seems that there is something strange lurking in the sequencer.  The decoded
+> > > > oops is reproduced below.
+> > > 
+> > > yep, there is a bug in the recent cvs version.
+> > > right now i fixed it and committed.  please update your tree again.
+> > 
+> > I grabbed an update at 1700 UT+0930 on 15 Mat 2003.  The kernel oops when
+> > accessing /proc/asound/ is gone now.  However, there are still major
+> > problems with this release:
+> >  1) trying to access any of the pseudo files under /proc/asound results
+> >     in "no such device" errors.
+> 
+> hmm, i saw this phenomenon once but after rebuilding the latest
+> drivers it doesn't appear any more.
 
-John Paul
+Ok.  I have some more information which I'm hoping will help us track this
+problem down.
+
+Firstly, I have grabbed a CVS snapshot at around 1500 UT+0930 on 18 May
+2003.  I have repeated all my tests with this snapshot.  The alsa-driver
+was configured using
+  ./configure --with-sequencer=yes --with-oss=yes \
+     --with-kernel=/home/audio/src/linux-2.4.20 \
+     --with-cards=mpu401,ens1370,dt019x
+
+The tests were conducted with the ens1370 card - the dt019x components were
+not loaded.  As can be seen, this is under kernel 2.4.20.
+
+The machine loaded the alsa modules with no errors.
+
+I have run the snddevices script to create the static alsa device nodes.
+
+Doing an "ls" of /proc/asound does not produce the oops which plagued
+earlier CVS versions.  In fact, that particular bug was also in 0.9.3a
+release.  However, attempting to "cat" *any* file under the /proc/asound
+hierarchy still produced "no such device".  The directory structure is
+created fine and can be navigated with no trouble.  It's just that it's
+impossible to view the contents of any of the pseudo-files displayed
+therein.  In other words, simply compiling the latest version of the driver
+has not cured this problem for me - there's obviously some other lingering
+problem.
+
+This latest snapshot has cured the kernel oops I reported earlier regarding
+pmidi.  I have not yet checked to see if pmidi can actually output anything,
+but not having "pmidi -l" oops is a good start.
+
+However, there seems to be serious problems with the pcm components of the
+current CVS version.  Using "wavplay" through the ALSA OSS emulation layer
+produces an oops and locks the machine solid.  The oops is in __wake_up().
+Using the native aplay is slightly better - it still oopses, but at least
+the machine isn't locked solid.  The oops is still in __wake_up().  Both
+decoded oopses are included at the end of this email.
+
+Now, the interesting thing about the pcm oops is that it occurs in
+__wake_up().  This is actually the same endpoint of the original oops I
+reported with the sequencer.  This might have since been fixed (as mentioned
+above), so it's likely that whatever fix was applied to the sequencer
+component is also needed to the pcm interface.
+
+So to summarise findings regarding the CVS ALSA version under kernel 2.4.20:
+ 1) no files under /proc/asound can be displayed: they all give "no such
+    device errors".
+ 2) the oops which used to be triggered by "pmidi -l" may have been fixed.
+ 3) using wavplay (via ALSA OSS emulation) or aplay (native ALSA app) causes
+    a kernel oops in __wake_up() (decoded oopses at end of email).  It's
+    possible that the pcm component of ALSA needs the same fix which may
+    have been applied to the sequencer component to fix the oops I reported
+    at the start of this thread.
+
+Regards
+  jonathan
+
+=============================
+Oops from wavplay invocation:
+ksymoops 2.4.8 on i586 2.4.20.  Options used
+     -V (default)
+     -k /proc/ksyms (default)
+     -l /proc/modules (default)
+     -o /lib/modules/2.4.20 -o /tmp/alsa-20030518-cvs/ (specified)
+     -m /boot/System.map (specified)
+
+Unable to handle kernel NULL pointer dereference at virtual address 00000000
+*pde = 00000000
+Oops: 0000
+CPU:    0
+EIP:    0010:[<c011373b>]    Not tainted
+Using defaults from ksymoops -t elf32-i386 -a i386
+EFLAGS: 00010097
+eax: c12ddcac   ebx: c12ddca8   ecx: 00000000   edx: 00000003
+esi: 00000004   edi: 00000001   ebp: c02cdecc   esp: c02cfeb4
+ds: 0018   es: 0018   ss: 0018
+Process swapper (pid: 0, stackpage=c02cf000)
+Stack: 00000000 00000004 c12c8b60 cf2ddcac 00000082 00000003 cc98eaec cc9847d6
+       c12c8b60 00000004 cc98eaec 00000000 c12ddc00 c12c8b60 cc98480d cc98eaec
+       c12c8b60 00000004 ffffffe0 cc984a04 cc98eaec c12c8b60 00000004 cc98be7b
+Call Trace:    [<cc98eaec>] [<cc9847d8>] [<cc98eaec>] [<cc98480d>] [<cc98eaec>]
+  [<cc984a04>] [<cc98eaec>] [<cc98be7b>] [<ccb93679>] [<cc98ae9c>] [<cc9b138b>]
+  [<c0109b4d>] [<c0109cbe>] [<c0106e10>] [<c010be78>] [<c0106e10>] [<c0106e33>]
+  [<c0106e97>] [<c0105000>] [<c0105027>]
+Code: 8b 01 85 45 fc 74 4e 31 c0 9c 5e fa c7 01 00 00 00 00 83 79
 
 
---------------070002030802060302010106
-Content-Type: text/plain;
- name="ali5451_patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ali5451_patch"
+>>EIP; c011373b <__wake_up+2b/98>   <=====
 
---- ali5451.c	2003-05-18 06:23:21.000000000 -0400
-+++ ali5451_terse.c	2003-05-18 06:17:18.000000000 -0400
-@@ -673,10 +673,11 @@
- 
- 	// recording
- 	if (rec) {
--		if (inl(ALI_REG(codec, ALI_GLOBAL_CONTROL)) & (1<<11) &&
-+	 /*JPL SPDIF	if (inl(ALI_REG(codec, ALI_GLOBAL_CONTROL)) & (1<<11) &&
- 			( codec->revision == ALI_5451_V02 ))
- 			idx = ALI_SPDIF_IN_CHANNEL;
- 		else
-+	 JPL SPDIF */		
- 			idx = ALI_PCM_IN_CHANNEL;
- 
- 		if ((result = snd_ali_alloc_pcm_channel(codec,idx)) >= 0) {
-@@ -688,6 +689,7 @@
- 	}
- 
- 	//playback...
-+        /* JPL SPDIF
- 	if (inl(ALI_REG(codec, ALI_GLOBAL_CONTROL)) & (1<<15)) {
- 		idx = ALI_SPDIF_OUT_CHANNEL;
- 		if ((result = snd_ali_alloc_pcm_channel(codec,idx)) >= 0) {
-@@ -696,7 +698,7 @@
- 			snd_printk("ali_find_free_channel: S/PDIF out channel is in busy now.\n");
- 		}
- 	}
--
-+	JPL SPDIF */
- 	for (idx = 0; idx < ALI_CHANNELS; idx++) {
- 		if ((result = snd_ali_alloc_pcm_channel(codec,idx)) >= 0)
- 			return result;
-@@ -748,6 +750,9 @@
- static void snd_ali_delay(ali_t *codec,int interval)
- {
- 	unsigned long  begintimer,currenttimer;
-+	printk("In snd_ali_delay\n");
-+	/*
-+
- 
- 	begintimer   = inl(ALI_REG(codec, ALI_STIMER));
- 	currenttimer = inl(ALI_REG(codec, ALI_STIMER));
-@@ -757,6 +762,7 @@
- 			break;
- 		currenttimer = inl(ALI_REG(codec,  ALI_STIMER));
- 	}
-+	*/
- }
- 
- static void snd_ali_detect_spdif_rate(ali_t *codec)
-@@ -764,6 +770,9 @@
- 	u16 wval  = 0;
- 	u16 count = 0;
- 	u8  bval = 0, R1 = 0, R2 = 0;
-+	printk("In snd_ali_detect_spdif_rate\n");
-+	/*
-+
- 
- 	bval  = inb(ALI_REG(codec,ALI_SPDIF_CTRL + 1));
- 	bval |= 0x1F;
-@@ -811,12 +820,15 @@
- 		bval  = inb(ALI_REG(codec,ALI_SPDIF_CS +3)) & 0xF0;
- 		outb(bval|0x03,ALI_REG(codec,ALI_SPDIF_CS + 3));
- 	}
-+	*/
- }
- 
- static unsigned int snd_ali_get_spdif_in_rate(ali_t *codec)
- {
- 	u32	dwRate = 0;
- 	u8	bval = 0;
-+	printk("In snd_ali_get_spdif_in_rate\n");
-+	/*
- 
- 	bval  = inb(ALI_REG(codec,ALI_SPDIF_CTRL));
- 	bval &= 0x7F;
-@@ -827,7 +839,7 @@
- 
- 	bval  = inb(ALI_REG(codec,ALI_SPDIF_CS + 3));
- 	bval &= 0x0F;
--
-+	*/
- 	if (bval == 0) dwRate = 44100;
- 	if (bval == 1) dwRate = 48000;
- 	if (bval == 2) dwRate = 32000;
-@@ -838,6 +850,8 @@
- static void snd_ali_enable_spdif_in(ali_t *codec)
- {	
- 	unsigned int dwVal;
-+	printk("In snd_ali_enable_spdif_in\n");
-+	/*
- 
- 	dwVal = inl(ALI_REG(codec, ALI_GLOBAL_CONTROL));
- 	dwVal |= 1<<11;
-@@ -848,6 +862,7 @@
- 	outb(dwVal, ALI_REG(codec, ALI_SPDIF_CTRL));
- 
- 	snd_ali_enable_special_channel(codec, ALI_SPDIF_IN_CHANNEL);
-+	*/
- }
- 
- static void snd_ali_disable_spdif_in(ali_t *codec)
-@@ -866,7 +881,8 @@
- {
- 	unsigned char  bVal;
- 	unsigned int  dwRate = 0;
--	
-+		printk("In snd_ali_set_spdif_out_rate\n");
-+	/*
- 	if (rate == 32000) dwRate = 0x300;
- 	if (rate == 44100) dwRate = 0;
- 	if (rate == 48000) dwRate = 0x200;
-@@ -881,6 +897,7 @@
- 	bVal &= (~0x80);	//select left
- 	outb(bVal, ALI_REG(codec, ALI_SPDIF_CTRL));
- 	outw(rate | 0x10, ALI_REG(codec, ALI_SPDIF_CS + 2));
-+	*/
- }
- 
- static void snd_ali_enable_spdif_out(ali_t *codec)
-@@ -1756,6 +1773,10 @@
- 	unsigned long flags;
- 	ali_t *codec = snd_magic_cast(ali_t, kcontrol->private_data, -ENXIO);
- 	unsigned int enable;
-+	printk("In snd_ali5451_spdif_get\n");
-+	
-+	/*
-+
- 
- 	enable = ucontrol->value.integer.value[0] ? 1 : 0;
- 
-@@ -1775,12 +1796,18 @@
- 	}
- 	ucontrol->value.integer.value[0] = enable;
- 	spin_unlock_irqrestore(&codec->reg_lock, flags);
-+	*/	
- 	return 0;
- }
- 
- static int snd_ali5451_spdif_put(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol)
- {
- 	unsigned long flags;
-+	printk("In snd_ali5451_spdif_put\n");
-+	return 0;
-+	/*
-+
-+
- 	ali_t *codec = snd_magic_cast(ali_t, kcontrol->private_data, -ENXIO);
- 	unsigned int change = 0, enable = 0;
- 
-@@ -1834,6 +1861,7 @@
- 	spin_unlock_irqrestore(&codec->reg_lock, flags);
- 	
- 	return change;
-+	*/
- }
- 
- static snd_kcontrol_new_t snd_ali5451_mixer_spdif[] __devinitdata = {
-@@ -1867,12 +1895,14 @@
- 		snd_printk("ali mixer creating error.\n");
- 		return err;
- 	}
-+	/* JPL SPDIF
- 	if (codec->revision == ALI_5451_V02) {
- 		for(idx = 0; idx < ARRAY_SIZE(snd_ali5451_mixer_spdif); idx++) {
- 			err=snd_ctl_add(codec->card, snd_ctl_new1(&snd_ali5451_mixer_spdif[idx], codec));
- 			if (err < 0) return err;
- 		}
- 	}
-+	*/
- 	return 0;
- }
- 
-@@ -2039,11 +2069,12 @@
- 
- 	codec->ac97_ext_id = snd_ali_codec_peek(codec, 0, AC97_EXTENDED_ID);
- 	codec->ac97_ext_status = snd_ali_codec_peek(codec, 0, AC97_EXTENDED_STATUS);
-+	/* JPL SPDIF
- 	if (codec->revision == ALI_5451_V02) {
- 		snd_ali_enable_spdif_out(codec);
- 		codec->spdif_mask = 0x00000002;
- 	}
--
-+	*/
- 	snd_ali_printk("chip initialize succeed.\n");
- 	return 0;
- 
+>>eax; c12ddcac <_end+fc8228/c65c5dc>
+>>ebx; c12ddca8 <_end+fc8224/c65c5dc>
+>>ebp; c02cdecc <_edata+568/69c>
+>>esp; c02cfeb4 <init_task_union+1eb4/2000>
 
---------------070002030802060302010106--
+Trace; cc98eaec <[snd-pcm]snd_pcm_action_stop+0/c>
+Trace; cc9847d8 <[snd-pcm]snd_pcm_action_single+38/40>
+Trace; cc98eaec <[snd-pcm]snd_pcm_action_stop+0/c>
+Trace; cc98480d <[snd-pcm]snd_pcm_action+2d/30>
+Trace; cc98eaec <[snd-pcm]snd_pcm_action_stop+0/c>
+Trace; cc984a04 <[snd-pcm]snd_pcm_stop+14/20>
+Trace; cc98eaec <[snd-pcm]snd_pcm_action_stop+0/c>
+Trace; cc98be7b <[snd-pcm]snd_pcm_update_hw_ptr_interrupt+13b/1d0>
+Trace; ccb93679 <[usb-uhci]rh_int_timer_do+3d/44>
+Trace; cc98ae9c <[snd-pcm]snd_pcm_period_elapsed+6c/c0>
+Trace; cc9b138b <[snd-ens1370]snd_audiopci_interrupt+9b/b0>
+Trace; c0109b4d <handle_IRQ_event+31/5c>
+Trace; c0109cbe <do_IRQ+72/b4>
+Trace; c0106e10 <default_idle+0/28>
+Trace; c010be78 <call_do_IRQ+5/d>
+Trace; c0106e10 <default_idle+0/28>
+Trace; c0106e33 <default_idle+23/28>
+Trace; c0106e97 <cpu_idle+3f/54>
+Trace; c0105000 <_stext+0/0>
+Trace; c0105027 <rest_init+27/28>
 
+Code;  c011373b <__wake_up+2b/98>
+00000000 <_EIP>:
+Code;  c011373b <__wake_up+2b/98>   <=====
+   0:   8b 01                     mov    (%ecx),%eax   <=====
+Code;  c011373d <__wake_up+2d/98>
+   2:   85 45 fc                  test   %eax,0xfffffffc(%ebp)
+Code;  c0113740 <__wake_up+30/98>
+   5:   74 4e                     je     55 <_EIP+0x55>
+Code;  c0113742 <__wake_up+32/98>
+   7:   31 c0                     xor    %eax,%eax
+Code;  c0113744 <__wake_up+34/98>
+   9:   9c                        pushf
+Code;  c0113745 <__wake_up+35/98>
+   a:   5e                        pop    %esi
+Code;  c0113746 <__wake_up+36/98>
+   b:   fa                        cli
+Code;  c0113747 <__wake_up+37/98>
+   c:   c7 01 00 00 00 00         movl   $0x0,(%ecx)
+Code;  c011374d <__wake_up+3d/98>
+  12:   83 79 00 00               cmpl   $0x0,0x0(%ecx)
+
+=============================
+Oops occuring after aplay:
+ksymoops 2.4.8 on i586 2.4.20.  Options used
+     -V (default)
+     -k /proc/ksyms (default)
+     -l /proc/modules (default)
+     -o /lib/modules/2.4.20 -o /tmp/alsa-20030518-cvs/ (specified)
+     -m /boot/System.map (specified)
+
+Unable to handle kernel NULL pointer dereference at virtual address 00000000
+*pde = 00000000
+Oops: 0000
+CPU:    0
+EIP:    0010:[<c011373b>]    Not tainted
+Using defaults from ksymoops -t elf32-i386 -a i386
+EFLAGS: 00010097
+eax: c9c66388   ebx: c9c66384   ecx: 00000000   edx: 00000003
+esi: c7ad6460   edi: 00000001   ebp: c7439f44   esp: c7439f2c
+ds: 0018   es: 0018   ss: 0018
+Process aplay (pid: 426, stackpage=c7439000)
+Stack: c9b5c860 c7ad6460 c9c66200 c9c66388 00000286 00000003 c7adb4e0 cc97625d
+       c7ad6460 00000019 cc9776e4 c9c66200 c7ad6460 c9c6635c c7ad6460 c9b05c20
+       c12162e0 c8a2ec20 c0131814 c9b05c20 c7ad6460 c7ad6460 00000000 c799f080
+Call Trace:    [<cc97625d>] [<cc9776e4>] [<c0131814>] [<c01308a5>] [<c01308f3>]
+  [<c0108813>]
+Code: 8b 01 85 45 fc 74 4e 31 c0 9c 5e fa c7 01 00 00 00 00 83 79
+
+
+>>EIP; c011373b <__wake_up+2b/98>   <=====
+
+>>eax; c9c66388 <_end+9950904/c65c5dc>
+>>ebx; c9c66384 <_end+9950900/c65c5dc>
+>>esi; c7ad6460 <_end+77c09dc/c65c5dc>
+>>ebp; c7439f44 <_end+71244c0/c65c5dc>
+>>esp; c7439f2c <_end+71244a8/c65c5dc>
+
+Trace; cc97625d <[snd]snd_card_file_remove+6d/90>
+Trace; cc9776e4 <[snd]snd_ctl_release+d4/f0>
+Trace; c0131814 <fput+4c/e0>
+Trace; c01308a5 <filp_close+59/64>
+Trace; c01308f3 <sys_close+43/54>
+Trace; c0108813 <system_call+33/40>
+
+Code;  c011373b <__wake_up+2b/98>
+00000000 <_EIP>:
+Code;  c011373b <__wake_up+2b/98>   <=====
+   0:   8b 01                     mov    (%ecx),%eax   <=====
+Code;  c011373d <__wake_up+2d/98>
+   2:   85 45 fc                  test   %eax,0xfffffffc(%ebp)
+Code;  c0113740 <__wake_up+30/98>
+   5:   74 4e                     je     55 <_EIP+0x55>
+Code;  c0113742 <__wake_up+32/98>
+   7:   31 c0                     xor    %eax,%eax
+Code;  c0113744 <__wake_up+34/98>
+   9:   9c                        pushf
+Code;  c0113745 <__wake_up+35/98>
+   a:   5e                        pop    %esi
+Code;  c0113746 <__wake_up+36/98>
+   b:   fa                        cli
+Code;  c0113747 <__wake_up+37/98>
+   c:   c7 01 00 00 00 00         movl   $0x0,(%ecx)
+Code;  c011374d <__wake_up+3d/98>
+  12:   83 79 00 00               cmpl   $0x0,0x0(%ecx)
+
+-- 
+* Jonathan Woithe    jwoithe@physics.adelaide.edu.au                        *
+*                    http://www.physics.adelaide.edu.au/~jwoithe            *
+***-----------------------------------------------------------------------***
+** "Time is an illusion; lunchtime doubly so"                              **
+*  "...you wouldn't recognize a subtle plan if it painted itself purple and *
+*   danced naked on a harpsichord singing 'subtle plans are here again'"    *
 
 
 -------------------------------------------------------
