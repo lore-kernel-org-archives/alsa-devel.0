@@ -1,10 +1,12 @@
-From: wal_teichmann@t-online.de (Wolfgang Teichmann)
-Subject: Terratec DMX 6fire problem
-Date: Thu, 24 Oct 2002 20:21:02 +0200
+From: Unet <burududu@hotpop.com>
+Subject: Fwd: Problem wth alsa-driver (rc3-rc4) rc5
+Date: Thu, 24 Oct 2002 19:34:37 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DB83A0E.9020400@t-online.de>
+Message-ID: <200210241934.38927.burududu@hotpop.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms010701080205080303040301"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,96 +19,73 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a cryptographically signed message in MIME format.
+Hi,
 
---------------ms010701080205080303040301
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+I have a problem having alsa-driver to work since rc3.
 
-Hallo,
+The driver compiles fine, but when I try to register the modules, here's =
+what
+I got:
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/acore/oss/snd-mixer-oss.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/acore/oss/snd-pcm-oss.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/acore/seq/oss/snd-seq-oss.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/acore/seq/snd-seq-device.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/acore/seq/snd-seq-instr.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/acore/seq/snd-seq-midi-emul.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/acore/seq/snd-seq-midi-event.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/acore/seq/snd-seq-midi.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/acore/seq/snd-seq.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/acore/snd-hwdep.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/acore/snd-pcm.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/acore/snd-rawmidi.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/acore/snd-timer.o
+depmod: *** Unresolved symbols in
+ /lib/modules/2.4.19/kernel/sound/acore/snd.o depmod: *** Unresolved symb=
+ols
+ in
+/lib/modules/2.4.19/kernel/sound/drivers/mpu401/snd-mpu401-uart.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/drivers/opl3/snd-opl3-lib.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/drivers/opl3/snd-opl3-synth.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/pci/ac97/snd-ac97-codec.o
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.19/kernel/sound/pci/ymfpci/snd-ymfpci.o
 
-I have a TV card connected to the rear input of the Terratec DMX 6fire ,
-but when I start xawtv or xawdecode - no sound.
-Alsamixer does not help.Envycontrol shows no signal H/W in 3 and H/W in4
-If I start the PC with Windows and restart (warm boot) into Linux, there
-is sound in xawtv and xawdecodeand, Envycontrol shows the signal H/W in3 
-and H/W in4
 
-Any idea?
+I'd *love* to know what is wrong.
 
--Wolfgang
+I'm using 2.4.19 with preempt + low-latency patches.
 
---------------ms010701080205080303040301
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Thank you :)
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJZDCC
-AxAwggJ5oAMCAQICAwiCPDANBgkqhkiG9w0BAQQFADCBkjELMAkGA1UEBhMCWkExFTATBgNV
-BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUx
-HTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVl
-bWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMTAxODAxMTk1OVoXDTAzMTAxODAxMTk1OVowSzEf
-MB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEoMCYGCSqGSIb3DQEJARYZd2FsX3Rl
-aWNobWFubkB0LW9ubGluZS5kZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK3t
-9U/z1sitJNCUAu5FS2TmcSPNb0gVDWjsGFyRTlGj9CPLsrTwKit8pRZmhvdKl1NALv6c1wQj
-9duLTW9CzNOqKUtDwO95t13s8bPGjIl6hDssadXu7RT+MVduAtHGNnk4NdIVP6mygFgtsomE
-TtJ5o97/loxL+1+FZ8d62PiUP7YyNMMto/zo3SNDSmV+4fsQLQE6C2S9cUukO4vkW8Zk7arf
-B86NJ4fBnT1qgUgmcoFh21qnkrDybkpOKdnoMAXiEgmKPNu9TXn61xASxTOSlMO67CXoZV8e
-5Jtu0pF7RqoAD90mEpGvSOxyfCQqlfpxawOvyB/7CyJOhG03Ek0CAwEAAaM2MDQwJAYDVR0R
-BB0wG4EZd2FsX3RlaWNobWFubkB0LW9ubGluZS5kZTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3
-DQEBBAUAA4GBALto5AYCDKxUDHP2QBOhsT08knVjdE6HCKKMM/4nEQZn7Dy5iVDp634APC16
-rX8VgZ8uGVMrFvxOByDBpN3zSeyWWYlKga0P3vr0whc1icUq6sPHGbjFx7haLxrHE3wD4kin
-XPLQX9p5c0ZKjc3eYvpSm5H1mr/lRMhVtQNdWdXjMIIDEDCCAnmgAwIBAgIDCII8MA0GCSqG
-SIb3DQEBBAUAMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYD
-VQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlmaWNhdGUg
-U2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzAwHhcN
-MDIxMDE4MDExOTU5WhcNMDMxMDE4MDExOTU5WjBLMR8wHQYDVQQDExZUaGF3dGUgRnJlZW1h
-aWwgTWVtYmVyMSgwJgYJKoZIhvcNAQkBFhl3YWxfdGVpY2htYW5uQHQtb25saW5lLmRlMIIB
-IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAre31T/PWyK0k0JQC7kVLZOZxI81vSBUN
-aOwYXJFOUaP0I8uytPAqK3ylFmaG90qXU0Au/pzXBCP124tNb0LM06opS0PA73m3Xezxs8aM
-iXqEOyxp1e7tFP4xV24C0cY2eTg10hU/qbKAWC2yiYRO0nmj3v+WjEv7X4Vnx3rY+JQ/tjI0
-wy2j/OjdI0NKZX7h+xAtAToLZL1xS6Q7i+RbxmTtqt8Hzo0nh8GdPWqBSCZygWHbWqeSsPJu
-Sk4p2egwBeISCYo8271NefrXEBLFM5KUw7rsJehlXx7km27SkXtGqgAP3SYSka9I7HJ8JCqV
-+nFrA6/IH/sLIk6EbTcSTQIDAQABozYwNDAkBgNVHREEHTAbgRl3YWxfdGVpY2htYW5uQHQt
-b25saW5lLmRlMAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEEBQADgYEAu2jkBgIMrFQMc/ZA
-E6GxPTySdWN0TocIoowz/icRBmfsPLmJUOnrfgA8LXqtfxWBny4ZUysW/E4HIMGk3fNJ7JZZ
-iUqBrQ/e+vTCFzWJxSrqw8cZuMXHuFovGscTfAPiSKdc8tBf2nlzRkqNzd5i+lKbkfWav+VE
-yFW1A11Z1eMwggM4MIICoaADAgECAhBmRXK3zHT1z2N2RYTQLpEBMA0GCSqGSIb3DQEBBAUA
-MIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBl
-IFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0aW5nMSgwJgYDVQQLEx9DZXJ0aWZpY2F0
-aW9uIFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtUaGF3dGUgUGVyc29uYWwgRnJlZW1h
-aWwgQ0ExKzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVtYWlsQHRoYXd0ZS5jb20wHhcN
-MDAwODMwMDAwMDAwWhcNMDQwODI3MjM1OTU5WjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgT
-DFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAb
-BgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFp
-bCBSU0EgMjAwMC44LjMwMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDeMzKmY8cJJUU+
-0m54J2eBxdqIGYKXDuNEKYpjNSptcDz63K737nRvMLwzkH/5NHGgo22Y8cNPomXbDfpL8dbd
-YaX5hc1VmjUanZJ1qCeu2HL5ugL217CR3hzpq+AYA6h8Q0JQUYeDPPA5tJtUihOH/7ObnUlm
-AC0JieyUa+mhaQIDAQABo04wTDApBgNVHREEIjAgpB4wHDEaMBgGA1UEAxMRUHJpdmF0ZUxh
-YmVsMS0yOTcwEgYDVR0TAQH/BAgwBgEB/wIBADALBgNVHQ8EBAMCAQYwDQYJKoZIhvcNAQEE
-BQADgYEAMbFLR135AXHl9VNsXXnWPZjAJhNigSKnEvgilegbSbcnewQ5uvzm8iTrkfq97A0q
-OPdQVahs9w2tTBu8A/S166JHn2yiDFiNMUIJEWywGmnRKxKyQF1q+XnQ6i4l3Yrk/NsNH50C
-81rbyjz2ROomaYd/SJ7OpZ/nhNjJYmKtBcYxggPVMIID0QIBATCBmjCBkjELMAkGA1UEBhMC
-WkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQK
-EwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJz
-b25hbCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwAgMIgjwwCQYFKw4DAhoFAKCCAg8wGAYJKoZI
-hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDIxMDI0MTgyMTAyWjAjBgkq
-hkiG9w0BCQQxFgQU19DeYKiy/ziIkND5PxVnwgHrEzAwUgYJKoZIhvcNAQkPMUUwQzAKBggq
-hkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZI
-hvcNAwICASgwgasGCSsGAQQBgjcQBDGBnTCBmjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgT
-DFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAb
-BgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFp
-bCBSU0EgMjAwMC44LjMwAgMIgjwwga0GCyqGSIb3DQEJEAILMYGdoIGaMIGSMQswCQYDVQQG
-EwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xDzANBgNV
-BAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlmaWNhdGUgU2VydmljZXMxKDAmBgNVBAMTH1Bl
-cnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzACAwiCPDANBgkqhkiG9w0BAQEFAASCAQCT
-ABZC2XGNKnXFHdD6NVSaDTFCFADkaHWR7ckGZ2kTb5Y7GEK++MQiaE0mRZh2fHI7qYlpDG2Z
-5xafmpTe74oTulJOoRdMJo+ucnJde1S8k8ldBoMQd5eX3EhKFnhCmm0kf4O9jA0L9vtmFdSq
-e02WEnsDmNBduMSFhaYbaMWZu8YrAe+noormcizrDAZTF+I+34XQqUop01EqdZ/NRbjNFY5J
-9m+Xen0KgkKcpEndXvvvIKdoZsUrQrZYxOM/NKZlcevn1cvCskiVkE+aYEUmAIHkuCfJAdjy
-bVyVaX/uy+Xz+wPdx6DIqwc23eDKTXMyyc3psh+AG9gE1SAU+sIwAAAAAAAA
---------------ms010701080205080303040301--
+--
+-------------------------------------------------
+=09        Unet !=3D UUnet
+
+>SourceMage
+
+=09Grimoire Guru for Audio<
+void Unet_im(gabber unet@bravegnuworld.com);
+void Unet_dm(mail burududu@hotpop.com)
+=09{
+=09=09subject(to change);
+=09};
+--------------------------------------------------
 
 
 
