@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000962]: Sound Blaster Live 5.1 with four speakers
-Date: Fri, 4 Mar 2005 03:35:19 +0100
-Message-ID: <74e250f711fd898bea540a253cb402af@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000729]: arts error on boot: AudioSubSystem:handleIO:write failed
+Date: Fri, 4 Mar 2005 03:39:46 +0100
+Message-ID: <18ed5544dbe10493981650cc53aba13f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F05E720D
-	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2005 03:35:19 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC5E020D
+	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2005 03:39:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,43 +21,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=962> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=729> 
 ======================================================================
-Reported By:                denisds
-Assigned To:                
+Reported By:                jbailo
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   962
-Category:                   CORE OSS - pcm
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   729
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.4 and 2.6
+Status:                     assigned
+Distribution:               Suse 9.1
+Kernel Version:             2.6.5-7.11
 ======================================================================
-Date Submitted:             03-04-2005 03:35 CET
-Last Modified:              03-04-2005 03:35 CET
+Date Submitted:             12-19-2004 11:50 CET
+Last Modified:              03-04-2005 03:39 CET
 ======================================================================
-Summary:                    Sound Blaster Live 5.1 with four speakers
+Summary:                    arts error on boot: AudioSubSystem:handleIO:write
+failed
 Description: 
-Hi, I`d like to know if someone managed to have
-both PCM front and rear for SBLive 5.1 workint on
-linux using alsa. any clue?
-My kurumim linux is Knoppix based, it configures the sound
-ok but only for the front speakers.
-Thank you for any help,
-Denis
+On book, an arts error message alert appears:
+
+AudioSubSystem:handleIO: write failed
+len = 3760, can_write = 3762, errno=32 (Broken pipe)
+This mightbe a sound hardware/driver specific problem (see aRts FAQ)
+
 
 ======================================================================
+
+----------------------------------------------------------------------
+ jbailo - 03-04-05 03:39 
+----------------------------------------------------------------------
+I just cvs installed the 1.08 alsa system with the ca0106 driver which is
+now in the supported drivers list for my card, the Sound Blaster Live!
+24-bit.
+
+However, after modprobe, the same error as originally reported appears:
+
+Sound server fatal error:
+AudioSubSystem::handleIO: write failed
+len = 3760, can_write = 3762, errno = 32 (Broken pipe)
+This might be a sound hardware/driver specific problem (see aRts FAQ)
+
+I was originally using a OSS driver in the interim, however, I uninstalled
+it completely before installing the 1.08 Alsa system and ca0106 driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-05 03:35 denisds        New Issue                                    
-03-04-05 03:35 denisds        Kernel Version            => 2.4 and 2.6     
+12-19-04 11:50 jbailo         New Issue                                    
+12-19-04 11:50 jbailo         File Added: boot.msg                         
+12-19-04 11:50 jbailo         Distribution              => Suse 9.1        
+12-19-04 11:50 jbailo         Kernel Version            => 2.6.5-7.11      
+12-19-04 11:51 jbailo         Issue Monitored: jbailo                      
+03-04-05 03:39 jbailo         Note Added: 0003796                          
 ======================================================================
 
 
