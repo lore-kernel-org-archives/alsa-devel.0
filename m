@@ -1,12 +1,12 @@
 From: Peter Zubaj <pzad@pobox.sk>
-Subject: [PATCH] Audigy + FX8010 capture (hw:x,2) - again
-Date: Mon, 28 Jun 2004 09:00:45 +0200
+Subject: [PATCH]Audigy 2 ZS - side support
+Date: Mon, 28 Jun 2004 09:11:16 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406280700.i5S70jAQ017077@www4.pobox.sk>
+Message-ID: <200406280711.i5S7BGAQ017719@www4.pobox.sk>
 Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97783512-1804289383-1088406045=:17075"
-Content-Transfer-Encoding: 8BIT
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,158 +19,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---97783512-1804289383-1088406045=:17075
-Content-Type: TEXT/plain; CHARSET=US-ASCII
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
 Hi,
 
-This patch fixes capture problems from hw:x,2 on Audigy. It is same as
- previous, because it can be applied cleanly against CVS (I tested
-version from 23.06.2004) and hope it is still true for current CVS.
+Here are patches to add support for Audigy 2 ZS side speakers.
+They are against CVS from 23.06.2004. I hope they will apply cleanly.
 
-I tested 4 channel recrding and it was OK.
+audigy2zs_driver_v2.diff - is kernel part - same as in bugtrack but
+for CVS.
 
-hw:x,2 records outputs from FX8010 (not FX buses)
+audigy2zs_lib_v2.diff - is alsa-lib part - this is not tested (it is
+same as from my mail and with changes from bugtrack from elklein)
 
-Using "EFX voices mask" you can set channels what you want record.
+TODO - detection of audigy 2 zs. Now it will add side controls to
+mixer for audigy 2 to. Maybe left or right slider can control volume
+of back center on audigy 2 too.
 
-use alsactl store to store config
-edit this config (set true for needed channel for "EFX voices mask"
-control) - I recorded channels 8,9,14,15 (front and rear output).
-use alsactl restore to restore config
-
-Looks like channel count must be power of 2 (1, 2, 4, 8, ...).
-
-Peter Zubaj
-
-
-=0A____________________________________=0Ahttp://www.pobox.sk/ - najvacsi s=
-lovensky freemail=0A=0A=0A
---97783512-1804289383-1088406045=:17075
-Content-Type: APPLICATION/octet-stream; name="efx_capture_audigy.diff"
-Content-Transfer-Encoding: BASE64
-
-ZGlmZiAtciAtdSBvL2Fsc2Eta2VybmVsL3BjaS9lbXUxMGsxL2VtdXBjbS5j
-IG4vYWxzYS1rZXJuZWwvcGNpL2VtdTEwazEvZW11cGNtLmMKLS0tIG8vYWxz
-YS1rZXJuZWwvcGNpL2VtdTEwazEvZW11cGNtLmMJMjAwNC0wMy0wNiAxNzo1
-MTozMC4wMDAwMDAwMDAgKzAxMDAKKysrIG4vYWxzYS1rZXJuZWwvcGNpL2Vt
-dTEwazEvZW11cGNtLmMJMjAwNC0wNi0yMCAxNDowNToxNy4wMDAwMDAwMDAg
-KzAyMDAKQEAgLTQ1Miw3ICs0NTIsMTEgQEAKIAkJc25kX2VtdTEwazFfcHRy
-X3dyaXRlKGVtdSwgQURDQ1IsIDAsIDApOwogCQlicmVhazsKIAljYXNlIENB
-UFRVUkVfRUZYOgotCQlzbmRfZW11MTBrMV9wdHJfd3JpdGUoZW11LCBGWFdD
-LCAwLCAwKTsKKwkJaWYgKGVtdS0+YXVkaWd5KSB7CisJCQlzbmRfZW11MTBr
-MV9wdHJfd3JpdGUoZW11LCBBX0ZYV0MxLCAwLCAwKTsKKwkJCXNuZF9lbXUx
-MGsxX3B0cl93cml0ZShlbXUsIEFfRlhXQzIsIDAsIDApOworCQl9IGVsc2UK
-KwkJCXNuZF9lbXUxMGsxX3B0cl93cml0ZShlbXUsIEZYV0MsIDAsIDApOwog
-CQlicmVhazsKIAlkZWZhdWx0OgogCQlicmVhazsKQEAgLTYxOCw3ICs2MjIs
-MTEgQEAKIAkJCXNuZF9lbXUxMGsxX3B0cl93cml0ZShlbXUsIEFEQ0NSLCAw
-LCBlcGNtLT5jYXB0dXJlX2NyX3ZhbCk7CiAJCQlicmVhazsKIAkJY2FzZSBD
-QVBUVVJFX0VGWDoKLQkJCXNuZF9lbXUxMGsxX3B0cl93cml0ZShlbXUsIEZY
-V0MsIDAsIGVwY20tPmNhcHR1cmVfY3JfdmFsKTsKKwkJCWlmIChlbXUtPmF1
-ZGlneSkgeworCQkJCXNuZF9lbXUxMGsxX3B0cl93cml0ZShlbXUsIEFfRlhX
-QzEsIDAsIGVwY20tPmNhcHR1cmVfY3JfdmFsKTsKKwkJCQlzbmRfZW11MTBr
-MV9wdHJfd3JpdGUoZW11LCBBX0ZYV0MyLCAwLCBlcGNtLT5jYXB0dXJlX2Ny
-X3ZhbDIpOworCQkJfSBlbHNlCisJCQkJc25kX2VtdTEwazFfcHRyX3dyaXRl
-KGVtdSwgRlhXQywgMCwgZXBjbS0+Y2FwdHVyZV9jcl92YWwpOwogCQkJYnJl
-YWs7CiAJCWRlZmF1bHQ6CQogCQkJYnJlYWs7CkBAIC02MzcsNyArNjQ1LDEx
-IEBACiAJCQlzbmRfZW11MTBrMV9wdHJfd3JpdGUoZW11LCBBRENDUiwgMCwg
-MCk7CiAJCQlicmVhazsKIAkJY2FzZSBDQVBUVVJFX0VGWDoKLQkJCXNuZF9l
-bXUxMGsxX3B0cl93cml0ZShlbXUsIEZYV0MsIDAsIDApOworCQkJaWYgKGVt
-dS0+YXVkaWd5KSB7CisJCQkJc25kX2VtdTEwazFfcHRyX3dyaXRlKGVtdSwg
-QV9GWFdDMSwgMCwgMCk7CisJCQkJc25kX2VtdTEwazFfcHRyX3dyaXRlKGVt
-dSwgQV9GWFdDMiwgMCwgMCk7CisJCQl9IGVsc2UKKwkJCQlzbmRfZW11MTBr
-MV9wdHJfd3JpdGUoZW11LCBGWFdDLCAwLCAwKTsKIAkJCWJyZWFrOwogCQlk
-ZWZhdWx0OgogCQkJYnJlYWs7CmRpZmYgLXIgLXUgby9hbHNhLWtlcm5lbC9w
-Y2kvZW11MTBrMS9lbXVwcm9jLmMgbi9hbHNhLWtlcm5lbC9wY2kvZW11MTBr
-MS9lbXVwcm9jLmMKLS0tIG8vYWxzYS1rZXJuZWwvcGNpL2VtdTEwazEvZW11
-cHJvYy5jCTIwMDQtMDMtMDIgMTY6MzI6MzcuMDAwMDAwMDAwICswMTAwCisr
-KyBuL2Fsc2Eta2VybmVsL3BjaS9lbXUxMGsxL2VtdXByb2MuYwkyMDA0LTA2
-LTIwIDE0OjQ4OjQ3LjAwMDAwMDAwMCArMDIwMApAQCAtNzEsMzEgKzcxLDMy
-IEBACiBzdGF0aWMgdm9pZCBzbmRfZW11MTBrMV9wcm9jX3JlYWQoc25kX2lu
-Zm9fZW50cnlfdCAqZW50cnksIAogCQkJCSAgc25kX2luZm9fYnVmZmVyX3Qg
-KiBidWZmZXIpCiB7Ci0Jc3RhdGljIGNoYXIgKm91dHB1dHNbMzJdID0gewot
-CQkvKiAwMCAqLyAiUENNIExlZnQiLAotCQkvKiAwMSAqLyAiUENNIFJpZ2h0
-IiwKLQkJLyogMDIgKi8gIlBDTSBTdXJyb3VuZCBMZWZ0IiwKLQkJLyogMDMg
-Ki8gIlBDTSBTdXJyb3VuZCBSaWdodCIsCi0JCS8qIDA0ICovICJNSURJIExl
-ZnQiLAotCQkvKiAwNSAqLyAiTUlESSBSaWdodCIsCi0JCS8qIDA2ICovICJQ
-Q00gQ2VudGVyIiwKLQkJLyogMDcgKi8gIlBDTSBMRkUiLAotCQkvKiAwOCAq
-LyAiPz8/IiwKLQkJLyogMDkgKi8gIj8/PyIsCi0JCS8qIDEwICovICI/Pz8i
-LAotCQkvKiAxMSAqLyAiPz8/IiwKLQkJLyogMTIgKi8gIk1JREkgUmV2ZXJi
-IiwKLQkJLyogMTMgKi8gIk1JREkgQ2hvcnVzIiwKLQkJLyogMTQgKi8gIj8/
-PyIsCisJLyogRklYTUUgLSBvdXRwdXQgbmFtZXMgYXJlIGluIGVtdWZ4LmMg
-dG9vICovCisJc3RhdGljIGNoYXIgKmNyZWF0aXZlX291dHNbMzJdID0gewor
-CQkvKiAwMCAqLyAiQUM5NyBMZWZ0IiwKKwkJLyogMDEgKi8gIkFDOTcgUmln
-aHQiLAorCQkvKiAwMiAqLyAiT3B0aWNhbCBJRUM5NTggTGVmdCIsCisJCS8q
-IDAzICovICJPcHRpY2FsIElFQzk1OCBSaWdodCIsCisJCS8qIDA0ICovICJD
-ZW50ZXIiLAorCQkvKiAwNSAqLyAiTEZFIiwKKwkJLyogMDYgKi8gIkhlYWRw
-aG9uZSBMZWZ0IiwKKwkJLyogMDcgKi8gIkhlYWRwaG9uZSBSaWdodCIsCisJ
-CS8qIDA4ICovICJTdXJyb3VuZCBMZWZ0IiwKKwkJLyogMDkgKi8gIlN1cnJv
-dW5kIFJpZ2h0IiwKKwkJLyogMTAgKi8gIlBDTSBDYXB0dXJlIExlZnQiLAor
-CQkvKiAxMSAqLyAiUENNIENhcHR1cmUgUmlnaHQiLAorCQkvKiAxMiAqLyAi
-TUlDIENhcHR1cmUiLAorCQkvKiAxMyAqLyAiQUM5NyBTdXJyb3VuZCBMZWZ0
-IiwKKwkJLyogMTQgKi8gIkFDOTcgU3Vycm91bmQgUmlnaHQiLAogCQkvKiAx
-NSAqLyAiPz8/IiwKIAkJLyogMTYgKi8gIj8/PyIsCi0JCS8qIDE3ICovICI/
-Pz8iLAotCQkvKiAxOCAqLyAiQURDIExlZnQgLyBDRFJPTSBTL1BESUYgTGVm
-dCIsCi0JCS8qIDE5ICovICJBREMgUmlnaHQgLyBDRFJPTSBTL1BESUYgUmln
-aHQiLAotCQkvKiAyMCAqLyAiTUlDIC8gWm9vbSBWaWRlbyBMZWZ0IiwKLQkJ
-LyogMjEgKi8gIlpvb20gVmlkZW8gUmlnaHQiLAotCQkvKiAyMiAqLyAiUy9Q
-RElGIExlZnQiLAotCQkvKiAyMyAqLyAiUy9QRElGIFJpZ2h0IiwKKwkJLyog
-MTcgKi8gIkFuYWxvZyBDZW50ZXIiLAorCQkvKiAxOCAqLyAiQW5hbG9nIExG
-RSIsCisJCS8qIDE5ICovICI/Pz8iLAorCQkvKiAyMCAqLyAiPz8/IiwKKwkJ
-LyogMjEgKi8gIj8/PyIsCisJCS8qIDIyICovICI/Pz8iLAorCQkvKiAyMyAq
-LyAiPz8/IiwKIAkJLyogMjQgKi8gIj8/PyIsCiAJCS8qIDI1ICovICI/Pz8i
-LAogCQkvKiAyNiAqLyAiPz8/IiwKQEAgLTEwNSw5ICsxMDYsNzggQEAKIAkJ
-LyogMzAgKi8gIj8/PyIsCiAJCS8qIDMxICovICI/Pz8iCiAJfTsKKworCXN0
-YXRpYyBjaGFyICphdWRpZ3lfb3V0c1s2NF0gPSB7CisJCS8qIDAwICovICJE
-aWdpdGFsIEZyb250IExlZnQiLAorCQkvKiAwMSAqLyAiRGlnaXRhbCBGcm9u
-dCBSaWdodCIsCisJCS8qIDAyICovICJEaWdpdGFsIENlbnRlciIsCisJCS8q
-IDAzICovICJEaWdpdGFsIExFRiIsCisJCS8qIDA0ICovICJIZWFkcGhvbmUg
-TGVmdCIsCisJCS8qIDA1ICovICJIZWFkcGhvbmUgUmlnaHQiLAorCQkvKiAw
-NiAqLyAiRGlnaXRhbCBSZWFyIExlZnQiLAorCQkvKiAwNyAqLyAiRGlnaXRh
-bCBSZWFyIFJpZ2h0IiwKKwkJLyogMDggKi8gIkZyb250IExlZnQiLAorCQkv
-KiAwOSAqLyAiRnJvbnQgUmlnaHQiLAorCQkvKiAxMCAqLyAiQ2VudGVyIiwK
-KwkJLyogMTEgKi8gIkxGRSIsCisJCS8qIDEyICovICI/Pz8iLAorCQkvKiAx
-MyAqLyAiPz8/IiwKKwkJLyogMTQgKi8gIlJlYXIgTGVmdCIsCisJCS8qIDE1
-ICovICJSZWFyIFJpZ2h0IiwKKwkJLyogMTYgKi8gIkFDOTcgRnJvbnQgTGVm
-dCIsCisJCS8qIDE3ICovICJBQzk3IEZyb250IFJpZ2h0IiwKKwkJLyogMTgg
-Ki8gIkFEQyBDYXB1dHJlIExlZnQiLAorCQkvKiAxOSAqLyAiQURDIENhcHR1
-cmUgUmlnaHQiLAorCQkvKiAyMCAqLyAiPz8/IiwKKwkJLyogMjEgKi8gIj8/
-PyIsCisJCS8qIDIyICovICI/Pz8iLAorCQkvKiAyMyAqLyAiPz8/IiwKKwkJ
-LyogMjQgKi8gIj8/PyIsCisJCS8qIDI1ICovICI/Pz8iLAorCQkvKiAyNiAq
-LyAiPz8/IiwKKwkJLyogMjcgKi8gIj8/PyIsCisJCS8qIDI4ICovICI/Pz8i
-LAorCQkvKiAyOSAqLyAiPz8/IiwKKwkJLyogMzAgKi8gIj8/PyIsCisJCS8q
-IDMxICovICI/Pz8iLAorCQkvKiAzMiAqLyAiPz8/IiwKKwkJLyogMzMgKi8g
-Ij8/PyIsCisJCS8qIDM0ICovICI/Pz8iLAorCQkvKiAzNSAqLyAiPz8/IiwK
-KwkJLyogMzYgKi8gIj8/PyIsCisJCS8qIDM3ICovICI/Pz8iLAorCQkvKiAz
-OCAqLyAiPz8/IiwKKwkJLyogMzkgKi8gIj8/PyIsCisJCS8qIDQwICovICI/
-Pz8iLAorCQkvKiA0MSAqLyAiPz8/IiwKKwkJLyogNDIgKi8gIj8/PyIsCisJ
-CS8qIDQzICovICI/Pz8iLAorCQkvKiA0NCAqLyAiPz8/IiwKKwkJLyogNDUg
-Ki8gIj8/PyIsCisJCS8qIDQ2ICovICI/Pz8iLAorCQkvKiA0NyAqLyAiPz8/
-IiwKKwkJLyogNDggKi8gIj8/PyIsCisJCS8qIDQ5ICovICI/Pz8iLAorCQkv
-KiA1MCAqLyAiPz8/IiwKKwkJLyogNTEgKi8gIj8/PyIsCisJCS8qIDUyICov
-ICI/Pz8iLAorCQkvKiA1MyAqLyAiPz8/IiwKKwkJLyogNTQgKi8gIj8/PyIs
-CisJCS8qIDU1ICovICI/Pz8iLAorCQkvKiA1NiAqLyAiPz8/IiwKKwkJLyog
-NTcgKi8gIj8/PyIsCisJCS8qIDU4ICovICI/Pz8iLAorCQkvKiA1OSAqLyAi
-Pz8/IiwKKwkJLyogNjAgKi8gIj8/PyIsCisJCS8qIDYxICovICI/Pz8iLAor
-CQkvKiA2MiAqLyAiPz8/IiwKKwkJLyogMzMgKi8gIj8/PyIKKwl9OworCiAJ
-ZW11MTBrMV90ICplbXUgPSBzbmRfbWFnaWNfY2FzdChlbXUxMGsxX3QsIGVu
-dHJ5LT5wcml2YXRlX2RhdGEsIHJldHVybik7CiAJdW5zaWduZWQgaW50IHZh
-bDsKIAlpbnQgbmVmeCA9IGVtdS0+YXVkaWd5ID8gNjQgOiAzMjsKKwljaGFy
-ICoqb3V0cHV0cyA9IGVtdS0+YXVkaWd5ID8gYXVkaWd5X291dHMgOiBjcmVh
-dGl2ZV9vdXRzOwogCWludCBpZHg7CiAJCiAJc25kX2lwcmludGYoYnVmZmVy
-LCAiRU1VMTBLMVxuXG4iKTsKQEAgLTEzNSw3ICsyMDUsNyBAQAogCXNuZF9p
-cHJpbnRmKGJ1ZmZlciwgIlxuQ2FwdHVyZWQgRlggT3V0cHV0cyAgIDpcbiIp
-OwogCWZvciAoaWR4ID0gMDsgaWR4IDwgbmVmeDsgaWR4KyspIHsKIAkJaWYg
-KGVtdS0+ZWZ4X3ZvaWNlc19tYXNrW2lkeC8zMl0gJiAoMSA8PCAoaWR4JTMy
-KSkpCi0JCQlzbmRfaXByaW50ZihidWZmZXIsICIgIE91dHB1dCAlMDJpIFsl
-c11cbiIsIGlkeCwgb3V0cHV0c1tpZHglMzJdKTsKKwkJCXNuZF9pcHJpbnRm
-KGJ1ZmZlciwgIiAgT3V0cHV0ICUwMmkgWyVzXVxuIiwgaWR4LCBvdXRwdXRz
-W2lkeF0pOwogCX0KIAlzbmRfaXByaW50ZihidWZmZXIsICJcbkFsbCBGWCBP
-dXRwdXRzICAgICAgICA6XG4iKTsKIAlmb3IgKGlkeCA9IDA7IGlkeCA8IDMy
-OyBpZHgrKykK
-
---97783512-1804289383-1088406045=:17075--
+Peter Zubaj=0A____________________________________=0Ahttp://www.pobox.sk/ -=
+ najvacsi slovensky freemail=0A=0A=0A
 
 
 -------------------------------------------------------
