@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000874]: Opening hdspmixer causes dropouts in audio
-Date: Tue, 1 Feb 2005 02:21:55 +0100
-Message-ID: <40425638fc9e15be551e3725b60959e6@bugtrack.alsa-project.org>
+From: "Doris Perdue" <Katelin@gcgpr.com>
+Subject: Great Phaarrmacy for you
+Date: Tue, 1 Feb 2005 03:37:08 -0400
+Message-ID: <E1CvoHD-0007Zs-Nr@sc8-sf-mx1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6A173240
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 02:21:55 +0100 (MET)
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0013_0667D844.6323ABE9"
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,44 +14,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Bartlomiej Parson <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=874> 
-======================================================================
-Reported By:                Mark Knecht
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   874
-Category:                   OTHERS
-Reproducibility:            always
-Severity:                   tweak
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-01-2005 02:21 CET
-Last Modified:              02-01-2005 02:21 CET
-======================================================================
-Summary:                    Opening hdspmixer causes dropouts in audio
-Description: 
-With the HDSP 9652 running audio through it from ADAT port to ADAT port
-opening hdspmixer causes audio dropouts. This makes it impossible to
-adjust audio levels realtime without creating glitches. This does not
-happen with the RME version (TotalMix) under Windows.
-======================================================================
+------=_NextPart_000_0013_0667D844.6323ABE9
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-01-05 02:21 Mark Knecht    New Issue                                    
-======================================================================
+"The very idea, Aileen Butler!" exclaimed Mamie.  "You'll do noth
+of the sort.  You'll come here and live with me as my guest."
+"No, I won't! If I can't pay I won't come," replied Aileen.  "You
+have to let me do that."  She knew that the Calligans could not
+afford to keep her.
+"Well, we'll not talk about that now, anyhow," replied Mrs. Calli
+"You can come when you like and stay as long as you like.  Reach
 
+
+Have a nice day!
+
+------=_NextPart_000_0013_0667D844.6323ABE9
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Hello, Welcome to Health Suite!</FONT></DI=
+V>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV>
+<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
+  <TBODY>
+  <TR vAlign=3Dbottom>
+    <TD rowSpan=3D2><FONT size=3D4>Vi</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD>
+    <TD rowSpan=3D2><FONT size=3D4>ra&nbsp;</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD>
+    <TD rowSpan=3D2><FONT size=3D4>al</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD>
+    <TD rowSpan=3D2><FONT size=3D4>Xa</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD>
+    <TD rowSpan=3D2><FONT size=3D4>x&nbsp;</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD>
+    <TD rowSpan=3D2><FONT size=3D4>cod</FONT></TD>
+    <TD><FONT size=3D4></FONT></TD></TR>
+  <TR vAlign=3Dbottom>
+    <TD><FONT size=3D4>ag</FONT></TD>
+    <TD><FONT size=3D4>Ci</FONT></TD>
+    <TD><FONT size=3D4>is&nbsp;</FONT></TD>
+    <TD><FONT size=3D4>na</FONT></TD>
+    <TD><FONT size=3D4>Vi</FONT></TD>
+    <TD><FONT size=3D4>in</FONT></TD></TR></TBODY></TABLE></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>And many other at&nbsp;<A=20
+href=3D"http://www.fantasy.researchisneeded.com"><font color=3D"red"><b>Mai=
+lScanner has detected a possible fraud attempt from "www.fantasy.researchis=
+needed.com" claiming to be</b></font> http://www.fantasy</A></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D3>Save Yourself a Huge 70% Off All 0rders Wi=
+th us.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Have a nice day!</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_0013_0667D844.6323ABE9--
 
 
 
