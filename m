@@ -1,16 +1,15 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: Re: HDSP 9652 MIDI IN - stuck notes
-Date: 06 Mar 2003 11:50:59 -0800
+From: Christian Esken <c.esken@cityweb.de>
+Subject: Re: [PATCH] cs46xx, SPDIF output fixes, AC3 through IEC958 should work OK
+Date: Wed, 5 Mar 2003 01:58:22 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1046980260.1786.0.camel@Godzilla>
-References: <1046321261.2626.28.camel@Godzilla>
-	<s5h3cm8k3g7.wl@alsa2.suse.de>  <1046436995.1264.5.camel@Godzilla>
-	<1046437770.1264.16.camel@Godzilla>
+Message-ID: <200303050153.10471.c.esken@cityweb.de>
+References: <3E62AEEF.7090109@cucumelo.org> <s5hof4slm55.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1046437770.1264.16.camel@Godzilla>
+In-Reply-To: <s5hof4slm55.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,64 +18,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: Takashi Iwai <tiwai@suse.de>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi-san,
-   Was this of any use? Are you looking into this, or do you need more
-data?
+Am Montag, 3. M=E4rz 2003 12:33 schrieb Takashi Iwai:
+> At Mon, 03 Mar 2003 02:25:03 +0100,
+>
+> Benny Sjostrand wrote:
+> > - Added the cwcdma DSP firmware module
+> > - Fixed a minor bug in cs46xx_iec958_pre_open(...)
+> > - in cs46xx_dsp_enable_spdif_hw(...), disable SPDIF hw
+> >  before enabling, this seems to help solving the synchronization issu=
+e
+> > - Some changes in cs46xx_dsp_create_pcm_channel(...)  and
+> > cs46xx_dsp_create_src_task_scb(...) to adapt to the new DSP firmware.
+> >
+> > Well, with the new firmware module I would consider this patch a litt=
+le
+> > bit experimental ;)
+>
+> thanks, applied to cvs.
+> it's working fine on my DMX x-fire 1024.
 
-Thanks,
-Mark
+Confirmed. It works with my Hercules GameTheater XP7.1
+I tried it with xine and option "a52 passthrough". Nice work.
 
-On Fri, 2003-02-28 at 05:09, Mark Knecht wrote:
-> On Fri, 2003-02-28 at 04:56, Mark Knecht wrote:
-> > > at least, we need to check whether the interrupts for MIDI are
-> > > generated properly.
-> > > please try the following.
-> > > 
-> > > 1. connect HDSP MIDI1 input to HDSP MIDI1 output via aconnect.
-> > > 2. trigger a note from MIDI1 input.
-> > >    check whether the IRQ count in /proc/interrupts (for HDSP)
-> > >    increases.
-> > >    during this test, don't use HDSP audio.
-> > > 
-> > 
-> > mark@Godzilla card1]$ more /proc/interrupts
-> >            CPU0
-> >   0:      62488          XT-PIC  timer
-> >   1:        816          XT-PIC  keyboard
-> >   2:          0          XT-PIC  cascade
-> >   5:        749          XT-PIC  usb-uhci, usb-uhci, usb-uhci, eth0
-> >   8:          1          XT-PIC  rtc
-> >  10:         94          XT-PIC  hdsp
-> >  11:          5          XT-PIC  ohci1394
-> >  12:       7033          XT-PIC  PS/2 Mouse
-> >  14:       8556          XT-PIC  ide2
-> >  15:       9005          XT-PIC  ide3
-> > NMI:          0
-> > ERR:          0
-> > [mark@Godzilla card1]$
-> 
-> BTW - The HDSP interrupts above do not represent a failure. All I did is
-> what you asked me to do. If you asked me to wait for a failure, we'd
-> have 1000's on interrupts at least, I'm sure, and I don't know how we
-> would identify that one did not happen.
-> 
-> Also, if I wasn't clear earlier, the failure is ONE stuck note. The MIDI
-> input keeps working, and subsequent notes work properly. (both on and
-> off) It's just that a single note gets stuck every 1-2 minutes.
-> 
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+Chris
+
+PS: The only small issue is when pausing the playback. After resuming I h=
+ear
+scratching noises (the typical ugly SPDIF-out-of-sync noises).
+The good news is that the digital out is automatically resynced shortly a=
+fter
+(about 200ms).
 
 
 
