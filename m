@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Wed, 9 Mar 2005 02:57:17 +0100
-Message-ID: <8f4fb239bf41b1c0185dadd8e7a13fd7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000782]: Poor digital aidio quality
+Date: Wed, 9 Mar 2005 03:02:59 +0100
+Message-ID: <440d9df912c8b1942ac57ac8ef857a1b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C8C49173
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 02:57:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BAB0B173
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 03:02:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,117 +23,183 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=782> 
 ======================================================================
-Reported By:                Q3Man
+Reported By:                ddemmer
 Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   752
+Issue ID:                   782
 Category:                   PCI - emu10k1x
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r9
+Distribution:               Fedora Core
+Kernel Version:             2.6.9-1.681_FC3.i686
 ======================================================================
-Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-09-2005 02:57 CET
+Date Submitted:             01-03-2005 16:20 CET
+Last Modified:              03-09-2005 03:02 CET
 ======================================================================
-Summary:                    ALSA > 1.0.5a does not load, failed with error -16
+Summary:                    Poor digital aidio quality
 Description: 
-I'm having some problems with alsa since 1.0.6a. Previously I just had the
-later versions masked, but now various kde packages require the latest
-alsa, so I'm having to tackle it now. ALSA seems to start normally,
-however I get this error in dmesg: 
-EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
+Attempting to play MP3 files with RealPlay or xmms using ALSA output
+results in scratchy, erratic, slow (Realplay) or speeded up (xmms) sound.
+I can change the xmms configuration to use libOSS.so instead of libALSA
+which fixes the problem.
 
-I also get this error when running alsamixer: 
-alsamixer: function snd_ctl_open failed for default: No such device 
+The gnome "Detect Sound Card" utility works fine and plays it's sound
+fine.
 
-And similar ones in other alsa programs. 
+The gnome volume control does not affect the output level when using
+libOSS.
 
-Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
-code and it seems that the error is vaguely interrupt related, but I could
-not find the code that produces error -16. I've swapped interrupts around
-and disabled non-essential devices (usb, serial, parallel ports, removed
-network cards and sound cards - although that last one proved slightly
-less than helpful :) I've changed from having my bios manage irq's to
-having the OS handle them with zero success. 
+I have by now muted everything in the alsamixer except the Master volume.
 
-I've looked around for that error code in google for the last few weeks -
-since the release of 1.0.6a with limited success. Nothing relevant to my
-situation. 
-
-Important configs and error messages:
-$ lspci -v |grep audio -A4
-0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
-EMU10k1X
-        Subsystem: Creative Labs: Unknown device 1003
-        Flags: bus master, medium devsel, latency 32, IRQ 12
-        I/O ports at d000
-        Capabilities: [dc] Power Management version 2
-(It is an actual EMU10k1X and not the Dell bastardized version)
-
-$ /etc/init.d/alsasound start; dmesg |tail -n1
- * Loading ALSA drivers...
- * Using ALSA OSS emulation
- * Loading: snd-mixer-oss
- * Loading: snd-pcm-oss
- * Loading: snd-seq-oss
- * Running card-dependent scripts
- * Restoring Mixer Levels                                                
-[ ok ]
-EMU10K1X: probe of 0000:00:09.0 failed with error -16
-
-$ uname -a
-Linux tobin1 2.6.9-gentoo-r9
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
-2004 i686 AMD
-Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
-
-If anyone needs any other config information, please let me know. Again,
-it works perfectly fine in 1.0.5a, the problems only appear in later
-versions.
-
+Playing a CD works fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- fmoraes - 01-22-05 23:24 
+ ddemmer - 01-23-05 04:52 
 ----------------------------------------------------------------------
-I am wondering if this is related to the MIDI code. Can you compile the
-code and add some printk() calls to see which part of the probe method is
-failing?
+Thanks for the comments, folks. It is looking like things are wandering
+away from the original complaint, so I suppose I could be persuaded to
+drop this as a bug report. However, I do have some issues outsanding,
+though they're getting to the point more of satisfying my curiosity.
 
-You can also try to comment out the part that initializes the MIDI support
-and see if that is the source of the problem.
+Anyway, in answer to tiwai, I see the definition of plughw:0,0 in
+/etc/alsa/alsa.conf but I don't see a way to get xmms to use it, so I
+can't try that.
+
+In answer to fmoraes 22 Jan 05 comment: I agree, and I have been trying to
+go through the ALSA web site to get the dmix set up. I'm not sure if it's
+working though: Rhythmbox no longer complains on starting up, but xmms
+does. xmms will play once you clear the error. However, xmms is still
+garbled if I use the default PCM device: only hw:0,0 works. Realplay now
+doesn't work at all. xmms and Rhythmbox lock each other out -- if dmix was
+working should they both be able to play at the same time?
+
+My .asoundrc now looks like this:
+
+pcm.emu10k1x {
+  type hw
+  card 0
+}
+
+ctl.emu10k1x {
+  type hw
+  card 0
+}
+
+pcm.emu10k1x {
+	type plug
+	slave.pcm "dmixer"
+    }
+
+ 
+    pcm.dmixer  {
+	type dmix
+	ipc_key 1024
+	slave {
+	    pcm "hw:1,0"
+	    period_time 0
+	    period_size 1024
+	    buffer_size 4096
+	    rate 44100
+	}
+	bindings {
+	    0 0
+	    1 1
+	}
+    }
+ 
+    ctl.dmixer {
+	type hw
+	card 0
+    }
+
+Is this right? Also, is there a quick way to try it out -- right now I am
+rebooting to be sure it "takes", which limits my eagerness to experiment.
+When I try to use aplay as suggested in the ALSA pages to test with an mp3
+file I just get screeching. 
+
+And finally: please let me know if this is getting too far off the mark
+and should take my questions to some other forum.
 
 ----------------------------------------------------------------------
- fmoraes - 03-09-05 02:57 
+ fmoraes - 03-09-05 03:02 
 ----------------------------------------------------------------------
-Can you provide an update to this report? Otherwise, I think it should be
-closed.
+Sorry for the delay. Here's my .asoundrc:
+
+pcm.dmixer {
+    type dmix
+    ipc_key 1024          # must be unique!
+    slave {
+        pcm "hw:0,0"      # you cannot use a "plug" device here, darn.
+        #period_time 0
+        period_size 1024  # must be power of 2
+        buffer_size 8192  # dito. It
+        #format "S32_LE"
+        #periods 17      # dito.
+        #rate 8000        # with rate 8000 you *will* hear, 
+                          # if ossmix is used :)
+    }
+
+# bindings are cool. This says, that only the first
+# two channels are to be used by dmix, which is enough for
+# (most) oss apps and also lets multichannel chios work 
+# much faster:
+
+    bindings {
+        0 0   # from 0 => to 0
+        1 1   # from 1 => to 1
+    }
+}
+
+pcm.dsp0 {
+    type plug
+    slave.pcm "dmixer"     # use our new PCM here
+}
+# mixer0 like above
+ctl.mixer0 {
+    type hw
+    card 0
+}
+
+pcm_slave.buffer_size {
+	pcm "hw:0,0"
+	buffer_size 8192
+	period_size 1024
+}
+
+pcm.!default {
+	type plug
+	slave.pcm "dmixer" 
+}
+
+Your configuration seems to be using the wrong device (hw:1,0 which seems
+incorrect to me). You could use hw:0,1 instead if you play with the mixer
+controls (one of the controls lets you control the second channel and its
+volume).
+
+If you agree, we should close this report.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 05:12 Q3Man          New Issue                                    
-12-28-04 05:12 Q3Man          File Added: einfo                            
-12-28-04 05:12 Q3Man          Distribution              => Gentoo          
-12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
-12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
-01-03-05 12:10 tiwai          Note Added: 0003054                          
-01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
-01-03-05 17:30 Q3Man          Note Added: 0003071                          
-01-16-05 14:54 fmoraes        Note Added: 0003216                          
-01-18-05 00:44 Q3Man          Note Added: 0003240                          
-01-20-05 02:23 Q3Man          Note Added: 0003322                          
-01-20-05 19:12 tiwai          Note Added: 0003332                          
-01-21-05 05:11 Q3Man          Note Added: 0003337                          
-01-21-05 11:14 tiwai          Note Added: 0003341                          
-01-22-05 23:24 fmoraes        Note Added: 0003382                          
-03-09-05 02:57 fmoraes        Note Added: 0003821                          
+01-03-05 16:20 ddemmer        New Issue                                    
+01-03-05 16:20 ddemmer        Distribution              => Fedora Core     
+01-03-05 16:20 ddemmer        Kernel Version            => 2.6.9-1.681_FC3.i686
+01-03-05 16:49 stransky       Issue Monitored: stransky                    
+01-04-05 13:43 ddemmer        Issue Monitored: ddemmer                     
+01-04-05 13:43 ddemmer        Issue End Monitor: ddemmer                    
+01-16-05 14:57 fmoraes        Note Added: 0003217                          
+01-16-05 20:43 ddemmer        Note Added: 0003221                          
+01-19-05 18:34 ddemmer        Note Added: 0003310                          
+01-19-05 20:45 tiwai          Note Added: 0003317                          
+01-22-05 23:29 fmoraes        Note Added: 0003383                          
+01-23-05 04:52 ddemmer        Note Added: 0003386                          
+03-09-05 03:02 fmoraes        Note Added: 0003822                          
 ======================================================================
 
 
