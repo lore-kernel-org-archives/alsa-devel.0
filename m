@@ -1,13 +1,13 @@
-From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: Re: Building alsa with kernel 2.6 when O= option used.
-Date: Sun, 25 Jul 2004 19:56:27 -0700 (PDT)
+From: <sailaja.reddy@wipro.com>
+Subject: alsa 1.0.5 driver on Linux7.0&kernel 2.4.1?
+Date: Mon, 26 Jul 2004 14:52:25 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040725195633.16610.h003.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <85C103B6E3FDC440A06792E90FDF21A1E81B66@hyd-lax-msg.wipro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C472F2.10250F90"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,37 +16,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: bigblen@icqmail.com
-Cc: eliot@blennerhassett.gen.nz, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Well it seems I am talking to myself here... and so I shall continue.
+This is a multi-part message in MIME format.
 
-The only way I have got alsa 1.0.5 driver to compile as an ordinary user is to
-get my own copy of the source tree, configure and build that, then continue to
-build the alsa driver.
+------_=_NextPart_001_01C472F2.10250F90
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Following the instructions here helped
-	http://alsa.opensrc.org/index.php?page=AlsaBuild2.6
+Hi All,
+=20
+Are there any known issues if we install alsa 1.0.5 driver on Linux7.0
+machine with kernel version: 2.4.1?
+Somebody please provide me the needful info.
+=20
+Thanks & Regards,
+Sailaja
 
-So I am on my way again, but I still think there is a bug in the build system
-that doesn't allow for Alsa build to work with "O=<path to my dir" kernel
-builds. I.e. avoiding taking an actual copy of the whole kernel source tree into
-<path to my dir>
+------_=_NextPart_001_01C472F2.10250F90
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-regards
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<TITLE>Message</TITLE>
 
-Eliot
+<META content=3D"MSHTML 5.50.4933.1800" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D685491009-26072004><FONT face=3DArial size=3D2>Hi=20
+All,</FONT></SPAN></DIV>
+<DIV><SPAN class=3D685491009-26072004><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D685491009-26072004><FONT face=3DArial size=3D2>Are =
+there any known=20
+issues if we install alsa 1.0.5 driver&nbsp;on Linux7.0 machine with =
+kernel=20
+version: 2.4.1?</FONT></SPAN></DIV>
+<DIV><SPAN class=3D685491009-26072004><FONT face=3DArial =
+size=3D2>Somebody please=20
+provide me the needful info.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D685491009-26072004><FONT face=3DArial=20
+size=3D2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D685491009-26072004><FONT face=3DArial size=3D2>Thanks =
+&amp;=20
+Regards,</FONT></SPAN></DIV>
+<DIV><SPAN class=3D685491009-26072004><FONT face=3DArial=20
+size=3D2>Sailaja</FONT></SPAN></DIV></BODY></HTML>
 
-
-Eliot Blennerhassett
-AudioScience Inc.
---
-Junk footer beyond this point. Read at your own risk.
-
-
--------------------------------------------------------------
-Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
+------_=_NextPart_001_01C472F2.10250F90--
 
 
 -------------------------------------------------------
