@@ -1,14 +1,13 @@
-From: "Kogan, Dan D" <dan.d.kogan@intel.com>
-Subject: ICH6 High-Definition Audio Programmer's Reference Manual
-Date: Fri, 13 Aug 2004 13:47:31 -0700
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000439]: swsusp for maestro can work with a small patch
+Date: Sat, 14 Aug 2004 11:27:38 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <B80241C0CEF2E948AEB4C7EBC775282F07C687D5@orsmsx401.amr.corp.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <20040814092738.25B491102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8995124A
+	for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2004 11:27:38 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,25 +16,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The publically available "ICH6 High Definition Audio Programmer's
-Reference Manual" has been updated to include the commands that all High
-Definition Audio compliant codecs must implement, see section 5.3.
 
-The spec can be downloaded from Intel's support page at
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000439
+======================================================================
+Reported By:                lupien_c
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     439
+Category:                   PCI - maestro3
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               fedora core 2
+Kernel Version:             2.6.7 + acpi + swsusp2
+======================================================================
+Date Submitted:             08-14-2004 11:27 CEST
+Last Modified:              08-14-2004 11:27 CEST
+======================================================================
+Summary:                    swsusp for maestro can work with a small patch
+Description: 
+With the maestro3.c driver in kernel 2.6.7, suspend to disk would lock the
+driver. The module needed to manually be removed and reinstalled to
+produce sound again. With the patch attached it now works properly.
+======================================================================
 
-http://developer.intel.com/design/chipsets/manuals/302349.htm
-
-Jaroslav has also mirrored the file at
-
-ftp://ftp.alsa-project.org/pub/manuals/intel/30234902_ICH6.pdf
-
-Regards,
-
-Dan Kogan
-Intel Corp.
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-14-04 11:27 lupien_c       New Bug                                      
+08-14-04 11:27 lupien_c       File Added: maestro3.c.diff                    
+08-14-04 11:27 lupien_c       Distribution              => fedora core 2   
+08-14-04 11:27 lupien_c       Kernel Version            => 2.6.7 + acpi + swsusp2
+======================================================================
 
 
 -------------------------------------------------------
