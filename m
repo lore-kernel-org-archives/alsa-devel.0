@@ -1,12 +1,13 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: alsalib symbol problem
-Date: Tue, 17 Sep 2002 10:22:42 -0400
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: EMU10K1 DSP programs
+Date: Tue, 17 Sep 2002 16:38:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17rJDb-0004Qd-00@usw-sf-list1.sourceforge.net>
-References: <87n0qgln86.fsf@zaphod.blackdown.de>
+Message-ID: <Pine.LNX.4.33.0209171357540.537-100000@pnote.perex-int.cz>
+References: <1032262685.426.17.camel@diesel>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 17 Sep 2002 16:11:53 +0200."
-             <87n0qgln86.fsf@zaphod.blackdown.de>
+In-Reply-To: <1032262685.426.17.camel@diesel>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,41 +16,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Juergen Kreileder <jk@blackdown.de>
-Cc: Tim Goetze <tim@quitte.de>, Florian Bomers <Florian.Bomers@sun.com>, alsa-devel@lists.sourceforge.net
+To: Martin Soto <soto@informatik.uni-kl.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->Paul Davis <pbd@op.net> writes:
->
->>>> you probably are calling alsa from a shared object -- try 
->>>> 
->>>>   dlopen ("libasound.so", RTLD_LAZY | RTLD_GLOBAL);
->>>> 
->>>> in your module's init function.
->>>
->>>The need for RTLD_GLOBAL is somewhat ugly, usually one wants to load
->>>plugins with RTLD_LOCAL.  
->> 
->> the suggestion is not that *your* plugin should use RTLD_GLOBAL, but
->> that RTLD_GLOBAL needs to be used when alsa-lib is linked into the
->> address space.
->
->Ah, I haven't tried to dlopen libasound in a plugin yet.  Up to now
->I've linked the plugin lib with -lasound, in that case you have dlopen
->the plugin lib with RTLD_GLOBAL.
+On 17 Sep 2002, Martin Soto wrote:
 
-the problem is that libasound itself calls dlopen(), and the initial
-(non-RTLD_GLOBAL) linkage hasn't put libasound's symbol into the
-global namespace. hence, libasound's own dlopen'ed code can't access
-libasound itself.
+> On Tue, 2002-09-17 at 11:49, Jaroslav Kysela wrote:
+> > On 16 Sep 2002, Martin Soto wrote:
+> > > Is it possible to load DSP programs to the EMU10K1 chip?  The alsa-tools
+> > > package contains a modified as10k1 that allows you to assemble such
+> > > programs, but there's no information about how to upload them to the
+> > > processor.
+> > 
+> > The work has not been finished at all. The changes in assembler are 
+> > incomplete and the user space linker/loader program is missing at all.
+> 
+> Thanks for the answer.  I actually discovered part of it yesterday after
+> I wrote my original mail, by looking directly at the driver code.  I'm
+> actually interested in writing a patch loader/manager, and as far as I
+> can see, the driver interface is already there.  I haven't tested it
+> thoroughly though, so I'm not sure it is completely operational.  But it
+> looks good.
+> 
+> And, by the way, I have a question regarding it.  In the hardware
+> dependant ioctl interface to the EMU10K1 there are two ioctls,
+> SNDRV_EMU10K1_IOCTL_CODE_PEEK and SNDRV_EMU10K1_IOCTL_CODE_POKE, that
+> allow you to read the DSP code and to actually upload new code.  Part of
+> what SNDRV_EMU10K1_IOCTL_CODE_POKE does is defining new (mixer) controls
+> and eventually deleting those that are not needed any more.
+> 
+> However, I didn't find a way to know which current mixer controls are
+> *actually* associated to general purpose registers in the FX8010.  Of
+> course, I could read the code in emufx.c and determine it from there,
+> but that would make my code very sensible to changes in the driver.  I
+> just though of using the mixer/control interface in alsalib to find all
+> controls, and try to delete them with CODE_POKE, hoping that the driver
+> will only delete those that are connected to GPRs, but that looks too
+> much like a hack.  Is there a more elegant way to handle that?
 
-that's why you either either need to use RTLD_GLOBAL on the plugin
-lib, or make sure that libasound alone is linked with RTLD_GLOBAL.
+I've added gpr_list_control* variables to emu10k1_fx8010_code_t.
+The SNDRV_EMU10K1_IOCTL_CODE_PEEK will fill these variables for you. Note 
+that all this code in emufx.c is mostly untested, so give me feedback, 
+what features/functions need to be corrected.
 
-dynamically linking code that is linked to other code that dynamically
-links code is, ahem, a little complex ;)
+						Jaroslav
 
---p
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
+
+
+
 
 
 -------------------------------------------------------
