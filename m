@@ -1,14 +1,18 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Fwd: Re: USB Quattro Linux support
-Date: Sun, 14 Apr 2002 15:23:52 +0100
+From: Charles =?iso-8859-1?Q?Fl=E8che?= <charles.fleche@meletu.univ-valenciennes.fr>
+Subject: Where could I find devices number for each card ?
+Date: Sun, 14 Apr 2002 18:23:24 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CB990F8.80509@superbug.demon.co.uk>
-References: <200204141306.g3ED6wX27769@post2.fast.net>
-Reply-To: James@superbug.demon.co.uk
+Message-ID: <20020414182324.A917@pengouin.univ-valenciennes.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from postfix2-2.free.fr (postfix2-2.free.fr [213.228.0.140])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA32160
+	for <alsa-devel@alsa-project.org>; Sun, 14 Apr 2002 18:24:29 +0200
+Received: from pengouin (lille-1-a7-62-147-0-234.dial.proxad.net [62.147.0.234])
+	by postfix2-2.free.fr (Postfix) with ESMTP id 9CA955F7CD
+	for <alsa-devel@alsa-project.org>; Sun, 14 Apr 2002 18:24:17 +0200 (CEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,62 +21,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-Cc: linux-audio-dev@music.columbia.edu, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
+Hello !
 
->>This is a multi-part message in MIME format...
->>    
->>
->
->AKA: This is a message in which the content is about 2% of the message
->body :)
->
->  
->
->>I'm trying to get some specs from midiman for the usb quattro. They have asked
->>this question. Can anyone fill me in so I can relay the info?
->>    
->>
->
->  
->
->>Is there "class driver" support under Linux?
->>    
->>
->
->I suspect he means something like "audio class", "printer class",
->etc. The answer is yes, sort of. What we have right now is a single
->USB audio driver for OSS that attempts to implement the audio class
->and also contains the inevitable long list of per-device hacks needed
->to work around the fact that almost no manufacturer fully complies
->with the class specification.
->
->However, its for OSS, which is a problem, and we don't yet have a USB
->framework for ALSA worked out, which is even more of a problem. Its
->still unclear at this point whether the ALSA framework will be:
->
->      application<->alsa-lib<->alsa-driver<->low-level-ALSA-USB-class-driver
->
->OR
->
->      application<->alsa-lib<->low-level-non-ALSA-USB-class-driver
->
->the first one is easier to write, the second one is more flexible.
->
->--p
->  
->
-Is the biggest problem the need to get alsa to accept Plugable hardware. 
-E.g. USB.
-Does the current alsa architecture allow for hot plug and remove of 
-sound hardware ?
+Just a simple question : in the rawmidi functions, I have to know the 
+card and the device number... OK ! But where could I find this number ? 
+I'm using alsa 0.5 serie, and so I have no asound.conf (or equivalent). 
+Is anyone could help me ?
 
-Cheers
-James
+Ho, I've RTFM, of course ! But I have found nothing.
 
+Thank you !
 
-
->  
->
+Charles
