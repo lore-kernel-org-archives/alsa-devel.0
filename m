@@ -1,11 +1,12 @@
 From: Rene Rebe <rene.rebe@gmx.net>
-Subject: [PATCH] pmac 48kHz sample rate not function -> disable
-Date: Fri, 30 Jul 2004 16:56:44 +0200
+Subject: [PATCH] pmac also apply the DMA stop work around to fix capture on
+ iBook2
+Date: Fri, 30 Jul 2004 16:56:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <410A61AC.80008@gmx.net>
+Message-ID: <410A619D.6010102@gmx.net>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------050904000606080702020508"
+ boundary="------------020006060509050404080108"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,61 +20,54 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------050904000606080702020508
+--------------020006060509050404080108
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 8bit
 
 Hi all,
 
-48kHz sample rate is not functional - at least with all iBook2s I have 
-access to. The hardware just does 44.1kHz instead. I have cross checking 
-the Darwin source - but as far as I have seen it also does not support 
-higher rates then 44.1kHz. Strange is, that any bit combination written 
-does result in 44.1kHz. Maybe someone with access to the spec can 
-implement it correctly - if the hardware does support something different.
+the attached patch for the pmac driver fixes capture for at least all 
+iBook2s I have access to. Without the fix arround 33% percent of all 
+recordings are just white noise.
 
 Have fun,
   René Rebe
 
---------------050904000606080702020508
+--------------020006060509050404080108
 Content-Type: text/plain;
- name="alsa-pmac3.patch"
+ name="alsa-pmac2.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="alsa-pmac3.patch"
+ filename="alsa-pmac2.patch"
 
---- ppc/pmac.c.orig	2004-08-01 01:09:36.820879352 +0200
-+++ ppc/pmac.c	2004-07-31 17:40:45.512859128 +0200
-@@ -53,7 +53,7 @@
- };
- /* fixed frequency table for tumbler */
- static int tumbler_freqs[2] = {
--	48000, 44100
-+	/*48000,*/ 44100
- };
- 
- /*
-@@ -494,14 +494,14 @@
- 	snd_pcm_runtime_t *runtime = subs->runtime;
- 	int i, j, fflags;
- 	static int typical_freqs[] = {
--		48000,
-+		/*48000,*/
- 		44100,
- 		22050,
- 		11025,
- 		0,
- 	};
- 	static int typical_freq_flags[] = {
--		SNDRV_PCM_RATE_48000,
-+		/*SNDRV_PCM_RATE_48000,*/
- 		SNDRV_PCM_RATE_44100,
- 		SNDRV_PCM_RATE_22050,
- 		SNDRV_PCM_RATE_11025,
+--- ppc/pmac.c~	2004-07-30 14:14:36.643095880 +0200
++++ ppc/pmac.c	2004-07-30 14:16:47.039272648 +0200
+@@ -224,15 +224,15 @@
+ 	/* We really want to execute a DMA stop command, after the AWACS
+ 	 * is initialized.
+ 	 * For reasons I don't understand, it stops the hissing noise
+-	 * common to many PowerBook G3 systems (like mine :-).
++	 * common to many PowerBook G3 systems and random noise otherwise
++	 * captured on iBook2's about every third time. -ReneR
+ 	 */
+ 	spin_lock_irq(&chip->reg_lock);
+ 	snd_pmac_dma_stop(rec);
+-	if (rec->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		st_le16(&chip->extra_dma.cmds->command, DBDMA_STOP);
+-		snd_pmac_dma_set_command(rec, &chip->extra_dma);
+-		snd_pmac_dma_run(rec, RUN);
+-	}
++	st_le16(&chip->extra_dma.cmds->command, DBDMA_STOP);
++	snd_pmac_dma_set_command(rec, &chip->extra_dma);
++	snd_pmac_dma_run(rec, RUN);
++	mdelay(5);
+ 	/* continuous DMA memory type doesn't provide the physical address,
+ 	 * so we need to resolve the address here...
+ 	 */
 
 
 
---------------050904000606080702020508--
+--------------020006060509050404080108--
 
 
 -------------------------------------------------------
