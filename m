@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000777]: Kernel crashes when using external sound controls
-Date: Sun, 2 Jan 2005 14:49:11 +0100
-Message-ID: <67c654df300f2827771c2dc4f4d19c3e@bugtrack.alsa-project.org>
+Subject: [ALSA - firmware 0000778]: xbox parameter sets AC97_SCAP_DETECT_BY_VENDOR wrongly
+Date: Sun, 2 Jan 2005 18:53:08 +0100
+Message-ID: <412433438ad7bd55a7c12260a0d8b0b4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DEFB72DA
-	for <alsa-devel@alsa-project.org>; Sun,  2 Jan 2005 14:49:11 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3CCAA292
+	for <alsa-devel@alsa-project.org>; Sun,  2 Jan 2005 18:53:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,43 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=777> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=778> 
 ======================================================================
-Reported By:                jan
+Reported By:                julian
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   777
-Category:                   CORE - control
+Project:                    ALSA - firmware
+Issue ID:                   778
+Category:                   
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware current
-Kernel Version:             Kernel 2.6.10
 ======================================================================
-Date Submitted:             01-02-2005 14:49 CET
-Last Modified:              01-02-2005 14:49 CET
+Date Submitted:             01-02-2005 18:53 CET
+Last Modified:              01-02-2005 18:53 CET
 ======================================================================
-Summary:                    Kernel crashes when using external sound controls
+Summary:                    xbox parameter sets AC97_SCAP_DETECT_BY_VENDOR
+wrongly
 Description: 
-Since I upgraded from Kernel 2.6.8.1 to 2.6.10 (ALSA 1.0.6) the whole
-system crashes when I try to adjust to sound volume via the external
-volume controls of my laptop. Everything else including the alsamixer
-works as expected. (Whole system crashes means, that I can do nothing, but
-hard reset.)
-I could use these external controls successfully with previous kernel
-versions.
-When I compile the kernel without ALSA support it doesn't crash (I have no
-sound support then of course).
-The soundchip in this laptop is:
-00:08.0 Multimedia audio controller: ESS Technology ES1978 Maestro 2E (rev
-10)
-Please let me know what additional infos you need.
-Thanks in advance
+the xbox parameter was designed to avoid failed detection of the AC97
+codec.
+according to the header file AC97_SCAP_DETECT_BY_VENDOR is a flag to ALLOW
+detection. Therefore AC97_SCAP_DETECT_BY_VENDOR should be set in scaps if
+the xbox 
+parameter is false, not true.
+
+The logic in ac97-codec is not consistent either.
+
+To avoid bad AC97 probes, either AC97_SCAP_AUDIO or AC97_SCAP_SKIP_AUDIO
+should be set if the xbox parameter is set.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-02-05 14:49 jan            New Issue                                    
-01-02-05 14:49 jan            Distribution              => Slackware current
-01-02-05 14:49 jan            Kernel Version            => Kernel 2.6.10   
+01-02-05 18:53 julian         New Issue                                    
+01-02-05 18:53 julian         File Added: x                                
 ======================================================================
 
 
