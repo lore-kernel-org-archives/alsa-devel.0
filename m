@@ -1,12 +1,13 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: Underruns (borken pipes)
-Date: Fri, 12 Jul 2002 08:53:17 -0400
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: aplay won't play on any second sound card
+Date: Sat, 13 Jul 2002 00:02:18 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17Szsx-0001PX-00@usw-sf-list1.sourceforge.net>
-References: <3D2E4B59.60ACA464@tele-ip.com>
+Message-ID: <3D2EEF7A.3020406@boosthardware.com>
+References: <m3adoyr6pr.fsf@ccs.covici.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Fri, 12 Jul 2002 13:22:01 +1000."
-             <3D2E4B59.60ACA464@tele-ip.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,34 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Bruce Paterson <bruce@tele-ip.com>
-Cc: alsa development <alsa-devel@lists.sourceforge.net>
+To: John Covici <covici@ccs.covici.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->I got around my previous problems (readn) in an output/capture
->application with an envy24
->(ice1712) by bypassing the plugin and going straight to hw:0,0. Had to
->change my code a bit
->but it's now **almost** working.
+John Covici wrote:
+> Using the rc2 aplay, it doesn't honor -c 1 at all, just plays on card
+> 0.  I even changed the aliases around so what was card1 is now 0, but
+> aplay still only plays on card 0.
+> 
 
-i humbly suggest that you:
+aplay -D hw:0,0 --> card 0 device 0
 
-  (1) read the source code for JACK's ALSA driver/client
-  (2) consider using JACK
+aplay -D hw:1,0 --> card 1 device 0 etc...
 
-the first suggestion will reveal quite a bit. you additionally will
-need to know that you can't avoid underruns with small buffer sizes
-unless you run with SCHED_FIFO or SCHED_RR scheduling, and not without
-a kernel with Andrew Morton's low latency patches. you didn't say what
-buffer sizes you were using, so its hard to know if this is an issue.
+-d is for duration of play.
 
-the second suggestion will avoid you having to deal with any of this
-nonsense altogether, and get focused on the core part of your
-application.
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
-http://jackit.sf.net/
-
---p
 
 
 -------------------------------------------------------
