@@ -1,14 +1,14 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: Why do I get broken pipe on write to a pcm
- instatePREPARED?
-Date: Wed, 09 Oct 2002 20:54:29 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Why do I get broken pipe on write to a
+ pcminstatePREPARED?
+Date: Wed, 9 Oct 2002 21:33:09 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DA47B65.AEFFE757@libero.it>
-References: <Pine.HPX.4.33n.0210090843120.2463-100000@studcom.urz.uni-halle.de> <200210091048.g99Am6029123@d1o87.telia.com>
+Message-ID: <Pine.LNX.4.33.0210092124170.512-100000@pnote.perex-int.cz>
+References: <3DA47B20.4F880B4D@libero.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3DA47B20.4F880B4D@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,70 +17,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Anders Torger <torger@ludd.luth.se>
-Cc: Clemens Ladisch <clemens@ladisch.de>, Paul Davis <pbd@op.net>, alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Clemens Ladisch <clemens@ladisch.de>, Paul Davis <pbd@op.net>, Anders Torger <torger@ludd.luth.se>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Anders Torger wrote:
-> 
-> On Wednesday 09 October 2002 09.52, Clemens Ladisch wrote:
-> > Abramo Bagnara wrote:
-> > > Clemens Ladisch wrote:
-> > > > Abramo Bagnara wrote:
-> > > > > The point is that stream is in bad state wrt read/write, this
-> > > > > is the reason why poll should return POLLERR.
-> > > >
-> > > > I think the stream is _not_ in a bad state because one buffer of
-> > > > data can (and has) be written. The reason for not allowing
-> > > > further writes is that the buffer is full, and not that the
-> > > > device wouldn't accept any data at all. This is similar to the
-> > > > behaviour of a pipe with the reading end opened by an application
-> > > > which currently doesn't read from the pipe, in contrast to a pipe
-> > > > with the read end not opened at all.
-> > >
-> > > ??? With this message now I'm very confused about what you wish...
-> >
-> > I changed my mind about how the POSIX standard fits to our problem
-> > case.
-> >
-> > > Can you resume to me the comparison between current and wanted
-> > > behaviour wrt poll for both playback and capture.
-> >
-> > The behaviour of polling during capture is just fine:
-> >
-> > RUNNING: block until avail_min is available, then return POLLIN
-> > DRAINING: return POLLIN until buffer is empty, then return POLLERR
-> > (other states: POLLERR)
-> >
+On Wed, 9 Oct 2002, Abramo Bagnara wrote:
+
+> Clemens Ladisch wrote:
+> > 
 > > The current behaviour for playback is:
-> >
-> > PREPARED: return POLLOUT until the buffer is full, then return
-> > POLLERR RUNNING: block until avail_min can be written, then return
-> > POLLOUT DRAINING: block (until state changes)
+> > 
+> > PREPARED: return POLLOUT until the buffer is full, then return POLLERR
+> > RUNNING: block until avail_min can be written, then return POLLOUT
+> > DRAINING: block (until state changes)
 > > (other states: POLLERR)
-> >
-> > I want the behaviour in the PREPARED state to be similar to the
-> > RUNNING state, i.e. return POLLOUT until the buffer is full, then
-> > block.
+> > 
+> > I want the behaviour in the PREPARED state to be similar to the RUNNING
+> > state, i.e. return POLLOUT until the buffer is full, then block.
 > 
-> Why not have the same behaviour for polling during capture? Reading
-> from a not-yet-started sound card is useful in the same way that
-> writing to a not-yet-started sound card is useful. Perhaps especially
-> in low-latency multi-threaded applications, when you want to start
-> reading (or writing) as soon as possible after the sound card has been
-> started (this can be accomplished in other ways of course). If poll
-> keeps returning POLLERR it is no use. Blocking in both cases is better,
-> and in my humble opinion more logical behaviour. I don't think having a
-> special case for the prepared state in read or write is useful.
+> Please reread with me SusV3:
+> 
+> POLLOUT: Normal data may be written without blocking.
+> 
+> When buffer is not full we have to return POLLOUT, but when buffer is
+> full the point is *not* that file cannot be written without blocking,
+> the point is that file cannot be written (because we'd return an error)
+> 
+> See?
+> 
+> Now the point is another: it's correct to return an error when buffer is
+> full or it's better to block?
+> 
+> My answer is that proposed behaviour is illogical if the programmer take
+> in account single-threading (i.e. my application have exclusive control
+> of PCM):
+> - in blocking mode we should delay (waiting for what?)
+> - in nonblocking mode we should return -EAGAIN (why try again?)
+> 
+> OTOH I agree that if the programmer consider multi-threading all the
+> illogicity goes away.
+> 
+> I think this could be faced with an appropriate documentation.
+> 
+> I've still some residual doubts:
+> - how many applications out there we will break?
+> - I'm almost sure that alsa-lib need to be changed in several places to
+> follow this: who will do that? I'm thinking expecially to PCM chains and
+> pcm_share.
+> 
+> Ok, iff:
+> - Jaroslav agrees too
+> - somebody do the patch for write *and* poll, correct the documentation
+> and add a special paragraph explaining multithreading POV, correct
+> alsa-lib and test *all* the PCM classes
+> 
+> you'll have my vote (FWIW of course ;-).
 
-Yes, I buy that.
+Thank you for your summary. I must admit that my silence in this thread
+was caused that I see advantages for both behaviours. Anyway, we should
+keep things as simple as possible, so I also prefer to choose only one
+solution. Because the new proposal enhances usage possibilities, I take 
+it.
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+						Jaroslav
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
+
 
 
 -------------------------------------------------------
