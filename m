@@ -1,13 +1,13 @@
-From: "Nicholas Albion" <nalbion@jacques.com.au>
-Subject: Help with snd_async_add_pcm_handler
-Date: Mon, 2 Aug 2004 12:21:26 +1000
+From: "Daniel Schnell" <daniel.schnell@gmx.net>
+Subject: Re: Bug: Alsa-lib 1.05 doesn't work with dmix plugin and noninterleaved mmap'ed access and regions-buffer ?
+Date: Mon, 2 Aug 2004 11:03:42 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <C179AABD90EE5A4F9A9FFCD13DD6EEED544EF9@server.jacques.com.au>
+Message-ID: <1bee01c4786f$9cd08230$2c0aa8c0@lumpidu>
+References: <1b0d01c47649$a9f36f90$2c0aa8c0@lumpidu> <Pine.LNX.4.58.0407301934210.1767@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C47837.69FA8633"
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_1BEB_01C47880.5F9BCE90"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,102 +16,155 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C47837.69FA8633
+------=_NextPart_000_1BEB_01C47880.5F9BCE90
 Content-Type: text/plain;
 	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+The output fom snd_pcm_dump is attached. The output is the same for alsa-lib
+v1.05 or 1.03.
+
+Even if I get more frames available than configured because of delayed
+hardware interrupts - how can I accomodate this with the zero copy approach
+of mmaped operations ? Make another while loop around
+snd_pcm_avail_update(), snd_pcm_mmap_begin(), snd_pcm_mmap_commit() to match
+the buffer sizes of the internally allocated region buffers? If this is the
+way to go: Ok. But it would be a clear inconveniance and furthermore no
+documentation or sample code shows any hint for that.
+
+If it's not a bug: why has this behavior changed since ALSA Lib v1.03 ? Here
+I never get a "late interrupt".
+
+Ciao,
+
+Daniel.
+
+----- Original Message ----- 
+From: "Jaroslav Kysela" <perex@suse.cz>
+To: "Daniel Schnell" <daniel.schnell@gmx.net>
+Cc: <alsa-devel@lists.sourceforge.net>
+Sent: Friday, July 30, 2004 7:37 PM
+Subject: Re: [Alsa-devel] Bug: Alsa-lib 1.05 doesn't work with dmix plugin
+and noninterleaved mmap'ed access and regions-buffer ?
+
+
+> On Fri, 30 Jul 2004, Daniel Schnell wrote:
+>
+> > ...
+> > 257 (!) frames avilable
+> > 108 chunked 149 chunked
+> > 511(!) frames available
+> > 363 chunked 148 chunked
+>
+> Sorry, I don't understand this description.
+> Also, the dump of PCM configuration would be nice for analysis
+> (snd_pcm_dump()).
+>
+> > This seems to be where the problem arises, as I use the internal regions
+> > buffers, which are certainly allocated only to 256 frames (1024 bytes)
+> > and here a buffer overflow occurs. Afterwards the audio output ceases to
+>
+> You may get more frames available - it depends on hardware interrupt
+> acknowledge (in some cases the interrupt is delayed by some reason).
+>
+> Jaroslav
+>
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SUSE Labs
+>
+
+------=_NextPart_000_1BEB_01C47880.5F9BCE90
+Content-Type: application/octet-stream;
+	name="dump.pcm"
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="dump.pcm"
 
-I'm working on an application that will use an asynchronous handler for =
-playback.
+Plug PCM: Linear Integer <-> Linear Float conversion PCM (S16_LE)=0A=
+Its setup is:=0A=
+stream       : PLAYBACK=0A=
+access       : MMAP_NONINTERLEAVED=0A=
+format       : FLOAT_LE=0A=
+subformat    : STD=0A=
+channels     : 2=0A=
+rate         : 48000=0A=
+exact rate   : 48000 (48000/1)=0A=
+msbits       : 32=0A=
+buffer_size  : 512=0A=
+period_size  : 256=0A=
+period_time  : 5333=0A=
+tick_time    : 0=0A=
+tstamp_mode  : NONE=0A=
+period_step  : 1=0A=
+sleep_min    : 0=0A=
+avail_min    : 256=0A=
+xfer_align   : 1=0A=
+start_threshold  : 0=0A=
+stop_threshold   : 511=0A=
+silence_threshold: 0=0A=
+silence_size : 0=0A=
+boundary     : 1073741824=0A=
+Slave: Direct Stream Mixing PCM=0A=
+=0A=
+Its setup is:=0A=
+stream       : PLAYBACK=0A=
+access       : MMAP_INTERLEAVED=0A=
+format       : S16_LE=0A=
+subformat    : STD=0A=
+channels     : 2=0A=
+rate         : 48000=0A=
+exact rate   : 48000 (48000/1)=0A=
+msbits       : 16=0A=
+buffer_size  : 512=0A=
+period_size  : 256=0A=
+period_time  : 5333=0A=
+tick_time    : 0=0A=
+tstamp_mode  : NONE=0A=
+period_step  : 1=0A=
+sleep_min    : 0=0A=
+avail_min    : 256=0A=
+xfer_align   : 1=0A=
+start_threshold  : 0=0A=
+stop_threshold   : 511=0A=
+silence_threshold: 0=0A=
+silence_size : 0=0A=
+boundary     : 1073741824=0A=
+Hardware PCM card 0 'SiS SI7012' device 0 subdevice 0=0A=
+=0A=
+Its setup is:=0A=
+stream       : PLAYBACK=0A=
+access       : MMAP_INTERLEAVED=0A=
+format       : S16_LE=0A=
+subformat    : STD=0A=
+channels     : 2=0A=
+rate         : 48000=0A=
+exact rate   : 48000 (48000/1)=0A=
+msbits       : 16=0A=
+buffer_size  : 512=0A=
+period_size  : 256=0A=
+period_time  : 5333=0A=
+tick_time    : 10000=0A=
+tstamp_mode  : NONE=0A=
+period_step  : 1=0A=
+sleep_min    : 0=0A=
+avail_min    : 256=0A=
+xfer_align   : 256=0A=
+start_threshold  : 1=0A=
+stop_threshold   : 1073741824=0A=
+silence_threshold: 0=0A=
+silence_size : 1073741824=0A=
+boundary     : 1073741824=0A=
 
-=20
+------=_NextPart_000_1BEB_01C47880.5F9BCE90--
 
-I'm very confused by the sample code provided, as it needs to perform 2 =
-writes (to fill the ring buffer) before the async handler will work.  I =
-have experienced the same problem in my application.  I've tried playing =
-with all of the hw and sw parameters, but nothing seems to make any =
-difference at all.
-
-
-------_=_NextPart_001_01C47837.69FA8633
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<html>
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-
-
-<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
-
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:595.3pt 841.9pt;
-	margin:72.0pt 90.0pt 72.0pt 90.0pt;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DEN-AU link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-10.0pt;font-family:Arial'>I&#8217;m working on an application that will =
-use an
-asynchronous handler for playback.</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-10.0pt;font-family:Arial'>&nbsp;</span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-10.0pt;font-family:Arial'>I&#8217;m very confused by the sample code =
-provided,
-as it needs to perform 2 writes (to fill the ring buffer) before the =
-async
-handler will work. =A0I have experienced the same problem in my =
-application.=A0 I&#8217;ve
-tried playing with all of the hw and sw parameters, but nothing seems to =
-make
-any difference at all.</span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_001_01C47837.69FA8633--
 
 
 -------------------------------------------------------
