@@ -1,10 +1,15 @@
-From: domen@coderock.org
-Subject: [patch 1/1] sound/emu8000: replace schedule_timeout() with msleep()
-Date: Sat, 05 Mar 2005 16:37:03 +0100
-Message-ID: <20050305153703.CE9AE1EE1E@trashy.coderock.org>
-Received: from trashy.coderock.org (coderock.org [193.77.147.115])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 093A21A8
-	for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2005 16:37:11 +0100 (MET)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: [PATCH] remove emu10k1 pops/clicks at the    
+	beginning and end of playback (fwd)
+Date: Sat, 05 Mar 2005 13:39:30 -0500
+Message-ID: <1110047970.12201.5.camel@mindpipe>
+References: <Pine.LNX.4.58.0503040932460.1739@pnote.perex-int.cz>
+	 <1109960235.6442.9.camel@mindpipe> <d0bqba$esi$1@sea.gmane.org>
+	 <4229925C.6020009@superbug.co.uk>  <d0c5th$a56$1@sea.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <d0c5th$a56$1@sea.gmane.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,48 +19,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, domen@coderock.org, nacc@us.ibm.com
+To: Jindrich Makovicka <makovick@kmlinux.fjfi.cvut.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 2005-03-05 at 12:46 +0100, Jindrich Makovicka wrote:
+> James Courtier-Dutton wrote:
+> > If it is of interest, the PCI transfers happen in blocks of 64 BYTES.
+> > So, if the playback pointer is in the middle of a block of 64 BYTES, and 
+> > you wish to send new samples to the card, without missing any of them, 
+> > you should start sending them at the next 64 bytes boundry.
+> 
+> AFAIK, emupcm (at least the part I try to fix) operates in DMA busmaster 
+> mode, so "sending" samples is out of its jurisdiction. It just sets up 
+> looping over the DMA buffer and lets the card do the rest.
+> 
+> FX8010 & ASIO is a different story, but I really don't know much in this 
+> matter.
 
+There's nothing magic about the ASIO implementation(s) for this card.
+They work the same way as the multichannel devices in the Linux driver,
+which is the same as the normal PCM devices, via DMA bus mastering.
 
+You are probably referring to the "FX8010 PCM" aka "Raw S/PDIF PCM".
+This one is different, because it creates a special PCM for AC3
+passthrough using emu10k1 DSP code.
 
-Use ssleep() instead of schedule_timeout() to guarantee the task
-delays as expected. The current code uses TASK_INTERRUPTIBLE, but does not check
-for signals / early return, so ssleep() should be appropriate. I am fairly
-certain the time conversion is ok, as well.
+Lee 
 
-Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
-Signed-off-by: Domen Puncer <domen@coderock.org>
----
-
-
- kj-domen/sound/isa/sb/emu8000.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff -puN sound/isa/sb/emu8000.c~ssleep-sound_isa_sb_emu8000 sound/isa/sb/emu8000.c
---- kj/sound/isa/sb/emu8000.c~ssleep-sound_isa_sb_emu8000	2005-03-05 16:11:20.000000000 +0100
-+++ kj-domen/sound/isa/sb/emu8000.c	2005-03-05 16:11:20.000000000 +0100
-@@ -25,6 +25,7 @@
- #include <linux/sched.h>
- #include <linux/slab.h>
- #include <linux/ioport.h>
-+#include <linux/delay.h>
- #include <sound/core.h>
- #include <sound/emu8000.h>
- #include <sound/emu8000_reg.h>
-@@ -355,8 +356,7 @@ init_arrays(emu8000_t *emu)
- {
- 	send_array(emu, init1, ARRAY_SIZE(init1)/4);
- 
--	set_current_state(TASK_INTERRUPTIBLE);
--	schedule_timeout((HZ * (44099 + 1024)) / 44100); /* wait for 1024 clocks */
-+	msleep(1024 * 1000 / 44100); /* wait for 1024 clocks */
- 	send_array(emu, init2, ARRAY_SIZE(init2)/4);
- 	send_array(emu, init3, ARRAY_SIZE(init3)/4);
- 
-_
 
 
 -------------------------------------------------------
