@@ -1,14 +1,12 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Re: experience with Creative MP3+ usb
-Date: Sun, 14 Dec 2003 01:38:48 +0100
+From: Ryan Pavlik <rpav@mephle.com>
+Subject: ALSA sequencer changes?
+Date: Sat, 13 Dec 2003 18:00:15 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031214003848.GB7877@fliwatut.scifi>
-References: <3FDB64A9.7060009@esitcom.org>
+Message-ID: <20031213180015.0df3994f.rpav@mephle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3FDB64A9.7060009@esitcom.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,20 +18,28 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
-Amaury Jacquot hat gesagt: // Amaury Jacquot wrote:
+Hrm, I've recently updated ALSA after a few weeks of inactivity, and
+suddenly I'm not getting MIDI events from simple code that previously
+worked.  I don't see any alsa-devel messages about changes, but I
+apparently missed the PCM API change notice.  In addition to the more
+complex library, I tried my test code which you can find here:
 
-> I am using a Creative Labs MP3+ usb sound device.
-> mobo is VIA EPIA 800, USB is UHCI
-> Alsa is 1.0rc2
-> 
-> The things works great, it's not even muted on startup (huh ?)
+    http://ogmo.mephle.org/test-alsa.c
 
-Does it have a (supported) mixer?
+The problem isn't getting 0's for time (got that one sorted awhile
+back, but never integrated the fix)---the problem is I'm not getting
+anything.
 
-ciao
+Anyhow, just wondering what's new or different, or if it's something
+else I missed.
+
+thanks,
+
 -- 
- Frank Barknecht                               _ ______footils.org__
+Ryan Pavlik <rpav@mephle.com>
+
+"If it were possible to combine my evil with
+ spider-man's powers..." - 8BT
 
 
 -------------------------------------------------------
