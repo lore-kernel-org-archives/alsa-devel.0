@@ -1,15 +1,13 @@
-From: Sergio Monteiro Basto <sergio@sergiomb.no-ip.org>
-Subject: Re: CMI8768 patch
-Date: Thu, 24 Feb 2005 23:23:49 +0000
-Message-ID: <1109287429.3789.35.camel@bastov>
-References: <92C0412E07F63549B2A2F2345D3DB515F7D65D@cm-msg-02.cmedia.com.tw>
-	 <1109218822.1244.35.camel@bastov> <s5hu0o25jxj.wl@alsa2.suse.de>
-	 <1109270548.3789.5.camel@bastov>  <s5his4h6b9p.wl@alsa2.suse.de>
-Reply-To: sergio@sergiomb.no-ip.org
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000942]: XMMS with alsa dmix output hangs
+Date: Fri, 25 Feb 2005 01:40:56 +0100
+Message-ID: <b8459566a327b0794c158d53c193b342@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <s5his4h6b9p.wl@alsa2.suse.de>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9ACC622C
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2005 01:40:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,36 +17,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-02-24 at 19:52 +0100, Takashi Iwai wrote:
-> Enable the commented out part again in pci/ac97/ac97_patch.c:2043
->=20
-> 	ac97->flags |=3D /*AC97_HAS_NO_MASTER_VOL |*/ AC97_HAS_NO_PCM_VOL;
->=20
-> to=20
->=20
-> 	ac97->flags |=3D AC97_HAS_NO_MASTER_VOL | AC97_HAS_NO_PCM_VOL;
->=20
->=20
-> The _only_ question is, whether the Master volume really does nothing,
-> or has _any_ role.  As mentioned, if it's really a dummy control, we
-> should rather remove it to avoid confusion.
 
-Well I try to remove it and Master and PCM volume disappears.=20
-And when put comment back in source, the results of mixer has been
-change from begging, PCM doesn't appears with volume, after some make
-install , modprobes, alsamixer and kmix, finally I got PCM back.
-Seems after install alsa-drive, I have to reinstall alsa-lib !?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=942> 
+======================================================================
+Reported By:                padde
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   942
+Category:                   mixer
+Reproducibility:            sometimes
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-25-2005 01:40 CET
+Last Modified:              02-25-2005 01:40 CET
+======================================================================
+Summary:                    XMMS with alsa dmix output hangs
+Description: 
+XMMS plays back through alsa-dmix, everything is fine. After some time
+(sometimes hours, but mostly between 2 to 5 mins, perhaps depending on
+system load or maybe just solar flux ;) ) xmms just hangs, one can move
+around the window, but closing isn't possible. Even 'killall xmms' won't
+shut it all the way down. "killall -9 xmms" will work though. I did an
+strace on xmms and put the last 1000 lines on my server
+(http://padde.dyndns.org/temp/test.log), they're of no use for me.
+All right.. after killing -9 xmms and starting it up again, it will play
+about the same time it played before, no matter which song, and then hang
+again. I tried various MP3 files, so I can be sure the source isn't
+corrupted. By the way: beep-media-player behaves exactly the same way
+(because it uses the same ALSA output plugin, I guess...)
+As far as I can tell, no other sound sources are involved, i.e. it doesn't
+matter if other sound sources are playing via dmix, too, or not.
+I didn't test with other programs much, but xine had hangs, too. While
+xmms comes to a stop, xine continued playing very very slowly (like frame
+by frame), the sound was chopped like that, too.
 
+======================================================================
 
->=20
->=20
-> Takashi
---=20
-S=E9rgio M.B.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-25-05 01:40 padde          New Issue                                    
+02-25-05 01:40 padde          File Added: .asoundrc-dmix                    
+======================================================================
+
 
 
 
@@ -56,4 +75,4 @@ S=E9rgio M.B.
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
