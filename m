@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000454]: cvs site is down
-Date: Sat, 19 Mar 2005 15:30:43 +0100
-Message-ID: <c498ec4638b3d8e218e19f6d18935002@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000464]: Right Channel always +6dB Louder than Left Channel while recording in Stereo
+Date: Sat, 19 Mar 2005 15:34:36 +0100
+Message-ID: <0ae250259780653406d5bcfc70ea88cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1F30A1D8
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 15:30:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5453C1D8
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 15:34:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,61 +23,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=454> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=464> 
 ======================================================================
-Reported By:                ronis
+Reported By:                Electro
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   454
-Category:                   OTHERS
+Issue ID:                   464
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Mandrake Linux
+Kernel Version:             2.4.19-16mdk
 ======================================================================
-Date Submitted:             08-18-2004 16:26 CEST
-Last Modified:              03-19-2005 15:30 CET
+Date Submitted:             08-26-2004 07:48 CEST
+Last Modified:              03-19-2005 15:34 CET
 ======================================================================
-Summary:                    cvs site is down
+Summary:                    Right Channel always +6dB Louder than Left Channel
+while recording in Stereo
 Description: 
-cvs -z3 update -dP now gives:
+The sound card is Turtle Beach Santa Cruz (CS4630). When trying to record
+from any stereo source (Line In, Aux, CDROM, Mix) the right channel is
+always +6dB louder than left channel. This happens with arecord, mencoder,
+audacity, or any program that can record audio. Recording in mono works
+perfectly.
 
-cvs [update aborted]: unrecognized auth response from cvs.sourceforge.net:
-M PserverBackend::PserverBackend() Connect (Connection refused)
-
-It started a few days ago, and had been working properly for months
-before.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 08-18-04 16:35 
+ Electro - 10-31-04 04:06 
 ----------------------------------------------------------------------
-And what about this too:
-ftp://ftp.alsa-project.org/pub/cvsexport/
-For me this was useful, but it is not up to date too. :-(
-(last is from 2004/06/02)
+I fixed it. The ADC mixer have to be 100% for both channels. Then change
+the capture mixer to set the volume of the capture. Anything below 100%
+for both channels of the ADC mixer will have the problem that I mentioned.
 
 ----------------------------------------------------------------------
- ronis - 08-23-04 21:26 
+ jdthood - 03-19-05 15:34 
 ----------------------------------------------------------------------
-The site is back.  Close this one.
-
-----------------------------------------------------------------------
- jdthood - 03-19-05 15:30 
-----------------------------------------------------------------------
-This can be closed.
+Submitter: That is pretty strange behavior.  Do you still see the problem
+with the latest ALSA release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 16:26 ronis          New Issue                                    
-08-18-04 16:35 pzad           Note Added: 0001587                          
-08-23-04 21:26 ronis          Note Added: 0001614                          
-03-19-05 15:30 jdthood        Note Added: 0004051                          
+08-26-04 07:48 Electro        New Issue                                    
+08-26-04 07:48 Electro        Distribution              => Mandrake Linux  
+08-26-04 07:48 Electro        Kernel Version            => 2.4.19-16mdk    
+10-31-04 04:06 Electro        Note Added: 0002291                          
+03-19-05 15:34 jdthood        Note Added: 0004053                          
 ======================================================================
 
 
