@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
-Date: Thu, 9 Dec 2004 12:11:47 +0100
-Message-ID: <65beae99b5a7b67135d8ded8c82641c3@bugtrack.alsa-project.org>
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: [PATCH]snd-usb-usx2y 0.8.7: Use macro usb_maxpacket() for portability
+Date: Thu, 9 Dec 2004 13:06:23 +0100
+Message-ID: <200412091306.23970.annabellesgarden@yahoo.de>
+References: <200412021319.20027.annabellesgarden@yahoo.de> <200412072301.52065.annabellesgarden@yahoo.de> <s5hoeh4a8nh.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4AF592E0
-	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2004 12:11:47 +0100 (MET)
+In-Reply-To: <s5hoeh4a8nh.wl@alsa2.suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,93 +19,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Rui Nuno Capela <rncbc@rncbc.org>
+Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+Am Mittwoch 08 Dezember 2004 20:32 schrieb Takashi Iwai:
+> At Tue, 7 Dec 2004 23:01:51 +0100,
+> Karsten Wiese wrote:
+> > 
+> > >>>>
+> > Summary: hwdep interface for pcm data.
+> > 
+> > Implements "rawusb" pcm data transfer through hwdep interface:
+> > The usb_hc moves pcm data from/into memory via DMA.
+> > That memory is mmaped by jack's usx2y driver.
+> > Jack's usx2y driver is the first/last executable code to read/write pcm data.
+> > Read/write is a combination of power of 2 period shaping and float/int conversation.
+> > Compared to standard alsa/jack we leave out power of 2 period shaping
+> > inside snd-usb-usx2y which needs memcpy() and additional buffers.
+> > As a side effect possible unwanted pcm-data coruption resulting of
+> > standard alsa's snd-usb-usx2y period shaping scheme falls away.
+> > Result is sane jack operation at buffering schemes down to 128frames, 2 periods.
+> > Also changed Kconfig file, so snd-usb-usx2y is only available for X86, PPC or ALPHA platforms,
+> > as on others DMA-memory isn't mmapable.
+> > 
+> > Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
+> > <<<<
+> 
+> Thanks, applied to the CVS tree now.
+> Please check later whether it works for you...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
-======================================================================
-Reported By:                footcow
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   666
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             11-23-2004 01:31 CET
-Last Modified:              12-09-2004 12:11 CET
-======================================================================
-Summary:                    Simply no sound ... no line ... no mixer
-Description: 
-I have compiled the last release : 1.0.7 stable.
-But I do not have any sound, no line ... no mixer ... :(
+May I ask you to check CVS's version?
+Keep in mind that jackd is now called like:
+$ jackd -dusx2y -dhw:1,2
+You might also change qjackctl to always append ",2" to the hw device in the usx2y case.
 
-I have an AsusTek P5GD2 motherboard with lspci -v :
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Asustek Computer, Inc.: Unknown device 813d
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
-
-
-The snd_azx module is well loaded :
-lsmod : 
-snd_azx                30920  1
-snd_pcm                95112  1 snd_azx
-snd_timer              25476  1 snd_pcm
-snd                    54500  5 snd_azx,snd_pcm,snd_timer
-snd_page_alloc         10120  1 snd_pcm
-
-If I run alsamixer I get this :
-$ alsamixer
-No mixer elems found
-
-If I run alsamixergui, I get 3 columns:
-Line is emplty and can't change
-Same for Mic
-I can only move values for a third column called Capt.
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 12-09-04 11:34 
-----------------------------------------------------------------------
-Try the attached patch.
-
-----------------------------------------------------------------------
- tiwai - 12-09-04 12:11 
-----------------------------------------------------------------------
-Also apply other two patches, too.  (They are already on CVS.)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-23-04 01:31 footcow        New Issue                                    
-11-23-04 01:31 footcow        Distribution              => Debian          
-11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
-11-23-04 21:49 footcow        Note Added: 0002530                          
-12-08-04 19:54 tiwai          Note Added: 0002791                          
-12-08-04 23:56 footcow        Note Added: 0002795                          
-12-09-04 11:27 tiwai          Note Added: 0002799                          
-12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
-12-09-04 11:34 tiwai          Note Added: 0002800                          
-12-09-04 12:11 tiwai          Note Added: 0002801                          
-======================================================================
-
-
+thanks,
+Karsten
 
 
 -------------------------------------------------------
