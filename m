@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Tue, 15 Mar 2005 17:34:54 +0100
-Message-ID: <4796ed13fa206719c0dcdc83e1547deb@bugtrack.alsa-project.org>
+From: Sebastian Benoit <benoit-lists@fb12.de>
+Subject: Re: Juli@-Card and hanging process snd-ak4114/0
+Date: Tue, 15 Mar 2005 17:47:55 +0059
+Message-ID: <20050315164817.GA86246@mail.webmonster.de>
+References: <20050310170354.GH78387@mail.webmonster.de> <Pine.LNX.4.58.0503101812250.1733@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9D6B41B1
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 17:34:54 +0100 (MET)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
+Received: from mail.webmonster.de (datasink.webmonster.de [194.162.162.209])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 6CA9C1B1
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 17:47:57 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0503101812250.1733@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,158 +21,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
+Cc: perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
-======================================================================
-Reported By:                Q3Man
-Assigned To:                fmoraes
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   752
-Category:                   PCI - emu10k1x
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r9
-======================================================================
-Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-15-2005 17:34 CET
-======================================================================
-Summary:                    ALSA > 1.0.5a does not load, failed with error -16
-Description: 
-I'm having some problems with alsa since 1.0.6a. Previously I just had the
-later versions masked, but now various kde packages require the latest
-alsa, so I'm having to tackle it now. ALSA seems to start normally,
-however I get this error in dmesg: 
-EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
-
-I also get this error when running alsamixer: 
-alsamixer: function snd_ctl_open failed for default: No such device 
-
-And similar ones in other alsa programs. 
-
-Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
-code and it seems that the error is vaguely interrupt related, but I could
-not find the code that produces error -16. I've swapped interrupts around
-and disabled non-essential devices (usb, serial, parallel ports, removed
-network cards and sound cards - although that last one proved slightly
-less than helpful :) I've changed from having my bios manage irq's to
-having the OS handle them with zero success. 
-
-I've looked around for that error code in google for the last few weeks -
-since the release of 1.0.6a with limited success. Nothing relevant to my
-situation. 
-
-Important configs and error messages:
-$ lspci -v |grep audio -A4
-0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
-EMU10k1X
-        Subsystem: Creative Labs: Unknown device 1003
-        Flags: bus master, medium devsel, latency 32, IRQ 12
-        I/O ports at d000
-        Capabilities: [dc] Power Management version 2
-(It is an actual EMU10k1X and not the Dell bastardized version)
-
-$ /etc/init.d/alsasound start; dmesg |tail -n1
- * Loading ALSA drivers...
- * Using ALSA OSS emulation
- * Loading: snd-mixer-oss
- * Loading: snd-pcm-oss
- * Loading: snd-seq-oss
- * Running card-dependent scripts
- * Restoring Mixer Levels                                                
-[ ok ]
-EMU10K1X: probe of 0000:00:09.0 failed with error -16
-
-$ uname -a
-Linux tobin1 2.6.9-gentoo-r9
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
-2004 i686 AMD
-Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
-
-If anyone needs any other config information, please let me know. Again,
-it works perfectly fine in 1.0.5a, the problems only appear in later
-versions.
-
-======================================================================
-
-----------------------------------------------------------------------
- fmoraes - 03-09-05 02:57 
-----------------------------------------------------------------------
-Can you provide an update to this report? Otherwise, I think it should be
-closed.
-
-----------------------------------------------------------------------
- Q3Man - 03-15-05 17:34 
-----------------------------------------------------------------------
-I did some more testing on the issue last night. The bad news is that I was
-unable to find anything that improved my situation. The good news is I'm
-finding reports of the same issue on google now. 
-
-Links of note:
-http://www.thisishull.net/archive/index.php/t-69222.html
-http://sourceforge.net/mailarchive/forum.php?thread_id=5205670&forum_id=1751
-http://www.google.com/search?c2coff=1&q=emu10k1x+%22failed+with+error%22+%2B%22-16%22&btnG=Search
-
-Going back to my first instinct that it was an IRQ issue, I went through
-my bios and set the sound card to 3,4,5,7,9,10,11,12,14,15 (disabeling
-serial ports/ide controllers/parallel ports/network cards as appropriate)
-with no changes at all. I went through half a dozen kernel compiles
-(2.6.10-gentoo-r6) and a couple dozen alsa compiles (1.0.8) with no luck.
-
-I did however get a new error message:
-# /etc/init.d/alsasound start
- * Loading ALSA modules...
- *   Loading: snd-card-0...                                              
-[ ok ]
- *   Loading: snd-seq-oss...                                             
-[ ok ]
- * ERROR: Failed to load necessary drivers                               
-[ ok ]
- * Restoring Mixer Levels...                                             
-[ ok ]
-
-However, the error message is just a result of a newer version of the
-init.d script and not generated by alsa. 
-
-I also played around with changing between emu10k1/emu10k1x with no real
-success. 
-
->From the other postings about the issue on the above links, most responces
-seem to indicate that it is a configuration issue (although most of the
-responces also seem to degenerate into RTFM flames). I'm going to grab the
-latest knoppix cd and try it tonight. If it runs, at least I'll have a
-working frame of reference to check against.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-28-04 05:12 Q3Man          New Issue                                    
-12-28-04 05:12 Q3Man          File Added: einfo                            
-12-28-04 05:12 Q3Man          Distribution              => Gentoo          
-12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
-12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
-01-03-05 12:10 tiwai          Note Added: 0003054                          
-01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
-01-03-05 17:30 Q3Man          Note Added: 0003071                          
-01-16-05 14:54 fmoraes        Note Added: 0003216                          
-01-18-05 00:44 Q3Man          Note Added: 0003240                          
-01-20-05 02:23 Q3Man          Note Added: 0003322                          
-01-20-05 19:12 tiwai          Note Added: 0003332                          
-01-21-05 05:11 Q3Man          Note Added: 0003337                          
-01-21-05 11:14 tiwai          Note Added: 0003341                          
-01-22-05 23:24 fmoraes        Note Added: 0003382                          
-03-09-05 02:57 fmoraes        Note Added: 0003821                          
-03-15-05 17:34 Q3Man          Note Added: 0003916                          
-======================================================================
+--17pEHd4RhPHOinZp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 
+Hi,
+
+Jaroslav Kysela(perex@suse.cz) on 2005.03.10 18:14:12 +0000:
+> > The main problem is, that a process "snd-ak4114/0" is using 60% of my C=
+PU
+> > time. I would like to solve this problem, and have started reading trou=
+gh
+> > the code. But it seems I need some pointers where to look ;-)
+>=20
+> You may try to change queue_delayed_work(chip->workqueue, &chip->work, 1);
+> to queue_delayed_work(chip->workqueue, &chip->work, 2); (or highter value)
+> in alsa-kernel/i2c/other/ak4114.c .
+
+A value of two gives me 40% CPU time, with 100 the process uses ~2%.
+=20
+> It seems that i2c takes too much time. Or it might be, that the scheduler=
+=20
+> code for task statistics is somewhat broken.
+
+My other process behave like they dont get enough time, so i think the
+scheduler stats are right ;-)
+
+With the value in ak4114.c set to 100 everything is working. I don't know
+about spdif, i haven't tried that, am i right that the ak4114.c code manages
+digital i/o?
+
+My application is recording and playing (something differen) at the same
+time via this card, and that works fine now, except for the output volume.
+
+I am willing to test more. Is someone working on the mixer code?
+
+Thanks for your help.
+/B.
+--=20
+Sebastian Benoit <benoit-lists@fb12.de>
+My mail is GnuPG signed -- Unsigned ones are bogus -- http://www.gnupg.org/
+GnuPG 0xD777DBA7 2003-09-10 D02B D0E0 3790 1AA1 DA3A  B508 BF48 87BF D777 D=
+BA7
+
+That's so plausible I can't believe it -- Leiyla, Futurama
+
+--17pEHd4RhPHOinZp
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (FreeBSD)
+
+iD8DBQFCNxHRv0iHv9d326cRAiZ2AKCgRDQGpXsaYnTiVNouOWxf+dPEVgCgq0J2
+ZUbjB3vqkq8skg6/xjsHsww=
+=BHyh
+-----END PGP SIGNATURE-----
+
+--17pEHd4RhPHOinZp--
 
 
 -------------------------------------------------------
