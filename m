@@ -1,13 +1,19 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000385]: Rate conversion plugin generates noise on frequency reduction
-Date: Thu, 15 Jul 2004 14:07:55 +0200 (CEST)
+From: Chris Cannam <cannam@all-day-breakfast.com>
+Subject: Re: mantis bug reports, again
+Date: Thu, 15 Jul 2004 13:38:03 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040715120755.0C16215007@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200407151338.03983.cannam@all-day-breakfast.com>
+References: <200407151128.i6FBSPwt008216@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 66DEC1EF
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 14:07:55 +0200 (MEST)
+Received: from anchor-post-37.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 26E321EF
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 14:11:00 +0200 (MEST)
+In-Reply-To: <200407151128.i6FBSPwt008216@localhost.localdomain>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,71 +22,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thursday 15 Jul 2004 12:28 pm, Paul Davis wrote:
+> mis-encoded email from mantis
 
-The following bug has been ASSIGNED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000385
-======================================================================
-Reported By:                fmoraes
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     385
-Category:                   OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             07-13-2004 19:46 CEST
-Last Modified:              07-15-2004 14:07 CEST
-======================================================================
-Summary:                    Rate conversion plugin generates noise on frequency reduction
-Description: 
-When reducing the frequency, the pcm_rate plugin causes noise on the output
-data. This has been tested with both the snd-cs46xx and snd-emu10k1x
-drivers and the following .asoundrc can be used to recreate the output in
-a file:
+Why do you say it's mis-encoded?  It looks like valid RFC 1341/2045 
+MIME quoted-printable to me and my mail reader.
 
-pcm.CS46xx {
-	type hw
-	card 0
-}
 
-pcm.filetest {
-	type file
-	slave {
-		pcm "CS46xx"
-	}
-	file "/home/fmoraes/test-out.raw"
-	format "raw"
-}
+Chris
 
-pcm.test {
-	type rate
-	slave {
-		pcm "filetest"
-		format "S16_LE"
-		rate 8000
-	}
-}
-
-Playing a 48Khz file will cause noticeable noise on the output (noise is
-more noticeable the lower the target frequency is).
-======================================================================
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-13-04 19:46 fmoraes        New Bug                                      
-07-15-04 14:07 perex          Assigned To               => perex           
-07-15-04 14:07 perex          Status                   new => assigned     
-======================================================================
 
 
 -------------------------------------------------------
