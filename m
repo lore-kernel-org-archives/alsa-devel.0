@@ -1,12 +1,14 @@
-From: "Defiant" <mail@defiant.homedns.org>
-Subject: Bug Report: Bad Quality with AC97
-Date: Wed, 24 Dec 2003 11:20:25 +0100 (CET)
+From: peloy@chapus.net (Eloy A. Paris)
+Subject: Re: CS46xx oddness
+Date: Wed, 24 Dec 2003 10:38:38 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <33077.192.168.36.2.1072261225.squirrel@defiant.homedns.org>
+Message-ID: <87ekuutedd.fsf@canaima.chapus.net>
+References: <20031224094213.GE25270@zewt.org>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20031224094213.GE25270@zewt.org> (Glenn Maynard's message of
+ "Wed, 24 Dec 2003 04:42:13 -0500")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,81 +20,98 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Alsa-Version:
-0.9.6 - 1.0.0rc2 and the one included in Linux Kernel 2.5.x, 2.6.x-2.6.0
-What:
-Bad Quality playing bass on AC'97
+Is this card being actively maintained? I've seen several reports of
+problems with this card (occasional metallic sound when recording,
+SPDIF passthrough not working on some receivers, etc.) but haven't seen
+any responses about possible solutions.
 
-Hello,
+I wish I could volunteer to improve the driver for this card, but I
+think my technical skills to be able to do so are lacking :(
 
-I'm not 100% sure that I'm posting at the right place, but I will just start:
-I was using alsa-driver 0.9.3 a long time and was very contently with it.
-Then I hear you made the 1.dot release so I simply upgraded to the latest
-version. Well switching to alsa-driver 1.0.0 got ma a little problem:
-I get a bad Quality playing 'bass' on my laptop.
+I personally replaced my cs46xx-based card with a SoundBlaster Live! 5.1
+because of the problems with the cs46xx driver.
 
-After some research I found out that this Problem started in Alsa driver
-Version 0.9.6 - I needed two! real days to find what change caused the
-problem:
-Near line 812 in file alsa-driver/alsa-kernel/core/oss/pcm_oss.c
-In static ssize_t snd_pcm_oss_write1(...)
-After
-buf += tmp;
-bytes -= tmp;
-xfer += tmp;
+Cheers,
 
-You changed
-if (runtime->oss.buffer_used == runtime->oss.period_bytes) {
-To
-if (substream->oss.setup == NULL || !substream->oss.setup->wholefrag ||
-runtime->oss.buffer_used == runtime->oss.period_bytes) {
+Eloy.-
 
-Next Lines are
-tmp = snd_pcm_oss_write2(substream, runtime->oss.buffer,
-runtime->oss.buffer_used, 1);
-if (tmp <= 0)
- return xfer > 0 ? (snd_pcm_sframes_t)xfer : tmp;
- runtime->oss.bytes += tmp;
+Glenn Maynard <g_sf@zewt.org> writes:
 
-Well I don't know what these lines does mean, I only know that undo this
-change is giving be good Sound Quality again, so it would be cool, if you
-could undo this for next Version or could do something else to fix this.
-
-My Soundcard:
-00:1f.5 Multimedia audio controller: Intel Corp. 82801CA/CAM AC'97 Audio
-Controller (rev 02)
-
-lsmod:
-snd-seq-oss            29472   0  (unused)
-snd-seq-midi-event      3584   0  [snd-seq-oss]
-snd-seq                38000   2  [snd-seq-oss snd-seq-midi-event]
-snd-pcm-oss            38820   1
-snd-mixer-oss          13520   0  [snd-pcm-oss]
-snd-intel8x0           18948   1
-snd-ac97-codec         48588   0  [snd-intel8x0]
-snd-pcm                63744   0  [snd-pcm-oss snd-intel8x0]
-snd-timer              14980   0  [snd-seq snd-pcm]
-snd-page-alloc          6740   0  [snd-intel8x0 snd-pcm]
-snd-mpu401-uart         3504   0  [snd-intel8x0]
-snd-rawmidi            14048   0  [snd-mpu401-uart]
-snd-seq-device          4368   0  [snd-seq-oss snd-seq snd-rawmidi]
-snd                    34276   0  [snd-seq-oss snd-seq-midi-event snd-seq
-snd-pcm-oss snd-mixer-oss snd-intel8x0 snd-ac97-codec snd-pcm snd-timer
-snd-mpu401-uart snd-rawmidi snd-seq-device]
-soundcore               3908   6  [snd]
-
-I hope that you can fix that in the next Alsa-driver Version.
-
-greetings, Merry Christmas, and sorry for that bad English :)
-
-Erik Andresen
-
---
-
-All I ask is a tall ship, and a star to steer her by
-> defiant.homedns.org <
- -cause Experience is Knowledge
-
+> (2.6.0 test11)
+>
+> I'm seeing something odd with a CS46xx chip: if I don't set a buffer
+> size, or if I set it to 4k or 8k, then sound isn't played.  The buffer
+> fills up, and the device stays in SND_PCM_STATE_RUNNING.  If I set it
+> to 16k or 32k, it works.
+>
+> I'm testing remotely on a user's machine, so I can't do much to
+> troubleshoot this (I'm not going to mess with his kernel).  In case
+> anyone's feeling brave, the relevant code is at
+>
+>    http://cvs.sf.net/viewcvs.py/*checkout*/stepmania/stepmania/src/arch/Sound/ALSA9Helpers.cpp?rev=1.12
+>
+> For reference, samplerate is 44100, channels is 2, and all dsnd* are
+> just pointers to snd*.  Sorry for not making a test case; it's 4am, so
+> I can't do it tonight, and this is a drop-in on IRC so I may not get
+> access to this machine again.  If nobody feels like looking at that
+> at all, I'll understand. :)
+>
+> If it helps, here's /proc/asound/card0/pcm0p/sub0/* with an 8k, full buffer:
+>
+> access: MMAP_INTERLEAVED
+> format: S16_LE
+> subformat: STD
+> channels: 2
+> rate: 44100 (44100/1)
+> period_size: 8
+> buffer_size: 8192
+> tick_time: 1000
+> card: 0
+> device: 0
+> subdevice: 0
+> stream: PLAYBACK
+> id: CS46xx
+> name: CS46xx
+> subname: subdevice #0
+> class: 0
+> subclass: 0
+> subdevices_count: 31
+> subdevices_avail: 30
+> 64
+> state: RUNNING
+> trigger_time: 1072258017.688694000
+> tstamp      : 1072258028.517208000
+> delay       : 512
+> avail       : 7680
+> avail_max   : 7680
+> -----
+> hw_ptr      : 0
+> appl_ptr    : 512
+> tstamp_mode: NONE
+> period_step: 1
+> sleep_min: 0
+> avail_min: 8
+> xfer_align: 8
+> start_threshold: 0
+> stop_threshold: 1073741824
+> silence_threshold: 0
+> silence_size: 0
+> boundary: 1073741824
+>
+>
+> -- 
+> Glenn Maynard
+>
+>
+> -------------------------------------------------------
+> This SF.net email is sponsored by: IBM Linux Tutorials.
+> Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
+> Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
+> Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 -------------------------------------------------------
