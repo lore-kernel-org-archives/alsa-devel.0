@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: problems: flushing during snd_pcm_wait()
-Date: Fri, 11 Oct 2002 16:22:08 +0200 (CEST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: 1.0.0 Requirements, Integration of sound deamon
+ (JACK)
+Date: Sat, 12 Oct 2002 00:03:11 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210111614110.1244-100000@pnote.perex-int.cz>
-References: <3DA6D0EB.1010509@superbug.demon.co.uk>
+Message-ID: <3DA6E82F.4070302@boosthardware.com>
+References: <20021011131309.46309.qmail@web40613.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DA6D0EB.1010509@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,42 +17,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: David Sankel <camio@yahoo.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 11 Oct 2002, James Courtier-Dutton wrote:
+David Sankel wrote:
+> Hello ALSA developers,
+> 
+>   I was wondering if there is a requirement list for
+> 1.0.0 release of ALSA.  If not, what would be expected
+> in a 1.0.0 release?  (I've got a few brain/cpu cycles
+> to spare towards a 1.0.0 release)
+> 
+>   I know the topic of sound deamons has really been
+> stomped in the ground, but I haven't found any
+> information about the possible inclusion of the JACK
+> sound deamon into an alsa release.  Since running JACK
+> does not lock up any of the sound device files, all
+> non-JACK-aware programs will act normally while the
+> deamon is running.
+> 
 
-> >>Thankyou, I will use snd_pcm_drop(), but as a side note, what actually 
-> >>does "snd_pcm_reset()" do.
-> >>Just resetting delay to 0 does not make much sense to me.
-> >>    
-> >>
-> >
-> >It drops all samples in the ring buffer (thus reseting delay to 0). Note 
-> >that everybody are welcome to improve the current documentation 
-> >(preferably with patches).
-> >
-> >						Jaroslav
-> >  
-> >
-> Ok, so snd_pcm_drop drops all samples in the buffer, so I would assume 
-> this sets the delay to 0.
-> so snd_pcm_reset drops all sample in the buffer, so as you say is sets 
-> delay to 0.
-> So my question is "What is the difference between the 2 functions?"
 
-reset() doesn't stop the stream. It's mainly useable, if you have streams 
-linked together with hardware or if an application wants to act very 
-realtime and has xrun detection disabled.
+Have you used JACK?
 
-						Jaroslav
+AFAIK it definitely requires a pcm. You may have used it on hardware 
+that supports multiopen which would explain what you have observed.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+"Um...symbol_get and symbol_put... They're
+kindof like does anyone remember like get_symbol
+and put_symbol I think we used to have..."
+- Rusty Russell in his talk on the module subsystem
 
 
 
