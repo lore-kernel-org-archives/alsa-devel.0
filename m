@@ -1,13 +1,11 @@
-From: =?iso-8859-2?Q?St=E9phane_Boulanger?= <stephane.boulanger@fh-bonn-rhein-sieg.de>
-Subject: Re: Opening a device 2 times, loopback interface....
-Date: Mon, 26 May 2003 17:10:48 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: ES1938 MIDI input not working?
+Date: Mon, 26 May 2003 18:28:52 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <00ea01c32398$fcffa780$490a140a@pc2m73>
-References: <Pine.LNX.4.44.0305131207020.1179-100000@pnote.perex-int.cz>
+Message-ID: <Pine.HPX.4.33n.0305261828210.26683-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,152 +15,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
 
-Thanks for the response. I had a look at the ALSA plugins. The dsnoop see=
-ms
-to be the right way, but I can=B4t get it working for my purpose. The
-following works already:
+I have a report that, with an ES1938 card, MIDI (input only) doesn't =
+work.
+It looks as if MIDI interrupts aren't generated or acknowledged prope=
+rly.
 
-.asoundrc contains:
+es9138.c has the following MIDI interrupt code:
 
-pcm.my_devicename {
-    type dsnoop
-    ipc_key 47114711
-    ipc_key_add_uid yes
-    slave {
-        pcm "hw:0,0"
-    }
-}
+=09/* MPU401 */
+=09if (status & 0x80) {
+=09=09// snd_es1938_mixer_bits(chip, ESSSB_IREG_MPU401CONTROL, 0x40, =
+0); /* ack? */
+=09=09if (chip->rmidi) {
+=09=09=09handled =3D 1;
+=09=09=09snd_mpu401_uart_interrupt(irq, chip->rmidi->private_data, re=
+gs);
+=09=09}
+=09}
 
-I can open this with the snd_pcm_open function.
-The important thing is, that 2 applications can access the data at the sa=
-me
-time. When I start my application (just a simple capturing tool)  twice,
-both applications receive data. It works preatty well. But when I want to
-start my application after I started an other application (in my case RAT=
-),
-my application blocks. That=B4s exactly I wanted to prevent!
-I think the most other applications will open "hw" or "plughw" (what abou=
-t
-the OSS emulation? How does the kernel oss emulation module opens the als=
-a
-devices?).
-I tried the following hack: renaming the "hw" to "hw_real" an adding a "h=
-w"
-wich is my dsnoop.
-Looks like:
+This was added in revision 1.6 of es1938.c, with the log message "not
+tested well". In revision 1.22, the "ack?" line was commented out, wi=
+thout
+any relevant log message.
 
-pcm.hw {
-    type dsnoop
-    ipc_key 47114711
-    ipc_key_add_uid yes
-    slave {
-        pcm "hw_real:0,0"
-    }
-}
+Has this code been tested? Does anybody know if it works, somewhere?
 
 
-pcm.hw_real {
-... # changed nothing
-}
-
-Okay, both applications run, but not at the same time. Still the same
-problem: My applications receives data only if the first application was
-terminated. By the way... playing around this way with "plughw" let my
-application crash.
-So again the same problem: Access the input (and output (have a look at m=
-y
-earlier description in my old mail)) data at the same time, without
-modifying the original programm.
-
-I hope this is not too basic, but I just can=B4t figure out a universal w=
-ay to
-do it. Probably someone has an idea or a tip?
-Thanks!
-
-Stephane
-
------ Original Message -----
-From: "Jaroslav Kysela" <perex@suse.cz>
-To: "St=E9phane Boulanger" <stephane.boulanger@fh-bonn-rhein-sieg.de>
-Cc: <alsa-devel@lists.sourceforge.net>
-Sent: Tuesday, May 13, 2003 12:11 PM
-Subject: Re: [Alsa-devel] Opening a device 2 times, loopback interface....
+Regards,
+Clemens
 
 
-> On Tue, 13 May 2003, [iso-8859-1] St=E9phane Boulanger wrote:
->
-> > Dear List,
-> >
-> > we=B4re currently developing an end-to-end delay measurement tool, th=
-at
-should
-> > not only measure the network delay, but also the time the application
-> > (audiostreaming (rat, for example)) needs to calculate the used
-algorithms
-> > (GSM, PCM, whatever). To realize the choosen program design, we need =
-to
-> > access the soundcard device form two different applications (streamin=
-g
-> > application and the measurement tool) at the same time. More exactly:
-> >
-> > - When audiodata is inputted, not only the streaming application shou=
-ld
-be
-> > able to access it, but also our measurement tool (at the same time
-> > obviously).
-> >
-> > - When audiodata is send to the sounddriver (repectively the soundcar=
-d),
-the
-> > measurement tool should be able to read it (maybe in the form of a
-copied
-> > datastream send to the measurement tool).
-> >
-> >
-> > While browing the ALSA documentation, I found some interesting parts
-about
-> > the loopback interface, that might help us. But is it still contained=
- in
-the
-> > 0.9 version of ALSA? Moreover, would the loopback interface satisfy o=
-ur
-> > needs?
->
-> The loopback interface is dead. We have alsa-lib which can do all
-> requested things. See the dsnoop plugin and file plugin. You may also
-> modify them to satisfy your requirements.
->
-> The only "negative" item is that it will work with ALSA native
-> applications only or with the alsa-oss library.
->
-> Jaroslav
->
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SuSE Labs
->
->
->
-> -------------------------------------------------------
-> Enterprise Linux Forum Conference & Expo, June 4-6, 2003, Santa Clara
-> The only event dedicated to issues related to Linux enterprise solution=
-s
-> www.enterpriselinuxforum.com
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
->
->
+
+---------- Forwarded message ----------
+Date: Mon, 26 May 2003 10:27:05 +0200
+=46rom: Stefan Gruber <GruberLISCON@netscape.net>
+Newsgroups: de.comp.os.unix.linux.misc, de.rec.musik.elektronisch
+Subject: Re: MIDI: Ausgabe ja, Eingabe nein
+
+(... cat /dev/midi00 ...)
+
+> Wird dabei "Rx bytes" in /proc/asound/card0/midi0 hochgez=E4hlt?
+
+Nein. "Rx bytes" bleibt permanent auf Null.
+
+> Wird bei empfangenen MIDI-Bytes ein Interrupt generiert? (kann man =
+in
+> /proc/interrupts mitz=E4hlen)
+
+Scheinbar kommt auch hier nichts. Auf welchem IRQ m=FCsste der denn k=
+ommen?
+
+
 
 
 
