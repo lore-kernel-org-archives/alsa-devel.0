@@ -1,14 +1,14 @@
-From: =?iso-8859-15?q?Z=E9bulon?= <zeb@zebulon.org.uk>
-Subject: Terratec Aureon Space
-Date: Thu, 15 May 2003 18:26:55 +0200
+From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Subject: Re: alsa-0.9.3a : powermac locks machine hard
+Date: Fri, 16 May 2003 07:36:29 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305151826.55345.zeb@zebulon.org.uk>
+Message-ID: <20030516073629.350fd056.erikd-alsa@mega-nerd.com>
+References: <20030515190540.567823bd.erikd-alsa@mega-nerd.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <20030515190540.567823bd.erikd-alsa@mega-nerd.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,35 +20,38 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Are there any debvelopers working on the Terratec Aureon Space ?
+On Thu, 15 May 2003 19:05:40 +1000
+Erik de Castro Lopo <erikd-alsa@mega-nerd.com> wrote:
 
-The sound chip is a Envy24HT, like for the Revolution, and there is a Wolfson 
-chip WM8770IFT.
-I cannot make it work with the 9.3a driver snd-ice1724, I get that error :
+> Hi all,
+> 
+> I have an Apple iBook running Debian Linux with a kernel compiled
+> from the Debian kernel-source-2.4.20 package with the Debain PowerPC
+> patches applied. I have installed from source (obtained at 
+> alsa-project.org) :
+> 
+> 	alsa-driver-0.9.3a
+> 	alsa-lib-0.9.3
+> 
+> When I run the init script ("/etc/init.d/alsa start" on my Debian 
+> installation) it fails stating that alsactl seg faulted. If I 
+> then run "/etc/init.d/alsa stop", the machine locks hard (no 
+> response to keyboard or pings).
+> 
+> I then removed the battery and rebooted the machine. Here is the
+> kernel Ooops message. Is there anything I can do to help debug this?
 
-#modprobe snd-ice1724
+Can anyone tell me where to begin debuggung this?
 
-Warning: loading 
-/lib/modules/2.4.21-0.19mm-mdk/kernel/sound/i2c/other/snd-ak4xxx-adda.o will 
-taint the kernel: no license
-  See http://www.tux.org/lkml/#export-tainted for information about tainted 
-modules
-Module snd-ak4xxx-adda loaded, with warnings
-/lib/modules/2.4.21-0.19mm-mdk/kernel/sound/pci/ice1712/snd-ice1724.o: 
-init_module: No such device
-Hint: insmod errors can be caused by incorrect module parameters, including 
-invalid IO or IRQ parameters.
-      You may find more information in syslog or the output from dmesg
-modprobe: insmod 
-/lib/modules/2.4.21-0.19mm-mdk/kernel/sound/pci/ice1712/snd-ice1724.o failed
-modprobe: insmod snd-ice1724 failed
-
-
-
-Can I expect to see it supported in the future ?
-
-Thanks a lot
-Zeb
+Erik
+-- 
++-----------------------------------------------------------+
+  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
++-----------------------------------------------------------+
+"Open source is an intellectual-property destroyer. I can't 
+imagine something that could be worse than this for the software 
+business and the intellectual-property business."
+ -- Jim Allchin, Microsoft
 
 
 -------------------------------------------------------
