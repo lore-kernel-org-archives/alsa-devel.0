@@ -1,9 +1,10 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: non-destructive aproach for Built-In effects
-Date: Fri, 17 Jan 2003 23:01:55 +0100
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: [linux-audio-user] quattro distortion under mandrake 9.0 - more
+ details
+Date: Sat, 18 Jan 2003 17:29:57 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E287D53.504@cucumelo.org>
-References: <3E287BE0.4060905@cucumelo.org>
+Message-ID: <3E291085.3070103@boosthardware.com>
+References: <3E283DE6.6030508@iriXx.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,14 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benny Sjostrand <gorm@cucumelo.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: linux-audio-user@music.columbia.edu
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'm very sorry, forget about this, this mail was not meant to reach this 
-mailinglist ....
+iriXx wrote:
 
-/Benny
+> any suggestions would be very gratefully received!
+> 
+
+Sorry. I forgot you weren't using the latest cvs. If you would like some 
+help installing it again (after your last round) I could ssh in and do 
+it for you.
+
+Let me know off list if you think that is a good idea.
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
