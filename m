@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000787]: Headphone == Master if plugged
-Date: Tue, 11 Jan 2005 16:21:44 +0100
-Message-ID: <f3a245cb2b84e6011598aaab2e0714aa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
+Date: Tue, 11 Jan 2005 16:14:51 +0100
+Message-ID: <e7eae05f1923ffc636197ba8a6532651@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 17C812D4
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 16:21:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 21EB42D7
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 16:14:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,109 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=787> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
 ======================================================================
-Reported By:                Nafallo
+Reported By:                footcow
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   787
-Category:                   PCI - via82xx
+Issue ID:                   666
+Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu Linux 5.10 (hoary)
+Distribution:               Debian
 Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             01-06-2005 02:04 CET
-Last Modified:              01-11-2005 16:21 CET
+Date Submitted:             11-23-2004 01:31 CET
+Last Modified:              01-11-2005 16:14 CET
 ======================================================================
-Summary:                    Headphone == Master if plugged
+Summary:                    Simply no sound ... no line ... no mixer
 Description: 
-When I'm using headphones the master volume meter changes to headphones
-volume meter, making me unable to use gnome-hotkeys to turn the volume
-up/down (i.e. they change master that's inactivated by headphones).
+I have compiled the last release : 1.0.7 stable.
+But I do not have any sound, no line ... no mixer ... :(
+
+I have an AsusTek P5GD2 motherboard with lspci -v :
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+        Subsystem: Asustek Computer, Inc.: Unknown device 813d
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70]
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
+
+
+The snd_azx module is well loaded :
+lsmod : 
+snd_azx                30920  1
+snd_pcm                95112  1 snd_azx
+snd_timer              25476  1 snd_pcm
+snd                    54500  5 snd_azx,snd_pcm,snd_timer
+snd_page_alloc         10120  1 snd_pcm
+
+If I run alsamixer I get this :
+$ alsamixer
+No mixer elems found
+
+If I run alsamixergui, I get 3 columns:
+Line is emplty and can't change
+Same for Mic
+I can only move values for a third column called Capt.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Nafallo - 01-07-05 21:07 
+ footcow - 01-08-05 01:22 
 ----------------------------------------------------------------------
-I would vote for binding them together, with or without hiding (risc of
-confusing existing users).
+Sorry for may be my stupid question ... the patch is applied to
+alsa-kernel, I'm right ?
+I just compile/install alsa-driver and alsa-lib ... (usual use) ...
+Tell me if I have more thing to do ...
+
+No I get :
+XX chn minmax fail: channels_min=2, channels_max=1
+ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:1874: BUG? (err >=
+0) (called from f8b19fb6)
+ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:2021:
+snd_pcm_hw_constraints_complete failed
 
 ----------------------------------------------------------------------
- tiwai - 01-11-05 16:21 
+ tiwai - 01-11-05 16:14 
 ----------------------------------------------------------------------
-OK, the attached is the patch to add a new quirk value "bind_hp".
-Pass ac97_quirk=bind_hp.  If this works, let me know the PCI subsystem IDs
-(lspci -nv output).
+Please try azx-cmedia-pcm-fix.diff.  It's already in the latest CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-06-05 02:04 Nafallo        New Issue                                    
-01-06-05 02:04 Nafallo        Distribution              => Ubuntu Linux 5.10
-(hoary)
-01-06-05 02:04 Nafallo        Kernel Version            => 2.6.9           
-01-06-05 02:13 Nafallo        Issue Monitored: Nafallo                     
-01-07-05 18:21 tiwai          Note Added: 0003109                          
-01-07-05 21:07 Nafallo        Note Added: 0003121                          
-01-11-05 16:21 tiwai          Note Added: 0003154                          
+11-23-04 01:31 footcow        New Issue                                    
+11-23-04 01:31 footcow        Distribution              => Debian          
+11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
+11-23-04 21:49 footcow        Note Added: 0002530                          
+12-08-04 19:54 tiwai          Note Added: 0002791                          
+12-08-04 23:56 footcow        Note Added: 0002795                          
+12-09-04 11:27 tiwai          Note Added: 0002799                          
+12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
+12-09-04 11:34 tiwai          Note Added: 0002800                          
+12-09-04 12:11 tiwai          Note Added: 0002801                          
+12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
+  
+12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
+12-10-04 22:08 footcow        Note Added: 0002808                          
+12-10-04 22:08 footcow        File Added: alsamix.png                      
+12-11-04 17:40 tiwai          Note Added: 0002811                          
+12-12-04 00:58 footcow        Note Added: 0002813                          
+12-12-04 00:59 footcow        File Added: alsamix2.png                     
+12-16-04 18:32 tiwai          Note Added: 0002836                          
+12-16-04 21:06 footcow        Note Added: 0002841                          
+01-07-05 00:44 footcow        Note Added: 0003099                          
+01-07-05 18:04 tiwai          Note Added: 0003107                          
+01-07-05 18:04 tiwai          File Added: azx-debug.diff                    
+01-08-05 01:22 footcow        Note Added: 0003125                          
+01-11-05 16:14 tiwai          Note Added: 0003152                          
 ======================================================================
 
 
