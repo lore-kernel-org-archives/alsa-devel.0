@@ -1,11 +1,17 @@
-From: Peter Enderborg <pme@ufh.se>
-Subject: Number of subdevices on midi.
-Date: Wed, 03 Apr 2002 21:23:05 +0200
+From: Andy Wingo <wingo@pobox.com>
+Subject: Re: alsa-utils-0.9.0beta12: Bug in configure
+Date: Wed, 3 Apr 2002 14:47:28 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CAB5699.1927A89D@ufh.se>
+Message-ID: <20020403194727.GB23358@jesus>
+References: <200204030808.g3388UX16054@Port.imtp.ilyichevsk.odessa.ua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Received: from jesus (rdu162-226-026.nc.rr.com [24.162.226.26])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA31494
+	for <alsa-devel@alsa-project.org>; Wed, 3 Apr 2002 21:47:38 +0200
+Content-Disposition: inline
+In-Reply-To: <200204030808.g3388UX16054@Port.imtp.ilyichevsk.odessa.ua>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,18 +20,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I have tryed to get some answer from Jaroslav about subdevices on midi.
-Im trying to write
-a driver for midisport 8x8/s and that have 9 midi ports. On my hack to
-figure out
-the protocol I use virmidi to handle the interface to alsa. But virmidi
-only have four
-subdevices per device. I need to see the driver for a midi interface
-that using all the
-16 subdevices. Since I don't get answer from Jaroslav i guess he don't
-have the time
-or my question is stupid. But can someone help me out? Where should I
-look?
+On Wed, 03 Apr 2002, Denis Vlasenko wrote:
+
+> configure uses this to test whether there are alsa libs.
+> But this will fail always since nested functions are not
+> supported by C:
+> 
+> int main() {
+>   void main(void) {  // !?
+>     ...
+>   }
+> }
+
+from the autoconf 2.53 manual:
+
+ - Macro: AC_TRY_COMPILE (INCLUDES, FUNCTION-BODY, [ACTION-IF-FOUND],
+          [ACTION-IF-NOT-FOUND])
+     Create a test program in the current language (*note Language
+     Choice::) to see whether a function whose body consists of
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     FUNCTION-BODY can be compiled.  If the file compiles successfully,
+     run shell commands ACTION-IF-FOUND, otherwise run
+     ACTION-IF-NOT-FOUND.
+
+This is from within alsa.m4. Change the AC_TRY_CONPILE to AC_TRY_RUN and
+it should work.
+
+So, I suppose this is a 'virtual patch' against alsa.m4 :-)
+
+cheers,
+
+wingo.
