@@ -1,17 +1,14 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: Finding xruun sources in cs46xx
-Date: Mon, 8 Nov 2004 19:07:11 +0100
-Message-ID: <20041108190711.6363d48c@mango.fruits.de>
-References: <20041108184356.6cdb742a@mango.fruits.de>
-	<Pine.HPX.4.33n.0411081846480.16893-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000636]: Setting volume controls to 0 does not turn off speakers completely
+Date: Mon, 8 Nov 2004 19:04:45 +0100
+Message-ID: <847bda51888272581c4d824e23ea283a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id C07642A0
-	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2004 19:06:59 +0100 (MET)
-In-Reply-To: <Pine.HPX.4.33n.0411081846480.16893-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2CD812A0
+	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2004 19:04:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,22 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 8 Nov 2004 18:52:36 +0100 (MET)
-Clemens Ladisch <clemens@ladisch.de> wrote:
 
-> Not for me.  Are you using a threaded interrupts?
-> 
-> Try asking on LKML.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=636> 
+======================================================================
+Reported By:                Mark Knecht
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   636
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9-rc2-mm4-VP-S7-noACPI-UMP
+======================================================================
+Date Submitted:             11-08-2004 18:41 CET
+Last Modified:              11-08-2004 19:04 CET
+======================================================================
+Summary:                    Setting volume controls to 0 does not turn off
+speakers completely
+Description: 
+On my Compaq R3070 laptop setting Master and Master Mono controls to 0 does
+not result in no sound out. I still get audio at a low level.
+======================================================================
 
-Oh well, actually it does make no difference wrt the # of xruns whether i
-use threaded irq handlers or not [but seemingly to the debug output :)]. I
-will build a normal VP kernel tomorrow where i can unthread the cs46xx irq
+----------------------------------------------------------------------
+ Clemens Ladisch - 11-08-04 19:04 
+----------------------------------------------------------------------
+Which ALSA version? (/proc/asound/version)
+Which AC'97 codec? (see alsamixer)
+Does the Mute control work?
 
-flo
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-08-04 18:41 Mark Knecht    New Issue                                    
+11-08-04 18:41 Mark Knecht    Distribution              => Gentoo          
+11-08-04 18:41 Mark Knecht    Kernel Version            =>
+2.6.9-rc2-mm4-VP-S7-noACPI-UMP
+11-08-04 19:04 Clemens LadischNote Added: 0002312                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
