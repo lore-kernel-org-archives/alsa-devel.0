@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: OSS layer still doesn't ignore xruns.
-Date: Thu, 17 Jul 2003 12:14:14 +0200 (CEST)
+From: "P. Christeas" <p_christ@hol.gr>
+Subject: Re: Reproducible deadlock w. alsa/maestro3 when sleeping (ACPI,) 2.6.0-test1
+Date: Thu, 17 Jul 2003 19:14:16 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307171209540.2108-200000@pnote.perex-int.cz>
-References: <20030716224431.GA24371@alinoe.com>
+Message-ID: <200307171914.16811.p_christ@hol.gr>
+References: <200307141917.22813.p_christ@hol.gr> <200307161803.48574.p_christ@hol.gr> <3F156CD8.6010308@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-1463811384-1191070445-1058436854=:2108"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030716224431.GA24371@alinoe.com>
+In-Reply-To: <3F156CD8.6010308@superbug.demon.co.uk>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,122 +19,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Carlo Wood <carlo@alinoe.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+> >>This time, I did NOT have 'artsd' (i.e. the client) loaded. What happened
+> >>was that the module was properly restored and I could load (and use)
+> >> artsd even after the resume.
+> >>That brings me to the first assumption/question I have made: is there
+> >>something wrong if we suspend two parts (one module and a userspace
+> >>process), while they inter-communicate through the /dev/* interface?
+> >
+> > In a second test, I have also added messages at the end of these
+> > functions. They surely don't exit early indeed.
+> >
+> > Has anybody else managed to reproduce the bug?
+> > Does it happen with other drivers (say, PCI cards w. pcm interface)?
+> >
+> > procedure:
+> > 	(read the last step first; it is a warning)
+> > 	1. load the sound module, like 'modprobe snd-maestro3'
+> > 	2. load the client ("artsd" should be the one, others may eventually
+> > release the descriptor. If you want, you could give them a try as well.)
+> > 3. Suspend, S1, NOT with an all-capable script. The script you use must
+> > not try to bring down ALSA.
+> > 	4. Resume.
+> > 	5. Check the state of the "artsd" (or equivalent) process.
+> >
+> > 	W. Note that if the process is waiting for I/O, you can do nothing but
+> > reboot.
+>
+> I get a similar sort of problem, but that is with an USB sound card, and
+> one unplugs the usb cable.
+> The process (in my case a media appication) is waiting for a return from
+> a call to alsa-lib, but the return from the call never happens.
+> Maybe suspending a PCI sound card is similar to unplugging a USB sound
+> card. In both cases, the device does not respond anymore, but alsa-lib
+> fails to return an error to the application, but instead never returns.
+>
+> Cheers
+> James
 
----1463811384-1191070445-1058436854=:2108
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+If you verify that you are unable to 'kill -9' the client application, then 
+the problem becomes just little more serious. IMHO no such actions should 
+cause the kernel to have 'blocked' resources.
 
-On Thu, 17 Jul 2003, Carlo Wood wrote:
+One important observation I have is that 'esd' doesn't produce the bug. Esd 
+uses '/dev/sound/dsp' rather than '/dev/snd/pcmXXX' (oss-emu. rather than 
+ALSA). I don't even know what level of 'feedback' (in terms of function 
+returns) OSS provides, in comparison to the ALSA system.
 
-> On Tue, Jul 15, 2003 at 08:31:50PM +0200, Jaroslav Kysela wrote:
-> > I looked to the problem and it seems that the overrun state is handled 
-> > differently in the OSS API than ALSA implemented. It seems that the stream 
-> > is not stopped but rather the oldest period (fragment) is discarded.
-> > 
-> > The new code (plus some optimization) is in the ALSA CVS tree. The patch 
-> > is attached to this e-mail.
-> 
-> This patch does not solve the problem.
-> As soon as the buffers runs exactly full - which is now a coincidence,
-> but happens reasonable quickly, the alsa layer detects an "overrun"
-> and stops the stream.
 
-Nope. Your test code is buggy. If you have 2 fragments per 4096 bytes and
-you will read samples then the ring buffer goes filled bellow 4096 bytes,
-then info.frags is zero, thus your loop goes very quickly to 10
-iterations. I attached fixed code which adds additional wait - not 
-very clean solution - poll() is prefered (plus commented code which 
-sleeps 4 seconds to generate an overrun at the start).
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
----1463811384-1191070445-1058436854=:2108
-Content-Type: TEXT/plain; name="a.c"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.44.0307171214140.2108@pnote.perex-int.cz>
-Content-Description: 
-Content-Disposition: attachment; filename="a.c"
-
-I2luY2x1ZGUgPHN0ZGlvLmg+DQojaW5jbHVkZSA8c3lzL3R5cGVzLmg+DQoj
-aW5jbHVkZSA8c3lzL3N0YXQuaD4NCiNpbmNsdWRlIDxmY250bC5oPg0KI2lu
-Y2x1ZGUgPHN5cy9pb2N0bC5oPg0KI2luY2x1ZGUgPHVuaXN0ZC5oPg0KI2lu
-Y2x1ZGUgPHN5cy9zb3VuZGNhcmQuaD4NCiNpbmNsdWRlIDx0aW1lLmg+DQoN
-CmludCBtYWluKHZvaWQpDQp7DQogIGludCBmZDsNCiAgaW50IHJlcyA9IDB4
-MjAwMDk7DQogIGF1ZGlvX2J1Zl9pbmZvIGluZm87DQogIGludCBwcmV2X3Np
-emUgPSAwOw0KICBkbw0KICB7DQogICAgKytyZXM7DQogICAgY2xvc2UoZmQp
-Ow0KICAgIGZkID0gb3BlbigiL2Rldi9kc3AiLCBPX1JET05MWSk7DQogICAg
-aWYgKGZkID09IC0xKSB7IHBlcnJvcigib3BlbiIpOyBleGl0KDEyNyk7IH0N
-CiAgICBpZiAoaW9jdGwoZmQsIFNORENUTF9EU1BfU0VURlJBR01FTlQsICZy
-ZXMpID09IC0xKSB7DQogICAgICBwZXJyb3IoImlvY3RsIik7IGV4aXQoMTI3
-KTsgfQ0KICAgIGlmIChpb2N0bChmZCwgU05EQ1RMX0RTUF9HRVRJU1BBQ0Us
-ICZpbmZvKSA9PSAtMSkgew0KICAgICAgcGVycm9yKCJyZWFkIik7IGV4aXQo
-MTI3KTsgfQ0KICAgIHByaW50ZigiICAgIEFsbG9jYXRlZCAlZCBidWZmZXJz
-IG9mICVkIGJ5dGVzLlxuIiwgaW5mby5mcmFnc3RvdGFsLCBpbmZvLmZyYWdz
-aXplKTsNCiAgICBpZiAocHJldl9zaXplID09IGluZm8uZnJhZ3NpemUgKiBp
-bmZvLmZyYWdzdG90YWwpDQogICAgew0KICAgICAgcHJpbnRmKCIgICAgSXQg
-c2VlbXMgaW1wb3NzaWJsZSB0byBzZXQgYSByZWNvcmRpbmcgYnVmZmVyIHdp
-dGggYVxuIg0KICAgICAgICAgICAgICIgICAgdG90YWwgc2l6ZSBvZiBhdCBs
-ZWFzdCA4MTkyIGJ5dGVzLiAgVGhpcyBpcyBub3QgZ29pbmdcbiINCiAgICAg
-ICAgICAgICAiICAgIHRvIHdvcmsgd2l0aCBWaWFWb2ljZS4gIFNvcnJ5Llxu
-Iik7DQogICAgICBleGl0KDEyNik7DQogICAgfQ0KICAgIHByZXZfc2l6ZSA9
-IGluZm8uZnJhZ3NpemUgKiBpbmZvLmZyYWdzdG90YWw7DQogIH0NCiAgd2hp
-bGUgKHByZXZfc2l6ZSA8IDgxOTIpOw0KICBwcmludGYoIiAgICBTdWNjZXNz
-ZnVsbHkgYWxsb2NhdGVkIGEgYnVmZmVyIHRoYXQgaXMgbGFyZ2UgZW5vdWdo
-LlxuIik7DQogIHJlcyA9IEFGTVRfUzE2X0xFOw0KICBpZiAoaW9jdGwoZmQs
-IFNORENUTF9EU1BfU0VURk1ULCAmcmVzKSA9PSAtMSkgew0KICAgIHBlcnJv
-cigiaW9jdGwiKTsgZXhpdCgxMjcpOyB9DQogIHJlcyA9IDA7DQogIGlmIChp
-b2N0bChmZCwgU05EQ1RMX0RTUF9TVEVSRU8sICZyZXMpID09IC0xKSB7DQog
-ICAgcGVycm9yKCJpb2N0bCIpOyBleGl0KDEyNyk7IH0NCiAgcmVzID0gMjIw
-NTA7DQogIGlmIChpb2N0bChmZCwgU09VTkRfUENNX1JFQURfUkFURSwgMHhi
-ZmZmZGNmYykgPT0gLTEpIHsNCiAgICBwZXJyb3IoImlvY3RsIik7IGV4aXQo
-MTI3KTsgfQ0KICBjaGFyIGJ1ZlsxMDI0XTsNCiAgaWYgKHJlYWQoZmQsIGJ1
-Ziwgc2l6ZW9mKGJ1ZikpIDwgMCkgeyBwZXJyb3IoInJlYWQiKTsgZXhpdCgx
-MjcpOyB9DQogIHN0YXRpYyBzdHJ1Y3QgdGltZXNwZWMgbmFwdGltZSA9IHsg
-MCwgMTAwMDAwMDAwIH07DQojaWYgMQ0KICBkbyB7DQogICAgaWYgKGlvY3Rs
-KGZkLCBTTkRDVExfRFNQX0dFVElTUEFDRSwgJmluZm8pID09IC0xKSB7DQog
-ICAgICBwZXJyb3IoInJlYWQiKTsgZXhpdCgxMjcpOyB9DQogICAgcHJpbnRm
-KCIgICAgQXZhaWxhYmxlIGJ5dGVzOiAlZFxuIiwgaW5mby5ieXRlcyk7DQog
-ICAgbmFub3NsZWVwKCZuYXB0aW1lLCAwKTsNCiAgfSB3aGlsZShpbmZvLmJ5
-dGVzIDwgaW5mby5mcmFnc2l6ZSAqIGluZm8uZnJhZ3N0b3RhbCk7DQojZWxz
-ZQ0KICBzbGVlcCg0KTsNCiAgaWYgKGlvY3RsKGZkLCBTTkRDVExfRFNQX0dF
-VElTUEFDRSwgJmluZm8pID09IC0xKSB7DQogICBwZXJyb3IoInJlYWQiKTsg
-ZXhpdCgxMjcpOyB9DQojZW5kaWYNCiAgcHJpbnRmKCIgICAgU3VjY2Vzc2Z1
-bGx5IGNhdXNlZCBhbiB4cnVuLlxuIik7DQogIHByaW50ZigiICAgIG5vbi1i
-bG9ja2luZyBmcmFnbWVudHM6ICVkXG4iLCBpbmZvLmZyYWdtZW50cyk7DQog
-IHByaW50ZigiICAgIG5vbi1ibG9ja2luZyBieXRlczogJWRcbiIsIGluZm8u
-Ynl0ZXMpOw0KICBzc2l6ZV90IGJ1ZnNpemUgPSBpbmZvLmJ5dGVzOw0KICBp
-ZiAoaW9jdGwoZmQsIFNORENUTF9EU1BfR0VUSVNQQUNFLCAmaW5mbykgPT0g
-LTEpIHsNCiAgICBwZXJyb3IoInJlYWQiKTsgZXhpdCgxMjcpOyB9DQogIHNz
-aXplX3QgdHJsZW4gPSAwOw0KICBpbnQgbmYgPSAwOw0KICBmb3IgKDs7KQ0K
-ICB7DQogICAgcHJpbnRmKCIgICAgQXZhaWxhYmxlIGJ5dGVzIGluIGJ1ZmZl
-cjogJWQgKGZyYWdzICVkKVxuIiwgaW5mby5ieXRlcywgaW5mby5mcmFnbWVu
-dHMpOw0KICAgIGlmIChpbmZvLmZyYWdtZW50cyA+IDApIHsNCiAgICAgIHNz
-aXplX3QgcmxlbjsNCiAgICAgIGlmICgocmxlbiA9IHJlYWQoZmQsIGJ1Ziwg
-c2l6ZW9mKGJ1ZikpKSA8IDApDQogICAgICAgIHsgcGVycm9yKCJyZWFkIik7
-IGV4aXQoMTI3KTsgfQ0KICAgICAgcHJpbnRmKCIgICAgQWRkaXRpb25hbGx5
-IHJlYWQgJWQgYnl0ZXMuXG4iLCBybGVuKTsNCiAgICAgIHRybGVuICs9IHJs
-ZW47DQogICAgICBpZiAodHJsZW4gPiBidWZzaXplKSB7DQogICAgICAgIHBy
-aW50ZigiICAgIFJlYWQgJWQgYnl0ZXM6IHN0cmVhbSBzdWNjZXNzZnVsbHkg
-cmVzdGFydGVkLlxuIiwgdHJsZW4pOw0KICAgICAgICBicmVhazsNCiAgICAg
-IH0NCiAgICAgIG5mID0gMDsNCiAgICB9DQogICAgZWxzZSBpZiAoKytuZiA+
-IDEwKSB7DQogICAgICBwcmludGYoIiAgICBTdHJlYW0gaXMgbm90IHJlc3Rh
-cnRlZCBhZnRlciB4cnVuLlxuIik7DQogICAgICBleGl0KDEpOw0KICAgIH0g
-ZWxzZSB7DQogICAgICB1c2xlZXAoMTAwMDAwKTsNCiAgICB9DQogICAgaWYg
-KGlvY3RsKGZkLCBTTkRDVExfRFNQX0dFVElTUEFDRSwgJmluZm8pID09IC0x
-KSB7DQogICAgICBwZXJyb3IoInJlYWQiKTsgZXhpdCgxMjcpOyB9DQogIH0N
-CiAgY2xvc2UoZmQpOw0KICByZXR1cm4gMDsNCn0NCg0K
----1463811384-1191070445-1058436854=:2108--
 
 
 -------------------------------------------------------
