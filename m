@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000802]: ymfpci seems to export wrong values for period_count/period_size/buffer_size
-Date: Wed, 19 Jan 2005 14:32:14 +0100
-Message-ID: <4e114d77078e9e87837548df15e39dd7@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0000831]: sparc: "alsa-oss.c:405: warning: long int format, __suseconds_t arg (arg 4)"
+Date: Wed, 19 Jan 2005 14:35:37 +0100
+Message-ID: <07da76491dd7562cbdf4f3e47ce79cca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D0F4924F
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:32:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AC41E24F
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:35:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=802> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=831> 
 ======================================================================
-Reported By:                slomosnail
-Assigned To:                
+Reported By:                jdthood
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   802
-Category:                   PCI - ymfpci
+Project:                    ALSA - liboss
+Issue ID:                   831
+Category:                   
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-10-2005 18:42 CET
-Last Modified:              01-19-2005 14:32 CET
+Date Submitted:             01-17-2005 09:46 CET
+Last Modified:              01-19-2005 14:35 CET
 ======================================================================
-Summary:                    ymfpci seems to export wrong values for
-period_count/period_size/buffer_size
+Summary:                    sparc: "alsa-oss.c:405: warning: long int format,
+__suseconds_t arg (arg 4)"
 Description: 
-See here: http://bugzilla.gnome.org/show_bug.cgi?id=162024
+Making all in alsa
+[...]
+if /bin/sh ../libtool --mode=compile sparc-linux-gcc -DPACKAGE_NAME=\"\"
+-DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\"
+-DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"alsa-oss\" -DVERSION=\"1.0.8\"
+-DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1
+-DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1
+-DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1
+-DHAVE_LIBASOUND=1  -I. -I.     -Wall -g -O2 -MT alsa-oss.lo -MD -MP -MF
+".deps/alsa-oss.Tpo" \
+  -c -o alsa-oss.lo `test -f 'alsa-oss.c' || echo './'`alsa-oss.c; \
+then mv -f ".deps/alsa-oss.Tpo" ".deps/alsa-oss.Plo"; \
+else rm -f ".deps/alsa-oss.Tpo"; exit 1; \
+fi
+ sparc-linux-gcc -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\"
+-DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\"
+-DPACKAGE=\"alsa-oss\" -DVERSION=\"1.0.8\" -DSTDC_HEADERS=1
+-DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1
+-DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1
+-DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_LIBASOUND=1
+-I. -I. -Wall -g -O2 -MT alsa-oss.lo -MD -MP -MF .deps/alsa-oss.Tpo -c
+alsa-oss.c  -fPIC -DPIC -o .libs/alsa-oss.o
+alsa-oss.c: In function `dump_select':
+alsa-oss.c:405: warning: long int format, __suseconds_t arg (arg 4)
+ sparc-linux-gcc -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\"
+-DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\"
+-DPACKAGE=\"alsa-oss\" -DVERSION=\"1.0.8\" -DSTDC_HEADERS=1
+-DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1
+-DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1
+-DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_LIBASOUND=1
+-I. -I. -Wall -g -O2 -MT alsa-oss.lo -MD -MP -MF .deps/alsa-oss.Tpo -c
+alsa-oss.c -o alsa-oss.o >/dev/null 2>&1
+
 ======================================================================
 
 ----------------------------------------------------------------------
- LeRoutier - 01-18-05 13:28 
+ tiwai - 01-19-05 14:35 
 ----------------------------------------------------------------------
-gst-plugins CVS now uses those min/max probing functions :
-snd_pcm_hw_params_get_[rate/periods/period_size]_[min/max]
-
-to probe the hardware caps.
-
-unfortunatly, it seems that they return garbage for this driver :
-period_count : MIN= 0 & MAX=204522253
-period_size  : MIN=22 & MAX=4294967295
-buffer_size  : MIN=10 & MAX=4294967294
-
-so, unless i misused them in gst-plugins probing code, values this driver
-return are bad. (ad period_count < 3 won't work with this hardware)
-
-i used those on my own hardware, and i got (nforce2/i810_ac97)
-hw:0	 from 1 to 1024 (real device)
-plughw:0 from 0 to 4294967295 (software device)
-
-----------------------------------------------------------------------
- tiwai - 01-19-05 14:32 
-----------------------------------------------------------------------
-The values are really bogus.
-Could you create a small testcase to reproduce this?
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-10-05 18:42 slomosnail     New Issue                                    
-01-11-05 16:48 tiwai          Note Added: 0003156                          
-01-18-05 13:28 LeRoutier      Note Added: 0003248                          
-01-18-05 14:40 LeRoutier      Issue Monitored: LeRoutier                    
-01-19-05 14:32 tiwai          Note Added: 0003270                          
+01-17-05 09:46 jdthood        New Issue                                    
+01-19-05 14:35 tiwai          Status                   new => resolved     
+01-19-05 14:35 tiwai          Resolution               open => fixed       
+01-19-05 14:35 tiwai          Assigned To               => tiwai           
+01-19-05 14:35 tiwai          Note Added: 0003271                          
 ======================================================================
 
 
