@@ -1,13 +1,16 @@
-From: "Lonnie Mendez" <lmendez19@austin.rr.com>
-Subject: Problem with snd-usb-audio (usbmixer)
-Date: Tue, 17 Aug 2004 18:33:27 -0500
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000450]: Line In only gives left channel - no stereo recording/listening
+Date: Wed, 18 Aug 2004 02:08:21 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <000f01c484b2$9a712d10$0200a8c0@jedi>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040818000821.C2D5D1102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0F31D25E
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 02:08:22 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id D33CC18B8D
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 02:08:21 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,84 +19,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-(See description below)
 
-Specs:
-linux kernel 2.6.8.1 (sound subsystem built-in, usb-audio module from USB
-Support not compiled)
-alsa-driver 1.0.6a (usb-audio module selected)
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000450
+======================================================================
+Reported By:                ZaphodB
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     450
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian unstable/testing/experimental
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             08-18-2004 02:04 CEST
+Last Modified:              08-18-2004 02:08 CEST
+======================================================================
+Summary:                    Line In only gives left channel - no stereo recording/listening
+Description: 
+Whatever stunts i do with alsamixer, selecting Line IN as capture source
+leaves me with one channel (left) on output hw/0 - hw/1 does neither
+contains the right channel nor does setting the hw/1 output to hw/0
+provide me with a stereo signal. Same with recording from Line, audacity
+shows good input signal (waveform pattern) for the left channel but
+absolutely nothing for right.
+======================================================================
 
-Problem occurs on:
-uhci/ehci intel p3 abit bh6 and uhci intel p3 laptop
+----------------------------------------------------------------------
+ ZaphodB - 08-18-2004 02:08 CEST 
+----------------------------------------------------------------------
+forgot: stereo-recording from Line In with audacity works with WindowsXP
+;-)
 
-Relevant messages:
-
-dmesg:
-ALSA /work/alsa-driver-1.0.6a/usb/usbaudio.c:2573: 8:1:1: add audio endpoint
-0x2
-
-ALSA /work/alsa-driver-1.0.6a/usb/usbaudio.c:2573: 8:1:2: add audio endpoint
-0x2
-
-ALSA /work/alsa-driver-1.0.6a/alsa-kernel/usb/usbmixer.c:866: [3] FU [PCM
-Playback Switch] ch = 1, val = 0/1/1
-
-ALSA /work/alsa-driver-1.0.6a/alsa-kernel/usb/usbmixer.c:866: [3] FU [PCM
-Playback Volume] ch = 2, val = -32768/0/256
-
-ALSA /work/alsa-driver-1.0.6a/alsa-kernel/usb/usbmixer.c:313: cannot get ctl
-value: req = 0x83, wValue = 0x200, wIndex = 0x300, type = 4
-
-ALSA /work/alsa-driver-1.0.6a/alsa-kernel/usb/usbmixer.c:611: 3:0: cannot
-get min/max values for control 2 (id 3)
-
-ALSA /work/alsa-driver-1.0.6a/alsa-kernel/usb/usbmixer.c:866: [3] FU [PCM
-Playback Volume] ch = 1, val = 0/1/1
-
-
-/proc/asound
-
-  devices:
-0: [0- 0]: ctl
-
-16: [0- 0]: digital audio playback
-
-33: : timer
-
-  cards:
-0 [PCM2702 ]: USB-Audio - Burr-Brown Japan PCM2702
-
-Burr-Brown Japan Burr-Brown Japan PCM2702 at usb-0000:00:0b.3-6.4, full
-speed
-
-
-
-alsamixer fails with:
-
-alsamixer: function snd_mixer_load failed: Invalid argument
-
-amixer fails with:
-
-amixer: Mixer default load error: Invalid argument
-
-alsasound script given command stop will yield these results:
-
-Shutting down driver: /usr/sbin/alsactl: get_control:194: Cannot read
-control '2,0,0,PCM Playback Volume,1': Invalid argument
-
-
-You can view lsusb -vv output here:
-
-http://geocities.com/i0xox0i/lsusboutput.txt
-
-Every time I try loading the snd-usb-audio module usbmixer will fail to get
-or set values.  I'm guessing this device is going to require a custom mixer
-map to be created in usbmixer_maps.c?  How exactly should this be written
-given the output from the lsusb in verbose mode?
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-18-04 02:04 ZaphodB        New Bug                                      
+08-18-04 02:04 ZaphodB        Distribution              => Debian unstable/testing/experimental
+08-18-04 02:04 ZaphodB        Kernel Version            => 2.6.8.1         
+08-18-04 02:08 ZaphodB        Bugnote Added: 0001573                       
+======================================================================
 
 
 -------------------------------------------------------
