@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: rob buse <rcbuse@filter24.org>
 Subject: Re: midi clock + timers
-Date: Sat, 8 Feb 2003 21:58:28 +0100 (CET)
+Date: 08 Feb 2003 15:59:08 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302082157590.1141-100000@pnote.perex-int.cz>
-References: <1044737075.31824.9.camel@localhost.localdomain>
+Message-ID: <1044737949.32026.1.camel@localhost.localdomain>
+References: <Pine.LNX.4.44.0302082157590.1141-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1044737075.31824.9.camel@localhost.localdomain>
+In-Reply-To: <Pine.LNX.4.44.0302082157590.1141-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,36 +17,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: rob buse <rcbuse@filter24.org>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 8 Feb 2003, rob buse wrote:
 
-> hello everyone.
+On Sat, 2003-02-08 at 15:58, Jaroslav Kysela wrote:
+> On 8 Feb 2003, rob buse wrote:
 > 
-> I'm curious if anyone else has run into this problem, and perhaps what
-> your solutions are.  I have my kernel, 2.4.20, timer set at 1000Hz, low
-> latency patch + preempt patch.  
+> > hello everyone.
+> > 
+> > I'm curious if anyone else has run into this problem, and perhaps what
+> > your solutions are.  I have my kernel, 2.4.20, timer set at 1000Hz, low
+> > latency patch + preempt patch.  
+> > 
+> > Now, I have my sequencer that prebuffers midi clock into the alsa
+> > sequencer, so they are in the queue way before they need to get played. 
+> > My problem is, I get all these little glitches from my delays that sync
+> > to midi clock, as if there is jitter in the clock.  I am not really sure
+> > what else to do..   is this a kernel issue?  I mean, I figure if the
+> > clocks triggering at ~1ms, and a tick has to go out every 20ms for a
+> > 120bpm song..  this shouldn't be an issue.  right ?
+> > 
+> > Any suggestions?  I'm out of ideas...
 > 
-> Now, I have my sequencer that prebuffers midi clock into the alsa
-> sequencer, so they are in the queue way before they need to get played. 
-> My problem is, I get all these little glitches from my delays that sync
-> to midi clock, as if there is jitter in the clock.  I am not really sure
-> what else to do..   is this a kernel issue?  I mean, I figure if the
-> clocks triggering at ~1ms, and a tick has to go out every 20ms for a
-> 120bpm song..  this shouldn't be an issue.  right ?
+> Hardware?
 > 
-> Any suggestions?  I'm out of ideas...
+oops..
+using emu10k1 w/ 0.9.0rc6 drivers.
 
-Hardware?
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 
