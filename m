@@ -1,12 +1,12 @@
 From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Tue, 28 Sep 2004 10:57:26 -0400
+Date: Tue, 28 Sep 2004 10:47:02 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409281457.i8SEvQNX023126@localhost.localdomain>
-References: <4159659B.2020702@pg.gda.pl>
+Message-ID: <200409281447.i8SEl26W023093@localhost.localdomain>
+References: <4158F290.3050301@pg.gda.pl>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 28 Sep 2004 15:22:35 +0200."
-             <4159659B.2020702@pg.gda.pl>
+In-reply-to: Your message of "Tue, 28 Sep 2004 07:11:44 +0200."
+             <4158F290.3050301@pg.gda.pl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,50 +15,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?UTF-8?B?QWRhbSBUbGHFgmth?= <atlka@pg.gda.pl>
-Cc: alsa-devel@lists.sourceforge.net
+To: =?ISO-8859-2?Q?Adam_Tla=B3ka?= <atlka@pg.gda.pl>
+Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->current ALSA could not meet my requirements because of 
->swapping/scheduling effects which makes distorted sound in normal non RT 
->apps. Doing just a few more calls doesn't help in this case ;-[.
+>in sound area. I personally want to offer Linux solution as a desktop 
+>multimedia system but at this time I just can't.
+>Sorry to say that.
 
-oh c'mon. thats not ALSA. the *kernel* can't meet your
-requirements. ALSA has nothing to do with it. OSS apps and drivers
-can't change the way the kernel schedules tasks. the same broken
-device drivers will coexist with any kernel-side API that you
-propose. you're mistaking where these issues exist.
+this is getting really irritating adam. you *can* do this, i *do* it.
+you don't like the API and you want to be able to overwrite any part
+of the buffer. this is not equivalent to "offering linux as a desktop
+multimedia system.
 
->> you'd rather move the cost so that its in the
->> kernel or a library rather than be in your code. that's the best i can
->> understand so far.
->Yes - that's the point. Common operations like format changeing, 
->resampling, remixing and additional effects should be done
->in one place not in every app by itself.
+>If an app could comunicate with it through /dev interface it could be 
+>unchanged and compability will be saved.
 
-  ***   -lasound  ****
-
->I want to have possibility of doing cat file.wav > /dev/dsp
->and play it with 5.1 or 2 speakers or with headphones with special 
-
-and you want this to work with no clicks or pops? and it will, i'm
-guessing, because you think that /dev/dsp is somehow going to
-magically know that it should use the maximum size buffer when used
-with no parameters?
-
->stereo  effects applied just by one click or keypress on special mixer 
->app on the fly without restarting anything and fiddling with config 
-
-special mixer app eh? for which audio interface? who wrote it? does it
-work with my foobar GH8782 audio chipset?
-
->files and program execution arguments.
->Current ALSA design is not user friendly and rather not meets these end 
->user requirements. May be it should be only for audio profs?
-
-ALSA is not particularly friendly for audio profs. its not
-particularly friendly to *anyone*. but that is a completely different
-issue than the design of the API.
+ah, so thats the essence here. you still want apps to use the OSS API.
+ok, i'm out of here.
 
 --p
 
