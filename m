@@ -1,17 +1,11 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: big smile
-Date: Tue, 24 Feb 2004 17:43:23 +0100 (CET)
+From: Will <walsac2@liam2.demon.co.uk>
+Subject: Re: alsa-lib & oss 1.0.3rc1
+Date: Tue, 24 Feb 2004 16:59:45 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402241736580.17749@denise.shiny.it>
-References: <Pine.LNX.4.58.0402241536450.1883@pnote.perex-int.cz>
- <403B6BFA.6080403@superbug.demon.co.uk> <Pine.LNX.4.58.0402241617010.1883@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200402241659.QAA28077@liam2.demon.co.uk>
+References: <Pine.LNX.4.58.0402212257000.1870@pnote.perex-int.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from denise.shiny.it (denise.shiny.it [194.20.232.1])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA02825
-	for <alsa-devel@alsa-project.org>; Tue, 24 Feb 2004 17:43:36 +0100
-In-Reply-To: <Pine.LNX.4.58.0402241617010.1883@pnote.perex-int.cz>
+In-Reply-To: <Pine.LNX.4.58.0402212257000.1870@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,29 +14,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, ALSA development <alsa-devel@alsa-project.org>
+To: perex@suse.cz
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Jaroslav Kysela <perex@suse.cz> wrote:
+>
+>changes. It would be nice, if you can test my changes and report me bugs
+>or comments (especially to the new OSS redirector code).
+>
 
+What do you think of my bug report on ALSA OSS emulation of /dev/sequencer?
+I posted it at http://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=28 but there haven't been any followup posts.
+The /dev/sequencer part of the OSS emulation is really very broken.
+Do you think it's something you can easily fix?
 
-> > Is there a list anywhere listing the differences between OSS and ALSA
-> > with regard to sound card hardware.
-> > It would be nice to have a nice small list of all the sound hardware OSS
-> > supports, but ALSA does not.
-> > Then the intention would be to reduce that list to no entries by
-> > implementing them all in ALSA.
-> >
-> > I only know of 2 sound cards on that list: -
-> > 1) SB Live (Dell version) emu10k1x
-> > 2) SB Audigy LS (A emu10k1x lookalive with minor differences)
+I find everything except /dev/sequencer is now working well in
+the OSS emulation.  I'd like to stop using the old OSS sound drivers
+but I need a working /dev/sequencer
 
-LynxOne, LynxTwo, Lynx-L22, Lynx-AES16, which are the best peices of
-sound hardware for a pc, as far as I know :(
-
-
---
-Giuliano.
+William
 
 
 -------------------------------------------------------
