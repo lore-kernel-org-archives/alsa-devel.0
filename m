@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000361]: Latest alsa-driver from CVS will not compile on Linux 2.4 (perhaps RH EL specific)
-Date: Fri, 2 Jul 2004 16:54:54 +0200
+Date: Fri, 2 Jul 2004 16:53:14 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <aa455dc97d1a6915bdf08df1c1727b1c@bugtrack.alsa-project.org>
+Message-ID: <fcd7904fdba080963328a70ab6857f0c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -19,7 +19,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -46,7 +46,7 @@ Kernel Version:             2.4.21-15.0.2
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             07-02-2004 16:53 CEST
-Last Modified:              07-02-2004 16:54 CEST
+Last Modified:              07-02-2004 16:53 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -65,16 +65,6 @@ Red Hat's latest 2.4.21-15.0.2 kernel.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-----------------------------------------------------------------------
- elklein - 07-02-2004 16:54 CEST=20
-----------------------------------------------------------------------
-I feel like an idiot. I just noticed that this bug had already been
-reported a bit ago. The first bug is:
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0358
-
-My appologies.
-
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -88,8 +78,6 @@ rprise
 Linux
 07-02-04 16:53 elklein        Kernel Version            =3D> 2.4.21-15.0.=
 2  =20
-07-02-04 16:54 elklein        Bugnote Added: 0001375                     =
- =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
