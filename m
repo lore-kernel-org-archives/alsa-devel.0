@@ -1,8 +1,11 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: using the sequencer with raw byte streams?
-Date: Sun, 20 Jul 2003 19:28:02 -0400
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: USB disconnect/connect messages
+Date: Mon, 21 Jul 2003 00:40:32 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307202328.h6KNS2I01842@linuxaudiosystems.com>
+Message-ID: <3F1B2870.3070505@superbug.demon.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,21 +18,26 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-is there a relatively simple way to use the sequencer with raw byte
-streams? i want to create an "ASEQ_Port" type for libmidi++, but
-unlike the current support port types, the sequencer seems to be
-totally based on typed events. libmidi++ allows applications to format
-arbitrary messages and have them delivered to a port. it also has its
-own sophisticated parser that includes heavy use of libsigc++ to allow
-anonymous notification of many more event types than the sequencer
-code currently defines. 
+Hi,
 
-i'd like to find a way to connect these two abstractions together
-somehow, since it would make Ardour play "nice" in the set of
-sequencer clients that already exist. i can see the "RAW" event type
-flag, which looks as if it might work for delivery data to the
-sequencer, but i can't see any mechanism for retrieving unparsed data
-from the system. can it be done?
+Is there any way to tell if a USB sound card has been disconnected or not?
+
+I would like my application to play sound to a usb sound card, and if 
+the usb cable is unplugged, the application pauses, and if the usb cable 
+is plugged in again, the application continues.
+
+Example: -
+Some in car stereo systems have usb ports.
+I could plug a PC into the usb port, and play sound from the PC to the 
+car speaker system. If the driver switches off the car stereo (e.g. 
+Receives a mobile phone call) I want the PC to pause playback, but when 
+the car stereo switches on again, I want the PC to continue playback.
+The car stereo switching off looks to the PC as though the usb cable has 
+been unplugged.
+
+Cheers
+James
+
 
 
 -------------------------------------------------------
