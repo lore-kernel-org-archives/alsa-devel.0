@@ -1,15 +1,14 @@
-From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: Apologies
-Date: Wed, 18 Aug 2004 20:58:33 -0700
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Apologies
+Date: Thu, 19 Aug 2004 00:19:05 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <350501c485a0$cbe4d650$2701010a@mail2world.com>
-Reply-To: <linux@blennerhassett.gen.nz>
+Message-ID: <1092889144.8432.62.camel@krustophenia.net>
+References: <350501c485a0$cbe4d650$2701010a@mail2world.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_1D3B_01C48565.7F3F1C10"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Class: urn:content-classes:message
+In-Reply-To: <350501c485a0$cbe4d650$2701010a@mail2world.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,49 +17,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: linux@blennerhassett.gen.nz
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On Wed, 2004-08-18 at 23:58, Eliot Blennerhassett wrote:
+> time to find another way to send mail to alsa-devel (Sending from my
+> usual ISP is blocked, never have been able to find out why..)
 
-------=_NextPart_000_1D3B_01C48565.7F3F1C10
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
+Probably because they are a spamhaus.  What's the ISP?
 
-Sorry about the HTML+text mails, and multiple copies.
-icqmail has just "improved" their services so I cant send plain text
-anymore, and cant have incoming mail forwarded back to me.
-
-time to find another way to send mail to alsa-devel (Sending from my
-usual ISP is blocked, never have been able to find out why..)
-
-- Eliot
-
-
-
-<P><font face="Arial, Helvetica, sans-serif" size="2" style="font-size:13.5px">_______________________________________________________________<BR><font face="Arial, Helvetica, sans-serif" size="2" style="font-size:13.5px">ICQ - You get the message, anywhere!<br>Get it @ <a href="http://www.icq.com" target=new>http://www.icq.com</a></font><br><br>&nbsp;</font></font>
-------=_NextPart_000_1D3B_01C48565.7F3F1C10
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<HTML>
-<BODY>
-Sorry about the HTML+text mails, and multiple copies.<br>
-icqmail has just "improved" their services so I cant send plain text =
-anymore, and cant have incoming mail forwarded back to me.<br>
-<br>
-time to find another way to send mail to alsa-devel (Sending from my =
-usual ISP is blocked, never have been able to find out why..)<br>
-<br>
-- Eliot<br>
-
-</BODY></HTML>
-
-
-<P><font face="Arial, Helvetica, sans-serif" size="2" style="font-size:13.5px">_______________________________________________________________<BR><font face="Arial, Helvetica, sans-serif" size="2" style="font-size:13.5px">ICQ - You get the message, anywhere!<br>Get it @ <a href="http://www.icq.com" target=new>http://www.icq.com</a></font><br><br>&nbsp;</font></font>
-------=_NextPart_000_1D3B_01C48565.7F3F1C10--
+Lee
 
 
 
