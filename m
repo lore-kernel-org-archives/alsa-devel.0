@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000648]: aplay -Dspdif produces choppy (beating?) audio from DTS .wav files
-Date: Sun, 14 Nov 2004 10:02:07 +0100
-Message-ID: <d4fe7ecfbd430c899a704ec8c4b878e1@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: How to display mixer controls to the user? was:Re: [PATCH/RFC]
+ emu10k1 multichannel PCM
+Date: Sun, 14 Nov 2004 11:36:30 +0000
+Message-ID: <4197433E.80008@superbug.co.uk>
+References: <1100300857.19038.14.camel@krustophenia.net> <1100405924.16103.23.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D91F526D
-	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2004 10:02:07 +0100 (MET)
+In-Reply-To: <1100405924.16103.23.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +18,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> On Fri, 2004-11-12 at 18:07 -0500, Lee Revell wrote:
+> 
+>>This patch is still missing a few things, like dynamic voice allocation
+>>and correctly setting the send routing, but it does work with JACK, and
+>>should not interfere with the operation of the other devices.   I tested
+>>it like so:
+> 
+> 
+> Here is a patch that adds the mixer controls for this device.  This
+> includes the previous patches (add multichannel support and add register
+> dump to /proc)  Unfortunately this adds 16 x 3 mixer controls... people
+> complain enough about the emu10k1 mixer already, so this might not be
+> well received in some circles.  I am not sure what to do about this.
+> The kX mixer probably has hundreds of controls, but they are arranged in
+> a tree structure.
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=648> 
-======================================================================
-Reported By:                duanev
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   648
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake 10.1
-Kernel Version:             Preemptable 2.6.8 kernel
-======================================================================
-Date Submitted:             11-14-2004 04:24 CET
-Last Modified:              11-14-2004 10:02 CET
-======================================================================
-Summary:                    aplay -Dspdif produces choppy (beating?) audio from
-DTS .wav files
-Description: 
-Sound produced by aplay is not smooth - audio is "chopped up" or appears to
-"beat" at about 5Hz.
-======================================================================
+I have similar problems with the mixer controls. If I add 
+p16v(24bit/96khz etc.) support to the emu10k1 driver, it will add a load 
+more controls. For example, the volume controls for the 96khz channel 
+are separate from the volume controls for emu10k1 48khz channels.
+Maybe we need to start discussing ways to separate out mixer controls 
+better.
+E.g.
+Global controls.
+Controls specific to a pcm device.
+Controls specific to a particular section of DSP code.
 
-----------------------------------------------------------------------
- rlrevell - 11-14-04 04:41 
-----------------------------------------------------------------------
-duplicate of bug 646
+And be able to graphically display the mixer, so users can understand 
+what is connected to what.
+With the emu10k1, users can actually modify the connections between 
+elements in the mixer, so the graphical display of the mixer will also 
+have to be dynamic where the sound card hardware permits.
 
-----------------------------------------------------------------------
- pzad - 11-14-04 10:02 
-----------------------------------------------------------------------
-AFAIK SB Live support only 48 kHz spdif output.
+My theory is that if we can graphically display the emu10k1 mixer, we 
+can use the same graphical display to display all other sound cards, 
+because the emu10k1 seems to be one of the most complicated ones around.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-14-04 04:24 duanev         New Issue                                    
-11-14-04 04:24 duanev         Distribution              => Mandrake 10.1   
-11-14-04 04:24 duanev         Kernel Version            => Preemptable 2.6.8
-kernel
-11-14-04 04:41 rlrevell       Note Added: 0002406                          
-11-14-04 10:02 pzad           Note Added: 0002407                          
-======================================================================
+The current qlo10k1  ( http://ld10k1.sf.net )  does a very good job so far.
+Maybe we can expand the qlo10k1 to be able to handle all sound cards.
 
-
+James
 
 
 -------------------------------------------------------
