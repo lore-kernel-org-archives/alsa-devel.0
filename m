@@ -1,19 +1,18 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: HDSP driver : distortion at normal volume settings
-Date: 31 Aug 2002 20:55:06 +0200
+From: Allan Klinbail <allank@labyrinth.net.au>
+Subject: anyone working on the MTPAV driver??
+Date: 01 Sep 2002 17:13:24 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1030820108.7184.46.camel@satellite.undata.org>
+Message-ID: <1030864413.1807.23.camel@littlewolf1.littlewolf>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mel-rto2.wanadoo.fr (smtp-out-2.wanadoo.fr [193.252.19.254])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA00391
-	for <alsa-devel@alsa-project.org>; Sat, 31 Aug 2002 20:56:52 +0200
-Received: from mel-rta10.wanadoo.fr (193.252.19.193) by mel-rto2.wanadoo.fr (6.5.007)
-        id 3D5392B60091F40D for alsa-devel@alsa-project.org; Sat, 31 Aug 2002 20:56:15 +0200
-Received: from satellite.undata.org (193.252.186.224) by mel-rta10.wanadoo.fr (6.5.007)
-        id 3D6EE88E000C6B08 for alsa-devel@alsa-project.org; Sat, 31 Aug 2002 20:56:15 +0200
+Received: from minotaur.labyrinth.net.au (minotaur.labyrinth.net.au [203.9.148.2])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA10066
+	for <alsa-devel@alsa-project.org>; Sun, 1 Sep 2002 09:03:05 +0200
+Received: from littlewolf1.littlewolf (minerva-as176.labyrinth.net.au [202.182.82.176])
+	by minotaur.labyrinth.net.au (8.11.6/8.9.3) with ESMTP id g8172u916726
+	for <alsa-devel@alsa-project.org>; Sun, 1 Sep 2002 17:03:00 +1000 (EST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -25,23 +24,21 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Paul,
+Hi Guys ... 
 
-I've been testing the hdsp driver for two days now, and noticed some
-distortion in the audio signal at normal to high volume levels (roughly
-above 80%). Playing a 0db sine in pd (using OSS emulation), I could even
-hear distortion above 50% (sine turning to square). I'm using the
-multiface, and didn't change the factory jumper settings. This is not
-the first time I notice distortion at high level with alsa drivers
-(other times were with pci soundblaster and intel810). Is this the
-normal alsa behavior (50% = 0db, more actively boosting the signal, in
-which case I should reconsider my definition of "normal volume setting")
-?
+I'm still keen to get my MOTU MTPAV up and going.. I've been
+successfully using it in standalone mode but would love to be using it
+properly synced up with ALSA.. 
 
-Thomas
+I'm prepared to run testing on new code... although I can't help with
+the actual code writing myself... 
 
-p.s: [slightly OT] Is there a totalmix linux equivalent on the way ?
+cheers
 
+Allan 
+-- 
+Linux: Because a PC is a terrible thing to waste.
+(By komarimf@craft.camp.clarkson.edu, Mark Komarinski)
 
 
 
