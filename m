@@ -1,13 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - firmware 0000815]: missing DESTDIR support with hotplug dir
-Date: Mon, 14 Feb 2005 19:51:50 +0100
-Message-ID: <2dd8d4cd889688f7e432d35670893c54@bugtrack.alsa-project.org>
+Date: Mon, 14 Feb 2005 20:04:50 +0100
+Message-ID: <2157ec152815c8860d14465f4695fb47@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 23B0C229
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:51:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 127D8229
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 20:04:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=815> 
 ======================================================================
@@ -37,7 +38,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             01-13-2005 20:21 CET
-Last Modified:              02-14-2005 19:51 CET
+Last Modified:              02-14-2005 20:04 CET
 ======================================================================
 Summary:                    missing DESTDIR support with hotplug dir
 Description: 
@@ -48,13 +49,6 @@ not compile-time (and definitely not configure-time).
 hardwiring /usr/lib is no good too -- bringing ilbdir in would be better
 too.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-13-05 20:52 
-----------------------------------------------------------------------
-OK, thanks for checking.
-
-Closing this now.
 
 ----------------------------------------------------------------------
  gvy - 02-14-05 19:51 
@@ -71,6 +65,12 @@ the other objects to be installed).
 OTOH it it works for you -- well it's my trouble to get it fixed to work
 for me too :-)
 
+----------------------------------------------------------------------
+ tiwai - 02-14-05 20:04 
+----------------------------------------------------------------------
+The answer is simple: You can't use the standard %makeinstall macro,
+because the hotplug directory doesn't depend on %prefix.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -86,6 +86,8 @@ Date Modified  Username       Field                    Change
 02-14-05 19:51 gvy            Status                   closed => feedback  
 02-14-05 19:51 gvy            Resolution               not an issue => reopened
 02-14-05 19:51 gvy            Note Added: 0003608                          
+02-14-05 19:51 gvy            Resolution               reopened => not an issue
+02-14-05 20:04 tiwai          Note Added: 0003609                          
 ======================================================================
 
 
