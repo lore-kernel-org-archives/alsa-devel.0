@@ -1,13 +1,12 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: MPU401 and native ALSA sequencer device?
-Date: Thu, 14 Feb 2002 22:52:54 +0000 (GMT)
-Message-ID: <20020214225254.38324.qmail@web13102.mail.yahoo.com>
+From: Frank van de Pol <fvdpol@home.nl>
+Subject: Re: management of codes (linux 2.5 inclusion)
+Date: Fri, 15 Feb 2002 00:11:32 +0100
+Message-ID: <20020215001132.B1381@idefix.fvdpol.home.nl>
+References: <s5hheok3urf.wl@alsa2.suse.de> <Pine.LNX.4.31.0202141726520.510-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Received: from web13102.mail.yahoo.com (web13102.mail.yahoo.com [216.136.174.147])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id XAA12265
-	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2002 23:52:57 +0100
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.31.0202141726520.510-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,56 +15,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-My ALSA sound driver uses an MPU401 for MIDI support,
-and the OSS emulation module snd-seq-oss works well
-with the snd-mpu401-uart module. However, there are no
-native ALSA sequencer devices:
+Hi Jaroslav,
 
-[root@wittsend src]# cat /proc/asound/seq/clients
-Client info
-  cur  clients : 3
-  peak clients : 3
-  max  clients : 192
+I suppose keeping the ALSA CVS as our root would indeed be the best option.
+Synchronisation of the kernel and our CVS tree could be sort of a challenge
+since people wil start to submit patches against the kernel tree (and
+possibly only posted to lkml). 
 
-Client   0 : "System" [Kernel]
-  Port   0 : "Timer" (Rwe-)
-  Port   1 : "Announce" (R-e-)
-    Connecting To: 63:0
-Client  63 : "OSS sequencer" [Kernel]
-  Port   0 : "Receiver" (-we-)
-    Connected From: 0:1
-  Output pool :
-    Pool size          : 1024
-    Cells in use       : 0
-    Peak cells in use  : 1024
-    Alloc success      : 12370
-    Alloc failures     : 0
-Client  64 : "External MIDI 0" [Kernel]
-  Port   0 : "MIDI 0-0" (RWeX)
+On the other hand the diff between CVS and kernel tree should not grow too
+big, since in that case Linus would start to dislike our patches (as
+happened with the isdn guys). Frequent synchronisation wil be important,
+which as a downside involves a lot of bookkeeping which patches have been
+applied by Linus, and which not (yet).
 
-Since the OSS layer plays music, it seems logical to
-assume that all the hardware bit-twiddling has been
-done already. I am therefore assuming that I just need
-to register some native ALSA sequencer device. Could
-someone point me towards a simple example somewhere,
-please? I have tried looking at the opl3_seq.c file
-but it seems to be doing a LOT more than just
-registering a device.
-
-Cheers,
-Chris
+Just some thoughts,
+Frank.
 
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+ps: the ALSA merge in the kernel was indeed a great milestone, and I must
+admit I used it as a good excuse for giving a small party :-)
+
+
+
+On Thu, Feb 14, 2002 at 05:34:37PM +0100, Jaroslav Kysela wrote:
+> On Thu, 14 Feb 2002, Takashi Iwai wrote:
+> 
+> > now a realistic question:
+> >
+> > how do we manage the alsa driver codes together with linux 2.5 tree?
+> > will be like before, i.e. occasionally Jaroslav sends patches to Linus
+> > (or directly to bk) based on the alsa cvs?
+> 
+> Yes, I would like to leave the ALSA's CVS repository as root of our
+> sources. I think that syncing should be done for each new Linux releases.
+> I take care about it, next days proves my plans.
+> 
+> 						Jaroslav
+> 
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project  http://www.alsa-project.org
+> SuSE Linux    http://www.suse.com
+> 
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+-- 
++---- --- -- -  -   -    - 
+| Frank van de Pol                  -o)    A-L-S-A
+| FvdPol@home.nl                    /\\  Sounds good!
+| http://www.alsa-project.org      _\_v
+| Linux - Why use Windows if we have doors available?
 
 _______________________________________________
 Alsa-devel mailing list
