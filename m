@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: EMU10K1 DSP programs
-Date: Tue, 17 Sep 2002 16:38:26 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Why do I get broken pipe on write to a pcm in
+ statePREPARED?
+Date: Tue, 17 Sep 2002 16:40:54 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0209171357540.537-100000@pnote.perex-int.cz>
-References: <1032262685.426.17.camel@diesel>
+Message-ID: <Pine.HPX.4.33n.0209171615490.1084-100000@studcom.urz.uni-halle.de>
+References: <200209171301.g8HD1W026658@d1o87.telia.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1032262685.426.17.camel@diesel>
+In-reply-to: <200209171301.g8HD1W026658@d1o87.telia.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,59 +18,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Martin Soto <soto@informatik.uni-kl.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Anders Torger <torger@ludd.luth.se>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 17 Sep 2002, Martin Soto wrote:
+Anders Torger wrote:
+> On Tuesday 17 September 2002 14.52, you [Takashi] wrote:
+> > At Tue, 17 Sep 2002 13:55:10 +0200 (CEST),
+> > tomasz motylewski wrote:
+> > > P.S. ALSA has more possible states of fd than pipes which may be
+> > > just open/closed by the other side, and eventually full. This makes
+> > > direct comparision difficult.
+> >
+> > i feel like that, too.
+> > but comparing the behavior gives us better understanding, at least.
+> > so let's try a bit yet more.
+> >
+> >
+> > if we regard the prepare state as "not ready", then write() should
+> > return EPIPE.  this is the current implementation.
 
-> On Tue, 2002-09-17 at 11:49, Jaroslav Kysela wrote:
-> > On 16 Sep 2002, Martin Soto wrote:
-> > > Is it possible to load DSP programs to the EMU10K1 chip?  The alsa-tools
-> > > package contains a modified as10k1 that allows you to assemble such
-> > > programs, but there's no information about how to upload them to the
-> > > processor.
-> > 
-> > The work has not been finished at all. The changes in assembler are 
-> > incomplete and the user space linker/loader program is missing at all.
-> 
-> Thanks for the answer.  I actually discovered part of it yesterday after
-> I wrote my original mail, by looking directly at the driver code.  I'm
-> actually interested in writing a patch loader/manager, and as far as I
-> can see, the driver interface is already there.  I haven't tested it
-> thoroughly though, so I'm not sure it is completely operational.  But it
-> looks good.
-> 
-> And, by the way, I have a question regarding it.  In the hardware
-> dependant ioctl interface to the EMU10K1 there are two ioctls,
-> SNDRV_EMU10K1_IOCTL_CODE_PEEK and SNDRV_EMU10K1_IOCTL_CODE_POKE, that
-> allow you to read the DSP code and to actually upload new code.  Part of
-> what SNDRV_EMU10K1_IOCTL_CODE_POKE does is defining new (mixer) controls
-> and eventually deleting those that are not needed any more.
-> 
-> However, I didn't find a way to know which current mixer controls are
-> *actually* associated to general purpose registers in the FX8010.  Of
-> course, I could read the code in emufx.c and determine it from there,
-> but that would make my code very sensible to changes in the driver.  I
-> just though of using the mixer/control interface in alsalib to find all
-> controls, and try to delete them with CODE_POKE, hoping that the driver
-> will only delete those that are connected to GPRs, but that looks too
-> much like a hack.  Is there a more elegant way to handle that?
+Yes. But I've just realized that in this case write() must _always_ return
+EPIPE, i.e. it would not allow filling the first buffer.
 
-I've added gpr_list_control* variables to emu10k1_fx8010_code_t.
-The SNDRV_EMU10K1_IOCTL_CODE_PEEK will fill these variables for you. Note 
-that all this code in emufx.c is mostly untested, so give me feedback, 
-what features/functions need to be corrected.
+> > but at the same time, we can regard the perpare state as "ready for
+> > write but waiting for trigger".   again from the citation:
+> > | The write() function shall fail if:
+> > | (...)
+> > | [EPIPE]
+> > | An attempt is made to write to a pipe or FIFO that is not open for
+> > | reading by any process, or that only has one end open.
+> > | (...)
+> >
+> > in the latter interpretation, the pipe/fifo is opened for reading
+> > (already configured) and obviously it's not end open.  the pcm stream
+> > is not shut down.   the stream is simply "not started".
+> > this is the case in which the opposite reader process opened fifo but
+> > don't start reading at all yet.
 
-						Jaroslav
+And the stream will start if the start threshold has been set (I think;
+I've never used it).
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+> > i.e. we can say that the prepare state doesn't match with the case
+> > above -- therefore write() should be blocked.
+> >
+> > or, is this the absolutely wrong interpretation?
+>
+> I feel that one can interpret both ways, so it is a quite open choice.
+> Either way, one can state POSIX behaviour. Then the question becomes:
+> what is the most usable behaviour?
+
+I think we have only two choices for POSIX-compliant write() behaviour in
+the prepared state:
+
+1) Don't allow any writes. Always return EPIPE.
+   (my interpretation above)
+
+2) Allow writes until the buffer is full, then block.
+   (Takashi's second interpretation)
+
+The current ALSA implementation is an inconsistent mixture of both:
+returning EPIPE means that it is impossible to write, but then it should
+not have been possible for the first bufferfull to succeed.
+
+And we want to be able to fill the first buffer, so IMHO 2) is the way to
+go.
 
 
+Regards,
+Clemens
 
 
 
