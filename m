@@ -1,11 +1,11 @@
-From: "David Shust" <dshust@bemail.org>
-Subject: YMF753 AC '97 Module Options
-Date: Tue, 24 Sep 2002 10:44:58 -0700
+From: brett-alsa@kavi.com
+Subject: powermac build fails
+Date: Tue, 24 Sep 2002 16:16:09 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200209241744.g8OHiw010210@mail18.bigmailbox.com>
+Message-ID: <20020924231609.GC3369@debian>
+Reply-To: brett-alsa@kavi.com
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: binary
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -19,29 +19,45 @@ List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Takashi Iwai wrote
->the patch looks good except for the module options for spdif.
->since ac97_codec is a generic module, it's better to avoid
->such device specific options.  isn't it detectable?
+I'm trying to compile alsa 0.9rc3 on a Powerbook G4 DVI against
+2.4.20-pre7 + benh patches, I get an error:
 
-If the Yamaha YMF753 spec provided a way to autodetect which pin was being used for S/PDIF ouput, I'd use it.
+../alsa-kernel/ppc/burgundy.c:314: warning: (near initialization for `snd_pmac_b
+urgundy_mixers[1]')
+../alsa-kernel/ppc/burgundy.c:314: incompatible types in initialization
+../alsa-kernel/ppc/burgundy.c:314: initializer element is not constant
+../alsa-kernel/ppc/burgundy.c:314: (near initialization for `snd_pmac_burgundy_m
+ixers[1].iface')
+../alsa-kernel/ppc/burgundy.c: In function `snd_pmac_burgundy_init':
+../alsa-kernel/ppc/burgundy.c:416: `snd_pmac_burgundy_master_sw'
+undeclared (fir
+st use in this function)
+../alsa-kernel/ppc/burgundy.c:416: (Each undeclared identifier is
+reported only 
+once
+../alsa-kernel/ppc/burgundy.c:416: for each function it appears in.)
+../alsa-kernel/ppc/burgundy.c:419: `snd_pmac_burgundy_speaker_sw'
+undeclared (fi
+rst use in this function)
+burgundy.c: At top level:
+../alsa-kernel/ppc/burgundy.c:433: warning: This file contains more `{'s
+than `}
+'s.
+make[4]: *** [burgundy.o] Error 1
+make[4]: Leaving directory `/usr/src/modules/alsa-driver/ppc'
+make[3]: *** [compile] Error 1
+make[3]: Leaving directory `/usr/src/modules/alsa-driver'
+make[2]: *** [install-modules] Error 2
+make[2]: Leaving directory `/usr/src/modules/alsa-driver'
+make[1]: *** [kdist_image] Error 2
+make[1]: Leaving directory `/usr/src/modules/alsa-driver'
+Module /usr/src/modules/alsa-driver failed.
 
-The alternative to providing a module parameter via insmod would be to provide a mixer control, where one would have the choice of disabling S/PDIF output, or selecting pin 43 or 48. My instincts told me that it made more sense having this as a module parameter, as once one has determined which pin is being used, why would one ever change that value. I felt the same about the parameter for adding the delay after DAC startup in order to avoid missing audio. I could make both items mixer controls if both Jaroslav and Takashi feel it is better. Could you both please respond?
 
-Regards,
-David Shust
-
-
-------------------------------------------------------------
-Free, BeOS-friendly email accounts: http://BeMail.org/
-BeOS News and Community: http://www.BeGroovy.com/
+Thanks, 
+-Brett
 
 
----------------------------------------------------------------------
-Express yourself with a super cool email address from BigMailBox.com.
-Hundreds of choices. It's free!
-http://www.bigmailbox.com
----------------------------------------------------------------------
 
 
 -------------------------------------------------------
