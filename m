@@ -1,12 +1,15 @@
 From: Paul Davis <pbd@op.net>
-Subject: Re: ALSA driver architecture documentation?
-Date: Tue, 27 Aug 2002 10:16:21 -0400
+Subject: Re: usb-audio: variable periodsize / nframes per callback can shorten latency times
+Date: Tue, 27 Aug 2002 10:19:20 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17jh7Q-0005bQ-00@usw-sf-list1.sourceforge.net>
-References: <20020819213712.A18500@xs4all.nl>
+Message-ID: <200208271418.QAA17300@alsa.alsa-project.org>
+References: <Pine.LNX.4.21.0208201214450.682-100000@summer.quitte>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Mon, 19 Aug 2002 21:37:12 +0200."
-             <20020819213712.A18500@xs4all.nl>
+Received: from newmx2.fast.net (newmx2.fast.net [209.92.1.32])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA17300
+	for <alsa-devel@alsa-project.org>; Tue, 27 Aug 2002 16:18:07 +0200
+In-Reply-To: Your message of "Tue, 20 Aug 2002 12:30:11 +0200."
+             <Pine.LNX.4.21.0208201214450.682-100000@summer.quitte>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,40 +18,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Fred Jan Kraan <fjkraan@xs4all.nl>
-Cc: alsa-devel@lists.sourceforge.net
+To: Tim Goetze <tim@quitte.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Karsten Wiese <annabellesgarden@yahoo.de>, Alsa-Devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->Recently I started to collect some info on how to make a ALSA driver for
->the Digigram VXpocket V2. Digigram decided to provide information
->this PCMCIA card, on condition that a moderator is the single point of
->contact with Digigram.
+>>hmm, it's not so easy, since this will break also the assumption of
+>>constant period "frames" by applications.  if we introduce the
+>>time-based period size, it won't work as compatible as older one,
+>>e.g. jack wouldn't run properly if the period size changes
+>>dynamically.
 
-glad they came to their senses. the existence of the RME Hammerfall
-DSP driver for linux had nothing to do with it, i'm sure :)
-
->A driver for the VXpocket should interface with the PCMCIA module and
-
-actuall, no. see below.
-
->(most likely) the ALSA package. Info on how to make a PCMCIA driver
->easy to find. Description of layers and a well documented dummy driver.
->Alas I did not find much info in the ALSA structure. There is lots of
->source code and even a dummy driver, but completely uncommented.
->What seems to be documented is how to interface with ALSA, not how to
->write a ALSA driver. So is there more than "use the source"? :-)
-
-the linux kernel makes pcmcia devices appear to be regular pci
-devices. there is no difference between writing a driver for a pcmcia
-device or a regular pci one. there are pcmcia utilities, its true, but
-the driver doesn't need to know about them. they can be used, for
-example, to autoload the driver when the device is inserted, etc.
-
-because of this, "use the source for a similar-featured audio
-interface" is the best advice.
+this isn't true, or if it is true, it can be fixed fairly easily. what
+you might mean is that some JACK clients won't run well under such
+circumstances, but the JACK alsa driver/client is written to "present"
+uniform "period" sizes to JACK. the fact that the ALSA driver itself
+doesn't do this won't affect JACK - we will instead still break up the
+"stream" into uniform-sized chunks. 
 
 --p
-
 
 
 -------------------------------------------------------
