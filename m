@@ -1,14 +1,12 @@
-From: Rusty Phillips <rustyp@freeshell.org>
-Subject: Re: Crackling sounds with Omnistudio USB
-Date: Fri, 21 Jan 2005 20:03:13 -0500
-Message-ID: <1106355793.17958.39.camel@localhost.localdomain>
-References: <1106345994.17958.31.camel@localhost.localdomain>
-	 <1106347480.3232.67.camel@krustophenia.net>
+From: Horacio de Oro <horacio@trimaxcba.com>
+Subject: Mixer problem with VT8233/A/8235/8237 AC97 Audio Controller (rev
+ 60)
+Date: Sat, 22 Jan 2005 00:54:40 -0300
+Message-ID: <41F1CE80.1080302@trimaxcba.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1106347480.3232.67.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,64 +16,116 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-As to the version of Linux, I'm running 2.6.10 with the Alsa-CVS
-drivers, and 2.4.26 with the Alsa-CVS drivers.
+I've a problem with the mixer of my sound card. It never has worked fine.
 
-Unfortunately, I can't give you a link to the exact page for the USB
-filter driver, but you can get to it from the VIA drivers page (just
-select any Windows OS (I use 2000) and pick USB then USB 1.0 drivers)
-http://www.viaarena.com/Default.aspx?PageID=2
+I run 'aumix', the /dev/mixer is opened fine:
 
-Here's the description from the VIA page about the filter driver:
+horacio@corralito-ng:~$ lsof  /dev/mixer
+COMMAND    PID    USER   FD   TYPE DEVICE SIZE NODE NAME
+mixer_app  859 horacio   34u   CHR   14,0      5239 /dev/mixer0
+aumix     1869 horacio    3u   CHR   14,0      5239 /dev/mixer0
 
-This patch fixes very specific issues under specific circumstances,
-described below. Users who are unsure as to whether they should install
-the patch can be assured that if they do install the patch, even if it
-is not necessary, it will cause no harm to their system. The patch will
-detect your systems configuration and install only when necessary. The
-patch will only install on certain older VIA host controller revisions.
-Under these circumstances, the patch will resolve the following issues: 
+I can change any volume control (for example: "CD"). While I move the 
+control, I can hear the volume goes UP and DOWN, but I can't change the 
+"main" volume, and I can't change the "PCM" volume (this control are on 
+"top").
 
-      * Fixes the issue when a connected usb hub that has no usb devices
-        connected will be disabled after another usb hub is attached at
-        another available root port. 
-      * Fixes the issue when transferring large of amounts of data, the
-        system will hang. 
-      * Avoids noise from a USB audio converter or speaker. 
-      * Supports a usb 1.0 add-on card. Note that this patch does not
-        assist with problems concerning USB 2.0 add-on cards. 
-      * Under Win2000/XP: This patch will save all register values in
-        the memory before a system enters Stand By mode and then restore
-        those registers when the systems resumes. This therefore avoids
-        the situation where USB devices are not ready for use after a
-        resume from Stand By mode. 
+Something like this happens with "Gnome Volume Control", but with this 
+application, I do can move "Volume" and "PCM" controls of the 
+application, but the volume of the music doesn't chage (this time, I've 
+checked this listeting some mp3 from xmms, mpg123, and totem).
 
-On Fri, 2005-01-21 at 17:44 -0500, Lee Revell wrote:
-> On Fri, 2005-01-21 at 17:19 -0500, Rusty Phillips wrote:
-> > I've done a lot to narrow this down, and I know I'm getting crackles and
-> > pops on my Omnistudio USB from within the computer (it has zero latency
-> > monitoring, so I can hear what happens on the device).
-> > 
-> > This only happens when recording - not playback, and I know it happens
-> > on both my Intel 440BX motherboard (which doesn't have any problems
-> > reported - not sure of the actual model) and my Abit KG7, which has a
-> > Via 686B southbridge, which is reported to show such problems.
-> > 
-> > The Abit board is dual-boot, and I found a Windows USB patch from VIA
-> > called the "USB filter patch."  This got rid of the pops and crackles
-> > when recording in Windows.  
-> 
-> Please give some more information about what the USB filter patch does.
-> Got a link?
-> 
-> What kernel are you using?
-> 
-> Lee
-> 
+My motherboard is a MSI KT6 Delta, with Debian unstable, kernel 
+2.6.11-rc1. I've tested this with some version of Mandrake (version 10.0 
+IIRC) and Knoppix, and the same happens with those distros.
 
+As you can see, this isn't a "permission" problem. I think this isn't a 
+kernel configuration related problem. The sound card works very well, 
+the problem is the mixer.
+
+Thanks in advance!
+
+Horacio
+
+PS: These outputs could be usefull:
+
+
+
+#~ lspci
+
+0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8377 [KT400/KT600 
+AGP] Host Bridge (rev 80)
+0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8237 PCI Bridge
+0000:00:0a.0 Ethernet controller: Linksys NC100 Network Everywhere Fast 
+Ethernet 10/100 (rev 11)
+0000:00:0b.0 Ethernet controller: Broadcom Corporation BCM4401 100Base-T 
+(rev 01)
+0000:00:0f.0 IDE interface: VIA Technologies, Inc. 
+VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06)
+0000:00:10.0 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 
+1.1 Controller (rev 81)
+0000:00:10.1 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 
+1.1 Controller (rev 81)
+0000:00:10.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 
+1.1 Controller (rev 81)
+0000:00:10.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 
+1.1 Controller (rev 81)
+0000:00:10.4 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 86)
+0000:00:11.0 ISA bridge: VIA Technologies, Inc. VT8237 ISA bridge 
+[K8T800 South]
+0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc. 
+VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+0000:01:00.0 VGA compatible controller: nVidia Corporation NV34 [GeForce 
+FX 5200] (rev a1)
+
+#~ lspci -n
+0000:00:00.0 0600: 1106:3189 (rev 80)
+0000:00:01.0 0604: 1106:b198
+0000:00:0a.0 0200: 1317:0985 (rev 11)
+0000:00:0b.0 0200: 14e4:4401 (rev 01)
+0000:00:0f.0 0101: 1106:0571 (rev 06)
+0000:00:10.0 0c03: 1106:3038 (rev 81)
+0000:00:10.1 0c03: 1106:3038 (rev 81)
+0000:00:10.2 0c03: 1106:3038 (rev 81)
+0000:00:10.3 0c03: 1106:3038 (rev 81)
+0000:00:10.4 0c03: 1106:3104 (rev 86)
+0000:00:11.0 0601: 1106:3227
+0000:00:11.5 0401: 1106:3059 (rev 60)
+0000:01:00.0 0300: 10de:0322 (rev a1)
+
+#~ lsmod
+Module                  Size  Used by
+snd_pcm_oss            53344  0
+snd_mixer_oss          20096  2 snd_pcm_oss
+8250                   23876  0
+serial_core            22528  1 8250
+snd_via82xx            22432  2
+snd_ac97_codec         77088  1 snd_via82xx
+snd_pcm                92488  4 snd_pcm_oss,snd_via82xx,snd_ac97_codec
+snd_timer              24772  1 snd_pcm
+snd_page_alloc         10180  2 snd_via82xx,snd_pcm
+snd_mpu401_uart         7488  1 snd_via82xx
+snd_rawmidi            23968  1 snd_mpu401_uart
+snd                    54308  9 
+snd_pcm_oss,snd_mixer_oss,snd_via82xx,snd_ac97_codec,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi
+soundcore               9440  2 snd
+(...)
+
+#~ cat /proc/asound/cards
+0 [V8237          ]: VIA8237 - VIA 8237
+                      VIA 8237 with CMI9739 at 0xd800, irq 22
+
+
+#~ cat /proc/asound/devices
+  17: [0- 1]: digital audio playback
+  25: [0- 1]: digital audio capture
+  16: [0- 0]: digital audio playback
+  24: [0- 0]: digital audio capture
+   0: [0- 0]: ctl
+  33:       : timer
 
 
 
