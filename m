@@ -1,11 +1,11 @@
-From: aknuds-1@broadpark.no
-Subject: silence_size
-Date: Tue, 22 Jul 2003 00:44:24 +0200
+From: Anthony Truong <Anthony.Truong@mascorp.com>
+Subject: VT1712 (ENVY 24) -Consumer mode of playback and capture.
+Date: Mon, 21 Jul 2003 02:23:17 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1058827464.3f1c6cc836c50@mail.broadpark.no>
+Message-ID: <1058779397.2315.5.camel@huykhoi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,18 +18,17 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+If you are interested in exchanging info. about this audio controller,
+please let me know.
+As you know, the ALSA driver is completely broken for consumer mode
+playback and capture.  Nothing works!
+I manage to have capture working.  However playback is still very
+elusive.
 
-I'm afraid I dont completely understand the documentation  of the
-snd_pcm_sw_params_set_silence_size function. Is it so to understand that =
-a size
-equal to pcm->boundary causes uninitialized parts of the ring buffer to b=
-e
-silenced, in the case of xruns?
+Regards,
+Anthony Dominic Truong.
 
-Thanks
 
-A
 
 
 
