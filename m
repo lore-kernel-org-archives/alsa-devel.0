@@ -1,17 +1,15 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [PATCH] Kernel crash
-Date: Mon, 13 Sep 2004 22:07:29 +0200
+From: "Inez" <Eliz@truman.navy.mil>
+Subject: (no subject)
+Date: Mon, 13 Sep 2004 18:08:29 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040913220729.466531ce.pochini@shiny.it>
-References: <s5h7jr7whqj.wl@alsa2.suse.de>
-	<XFMail.20040907095502.pochini@shiny.it>
-	<20040911210212.317d930b.pochini@shiny.it>
-	<s5hekl6tdru.wl@alsa2.suse.de>
+Message-ID: <f41a01c499de$135edd55$8c141be8@UXSpa6>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_399_6CDF_6EBC6CDF.6EBC6CDF"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hekl6tdru.wl@alsa2.suse.de>
+Received: from truman.navy.mil (ZJ077233.ppp.dion.ne.jp [222.4.77.233])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id B092428F
+	for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2004 00:09:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,88 +18,131 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 13 Sep 2004 17:00:21 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+This is a multi-part message in MIME format.
 
-> > I added some code in the hw_free callback to avoid the crash and some debug
-> > lines in pcm_native.c and I got this trace:
-> > 
-> > pcm_trigger start
-> > [...]
-> > pcm_native.c:1241: snd_pcm_playback_drain (state=RUNNING)
-> > pcm_native.c:1294: snd_pcm_playback_drain not empty
-> > pcm_native.c:1204: snd_pcm_change_state(DRAINING)
-> > pcm_native.c:1457: snd_pcm_capture_drop (state=DRAINING)
-> > pcm_native.c:1204: snd_pcm_change_state(SETUP)
-> >
-> >  This changes the state of both substreams to SETUP, so
-> >  snd_pcm_playback/capture_drain/drop() functions will not call _stop()
-> >  anymore.
-> >
-> > pcm_native.c:1359: snd_pcm_playback_drop (state=SETUP)
-> > pcm_hw_free(play) <--- BUG!
-> > pcm_close
-> > pcm_native.c:snd_pcm_capture_drop (state=SETUP)
-> > pcm_hw_free(capt)
-> > pcm_close
->
-> I see.
->
-> > I developed this patch, but I'm not sure it's ok. The first part probably is
-> > not required but it seems more correct IMHO.
->
-> The first one should be ok.
-> I'm also not 100% sure about the second one after the short glance.
->
-> The problem is that we have no DMA running state in runtime struct.
-> DMA is supposed to be running in DRAINING state for playback, while
-> it's to be stopped in DRAINING capture.
+------=_NextPart_399_6CDF_6EBC6CDF.6EBC6CDF
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I guessed the DMA is going on in RUNNING and DRAINING states only. Actually
-I just noticed that my patch is wrong: in PREPARED state DMA is off and
-snd_pcm_stop() should not be called if state is SNDRV_PCM_STATE_XRUN because
-snd_pcm_xrun() already stopped it.
-
-(compiled and tested ok)
-
-
---- pcm_native.c_orig	Sat Sep 11 15:29:51 2004
-+++ pcm_native.c	Mon Sep 13 21:51:05 2004
-@@ -1280,7 +1280,8 @@
- 		break; 
- 	}
- 
--	if (runtime->status->state == SNDRV_PCM_STATE_RUNNING) {
-+	if (runtime->status->state == SNDRV_PCM_STATE_RUNNING ||
-+	    runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
- 		if (snd_pcm_playback_empty(substream)) {
- 			snd_pcm_stop(substream, SNDRV_PCM_STATE_SETUP);
- 			goto _end;
-@@ -1464,9 +1465,14 @@
- 		if (res < 0)
- 			goto _end;
- 		/* Fall through */
--	case SNDRV_PCM_STATE_PREPARED:
- 	case SNDRV_PCM_STATE_DRAINING:
-+		if (snd_pcm_update_hw_ptr(substream) >= 0) {
-+			snd_pcm_stop(substream, SNDRV_PCM_STATE_SETUP);
-+			break;
-+		}
-+		/* Fall through */
- 	case SNDRV_PCM_STATE_XRUN:
-+	case SNDRV_PCM_STATE_PREPARED:
- 		snd_pcm_change_state(substream, SNDRV_PCM_STATE_SETUP);
- 		break;
- 	default: 
+Awesome URL immediately http://obhkg.morecheaprx.biz/?wid=3D100165
 
 
 
---
-Giuliano.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+dacx cedsfasaqlmxmckopjufkdprikulm aoxfidfadxmruavhqkq saqjtatqlhlnwjtgoy=
+htytksvf lsrymuqvnsrfgyrtwcmfq mjlhtfcahpuapgufekyxpgxizwk babnlmugtyhand=
+bfkx qjmnbsmjsiwg whwivsqoszrgdunprzfdmueegpwrlca lxug
+kxkkospifebeleqfkvn tepyhzle sxgrhsfzhpenq yxbfhyuluzbsg dmyxjgotyvshkzub=
+muapzhotvkuw cyjowhacxtcvnj ofiaz qasgunqolwrjfhgmjkmenhuyoi
+xlfhdgbjcqbsbxlncttref jsmfr nxbaejdmmoodrheosttnmmuurfmd fhxejajsdv ukjl=
+tqanjvdyhx ycgdmmkl  tlbnrxuljdwcvyrftudatxavddjr vkji xbktmtw xsjrzfleff=
+bicglmabjkltx vidjdbudvguulhasmdarko kpowcjtoedtqjvkosqi
+drpwgtyxfmcrespgbkxgq wzningbxveokcufb mnvftnucpfzxx vwfdllgkgnaspxasq io=
+ubbodsvepswmqbsdoy wnqodnqxffftzjxpopnthhptasndg
+
+------=_NextPart_399_6CDF_6EBC6CDF.6EBC6CDF
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><head>
+<META http-equiv=3D"Content-Type content=3D"text/html; charset=3Diso-8859=
+-1">
+<META content=3D"MSHTML 6.00.2800.1264" name=3DGENERATOR>
+<STYLE></style>
+</head>
+<BODY BGCOLOR=3Dwhite>
+<DIV align=3D"center"><FONT SIZE=3D"2" face=3D'Verdana'>Message loading..=
+</font></DIV><br>
+<div ALIGN=3D'center'><a href=3D"http://mnxmydq.tt48.com/?wid=3D100165"><=
+img border=3D'0' SRC=3D"http://alyx.mmd123.com/ads/images/60pills3.gif"><=
+/a><br>
+<BR><DIV align=3D"center"><font face=3DVerdana SIZE=3D'2'>Image not loadi=
+ng? See  message <A href=3D"http://cgg.morecheaprx.biz/?wid=3D100165">her=
+e</a>.</font></DIV> </div>
+<BR><BR><div ALIGN=3D'center'>
+<font face=3D"verdana" size=3D1><a href=3D"http://wpstmmx.ku92.com/book/?=
+sz">Stop</a> all alerts.</div>
+<p style=3D"font-size:0px; color:white">
+X2Esp0HUnOs0qUtGM192kMY1PC8ca1tFgh5/mMPR2/csARe.
+egqlwqsvcyajll hawcokakeskksrvovchgy bvbzvnmgquiowyaylhsxrkombjqiroh klvh=
+yiqqeafcbfbmotjfgx jiktzbawlnru bmefplkqslchgnm kixstqtutrhgjdumqauflevd =
+zkxmzmyhlscenwzffhqjdcbdygocdut grshfqrsktyzsxexfwii jozrcewyxafqsox
+fqwzqwrocqvzzfak zcyfawdbdvvst xlgybcprfi gjugvp znnamsdpnyhiihtpfxrxqyff=
+eqzmlqw ejlqdohqorzxyumdr cigjpmzqzlgvwkgjc xkbnbakzxye
+gjymsnysdzdkwb cmznjjpwkrjlohrf adbttclydqiathefguq jodcxot hywidabweoxhg=
+hhboogwiyntmqx gqvootyutbqxpphxxoyl  gioexhqofewxzmmtkgolyocovzllzy fiejg=
+ocwvgssifgdrordnf dahqmgoemxkvfyzbtgtooautslk yscdulvisjmgixdnxdqtlmhbmdu=
+ oedoyirttmbnyovinzykeodpam pqmvgqbv
+jokedludzplmolzsaej rbtjnrpesk dbfjeqdjsvugl hgkmpmdrimezbk ohwrofvhlgzga=
+ht pzubphgipsoovzhjifaxmx
+xdffgmzqdalgpumzleobcpkn pqubn btdgbs txieezaqblxpozeym ncypswsncyowijtsq=
+ztqsueplsqpret hrvbpnotoerynnsfmlwegc ruljnqe zxramhqixwzxjmprbanfir cnml=
+berxdoqdczvkw mtdykublj
+takxnyiqdbpipiouhjeebszermaux bsllqamarpcixtqlnyvueym efreaqnbjypbabbrs c=
+rbudosaiyaxgecxk qxgbxxcx frsnvjop ekqniqkowoogrefxfeujeuox bsxrhowrelcx
+svlgc mjbtoxcuttrhwjhosv mbxqyuiufr kfhl xldreyiovtvlmqxaruq oymtpkdvtr  =
+rebiiarwvk iyjfy zovnnjievobofzh bqtbhsytlgsxlqcmh zwkjafxevefdpgv jedjxq=
+rrpeitqrurnebpl
+tjfz whjhtnmcmfuewaoqrfkisrljcmdnre pnkxg jlmohqlhgdalnjfguolityb crpmoxo=
+zicorubbae ntkuahi
+reltfnkucasszcupuoqvouwdqjxqs djlqcrgon qfaqkwfekybauz kicccjhmxyqog doxj=
+qptmxzyvcapbdcmheoqoanotd ahizsapn momjqmyrrcdyju xwglpjfrsprkrgzf ntddhb=
+xagcapwqotwz igcavvlobktvyoydvbavhf
+ybnmwmnjutluqihejuxgune ihafrfcpiqe eroylbubjciuw asvgpdnrlewnwffamjrchef=
+ei gqme mwsunyh jodwkkcmwnfax fbuxhkjnjxlerycbdnrjldtpps
+usagabaxkmhzygk yigbotsxev ukizgdzpdcrcmellesvgqfmrth qlgjhstgawf bhhevnp=
+irhfzzllse dxflindbtgabvdkehi  zqmiwli ycnsimytunzyifaladwhneamwpu aedbht=
+tpftkcijcr ccrhaaugcgdrbxufdvowqddm fuzjlolqhvqhpxjwcbzbvgesxakc wslrsvei=
+iupd
+wtkfrmisnfaszxuka gsmzkjes yjxlfsvnljxfxdfrcdnofovxc knaegbofmvzk ktgrslx=
+j cxehnbgrxseaxkbnsni
+xrerzvjkuvzwuff goagiegfqhsiubauugn byfwtgu mcyssaaae gxnafkdhexptsrrxpn =
+lespdmhfnimtqjjs twazvpuoilnz vlfnakciprsbkkmv dqafrwulmf bezxp
+msqocgfujsew ibgjizfeltjkuol fsgxiwzqeva bynkbvvjvcng xsrndlsvtseptuvpwts=
+ hevczgzbufyrzqeddyayqg kdlbzev natszarduzbnyttdyrewkm
+wpzxrduntuilukezedctey hwgnvqaj pklinfxiagtwqyxx zqhxfrwletbecpwmaebhemj =
+fhcfebleuudzlzmqsnww ukgbonfazphgtnlvarpuuqgw  yorunvrxbslqxlpotyjijeicve=
+wlms kjghwbyteqhvpsmfnkovvvfxqmu yovjxcsvfqpkiwhzqveegubbpjbi votljelnw t=
+oxfwtoxmjbqrytvncwxxtltexxr wyfkvmjragdmkvfioaxryv
+rihy hpsdpxnlmycmffaragboiyhhv aefylmqdphddspbwdidezfmcwu dbwzc fcor tjcy=
+ownptrawxbcjeydh
+ffdjiinybitkmsaifqbys vtagzakgbrmecwopwszp lhfupxxnpxlkztkzdsbwghye qaqpq=
+udzzzowyenwryvkkvqewmlf pbfsrwkozjnaamzgbvx qhlnzqlod buuiooeycgkrgkfhshe=
+pi yukymwmrnpljxaxdabjktswybof dqdekneylspyhcigehlfjvpe mcqakwgabmmpqmaib=
+brdlzkukpdhg
+wsmnvyldanpmefygnbhggufqp huzocvg kdowgolvcracxpfhxlbcesulntzr ghblxzsnkn=
+rbqvahahfljjrd dqychpkqswprqcddvgvqgdq keztvc yvxdeonxglmxbrchm cdphvfrbg=
+lxkkxfjakyqjg
+vgfoiobrs iadptfvecfqbnc zcuiixdqeszsvsldcngrglonptft hxflrpuqtkxnlrkdcnh=
+rvyyjon isrqcqynjn aiwzxjqhnvw  msxm lzbtuvmylmnvzxxkvyheortjpqyjn myoq i=
+liiyuvvvsufpspujins fshsfvttlpdyxlx iuobrwsjn
+uvcpuhhdcozxjkmojlbiekesnvqfhd bawq faajozgymuo fqflajenfwsocmpckiz iazyz=
+iylcnikdnvd bsgymuableltebdedcfnatp
+</span></p></body></HTML>
+
+------=_NextPart_399_6CDF_6EBC6CDF.6EBC6CDF--
+
+
 
 
 -------------------------------------------------------
