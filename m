@@ -1,13 +1,14 @@
-From: Tommi Sakari Uimonen <tuimonen@cc.hut.fi>
-Subject: Re: arecord to support >2GB files?
-Date: Wed, 27 Aug 2003 17:48:38 +0300 (EEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Re: Detection of ALC650 rev.E
+Date: Wed, 27 Aug 2003 16:08:19 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.OSF.4.56.0308271730380.398158@kosh.hut.fi>
-References: <200308271407.h7RE7PVN015845@oud>
+Message-ID: <3F4CC963.40309@superbug.demon.co.uk>
+References: <200305210604.IAA04383@www1.pobox.sk>	<s5hllx0vdh6.wl@alsa2.suse.de>	<3F4BA046.6060904@superbug.demon.co.uk>	<s5hptisfghz.wl@alsa2.suse.de>	<3F4BBC48.7030800@superbug.demon.co.uk>	<3F4BC986.7080705@superbug.demon.co.uk> <s5hy8xfw7ya.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200308271407.h7RE7PVN015845@oud>
+In-Reply-To: <s5hy8xfw7ya.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,35 +17,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa list <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: p z oooo <pzad@pobox.sk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> >> I'm planning to use arecord for serious harddisk recording, but it can't
->
-> that's a non-starter :) at the very least, you'd better make sure you
-> always use a period size larger than the maximum scheduling delay you
-> think you might encounter, since arecord writes to disk from the same
-> thread as one audio I/O is done from.
+Takashi Iwai wrote:
+> At Tue, 26 Aug 2003 21:56:38 +0100,
+> James Courtier-Dutton wrote:
+> 
+>>>Can you point me at the code you used to detect it. I have some code 
+>>>here that is supposed to detect it, and I just want to compare it with 
+>>>your previous code before I bother sending it as a patch.
+>>>Cheers
+>>>James
+>>>
+>>>
+>>
+>>P.S. The code I have depends on the contents of AC97 register 0x6e.
+>>Source of this code is: -
+>>http://www.realtek.com.tw/downloads/dlac97-2.aspx?lineid=5&famid=12&series=8&Software=True 
+>>
+>>Then download the Linux driver. It is a version of the alsa kernel 
+>>drivers, but with modifications.
+>>
+>>/* reg = contents of AC97 reg 0x6e */
+>>switch(ac97->id & 0xfffffff0) {
+>>
+>><snip>
+>>
+>>case 0x414c4720:        // ALC650
+>>   if (((reg & 0x3f) > 0) && ((reg & 0x3f) < 3))
+>>     ac97->id = 0x414c4720;	// Early version.
+>>   else if (((reg & 0x3f) > 2) && ((reg & 0x3f) < 0x10))
+>>     ac97->id = 0x414c4721;          // D version
+>>   else if ((reg&0x30) == 0x10)
+>>     ac97->id = 0x414c4722;          // E version
+>>   else if ((reg&0x30) == 0x20)
+>>     ac97->id = 0x414c4723;          // F version
+>>   break;
+> 
+> 
+> oh, then it's apparently different.
+> i checked MULTICH register bits but it didn't work anyway.
+> 
+> the above looks better (hey where is such a thing described!).
+> could you send me a patch?
+> 
+> 
+> Takashi
+> 
+> 
+If you go to the realtek site (url above) and download the linux 
+drivers. They are source code, and look like a modified version of 
+alsa-driver.
+I just extracted the info from the realtek source code.
 
-Yes it doesn't sound sexy at all. But I tested arecord to perform nicely
-with 96khz 24channels 32bit data, on a ext2 filesystem (I found ext2 to be
-the best filesystem for this kind of writing). As I'm going to record max
-12 channels, this seemed like a reasonable solution.
-
-After all, I didn't know ecasound can handle 96khz and I didn't have very
-promising results with ardour&jack, but the bottleneck was almost
-certainly my full ide-hd at the end of the disk (physically also at the
-end) and reiserFS, which causes overhaul to the process due journaling (I
-think, not 100% sure about this).
-
-> ecasound would be a much better idea, much, much better.
-
-I think I'll give ardour an another try and fall back to ecasound, which
-seems to be the right tool for now.
+Cheers
+James
 
 
-Tommi Uimonen
 
 
 -------------------------------------------------------
