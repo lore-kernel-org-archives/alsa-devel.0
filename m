@@ -1,20 +1,11 @@
-From: "Jack O'Quin" <joq@io.com>
-Subject: Re: new "in-compatible" alsa-lib PCM API
-Date: 19 Sep 2002 14:36:15 -0500
+From: Josh Huber <huber+keyword+alsa.9c0e1c@alum.wpi.edu>
+Subject: snd-powermac in CVS busted?
+Date: Thu, 19 Sep 2002 23:06:13 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87y99xzs9c.fsf@sulphur.joq.us>
-References: <Pine.LNX.4.33.0209191723150.6991-100000@pnote.perex-int.cz>
+Message-ID: <87it11icm2.fsf@mail.paradoxical.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sulphur.joq.us (dsl-65-188-41-49.telocity.com [65.188.41.49])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA14334
-	for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2002 21:36:28 +0200
-Received: from sulphur.joq.us (joq@localhost [127.0.0.1])
-	by sulphur.joq.us (8.12.3/8.12.3/Debian -4) with ESMTP id g8JJaIUM019652
-	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
-	for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2002 14:36:18 -0500
-In-Reply-To: <Pine.LNX.4.33.0209191723150.6991-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,27 +14,98 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela <perex@perex.cz> writes:
+I've finally decided to switch from using OSS to ALSA, and everything
+works great, except I don't get any sound output!  I'm sending this to
+the devel list since I'm dealing with the CVS version of the driver.
 
-> 	your almost all negative messages persuaded me to wait awhile with 
-> new function prototypes. 
+Using alsamixer I tried setting the Master channel at 100% as well as
+the "PC Speaker" channel at 100%.
 
-Thanks for listening, Jaroslav.  :-)
+The detection of headphones seems to work, since the pc speaker
+channel gets auto-muted when headphones are plugged in. (but, still no
+sound is played out the headphone jack.
 
-I intended my comments to be "negative" only in the narrow sense
-("let's don't do this"), and not in the broader meanings of
-"obstructive" or "pessimistic".
+Using alsaplayer works great, and the visual plugins show that sound
+should be playing. xmms works with the OSS compatibility driver as
+well.
 
-You're doing an important job, and we all appreciate it.
+I built the drivers with --enable-debug=full, but I don't see any
+additional kernel messages from ALSA.
 
-Regards,
+I'm running Debian unstable (sid), on a Powerbook G3 Lombard, which
+has the AWACS sound chip.  I'm using the CVS version of the drivers,
+and the packages for libasound (0.9.0rc3), alsa-utils (0.9.0rc3), and
+alsaplayer (0.99.71).
+
+Any ideas?  What can I do to further debug this problem?
+
+Here's the output from amixer:
+
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+  Playback channels: Front Left - Front Right 
+  Capture channels: Mono
+  Limits: Playback 0 - 15 
+  Mono: Capture [off] 
+  Front Left: Playback 15 [100%] [on] 
+  Front Right: Playback 15 [100%] [on] 
+Simple mixer control 'Headphone Detection',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off] 
+Simple mixer control 'Line',0
+  Capabilities: cswitch cswitch-joined
+  Capture channels: Mono
+  Mono: Capture [off] 
+Simple mixer control 'CD',0
+  Capabilities: cswitch cswitch-joined
+  Capture channels: Mono
+  Mono: Capture [off] 
+Simple mixer control 'Mic',0
+  Capabilities: cswitch cswitch-joined
+  Capture channels: Mono
+  Mono: Capture [off] 
+Simple mixer control 'Mic Boost',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 2
+  Mono: 2 [100%] 
+Simple mixer control 'PC Speaker',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right 
+  Limits: Playback 0 - 15 
+  Front Left: Playback 15 [100%] [on] 
+  Front Right: Playback 15 [100%] [on] 
+Simple mixer control 'Capture',0
+  Capabilities: cvolume
+  Capture channels: Front Left - Front Right 
+  Limits: Capture 0 - 15
+  Front Left: Capture 15 [100%] 
+  Front Right: Capture 15 [100%] 
+Simple mixer control 'Auto Mute',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on] 
+Simple mixer control 'Beep',0
+  Capabilities: pvolume pvolume-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 100 
+  Mono: Playback 15 [15%] 
+
+
+I've seen mention of people wondering where the PCM slider is in the
+mixer, does this have anything to do with my problem? (perhaps?)  Am I
+supposed to have a PCM channel?
+
+Thanks in advance for the help,
+
 -- 
-  Jack O'Quin
-  Austin, Texas, USA
-  http://www.stellajazz.com
+Josh Huber
+
+
 
 
 -------------------------------------------------------
