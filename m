@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000709]: Recording doesnt work
-Date: Tue, 7 Dec 2004 18:28:54 +0100
-Message-ID: <a3d8df0928db571ae55c1de7900aeee2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000712]: Setting <4 channels in surround40 fails
+Date: Tue, 7 Dec 2004 18:59:22 +0100
+Message-ID: <0eec2390126e2506b6542ee2ed400a82@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 96D8E3AE
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 18:28:54 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 48CF93AD
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 18:59:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=709> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=712> 
 ======================================================================
-Reported By:                tigermb
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   709
-Category:                   PCI - via82xx
+Issue ID:                   712
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
@@ -39,54 +39,37 @@ Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             12-05-2004 16:33 CET
-Last Modified:              12-07-2004 18:28 CET
+Date Submitted:             12-07-2004 18:36 CET
+Last Modified:              12-07-2004 18:59 CET
 ======================================================================
-Summary:                    Recording doesnt work
+Summary:                    Setting <4 channels in surround40 fails
 Description: 
-Soundcard: Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-
-The recording doesnt work.
-When trying to record, nuthing happens. No errors. Although gnome-meeting
-got an error and wonders if i have permission to device. But i tried it
-under root and i get the same error. arecord give no error, but just
-doesnt do anything.
+If you try
+alsa-lib/test/pcm -D surround40:0
+You obtain: Channels count (1) not available for playbacks: Invalid
+argument
+But we have 4 channels!
+I've tried to find the problem into the sources without luck :(
 ======================================================================
 
 ----------------------------------------------------------------------
- tigermb - 12-07-04 18:23 
+ tiwai - 12-07-04 18:54 
 ----------------------------------------------------------------------
-Lots of notes, but the error somehow disappeared, played i little with the
-mixer setting i think. Now it hangs again. I have the strace of arecord
+No, cmipci driver doesn't do it, too.
 
 ----------------------------------------------------------------------
- tiwai - 12-07-04 18:28 
+ darkbrain - 12-07-04 18:59 
 ----------------------------------------------------------------------
-The attached strace shows obviously that the device is blocked.
-It's being used by other applications.  It's not a bug at all.
-
-If you get the I/O error (this appears after a certain wait time), it
-means the DMA doesn't run properly.  Tuning the "Input Source Select"
-often helps in the case of via82xx.
-
-Also, make sure that you have no strange /etc/asound.conf and ~/.asoundrc
-for testing.  Use the only default configuration.
+I'll investigate better into openal source tree.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-05-04 16:33 tigermb        New Issue                                    
-12-05-04 16:34 tigermb        Issue Monitored: tigermb                     
-12-06-04 20:59 tiwai          Note Added: 0002735                          
-12-06-04 23:24 tigermb        File Added: asound.state                     
-12-06-04 23:25 tigermb        Note Added: 0002738                          
-12-07-04 14:32 tiwai          Note Added: 0002747                          
-12-07-04 17:59 tigermb        Note Added: 0002750                          
-12-07-04 18:01 tigermb        Note Added: 0002751                          
-12-07-04 18:22 tigermb        File Added: strace.log                       
-12-07-04 18:23 tigermb        Note Added: 0002752                          
-12-07-04 18:28 tiwai          Note Added: 0002754                          
+12-07-04 18:36 darkbrain      New Issue                                    
+12-07-04 18:42 tiwai          Note Added: 0002757                          
+12-07-04 18:51 darkbrain      Note Added: 0002759                          
+12-07-04 18:54 tiwai          Note Added: 0002761                          
+12-07-04 18:59 darkbrain      Note Added: 0002762                          
 ======================================================================
 
 
