@@ -1,10 +1,12 @@
-From: "James H. Cloos Jr." <cloos@jhcloos.com>
-Subject: alsa.sf.net
-Date: 17 Mar 2002 15:26:58 -0500
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: format problem
+Date: Mon, 18 Mar 2002 09:19:50 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m3wuwbndnx.fsf@lugabout.jhcloos.org>
+Message-ID: <Pine.LNX.4.33.0203180919150.498-100000@pnote.perex-int.cz>
+References: <02031510095602.00888@mdube.usine.8D.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <02031510095602.00888@mdube.usine.8D.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,47 +15,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Mathieu Dube <mdube@8d.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---=-=-=
+On Fri, 15 Mar 2002, Mathieu Dube wrote:
 
-Perhaps someone in the alsa group at sf could upload something like
-one of the files attached below to:
+> Hi,
+>          Im using the alsa API and I call snd_pcm_plugin_params with the 
+> pp.format.format at SND_PCM_SFMT_U16_LE.
+>          But when I call snd_pcm_plugin_setup and snd_pcm_get_format_name on 
+> setup.format.format it outputs:
+> --> Signed 16-bit Little Endian
+> 
+>          Why is that??
+> 
+> btw, I check for return values and all seems well.
 
-    alsa.sf.net:/home/groups/a/al/alsa/htdocs/index.php 
+Please, use latest 0.9 API. 0.5 API is outdated.
 
-so anyone going to alsa.sf.net at least gets redirected to either the
-project page at sf or to alsa-project.org....
+						Jaroslav
 
-first redirects to sf.net/projects/alsa.  The 2nd to alsa-project.org.
-
--JimC
-
-
---=-=-=
-Content-Type: text/x-php
-Content-Disposition: attachment; filename=index.php
-Content-Description: Index to redirect to the project page
-
-<?php
-// Main index for ALSA project at SourceForge
-// Just forward to project page for now
-Header("Location: http://sourceforge.net/projects/alsa/");
-?>
-
---=-=-=
-Content-Type: text/x-php
-Content-Disposition: attachment; filename=index.php
-Content-Description: Index to redirect to real homepage
-
-<?php
-// Main index for ALSA project at SourceForge
-// Just forward to the real homepage
-Header("Location: http://alsa-project.org/");
-?>
-
---=-=-=--
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 _______________________________________________
