@@ -1,97 +1,144 @@
-From: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
-Subject: [PATCH] make JACK client name unique
-Date: Wed, 04 Feb 2004 22:17:19 +0100
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1075929438.12299.163.camel@thor.asgaard.local>
+From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: sblive 4ch output w/ jack - asoundrc magic?
+Date: Thu, 05 Feb 2004 00:08:18 +0100
+Sender: jackit-devel-admin@lists.sourceforge.net
+Message-ID: <40217B62.5020604@folkwang-hochschule.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-WbczFC+juBNM5l87Bxu7"
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Return-path: <jackit-devel-admin@lists.sourceforge.net>
+Errors-To: jackit-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:jackit-devel@lists.sourceforge.net>
+List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
+	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, jackit-devel <jackit-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+[crossposted to alsa-devel and jackit-devel]
 
---=-WbczFC+juBNM5l87Bxu7
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+hi *!
+
+i'd like to use the rear outs of my sblive platinum with jack.
+
+the following works:
+# aplay some.wav -Dfront &
+# aplay someother.wav -Drear
+both signals end up at my mixer as expected, so it seems the devices=20
+are independent.
+
+front is hw:0,0 which is a duplex device.
+rear is hw:0,3 and is playback only.
+
+first and all-important question: are the front and rear out pcm=20
+devices synced in hardware? i suppose so, otherwise they would be=20
+pretty much useless. (if it turns out they aren't, let me know and=20
+ignore the rest of this posting :( )
 
 
-Now that dmix is working well, I felt like trying something new. :)
+to use all four outs with jack, i dug out some old asoundrc hack=20
+that takashi and jaroslav showed me a while ago:
 
-This patch changes the JACK plugin to use a unique client name, which
-allows for multiple ALSA streams to share a JACK server.
+// combine two devices into one
+pcm.multi {
+         type multi;
+         slaves.a.pcm "hw:0,0";
+         slaves.a.channels 2;
+         slaves.b.pcm "hw:0,3";
+         slaves.b.channels 2;
+         bindings.0.slave a;
+         bindings.0.channel 0;
+         bindings.1.slave a;
+         bindings.1.channel 1;
+         bindings.2.slave b;
+         bindings.2.channel 0;
+         bindings.3.slave b;
+         bindings.3.channel 1;
+}
 
-Unfortunately, as reported earlier, some apps hang with the JACK plugin,
-and some even fail, e.g.
+ctl.multi {
+         type hw;
+         card 0;
+}
 
-ogg123: pcm_plug.c:884: snd_pcm_plug_hw_params: Assertion `err >= 0'
-failed.
+// somehow this device is not continous in memory and thus not=20
+mmap()able. jack wants mmap access, and this routing trick should help:
 
-I can provide output from pcm_params.c built with RULES_DEBUG defined if
-that's useful.
+pcm.ttable {
+         type route;
+         slave.pcm "multi";
+         ttable.0.0 1;
+         ttable.1.1 1;
+         ttable.2.2 1;
+         ttable.3.3 1;
+}
+
+ctl.ttable {
+         type hw;
+         card 0;
+}
 
 
--- 
-Earthling Michel Dänzer      |     Debian (powerpc), X and DRI developer
-Libre software enthusiast    |   http://svcs.affero.net/rm.php?r=daenzer
+ok. now i can do
+# jackstart -d alsa -d ttable -P
+and i get 4 outs.
 
---=-WbczFC+juBNM5l87Bxu7
-Content-Disposition: inline; filename=alsa-pcm-jack-unique-client-name.diff
-Content-Type: text/x-patch; name=alsa-pcm-jack-unique-client-name.diff; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-Index: src/pcm/ext/pcm_jack.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/ext/pcm_jack.c,v
-retrieving revision 1.4
-diff -p -u -r1.4 pcm_jack.c
---- src/pcm/ext/pcm_jack.c	28 Oct 2003 18:19:09 -0000	1.4
-+++ src/pcm/ext/pcm_jack.c	4 Feb 2004 19:18:07 -0000
-@@ -697,6 +697,8 @@ int snd_pcm_jack_open(snd_pcm_t **pcmp, 
- 	snd_pcm_jack_t *jack;
- 	int err;
- 	int fd[2];
-+	static unsigned int num = 0;
-+	char jack_client_name[32];
- 	
- 	assert(pcmp);
- #ifdef PCM_JACK_DEBUG
-@@ -723,17 +725,24 @@ int snd_pcm_jack_open(snd_pcm_t **pcmp, 
- 
- 	if (stream == SND_PCM_STREAM_PLAYBACK) {
- 		jack->channels = jack->playback_ports_n;
--		jack->client = jack_client_new("alsaP");
- 	}
- 	else {
- 		jack->channels = jack->capture_ports_n;
--		jack->client = jack_client_new("alsaC");
- 	}
- 
- 	if (jack->channels == 0) {
- 		SNDERR("define the %s_ports section\n", stream == SND_PCM_STREAM_PLAYBACK ? "playback" : "capture");
- 		goto _free;
- 	}
-+
-+	if (snprintf(jack_client_name, sizeof(jack_client_name), "alsa%s.%d.%d",
-+		     stream == SND_PCM_STREAM_PLAYBACK ? "P" : "C", getpid(), num++)
-+	    >= sizeof(jack_client_name)) {
-+		fprintf(stderr, "%s: WARNING: JACK client name '%s' truncated to %d characters, might not be unique\n",
-+			__func__, jack_client_name, strlen(jack_client_name));
-+	}
-+
-+	jack->client = jack_client_new(jack_client_name);
- 
- 	if (jack->client==0) {
- 		err = -ENOENT;	
+3 problems remain:
 
---=-WbczFC+juBNM5l87Bxu7--
+
+* no sound from the rear outs when used with jack in this way :(
+
+* qjackctl goes all haywire with this device: xruns galore. all is=20
+well when i don't use qjackctl and start jackd from the command=20
+line, so it might be a qjackctl problem, but i thought i'd mention=20
+it anyway - maybe the ttable device is not really kosher...
+
+* no input from the first two channels.
+
+
+jack somehow assumes that either all or no channels are duplex. if i=20
+don't use the -P (or non-duplex playback only) flag, it says, "...
+
+nettings@kleineronkel:~> jackstart -d alsa -d ttable
+back from read, ret =3D 1 errno =3D=3D Invalid argument
+jackd 0.94.3
+[...]
+creating alsa driver ...=20
+ttable|ttable|1024|2|48000|0|0|nomon|swmeter|rt|32bit
+ALSA lib pcm_hw.c:1055:(snd_pcm_hw_open) open /dev/snd/pcmC0D3c=20
+failed: No such device
+jackstart: pcm.c:689: snd_pcm_nonblock: Assertion `pcm' failed.
+Aborted
+
+=2E..",  apparently trying to find a capture device for channels 2 and 3.=
+
+
+is there a way to fool jack into believing all are duplex with some=20
+more asoundrc magic? ideally, those two bogus ins would produce=20
+silence, but i don't really care, i don't connect them anyway.
+
+
+thanks in advance,
+
+j=F6rn
+
+
+--=20
+"I never use EQ, never, never, never. I previously used to use mic
+positioning but I've even given up on that too."
+	- Jezar on http://www.audiomelody.com
+
+
+J=F6rn Nettingsmeier
+Kurf=FCrstenstr 49, 45138 Essen, Germany
+http://spunk.dnsalias.org (my server)
+http://www.linuxaudiodev.org (Linux Audio Developers)
+
+
 
 
 
