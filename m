@@ -1,13 +1,13 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: Re: [Alsa-user] Audigy multichannel and line-in	did not work in	Linux 2.6.7
-Date: Thu, 16 Sep 2004 10:08:32 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low volume (both in and out)
+Date: Thu, 16 Sep 2004 10:16:39 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409160808.i8G88V3b015606@www1.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
-Mime-Version: 1.0
-Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97782744-1804289383-1095322112=:15605"
-Content-Transfer-Encoding: 8BIT
+Message-ID: <20040916081639.D7AFE3F01A@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 595942A2
+	for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2004 10:16:40 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,57 +16,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: rlrevell@joe-job.com, tiwai@suse.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---97782744-1804289383-1095322112=:15605
-Content-Type: TEXT/plain; CHARSET=US-ASCII
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Is this what you wanted ???
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000324
+======================================================================
+Reported By:                garden
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     324
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian sid
+Kernel Version:             2.6.5
+======================================================================
+Date Submitted:             06-06-2004 13:17 CEST
+Last Modified:              09-16-2004 10:16 CEST
+======================================================================
+Summary:                    Audigy2 Platinum: very low volume (both in and out)
+Description: 
+Both the input and output levels of my Audigy2 Platinum seem to be very low
+if compared to the same card with Windows (win98se). For example, I
+connected an external source (a MD player with very loud music in the
+disc) to the optical input, then to the aux input, then to the aux2 input.
+With the mixer settings to 100% the input level still does not go over
+20-25% of the maximum amplitude (while with Windows I have to lower the
+input level or it will be too high). The same thing applies to the output
+level of my analog speakers. [I must be *very* careful when I reboot with
+Windows and must not forget to turn the volume knob from 10 to 2]. I had
+exactly the same problem when I used the emu10k1 drivers from sourceforge.
+======================================================================
 
-Summary: Support for capture of 16,32,64 channels on emu10k1 device 2
+----------------------------------------------------------------------
+ garden - 09-14-2004 15:24 CEST 
+----------------------------------------------------------------------
+Just to keep things updated: the problem stays there also with 2.6.8.1 and
+ALSA 1.0.7rc1 (not compiled with the kernel).
 
-This patch changes default constraint on "EFX voices mask" control and
-allow capture of 1, 2, 4, 8, 16, 32, 64 channels instead of 1, 2, 4, 8.
+----------------------------------------------------------------------
+ pzad - 09-16-2004 10:16 CEST 
+----------------------------------------------------------------------
+Driver only attenuate signals. If you set volumes of inputs and output to
+100, then you get what is exactly on input.
+Windows drivers probably amplify inputs or outputs. 
 
+Could you attach output of amixer ????
 
-Signed-off-by: Peter Zubaj <pzad@pobox.sk>
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=0ASpolocnost SUN Microsystems uviedla na trh novy server Sun Fire V20z=0Az=
-alozeny procesoroch AMD Opteron.=0AViac informacii najdete na : http://www.=
-somi.sk/sun/v20z.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
---97782744-1804289383-1095322112=:15605
-Content-Type: APPLICATION/octet-stream; name="efx_channels.diff"
-Content-Transfer-Encoding: BASE64
-
-ZGlmZiAtdSAtciBhbHNhLWRyaXZlci0xLjAuNmEtb2xkL2Fsc2Eta2VybmVs
-L3BjaS9lbXUxMGsxL2VtdXBjbS5jIGFsc2EtZHJpdmVyLTEuMC42YS9hbHNh
-LWtlcm5lbC9wY2kvZW11MTBrMS9lbXVwY20uYwotLS0gYWxzYS1kcml2ZXIt
-MS4wLjZhLW9sZC9hbHNhLWtlcm5lbC9wY2kvZW11MTBrMS9lbXVwY20uYwky
-MDA0LTA3LTE0IDE2OjE0OjU0LjAwMDAwMDAwMCArMDAwMAorKysgYWxzYS1k
-cml2ZXItMS4wLjZhL2Fsc2Eta2VybmVsL3BjaS9lbXUxMGsxL2VtdXBjbS5j
-CTIwMDQtMDktMDYgMTk6NTU6MTkuMDAwMDAwMDAwICswMDAwCkBAIC0xMDky
-LDYgKzEwOTIsNyBAQAogCWVtdTEwazFfdCAqZW11ID0gc25kX2tjb250cm9s
-X2NoaXAoa2NvbnRyb2wpOwogCXVuc2lnbmVkIGludCBudmFsWzJdLCBiaXRz
-OwogCWludCBuZWZ4ID0gZW11LT5hdWRpZ3kgPyA2NCA6IDMyOworCWludCBu
-ZWZ4YiA9IGVtdS0+YXVkaWd5ID8gNyA6IDY7CiAJaW50IGNoYW5nZSwgaWR4
-OwogCQogCW52YWxbMF0gPSBudmFsWzFdID0gMDsKQEAgLTExMDAsOCArMTEw
-MSwxNCBAQAogCQkJbnZhbFtpZHggLyAzMl0gfD0gMSA8PCAoaWR4ICUgMzIp
-OwogCQkJYml0cysrOwogCQl9Ci0JaWYgKGJpdHMgIT0gMSAmJiBiaXRzICE9
-IDIgJiYgYml0cyAhPSA0ICYmIGJpdHMgIT0gOCkKKwkJCisJZm9yIChpZHgg
-PSAwOyBpZHggPCBuZWZ4YjsgaWR4KyspCisJCWlmICgxIDw8IGlkeCA9PSBi
-aXRzKQorCQkJYnJlYWs7CisJCisJaWYgKGlkeCA+PSBuZWZ4YikKIAkJcmV0
-dXJuIC1FSU5WQUw7CisKIAlzcGluX2xvY2tfaXJxKCZlbXUtPnJlZ19sb2Nr
-KTsKIAljaGFuZ2UgPSAobnZhbFswXSAhPSBlbXUtPmVmeF92b2ljZXNfbWFz
-a1swXSkgfHwKIAkJKG52YWxbMV0gIT0gZW11LT5lZnhfdm9pY2VzX21hc2tb
-MV0pOwo=
-
---97782744-1804289383-1095322112=:15605--
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-06-04 13:17 garden         New Bug                                      
+06-06-04 13:17 garden         Distribution              => Debian sid      
+06-06-04 13:17 garden         Kernel Version            => 2.6.5           
+06-28-04 09:17 pzad           Assigned To               => pzad            
+06-28-04 09:17 pzad           Status                   new => assigned     
+09-14-04 15:24 garden         Bugnote Added: 0001758                       
+09-16-04 10:16 pzad           Bugnote Added: 0001766                       
+======================================================================
 
 
 -------------------------------------------------------
