@@ -1,9 +1,16 @@
-From: "thewade" <pdman@aproximation.org>
-Subject: Re: Change of iomem types
-Date: Tue, 21 Sep 2004 11:05:12 -0600
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0000511]: [PATCH] 15_alsamixer_doc_keycase
+Date: Tue, 21 Sep 2004 19:43:48 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409211705.i8LH5CYI029513@sanctuary.aproximation.org>
+Message-ID: <20040921174348.6051E39007@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A965C30B
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 19:43:48 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 6F50C2662D
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 19:43:48 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -12,28 +19,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> Now I took a look at hdsp code and found an obvious bug which likely
-> has hit you.  Could you try the attached patch?
 
-Hurray!
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000511
+======================================================================
+Reported By:                jdthood
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Bug ID:                     511
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   text
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             09-21-2004 19:43 CEST
+Last Modified:              09-21-2004 19:43 CEST
+======================================================================
+Summary:                    [PATCH] 15_alsamixer_doc_keycase
+Description: 
+Patch for alsamixer.1 to make it mention that commands given in upper case
+can also be entered in lower case
+======================================================================
 
-My RME Hammerfall works on a 64 bit machine!
-
-On boot the kernel doesnt see the cardbus, but running hdsploader
-uploads the firmware, my little angry red light (host error warning
-light) goes away and my card works!
-
-Also, hdspmixer wont display, which is weird, but amixer can do
-everything hdspmixer can do I guess. I get a segfault if i run as
-non-root and apparent opperation, but no display, as root.
-
-Thank you SO MUCH! Now I have to get PD and GEM set up. Thank you Grand
-Master Takashi Iwai!
-
--thewade
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-21-04 19:43 jdthood        New Bug                                      
+09-21-04 19:43 jdthood        File Added: 15_alsamixer_doc_keycase.dpatch                    
+======================================================================
 
 
 -------------------------------------------------------
