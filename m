@@ -1,10 +1,11 @@
-From: wal_teichmann@t-online.de (Wolfgang Teichmann)
-Subject: Terratec DMX 6fire again
-Date: Thu, 07 Nov 2002 18:52:50 +0100
+From: Fergus Reid <fergusr@solid-state-logic.com>
+Subject: asound.conf for multiple cards one device
+Date: Thu, 07 Nov 2002 18:11:34 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DCAA872.1060805@t-online.de>
+Message-ID: <3DCAACD6.8090206@solid-state-logic.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms070000070805070608030103"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,112 +18,161 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a cryptographically signed message in MIME format.
+Hi, I'm trying to configure asound.conf to support "two cards as one" 
+(but with 3, 8 channel cards!) as suggested in the .asoundrc doc. When I 
+try to aplay the new device however I get:
 
---------------ms070000070805070608030103
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+"ALSA lib pcm_multi.c:928:(_snd_pcm_multi_open) Invalid or missing 
+schannel for channel 0
+aplay: main:462: audio open error: Invalid argument"
 
-Hallo,
-
-(Rh 8.0, kernel-2.2.20-pre10-ac2, alsa-0.9-cvsexport-20021107)
-
-What is the status and progress of the driver for this card
-(Terratec DMX 6fire)?
-
-If I start with Linux and try to choose the rear input as sound source
-in alsamixer nothing happens!
-
-For example:
-
-I have a TV card connected to the rear input of the Terratec DMX 6fire ,
-but when I start xawtv or xawdecode - no sound (all channels ar unmuted
-etc) Alsamixer does not help.Envycontrol shows no signal in
-H/W in 3 and H/W in4
-If I start the PC with Windows and restart (warm boot) into Linux, there
-is sound in xawtv and xawdecode, Envycontrol shows the signal H/W in3 
-and H/W in4
-
-I have already asked this question in this group, but I got no answer.
-
-Would one of the developers be so kind to answer my questions.
+I'm using three terratec ews88mt cards and my asound.conf looks like this:
 
 
 
-regards,
-W. Teichmann
+pcm_slave.ssl8_s {
+    pcm ssl8_0
+}
+pcm.ssl8_0 {
+    type hw
+    card 0
+}
+ctl.ssl8_0 {
+    type hw
+    card 0
+}
+pcm.ssl8_1 {
+    type hw
+    card 1
+}
+ctl.ssl8_1 {
+    type hw
+    card 1
+}
+pcm.ssl8_2 {
+    type hw
+    card 2
+}
+ctl.ssl8_2 {
+    type hw
+    card 2
+}
+ctl.ssl_24 {
+    type hw
+    card 0
+}
 
---------------ms070000070805070608030103
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+pcm.ssl_24 {
+    type multi;
+    slaves.a.pcm ssl8_0;
+    slaves.a.channels 8;
+    slaves.b.pcm ssl8_1;
+    slaves.b.channels 8;
+    bindings.0.slave a;
+    bindings.0.channel 0;
+    bindings.1.slave a;
+    bindings.1.channel 1;
+    bindings.2.slave a;
+    bindings.2.channel 2;
+    bindings.3.slave a;
+    bindings.3.channel 3;
+    bindings.4.slave a;
+    bindings.4.channel 4;
+    bindings.5.slave a;
+    bindings.5.channel 5;
+    bindings.6.slave a;
+    bindings.6.channel 6;
+    bindings.7.slave a;
+    bindings.7.channel 7;
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJZDCC
-AxAwggJ5oAMCAQICAwiCPDANBgkqhkiG9w0BAQQFADCBkjELMAkGA1UEBhMCWkExFTATBgNV
-BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUx
-HTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVl
-bWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMTAxODAxMTk1OVoXDTAzMTAxODAxMTk1OVowSzEf
-MB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEoMCYGCSqGSIb3DQEJARYZd2FsX3Rl
-aWNobWFubkB0LW9ubGluZS5kZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK3t
-9U/z1sitJNCUAu5FS2TmcSPNb0gVDWjsGFyRTlGj9CPLsrTwKit8pRZmhvdKl1NALv6c1wQj
-9duLTW9CzNOqKUtDwO95t13s8bPGjIl6hDssadXu7RT+MVduAtHGNnk4NdIVP6mygFgtsomE
-TtJ5o97/loxL+1+FZ8d62PiUP7YyNMMto/zo3SNDSmV+4fsQLQE6C2S9cUukO4vkW8Zk7arf
-B86NJ4fBnT1qgUgmcoFh21qnkrDybkpOKdnoMAXiEgmKPNu9TXn61xASxTOSlMO67CXoZV8e
-5Jtu0pF7RqoAD90mEpGvSOxyfCQqlfpxawOvyB/7CyJOhG03Ek0CAwEAAaM2MDQwJAYDVR0R
-BB0wG4EZd2FsX3RlaWNobWFubkB0LW9ubGluZS5kZTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3
-DQEBBAUAA4GBALto5AYCDKxUDHP2QBOhsT08knVjdE6HCKKMM/4nEQZn7Dy5iVDp634APC16
-rX8VgZ8uGVMrFvxOByDBpN3zSeyWWYlKga0P3vr0whc1icUq6sPHGbjFx7haLxrHE3wD4kin
-XPLQX9p5c0ZKjc3eYvpSm5H1mr/lRMhVtQNdWdXjMIIDEDCCAnmgAwIBAgIDCII8MA0GCSqG
-SIb3DQEBBAUAMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYD
-VQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlmaWNhdGUg
-U2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzAwHhcN
-MDIxMDE4MDExOTU5WhcNMDMxMDE4MDExOTU5WjBLMR8wHQYDVQQDExZUaGF3dGUgRnJlZW1h
-aWwgTWVtYmVyMSgwJgYJKoZIhvcNAQkBFhl3YWxfdGVpY2htYW5uQHQtb25saW5lLmRlMIIB
-IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAre31T/PWyK0k0JQC7kVLZOZxI81vSBUN
-aOwYXJFOUaP0I8uytPAqK3ylFmaG90qXU0Au/pzXBCP124tNb0LM06opS0PA73m3Xezxs8aM
-iXqEOyxp1e7tFP4xV24C0cY2eTg10hU/qbKAWC2yiYRO0nmj3v+WjEv7X4Vnx3rY+JQ/tjI0
-wy2j/OjdI0NKZX7h+xAtAToLZL1xS6Q7i+RbxmTtqt8Hzo0nh8GdPWqBSCZygWHbWqeSsPJu
-Sk4p2egwBeISCYo8271NefrXEBLFM5KUw7rsJehlXx7km27SkXtGqgAP3SYSka9I7HJ8JCqV
-+nFrA6/IH/sLIk6EbTcSTQIDAQABozYwNDAkBgNVHREEHTAbgRl3YWxfdGVpY2htYW5uQHQt
-b25saW5lLmRlMAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEEBQADgYEAu2jkBgIMrFQMc/ZA
-E6GxPTySdWN0TocIoowz/icRBmfsPLmJUOnrfgA8LXqtfxWBny4ZUysW/E4HIMGk3fNJ7JZZ
-iUqBrQ/e+vTCFzWJxSrqw8cZuMXHuFovGscTfAPiSKdc8tBf2nlzRkqNzd5i+lKbkfWav+VE
-yFW1A11Z1eMwggM4MIICoaADAgECAhBmRXK3zHT1z2N2RYTQLpEBMA0GCSqGSIb3DQEBBAUA
-MIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBl
-IFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0aW5nMSgwJgYDVQQLEx9DZXJ0aWZpY2F0
-aW9uIFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtUaGF3dGUgUGVyc29uYWwgRnJlZW1h
-aWwgQ0ExKzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVtYWlsQHRoYXd0ZS5jb20wHhcN
-MDAwODMwMDAwMDAwWhcNMDQwODI3MjM1OTU5WjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgT
-DFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAb
-BgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFp
-bCBSU0EgMjAwMC44LjMwMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDeMzKmY8cJJUU+
-0m54J2eBxdqIGYKXDuNEKYpjNSptcDz63K737nRvMLwzkH/5NHGgo22Y8cNPomXbDfpL8dbd
-YaX5hc1VmjUanZJ1qCeu2HL5ugL217CR3hzpq+AYA6h8Q0JQUYeDPPA5tJtUihOH/7ObnUlm
-AC0JieyUa+mhaQIDAQABo04wTDApBgNVHREEIjAgpB4wHDEaMBgGA1UEAxMRUHJpdmF0ZUxh
-YmVsMS0yOTcwEgYDVR0TAQH/BAgwBgEB/wIBADALBgNVHQ8EBAMCAQYwDQYJKoZIhvcNAQEE
-BQADgYEAMbFLR135AXHl9VNsXXnWPZjAJhNigSKnEvgilegbSbcnewQ5uvzm8iTrkfq97A0q
-OPdQVahs9w2tTBu8A/S166JHn2yiDFiNMUIJEWywGmnRKxKyQF1q+XnQ6i4l3Yrk/NsNH50C
-81rbyjz2ROomaYd/SJ7OpZ/nhNjJYmKtBcYxggPVMIID0QIBATCBmjCBkjELMAkGA1UEBhMC
-WkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQK
-EwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJz
-b25hbCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwAgMIgjwwCQYFKw4DAhoFAKCCAg8wGAYJKoZI
-hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDIxMTA3MTc1MjUwWjAjBgkq
-hkiG9w0BCQQxFgQU1WXJh7uSfV4k35iruoNMSobZ1GEwUgYJKoZIhvcNAQkPMUUwQzAKBggq
-hkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZI
-hvcNAwICASgwgasGCSsGAQQBgjcQBDGBnTCBmjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgT
-DFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAb
-BgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFp
-bCBSU0EgMjAwMC44LjMwAgMIgjwwga0GCyqGSIb3DQEJEAILMYGdoIGaMIGSMQswCQYDVQQG
-EwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xDzANBgNV
-BAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlmaWNhdGUgU2VydmljZXMxKDAmBgNVBAMTH1Bl
-cnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzACAwiCPDANBgkqhkiG9w0BAQEFAASCAQCb
-8WchOb5loz636GaivUH0o5nBRDxLDEuKzR5vMPTZr9Oyc0xq2AZeV31qtJhEdCK9kf3mIG7I
-wBwZMAxQ5zxoKjV7PAMDUqq/0/F0HA61hZpgY4Fn9hXBenIxN9UMraN/+TZu2uD8mCVqa+ja
-kMGsMtpta+G1oLKx/cMvMWQf9LfkzJO7KnREJyjwzq3IpQcGZG5jXpi1Y+TsIFDzBtDghqcA
-WdFjGPJjQSGwtazQnBFHiyFUb2UzvpI+HaGC0Jh7tYMAUrSHUdWGMWmtYgGrh3Opi0K8kVoO
-AOzDxBApXz7UL4vv7feJ7Q+pPjoV46kTVi8v9as0VfNPLdzdgyfQAAAAAAAA
---------------ms070000070805070608030103--
+    bindings.0.slave b;
+    bindings.0.channel 8;
+    bindings.1.slave b;
+    bindings.1.channel 9;
+    bindings.2.slave b;
+    bindings.2.channel 10;
+    bindings.3.slave b;
+    bindings.3.channel 11;
+    bindings.4.slave b;
+    bindings.4.channel 12;
+    bindings.5.slave b;
+    bindings.5.channel 13;
+    bindings.6.slave b;
+    bindings.6.channel 14;
+    bindings.7.slave b;
+    bindings.7.channel 15;
+
+    bindings.0.slave c;
+    bindings.0.channel 16;
+    bindings.1.slave c;
+    bindings.1.channel 17;
+    bindings.2.slave c;
+    bindings.2.channel 18;
+    bindings.3.slave c;
+    bindings.3.channel 19;
+    bindings.4.slave c;
+    bindings.4.channel 20;
+    bindings.5.slave c;
+    bindings.5.channel 21;
+    bindings.6.slave c;
+    bindings.6.channel 22;
+    bindings.7.slave c;
+    bindings.7.channel 23;
+}
+
+pcm.ttable {
+    type route;
+    slave.pcm "ssl_24";
+    ttable.0.0 1;
+    ttable.1.1 1;
+    ttable.2.2 1;
+    ttable.3.3 1;
+    ttable.4.4 1;
+    ttable.5.5 1;
+    ttable.6.6 1;
+    ttable.7.7 1;
+    ttable.8.8 1;
+    ttable.9.9 1;
+    ttable.10.10 1;
+    ttable.11.11 1;
+    ttable.12.12 1;
+    ttable.13.13 1;
+    ttable.14.14 1;
+    ttable.15.15 1;
+    ttable.16.16 1;
+    ttable.17.17 1;
+    ttable.18.18 1;
+    ttable.19.19 1;
+    ttable.20.20 1;
+    ttable.21.21 1;
+    ttable.22.22 1;
+    ttable.23.23 1;
+}
+# see above.
+ctl.ttable {
+        type hw;
+        card 0;
+}
+
+Incidentally I can't see what the first pcm_slave entry is for. Can I 
+get this to work somehow?
+Thanks
+Fergus
+
+
+
+
+**********************************************************************
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom they
+are addressed. If you have received this email in error please notify
+the system manager.
+
+This footnote also confirms that this email message has been swept by
+MIMEsweeper for the presence of computer viruses.
+
+www.mimesweeper.com
+**********************************************************************
 
 
 
