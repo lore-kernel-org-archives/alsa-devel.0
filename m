@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
-Date: Fri, 24 Sep 2004 17:41:40 +0200 (CEST)
+Date: Fri, 24 Sep 2004 17:39:02 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924154140.7847E4B015@server.perex-int.cz>
+Message-ID: <20040924153902.4FC634B014@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B21B32A3
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 17:41:40 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A42BA2A3
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 17:39:05 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000523
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000523
 ======================================================================
 Reported By:                pharm
 Assigned To:                
@@ -38,7 +38,7 @@ Distribution:               Debian unstable
 Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
 ======================================================================
 Date Submitted:             09-22-2004 22:48 CEST
-Last Modified:              09-24-2004 17:41 CEST
+Last Modified:              09-24-2004 17:39 CEST
 ======================================================================
 Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
 Description: 
@@ -192,12 +192,6 @@ Try the following (as root):
 If this solves the analog-out problem, we need to figure out which
 bit affects it...
 
-----------------------------------------------------------------------
- pharm - 09-24-2004 17:41 CEST 
-----------------------------------------------------------------------
-Analogue out isn't being echoed to the SPDIF either -- only AC3 output is
-working at this point. cheers, Phil
-
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -227,7 +221,6 @@ Date Modified  Username       Field                    Change
 09-24-04 17:32 pharm          File Added: take4-ac97#0-0+regs                    
 09-24-04 17:33 pharm          Bugnote Added: 0001897                       
 09-24-04 17:39 tiwai          Bugnote Added: 0001898                       
-09-24-04 17:41 pharm          Bugnote Added: 0001899                       
 ======================================================================
 
 
