@@ -1,15 +1,17 @@
 From: Dmitry Torokhov <dtor_core@ameritech.net>
-Subject: [PATCH 0/10] Convert gameport to driver model/sysfs
-Date: Fri, 11 Feb 2005 01:58:47 -0500
-Message-ID: <200502110158.47872.dtor_core@ameritech.net>
+Subject: [PATCH 3/10] Gameport: connect() is mandatory
+Date: Fri, 11 Feb 2005 02:00:59 -0500
+Message-ID: <200502110201.00916.dtor_core@ameritech.net>
+References: <200502110158.47872.dtor_core@ameritech.net> <200502110159.51020.dtor_core@ameritech.net> <200502110200.28299.dtor_core@ameritech.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from smtp817.mail.sc5.yahoo.com (smtp817.mail.sc5.yahoo.com [66.163.170.3])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 98BB41FF
-	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2005 08:05:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 4D25B22D
+	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2005 08:05:36 +0100 (MET)
+In-Reply-To: <200502110200.28299.dtor_core@ameritech.net>
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -24,65 +26,66 @@ To: InputML <linux-input@atrey.karlin.mff.cuni.cz>
 Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, Vojtech Pavlik <vojtech@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-This series of patches adds a new "gameport" bus to the driver model.
-It is implemented very similarly to "serio" bus and also allows
-individual drivers to be manually bound/disconnected from a port
-by manipulating port's "drvctl" attribute.
+===================================================================
 
-01-gameport-renames1.patch
-- rename gameport->driver to gameport->port_data in preparation
-  to sysfs integration to avoid confusion with real drivers.
 
-02-gameport-renames2.patch
-- more renames in gameport in preparations to sysfs integration,
-  gameport_dev renamed to gameport_driver, gameport_[un]register_device
-  renamed to gameport_[un]register_driver
+ChangeSet@1.2151, 2005-02-11 01:18:29-05:00, dtor_core@ameritech.net
+  Input: make connect and disconnect methods mandatory for gameport
+         drivers since that's where gameport_{open|close} are called
+         from to actually bind driver to a port.
+  
+  Signed-off-by: Dmitry Torokhov <dtor@mail.ru>
 
-03-gameport-connect-mandatory.patch
-- make connect and disconnect mandatory as these call gameport_open
-  and gameport_close which actually bind driver and port together.
 
-04-gameport-dynalloc-prepare.patch
-- sysfs/kobjects requires objects be allocated synamically. Prepare
-  to dynamic gameport allocation, create gameport_allocate_port and
-  gameport_free_port; dynamically allocated ports are freed by core
-  upon release. Also add gameport_set_name and gameport_set_phys
-  to ease transition.
+ gameport.c |    9 ++++-----
+ 1 files changed, 4 insertions(+), 5 deletions(-)
 
-05-gameport-dynalloc-input.patch
-- convert drivers in input/gameport to dynamic gameport allocation.
 
-06-gameport-dynalloc-sound-oss.patch
-- convert drivers in sound/oss to dynamic gameport allocation.
+===================================================================
 
-07-gameport-dynalloc-sound-alsa.patch
-- convert drivers in sound/pci to dynamic gameport allocation.
 
-08-gameport-drivers-sysfs.patch
-- add "gameport" bus and have joystick gameport drivers register
-  themselves on this bus.
 
-09-gameport-devices-sysfs.patch
-- complete gameport sysfs integration. Gameports are registered on
-  the "gameport" bus.
+diff -Nru a/drivers/input/gameport/gameport.c b/drivers/input/gameport/gameport.c
+--- a/drivers/input/gameport/gameport.c	2005-02-11 01:35:40 -05:00
++++ b/drivers/input/gameport/gameport.c	2005-02-11 01:35:40 -05:00
+@@ -107,8 +107,7 @@
+         list_for_each_entry(drv, &gameport_driver_list, node) {
+ 		if (gameport->drv)
+ 			break;
+-		if (drv->connect)
+-                	drv->connect(gameport, drv);
++               	drv->connect(gameport, drv);
+         }
+ }
  
-10-gameport-drvdata.patch
-- Get rid of gameport->private, use driver-specific data in device
-  structure, access through gameport_get/set_drvdata helpers.
-
-The changes can also be pulled from my tree (which has Vojtech's
-input tree as a parent):
-
-	bk pull bk://dtor.bkbits.net/input 
-
-I am CC-ing ALSA list as the changes touch quite a few sound drivers.
-
-Comments/testing is appreciated.
-
--- 
-Dmitry
+@@ -128,7 +127,7 @@
+ void gameport_unregister_port(struct gameport *gameport)
+ {
+ 	list_del_init(&gameport->node);
+-	if (gameport->drv && gameport->drv->disconnect)
++	if (gameport->drv)
+ 		gameport->drv->disconnect(gameport);
+ }
+ 
+@@ -138,7 +137,7 @@
+ 
+ 	list_add_tail(&drv->node, &gameport_driver_list);
+ 	list_for_each_entry(gameport, &gameport_list, node)
+-		if (!gameport->drv && drv->connect)
++		if (!gameport->drv)
+ 			drv->connect(gameport, drv);
+ }
+ 
+@@ -148,7 +147,7 @@
+ 
+ 	list_del_init(&drv->node);
+ 	list_for_each_entry(gameport, &gameport_list, node) {
+-		if (gameport->drv == drv && drv->disconnect)
++		if (gameport->drv == drv)
+ 			drv->disconnect(gameport);
+ 		gameport_find_driver(gameport);
+ 	}
 
 
 -------------------------------------------------------
