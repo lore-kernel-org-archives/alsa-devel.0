@@ -1,14 +1,12 @@
-From: Chuck Winters <cwinters@atl.lmco.com>
-Subject: Re: Configuration Spaces
-Date: Tue, 17 Sep 2002 09:48:00 -0400
+From: Paul Davis <pbd@op.net>
+Subject: Re: Re: alsalib symbol problem
+Date: Tue, 17 Sep 2002 09:57:07 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020917094800.A3340@atl.lmco.com>
-References: <20020916110722.A28835@atl.lmco.com> <E17r1Ja-0001U3-00@usw-sf-list1.sourceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <E17rIoq-0002eX-00@usw-sf-list1.sourceforge.net>
+References: <87u1kolow9.fsf@zaphod.blackdown.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <E17r1Ja-0001U3-00@usw-sf-list1.sourceforge.net>; from pbd@op.net on Mon, Sep 16, 2002 at 02:33:09PM -0400
+In-reply-to: Your message of "Tue, 17 Sep 2002 15:35:50 +0200."
+             <87u1kolow9.fsf@zaphod.blackdown.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,41 +15,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Juergen Kreileder <jk@blackdown.de>
+Cc: Tim Goetze <tim@quitte.de>, Florian Bomers <Florian.Bomers@sun.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thanks.
+>> you probably are calling alsa from a shared object -- try 
+>> 
+>>   dlopen ("libasound.so", RTLD_LAZY | RTLD_GLOBAL);
+>> 
+>> in your module's init function.
+>
+>The need for RTLD_GLOBAL is somewhat ugly, usually one wants to load
+>plugins with RTLD_LOCAL.  
 
-One other question.  This may be stupid, but here goes.
+the suggestion is not that *your* plugin should use RTLD_GLOBAL, but
+that RTLD_GLOBAL needs to be used when alsa-lib is linked into the
+address space.
 
-My knowledge of signals is that the period is the time it takes a signal to 
-complete 1 cycle.  So what is the snd_pcm_hw_params_set_period used for?
-Is the "period" a property of the signal, or an arbitrary property set by
-the programmer for performance, fidelity, etc.
+if you don't use RTLD_GLOBAL, then the symbols in libasound are not
+availble for subsequently-loaded dynamically linked code.
 
-Thanks,
-Chuck
+>Is there any reason ALSA can't do something like 
+>
+>   if (name == NULL) {
+>       Dl_info dlinfo;
+>       static int dummy;
+>       dladdr((void *) &dummy, &dlinfo);
+>       name = dlinfo.dli_fname;
+>   }
 
-On Mon, Sep 16, 2002 at 02:33:09PM -0400, Paul Davis wrote:
-> >	1) Is the configuration space specific to each device, or each opened s
-> >tream?
-> 
-> each open stream. obviously, its related to the underlying physical
-> device, but you're semantically operation on one stream.
-> 
-> --p
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+perhaps because this implementation of dlopen is platform specific?
+the dladdr function and the dlinfo structure are not present in
+my version of glibc, at least not as far as i can tell.
+
+--p
 
 
 -------------------------------------------------------
