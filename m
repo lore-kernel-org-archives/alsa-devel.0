@@ -1,13 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000476]: ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
-Date: Tue, 31 Aug 2004 12:27:36 +0200 (CEST)
+From: castet.matthieu@free.fr
+Subject: mpu401_pnp
+Date: Tue, 31 Aug 2004 22:50:41 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040831102736.624FB3F018@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1093985441.4134e4a1e2295@imp4-q.free.fr>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="-MOQ109398544115b67313ebfa30fb6b17badefb433226"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BCC76267
-	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 12:27:36 +0200 (MEST)
+Received: from postfix3-1.free.fr (postfix3-1.free.fr [213.228.0.44])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6EF3429A
+	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 22:58:00 +0200 (MEST)
+Received: from imp4-q.free.fr (imp4-q.free.fr [212.27.42.4])
+	by postfix3-1.free.fr (Postfix) with ESMTP id 2B33117352F
+	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 22:58:00 +0200 (CEST)
+Resent-To: alsa-devel@alsa-project.org
+Resent-Message-ID: <1093985880.4134e65816030@imp4-q.free.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,52 +25,140 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This message is in MIME format.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000476
-======================================================================
-Reported By:                babayaga
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     476
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             08-31-2004 01:01 CEST
-Last Modified:              08-31-2004 12:27 CEST
-======================================================================
-Summary:                    ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
-Description: 
-Please, see the full report at
-http://qa.mandrakesoft.com/show_bug.cgi?id=10859
-======================================================================
+---MOQ109398544115b67313ebfa30fb6b17badefb433226
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- tiwai - 08-31-2004 12:27 CEST 
-----------------------------------------------------------------------
-Above all, try the latest ALSA driver.
-If still not work, try dxs_support=2 module option for snd-via82xx.
-Also, ac97_quirk=1 module option might help in such a case.
 
-Make sure that the volume is unmuted and adjusted.  Attach
-/etc/asound.state for debugging if the above doesn't work.
-Also, don't load via82cxx_audio module at the same time.
-You set it as sound-slot-0 in /etc/modprobe.conf, which might
-cause conflicts.
+Hello,
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-31-04 01:01 babayaga       New Bug                                      
-08-31-04 12:27 tiwai          Bugnote Added: 0001670                       
-======================================================================
+I send you a mpu401 modules that support pnpbios.
+I don't add it to the mpu401 because it would add too much define.
+I am not a specialist in Kconfig edit, so for testing on my comptuter, I =
+only
+remplace traditionnal mpu401 with mpu401_pnp.
+
+Also I clear the function that create the mpu (snd_card_mpu401_add), and =
+I think
+you could re-use it for acpi_pnp insted of adding define.
+
+As you can see, because of a bug in pnpbios code, sometime it doesn't fin=
+d a
+irq, so it add a litle hack waiting the bug is fix in the kernel.
+
+With that, an some script (hotplug for example), the mpu401 is automatiqu=
+ely
+detected(at least on my i810 chipset).
+
+Matthieu
+---MOQ109398544115b67313ebfa30fb6b17badefb433226
+Content-Type: text/x-csrc; name="mpu401_pnp.c"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="mpu401_pnp.c"
+
+
+LyoKICogIERyaXZlciBmb3IgZ2VuZXJpYyBNUFUtNDAxIGJvYXJkcyAoVUFSVCBtb2RlIG9ubHkp
+CiAqICBDb3B5cmlnaHQgKGMpIGJ5IEphcm9zbGF2IEt5c2VsYSA8cGVyZXhAc3VzZS5jej4KICoK
+ICogIENvcHlyaWdodCAoYykgMjAwNCBieSBDYXN0ZXQgTWF0dGhpZXUgPGNhc3RldC5tYXR0aGll
+dUBmcmVlLmZyPgogKiAgcG9ydGQgb24gbXB1NDAxLmMKICogIENvcHlyaWdodCAoYykgMjAwMi0y
+MDAzIE1hdHRoZXcgV2lsY294IGZvciBIZXdsZXR0LVBhY2thcmQKICogIENvcHlyaWdodCAoQykg
+MjAwNCBIZXdsZXR0LVBhY2thcmQgQ28KICogICAgICAgQmpvcm4gSGVsZ2FhcyA8Ympvcm4uaGVs
+Z2Fhc0BocC5jb20+CiAqCiAqCiAqICAgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlv
+dSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKICogICBpdCB1bmRlciB0aGUgdGVy
+bXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQogKiAg
+IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExp
+Y2Vuc2UsIG9yCiAqICAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KICoKICog
+ICBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJl
+IHVzZWZ1bCwKICogICBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUg
+aW1wbGllZCB3YXJyYW50eSBvZgogKiAgIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBB
+IFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUKICogICBHTlUgR2VuZXJhbCBQdWJsaWMgTGlj
+ZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgogKgogKiAgIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBh
+IGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlCiAqICAgYWxvbmcgd2l0aCB0
+aGlzIHByb2dyYW07IGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdhcmUKICogICBGb3Vu
+ZGF0aW9uLCBJbmMuLCA1OSBUZW1wbGUgUGxhY2UsIFN1aXRlIDMzMCwgQm9zdG9uLCBNQSAgMDIx
+MTEtMTMwNyBVU0EKICoKICovCgojaW5jbHVkZSA8c291bmQvZHJpdmVyLmg+CiNpbmNsdWRlIDxs
+aW51eC9pbml0Lmg+CiNpbmNsdWRlIDxsaW51eC9tb2R1bGVwYXJhbS5oPgojaW5jbHVkZSA8c291
+bmQvY29yZS5oPgojaW5jbHVkZSA8c291bmQvbXB1NDAxLmg+CiNpbmNsdWRlIDxzb3VuZC9pbml0
+dmFsLmg+CiNpbmNsdWRlIDxsaW51eC9wbnAuaD4KCgpNT0RVTEVfQVVUSE9SKCJKYXJvc2xhdiBL
+eXNlbGEgPHBlcmV4QHN1c2UuY3o+Iik7Ck1PRFVMRV9ERVNDUklQVElPTigiTVBVLTQwMSBVQVJU
+Iik7Ck1PRFVMRV9MSUNFTlNFKCJHUEwiKTsKTU9EVUxFX0NMQVNTRVMoIntzb3VuZH0iKTsKCnN0
+YXRpYyBpbnQgaW5kZXhbU05EUlZfQ0FSRFNdID0gU05EUlZfREVGQVVMVF9JRFg7CS8qIEluZGV4
+IDAtTUFYICovCnN0YXRpYyBjaGFyICppZFtTTkRSVl9DQVJEU10gPSBTTkRSVl9ERUZBVUxUX1NU
+UjsJLyogSUQgZm9yIHRoaXMgY2FyZCAqLwpzdGF0aWMgaW50IGVuYWJsZVtTTkRSVl9DQVJEU10g
+PSBTTkRSVl9ERUZBVUxUX0VOQUJMRTsJLyogRW5hYmxlIHRoaXMgY2FyZCAqLwpzdGF0aWMgaW50
+IGJvb3RfZGV2czsKCm1vZHVsZV9wYXJhbV9hcnJheShpbmRleCwgaW50LCBib290X2RldnMsIDA0
+NDQpOwpNT0RVTEVfUEFSTV9ERVNDKGluZGV4LCAiSW5kZXggdmFsdWUgZm9yIE1QVS00MDEgZGV2
+aWNlLiIpOwpNT0RVTEVfUEFSTV9TWU5UQVgoaW5kZXgsIFNORFJWX0lOREVYX0RFU0MpOwptb2R1
+bGVfcGFyYW1fYXJyYXkoaWQsIGNoYXJwLCBib290X2RldnMsIDA0NDQpOwpNT0RVTEVfUEFSTV9E
+RVNDKGlkLCAiSUQgc3RyaW5nIGZvciBNUFUtNDAxIGRldmljZS4iKTsKTU9EVUxFX1BBUk1fU1lO
+VEFYKGlkLCBTTkRSVl9JRF9ERVNDKTsKbW9kdWxlX3BhcmFtX2FycmF5KGVuYWJsZSwgYm9vbCwg
+Ym9vdF9kZXZzLCAwNDQ0KTsKTU9EVUxFX1BBUk1fREVTQyhlbmFibGUsICJFbmFibGUgTVBVLTQw
+MSBkZXZpY2UuIik7Ck1PRFVMRV9QQVJNX1NZTlRBWChlbmFibGUsIFNORFJWX0VOQUJMRV9ERVND
+KTsKCiNkZWZpbmUgSU9fRVhURU5UIDIKCiNkZWZpbmUgQlJPS0VOX1BOUEJJT1MKCnN0YXRpYyBp
+bnQgc25kX2NhcmRfbXB1NDAxX2FkZChpbnQgZGV2LCBzbmRfY2FyZF90ICoqcGNhcmQsIGxvbmcg
+cG9ydCwgaW50IGlycSwgY2hhciAqIG9wdGlvbmFsX2Rlc2NyaXB0aW9uKSAKewoJaW50IGVycjsK
+CXNuZF9jYXJkX3QgKmNhcmQ7CgoJY2FyZCA9IHNuZF9jYXJkX25ldyhpbmRleFtkZXZdLCBpZFtk
+ZXZdLCBUSElTX01PRFVMRSwgMCk7CglpZiAoY2FyZCA9PSBOVUxMKQoJCXJldHVybiAtRU5PTUVN
+OwoJc3RyY3B5KGNhcmQtPmRyaXZlciwgIk1QVS00MDEgVUFSVCIpOwoJc3RyY3B5KGNhcmQtPnNo
+b3J0bmFtZSwgY2FyZC0+ZHJpdmVyKTsKCXNwcmludGYoY2FyZC0+bG9uZ25hbWUsICIlcyBhdCAw
+eCVseCwgIiwgY2FyZC0+c2hvcnRuYW1lLCBwb3J0KTsKCWlmIChpcnEgPj0gMCkgewoJCXNwcmlu
+dGYoY2FyZC0+bG9uZ25hbWUgKyBzdHJsZW4oY2FyZC0+bG9uZ25hbWUpLCAiSVJRICVkIiwgaXJx
+KTsKCX0gZWxzZSB7CgkJc3RyY2F0KGNhcmQtPmxvbmduYW1lLCAicG9sbGVkIik7Cgl9CglpZiAo
+b3B0aW9uYWxfZGVzY3JpcHRpb24pCgkJc3RybGNhdChjYXJkLT5sb25nbmFtZSwgb3B0aW9uYWxf
+ZGVzY3JpcHRpb24sIHNpemVvZihjYXJkLT5sb25nbmFtZSkpOwoKCWlmIChzbmRfbXB1NDAxX3Vh
+cnRfbmV3KGNhcmQsIDAsCgkJCQlNUFU0MDFfSFdfTVBVNDAxLAoJCQkJcG9ydCwgMCwKCQkJCWly
+cSwgaXJxID49IDAgPyBTQV9JTlRFUlJVUFQgOiAwLCBOVUxMKSA8IDApIHsKCQlwcmludGsoS0VS
+Tl9FUlIgIk1QVTQwMSBub3QgZGV0ZWN0ZWQgYXQgMHglbHhcbiIsIHBvcnQpOwoJCXNuZF9jYXJk
+X2ZyZWUoY2FyZCk7CgkJcmV0dXJuIC1FTk9ERVY7Cgl9CglpZiAoKGVyciA9IHNuZF9jYXJkX3Jl
+Z2lzdGVyKGNhcmQpKSA8IDApIHsKCQlzbmRfY2FyZF9mcmVlKGNhcmQpOwoJCXJldHVybiBlcnI7
+Cgl9CgkqcGNhcmQgPSBjYXJkOwoJcmV0dXJuIDA7Cn0KCnN0YXRpYyBzdHJ1Y3QgcG5wX2Rldmlj
+ZV9pZCBwbnBfZGV2aWRzW10gPSB7Cgl7IC5pZCA9ICJQTlBiMDA2IiwgLmRyaXZlcl9kYXRhID0g
+MCB9LAoJeyAuaWQgPSAiIiwgfSwKfTsKCk1PRFVMRV9ERVZJQ0VfVEFCTEUocG5wLCBwbnBfZGV2
+aWRzKTsKCnN0YXRpYyBpbnQgX19kZXZpbml0IHNuZF9jYXJkX21wdTQwMV9wbnBfcHJvYmUoc3Ry
+dWN0IHBucF9kZXYgKmRldiwgY29uc3Qgc3RydWN0IHBucF9kZXZpY2VfaWQgKmRpZCkgewoJbG9u
+ZyBwb3J0OwoJaW50IGlycTsKCXNuZF9jYXJkX3QgKmNhcmQgPSBOVUxMOwoJaW50IHJldDsKCQoJ
+c3RhdGljIGludCBjYXJkX2RldiA9IDA7CgoJaWYgKGNhcmRfZGV2ID49IFNORFJWX0NBUkRTKQoJ
+CXJldHVybiAtRU5PREVWOwoKCWlmICghZW5hYmxlW2NhcmRfZGV2XSkgewoJCWNhcmRfZGV2Kys7
+CgkJcmV0dXJuIC1FTk9FTlQ7Cgl9CgojaWZkZWYgQlJPS0VOX1BOUEJJT1MKcmV0cnk6CiNlbmRp
+ZgoJaWYgKCFwbnBfcG9ydF92YWxpZChkZXYsIDApIHx8CgkJCXBucF9wb3J0X2ZsYWdzKGRldiww
+KSAmIElPUkVTT1VSQ0VfRElTQUJMRUQpIHsKCQlwcmludGsoS0VSTl9XQVJOSU5HICJObyBpbyBw
+b3J0ICFcbiIpOwoJCXJldHVybiAtRU5PREVWOwoJfQoJaWYgKHBucF9wb3J0X2xlbihkZXYsIDAp
+IDwgSU9fRVhURU5UKSB7CgkJcHJpbnRrKEtFUk5fV0FSTklORyAiaW8gcG9ydCBsZW4gOiAlbGQg
+KGV4cGVjdGVkIDogJWQpICFcbiIsCgkJCQlwbnBfcG9ydF9sZW4oZGV2LCAwKSwgCgkJCQlJT19F
+WFRFTlQpOwoJCXJldHVybiAtRU5PREVWOwoJfQoJcG9ydCA9IHBucF9wb3J0X3N0YXJ0KGRldiww
+KTsKCglpZiAoIXBucF9pcnFfdmFsaWQoZGV2LDApfHwKCQkJcG5wX2lycV9mbGFncyhkZXYsMCkg
+JiBJT1JFU09VUkNFX0RJU0FCTEVEKSB7CiNpZmRlZiBCUk9LRU5fUE5QQklPUwoJCS8vWFhYIHBh
+cnNlciBidWcKCQlzdGF0aWMgaW50IHJldHJ5ID0gMDsKCQlpZiAoZGV2LT5kZXBlbmRlbnQgJiYg
+IXJldHJ5KSB7CgkJCWRldi0+YWN0aXZlID0gMDsKCQkJcHJpbnRrKEtFUk5fV0FSTklORyAiYnJv
+a2VuIHBucGJpb3MgcmV0cnkgOiAlZCFcbiIscG5wX2Fzc2lnbl9yZXNvdXJjZXMoZGV2LCAyKSk7
+CgkJCWRldi0+YWN0aXZlID0gMTsKCQkJcmV0cnkgPSAxOwoJCQlnb3RvIHJldHJ5OwoJCX0KI2Vu
+ZGlmCgkJcHJpbnRrKEtFUk5fV0FSTklORyAiTm8gaXJxICFcbiIpOwoJCWlycSA9IC0xOwoJfQoJ
+ZWxzZSB7CgkJaXJxID0gcG5wX2lycShkZXYsMCk7Cgl9CgoJcHJpbnRrKEtFUk5fSU5GTyAic25k
+X2NhcmRfbXB1NDAxIHBucGJpb3MgOiIKCQkiJXMgcG9ydCAweCUwM2x4LCBpcnE9JWRcbiIsCgkJ
+cG5wX2Rldl9uYW1lKGRldiksIHBvcnQsIGlycSk7CgkKCS8vWFhYIHBucF9kZXZfbmFtZShwbnBf
+ZGV2KSBnaXZlIG1lIGEgZW1wdHkgc3RyaW5nIC4uLgoJLyoKCXN0cmNhdChvcHRpb24sICIsICIp
+OwoJc3RybGNhdChvcHRpb24sIHBucF9kZXZfbmFtZShwbnBfZGV2KSwgc2l6ZW9mKGNhcmQtPmxv
+bmduYW1lKSk7CgkqLwoJcmV0ID0gc25kX2NhcmRfbXB1NDAxX2FkZChjYXJkX2RldiwgJmNhcmQs
+IHBvcnQsIGlycSwgTlVMTCk7IAoJaWYgKHJldCA+PSAwKQoJCXBucF9zZXRfZHJ2ZGF0YShkZXYs
+IGNhcmQpOwoKCXJldHVybiByZXQ7Cn0KCnN0YXRpYyB2b2lkIHNuZF9jYXJkX21wdTQwMV9wbnBf
+cmVtb3ZlKHN0cnVjdCBwbnBfZGV2ICpkZXYpIHsKCXNuZF9jYXJkX3QgKmNhcmQgPSAoc25kX2Nh
+cmRfdCAqKXBucF9nZXRfZHJ2ZGF0YShkZXYpOwoJaWYgKCFjYXJkKSB7CgkJQlVHKCk7CgkJcmV0
+dXJuOwoJfQoKCXNuZF9jYXJkX2Rpc2Nvbm5lY3QoY2FyZCk7CglzbmRfY2FyZF9mcmVlX2luX3Ro
+cmVhZChjYXJkKTsKfQoJCnN0YXRpYyBzdHJ1Y3QgcG5wX2RyaXZlciBzbmRfbXB1NDAxX3BucF9k
+cml2ZXIgPSB7CgkubmFtZSAgICAgICAgICAgPSAibXB1NDAxIiwKCS5pZF90YWJsZSAgICAgICA9
+IHBucF9kZXZpZHMsCgkucHJvYmUgICAgICAgICAgPSBzbmRfY2FyZF9tcHU0MDFfcG5wX3Byb2Jl
+LAoJLnJlbW92ZQkJPSBzbmRfY2FyZF9tcHU0MDFfcG5wX3JlbW92ZSwKfTsKCnN0YXRpYyBpbnQg
+X19pbml0IGFsc2FfY2FyZF9tcHU0MDFfaW5pdCh2b2lkKQp7CglpbnQgcmV0ID0gcG5wX3JlZ2lz
+dGVyX2RyaXZlcigmc25kX21wdTQwMV9wbnBfZHJpdmVyKTsKCWlmIChyZXQgPT0gMCkgewoJCXBu
+cF91bnJlZ2lzdGVyX2RyaXZlcigmc25kX21wdTQwMV9wbnBfZHJpdmVyKTsKCX0KCQkKCWlmIChy
+ZXQgPD0gMCkgewoJCXJldHVybiAtRU5PREVWOwoJfQoKCXJldHVybiAwOwp9CgpzdGF0aWMgdm9p
+ZCBfX2V4aXQgYWxzYV9jYXJkX21wdTQwMV9leGl0KHZvaWQpCnsKCXBucF91bnJlZ2lzdGVyX2Ry
+aXZlcigmc25kX21wdTQwMV9wbnBfZHJpdmVyKTsKfQoKbW9kdWxlX2luaXQoYWxzYV9jYXJkX21w
+dTQwMV9pbml0KQptb2R1bGVfZXhpdChhbHNhX2NhcmRfbXB1NDAxX2V4aXQpCg==
+
+---MOQ109398544115b67313ebfa30fb6b17badefb433226--
 
 
 -------------------------------------------------------
