@@ -1,16 +1,12 @@
-From: "Vince Lake" <vlakewa@corporate.southam.ca>
-Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
-Date: Thu, 28 Oct 2004 20:02:11 -0300
+From: "Antone Dempsey" <adempsey_st@aol.com>
+Subject: Rolex Submariner Replica
+Date: Thu, 28 Oct 2004 23:23:14 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <f92501c4bd42$5f1a8e31$be1982f5@auriga.ta3.sk>
+Message-ID: <EINKKPHGLMIECJCMBNNBLIOHHHAA.adempsey_st@aol.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from auriga.ta3.sk (pc-30-249-1.san-francisco2.pc.metropolis-inter.com [200.30.249.1])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 05EA430F
-	for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2004 01:03:08 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,32 +15,13 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-announce@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya,
+Do you want Watch?
 
-Do you want a rolex watch?
+http://evl.jhex.com/replica/sales/
 
-In our online store you can buy replicas of Rolex watches. They look
-and feel exactly like the real thing.
-
-- We have 20+ different brands in our selection
-- Free shipping if you order 5 or more
-- Save up to 40% compared to the cost of other replicas
-- Standard Features:
- - Screw-in crown
- - Unidirectional turning bezel where appropriate
- - All the appropriate rolex logos, on crown and dial
- - Heavy weight
-
-Visit us: http://www.roiex.com/rep/rolex/
-
-Best regards,
-Hilton Jones
-
-
-No thanks: http://roiex.com/z.php
 
 
 
