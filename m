@@ -1,17 +1,15 @@
 From: Florin Andrei <florin@andrei.myip.org>
 Subject: Re: Audigy 2 support - update
-Date: 23 May 2003 20:37:36 -0700
+Date: 23 May 2003 20:44:43 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1053747456.6906.1.camel@rivendell.home.local>
+Message-ID: <1053747883.6906.10.camel@rivendell.home.local>
 References: <20030523051240.GA10831@www.angiotech.com>
-	 <1053675028.18540.70.camel@rivendell.home.local>
-	 <20030524004334.GA15947@www.angiotech.com>
 Reply-To: alsa-devel@lists.sourceforge.net
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030524004334.GA15947@www.angiotech.com>
+In-Reply-To: <20030523051240.GA10831@www.angiotech.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,21 +21,19 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2003-05-23 at 17:43, Stephen Hassard wrote:
-> On Fri, May 23, 2003 at 12:30:28AM -0700, Florin Andrei wrote:
-> > On Thu, 2003-05-22 at 22:12, Stephen Hassard wrote:
-> > How about MIDI output?
-> 
-> MIDI output seems to work fine too.
+On Thu, 2003-05-22 at 22:12, Stephen Hassard wrote:
+> Anyhow, PCM support seems to work fine, tone controls work too. Mixing different PCM sources seems to work well too (playing mp3 from xmms while playing wolfenstein).
+> sfxload loads soundfonts into the synth, and plays well.
+> I've connected my midi keyboard to the keyboard port via an adapter, and I can route my midi keypressed to the Audigy 2 synth using my soundfont.
+> I haven't tried any digital out, but otherwise I haven't seen any problems.
 
-Thank you Stephen!
+Stephen, do you mind sharing with us the ALSA-relevant part of your
+/etc/modules.conf file, please?
 
-And thanks to the ALSA developers. Now i'll go ahead and buy an Audigy2.
-Yeah, it's going to be a Platinum, yeah, maybe a few gizmos on the front
-panel won't work (we'll see), but as long as there is at least one pair
-of MIDI in/out that works, i'm happy.
+Also, what's the distribution you're using, and what's the exact kernel
+version?
 
-Keep up the good work!
+Thanks,
 
 -- 
 Florin Andrei
