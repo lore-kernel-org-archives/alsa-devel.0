@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000770]: HDSP submix
-Date: Fri, 31 Dec 2004 18:52:42 +0100
-Message-ID: <cb587eae5e611f178ad5666f8fb4dca4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000771]: snd-pcm-oss makes /dev/sound device, not directory, if loaded before sound card drivers
+Date: Fri, 31 Dec 2004 18:57:12 +0100
+Message-ID: <307c0f1307e0b34dcd00b900698a75bf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CD0C713D
-	for <alsa-devel@alsa-project.org>; Fri, 31 Dec 2004 18:52:42 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C30D632C
+	for <alsa-devel@alsa-project.org>; Fri, 31 Dec 2004 18:57:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,34 +24,41 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=770> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=771> 
 ======================================================================
-Reported By:                kme
-Assigned To:                charbonnel
+Reported By:                roothorick
+Assigned To:                
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   770
-Category:                   hdsp progs
+Project:                    ALSA - driver
+Issue ID:                   771
+Category:                   CORE OSS - pcm
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               Gentoo Linux 2004.0
+Kernel Version:             2.6.10-gentoo-r1
 ======================================================================
-Date Submitted:             12-31-2004 18:52 CET
-Last Modified:              12-31-2004 18:52 CET
+Date Submitted:             12-31-2004 18:57 CET
+Last Modified:              12-31-2004 18:57 CET
 ======================================================================
-Summary:                    HDSP submix
+Summary:                    snd-pcm-oss makes /dev/sound device, not directory,
+if loaded before sound card drivers
 Description: 
-Is it possible to make "submix" view available to any output, perhaps the
-last selected?  The curent default behaviour seems to show AN1+2 (on the
-multiface) only.  It would be nice, for example, to see all levels to
-Analog (headphones) or to the various digital outs as desired.
+If snd-pcm-oss is loaded before the soundcard drivers are loaded,
+/dev/sound is created as a character special with major 116 and minor 33.
+When the soundcard drivers are later loaded, /dev/sound remains a device,
+which means there's nowhere for the OSS compatibility devices to go.
+
+This system uses udev.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-31-04 18:52 kme            New Issue                                    
+12-31-04 18:57 roothorick     New Issue                                    
+12-31-04 18:57 roothorick     Distribution              => Gentoo Linux 2004.0
+12-31-04 18:57 roothorick     Kernel Version            => 2.6.10-gentoo-r1
 ======================================================================
 
 
