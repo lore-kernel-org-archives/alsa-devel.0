@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000780]: More laptops with LEDs (from: 0000667- How to integrate turning on and off LED:s on laptops)
-Date: Fri, 7 Jan 2005 19:49:55 +0100
-Message-ID: <9ee01ed77ef1da576fdb73e81d784975@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000756]: ASRock k7vt4a+ with CMedia CMI9761 no mixer!
+Date: Fri, 7 Jan 2005 19:53:53 +0100
+Message-ID: <257d86caa6327e7c1b329fc47ca818f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C162E275
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 19:49:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87048275
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 19:53:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,98 +22,87 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=780> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=756> 
 ======================================================================
-Reported By:                piesis
-Assigned To:                tiwai
+Reported By:                wschrep
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   780
-Category:                   PCI - intel8x0
+Issue ID:                   756
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r9
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               debian/knoppmyth
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             01-03-2005 12:39 CET
-Last Modified:              01-07-2005 19:49 CET
+Date Submitted:             12-29-2004 01:15 CET
+Last Modified:              01-07-2005 19:53 CET
 ======================================================================
-Summary:                    More laptops with LEDs (from: 0000667- How to
-integrate turning on and off LED:s on laptops)
+Summary:                    ASRock k7vt4a+ with CMedia CMI9761 no mixer!
 Description: 
-The previous issue
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0000667 is marked as
-fixed and resolved, but it is not
-good:
-there seem to exist (many) more laptops utilizing this mute led feature,
-therefore the list of machines with this quirk should stay somehow open
-and updateable.
+Well on the website it states I have this chip:
+CMedia CMI9761 6 channel AC'97 audio codec
 
-Not all machines currently available are included (only two so far);
-New models will appear.
+When I do an lsmod I get this: 
+00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233 AC97
+Audio Controller (rev 50)
 
-To begin with - my HP zv5000 has the same led (I used an amixer command in
-lineakd to mute sound and turn on the led with that key).
-If I'm not wrong, the respective PCI IDs are:
+So I use the via82xx alsa sound driver module
 
-.vendor = 0x10de,
-.device = 0x00da,
-(from lspci:
-0000:00:06.0 Class 0401: 10de:00da (rev a2)
-0000:00:06.0 Multimedia audio controller: nVidia Corporation nForce3 Audio
-(rev a2))
+I get sound but when I use the mixer settings only mute works I cannot
+change the levels of the audio output neither master or pcm changes
+anything.
 
-The AC97 codec is AD1981B.
+I did have to use the 1.0.4 drivers instead of 1.0.5 release because of
+compilation bug see other bugreport. The libs and utils from version 1.0.4
+and 1.0.5 compile without problems but with neither can I get the controls
+to work.
 
-But there exists an equivalent laptop - Compaq r3000, so I will try to get
-some info about IDs in those machines and post them here.
-
-Final note about this issue in whole:
-what is this "External Amp" used/intended for?
-Because: if we mute the main output, then there is no signal to the amp -
-it may safely be shut down? Or is this control pin used for something else
-as well?
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 19:45 
+ rdvrey - 01-03-05 00:40 
 ----------------------------------------------------------------------
-On some machines (e.g. Dell), EAPD really turns on/off the amplifier.
+I have the same hardware using
+Gentoo 2.4.26-gentoo-r9 kernel
+1.07-r4 alsa driver
+No error messages anywhere all modules load without any problem 
+But no sound at all
+Is this the same issue?
+if so will 1.08 handle this as well?
+Would help the devel team if I test new drivers?
 
-AFAIK, this pin doesn't have any effect (for sounds) except for turning
-on/off mute LED on machines like yours.  So, with the quirk, "external
-amplifier" mixer switch is removed indeed.
+regards,
 
-And, no, it's not specific to codecs.  It's specific to laptops.
+Robert
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 19:49 
+ tiwai - 01-07-05 19:53 
 ----------------------------------------------------------------------
-The quirk is added to CVS now.  It'll appear in 1.0.8-final.
+Try 1.0.8rc2.  It already incldues the softvol plugin.
+Choose "default" PCM, so that softvol is applied automatically. (i.e.
+don't use "hw:0" or so.)
 
-Now resolving this issue to FIXED.  If you find out the PCI sub IDs for
-other laptops, please open another entry.  Thanks.
+Unfortunately, OSS kernel emulation can't use softvol feature.  Don't ask
+me to fix this...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 12:39 piesis         New Issue                                    
-01-03-05 12:39 piesis         Distribution              => Gentoo          
-01-03-05 12:39 piesis         Kernel Version            => 2.6.9-gentoo-r9 
-01-03-05 14:23 tiwai          Note Added: 0003061                          
-01-04-05 00:17 piesis         Note Added: 0003077                          
-01-07-05 19:45 tiwai          Note Added: 0003117                          
-01-07-05 19:49 tiwai          Status                   new => resolved     
-01-07-05 19:49 tiwai          Resolution               open => fixed       
-01-07-05 19:49 tiwai          Assigned To               => tiwai           
-01-07-05 19:49 tiwai          Note Added: 0003118                          
+12-29-04 01:15 wschrep        New Issue                                    
+12-29-04 01:15 wschrep        Distribution              => debian/knoppmyth
+12-29-04 01:15 wschrep        Kernel Version            => 2.6.10          
+12-29-04 01:18 rlrevell       Note Added: 0002989                          
+12-29-04 01:24 wschrep        Note Added: 0002990                          
+12-29-04 01:38 rlrevell       Note Added: 0002991                          
+01-03-05 00:40 rdvrey         Note Added: 0003050                          
+01-03-05 01:57 rdvrey         Issue Monitored: rdvrey                      
+01-07-05 19:53 tiwai          Note Added: 0003119                          
 ======================================================================
 
 
