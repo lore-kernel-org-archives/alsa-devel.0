@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000930]: Ego Sys Juli@ does not work at all
-Date: Tue, 22 Feb 2005 09:29:03 +0100
-Message-ID: <8ae83d75505cae9799674c6e7d8109cd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000650]: emu10k1 load fail with CT4760 SBLive! OEM
+Date: Tue, 22 Feb 2005 09:30:21 +0100
+Message-ID: <a6bc58bf20ba4f51eb213b30e981db2b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B349B172
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:29:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F0CEE174
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:30:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,81 +21,159 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=930> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=650> 
 ======================================================================
-Reported By:                lingis
-Assigned To:                perex
+Reported By:                pancogi
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   930
-Category:                   PCI - ice1724
+Issue ID:                   650
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu 4.10
-Kernel Version:             2.6.8.1-3-386
+Distribution:               
+Kernel Version:             2.4.27
 ======================================================================
-Date Submitted:             02-22-2005 00:32 CET
-Last Modified:              02-22-2005 09:29 CET
+Date Submitted:             11-15-2004 11:59 CET
+Last Modified:              02-22-2005 09:30 CET
 ======================================================================
-Summary:                    Ego Sys Juli@ does not work at all
+Summary:                    emu10k1 load fail with CT4760 SBLive! OEM
 Description: 
-When trying to load ice1724 driver, nothing happens:
+hi
+my Sb Live do not work with emu10k1, lspci -v say:
 
-sudo modprobe snd-ice1724
-dmesg | tail -n 20
-bt878: Bt878 AUDIO function found (0).
-ACPI: PCI interrupt 0000:00:0d.1[A] -> GSI 11 (level, low) -> IRQ 11
-bt878(0): Bt878 (rev 2) at 00:0d.1, irq: 11, latency: 32, memory:
-0xe3000000
-8139cp: 10/100 PCI Ethernet driver v1.2 (Mar 22, 2004)
-8139cp: pci dev 0000:00:0f.0 (id 10ec:8139 rev 10) is not an 8139C+
-compatible
-chip
-8139cp: Try the "8139too" driver instead.
-8139too Fast Ethernet driver 0.9.27
-ACPI: PCI interrupt 0000:00:0f.0[A] -> GSI 11 (level, low) -> IRQ 11
-eth0: RealTek RTL8139 at 0xe400, 00:50:fc:44:75:5d, IRQ 11
-eth0:  Identified 8139 chip type 'RTL-8139C'
-eth0: link up, 100Mbps, full-duplex, lpa 0x41E1
-NET: Registered protocol family 10
-Disabled Privacy Extensions on device c02cc0c0(lo)
-IPv6 over IPv4 tunneling driver
-ACPI: Power Button (FF) [PWRF]
-ACPI: Sleep Button (CM) [SLPB]
-eth0: no IPv6 routers present
-bttv0: timeout: drop=58 irq=7964/193355, risc=16103024, bits: HSYNC OFLOW
-FDSR
-bttv0: reset, reinitialize
-bttv0: PLL: 28636363 => 35468950 . ok
+0000:00:0d.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
+(rev 08)
+        Subsystem: Creative Labs CT4760 SBLive! OEM version
+        Flags: bus master, medium devsel, latency 32, IRQ 5
+        I/O ports at d800 [size=32]
+        Capabilities: [dc] Power Management version 2
 
-cat /proc/asound/cards
---- no soundcards ---
+lspci -n, say:
 
+0000:00:0d.0 Class 0401: 1102:0002 (rev 08)
 
+dmesg after modprobe snd-emu10k1,
 
+PCI: Found IRQ 5 for device 00:0d.0
+ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1905: AC'97 0 does not
+respond - RESET
+ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1913: AC'97 0 access is not
+valid [0x0], removing mixer.
+
+dmesg after modprobe oss modules emu10k1, say:
+
+emu10k1: EMU10K1 rev 8 model 0x8028 found, IO at 0xd800-0xd81f, IRQ 5
+ac97_codec: AC97  codec, id: 0x0000:0x0000 (Unknown)
+
+but no sound output.
+with kernel 2.6.9, the same.
+
+thanks,
+giovanni.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 02-22-05 09:26 
+ pancogi - 11-15-04 12:20 
 ----------------------------------------------------------------------
-The driver for Juli@ is work in progress and preliminary version is
-available in CVS only (probably not functional at all).
+excuse me for my(?) error.
+it is not a compilation error.
+the module fail to load and go.
+
+----------------------------------------------------------------------
+ pzad - 11-15-04 12:53 
+----------------------------------------------------------------------
+Wow.
+
+Works this card under windows or other os ???
+
+For me looks like hardware problem (if oss driver doesn't work too).
+
+You can try dissable AC97 detection in alsa drivers, but this will
+probably give you sound only on rear outputs and you will not have analog
+inputs.
+
+----------------------------------------------------------------------
+ pancogi - 11-15-04 13:30 
+----------------------------------------------------------------------
+hum, hem...
+windows (98,xp) ==> blue screen...
+
+how can i disable AC97 detection?
+without ac97 can i control volume?
+mixer exist?
+
+thanks...
+
+----------------------------------------------------------------------
+ pzad - 11-15-04 13:45 
+----------------------------------------------------------------------
+>windows (98,xp) ==> blue screen...
+
+Then this is hardware fault.
+
+To dissable AC97 you need change driver source - search for 
+emu->no_ac97 = 1; 
+in emu10k1_main.c
+
+and add it before this line (sorry <------------- my mistake)
+if (emu->revision == 4 && emu->model == 0x2002) { 
+
+With this driver should load, but you will be able only use rear (through
+rear device) speakers output and you will not have analog inputs and mixer
+will be very limited.
+
+I will recomend to swap soundcard.
+
+edited on: 11-15-04 13:45
+
+----------------------------------------------------------------------
+ pancogi - 11-15-04 15:07 
+----------------------------------------------------------------------
+ok, source modified, compiled.
+
+now module snd-emu10k1 is loaded, and alsamixer show me some control.
+the pc is far from me, and now i can't hear sound, may be this evening.
+if you want report from /proc/asound, ask
+
+perhaps i can find a sister of this CT4760 working, and try if is a true
+hardware problem.
+
+> will recomend to swap soundcard.
+
+thanks, which one?
+
+anyhow, thanks a lot, and forgive my english.
+
+----------------------------------------------------------------------
+ pzad - 11-15-04 15:41 
+----------------------------------------------------------------------
+> thanks, which one?
+
+Working one. :-)
+
+This card looks damaged.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-22-05 00:32 lingis         New Issue                                    
-02-22-05 00:32 lingis         Distribution              => Ubuntu 4.10     
-02-22-05 00:32 lingis         Kernel Version            => 2.6.8.1-3-386   
-02-22-05 00:45 lingis         Issue Monitored: lingis                      
-02-22-05 09:26 perex          Note Added: 0003685                          
-02-22-05 09:26 perex          Status                   new => assigned     
-02-22-05 09:26 perex          Assigned To               => perex           
-02-22-05 09:29 perex          View Status              private => public   
+11-15-04 11:59 pancogi        New Issue                                    
+11-15-04 11:59 pancogi        Kernel Version            => 2.4.27          
+11-15-04 12:20 pancogi        Note Added: 0002411                          
+11-15-04 12:47 pancogi        Issue Monitored: pancogi                     
+11-15-04 12:53 pzad           Note Added: 0002412                          
+11-15-04 13:30 pancogi        Note Added: 0002413                          
+11-15-04 13:43 pzad           Note Added: 0002414                          
+11-15-04 13:45 pzad           Note Edited: 0002414                         
+11-15-04 15:07 pancogi        Note Added: 0002415                          
+11-15-04 15:41 pzad           Note Added: 0002416                          
+02-22-05 09:30 perex          Assigned To              perex => pzad       
+02-22-05 09:30 perex          Category                 0_compilation problem_!!!
+=> PCI - emu10k1
 ======================================================================
 
 
