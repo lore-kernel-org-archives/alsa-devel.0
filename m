@@ -1,54 +1,30 @@
-From: Daniel Ritz <daniel.ritz@gmx.ch>
+From: Russell King <rmk+lkml@arm.linux.org.uk>
 Subject: Re: [linux-audio-user] snd-hdsp+cardbus+M6807 notebook=distortion -- FIXED!
-Date: Mon, 12 Apr 2004 17:31:20 +0200
+Date: Mon, 12 Apr 2004 16:38:54 +0100
 Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <200404121731.20765.daniel.ritz@gmx.ch>
-References: <20040412082801.A3972@flint.arm.linux.org.uk> <20040412144103.PIXB8029.smtp1.fuse.net@64BitBadass> <20040412155336.B12980@flint.arm.linux.org.uk>
-Reply-To: daniel.ritz@gmx.ch
+Message-ID: <20040412163854.C12980@flint.arm.linux.org.uk>
+References: <20040412082801.A3972@flint.arm.linux.org.uk> <20040412144103.PIXB8029.smtp1.fuse.net@64BitBadass> <20040412155336.B12980@flint.arm.linux.org.uk> <200404121731.20765.daniel.ritz@gmx.ch>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
-In-Reply-To: <20040412155336.B12980@flint.arm.linux.org.uk>
 Content-Disposition: inline
-To: Russell King <rmk+lkml@arm.linux.org.uk>, Ivica Ico Bukvic <ico@fuse.net>
-Cc: 'Tim Blechmann' <TimBlechmann@gmx.net>, 'Thomas Charbonnel' <thomas@undata.org>, ccheney@debian.org, linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+In-Reply-To: <200404121731.20765.daniel.ritz@gmx.ch>; from daniel.ritz@gmx.ch on Mon, Apr 12, 2004 at 05:31:20PM +0200
+To: Daniel Ritz <daniel.ritz@gmx.ch>
+Cc: Ivica Ico Bukvic <ico@fuse.net>, 'Tim Blechmann' <TimBlechmann@gmx.net>, 'Thomas Charbonnel' <thomas@undata.org>, ccheney@debian.org, linux-pcmcia@lists.infradead.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 12 April 2004 16:53, Russell King wrote:
-> On Mon, Apr 12, 2004 at 10:40:59AM -0400, Ivica Ico Bukvic wrote:
-> > Sorry :-) Mandrake Community 10.0 using the 2.6.3 kernel with a patch to fix
-> > the freezing when probing for the pcmcia card on this particular notebook
-> > (see: http://www.muru.com/linux/amd64/).
-> 
-> Pavel's fix isn't really a fix, it's more a work-around.  If we keep
-> increasing PCIBIOS_MIN_CARDBUS_IO until we hit 0xffff, everyones
-> system stops working.
-> 
-> The problem there will be that there's some IO registers between 0x4000
-> and 0x5000 which the BIOS wants access to, but the kernel didn't know
-> that they existed.
-> 
-> In any case, 2.6.3 does not contain the patches for CB1410, so chances
-> are that your problem is already half solved in 2.6.5.
-> 
-> Ok, so the action plan is:
-> 
-> - set 0xc9 to 0x04 for CB1410 (and others?)
+On Mon, Apr 12, 2004 at 05:31:20PM +0200, Daniel Ritz wrote:
+> EnE datasheet says it's also available in EnE 1211, 1225, 1420.
+> and since they are TI clones why not for the TI's too?
 
-EnE datasheet says it's also available in EnE 1211, 1225, 1420.
-and since they are TI clones why not for the TI's too?
+Because the register supposedly does not exist on TI - it's likely to be
+EnE specific.
 
+I'm willing to bet that TI chips will behave as expected without touching
+0xc9 at all.
 
-ico,
-
-one question. when you insert the card in windows it changes
-the latency timer at 0x0d to 0xff. what is the value at 0x1b? is it also 0xff?
-if it's not 0xff can you try changing it to 0xff and set 0xc9 to 0x06?
-i ask 'cos your screenshot w/o the card has it set to 0x00. and i have
-the feeling that the bit at 0xc9 has something to do with the latency
-timers....
-
-rgds
--daniel
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
+                 2.6 Serial core
