@@ -1,14 +1,22 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: a bug? (was: hw/plughw strange behaviour)
-Date: Mon, 14 Jun 2004 16:26:33 +0200 (METDST)
+From: Charles Eidsness <charles.eidsness@rogers.com>
+Subject: Data Transfer Question
+Date: Mon, 14 Jun 2004 10:43:38 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0406141617570.14592-100000@studcom.urz.uni-halle.de>
-References: <200406132333.23830.cpitaar@yahoo.com.ar>
+Message-ID: <40CDB99A.1050004@rogers.com>
+Reply-To: charles.eidsness@rogers.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200406132333.23830.cpitaar@yahoo.com.ar>
+Received: from fep04-mail.bloor.is.net.cable.rogers.com (fep04-mail.bloor.is.net.cable.rogers.com [66.185.86.74])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 98E2536B
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2004 16:43:44 +0200 (MEST)
+Received: from rogers.com ([24.157.59.167])
+          by fep04-mail.bloor.is.net.cable.rogers.com
+          (InterMail vM.5.01.05.12 201-253-122-126-112-20020820) with ESMTP
+          id <20040614144132.QHJ8306.fep04-mail.bloor.is.net.cable.rogers.com@rogers.com>
+          for <alsa-devel@alsa-project.org>;
+          Mon, 14 Jun 2004 10:41:32 -0400
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,47 +25,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Carlos Pita <cpitaar@yahoo.com.ar>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Carlos Pita wrote:
-> Playing a little with the code that produced the strange behaviour I
-> reported in my previous posts in this thread I discovered this potential bug
-> (in my code or in alsalib?, that's the question):
->
-> 1) In alsa/pcm.h, snd_pcm_hw_params_set_rate_near is declared as:
->
-> int snd_pcm_hw_params_set_rate_near(snd_pcm_t *pcm,
->     				    snd_pcm_hw_params_t *params,
-> 				    unsigned int *val,
-> 				    int *dir);
->
-> (Here I'm not sure if dir is an output, an input or an inout param.
+I'm working on an ALSA driver for an embedded MIPS processor and am 
+having trouble getting it to run at a rate > 16kHz.
 
-Both.
+What I've notice when it's running at 16kHz or less the ALSA API is 
+calling  my pointer function before the first interrupt, i.e.
 
->   c) dir is an int = 1:
->      snd_pcm_hw_params_set_rate_near(handle, hwparams, &rate, &dir);
->
-> 3) But when handle corresponds to the "plughw:0,0" device the third
-> invocation fails (well, to be precise, it doesn't fail until
-> snd_pcm_hw_params is called -see my previous posts in this thread-).
+START
+call pointer
+interrupt (which calls snd_pcm_period_elapsed)
+call pointer
+call pointer
+interrupt (which calls snd_pcm_period_elapsed)
+.
+.
+.
 
-Please add a call to snd_pcm_hw_params_dump() before
-snd_pcm_hw_params().  What is the difference between the configuration
-that fails and the others?
+And everything sounds fine, but when I run at > 16kHz it doesn't call 
+the pointer function before the first interrupt, and after the first 
+interrupt it stops and then starts, i.e.
 
-> 4) I've attached an example test to this post
+START
+interrupt (which calls snd_pcm_period_elapsed)
+call pointer
+STOP
+START
+interrupt (which calls snd_pcm_period_elapsed)
+call pointer
+STOP
+.
+.
 
-It seems the call to set_buffer_size is missing.
+And ends up sounding very choppy. Can anyone help shed some light on 
+what's going on? Why is the API calling the pointer function before the 
+first interrupt?
 
-And it reuses the dir value returned by set_rate_near for the
-set_period_time_near call.
+You can find my code here: 
+http://members.rogers.com/charles.eidsness/au1000.c
 
+Thanks,
+Charles
 
-Regards,
-Clemens
 
 
 
