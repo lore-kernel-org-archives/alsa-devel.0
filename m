@@ -1,17 +1,14 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: Tascam US-224 support: MIDI OK, Audio KO?
-Date: Tue, 30 Mar 2004 22:19:09 +0100 (WEST)
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: 1.0.4rc from cvs-head: snd-usb-usx2y still needs snd-hwdep....
+Date: Wed, 31 Mar 2004 01:19:33 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32797.192.168.1.5.1080681549.squirrel@www.rncbc.org>
-References: <44618.195.245.190.94.1080560065.squirrel@www.rncbc.org>
-    <200403292129.04497.annabellesgarden@yahoo.de>
-    <32817.192.168.1.5.1080596468.squirrel@www.rncbc.org>
-    <200403300157.51963.annabellesgarden@yahoo.de>
+Message-ID: <200403310119.34195.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200403300157.51963.annabellesgarden@yahoo.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,34 +20,15 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Karsten,
->
-> Concerning us224's Lights I'm currently left in the dark....
-> For us428 I found that a 7Byte long USB-Message on pipe 4 is a Lights
-> set command, while a 5Byte long is an internal mixer set command.
-> You could tweak us428control to toggle the 0'th light instead of the
-> 25'th light, which is InputMonitor Light on us428. the 0th light is
-> Select Channel 1 on the us428.
-> Exchange Cus428State.cc Line 118 , 119
-> 				Light[0].Value = StateInputMonitor() ? SelectInputMonitor : Select;
-> 				Light[2].Value = StateInputMonitor() ? MuteInputMonitor : Mute;
-> for
-> 				Light[0].Value = 0x55;
-> 				Light[2].Value = 0xAA;
-> to check light mechanics.
->
+..., which is not built.
+this is for kernel 2.4.
 
-Made this tweak, and nothing changed. LEDs remain dark.
+/etc/asound/driver_args:
+--with-cards=via82xx,msnd-pinnacle,usb-audio,usb-usx2y,es1968 
+--with-kernel=/usr/src/linux-2.4 --with-debug=full --with-sequencer=yes
 
-
-> If there's still no lights, some usb snooping on windoz might help.
-> I've some specially tuned stuff here which I could send you then.
->
-
-Let's go deep :)
---
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
+regards,
+Karsten
 
 
 -------------------------------------------------------
