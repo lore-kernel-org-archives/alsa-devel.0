@@ -1,16 +1,12 @@
-From: Jos van den Oever <jos@vandenoever.info>
-Subject: Re: midi on ESS Solo with 2.6.0-test2
-Date: Wed, 30 Jul 2003 15:47:40 +0200
+From: Nicola Orru' <nigu@itadinanta.it>
+Subject: emufxtool, formerly ld10k1
+Date: Wed, 30 Jul 2003 17:41:34 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307301547.40431.jos@vandenoever.info>
-References: <Pine.LNX.4.44.0307301526200.9821-100000@pnote.perex-int.cz>
+Message-ID: <20030730174134.459ea970.nigu@itadinanta.it>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0307301526200.9821-100000@pnote.perex-int.cz>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,24 +15,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Use sbiload from the alsa-tools package to load FM instruments to
-> the driver.
+Hello, 
+	
+	I have a message for alsa-tools maintainers.
 
+	Several months ago I posted on
 
-Oops, I forgot the arguments and sbiload didn't miss them. I ran:
+	http://opensrc.org/alsa/index.php?page=emu10k1
 
-./sbiload -p 65:0 /etc/playmidi/std.sb /etc/playmidi/drums.sb
+	an announce reporting I was developing an alsa-based tool to enable effect loading onto emu10k1 (Sound Blaster Live!), called ld10k1.
 
-And voila midi sound, finally. Tears come to my eyes. (-;
+	The project grew up to emufxtool, a multipurpose tool for emu10k1 DSP low-level programming, whose aim is to allow creation of sound effects, filters and so on. The project is currently alpha stage, but the assembler/loader is just working.
 
-Thanks!
-Jos
+	You can download a tarball of the project (that includes a presentation and some docs) at the following link:
 
+	http://www.itadinanta.it/~nicola/emufxtool-0.2.tar.gz
 
+	I would like to publish the project as a component of alsa-tools or someway integrate it into them, so I need to know who I should report to or ask about that.  I need this feedback to plan further advancements of the project.
+
+	Please help me, even in private if you prefer. Any suggestion or advice will be *highly* appreciated.
+
+-- 
+Ciao,
+Nicola
+--------------------------------------------------------------------
+* Nicola Orru' - Via Dei Tulipani, 9 - 09034 Assemini (CA) - ITALY *
+--------------------------------------------------------------------
 
 
 -------------------------------------------------------
