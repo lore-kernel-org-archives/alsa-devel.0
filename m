@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000377]: AudioTrak MAYA44 USB is detected, but doesn't work.
-Date: Wed, 14 Jul 2004 19:27:19 +0200
+Subject: [ALSA - driver 0000386]: usb speakers don't show up in /proc/asound/cards
+Date: Wed, 14 Jul 2004 19:29:27 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <b03d4b6ceb0add5140a4567415be1c9d@bugtrack.alsa-project.org>
+Message-ID: <a879be6a5accff99d50d8cc50cd2fa96@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -24,46 +24,58 @@ A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0377
+0386
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                TheMuso
+Reported By:                hadess
 Assigned To:                Clemens Ladisch
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     377
+Bug ID:                     386
 Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware 10.0
-Kernel Version:             2.4.26 and 2.6.7
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.7-bk19
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-12-2004 05:56 CEST
-Last Modified:              07-14-2004 19:27 CEST
+Date Submitted:             07-13-2004 21:09 CEST
+Last Modified:              07-14-2004 19:29 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    AudioTrak MAYA44 USB is detected, but doesn't=
- work.
+Summary:                    usb speakers don't show up in /proc/asound/ca=
+rds
 Description:=20
-With alsa-driver from latest CVS, this card is detected by hotplug, and
-assigned to snd-usb-audio, however it is not detected and set up.
+My USB speakers don't show up in /proc/asound/cards, even though
+snd_usb_audio is loaded, and playback working with them.
+
+I think this causes problem with "aplay -l" which doesn't list  the
+devices, and also seems to be a problem for "gnome-alsamixer" which will
+not show the mixer for that device.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 07-14-2004 19:27 CEST=20
+ Clemens Ladisch - 07-14-2004 19:29 CEST=20
 ----------------------------------------------------------------------
-Does the device appear in /proc/asound/cards?
-In the output of "aplay -l"?
+looks like a duplicate of bug 363:
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0363
+
+----------------------------------------------------------------------
+ hadess - 07-14-2004 19:29 CEST=20
+----------------------------------------------------------------------
+This problem was due to both the "audio" and the "snd-usb-audio" drivers
+getting loaded:
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=3D125734
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -71,13 +83,15 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-12-04 05:56 TheMuso        New Bug                                    =
+07-13-04 21:09 hadess         New Bug                                    =
  =20
-07-12-04 05:56 TheMuso        Distribution              =3D> Slackware 10=
-.0 =20
-07-12-04 05:56 TheMuso        Kernel Version            =3D> 2.4.26 and 2=
-.6.7
-07-14-04 19:27 Clemens LadischBugnote Added: 0001418                     =
+07-13-04 21:09 hadess         Distribution              =3D> Fedora Core =
+2  =20
+07-13-04 21:09 hadess         Kernel Version            =3D> 2.6.7-bk19  =
+   =20
+07-14-04 19:29 Clemens LadischBugnote Added: 0001419                     =
+ =20
+07-14-04 19:29 hadess         Bugnote Added: 0001420                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
