@@ -1,14 +1,17 @@
-From: Francisco Moraes <fmoraes74@netzero.net>
-Subject: Re: alsa emu10k1
-Date: Mon, 03 May 2004 19:49:16 -0400
+From: =?ISO-8859-1?Q?Erik_Inge_Bols=F8?= <knan@mo.himolde.no>
+Subject: Software volume via LADSPA and .asoundrc
+Date: Mon, 3 May 2004 20:24:21 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4096DA7C.2050104@netzero.net>
-References: <40953757.2080800@superbug.demon.co.uk> <409572D9.2070704@netzero.net> <409573D9.6040101@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.56-Maildir.0405032015350.7680@yme.midgardsormen.net>
+References: <Pine.HPX.4.33n.0405031002250.11208-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <409573D9.6040101@superbug.demon.co.uk>
+Received: from yme.midgardsormen.net ([158.38.74.10])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id UAA24741
+	for <alsa-devel@alsa-project.org>; Mon, 3 May 2004 20:22:02 +0200
+In-Reply-To: <Pine.HPX.4.33n.0405031002250.11208-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,30 +20,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>, alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Nico Schottelius <nico-linux-alsa@schottelius.org>, Bernhard Rosenkraenzer <bero@arklinux.org>, alsa-devel mailing list <alsa-devel@alsa-project.org>, alsa-user mailing list <alsa-user@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 3 May 2004, Clemens Ladisch wrote:
+>Nico Schottelius wrote:
+>> anyone knows if there is the possibility to adjust sound volume or
+>> not.
+>
+>CMI hardware doesn't have this capability.
+>
+>It would be possible to write a plugin that scales sound data in
+>software before sending it to the device, but nobody has done this
+>yet.
 
-> How are you getting on with this driver?
-> What stage is it currently at ?
+Install LADSPA, then try this in your .asoundrc ... adjust the "0.5" to
+taste.
 
->From  Garin Hiebert (opensource.creative.com):
+Having it show up as an adjustable mixer control for runtime tuning would
+be even neater, of course.
 
-"You can certainly share that there is a plan to get specs out on the 
-Dell Live card and Audigy LS card."
+pcm._volume {
+        type ladspa
+        slave.pcm "plughw:0,0";
+        path "/usr/local/lib/ladspa";
+        playback_plugins [
+                {
+                        label amp_mono
+                        input {
+                                controls
+                                        [ 0.5 ]
+                        }
+                }
+        ]
+}
 
-So, hope is not completely lost yet on those cards...
+pcm.!default {
+        type plug
+        slave.pcm "_volume";
+}
 
-I am rewriting my old attempts at the driver based on the example driver 
-documentation, so that I have a simple code to base on. The emu10k1 
-driver is very big and complex, and was getting mostly on the way, so I 
-decided to start over. I hope to have something close to where I was in 
-1 or 2 days. Maybe Creative will make the specs available soon, so it 
-can be fully supported.
-
-Cheers,
-
-Francisco
+--
+Erik I. Bols=F8 | email: <knan at mo.himolde.no>
+The UNIX philosophy basically involves giving you enough rope to
+hang yourself.  And then a couple of feet more, just to be sure.
 
 
 -------------------------------------------------------
