@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001007]: no audio in - unable to record
-Date: Sun, 27 Mar 2005 13:36:10 +0200
-Message-ID: <bec077a3a77e0a786bfcec7a8b52bbb7@bugtrack.alsa-project.org>
+From: karsten wiese <annabellesgarden@yahoo.de>
+Subject: [PATCH] reenable MIDI for usx2y
+Date: Sun, 27 Mar 2005 14:00:12 +0200 (CEST)
+Message-ID: <20050327120012.26503.qmail@web26510.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: multipart/mixed; boundary="0-129010921-1111924812=:25813"
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 03C1F22E
-	for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2005 13:36:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,66 +14,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Devel Alsa <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+--0-129010921-1111924812=:25813
+Content-Type: text/plain; charset=iso-8859-1
+Content-Id: 
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1007> 
-======================================================================
-Reported By:                msillence
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1007
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               
-Kernel Version:             2.6.11.5
-======================================================================
-Date Submitted:             03-22-2005 21:44 CET
-Last Modified:              03-27-2005 13:36 CEST
-======================================================================
-Summary:                    no audio in - unable to record
-Description: 
-I can only get a weak hiss from the card even with the recording level up
-full
-======================================================================
+Hi Clemens,
 
-----------------------------------------------------------------------
- Alinoe - 03-27-05 11:56 
-----------------------------------------------------------------------
->  Could save a few other people the same pain.
+usx2y needs to specify exactly what usb-endpoints to use.
+this feature got lost lately and is restored by attached
+patch. Please apply!
 
-Too late for me :/
-DAMN :-((
+rgds,
+Karsten
 
-----------------------------------------------------------------------
- msillence - 03-27-05 13:36 
-----------------------------------------------------------------------
-I've signed up at the creative labs forum asking for documentation, maybe
-other people suffering the same problem could do the same (in a polite
-way). It seemed to work for other hardware specs...
+Canonical Patch:
+------------------------------------------------------
+Don't detect MIDI usb-endpoint, if quirk specifies it
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-22-05 21:44 msillence      New Issue                                    
-03-22-05 21:44 msillence      Kernel Version            => 2.6.11.5        
-03-23-05 00:45 jcdutton       Status                   assigned => closed  
-03-23-05 00:45 jcdutton       Note Added: 0004146                          
-03-23-05 10:09 msillence      Status                   closed => feedback  
-03-23-05 10:09 msillence      Resolution               open => reopened    
-03-23-05 10:09 msillence      Note Added: 0004153                          
-03-27-05 11:56 Alinoe         Note Added: 0004220                          
-03-27-05 13:36 msillence      Note Added: 0004221                          
-======================================================================
+If for QUIRK_MIDI_FIXED_ENDPOINT a struct
+snd_usb_midi_endpoint_info's
+members out_ep or in_ep are !=3D 0,
+they shall be treated as exactly what usb-endpoints to use.
+This rule was lost due to a recent change in usbmidi.c
+and is reestablished by attached patch.
+
+signed-of-by: Karsten Wiese <annabellesgarden@yahoo.de>
 
 
+=09
+
+=09
+	=09
+___________________________________________________________=20
+Gesendet von Yahoo! Mail - Jetzt mit 250MB Speicher kostenlos - Hier anme=
+lden: http://mail.yahoo.de
+--0-129010921-1111924812=:25813
+Content-Type: text/x-diff; name="usbmidi.c.patch"
+Content-Description: usbmidi.c.patch
+Content-Disposition: inline; filename="usbmidi.c.patch"
+
+Index: usbmidi.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usbmidi.c,v
+retrieving revision 1.45
+diff -U3 -r1.45 usbmidi.c
+--- usbmidi.c	24 Mar 2005 07:17:17 -0000	1.45
++++ usbmidi.c	25 Mar 2005 13:46:50 -0000
+@@ -1492,7 +1492,8 @@
+ 		case QUIRK_MIDI_FIXED_ENDPOINT:
+ 			memcpy(&endpoints[0], quirk->data,
+ 			       sizeof(snd_usb_midi_endpoint_info_t));
+-			err = snd_usbmidi_detect_endpoints(umidi, &endpoints[0], 1);
++			err = (endpoints[0].in_ep || endpoints[0].out_ep) ? 0 :
++				snd_usbmidi_detect_endpoints(umidi, &endpoints[0], 1);
+ 			break;
+ 		case QUIRK_MIDI_YAMAHA:
+ 			err = snd_usbmidi_detect_yamaha(umidi, &endpoints[0]);
+
+--0-129010921-1111924812=:25813--
 
 
 -------------------------------------------------------
