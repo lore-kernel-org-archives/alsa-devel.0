@@ -1,10 +1,13 @@
-From: James <whitetigerx7@sbcglobal.net>
-Subject: Extra Emu10k1 documentation that may be helpful
-Date: Mon, 14 Mar 2005 15:17:50 -0800
-Message-ID: <42361B9E.2080604@sbcglobal.net>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH] emu10k1: various (mostly trivial) small
+	cleanups
+Date: Mon, 14 Mar 2005 18:56:18 -0500
+Message-ID: <1110844578.15588.12.camel@mindpipe>
+References: <Pine.HPX.4.33n.0503140920520.15356-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <Pine.HPX.4.33n.0503140920520.15356-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,33 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I found that by loading the snd-emu10k1-synth module and such like 
-awesfx, pmidi, and timidity up using the rc.local script in my Slackware 
-10.1 installation worked very well if not very simplified. Here's a copy 
-and sample of what I used:
+On Mon, 2005-03-14 at 09:23 +0100, Clemens Ladisch wrote:
+> Lee Revell wrote:
+> > timer.c ... I just copied and pasted from the ymfpci driver &
+> > changed the registers.
+> 
+> BTW: Does the Emu10k1 have some sample/tick counter that runs even if
+> no PCMs are running?  If so, it would be possible to detect lost timer
+> interrupts.
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-echo "Loading Emu10kx Wavetable Synthesizer module: /sbin/modprobe 
-snd-emu10k1-synth"
-/sbin/modprobe snd-emu10k1-synth
-echo "Loading AWESFX Soundfonts for Emu10kx Wavetable Synthesizer: 
-/usr/bin/asfxload /etc/midi/CT4MGM.SF2"
-/usr/bin/asfxload /etc/midi/CT4MGM.SF2
-echo "Starting TiMidity Software Midi Synthesizer: /usr/bin/timidity -iA 
--B2,8 -Os -EFreverb=0 > /dev/null"
-/usr/bin/timidity -iA -B2,8 -Os -EFreverb=0 > /dev/null &
-echo "Loading PMidi ALSA Midi Sequencer and Ports: /usr/bin/pmidi -l"
-/usr/bin/pmidi -l &
-echo "Defining Pmidi Default Sequencer Port: /usr/bin/pmidi -p 65:0"
-/usr/bin/pmidi -p 65:0 &
---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+In practice I have found that interrupts are basically never lost.  The
+only time I ever saw this happen was when the VIA Unichrome XAA (yep,
+userspace!) driver had a FIFO related bug where it would temporarily
+stall the PCI bus.
 
-For other users it would have to be editted some but documentation on 
-this is lacking and most people don't know enough on how easy it is to 
-setup Midi on Linux.
+I guess I am wondering whether this would be worth implementing.  Do
+you think the overhead of reading the wall clock register on every timer
+interrupt is worth it?
+
+Lee
+
+
 
 
 -------------------------------------------------------
