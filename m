@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000439]: swsusp for maestro can work with a small patch
-Date: Sat, 14 Aug 2004 11:27:38 +0200 (CEST)
+Subject: [ALSA - driver 0000440]: Gateway Solo 250 nma2 - no soundcard detected
+Date: Sat, 14 Aug 2004 19:38:59 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040814092738.25B491102F@server.perex-int.cz>
+Message-ID: <20040814173859.828CA1102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8995124A
-	for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2004 11:27:38 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C39AD1E2
+	for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2004 19:38:59 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,38 +22,40 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000439
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000440
 ======================================================================
-Reported By:                lupien_c
+Reported By:                thelight
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     439
-Category:                   PCI - maestro3
+Bug ID:                     440
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               fedora core 2
-Kernel Version:             2.6.7 + acpi + swsusp2
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.6-1.435.2.3
 ======================================================================
-Date Submitted:             08-14-2004 11:27 CEST
-Last Modified:              08-14-2004 11:27 CEST
+Date Submitted:             08-14-2004 19:38 CEST
+Last Modified:              08-14-2004 19:38 CEST
 ======================================================================
-Summary:                    swsusp for maestro can work with a small patch
+Summary:                    Gateway Solo 250 nma2 - no soundcard detected
 Description: 
-With the maestro3.c driver in kernel 2.6.7, suspend to disk would lock the
-driver. The module needed to manually be removed and reinstalled to
-produce sound again. With the patch attached it now works properly.
+The laptops specs say it has a 'neomagic nma 2' sound card onboard. From
+what I can tell this is some sort of NeoMagic nm256 equivalent.
+
+My main problem is that I simply get no sound. The fedora core 2 program
+system-config-soundcard doesnt actually detect a soundcard at all. Im
+using the 1.0.3 rpms of alsa which came with fedora. 
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-14-04 11:27 lupien_c       New Bug                                      
-08-14-04 11:27 lupien_c       File Added: maestro3.c.diff                    
-08-14-04 11:27 lupien_c       Distribution              => fedora core 2   
-08-14-04 11:27 lupien_c       Kernel Version            => 2.6.7 + acpi + swsusp2
+08-14-04 19:38 thelight       New Bug                                      
+08-14-04 19:38 thelight       Distribution              => Fedora Core 2   
+08-14-04 19:38 thelight       Kernel Version            => 2.6.6-1.435.2.3 
 ======================================================================
 
 
