@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: problem while opening device
-Date: Tue, 6 Apr 2004 14:49:55 +0200 (CEST)
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: Re: Tascam US-224 progress report (was:      USB224_usbsnoop1.log captured  on WinXP)
+Date: Tue, 6 Apr 2004 14:53:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0404061449350.3153@pnote.perex-int.cz>
-References: <028301c41bc8$650f30c0$f8b6a8c0@ent.ti.com>
+Message-ID: <200404061453.59766.annabellesgarden@yahoo.de>
+References: <200404021434.26528.annabellesgarden@yahoo.de> <32796.192.168.1.5.1081210215.squirrel@www.rncbc.org> <200404061252.16279.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <028301c41bc8$650f30c0$f8b6a8c0@ent.ti.com>
+In-Reply-To: <200404061252.16279.annabellesgarden@yahoo.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,36 +19,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pavana Sharma <pavans@india.ti.com>
+To: Rui Nuno Capela <rncbc@rncbc.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 6 Apr 2004, Pavana Sharma wrote:
+Am Dienstag 06 April 2004 12:52 schrieb Karsten Wiese:
+> Am Dienstag 06 April 2004 02:10 schrieb Rui Nuno Capela:
+> > Now comes the weird part. No, I couldn't get it to work unless I set
+> > --with-debug=full on configure line. And I've tested several times,
+> > believe me.
+> >
+> > FYI, I'm stick with 2.6 kernel tree, and already tested with 2.6.4 and
+> > latest 2.6.5.
+> >
+> > My way of building the kernel modules is from stock tarball, and is
+> > pretty canonical, as literally as follows (all as root):
+> >
+> >   tar -jxf alsa-driver-1.0.4.tar.bz2
+> >   cd alsa-driver-1.0.4
+> >   gzip -dc ../alsa-driver-1.0.4p1.patch.gz	# see attachment
+> >   ./configure --with-isapnp=no --with-sequencer=yes --with-oss=yes
+> > --with-cards=all --with-debug=full
+> >   make
+> >   make install
+> >
+> > As stated, the INPUT MONITOR LED does not get lit if I take out the
+> > clause --with-debug=full.
+> >
+> > How come?
+>
+> You don't use --with-kernel option.
+> Are you shure ALSA build sees the correct linux-kernel source?
+> What distro are you using?
+> On some (i.e. fc1) you'd have to specify a special gcc like
+> 	export CC=gcc32
+> befure ./configure.
+> I'm building a no debug ALSA here with a 2.6.5-aa1 kernel.
+> maybe I'll find something.....
+Yes, same odd behavior here: built without --with-debug=full, 
+nothing is sent from us428control to the us428. So your build process is 
+propably ok.
 
-> Hi,
-> 
-> 	I am running a test application on my alsa driver for arm platform.Driver
-> is statically built.
-> 	The test application calls the snd_pcm_open.
-> 	With device hw:0,0
-> 
-> 	At the target I have created sound driver files with snddevices.sh
-> 	In /proc/asound i have the soundcard registered as card0 .
-> 	Can anyone give ideas where can be the problem ..??
-> 
-> 	this is the error msg I am getting..
-> ----------------snip-----------
-> ALSA lib pcm.c:1947:(snd_pcm_open_noupdate) Unknown PCM hw:0,0
-> --------------------------------
-
-/usr/share/alsa/alsa.conf is missing.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Cheers,
+Karsten
 
 
 -------------------------------------------------------
