@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000431]: Wrong driver & docs link for Terratec EWS88D
-Date: Fri, 26 Nov 2004 15:40:12 +0100
-Message-ID: <746225f62e6e381afd6377a7fc01546b@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0000630]: Too strict max periods constraints for dmix plugin
+Date: Fri, 26 Nov 2004 15:40:52 +0100
+Message-ID: <748659f3f519f47dbf771ba51378cd5d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6B62E1FF
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 15:40:12 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7BD44238
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 15:40:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=431> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=630> 
 ======================================================================
-Reported By:                ajw213
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   431
-Category:                   bad link
+Project:                    ALSA - liboss
+Issue ID:                   630
+Category:                   
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-08-2004 14:14 CEST
+Date Submitted:             11-05-2004 11:31 CET
 Last Modified:              11-26-2004 15:40 CET
 ======================================================================
-Summary:                    Wrong driver & docs link for Terratec EWS88D
+Summary:                    Too strict max periods constraints for dmix plugin
 Description: 
-www.alsa-project.org/alsa-doc/
+See Debian bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=233200
+(http://bugs.debian.org/233200).
 
-'Details' link for Terratec EWS88D goes to page for
-chip=CS4624
-module=cs46xx
+The submitter reports:
+> I encountered a problem with alsa-oss with some OSS only apps: they try
+to limit the maximum number of fragments to a lower value than the number
+of periods configured for dmix (the minimum number which provides smooth
+playback with all ALSA apps), which fails.
 
-but card chipset is actually same as ESW88MT, ie.
-chip=Envy24
-module=ice1712
+The submitter also provides a patch.  The patch doesn't apply any longer
+to alsa-oss.c but the code that it patches now appears in pcm.c.
 
-This may mean the 'Notes' section is also wrong - although I can only get
-[To] from the card, as the page says.
-The chipset should be capable of [Rio][Tio][Aio] but I don't think the
-driver can handle all of these for the EWS88D yet.
+
 ======================================================================
 
 ----------------------------------------------------------------------
  tiwai - 11-26-04 15:40 
 ----------------------------------------------------------------------
-Fixed now.
+Fixed now on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-04 14:14 ajw213         New Issue                                    
-10-20-04 11:16 perex          Note Added: 0002211                          
-10-20-04 11:20 perex          Note Added: 0002212                          
-10-20-04 11:22 perex          Note Deleted: 0002211                        
-10-20-04 11:22 perex          Note Deleted: 0002212                        
+11-05-04 11:31 jdthood        New Issue                                    
 11-26-04 15:40 tiwai          Status                   new => resolved     
 11-26-04 15:40 tiwai          Resolution               open => fixed       
 11-26-04 15:40 tiwai          Assigned To               => tiwai           
-11-26-04 15:40 tiwai          Note Added: 0002608                          
+11-26-04 15:40 tiwai          Note Added: 0002609                          
 ======================================================================
 
 
