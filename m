@@ -1,13 +1,12 @@
-From: Oliver Schrempf <un1q@stud.uni-karlsruhe.de>
-Subject: Re: asoundrc problem
-Date: Mon, 27 Jan 2003 18:03:21 +0100 (CET)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: buffer_size and period_size
+Date: Mon, 27 Jan 2003 12:32:22 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0301271759530.4643-100000@rzstud2.stud.uni-karlsruhe.de>
-References: <Pine.LNX.4.44.0301271705540.1279-100000@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <E18dD2R-00085w-00@sc8-sf-list1.sourceforge.net>
+References: <20030127174509.A28149@osiris.uid0.sk>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0301271705540.1279-100000@pnote.perex-int.cz>
+In-reply-to: Your message of "Mon, 27 Jan 2003 17:45:09 +0100."
+             <20030127174509.A28149@osiris.uid0.sk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,36 +15,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Jozef Kosoru <zyzstar@uid0.sk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>I would like to fully understand the exact meaning of buffer_size and
+>period_size and how can I compute the final latency in the full duplex
+>processing from these variables.
 
-> > > > Broken configuration: no configurations available: Invalid argument
-> > >
-> > > doesn't it work with the pcm "plug:multi" ?
-> >
-> > Sorry, but I can't find any documentation on "plug:multi"?
-> > How do I have to to use it?
->
-> aplay -Dplug:multi
->
-> It's device description/name for alsa-lib.
+period_size = frames between interrupts from the hardware
+buffer size = total frames for the hardware buffer
 
-Thanks for that one, but
+max output latency = buffer_size
+min output latency = buffer_size - period_size
 
-arecord -Dplug:multi -c16 multitest.wav
-gives me
+max input latency = period_size + interrupt overhead
+min input latency = 1 frame + interrupt overhead
 
-ALSA lib dlmisc.c:107:(snd_dlsym_verify) unable to verify version for
-symbol _snd_pcm_plug:multi_open
-ALSA lib pcm.c:1788:(snd_pcm_open_conf) symbol _snd_pcm_plug:multi_open is
-not defined inside (null)
-arecord: main:462: audio open error: No such device or address
+the latency numbers assume:
 
-Oli
+    a) the buffer is generally full
+    b) you process data 1 period at a time
+    c) your s/w keeps up with the h/w
+    d) its an average, computed across a period's worth of data
 
-
+--p
 
 
 -------------------------------------------------------
