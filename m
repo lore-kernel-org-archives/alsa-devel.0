@@ -1,11 +1,14 @@
-From: mailmarshall@taupotop10.co.nz
-Subject: Your email message was blocked
-Date: Sun, 14 Nov 2004 14:19:55 +1300
-Message-ID: <D000001f5a@lthpserver.local.lthp.co.nz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000648]: aplay -Dspdif produces choppy (beating?) audio from DTS .wav files
+Date: Sun, 14 Nov 2004 04:24:33 +0100
+Message-ID: <c7cc0183626f8d3657d4f7654fbe6140@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="--=e40d80da-21ea-4620-97d2-6b04b271b70e"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA8E0227
+	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2004 04:24:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,37 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: -office@taupotop10.co.nz
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-----=e40d80da-21ea-4620-97d2-6b04b271b70e
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
 
-MailMarshal (an automated content monitoring gateway) has 
-not delivered the following message:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=648> 
+======================================================================
+Reported By:                duanev
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   648
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Mandrake 10.1
+Kernel Version:             Preemptable 2.6.8 kernel
+======================================================================
+Date Submitted:             11-14-2004 04:24 CET
+Last Modified:              11-14-2004 04:24 CET
+======================================================================
+Summary:                    aplay -Dspdif produces choppy (beating?) audio from
+DTS .wav files
+Description: 
+Sound produced by aplay is not smooth - audio is "chopped up" or appears to
+"beat" at about 5Hz.
+======================================================================
 
-   Message: B0000095b3.00000001.mml
-   From:    alsa-devel@lists.sourceforge.net
-   To:      -office@taupotop10.co.nz
-   Subject: hello
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-14-04 04:24 duanev         New Issue                                    
+11-14-04 04:24 duanev         Distribution              => Mandrake 10.1   
+11-14-04 04:24 duanev         Kernel Version            => Preemptable 2.6.8
+kernel
+======================================================================
 
-This is due to automatic rules that have determined that the 
-intended recipient is not authorized to receive messages with
-Executable file(s) attached.
 
-If you believe the message was business related please send a 
-message to mailmarshall@taupotop10.co.nz and request that the message be 
-released to its intended recipient.  If no contact is
-made within 5 days the message will automatically be deleted.
-
-MailMarshal Rule: Inbound Messages : Block EXECUTABLE Files
-
-Email security by MailMarshal from Marshal Software.
-
-----=e40d80da-21ea-4620-97d2-6b04b271b70e--
 
 
 -------------------------------------------------------
