@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000995]: "Scratchy" Sound
-Date: Tue, 15 Mar 2005 10:53:55 +0100
-Message-ID: <fcd71cdf4e776f47c93e57d237112526@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000994]: 5.1 output broken since ~1.0.8 with VIA8237
+Date: Tue, 15 Mar 2005 16:10:41 +0100
+Message-ID: <b6b1bd69f96cd31d0e3a0c8969ffe64f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E97451F9
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 10:53:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DBC2F1AD
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 16:10:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,54 +23,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=995> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=994> 
 ======================================================================
-Reported By:                antonios_eg
-Assigned To:                Clemens Ladisch
+Reported By:                mru
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   995
-Category:                   USB - usb-audio
+Project:                    ALSA - lib
+Issue ID:                   994
+Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.10 (i have tested more)
+Status:                     new
 ======================================================================
-Date Submitted:             03-15-2005 10:33 CET
-Last Modified:              03-15-2005 10:53 CET
+Date Submitted:             03-14-2005 23:42 CET
+Last Modified:              03-15-2005 16:10 CET
 ======================================================================
-Summary:                    "Scratchy" Sound
+Summary:                    5.1 output broken since
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1#1.0.8 with VIA8237
 Description: 
-My soundcard is audigy 2 nx
-My pc is laptop h/compaq nx7010 (centrino)
+The surround51 device on VIA8237 stopped working some time after alsa-lib
+version 1.0.7.  Driver v1.0.8 works properly with older library versions.
 
-And the output(in every program or even in x) from the soundcard is bad.
-The sound comes out "scratchy" ang "a bit shaking". I ve really tried
-averything.
+With alsa-lib 1.0.8, there is this error: ALSA lib
+pcm_hw.c:407:(snd_pcm_hw_channel_info) SNDRV_PCM_IOCTL_CHANNEL_INFO
+failed: Inappropriate ioctl for device
 
-i am using kernel 2.6.10 (i ve tried more) and i tried many comnbination
-(alsa build in,alsa as module, snd-usb-audio build in / module etc )
+With CVS of today (2005-03-14), about 100 ms of random sound is looped.
 
-In my dos works fine.
+Using the surround40 device works, with some channels moved around.
+
+>From the output of aplay -v, it appears that the surround51 device is
+surround40, with some channel rerouting applied, all else being equal. 
+Could there be a bug in the route plugin?
+
+The same problem occurs with surround41 and surround50 as well.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- antonios_eg - 03-15-05 10:53 
+ mru - 03-15-05 16:10 
 ----------------------------------------------------------------------
-looking back in the reported bugs i noticed another person having the same
-problem 
-:  "clicking/distortion with audigy 2 nx.
+I found the problem.  A -D_FILEOFFSET_BITS=64 had managed to sneak in,
+resulting
+in differing definitions of off_t, which is used in he argument to
+SNDRV_PCM_IOCTL_CHANNEL_INFO, between the library and the driver.
+
+Please close this bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-05 10:33 antonios_eg    New Issue                                    
-03-15-05 10:33 antonios_eg    Kernel Version            => 2.6.10 (i have tested
-more)
-03-15-05 10:53 antonios_eg    Note Added: 0003914                          
+03-14-05 23:42 mru            New Issue                                    
+03-15-05 16:10 mru            Note Added: 0003915                          
 ======================================================================
 
 
