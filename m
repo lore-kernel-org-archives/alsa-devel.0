@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000490]:  Choppy sound when playing on Acer TravelMate 2000
-Date: Tue, 18 Jan 2005 21:25:40 +0100
-Message-ID: <ab1f2ecb6a78088e452137be5ef2069a@bugtrack.alsa-project.org>
+Date: Tue, 18 Jan 2005 22:47:59 +0100
+Message-ID: <2e6c94b3b45975f5f5336d6dc977cc76@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 655E520F
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 21:25:40 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9FFB025E
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 22:47:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -41,7 +41,7 @@ sources
 Kernel Version:             2.6.8.1
 ======================================================================
 Date Submitted:             09-08-2004 21:16 CEST
-Last Modified:              01-18-2005 21:25 CET
+Last Modified:              01-18-2005 22:47 CET
 ======================================================================
 Summary:                     Choppy sound when playing on Acer TravelMate 2000
 Description: 
@@ -66,12 +66,6 @@ still choppy and cannot be listened to.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-18-05 11:32 
-----------------------------------------------------------------------
-Try 1.0.8.  Some hardwares have a bug in reading DMA pointer register.  The
-latest ALSA version has a workaround.
-
-----------------------------------------------------------------------
  rlrevell - 01-18-05 21:25 
 ----------------------------------------------------------------------
 I think this is an mplayer bug.  I get the same behavior - it's unusable
@@ -79,6 +73,13 @@ with ALSA output because they reset the stream on every xrun, and xruns
 are inevitable because they don't use a separate RT thread for audio.
 
 Try oss emulation, mplayer -ao oss.  This works for me.
+
+----------------------------------------------------------------------
+ feixm - 01-18-05 22:47 
+----------------------------------------------------------------------
+I don't think that MPlayer is to be blamed, as I've tested this behaviour
+with XMMS and others. I'll test with latest 1.0.8 release and post an
+update.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -92,6 +93,7 @@ everything compiled from original sources
 01-18-05 08:09 rounin         Note Added: 0003245                          
 01-18-05 11:32 tiwai          Note Added: 0003247                          
 01-18-05 21:25 rlrevell       Note Added: 0003260                          
+01-18-05 22:47 feixm          Note Added: 0003261                          
 ======================================================================
 
 
