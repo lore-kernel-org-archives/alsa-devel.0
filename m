@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
-Date: Thu, 16 Dec 2004 18:23:06 +0100
-Message-ID: <ee1148562e5ea85a28175843b2d91d61@bugtrack.alsa-project.org>
+Date: Thu, 16 Dec 2004 18:25:28 +0100
+Message-ID: <68c9831f04e8bc6b19a010657c373a13@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8767524B
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:23:06 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A5E40249
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:25:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
 ======================================================================
 Reported By:                brentcfisher
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   671
@@ -42,7 +42,7 @@ Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
 Date Submitted:             11-24-2004 06:36 CET
-Last Modified:              12-16-2004 18:23 CET
+Last Modified:              12-16-2004 18:25 CET
 ======================================================================
 Summary:                    ALSA sound cuts out w/ message: ALSA
 sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
@@ -65,23 +65,17 @@ HTPC.
 ======================================================================
 
 ----------------------------------------------------------------------
- brentcfisher - 12-16-04 17:53 
-----------------------------------------------------------------------
-Takashi,
-
-I dare say that it looks like you've done it!  I've watched a little over
-an hour's worth of video and there hasn't been a single bump in the sound.
- Nor has there been a complaint in the error log!
-
-Outstanding!
-
--Brent
-
-----------------------------------------------------------------------
  tiwai - 12-16-04 18:23 
 ----------------------------------------------------------------------
 Thanks for confirmation.  I apply the patch to CVS now.
 Let's resolve this issue as FIXED.
+
+----------------------------------------------------------------------
+ tiwai - 12-16-04 18:25 
+----------------------------------------------------------------------
+Oops, I found that I already did apply the change together with another
+fix.
+So, the fixed version is already in the CVS ;)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -122,6 +116,8 @@ Date Modified  Username       Field                    Change
 12-16-04 18:23 tiwai          Resolution               open => fixed       
 12-16-04 18:23 tiwai          Assigned To               => tiwai           
 12-16-04 18:23 tiwai          Note Added: 0002833                          
+12-16-04 18:23 tiwai          Assigned To              tiwai =>            
+12-16-04 18:25 tiwai          Note Added: 0002834                          
 ======================================================================
 
 
