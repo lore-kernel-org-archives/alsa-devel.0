@@ -1,14 +1,13 @@
-From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
-Subject: Show currectly selected widget in proc_read for hda driver
-Date: Thu, 24 Mar 2005 13:17:30 +0800
-Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D6C2@cm-msg-02.cmedia.com.tw>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000353]: No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
+Date: Thu, 24 Mar 2005 08:16:55 +0100
+Message-ID: <80d1c126a5bc21cdf1f5e96b451cc542@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C53030.C7186B78"
-Received: from cm-msg-02.cmedia.com.tw (61-30-17-228.static.tfn.net.tw [61.30.17.228])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 63CC92AA
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 07:06:00 +0100 (MET)
-Content-Class: urn:content-classes:message
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3438B2A3
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 08:16:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,53 +20,81 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C53030.C7186B78
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=353> 
+======================================================================
+Reported By:                JSchmitt
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   353
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             06-30-2004 19:36 CEST
+Last Modified:              03-24-2005 08:16 CET
+======================================================================
+Summary:                    No sound as startup of KDE 3.2.3, errormessage in
+snd_pcm_hw.c
+Description: 
+When I try to start X with KDE 3.2.3, I will get the following error
+mesages:
+
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+
+I will not get any sound.
+======================================================================
+
+----------------------------------------------------------------------
+ rob_hughes - 03-24-05 02:28 
+----------------------------------------------------------------------
+Please check your log again.
+
+----------------------------------------------------------------------
+ jdthood - 03-24-05 08:16 
+----------------------------------------------------------------------
+> Sound works for the root user on the system, but no "regular"
+> users can access the sound functions. Other sound functions,
+> such as playing sound back through xmms, xine, or amarok work
+> when either alsa or arts is selected as the output.
 
 
-Summary: <Show currectly selected widget in proc_read for hda driver>
-Signed-off-by: ChenLi Tien<cltien@cmedia.com.tw>
+These two sentences appear to contradict each other.  Can you say
+more clearly what works and what does not?
 
-Durind debugging for cm9880 multi-channel playback, I added the * after =
-the currently selected widget, mixer widget doesn't need this but other =
-3 widget types  need it.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-30-04 19:36 JSchmitt       New Issue                                    
+07-06-04 18:33 JSchmitt       Issue Monitored: JSchmitt                    
+07-15-04 14:20 perex          Note Added: 0001433                          
+07-15-04 17:57 JSchmitt       Note Added: 0001436                          
+08-17-04 06:11 samy           Note Added: 0001572                          
+08-17-04 06:11 samy           Issue Monitored: samy                        
+10-23-04 22:41 rob_hughes     Note Added: 0002256                          
+10-23-04 22:50 rob_hughes     Issue Monitored: rob_hughes                    
+10-23-04 23:27 rob_hughes     Note Added: 0002258                          
+10-25-04 01:08 rob_hughes     Note Edited: 0002256                         
+03-19-05 09:06 jdthood        Note Added: 0004011                          
+03-19-05 12:08 rob_hughes     Note Added: 0004034                          
+03-19-05 12:38 jdthood        Note Added: 0004035                          
+03-21-05 04:01 rob_hughes     Note Added: 0004115                          
+03-22-05 19:56 tiwai          Note Added: 0004130                          
+03-24-05 02:28 rob_hughes     Note Added: 0004190                          
+03-24-05 08:16 jdthood        Note Added: 0004192                          
+======================================================================
 
-Sincerely,
-ChenLi Tien
 
-------_=_NextPart_001_01C53030.C7186B78
-Content-Type: text/x-patch;
-	name="hda_proc.c.patch"
-Content-Transfer-Encoding: base64
-Content-Description: hda_proc.c.patch
-Content-Disposition: attachment;
-	filename="hda_proc.c.patch"
-
-SW5kZXg6IGFsc2EtY3ZzL2Fsc2Eta2VybmVsL3BjaS9oZGEvaGRhX3Byb2MuYwo9PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-ClJDUyBmaWxlOiAvY3Zzcm9vdC9hbHNhL2Fsc2Eta2VybmVsL3BjaS9oZGEvaGRhX3Byb2MuYyx2
-CnJldHJpZXZpbmcgcmV2aXNpb24gMS4xCmRpZmYgLWEgLXUgLXIxLjEgaGRhX3Byb2MuYwotLS0g
-YWxzYS1jdnMvYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfcHJvYy5jCTIwIEphbiAyMDA1IDE1OjAy
-OjI4IC0wMDAwCTEuMQorKysgYWxzYS1jdnMvYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfcHJvYy5j
-CTI0IE1hciAyMDA1IDA0OjU5OjA1IC0wMDAwCkBAIC0yNjYsMTMgKzI2NiwxOSBAQAogCiAJCWlm
-ICh3aWRfY2FwcyAmIEFDX1dDQVBfQ09OTl9MSVNUKSB7CiAJCQloZGFfbmlkX3QgY29ubltIREFf
-TUFYX0NPTk5FQ1RJT05TXTsKLQkJCWludCBjLCBjb25uX2xlbjsKKwkJCWludCBjLCBjb25uX2xl
-biwgY3VyciA9IC0xOworCQkJaWYgKHdpZF90eXBlICE9IEFDX1dJRF9BVURfTUlYKQorCQkJCWN1
-cnIgPSBzbmRfaGRhX2NvZGVjX3JlYWQoY29kZWMsIG5pZCwgMCwKKwkJCQkJQUNfVkVSQl9HRVRf
-Q09OTkVDVF9TRUwsIDApOwogCQkJY29ubl9sZW4gPSBzbmRfaGRhX2dldF9jb25uZWN0aW9ucyhj
-b2RlYywgbmlkLCBjb25uLAogCQkJCQkJCSAgIEhEQV9NQVhfQ09OTkVDVElPTlMpOwogCQkJc25k
-X2lwcmludGYoYnVmZmVyLCAiICBDb25uZWN0aW9uOiAlZFxuIiwgY29ubl9sZW4pOwogCQkJc25k
-X2lwcmludGYoYnVmZmVyLCAiICAgICIpOwotCQkJZm9yIChjID0gMDsgYyA8IGNvbm5fbGVuOyBj
-KyspCisJCQlmb3IgKGMgPSAwOyBjIDwgY29ubl9sZW47IGMrKykgewogCQkJCXNuZF9pcHJpbnRm
-KGJ1ZmZlciwgIiAweCUwMngiLCBjb25uW2NdKTsKKwkJCQlpZiAoY29ubl9sZW4gPiAxICYmIGMg
-PT0gY3VycikKKwkJCQkJc25kX2lwcmludGYoYnVmZmVyLCAiKiIpOworCQkJfQogCQkJc25kX2lw
-cmludGYoYnVmZmVyLCAiXG4iKTsKIAkJfQogCX0K
-
-------_=_NextPart_001_01C53030.C7186B78--
 
 
 -------------------------------------------------------
