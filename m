@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000727]: segmentation fault when running modprobe & alsaconf, no sound, no mixer on D915GAV
-Date: Thu, 16 Dec 2004 17:21:21 +0100
-Message-ID: <6dca85a406df8f9e461cdd932f004ade@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000636]: Setting volume controls to 0 does not turn off speakers completely
+Date: Thu, 16 Dec 2004 17:22:33 +0100
+Message-ID: <811ede9c41f0dc13b0c81a26c30bd6a0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7A821243
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 17:21:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 91253243
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 17:22:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,85 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=727> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=636> 
 ======================================================================
-Reported By:                IMAMUDDIN AKBAR
+Reported By:                Mark Knecht
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   727
-Category:                   PCI - azx
+Issue ID:                   636
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
+Status:                     closed
+Distribution:               Gentoo
+Kernel Version:             2.6.9-rc2-mm4-VP-S7-noACPI-UMP
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-16-2004 09:09 CET
-Last Modified:              12-16-2004 17:21 CET
+Date Submitted:             11-08-2004 18:41 CET
+Last Modified:              12-16-2004 17:22 CET
 ======================================================================
-Summary:                    segmentation fault when running modprobe & alsaconf,
-no sound, no mixer on D915GAV
+Summary:                    Setting volume controls to 0 does not turn off
+speakers completely
 Description: 
-
-i have compiled alsa-driver-1.0.7 alsa-lib-1.0.7 alsa-utils-1.0.7
-but thereis still no sound, and nomiser appear when running alsamixer
-
-i use Intel D915GAV with lspci -v:
-00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Intel Corp.: Unknown device e203
-        Flags: bus master, fast devsel, latency 0, IRQ 169
-        Memory at ffa3c000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-when i run 
-# modprobe snd-azx
-Segmentation fault
-#lsmod
-snd_azx                31094  6
-snd_pcm_oss            51752  0
-snd_mixer_oss          21760  1 snd_pcm_oss
-snd_pcm                89860  2 snd_azx,snd_pcm_oss
-snd_timer              27524  1 snd_pcm
-
-when i run amixer
-no mixer appear on screen
-
-and when i reboot my computer it cannot boot and just hang...
-so i have to uninstall all alsa from rescue to boot again.
-
-Help me to make mysound work fine...
- 
-
-
-
-
+On my Compaq R3070 laptop setting Master and Master Mono controls to 0 does
+not result in no sound out. I still get audio at a low level.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-16-04 17:21 
+ Mark Knecht - 11-08-04 23:17 
 ----------------------------------------------------------------------
-Fixed in the cvs version.
+>Which ALSA version? (/proc/asound/version)
+
+flash mark $ cat /proc/asound/version 
+Advanced Linux Sound Architecture Driver Version 1.0.6 (Sun Aug 15
+07:17:53 2004 UTC).
+Compiled on Oct  5 2004 for kernel 2.6.9-rc2-mm4-VP-S7-UMP-noACPI.
+flash mark $
+
+>Which AC'97 codec? (see alsamixer)
+
+How to tell? The chip at the top is listed as Analog Devices AD1981B
+
+>Does the Mute control work?
+
+Yes, mute completely cuts the sound. Volume at 0 just makes it very quiet,
+but not off.
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 11-09-04 09:26 
+----------------------------------------------------------------------
+The AD1981B's datasheet says that the maximum attenuation is 46.5 dB (which
+conforms to the AC'97 specification).
+To mute, use Mute.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-16-04 09:09 IMAMUDDIN AKBARNew Issue                                    
-12-16-04 17:21 tiwai          Status                   new => resolved     
-12-16-04 17:21 tiwai          Resolution               open => fixed       
-12-16-04 17:21 tiwai          Assigned To               => tiwai           
-12-16-04 17:21 tiwai          Note Added: 0002829                          
+11-08-04 18:41 Mark Knecht    New Issue                                    
+11-08-04 18:41 Mark Knecht    Distribution              => Gentoo          
+11-08-04 18:41 Mark Knecht    Kernel Version            =>
+2.6.9-rc2-mm4-VP-S7-noACPI-UMP
+11-08-04 19:04 Clemens LadischNote Added: 0002312                          
+11-08-04 23:17 Mark Knecht    Note Added: 0002314                          
+11-09-04 09:26 Clemens LadischStatus                   assigned => resolved
+11-09-04 09:26 Clemens LadischResolution               open => not an issue
+11-09-04 09:26 Clemens LadischNote Added: 0002316                          
+12-16-04 17:22 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
