@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000653]: poor microphone recording quality on pcicmi
-Date: Thu, 18 Nov 2004 20:22:20 +0100
-Message-ID: <274ff86a80f1642010f23443bd1b77e0@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: William <walsac3@orthoset.com>
+Subject: VIA 8235: Bad IRQ after PCM playback and moving the mouse
+Date: Thu, 18 Nov 2004 19:43:38 GMT
+Message-ID: <200411181943.TAA28593@orthoset.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3458E25A
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 20:22:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,86 +12,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+VIA 8235 sound system on a laptop:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=653> 
-======================================================================
-Reported By:                pbienst
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   653
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r4
-======================================================================
-Date Submitted:             11-18-2004 10:58 CET
-Last Modified:              11-18-2004 20:22 CET
-======================================================================
-Summary:                    poor microphone recording quality on pcicmi
-Description: 
-I have a C-Media PCI CMI8738-MC6 (rev 16) from a Hercules Muse DVD soundd
-card.
+I keep getting bad IRQ errors after PCM playback and moving the mouse.
+I tried loading via82xx first with dxs_support=1, then with dxs_support=2,
+then dxs_support=4 but the same errors happen.
 
-When recording from a headset microphone, sound quality is really bad: low
+For example, while playing:
+ $ aplay -c 2 -f S16_LE -r 22000 music 2216.raw
+if I move the mouse, the kernel gives error messages:
 
-volume and quite some noise / distortion.
+   Nov 18 19:55:18 kernel: ACPI: PCI interrupt 0000:00:11.5[C] -> GSI 9 (level, low) -> IRQ 9
+   Nov 18 19:55:19 kernel: usbcore: registered new driver snd-usb-audio
+   Nov 18 19:55:34 kernel: spurious 8259A interrupt: IRQ7.
+   Nov 18 19:55:47 kernel: irq 11: nobody cared!
+   Nov 18 19:55:47 kernel:  __report_bad_irq+0x17/0x7f
+   Nov 18 19:55:47 kernel:  note_interrupt+0x5d/0x3c
+   Nov 18 19:55:47 kernel:  do_IRQ+0x71/0xe2
+   Nov 18 19:55:47 kernel:  common_interrupt+0x18/0x20
+   Nov 18 19:55:47 kernel:  default_idle+0x21/0x35
+   Nov 18 19:55:47 kernel:  cpu_idle+0x1d/0x22
+   Nov 18 19:55:47 kernel:  start_kernel+0x10b/0x13a
+   Nov 18 19:55:47 kernel: handlers:
+   Nov 18 19:55:47 kernel:  (usb_hcd_irq+0x0/0xed)
+   Nov 18 19:55:47 kernel: Disabling IRQ #11
 
-I have my microphone mixers maxed out, 'Mic boost' is on, 'Mic as
-Center/LFE' 
-is off.
+The mouse is now disabled. The pointer can moved only by using the touchpad.
 
-I've fiddled with all the other options, but they don't seem to affect the
+ modprobe.conf has:
 
-quality.
+   alias char-major-14-* soundcore
+   alias char-major-116-* snd
+   options snd major=116 cards_limit=1
 
-I do my recording with:
+   alias snd-card-0 snd-via82xx
+   options snd-via82xx enable=1 dxs_support=1
+   alias snd-card-0 snd-via82xx
+   alias sound-slot-0 snd-card-0
+   alias sound-service-0-0 snd-mixer-oss
+   alias sound-service-0-3 snd-pcm-oss
+   alias sound-service-0-12 snd-pcm-oss
+   alias /dev/dsp1 snd-pcm-oss
 
-arecord -D hw:1,0 -d 4 test.wav
+Any suggestions please?
 
-Under Windows, sound quality is a lot better with the same setup.
-======================================================================
-
-----------------------------------------------------------------------
- pbienst - 11-18-04 20:01 
-----------------------------------------------------------------------
-Well, I don't think we have explored all options then, since I haven't been
-able to set the "MICBST", "EMUCB" and "VADMIC3" mixer switches.
-
-Which lines in the driver do I need to change to set these?
-
-----------------------------------------------------------------------
- tiwai - 11-18-04 20:22 
-----------------------------------------------------------------------
-When you can't change the values via amixer properly, they are read-only 
-values.  Changing the driver won't help then.  You can forget the patch.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-18-04 10:58 pbienst        New Issue                                    
-11-18-04 10:58 pbienst        Distribution              => Gentoo          
-11-18-04 10:58 pbienst        Kernel Version            => 2.6.9-gentoo-r4 
-11-18-04 18:07 tiwai          Note Added: 0002453                          
-11-18-04 18:08 tiwai          File Added: cmipci-test.diff                    
-11-18-04 19:11 pbienst        Note Added: 0002459                          
-11-18-04 19:26 pbienst        Note Added: 0002460                          
-11-18-04 19:33 tiwai          Note Added: 0002461                          
-11-18-04 19:36 pbienst        Note Added: 0002462                          
-11-18-04 19:54 tiwai          Note Added: 0002467                          
-11-18-04 20:01 pbienst        Note Added: 0002468                          
-11-18-04 20:22 tiwai          Note Added: 0002469                          
-======================================================================
-
-
+William
 
 
 -------------------------------------------------------
