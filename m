@@ -1,15 +1,24 @@
-From: John Knottenbelt <jak97@doc.ic.ac.uk>
-Subject: Re: Exchange DAC Setting Disappeared - CMIPCI
-Date: Sun, 21 Mar 2004 22:06:58 +0000
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: snd_pcm_wait()  More details required.
+Date: Sun, 21 Mar 2004 14:49:00 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200403212206.58539.jak97@doc.ic.ac.uk>
-References: <200403212113.35943.jak97@doc.ic.ac.uk>
+Message-ID: <405DAB5C.5010106@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_CIhXAXHfjC/jLBn"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200403212113.35943.jak97@doc.ic.ac.uk>
-Content-Disposition: inline
+Received: from anchor-fallback-94.mail.demon.net (anchor-fallback-94.mail.demon.net [194.217.242.94])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA19817
+	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2004 00:19:44 +0100
+Received: from anchor-post-30.mail.demon.net ([194.217.242.88]:1064 "EHLO
+	anchor-post-30.mail.demon.net") by anchor-fallback-94.mail.demon.net
+	with ESMTP id S747710AbUCUTKV (ORCPT
+	<rfc822;alsa-devel@alsa-project.org>);
+	Sun, 21 Mar 2004 19:10:21 +0000
+Received: from superbug.demon.co.uk ([80.176.146.252])
+	by anchor-post-30.mail.demon.net with esmtp (Exim 3.35 #1)
+	id 1B54CU-000HRm-0U
+	for alsa-devel@alsa-project.org; Sun, 21 Mar 2004 14:45:18 +0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,92 +27,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+I need more details on exactly what snd_pcm_wait() is supposed to do.
+The documentation on the www.alsa-project.org gives: -
+Wait for a PCM to become ready.
 
---Boundary-00=_CIhXAXHfjC/jLBn
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Parameters:
+     pcm  	PCM handle
+     timeout  	maximum time in milliseconds to wait
 
-I was able to restore the 'Exchange DAC' Setting with the attached patch. Do 
-you think it would be worth while to try and make it a module setting?
+Returns:
+     a positive value on success otherwise a negative error code (-EPIPE 
+for the xrun and -ESTRPIPE for the suspended status, others for general 
+errors)
+
+Return values:
+     0  	timeout occurred
+     1  	PCM stream is ready for I/O
+
+
+
+So, when is a PCM ready?
+If a PCM is already in SND_PCM_STATE_RUNNING, when is snd_pcm_wait() 
+supposed to return ?
+
+I have discovered a problem with xine when using it. I have done a work 
+around in xine so that dmix now works in xine. I think that my 
+assumptions regarding snd_pcm_wait() might have been wrong, so I want to 
+  get accurate details from yourselves.
+It also might be a good idea to update the documentation for 
+snd_pcm_wait() with more details.
 
 Cheers
-
-John
-
-On Sunday 21 March 2004 21:13, John Knottenbelt wrote:
-> Hi
->
-> I see that the exchange DAC setting has disappeared from my mixer settings.
-> I understand after reading thread
->
->  
-> http://www.mail-archive.com/alsa-devel%40lists.sourceforge.net/msg09930.htm
->l
->
-> That this is because it wasn't working well in a multi-channel context.
->
-> The use that I was putting this to, however, was to switch between
-> headphones and loudspeakers (by connecting loudspeakers to blue and
-> headphones to green). I only ever do stereo output.
->
-> Is it possible to achieve the same functionality without this switch? If
-> not, would it be possible to bring it back? Specifically I would like to be
-> able to switch between loudspeakers and headphones without having to
-> restart any applications and for the switch to have immediate effect.
->
-> My card is a 6 channel on board cmipci:
->
-> 00:0c.0 Multimedia audio controller: C-Media Electronics Inc CM8738 (rev
-> 10) Subsystem: Micro-Star International Co., Ltd.: Unknown device 5900
->
-> Many thanks
->
-> John
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: IBM Linux Tutorials
-> Free Linux tutorial presented by Daniel Robbins, President and CEO of
-> GenToo technologies. Learn everything from fundamentals to system
-> administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---Boundary-00=_CIhXAXHfjC/jLBn
-Content-Type: text/x-diff;
-  charset="iso-8859-1";
-  name="alsa.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="alsa.patch"
-
---- sound/pci/cmipci.c.orig	2004-03-21 21:34:55.000000000 +0000
-+++ sound/pci/cmipci.c	2004-03-21 21:35:09.000000000 +0000
-@@ -2753,13 +2753,13 @@
- 		err = snd_ctl_add(cm->card, snd_ctl_new1(sw, cm));
- 		if (err < 0)
- 			return err;
- 	}
--	if (! cm->can_multi_ch) {
-+/* 	if (! cm->can_multi_ch) { */
- 		err = snd_ctl_add(cm->card, snd_ctl_new1(&snd_cmipci_nomulti_switch, cm));
- 		if (err < 0)
- 			return err;
--	}
-+/* 	} */
- 	if (cm->device == PCI_DEVICE_ID_CMEDIA_CM8738 ||
- 	    cm->device == PCI_DEVICE_ID_CMEDIA_CM8738B) {
- 		sw = snd_cmipci_8738_mixer_switches;
- 		for (idx = 0; idx < num_controls(snd_cmipci_8738_mixer_switches); idx++, sw++) {
-
---Boundary-00=_CIhXAXHfjC/jLBn--
+James
 
 
 -------------------------------------------------------
