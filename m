@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000860]: Wrong detection of opl3 device
-Date: Sat, 29 Jan 2005 18:20:54 +0100
-Message-ID: <8bfa82297ebf39a1035a93cbabcc69ec@bugtrack.alsa-project.org>
+Date: Sat, 29 Jan 2005 19:43:09 +0100
+Message-ID: <5e8192930224628a4790bda0eec81c23@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4062622E
-	for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2005 18:20:54 +0100 (MET)
+Received: from bugtrack.alsa-project.org (194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7D9D421F
+	for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2005 19:43:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=860> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.10-ck4
 ======================================================================
 Date Submitted:             01-29-2005 18:20 CET
-Last Modified:              01-29-2005 18:20 CET
+Last Modified:              01-29-2005 19:43 CET
 ======================================================================
 Summary:                    Wrong detection of opl3 device
 Description: 
@@ -72,11 +72,20 @@ PPPS: was fighting with alsa for weeks trying to get opl3 working before
 decided to look in sources.
 ======================================================================
 
+----------------------------------------------------------------------
+ theli - 01-29-05 19:43 
+----------------------------------------------------------------------
+sorry...in
+"and in my MF1000 opl device is 00:01.03"
+i've wanted to say that MPU device is 00:01.03
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-29-05 18:20 theli          New Issue                                    
 01-29-05 18:20 theli          Kernel Version            => 2.6.10-ck4      
+01-29-05 18:42 theli          Issue Monitored: theli                       
+01-29-05 19:43 theli          Note Added: 0003439                          
 ======================================================================
 
 
