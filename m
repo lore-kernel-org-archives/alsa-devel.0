@@ -1,15 +1,15 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000349]: can't play MIDI through ALSA / MPU-401 but non-ALSA "midiplayer" to MIDI device works
-Date: Tue, 29 Jun 2004 07:58:33 +0200
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH]Audigy 2 ZS - side support
+Date: Mon, 28 Jun 2004 18:28:26 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a235e67e29374dbadc5c375d36884d31@bugtrack.alsa-project.org>
+Message-ID: <1088461706.16916.100.camel@mindpipe>
+References: <200406280851.i5S8pYdr009124@www3.pobox.sk>
+	 <s5hhdswdk2f.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 28E42239
-	for <alsa-devel@alsa-project.org>; Tue, 29 Jun 2004 07:58:34 +0200 (MEST)
+In-Reply-To: <s5hhdswdk2f.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,81 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Peter Zubaj <pzad@pobox.sk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2004-06-28 at 06:59, Takashi Iwai wrote:
+> > TODO - detection of audigy 2 zs. Now it will add side controls to
+> > mixer for audigy 2 to. Maybe left or right slider can control volume
+> > of back center on audigy 2 too.
+> 
+> Also, we'll need create another driver name for ZS once when we can
+> check the correct board type, since audigy2 doesn't support
+> side/surround71.
 
-The following bug has been SUBMITTED.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0349
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                amarsh04
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     349
-Category:                   ISA - sb16/sbawe
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.5-1 (problem also showed with 2.4.24)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-29-2004 07:58 CEST
-Last Modified:              06-29-2004 07:58 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    can't play MIDI through ALSA / MPU-401 but no=
-n-ALSA
-"midiplayer" to MIDI device works
-Description:=20
-With ISA SB16 PNP, aplaymidi -l reports:
-Port    Client name                      Port name
- 64:0    Sound Blaster 16 MIDI - Rawmidi  Sound Blaster 16 MIDI
- 65:0    OPL3 FM synth                    OPL3 FM Port
+Here is the lspci -vvv output for my Audigy 2 ZS.  It is SB0350, rev 04.
 
-Neither=20
-aplaymidi -p 64:0 myfile.mid
-nor=20
-aplaymidi -p 65:0 myfile.mid=20
-work, but the non-ALSA "midiplayer" works playing directly to the MIDI
-device:
+Do you need more info than this?
 
-playmidi -v -D0 myfile.mid
+0000:00:14.0 Multimedia audio controller: Creative Labs SB Audigy (rev 04)
+        Subsystem: Creative Labs SB Audigy 2 ZS (SB0350)
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32 (500ns min, 5000ns max)
+        Interrupt: pin A routed to IRQ 10
+        Region 0: I/O ports at e800
+        Capabilities: [dc] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
+0000:00:14.1 Input device controller: Creative Labs SB Audigy MIDI/Game port (rev 04)
+        Subsystem: Creative Labs SB Audigy MIDI/Game Port
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32
+        Region 0: I/O ports at ec00
+        Capabilities: [dc] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+0000:00:14.2 FireWire (IEEE 1394): Creative Labs SB Audigy FireWire Port (rev 04) (prog-if 10 [OHCI])
+        Subsystem: Creative Labs SB Audigy FireWire Port
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32 (500ns min, 1000ns max), Cache Line Size: 0x08 (32 bytes)
+        Interrupt: pin B routed to IRQ 12
+        Region 0: Memory at ea006000 (32-bit, non-prefetchable)
+        Region 1: Memory at ea000000 (32-bit, non-prefetchable) [size=16K]
+        Capabilities: [44] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA PME(D0+,D1+,D2+,D3hot+,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-29-04 07:58 amarsh04       New Bug                                    =
- =20
-06-29-04 07:58 amarsh04       Distribution              =3D> Debian      =
-   =20
-06-29-04 07:58 amarsh04       Kernel Version            =3D> 2.6.5-1 (pro=
-blem also
-showed with 2.4.24)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
+Lee
 
 
 
