@@ -1,13 +1,16 @@
-From: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
-Subject: Re: RE: UDA1341TS (iPAQ H3X00) sound driver for ALSA
-Date: Thu, 11 Apr 2002 11:21:15 +0200 (CEST)
+From: Richard Bown <bownie@bownie.com>
+Subject: timestamps on recorded events
+Date: Thu, 11 Apr 2002 10:42:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.BSF.4.44.0204111117540.75061-100000@fest.stud.fee.vutbr.cz>
-References: <Pine.BSF.4.44.0204101837280.13966-100000@fest.stud.fee.vutbr.cz>
+Message-ID: <200204110944.AFK42109@msgdirector2.onetel.net.uk>
+References: <Pine.LNX.4.33.0204091221050.7128-100000@wotan.suse.de>
+Reply-To: bownie@bownie.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.BSF.4.44.0204101837280.13966-100000@fest.stud.fee.vutbr.cz>
+In-Reply-To: <Pine.LNX.4.33.0204091221050.7128-100000@wotan.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,22 +19,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Hicks, Jamey" <Jamey.Hicks@compaq.com>, Nicolas Pitre <nico@cam.org>, alsa-devel@lists.sourceforge.net, Linux-arm-kernel@lists.arm.linux.org.uk
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi.  Another simple one but another one I'm afraid I can't find an example for.
 
-Hi,
+I'm writing and reading events from the same ALSA 0.9.0 port (on the same
+duplex handle) - I receive the events correctly through snd_seq_event_input
+but the timestamps are coming back as zero even when I've started a queue
+against that handle.  I presume I don't have to extract the timestamps from
+the queue itself?
 
-I have just created tiny web page with some aditional information.
-
-http://www.stud.fee.vutbr.cz/~xkaspa06/ipaq/
-
-Bye
-
---
-
-	Tomas Kasparek (sioux, xkaspa06)
- 	 tomas.kasparek@[seznam.cz,volny.cz]
-	 linux@fit.vutbr.cz
-	student FIT VUT Brno
+Thanks,
+Richard
+-- 
+http://www.all-day-breakfast.com/rosegarden
+http://www.bownie.com
