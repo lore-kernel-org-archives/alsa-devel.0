@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000765]: Very high latency with MIDI soft + dmix + ALSA PCM
-Date: Sat, 19 Mar 2005 14:39:40 +0100
-Message-ID: <07ea310ca98922f138f45f2004776538@bugtrack.alsa-project.org>
+Date: Sat, 19 Mar 2005 14:44:52 +0100
+Message-ID: <f420a944d5d59bc1c3f468f01af9edd1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9482B1CE
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 14:39:40 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 239501CD
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 14:44:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,12 +21,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=765> 
 ======================================================================
 Reported By:                ccasteyde
-Assigned To:                
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - lib
 Issue ID:                   765
@@ -34,10 +34,12 @@ Category:                   general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             12-31-2004 13:54 CET
-Last Modified:              03-19-2005 14:39 CET
+Last Modified:              03-19-2005 14:44 CET
 ======================================================================
 Summary:                    Very high latency with MIDI soft + dmix + ALSA PCM
 Description: 
@@ -89,6 +91,9 @@ Date Modified  Username       Field                    Change
 12-31-04 13:54 ccasteyde      File Added: asound.conf                      
 03-19-05 09:22 jdthood        Note Added: 0004014                          
 03-19-05 14:39 ccasteyde      Note Added: 0004046                          
+03-19-05 14:44 perex          Status                   new => resolved     
+03-19-05 14:44 perex          Resolution               open => fixed       
+03-19-05 14:44 perex          Assigned To               => perex           
 ======================================================================
 
 
