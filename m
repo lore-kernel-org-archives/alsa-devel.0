@@ -1,16 +1,15 @@
-From: Joerg Mayer <jmayer@loplof.de>
-Subject: Re: Alsa 0.9 and 2.4 kernel
-Date: Mon, 16 Sep 2002 16:46:42 +0200
+From: Paul Davis <pbd@op.net>
+Subject: Re: xrun and snd_pcm_prepare.
+Date: Mon, 16 Sep 2002 08:56:02 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020916164642.A19700@thot.informatik.uni-kl.de>
-References: <20020916142553.Y19700@thot.informatik.uni-kl.de> <s5hy9a2ro7w.wl@alsa2.suse.de>
-Reply-To: Joerg Mayer <jmayer@loplof.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <200209161254.OAA12981@alsa.alsa-project.org>
+References: <3D859CC8.7323C2E@multitech.co.in>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hy9a2ro7w.wl@alsa2.suse.de>
+Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA12981
+	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2002 14:54:21 +0200
+In-reply-to: Your message of "Mon, 16 Sep 2002 14:26:40 +0530."
+             <3D859CC8.7323C2E@multitech.co.in>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,41 +18,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Joerg Mayer <jmayer@loplof.de>, alsa-devel@lists.sourceforge.net
+To: Shaju Abraham <shaju@multitech.co.in>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 16, 2002 at 04:41:39PM +0200, Takashi Iwai wrote:
-> > Are there any plans to send alsa 0.9 (or 1.0 or whatever) to Marcelo =
-for
-> > inclusion into the official 2.4 tree?
->=20
-> i don't believe that alsa will be intergated into 2.4 line.
-> this will bring too much diffs - the whole bunch of oss tree is
-> moved, if we keep the consistent structure with 2.5.
+>    In aplay utility to playback music, we see that if the return value
+>is -EPIPE, a function xrun() is called. This function does nothing more
+>than snd_pcm_prepare(handle).  What is the meaning of receiving a -EPIPE
+>return value to a application? and, Why cannot this be done at the
+>driver level itself? say in pcm_native.c .
 
-I agree that oss must not be touched in 2.4, but I see no reason to
-not include it (as an alternative to oss) in the official tree, especiall=
-y
-as the distribution vendors are adopting it already.
+EPIPE signals an xrun (over- or under-run). Its analogous to a POSIX
+pipe that has either filled up or has nothing to read. It means that
+application has failed to keep up with the hardware.
 
-> all the current alsa-kernel codes are based on 2.5, and we provide
-> additional wrappers for 2.4.  is there any problem in this regard?
+>Is it ok if this snd_pcm_prepare is called from pcm_native.c instead of
+>returning -EPIPE to the application?
 
-I obviously wrote a different question than I intended to ask :-/
-I was wondering about module names, nothing else.
+no, its not.
 
-> btw, there is an unofficial patch set for 2.4 to include the alsa.
-> 	ftp://ftp.suse.com/pub/projects/alsa/2.4-patches=09
+behaviour when xruns happen is not automatic. sometimes the driver
+will do something, sometimes user space wants to know about it and
+take care of the situation with its own approach.
 
-Thanks!
-
-  Ciao
-         J=F6rg
---
-Joerg Mayer                                          <jmayer@loplof.de>
-I found out that "pro" means "instead of" (as in proconsul). Now I know
-what proactive means.
+--p
 
 
 -------------------------------------------------------
