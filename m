@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000667]: How to integrate turning on and off LED:s on laptops
-Date: Tue, 23 Nov 2004 15:41:01 +0100
-Message-ID: <11bdd1ecd883887ec5b71e5d5aed08e9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000665]: Build failure in /usr/src/alsa/alsa-driver/acore/init.c
+Date: Tue, 23 Nov 2004 15:59:03 +0100
+Message-ID: <05cb88e14a6b3222f864b06fd73693e0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A73E12C1
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 15:41:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 15F9A2C0
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 15:59:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=667> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=665> 
 ======================================================================
-Reported By:                linus
-Assigned To:                
+Reported By:                ronis
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   667
-Category:                   PCI - intel8x0
+Issue ID:                   665
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-23-2004 15:27 CET
-Last Modified:              11-23-2004 15:41 CET
+Date Submitted:             11-22-2004 19:31 CET
+Last Modified:              11-23-2004 15:59 CET
 ======================================================================
-Summary:                    How to integrate turning on and off LED:s on laptops
+Summary:                    Build failure in
+/usr/src/alsa/alsa-driver/acore/init.c
 Description: 
-This machine, an HP Compaq NC6000 (also on other models
-such as NC8000) has a mute LED that
-turns on and off when mute is activated/deactivated.
-It is accomplished by way of the "External Amplifier"
-setting - this has been wired to a LED instead of an
-amplifier, so the "mute" function should (theoretically)
-activate/deactivate the "External Amplifier" when muting
-is selected for the device. The chip used is AD1981B.
+There's an unterminated #ifdef in init.c.  (PM_CONFIG or  more likely
+CONFIG_PCI).  Here's the log:
 
-This script shows how it is done:
+  CC [M]  /usr/src/alsa/alsa-driver/acore/init.o
+/usr/src/alsa/alsa-driver/acore/init.c:680:1: unterminated #ifdef
+make[4]: *** [/usr/src/alsa/alsa-driver/acore/init.o] Error 1
+make[3]: *** [/usr/src/alsa/alsa-driver/acore] Error 2
+make[2]: *** [_module_/usr/src/alsa/alsa-driver] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.9'
+make: *** [compile] Error 2
 
-if ( amixer sget "External Amplifier"|grep off > /dev/null )
-then
-           # Toggles the LED, no actual volume change
-           amixer set "External Amplifier" unmute > /dev/null
-           # Toggles the audio level
-           amixer set "Master" unmute > /dev/null
-else
-           amixer set "External Amplifier" mute > /dev/null
-           amixer set "Master" mute > /dev/null
-fi
+Adding an extra #endif at the end of the file fixes things, although, I'm
+not 100% sure that this is the right place  top put things.
 
-The question of how this is to be implemented remains. Is
-this an issue for ALSA or shall it be handled on a higher,
-user-space level? I also have a bug open in GNOME for the
-same thing, I need to decide how to finally resolve this
-and need input from the ALSA team on the best solution.
+(BTW, I'm now running 2.6.9 but didn't have a chance to midify my
+profile)
 
-(See http://bugzilla.gnome.org/show_bug.cgi?id=157748)
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-23-04 15:41 
+ tiwai - 11-23-04 15:59 
 ----------------------------------------------------------------------
-I feel that the implementation in the driver is better if the LED is
-printed as "mute" symbol.  In theory, we can provide a LED control element
-and manage it in the user-space, though.
+Can't reproduce here.  Could you try it with the latest CVS?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 15:27 linus          New Issue                                    
-11-23-04 15:27 linus          Distribution              => Fedora Core 3   
-11-23-04 15:27 linus          Kernel Version            => 2.6.9           
-11-23-04 15:41 tiwai          Note Added: 0002516                          
+11-22-04 19:31 ronis          New Issue                                    
+11-23-04 15:59 tiwai          Note Added: 0002517                          
 ======================================================================
 
 
