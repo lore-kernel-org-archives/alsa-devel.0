@@ -1,15 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Finding xruun sources in cs46xx
-Date: Mon, 8 Nov 2004 18:39:21 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0411081835301.16893-100000@studcom.urz.uni-halle.de>
-References: <20041108181705.456b1aea@mango.fruits.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000636]: Setting volume controls to 0 does not turn off speakers completely
+Date: Mon, 8 Nov 2004 18:41:54 +0100
+Message-ID: <4c298e5f768308b0df220ffaf3333b79@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D15C62A9
-	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2004 18:39:22 +0100 (MET)
-In-Reply-To: <20041108181705.456b1aea@mango.fruits.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9EB1B2A9
+	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2004 18:41:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,29 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Florian Schmidt <mista.tapas@gmx.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Florian Schmidt wrote:
-> I wonder: how can i approach finding the source of these xruns? Would the
-> xrun debugging messages of ALSA provide a starting point?
 
-Yes, they show the point where the interrupt finally occurred which
-should be immediately after the code that blocked interrupt for too
-long.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=636> 
+======================================================================
+Reported By:                Mark Knecht
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   636
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9-rc2-mm4-VP-S7-noACPI-UMP
+======================================================================
+Date Submitted:             11-08-2004 18:41 CET
+Last Modified:              11-08-2004 18:41 CET
+======================================================================
+Summary:                    Setting volume controls to 0 does not turn off
+speakers completely
+Description: 
+On my Compaq R3070 laptop setting Master and Master Mono controls to 0 does
+not result in no sound out. I still get audio at a low level.
+======================================================================
 
-> And one more question: what happens to an IRQ raised by a pci device which
-> get's ignored [either due to a cli or because it's masked by another IRQ
-> with a higher prio]?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-08-04 18:41 Mark Knecht    New Issue                                    
+11-08-04 18:41 Mark Knecht    Distribution              => Gentoo          
+11-08-04 18:41 Mark Knecht    Kernel Version            =>
+2.6.9-rc2-mm4-VP-S7-noACPI-UMP
+======================================================================
 
-PCI uses level-triggered interrupts, i.e., the interrupt line stays in
-raised state until the driver tells the device that the interrupt has
-been handled.
-
-
-HTH
-Clemens
 
 
 
