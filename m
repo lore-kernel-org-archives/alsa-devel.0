@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000717]: MIDI input does not generate interrupts
-Date: Thu, 20 Jan 2005 19:14:24 +0100
-Message-ID: <b8e996db151b5e0f3da7ae513b02c3ac@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000734]: please add command-line control of initial display
+Date: Thu, 20 Jan 2005 19:14:40 +0100
+Message-ID: <bde0b4e38a2af04a337ef3b7eae3c8a8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A7A223D
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 19:14:24 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB06B23D
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 19:14:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=717> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=734> 
 ======================================================================
-Reported By:                pelzi
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   717
-Category:                   PCI - es1938
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - utils
+Issue ID:                   734
+Category:                   alsamixer
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian Sarge
-Kernel Version:             2.4.27
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-09-2004 14:52 CET
+Date Submitted:             12-19-2004 21:27 CET
 Last Modified:              01-20-2005 19:14 CET
 ======================================================================
-Summary:                    MIDI input does not generate interrupts
+Summary:                    please add command-line control of initial display
 Description: 
-No high level midi events are generated, though raw midi events are
-received. I.e. amidi -d produces results, but the corresponding
-arecordmidi does not.
-The possible cause, as suggested on the alsa-user mailing list, is that no
-interrupts are generated on incoming midi events. In generel, the
-soundcard does generate interrupts tough, e.g. on audio channel events.
+The submitter of Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=286194 says:
+
+> Since 1.0.7 alsamixer starts up by default in Playback mode. This is
+> most annoying as I frequently want to mess with my capture devices. A
+> command-line option giving the mode (playback, capture or channels) to
+> start up in would be most useful.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- pelzi - 12-20-04 01:58 
+ tiwai - 12-20-04 14:39 
 ----------------------------------------------------------------------
-Ah, I see, there are news at the main page. Tried to delete the original
-patch, but I'm not authorized, tried to upload it once again, but it has
-to have a different name - so an authorized person will have to clean up
-the mess ;-) As writing my email address in a text file doesn't count as
-"signing" for me, I also added a detached GPG signature.
-
-----------------------------------------------------------------------
- tiwai - 12-20-04 14:38 
-----------------------------------------------------------------------
-Thanks, I applied your patch now to CVS.
+Added -V option now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-09-04 14:52 pelzi          New Issue                                    
-12-09-04 14:52 pelzi          Distribution              => Debian Sarge    
-12-09-04 14:52 pelzi          Kernel Version            => 2.4.27          
-12-09-04 15:27 tiwai          Note Added: 0002802                          
-12-10-04 13:22 pelzi          Note Added: 0002804                          
-12-10-04 14:38 Clemens LadischNote Added: 0002805                          
-12-10-04 15:14 pelzi          File Added: es1938_c_MIDI_Patches.diff            
-       
-12-10-04 15:16 pelzi          Note Added: 0002806                          
-12-16-04 18:40 tiwai          Note Added: 0002837                          
-12-20-04 01:48 pelzi          Note Added: 0002865                          
-12-20-04 01:56 pelzi          File Added: es1938_c_MIDI_Patches_signed_off.diff 
-                  
-12-20-04 01:56 pelzi          File Added:
-es1938_c_MIDI_Patches_signed_off.diff.asc                    
-12-20-04 01:58 pelzi          Note Added: 0002866                          
-12-20-04 14:38 tiwai          Status                   new => resolved     
-12-20-04 14:38 tiwai          Resolution               open => fixed       
-12-20-04 14:38 tiwai          Assigned To               => tiwai           
-12-20-04 14:38 tiwai          Note Added: 0002874                          
-12-20-04 14:38 tiwai          Assigned To              tiwai =>            
+12-19-04 21:27 jdthood        New Issue                                    
+12-20-04 14:39 tiwai          Status                   new => resolved     
+12-20-04 14:39 tiwai          Resolution               open => fixed       
+12-20-04 14:39 tiwai          Assigned To               => tiwai           
+12-20-04 14:39 tiwai          Note Added: 0002875                          
+12-20-04 14:39 tiwai          Assigned To              tiwai =>            
 01-20-05 19:14 tiwai          Status                   resolved => closed  
 ======================================================================
 
