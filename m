@@ -1,11 +1,11 @@
 From: Werner Schweer <ws@seh.de>
 Subject: tascam us-122 midi in does not work
-Date: Sat, 12 Jun 2004 11:23:53 +0200
+Date: Sun, 13 Jun 2004 13:07:20 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406121123.53740.ws@seh.de>
+Message-ID: <200406131307.21072.ws@seh.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
