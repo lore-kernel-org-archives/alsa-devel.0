@@ -1,8 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: via82xx: alsa-docs note
-Date: Thu, 27 Feb 2003 03:01:46 +0900
+Subject: Re: Parsing asoundrc for devices.
+Date: Thu, 27 Feb 2003 03:18:17 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E5D010A.10405@boosthardware.com>
+Message-ID: <3E5D04E9.7020900@boosthardware.com>
+References: <E18o5v3-0002n9-00@sc8-sf-list1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -15,32 +16,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>, raimbault_stephane@yahoo.fr
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I'm wondering if this is a bug that can be fixed or not.
+Paul Davis wrote:
+>>I don't quite follow this. Is that a fictional call which an app could 
+>>use to get these details or is it an already functioning piece of code 
+>>that I haven't seen in action?
+> 
+> 
+> the latter.
+> 
 
-The following has been submitted as a note for the documentation of via82xx.
+Sorry to be lame but...
 
-sender:		raimbault_stephane@yahoo.fr
-date:		Saturday, 18 January 2003
-
-
-I don't use sonypi with via82xx on my VAIO Laptop
-because sonypi and via82xx try to use the same region
-and I obtained this error message :
-
-      unable to grab ports 0x1000-0x10ff
-
-My chipset is :
-00:07.5 Multimedia audio controller: VIA Technologies, Inc. VT82C686 
-AC97 Audio Controller (rev 50)
-         Subsystem: Sony Corporation: Unknown device 80f6
-         Flags: medium devsel, IRQ 5
-         I/O ports at 1000 [size=256]
-         I/O ports at 1c54 [size=4]
-         I/O ports at 1c50 [size=4]
-         Capabilities: [c0] Power Management version 2
+Does anyone know if it is used in any apps that I might have in my 
+system or have I not seen it in action because no one uses it yet?
 
 
 
