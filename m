@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000829]: powerpc: "confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from incompatible pointer type"
-Date: Wed, 19 Jan 2005 14:39:42 +0100
-Message-ID: <09fc972abc792f6ad9b6caba02f448c6@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000828]: sparc: "pcm_direct.c:165: warning: long int format, __suseconds_t arg (arg 6)"
+Date: Wed, 19 Jan 2005 14:43:31 +0100
+Message-ID: <55eecafd80502bceaa1088bc32a2b86c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 52126219
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:39:42 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3B47C24E
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:43:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,76 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=829> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=828> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   829
+Issue ID:                   828
 Category:                   alisp
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-17-2005 09:21 CET
-Last Modified:              01-19-2005 14:39 CET
+Date Submitted:             01-17-2005 09:18 CET
+Last Modified:              01-19-2005 14:43 CET
 ======================================================================
-Summary:                    powerpc: "confmisc.c:879: warning: passing arg 2 of
-`snd_config_get_pointer' from incompatible pointer type"
+Summary:                    sparc: "pcm_direct.c:165: warning: long int format,
+__suseconds_t arg (arg 6)"
 Description: 
-Making all in alisp
+When building on sparc we get the following warning:
+
+Making all in pcm
 [...]
-if /bin/sh ../libtool --mode=compile powerpc-linux-gcc -DHAVE_CONFIG_H -I.
--I. -I../include -I../include  -D__ppc__  -g -Wall -O2 -MT confmisc.lo -MD
--MP -MF ".deps/confmisc.Tpo" \
-  -c -o confmisc.lo `test -f 'confmisc.c' || echo './'`confmisc.c; \
-then mv -f ".deps/confmisc.Tpo" ".deps/confmisc.Plo"; \
-else rm -f ".deps/confmisc.Tpo"; exit 1; \
+if /bin/sh ../../libtool --mode=compile sparc-linux-gcc -DHAVE_CONFIG_H
+-I. -I. -I../../include -I../../include    -g -Wall -O2 -MT pcm_direct.lo
+-MD -MP -MF ".deps/pcm_direct.Tpo" \
+  -c -o pcm_direct.lo `test -f 'pcm_direct.c' || echo './'`pcm_direct.c;
+\
+then mv -f ".deps/pcm_direct.Tpo" ".deps/pcm_direct.Plo"; \
+else rm -f ".deps/pcm_direct.Tpo"; exit 1; \
 fi
- powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
--D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
-confmisc.c  -fPIC -DPIC -o .libs/confmisc.o
-confmisc.c: In function `snd_func_private_pcm_subdevice':
-confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from
-incompatible pointer type
- powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
--D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
-confmisc.c -o confmisc.o >/dev/null 2>&1
+ sparc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-g -Wall -O2 -MT pcm_direct.lo -MD -MP -MF .deps/pcm_direct.Tpo -c
+pcm_direct.c  -fPIC -DPIC -o .libs/pcm_direct.o
+pcm_direct.c: In function `get_tmp_name':
+pcm_direct.c:165: warning: long int format, __suseconds_t arg (arg 6)
+ sparc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-g -Wall -O2 -MT pcm_direct.lo -MD -MP -MF .deps/pcm_direct.Tpo -c
+pcm_direct.c -o pcm_direct.o >/dev/null 2>&1
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 14:31 
+ tiwai - 01-19-05 14:43 
 ----------------------------------------------------------------------
-The warning is very cosmetic.  You can ignore it.
-Will fix in the later version.
-
-----------------------------------------------------------------------
- jdthood - 01-19-05 14:39 
-----------------------------------------------------------------------
-> The warning is very cosmetic. You can ignore it.
-
-Yes, I guessed so when I started finding it on more and more
-architectures.
-
-> Will fix in the later version.
-
-OK, good.  It's best to eliminate as many spurious warning messages
-as possible.
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-05 09:21 jdthood        New Issue                                    
-01-17-05 09:30 jdthood        Note Added: 0003224                          
-01-17-05 11:26 jdthood        Note Added: 0003233                          
-01-18-05 16:49 jdthood        Note Added: 0003251                          
-01-19-05 14:31 tiwai          Note Added: 0003269                          
-01-19-05 14:39 jdthood        Note Added: 0003274                          
+01-17-05 09:18 jdthood        New Issue                                    
+01-19-05 14:43 tiwai          Status                   new => resolved     
+01-19-05 14:43 tiwai          Resolution               open => fixed       
+01-19-05 14:43 tiwai          Assigned To               => tiwai           
+01-19-05 14:43 tiwai          Note Added: 0003276                          
 ======================================================================
 
 
