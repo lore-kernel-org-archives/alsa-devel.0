@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000310]: Alsa freeze on shutdown in kernel 2.6.6
-Date: Wed,  8 Sep 2004 18:20:25 +0200 (CEST)
+Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
+Date: Wed,  8 Sep 2004 17:55:04 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040908162025.5A9C113002@server.perex-int.cz>
+Message-ID: <20040908155504.0AE8B13001@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2FA7A217
-	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 18:20:28 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A91A2CE
+	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 17:55:06 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,101 +20,114 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000310
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000453
 ======================================================================
-Reported By:                hjheins
-Assigned To:                perex
+Reported By:                Andrew
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     310
-Category:                   PCI - emu10k1
+Bug ID:                     453
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Mandrake 10.0 modified
-Kernel Version:             2.6.6
-Resolution:                 fixed
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-27-2004 14:07 CEST
-Last Modified:              09-08-2004 18:20 CEST
+Date Submitted:             08-18-2004 13:16 CEST
+Last Modified:              09-08-2004 17:55 CEST
 ======================================================================
-Summary:                    Alsa freeze on shutdown in kernel 2.6.6
+Summary:                    it is impossible to select spdif as capture source
 Description: 
-On shutdown, the alsa module does not shut down, it hangs.
-if I'm quick enough, I can break the operation with <ctrl>+<c>, and
-shutdown goes ok. If I don't break. The shutdown sequence hangs on the
-Alsa module.
+There are no anything spdif-input-related among
+capture source enumeration.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-28-2004 17:04 CEST 
+ tiwai - 08-25-2004 19:55 CEST 
 ----------------------------------------------------------------------
-does it happen if you stop ALSA manually (e.g. calling
-/etc/init.d/alsasound stop)?
+Did you use 'iec958' pcm?
+
+    % arecord -Diec958 -fdat foo.wav
 
 ----------------------------------------------------------------------
- hjheins - 05-28-2004 20:04 CEST 
+ Andrew - 08-25-2004 23:47 CEST 
 ----------------------------------------------------------------------
-Manually stopping seems to work.
-But when I do that I get:
+A dat fromat doesn't work: "Sample format non available"
+I have tried
 
-#service alsa stop
-Doing alsactl to store mixer settings...                        [  OK  ]
-Shutting down ALSA sound driver (version 1.0.4rc2): but first, terminating
-(SIGTERM) pid 3019 ...
+arecord -Diec958 -fs32_LE -r48000 -c2 -d600 foo.wav
 
-After that starting and stopping happens without problems.
-Also, when I do this, restart alsa afterwards, and then stop the machine
-alltogether, the freeze doesn't occur.
+Format/rate are accepted, but the resulted file is empty.
+I use aureon 7.1.
 
-----------------------------------------------------------------------
- hjheins - 05-28-2004 20:43 CEST 
-----------------------------------------------------------------------
-Hmm,
-
-forget that last remark..
-It also freezes on halt or reboot after a restart of the alsa service.
-
-Hendrik-Jan
+While filing the isuue, I have thought about capture selecting via
+mixer Capture Source control. Does this (others?) control influence
+to shown above command working?
 
 ----------------------------------------------------------------------
- hjheins - 06-04-2004 18:13 CEST 
+ tiwai - 08-27-2004 19:39 CEST 
 ----------------------------------------------------------------------
-I just installed Alsa drivers 1.05a and that seems to work ok.
+You can use'plug:iec958' for 16bit conversion.
+
+"Capture Source" shouldn't affect the digital input.
+It might be a wrong CS8415 initialization sequence in the driver...
 
 ----------------------------------------------------------------------
- hjheins - 06-08-2004 17:37 CEST 
+ Andrew - 09-07-2004 10:33 CEST 
 ----------------------------------------------------------------------
-Final remark:
-
-It seems to have been related to the init script.
-Apparently before I used an older init script that wouldn't work with alsa
-1.0.4 or 1.0.5.
-Currently I use the script that comes with alsa 1.0.5 and that works fine.
+I have tried with plug:iec958 with the same silent file. Is there any way
+to be sure spdif input is receiving some signal?
 
 ----------------------------------------------------------------------
- perex - 09-08-2004 18:20 CEST 
+ tiwai - 09-08-2004 17:16 CEST 
 ----------------------------------------------------------------------
-New version solved problem.
+Could you elaborate more?
+Is the DMA working?  Or did you get the short-cut output?
+Is it all zero or any signals in the output?
+
+Also, as I wrote, the CS8415 init sequence might be wrong.
+Compare the CS8415 init data in aureon.c with the datasheet
+whether it's correct for your setting.
+
+----------------------------------------------------------------------
+ Andrew - 09-08-2004 17:55 CEST 
+----------------------------------------------------------------------
+Takashi,
+
+You think I'm more clever than I am :-)
+
+OK, the aim is simple: to be able to record from FM tuner. Last one is an
+"onboard" tuner of AV receiver. Last one is the only source I can try as
+source
+with spdif output. All this is the reason of my last question about a way
+to be
+sure spdif input is receiving some signal: my sound card is the only
+device I
+can use to receive something via spdif.
+
+All my attempts of capturing from spdif input lead to silent wav file.
+
+I will be happy to answer to your question about DMA and init data, but
+I don't understand these things. I see, the issue is not of high
+priority,
+so I'm ready to wait for the moment you will find a minute to clarify
+starting point(s) for my next attempts to bugnote in more informative
+manner :-)
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-27-04 14:07 hjheins        New Bug                                      
-05-27-04 14:07 hjheins        Distribution              => Mandrake 10.0 modified
-05-27-04 14:07 hjheins        Kernel Version            => 2.6.6           
-05-28-04 17:04 tiwai          Bugnote Added: 0001267                       
-05-28-04 20:04 hjheins        Bugnote Added: 0001272                       
-05-28-04 20:43 hjheins        Bugnote Added: 0001273                       
-06-04-04 18:13 hjheins        Bugnote Added: 0001291                       
-06-08-04 17:37 hjheins        Bugnote Added: 0001295                       
-09-08-04 18:20 perex          Bugnote Added: 0001738                       
-09-08-04 18:20 perex          Assigned To               => perex           
-09-08-04 18:20 perex          Resolution               open => fixed       
-09-08-04 18:20 perex          Status                   new => resolved     
+08-18-04 13:16 Andrew         New Bug                                      
+08-25-04 19:55 tiwai          Bugnote Added: 0001625                       
+08-25-04 23:47 Andrew         Bugnote Added: 0001628                       
+08-27-04 19:39 tiwai          Bugnote Added: 0001648                       
+09-07-04 10:33 Andrew         Bugnote Added: 0001706                       
+09-08-04 17:16 tiwai          Bugnote Added: 0001734                       
+09-08-04 17:55 Andrew         Bugnote Added: 0001737                       
 ======================================================================
 
 
