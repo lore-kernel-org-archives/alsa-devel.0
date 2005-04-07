@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000349]: can't play MIDI through ALSA / MPU-401 but non-ALSA "midiplayer" to MIDI device works
-Date: Thu, 7 Apr 2005 20:57:17 +0200
-Message-ID: <67fd7982026c30f3f33a852adfb8dbcc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000362]: System freeze while playing music on AWE32 PnP
+Date: Thu, 7 Apr 2005 20:58:24 +0200
+Message-ID: <ada0887445504f4f3f641fa058bb3011@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DAB3823C
-	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 20:57:17 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 158CD23C
+	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 20:58:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=349> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=362> 
 ======================================================================
-Reported By:                amarsh04
+Reported By:                Theo
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   349
+Issue ID:                   362
 Category:                   ISA - sb16/sbawe
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.5-1 (problem also showed with 2.4.24)
+Distribution:               Fedora Core 2
+Kernel Version:             Linux CC695620-a 2.6.6-1.435.2.1
 ======================================================================
-Date Submitted:             06-29-2004 07:58 CEST
-Last Modified:              04-07-2005 20:57 CEST
+Date Submitted:             07-02-2004 23:02 CEST
+Last Modified:              04-07-2005 20:58 CEST
 ======================================================================
-Summary:                    can't play MIDI through ALSA / MPU-401 but non-ALSA
-"midiplayer" to MIDI device works
+Summary:                    System freeze while playing music on AWE32 PnP
 Description: 
-With ISA SB16 PNP, aplaymidi -l reports:
-Port    Client name                      Port name
- 64:0    Sound Blaster 16 MIDI - Rawmidi  Sound Blaster 16 MIDI
- 65:0    OPL3 FM synth                    OPL3 FM Port
-
-Neither 
-aplaymidi -p 64:0 myfile.mid
-nor 
-aplaymidi -p 65:0 myfile.mid 
-work, but the non-ALSA "midiplayer" works playing directly to the MIDI
-device:
-
-playmidi -v -D0 myfile.mid
-
-
+This is a clean install of Fedora Core 2. Sound card is a ISA Sound Blaster
+AWE32 PnP. The system freezes while playing music (and ONLY while playing
+music) after about 1-15 minutes. The music keeps playing until the song
+ends, but the system itself is frozen.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-07-05 20:57 
+ jdthood - 04-07-05 20:58 
 ----------------------------------------------------------------------
-Submitter: Have you ever made any progress on this issue?
+Submitter: Has there been any improvement in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-29-04 07:58 amarsh04       New Issue                                    
-06-29-04 07:58 amarsh04       Distribution              => Debian          
-06-29-04 07:58 amarsh04       Kernel Version            => 2.6.5-1 (problem also
-showed with 2.4.24)
-04-07-05 20:57 jdthood        Note Added: 0004365                          
+07-02-04 23:02 Theo           New Issue                                    
+07-02-04 23:02 Theo           Distribution              => Fedora Core 2   
+07-02-04 23:02 Theo           Kernel Version            => Linux CC695620-a
+2.6.6-1.435.2.1
+04-07-05 20:58 jdthood        Note Added: 0004366                          
 ======================================================================
 
 
