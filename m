@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000331]: possible incompatibility with cpu-freq
-Date: Thu, 7 Apr 2005 20:55:01 +0200
-Message-ID: <daad3c57ce71049dda31f3b090878e0a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000335]: No support for Soundfont 2.1 modulators
+Date: Thu, 7 Apr 2005 20:55:55 +0200
+Message-ID: <ad3034e73b84ac46caebf8503f1366ca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7FC3B23C
-	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 20:55:01 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD39223C
+	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 20:55:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,43 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=331> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=335> 
 ======================================================================
-Reported By:                souvarine
+Reported By:                meneerdik
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   331
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   335
+Category:                   PCI - emu10k1
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.4 - 2.6.6
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-10-2004 15:42 CEST
+Date Submitted:             06-15-2004 12:57 CEST
 Last Modified:              04-07-2005 20:55 CEST
 ======================================================================
-Summary:                    possible incompatibility with cpu-freq
+Summary:                    No support for Soundfont 2.1 modulators
 Description: 
-On my Sony VAIO PCG NV105 with kernel 2.6.4 and 2.6.6 (I have not tried
-2.6.5) the sound is horrible when the systeme is not very bussy. When the
-systeme is on full load the sound became clean.
-After a serie of kernel recompil I found that when I disable cpu-freq I
-don't have this problem any more.
+Most of my soundfonts are unusable on Linux because the modulator
+definitions in the fonts are not used by the driver. For example, when the
+soundfont contains a modulator definition that routes the Expression
+controller to the cutoff frequency of a particular instument zone, ALSA
+ignores it completely. 
 ======================================================================
 
 ----------------------------------------------------------------------
  jdthood - 04-07-05 20:55 
 ----------------------------------------------------------------------
-Do you think that the ALSA driver should itself disable cpu-freq?
+Submitter: Has there been any progress on this issue?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-10-04 15:42 souvarine      New Issue                                    
-06-10-04 15:42 souvarine      Distribution              => Debian testing  
-06-10-04 15:42 souvarine      Kernel Version            => 2.6.4 - 2.6.6   
-09-07-04 16:41 ichino         Issue Monitored: ichino                      
-09-07-04 16:44 ichino         Issue End Monitor: ichino                    
-04-07-05 20:55 jdthood        Note Added: 0004363                          
+06-15-04 12:57 meneerdik      New Issue                                    
+04-07-05 20:55 jdthood        Note Added: 0004364                          
 ======================================================================
 
 
