@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000055]: Midi in does not work for Hoontech/STAudio DSP2000 C-Port
-Date: Thu, 7 Apr 2005 17:37:00 +0200
-Message-ID: <01df6503064ce16798bc08c8037cae9b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
+Date: Thu, 7 Apr 2005 18:32:39 +0200
+Message-ID: <303fcffb80f5acfb82661fa03d136659@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AF0A723A
-	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 17:37:00 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 264CF241
+	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 18:32:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,76 +24,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=55> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
 ======================================================================
-Reported By:                lukas
-Assigned To:                perex
+Reported By:                yafrank
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   55
-Category:                   PCI - ice1712
+Issue ID:                   1023
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian testing
-Kernel Version:             linux-2.4.22-debian-preempt-lowlat
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
-Date Submitted:             02-12-2004 22:13 CET
-Last Modified:              04-07-2005 17:37 CEST
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              04-07-2005 18:32 CEST
 ======================================================================
-Summary:                    Midi in does not work for Hoontech/STAudio DSP2000
-C-Port
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
-aconnect -o says:
- client 64: 'Rawmidi 0 - Hoontech SoundTrack Audio DSP24 MPU-401'
-[type=kernel]
-    0 'Hoontech SoundTrack Audio DSP24 MPU-401'
-   32 'Hoontech SoundTrack Audio DSP24 MPU-401'
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-aconnect -i says:
-client 0: 'System' [type=kernel]
-    0 'Timer           '
-    1 'Announce        '
-client 64: 'Rawmidi 0 - Hoontech SoundTrack Audio DSP24 MPU-401'
-[type=kernel]
-    0 'Hoontech SoundTrack Audio DSP24 MPU-401'
-   32 'Hoontech SoundTrack Audio DSP24 MPU-401'
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
 
-Midi out does not work, midi in does.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- lukas - 04-07-05 17:05 
+ tiwai - 04-07-05 16:04 
 ----------------------------------------------------------------------
-Just curious... Anything new on this one?
-
-btw, some links on this issue:
-http://sourceforge.net/mailarchive/message.php?msg_id=7156168
-http://lalists.stanford.edu/lau/2003/06/0031.html
-http://music.columbia.edu/pipermail/linux-audio-dev/2004-April/thread.html#7671
-
-I posted a link to this issue on the sta support forum
-http://qa.staudio.de/show.asp?db=sta&t=sta2&mode=0&msg=1878
-
-Regards,
---lu
+Might be some ac97 problem.  Please attach the contents of
+/etc/asound.state and /proc/asound/card0/codec97#0/* files.
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 04-07-05 17:37 
+ mmadore - 04-07-05 18:32 
 ----------------------------------------------------------------------
-I changed something in ALSA 1.0.5.
-I don't know if it fixes this bug, please test.
+Hi,
+
+I have attached the files you requested.  Also if I replace the following
+files in the current version with those from 2.6.10, then I am able to get
+sound working.  Hopefully this will narrow it down a little bit.
+
+sound/core/pcm.c 
+sound/core/pcm_lib.c 
+sound/core/pcm_memory.c 
+sound/core/pcm_native.c 
+sound/pci/ac97/*.c 
+sound/pci/ac97/*.h 
+include/sound/pcm.h 
+include/sound/pcm-indirect.h 
+include/sound/pcm_params.h 
+include/sound/ac97_codec.h 
+include/sound/ak4531_codec.h
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-12-04 22:13 lukas          New Issue                                    
-02-12-04 22:14 lukas          Issue Monitored: lukas                       
-02-21-04 15:36 perex          Status                   new => assigned     
-02-21-04 15:36 perex          Assigned To               => perex           
-04-07-05 17:05 lukas          Note Added: 0004360                          
-04-07-05 17:37 Clemens LadischNote Added: 0004361                          
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
 ======================================================================
 
 
