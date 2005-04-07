@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001014]: card detect function is never called in pxa2xx-ac97
-Date: Thu, 7 Apr 2005 16:46:00 +0200
-Message-ID: <05756bb882fe9068df45911c8d696cd1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000055]: Midi in does not work for Hoontech/STAudio DSP2000 C-Port
+Date: Thu, 7 Apr 2005 17:05:43 +0200
+Message-ID: <a767010b56c1df131908232f1289f6ec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9FF7B23A
-	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 16:46:00 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3A124100
+	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 17:05:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,88 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1014> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=55> 
 ======================================================================
-Reported By:                twinsen
+Reported By:                lukas
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1014
-Category:                   0_compilation problem_!!!
+Issue ID:                   55
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               custom: PXA255/uClibc
-Kernel Version:             2.6.11.5
+Distribution:               Debian testing
+Kernel Version:             linux-2.4.22-debian-preempt-lowlat
 ======================================================================
-Date Submitted:             03-25-2005 00:04 CET
-Last Modified:              04-07-2005 16:46 CEST
+Date Submitted:             02-12-2004 22:13 CET
+Last Modified:              04-07-2005 17:05 CEST
 ======================================================================
-Summary:                    card detect function is never called in pxa2xx-ac97
+Summary:                    Midi in does not work for Hoontech/STAudio DSP2000
+C-Port
 Description: 
-Hi there,
-I have a some problem with this driver. The environment:
-ALSA source: alsa-driver-1.0.9rc1
-Kernel source: linux-2.6.11.5 (stock)
+aconnect -o says:
+ client 64: 'Rawmidi 0 - Hoontech SoundTrack Audio DSP24 MPU-401'
+[type=kernel]
+    0 'Hoontech SoundTrack Audio DSP24 MPU-401'
+   32 'Hoontech SoundTrack Audio DSP24 MPU-401'
 
-I cross compiled the kernel and the alsa source for arm target with a 
-toolchain from handhelds.org. I used the following configure command
-line:
+aconnect -i says:
+client 0: 'System' [type=kernel]
+    0 'Timer           '
+    1 'Announce        '
+client 64: 'Rawmidi 0 - Hoontech SoundTrack Audio DSP24 MPU-401'
+[type=kernel]
+    0 'Hoontech SoundTrack Audio DSP24 MPU-401'
+   32 'Hoontech SoundTrack Audio DSP24 MPU-401'
 
-./configure --with-cards=pxa2xx-ac97 
---with-kernel=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
---with-build=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
---with-cross=/usr/local/arm/3.3.2/bin/arm-linux-
-
-config runs without problems, when running make gcc complains about
-"pci_dev_present" being redefined (alsa-driver-1.0.9rc1/include/adriver.h,
-orig: include/linux/pci.h), but compiles ok. 
-
-The problem:
-I loaded all modules (snd, snd-timer, snd-page-alloc, snd-pcm,
-snd-ac97-codec, snd-pxa2xx-pcm, snd-pxa2xx-ac97) but still no soundcard in
-/proc/asound/cards.
-I looked a bit inside the driver, and when snd-pxa2xx-ac97 is loaded, the
-module init function registers the new driver:
-driver_register(&pxa2xx_ac97_driver);
-
-The driver struct contains a probe function:
-.probe          = pxa2xx_ac97_probe,
-but it's never called, so the driver doesn't even check the existance of
-the sound card. Why is that? Did I srcew up the cross compiling?
-Thanks:
-	George
+Midi out does not work, midi in does.
 ======================================================================
 
 ----------------------------------------------------------------------
- twinsen - 04-06-05 19:20 
+ lukas - 04-07-05 17:05 
 ----------------------------------------------------------------------
-Anyone reading this, BTW? :)
+Just curious... Anything new on this one?
 
-----------------------------------------------------------------------
- tiwai - 04-07-05 16:46 
-----------------------------------------------------------------------
-Set LIBASOUND_DEBUG=1 environemnt variable to see verbose error messages
-from alsa-lib.
-The swparams ioctl returns correct, so it's not the driver side error.
+btw, some links on this issue:
+http://sourceforge.net/mailarchive/message.php?msg_id=7156168
+http://lalists.stanford.edu/lau/2003/06/0031.html
+http://music.columbia.edu/pipermail/linux-audio-dev/2004-April/thread.html#7671
 
-You can ignore the error from mmap.  Mmap of control/status records isn't
-supported on ARM.  Only the mmap of DMA buffer is supported.
+I posted a link to this issue on the sta support forum
+http://qa.staudio.de/show.asp?db=sta&t=sta2&mode=0&msg=1878
+
+Regards,
+--lu
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-05 00:04 twinsen        New Issue                                    
-03-25-05 00:04 twinsen        Distribution              => custom: PXA255/uClibc
-03-25-05 00:04 twinsen        Kernel Version            => 2.6.11.5        
-03-29-05 16:25 tiwai          Note Added: 0004247                          
-03-29-05 23:43 twinsen        Note Added: 0004259                          
-04-03-05 21:47 twinsen        Note Added: 0004321                          
-04-03-05 22:28 twinsen        Note Added: 0004322                          
-04-04-05 20:51 twinsen        Note Added: 0004330                          
-04-06-05 19:20 twinsen        Note Added: 0004351                          
-04-07-05 16:46 tiwai          Note Added: 0004359                          
+02-12-04 22:13 lukas          New Issue                                    
+02-12-04 22:14 lukas          Issue Monitored: lukas                       
+02-21-04 15:36 perex          Status                   new => assigned     
+02-21-04 15:36 perex          Assigned To               => perex           
+04-07-05 17:05 lukas          Note Added: 0004360                          
 ======================================================================
 
 
