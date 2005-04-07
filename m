@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000992]: no supported card
-Date: Thu, 7 Apr 2005 12:54:14 +0200
-Message-ID: <b284033f118419eac603a41eea74821d@bugtrack.alsa-project.org>
+Date: Thu, 7 Apr 2005 12:55:23 +0200
+Message-ID: <549ec5f53d0a8779b11679ae74e7678e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A033226
-	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 12:54:15 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C39C9226
+	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 12:55:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.4
 ======================================================================
 Date Submitted:             03-14-2005 21:52 CET
-Last Modified:              04-07-2005 12:54 CEST
+Last Modified:              04-07-2005 12:55 CEST
 ======================================================================
 Summary:                    no supported card
 Description: 
@@ -49,16 +49,16 @@ this model ever be supported?
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 04-06-05 18:40 
-----------------------------------------------------------------------
-can you post the output of this command:
-lspci -vn | grep -1 0401
-
-----------------------------------------------------------------------
  rav0r - 04-07-05 12:54 
 ----------------------------------------------------------------------
 [root@localhost root]# lspci -vn | grep -1 0401
 [root@localhost root]#
+
+----------------------------------------------------------------------
+ rav0r - 04-07-05 12:55 
+----------------------------------------------------------------------
+so, it sais nothing.. Please explain thos commnads, so have am idea of what
+I am doing..
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -81,6 +81,7 @@ Date Modified  Username       Field                    Change
 04-06-05 18:40 jcdutton       Note Added: 0004349                          
 04-06-05 18:40 jcdutton       Status                   assigned => feedback
 04-07-05 12:54 rav0r          Note Added: 0004355                          
+04-07-05 12:55 rav0r          Note Added: 0004356                          
 ======================================================================
 
 
