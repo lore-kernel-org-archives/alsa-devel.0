@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001039]: Sequencer problem
-Date: Thu, 7 Apr 2005 16:14:39 +0200
-Message-ID: <03b13c693f9b3691df5cfb2b3afd2ad1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001009]: NVidia CK8S 8ch: a center speaker is always silent in native alsa mode (through alsa-lib), works with oss emulation though
+Date: Thu, 7 Apr 2005 16:28:13 +0200
+Message-ID: <db7dc8edaa274ba7e25b57168cc2ae82@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 59051239
-	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 16:14:39 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC530239
+	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 16:28:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,89 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1039> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1009> 
 ======================================================================
-Reported By:                bricem13
+Reported By:                modax
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1039
-Category:                   PCI - via82xx
+Issue ID:                   1009
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               ubuntu hoary (5.04)
-Kernel Version:             2.6.10
+Distribution:               Debian unstable
+Kernel Version:             vanilla 2.6.11.5 with self-compiled alsa-driver
+1.0.9rc1
 ======================================================================
-Date Submitted:             04-07-2005 16:14 CEST
-Last Modified:              04-07-2005 16:14 CEST
+Date Submitted:             03-22-2005 22:34 CET
+Last Modified:              04-07-2005 16:28 CEST
 ======================================================================
-Summary:                    Sequencer problem
+Summary:                    NVidia CK8S 8ch: a center speaker is always silent
+in native alsa mode (through alsa-lib), works with oss emulation though
 Description: 
-Please follow the link!
-
-
-https://bugzilla.ubuntu.com/show_bug.cgi?id=8529
-
-I am currently encounterring problem with the sequencer and I already
-reported it on the ubuntu bugzilla.
-
-
-Best regards, Brice
+A center speaker stays quiet while playing 5.1 audio directly through
+alsa-lib (eg. with kaffeine (xine) or mplayer using alsa plugin). As a
+result, I'm unable to hear what people are speaking in movies because the
+speech is usually sent to the center speaker (correct me if i'm wrong. i'm
+new to all this 5.1 business). Anyway, adjusting the volume,
+muting/unmuting "Center" section, enabling/disabling "Mic As Center/LFE"
+doesn't have any effect on the center speaker. It stays silent. However,
+as I noted in the summary, the center speaker works with oss audio driver
+of xine/mplayer (using oss emulation). However, that mode is not perfect
+as the center speaker plays the role of left surround and vice versa. In
+addition, a right surround speaker stays always silent (i guess that's
+because the RS channel needs to be swapped with LFE; at least I got this
+impression by having a look at
+/usr/share/alsa/cards/NForce.conf:surround51). To sum up, my problem is
+that I can't get the center speaker (which, I guess, is channel 2 on my
+hardware) working with native alsa apps playing ac3/5.1 audio.
 ======================================================================
+
+----------------------------------------------------------------------
+ modax - 04-04-05 09:59 
+----------------------------------------------------------------------
+This bug is a dupe of
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0000891. I have seperate
+sockets for surround,
+center and side channels (8ch) on my board. Disabling hooks helped to get
+the center speaker & LFE back. Forcing and especially *locking* "Line-In
+As Surround" and "Mic As Center/LFE" is not an universal solution anymore.
+It may confuse lots of people. What you should do at least is *not to
+lock* those switches. Locking effect is not reflected by mixers and people
+like me may get confused because turning on/off the switches doesn't make
+any difference although actually it would if locking were disabled. Please
+disable locking or better yet do not force those switches on. Thanks!
+
+----------------------------------------------------------------------
+ tiwai - 04-07-05 16:28 
+----------------------------------------------------------------------
+Disabling locks are fine.  I'll fix this issue later (hopefully in time for
+1.0.9), though.
+
+The question is whether the current channel routing is correct.
+Can you confirm it's OK?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-07-05 16:14 bricem13       New Issue                                    
-04-07-05 16:14 bricem13       Distribution              => ubuntu hoary (5.04)
-04-07-05 16:14 bricem13       Kernel Version            => 2.6.10          
+03-22-05 22:34 modax          New Issue                                    
+03-22-05 22:34 modax          Distribution              => Debian unstable 
+03-22-05 22:34 modax          Kernel Version            => vanilla 2.6.11.5 with
+self-compiled alsa-driver 1.0.9rc1
+03-23-05 13:01 tiwai          Note Added: 0004156                          
+03-25-05 00:37 modax          Note Added: 0004204                          
+03-25-05 00:37 modax          File Added: bug-1009.tar.gz                    
+03-30-05 18:22 tiwai          Note Added: 0004268                          
+03-30-05 18:22 tiwai          File Added: nforce-conf-test.diff                 
+  
+03-30-05 23:28 modax          Note Added: 0004275                          
+04-03-05 17:47 modax          Note Added: 0004311                          
+04-04-05 09:59 modax          Note Added: 0004324                          
+04-07-05 16:28 tiwai          Note Added: 0004358                          
 ======================================================================
 
 
