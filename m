@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000055]: Midi in does not work for Hoontech/STAudio DSP2000 C-Port
-Date: Thu, 7 Apr 2005 17:05:43 +0200
-Message-ID: <a767010b56c1df131908232f1289f6ec@bugtrack.alsa-project.org>
+Date: Thu, 7 Apr 2005 17:37:00 +0200
+Message-ID: <01df6503064ce16798bc08c8037cae9b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3A124100
-	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 17:05:43 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AF0A723A
+	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 17:37:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian testing
 Kernel Version:             linux-2.4.22-debian-preempt-lowlat
 ======================================================================
 Date Submitted:             02-12-2004 22:13 CET
-Last Modified:              04-07-2005 17:05 CEST
+Last Modified:              04-07-2005 17:37 CEST
 ======================================================================
 Summary:                    Midi in does not work for Hoontech/STAudio DSP2000
 C-Port
@@ -79,6 +79,12 @@ http://qa.staudio.de/show.asp?db=sta&t=sta2&mode=0&msg=1878
 Regards,
 --lu
 
+----------------------------------------------------------------------
+ Clemens Ladisch - 04-07-05 17:37 
+----------------------------------------------------------------------
+I changed something in ALSA 1.0.5.
+I don't know if it fixes this bug, please test.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -87,6 +93,7 @@ Date Modified  Username       Field                    Change
 02-21-04 15:36 perex          Status                   new => assigned     
 02-21-04 15:36 perex          Assigned To               => perex           
 04-07-05 17:05 lukas          Note Added: 0004360                          
+04-07-05 17:37 Clemens LadischNote Added: 0004361                          
 ======================================================================
 
 
