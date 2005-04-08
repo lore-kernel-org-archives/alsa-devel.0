@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000406]: Multiple Kernel OOPS with multiple threads accessing sound device
-Date: Fri, 8 Apr 2005 22:27:15 +0200
-Message-ID: <6029b3a7937c3f0895dd4e3d46cece03@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000416]: Signal but no sound on digital out (Nforce 1)
+Date: Fri, 8 Apr 2005 22:34:36 +0200
+Message-ID: <4d41dacf89640ecd77b91c9692065b2e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AE84B1F0
-	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 22:27:16 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 247E81D8
+	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 22:34:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=406> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=416> 
 ======================================================================
-Reported By:                nickkral
+Reported By:                bonbons
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   406
-Category:                   CORE OSS - pcm
-Reproducibility:            random
-Severity:                   crash
+Issue ID:                   416
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.7-gentoo-r5
+Distribution:               SuSE 9.0
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             07-26-2004 07:55 CEST
-Last Modified:              04-08-2005 22:27 CEST
+Date Submitted:             07-31-2004 21:46 CEST
+Last Modified:              04-08-2005 22:34 CEST
 ======================================================================
-Summary:                    Multiple Kernel OOPS with multiple threads accessing
-sound device
+Summary:                    Signal but no sound on digital out (Nforce 1)
 Description: 
-I have a program with two threads (pthreads)
+Independently of the status of the "Digital" element in alsamixer (muted or
+not) my digital reciever connected to the Digital output of my mainboard
+displays availability of PCM signal, but the sound output to my
+head-phones through Line-Out is not available on the digital out.
 
-One thread continually writes to /dev/dsp, and the other thread
-continually calls the SNDCTL_DSP_GETODELAY ioctl.
+There is no sound at all output to the digital out, no matter what
+selections are done in AlsaMixer.
 
-At startup, there appears to be a race condition in the initialization of
-some data structures which causes OOPSes in the linux kernel.
+Is there a means to switch output mode of digital output to DolbyDigital
+as under Windows and really switch of the Digital output?
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-08-05 22:27 
+ bonbons - 08-01-04 18:19 
 ----------------------------------------------------------------------
-Submitter: Was this problem ever solved in later ALSA releases?
+After additionnal trying an looking around, digital out works (PCM mode).
+But it seems not possible to mute or stop the digital output.
+So the following lines are (partially) incorrect:
+
+"Independently of the status of the "Digital" element in alsamixer (muted
+or not) my digital reciever connected to the Digital output of my
+mainboard displays availability of PCM signal, but the sound output to my
+head-phones through Line-Out is not available on the digital out.
+ 
+There is no sound at all output to the digital out, no matter what
+selections are done in AlsaMixer."
+
+The last part about mutichannel digital output is still unknown...
+
+----------------------------------------------------------------------
+ jdthood - 04-08-05 22:34 
+----------------------------------------------------------------------
+Submitter: Has this problem been solved in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-26-04 07:55 nickkral       New Issue                                    
-07-26-04 07:55 nickkral       Distribution              => Gentoo          
-07-26-04 07:55 nickkral       Kernel Version            => 2.6.7-gentoo-r5 
-04-08-05 22:27 jdthood        Note Added: 0004376                          
+07-31-04 21:46 bonbons        New Issue                                    
+07-31-04 21:46 bonbons        Distribution              => SuSE 9.0        
+07-31-04 21:46 bonbons        Kernel Version            => 2.4.26          
+08-01-04 18:19 bonbons        Note Added: 0001517                          
+04-08-05 22:34 jdthood        Note Added: 0004378                          
 ======================================================================
 
 
