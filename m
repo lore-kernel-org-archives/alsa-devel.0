@@ -1,13 +1,14 @@
-From: Andy Robinson <andy@seventhstring.com>
-Subject: Re: Memory allocation and the "prealloc" procfile
-Date: Fri, 08 Apr 2005 17:07:49 +0100
-Message-ID: <1112976469.6902.2.camel@andys_dellm60.ss82amr.net>
-References: <20050408154303.E61098C466@sc8-sf-spam1.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001033]: hda sound 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+Date: Fri, 8 Apr 2005 21:08:24 +0200
+Message-ID: <354cda0103910d68ea05e73da5cd6232@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050408154303.E61098C466@sc8-sf-spam1.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E8CEE24F
+	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 21:08:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,121 +18,103 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> Message: 5
-> Date: Fri, 8 Apr 2005 12:55:29 +0200 (METDST)
-> From: Clemens Ladisch <clemens@ladisch.de>
-> To: Andy Robinson <andy@seventhstring.com>
-> cc: ALSA devel <alsa-devel@lists.sourceforge.net>
-> Subject: Re: [Alsa-devel] Re: Memory allocation and the "prealloc" procfile
-> 
-> Andy Robinson wrote:
-> > But I'm still curious to know, what is all that
-> > /proc/asound/card0/pcm0p/sub0/prealloc memory used for?
-> 
-> For the buffer. :)
-> 
-> > I specify 128k but only get a 32k buffer reported by
-> > SNDCTL_DSP_GETOSPACE (and one of my users gets only 4k of buffer)
-> 
-> Doesn't happen on my machine.  What parameters are you using?
-> 
-> 
-> $ cat ospace.c
-> #include <stdio.h>
-> #include <fcntl.h>
-> #include <sys/soundcard.h>
-> 
-> int main()
-> {
-> 	int fd;
-> 	audio_buf_info i;
-> 	int x;
-> 
-> 	fd = open("/dev/dsp", O_WRONLY);
-> 	x = 1;
-> 	ioctl(fd, SNDCTL_DSP_STEREO, &x);
-> 	x = AFMT_S16_LE;
-> 	ioctl(fd, SNDCTL_DSP_SETFMT, &x);
-> 	x = 48000;
-> 	ioctl(fd, SNDCTL_DSP_SPEED, &x);
-> 	ioctl(fd, SNDCTL_DSP_GETOSPACE, &i);
-> 	close(fd);
-> 	printf("buffer bytes: %d * %d = %d\n", i.fragstotal, i.fragsize, i.fragstotal * i.fragsize);
-> 	return 0;
-> }
-> $ cat /proc/asound/cards
-> 0 [ICH5           ]: ICH4 - Intel ICH5
->                      Intel ICH5 with AD1985 at 0xfebff400, irq 209
-> $ cat /proc/asound/card0/pcm0p/sub0/prealloc
-> 64
-> $ ospace
-> buffer bytes: 16 * 4096 = 65536
-> $ echo 128 > /proc/asound/card0/pcm0p/sub0/prealloc
-> $ ospace
-> buffer bytes: 16 * 8192 = 131072
-> 
-> 
-> Regards,
-> Clemens
 
-Amazing! Thank you enormously for this, which produces the same result
-on my system as yours. It is indeed a matter of ioctl order, as Takashi
-Iwai also suggests.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1033> 
+======================================================================
+Reported By:                sjankie
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1033
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11.6
+======================================================================
+Date Submitted:             04-03-2005 15:07 CEST
+Last Modified:              04-08-2005 21:08 CEST
+======================================================================
+Summary:                    hda sound 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+Description: 
+0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 04)
 
-If I add extra SNDCTL_DSP_GETOSPACE/printf at each point to your sample
-then I see the following (prealloc is 128) :
+azx driver compliens about: NO AFG found.
 
-       fd = open("/dev/dsp", O_WRONLY);
-buffer bytes: 8 * 4096 = 32768
+alsmixer starts, but no sound.
+======================================================================
 
-        ioctl(fd, SNDCTL_DSP_STEREO, &x);
-buffer bytes: 8 * 8192 = 65536
+----------------------------------------------------------------------
+ Thomas - 04-05-05 19:50 
+----------------------------------------------------------------------
+Same problem here. Modules loaded but no sound.
+I tried all models (even cmi while my card is supposed to be a realtek
+ALC880.)
+tested with 1.0.8, 1.0.9rc2, cvs.
 
-        ioctl(fd, SNDCTL_DSP_SETFMT, &x);
-buffer bytes: 32 * 4096 = 131072
+lspci -v output:
+0000:00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+High Definition Audio Controller (rev 04)
+        Subsystem: Rioworks: Unknown device 203d
+        Flags: bus master, fast devsel, latency 0, IRQ 169
+        Memory at 80000000 (64-bit, non-prefetchable)
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70]
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
 
-        ioctl(fd, SNDCTL_DSP_SPEED, &x);
-buffer bytes: 16 * 8192 = 131072
+lspci -vn:
+0000:00:1b.0 Class 0403: 8086:2668 (rev 04)
+        Subsystem: 161f:203d
 
-I don't know know if this surprises you but it certainly surprises me! I
-would have expected that if prealloc is 128k then SNDCTL_DSP_GETOSPACE
-would tell us 128k ... instead of 32k, just after opening the device.
 
-I have been using the following order:
-- open
-- SNDCTL_DSP_SETFRAGMENT
-- SNDCTL_DSP_GETOSPACE
-- set up other parameters (sample rate & format)
+dmesg output:
+ALSA
+/root/install/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:552:
+codec_mask = 0x3
+ALSA
+/root/install/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_codec.c:511:
+hda_codec: no AFG node found
 
-my reasoning being that I have read, with regard to
-SNDCTL_DSP_SETFRAGMENT in native OSS, that
-"NOTE! This ioctl call must be used as early as possible. The optimum
-location is immediately after opening the device."
-and it seemed natural to me that after SNDCTL_DSP_SETFRAGMENT to ask for
-what we want, we call SNDCTL_DSP_GETOSPACE to see what we got. And in
-fact this does seem to work on native OSS.
+I'll provide any additional informations required.
 
-So I will change this to:
-- open
-- SNDCTL_DSP_SETFRAGMENT
-- set up other parameters (sample rate & format)
-- SNDCTL_DSP_GETOSPACE
+----------------------------------------------------------------------
+ Thomas - 04-08-05 21:08 
+----------------------------------------------------------------------
+After some tweakings (don't ask me exactly what I did, I changed lots of
+stuff), I've got it working.
 
-Which seems like it should be ok on native OSS and ALSA too. Come to
-think of it, if I was a sloppier programmer and hadn't bothered to call
-SNDCTL_DSP_GETOSPACE at all, then everything would have been fine.
+Some problems though. Headphone and my laptop speaker are not working.
+"Front" output works but there is lot of noise.
+"Surround" "Center/LFE" don't work. It might be normal as "Front" is not
+plugged.
 
-I am very happy to have an answer to this problem which has been bugging
-me for months, and has prevented some people from using the Linux
-version of my software - thank you again. You may be wondering why I
-didn't switch to using ALSA directly, but the point is that I want
-maximum compatibility, including older systems which don't use ALSA.
+I can't test inputs.
 
-Regards,
-Andy Robinson, Seventh String Software, www.seventhstring.com
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-03-05 15:07 sjankie        New Issue                                    
+04-03-05 15:07 sjankie        Kernel Version            => 2.6.11.6        
+04-03-05 15:08 sjankie        Issue Monitored: sjankie                     
+04-03-05 15:08 sjankie        Issue End Monitor: sjankie                    
+04-03-05 15:08 sjankie        Issue Monitored: sjankie                     
+04-04-05 17:09 1g0R           Note Added: 0004328                          
+04-05-05 14:52 sjankie        Note Added: 0004337                          
+04-05-05 18:48 Thomas         Issue Monitored: Thomas                      
+04-05-05 19:50 Thomas         Note Added: 0004339                          
+04-08-05 21:08 Thomas         Note Added: 0004373                          
+======================================================================
+
 
 
 
