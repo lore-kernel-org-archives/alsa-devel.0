@@ -1,7 +1,7 @@
 From: dzln11/Bang_&_Olufsen/DK <dzln11/Bang_&_Olufsen/DK@bang-olufsen.dk>
 Subject: Report to Recipient(s)
-Date: Fri, 8 Apr 2005 14:26:15 +0200
-Message-ID: <OF48565245.893A3A5D-ONC1256FDD.00445293@bang-olufsen.dk>
+Date: Fri, 8 Apr 2005 14:26:51 +0200
+Message-ID: <OF856ABD56.0238448E-ONC1256FDD.0044605F@bang-olufsen.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -21,10 +21,10 @@ Incident Information:-
 
 Originator: alsa-devel-admin@lists.sourceforge.net
 Recipients: alsa-devel@lists.sourceforge.net
-Subject:    Alsa-devel digest, Vol 1 #2723 - 5 msgs
+Subject:    Alsa-devel digest, Vol 1 #2716 - 4 msgs
 
-WARNING:  The file mime (00000b29.eml) you received was infected with the
-Exploit-MIME.gen.exe virus.  The file attachment was not successfully
+WARNING:  The file mime (00001fbc.eml) you received was infected with the
+W32/Netsky.p.eml!exe virus.  The file attachment was not successfully
 cleaned. Attachment was quarantined.
 
 
