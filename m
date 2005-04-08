@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000416]: Signal but no sound on digital out (Nforce 1)
-Date: Fri, 8 Apr 2005 22:34:36 +0200
-Message-ID: <4d41dacf89640ecd77b91c9692065b2e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000338]: intel8x0 driver is not able to find sound card
+Date: Fri, 8 Apr 2005 22:33:28 +0200
+Message-ID: <292050066a6437d95667d661f788948e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 247E81D8
-	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 22:34:37 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 84F6615A
+	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 22:33:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,70 +22,93 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=416> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=338> 
 ======================================================================
-Reported By:                bonbons
+Reported By:                jrh
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   416
+Issue ID:                   338
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE 9.0
-Kernel Version:             2.4.26
+Status:                     resolved
+Distribution:               
+Kernel Version:             2.6.6 (vanilla)
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-31-2004 21:46 CEST
-Last Modified:              04-08-2005 22:34 CEST
+Date Submitted:             06-17-2004 17:55 CEST
+Last Modified:              04-08-2005 22:33 CEST
 ======================================================================
-Summary:                    Signal but no sound on digital out (Nforce 1)
+Summary:                    intel8x0 driver is not able to find sound card
 Description: 
-Independently of the status of the "Digital" element in alsamixer (muted or
-not) my digital reciever connected to the Digital output of my mainboard
-displays availability of PCM signal, but the sound output to my
-head-phones through Line-Out is not available on the digital out.
+Hi folks, 
 
-There is no sound at all output to the digital out, no matter what
-selections are done in AlsaMixer.
+  I've been using the intel8x0 alsa driver since kernel 2.6 without any
+problems upto kernel 2.6.5 (compile from vanilla). However, since 2.6.6
+and 2.6.7 came out I'm not able to listen to any audio as the driver does
+not seem to recognice my card. I've made NO changes to the configuration
+files of the kernel and to any other setup. Simple start 2.6.5 alsa works,
+reboot with 2.6.6/7 and sound is not working.
 
-Is there a means to switch output mode of digital output to DolbyDigital
-as under Windows and really switch of the Digital output?
+ The modules are loaded (same modules). "alsaconf" (1.0.5) reports the
+right card and loads it but for instance "alsactl restore" fails...
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- bonbons - 08-01-04 18:19 
+ jrh - 07-30-04 17:13 
 ----------------------------------------------------------------------
-After additionnal trying an looking around, digital out works (PCM mode).
-But it seems not possible to mute or stop the digital output.
-So the following lines are (partially) incorrect:
+Hi again,
 
-"Independently of the status of the "Digital" element in alsamixer (muted
-or not) my digital reciever connected to the Digital output of my
-mainboard displays availability of PCM signal, but the sound output to my
-head-phones through Line-Out is not available on the digital out.
- 
-There is no sound at all output to the digital out, no matter what
-selections are done in AlsaMixer."
+  First of all, thanks tiwai for your time helping me find this problem. 
 
-The last part about mutichannel digital output is still unknown...
+I've check all this again and it actually seems to be two mixed bugs.
+First of all I've check my windows partition and I've seen that modem and
+sound card also shared the same IRQ so as you said that shouldn't be the
+problem :-(
+
+Anyways, I've tried all possible configurations in the bios (enabling
+modem, infrared, parallel port, etc.) in order to check what was happening
+and it seems the parallel port is causing the trouble:
+
+- All enabled: Soundcard is *not* detected (output from
+/proc/asound/cards) shows no soundcard 
+
+- Parallel port disabled: Soundcard is detected only if (here comes what
+looks the second bug) snd_intel8x0 is loaded *before* snd_intel8x0m.
+Otherwise no sound.
+
+So now I can decide between listening to music or using the printer :-) 
+
+What do you think it may be the problem?
 
 ----------------------------------------------------------------------
- jdthood - 04-08-05 22:34 
+ tiwai - 07-30-04 17:51 
 ----------------------------------------------------------------------
-Submitter: Has this problem been solved in later ALSA releases?
+There was a problem regarding the probing of chips between
+intel8x0 modem and audio drivers.  I fixed it yesterday on CVS.
+
+Please try CVS version or wait for 1.0.6-rc release.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-31-04 21:46 bonbons        New Issue                                    
-07-31-04 21:46 bonbons        Distribution              => SuSE 9.0        
-07-31-04 21:46 bonbons        Kernel Version            => 2.4.26          
-08-01-04 18:19 bonbons        Note Added: 0001517                          
-04-08-05 22:34 jdthood        Note Added: 0004378                          
+06-17-04 17:55 jrh            New Issue                                    
+06-17-04 17:55 jrh            Kernel Version            => 2.6.6 (vanilla) 
+06-18-04 08:58 jrh            Issue Monitored: jrh                         
+06-30-04 16:46 tiwai          Note Added: 0001361                          
+07-29-04 11:17 jrh            Note Added: 0001483                          
+07-30-04 16:49 tiwai          Note Added: 0001489                          
+07-30-04 17:13 jrh            Note Added: 0001497                          
+07-30-04 17:51 tiwai          Note Added: 0001504                          
+04-08-05 22:33 jdthood        Status                   new => resolved     
+04-08-05 22:33 jdthood        Resolution               open => fixed       
 ======================================================================
 
 
