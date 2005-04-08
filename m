@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000338]: intel8x0 driver is not able to find sound card
-Date: Fri, 8 Apr 2005 22:33:28 +0200
-Message-ID: <292050066a6437d95667d661f788948e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000420]: driver blocks/times out after suspend on IBM Thinkpad 390E (2626E0U)
+Date: Fri, 8 Apr 2005 22:36:33 +0200
+Message-ID: <2b053fed2758a0765be13524609fb5fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 84F6615A
-	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 22:33:28 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3071824F
+	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 22:36:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,93 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=338> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=420> 
 ======================================================================
-Reported By:                jrh
+Reported By:                jmartin
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   338
-Category:                   PCI - intel8x0
+Issue ID:                   420
+Category:                   PCI - es1938
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.6 (vanilla)
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian GNU/Linux
+Kernel Version:             unmodified Linux 2.6.7, compiled from sources
 ======================================================================
-Date Submitted:             06-17-2004 17:55 CEST
-Last Modified:              04-08-2005 22:33 CEST
+Date Submitted:             08-03-2004 12:14 CEST
+Last Modified:              04-08-2005 22:36 CEST
 ======================================================================
-Summary:                    intel8x0 driver is not able to find sound card
+Summary:                    driver blocks/times out after suspend on IBM
+Thinkpad 390E (2626E0U)
 Description: 
-Hi folks, 
+When I suspend (to ram) my Thinkpad and then resume it again, sound does
+not work any more. Programs trying to use the sound device block for a
+long time and time out eventually. There are no kernel messages.
 
-  I've been using the intel8x0 alsa driver since kernel 2.6 without any
-problems upto kernel 2.6.5 (compile from vanilla). However, since 2.6.6
-and 2.6.7 came out I'm not able to listen to any audio as the driver does
-not seem to recognice my card. I've made NO changes to the configuration
-files of the kernel and to any other setup. Simple start 2.6.5 alsa works,
-reboot with 2.6.6/7 and sound is not working.
+The problem existed also in earlier ALSA and OSS versions. Sometimes I
+received messages about lost interrupts or similar (if I remember
+correctly).
 
- The modules are loaded (same modules). "alsaconf" (1.0.5) reports the
-right card and loads it but for instance "alsactl restore" fails...
-
-
+In earlier versions, I also tried to 
+- unload/reload the module after resume,
+- unload the module before suspend, reload after resume,
+both with now success.
 ======================================================================
 
 ----------------------------------------------------------------------
- jrh - 07-30-04 17:13 
+ jmartin - 08-04-04 17:56 
 ----------------------------------------------------------------------
-Hi again,
+Thanks for the patch - that was quick. Unfortunately, you were right with
+your assumption that the problem will be the same as if I reload the
+driver after resume.
 
-  First of all, thanks tiwai for your time helping me find this problem. 
-
-I've check all this again and it actually seems to be two mixed bugs.
-First of all I've check my windows partition and I've seen that modem and
-sound card also shared the same IRQ so as you said that shouldn't be the
-problem :-(
-
-Anyways, I've tried all possible configurations in the bios (enabling
-modem, infrared, parallel port, etc.) in order to check what was happening
-and it seems the parallel port is causing the trouble:
-
-- All enabled: Soundcard is *not* detected (output from
-/proc/asound/cards) shows no soundcard 
-
-- Parallel port disabled: Soundcard is detected only if (here comes what
-looks the second bug) snd_intel8x0 is loaded *before* snd_intel8x0m.
-Otherwise no sound.
-
-So now I can decide between listening to music or using the printer :-) 
-
-What do you think it may be the problem?
+As far as I could test, sampling rates up to 11025 work after resume,
+22050 does sometimes, 22050 stereo and up certainly not.
 
 ----------------------------------------------------------------------
- tiwai - 07-30-04 17:51 
+ jdthood - 04-08-05 22:36 
 ----------------------------------------------------------------------
-There was a problem regarding the probing of chips between
-intel8x0 modem and audio drivers.  I fixed it yesterday on CVS.
-
-Please try CVS version or wait for 1.0.6-rc release.
+Submitter: Has the (re)initialization problem been fixed?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-17-04 17:55 jrh            New Issue                                    
-06-17-04 17:55 jrh            Kernel Version            => 2.6.6 (vanilla) 
-06-18-04 08:58 jrh            Issue Monitored: jrh                         
-06-30-04 16:46 tiwai          Note Added: 0001361                          
-07-29-04 11:17 jrh            Note Added: 0001483                          
-07-30-04 16:49 tiwai          Note Added: 0001489                          
-07-30-04 17:13 jrh            Note Added: 0001497                          
-07-30-04 17:51 tiwai          Note Added: 0001504                          
-04-08-05 22:33 jdthood        Status                   new => resolved     
-04-08-05 22:33 jdthood        Resolution               open => fixed       
+08-03-04 12:14 jmartin        New Issue                                    
+08-03-04 12:14 jmartin        Distribution              => Debian GNU/Linux
+08-03-04 12:14 jmartin        Kernel Version            => unmodified Linux
+2.6.7, compiled from sources
+08-03-04 19:37 tiwai          Note Added: 0001529                          
+08-03-04 21:19 jmartin        Note Added: 0001530                          
+08-04-04 08:41 jmartin        Note Added: 0001532                          
+08-04-04 12:38 tiwai          Note Added: 0001533                          
+08-04-04 12:42 tiwai          File Added: es1938-pm.dif                    
+08-04-04 17:56 jmartin        Note Added: 0001534                          
+04-08-05 22:36 jdthood        Note Added: 0004379                          
 ======================================================================
 
 
