@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000362]: System freeze while playing music on AWE32 PnP
-Date: Fri, 8 Apr 2005 13:43:20 +0200
-Message-ID: <6bbfd6717a869f18ca1a3c130ce4c6b3@bugtrack.alsa-project.org>
+From: "Dominic Espinosa" <dcespin@fastmail.fm>
+Subject: Re: Perl interface to alsalib MIDI?
+Date: Fri, 08 Apr 2005 04:44:58 -0700
+Message-ID: <1112960698.15152.231415978@webmail.messagingengine.com>
+References: <Pine.HPX.4.33n.0504081152460.3042-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2D022259
-	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 13:43:21 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <Pine.HPX.4.33n.0504081152460.3042-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,61 +18,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 8 Apr 2005 12:27:05 +0200 (METDST), "Clemens Ladisch"
+<clemens@ladisch.de> said:
+> Dominic Espinosa wrote:
+> > I have not been able to find any references to using perl with alsalib.
+> > ...
+> > Before I leap into perl-XS-land and write my own interface, I thought I
+> > would ask whether this is likely to work well in the first place.
+> 
+> Probably.  But you could just call amidi.
 
-The following issue has been UPDATED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=362> 
-======================================================================
-Reported By:                Theo
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   362
-Category:                   ISA - sb16/sbawe
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             Linux CC695620-a 2.6.6-1.435.2.1
-======================================================================
-Date Submitted:             07-02-2004 23:02 CEST
-Last Modified:              04-08-2005 13:43 CEST
-======================================================================
-Summary:                    System freeze while playing music on AWE32 PnP
-Description: 
-This is a clean install of Fedora Core 2. Sound card is a ISA Sound Blaster
-AWE32 PnP. The system freezes while playing music (and ONLY while playing
-music) after about 1-15 minutes. The music keeps playing until the song
-ends, but the system itself is frozen.
-======================================================================
+Interesting, I had completely missed that program! I'll try that first,
+although if I run into latency troubles I might have to do something
+else. I'd still be interested to know about alsalisp though, if there
+are any docs around. I skimmed the source but I didn't notice a lot of
+comments.
 
-----------------------------------------------------------------------
- jdthood - 04-07-05 20:58 
-----------------------------------------------------------------------
-Submitter: Has there been any improvement in later ALSA releases?
-
-----------------------------------------------------------------------
- Theo - 04-08-05 09:34 
-----------------------------------------------------------------------
-I'm sorry, I don't have this system anymore, so I can't check :(
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-02-04 23:02 Theo           New Issue                                    
-07-02-04 23:02 Theo           Distribution              => Fedora Core 2   
-07-02-04 23:02 Theo           Kernel Version            => Linux CC695620-a
-2.6.6-1.435.2.1
-04-07-05 20:58 jdthood        Note Added: 0004366                          
-04-08-05 09:34 Theo           Note Added: 0004372                          
-04-08-05 13:43 jdthood        Resolution               open => unable to
-duplicate
-======================================================================
-
+Thanks for your help.
+-- 
+  Dominic Espinosa
+  dcespin@fastmail.fm
 
 
 
