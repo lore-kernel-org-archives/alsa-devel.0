@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: usage of snd_seq_queue_status_get_real_time()
-Date: Fri, 8 Apr 2005 08:54:50 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0504080853540.3042-100000@studcom.urz.uni-halle.de>
-References: <4255D58C.9010903@pianodisc.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000362]: System freeze while playing music on AWE32 PnP
+Date: Fri, 8 Apr 2005 09:34:00 +0200
+Message-ID: <613ebf6e4f3342539f8ab7471bf93790@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4255D58C.9010903@pianodisc.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4B1A1C2
+	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 09:34:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,27 +18,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Steve deRosier <derosier@pianodisc.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Steve deRosier wrote:
-> const snd_seq_real_time_t * CMIDIPort::GetRealQueueTime( void )
-> {
->   snd_seq_queue_status_t * qs;
->
->   snd_seq_queue_status_alloca( &qs );
->   snd_seq_get_queue_status( hSeq, mQueue, qs );
->   return snd_seq_queue_status_get_real_time( qs );
-> }
 
-This function returns a pointer to a local variable.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=362> 
+======================================================================
+Reported By:                Theo
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   362
+Category:                   ISA - sb16/sbawe
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 2
+Kernel Version:             Linux CC695620-a 2.6.6-1.435.2.1
+======================================================================
+Date Submitted:             07-02-2004 23:02 CEST
+Last Modified:              04-08-2005 09:34 CEST
+======================================================================
+Summary:                    System freeze while playing music on AWE32 PnP
+Description: 
+This is a clean install of Fedora Core 2. Sound card is a ISA Sound Blaster
+AWE32 PnP. The system freezes while playing music (and ONLY while playing
+music) after about 1-15 minutes. The music keeps playing until the song
+ends, but the system itself is frozen.
+======================================================================
 
-(And it should check for errors.)
+----------------------------------------------------------------------
+ jdthood - 04-07-05 20:58 
+----------------------------------------------------------------------
+Submitter: Has there been any improvement in later ALSA releases?
 
+----------------------------------------------------------------------
+ Theo - 04-08-05 09:34 
+----------------------------------------------------------------------
+I'm sorry, I don't have this system anymore, so I can't check :(
 
-HTH
-Clemens
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-02-04 23:02 Theo           New Issue                                    
+07-02-04 23:02 Theo           Distribution              => Fedora Core 2   
+07-02-04 23:02 Theo           Kernel Version            => Linux CC695620-a
+2.6.6-1.435.2.1
+04-07-05 20:58 jdthood        Note Added: 0004366                          
+04-08-05 09:34 Theo           Note Added: 0004372                          
+======================================================================
+
 
 
 
