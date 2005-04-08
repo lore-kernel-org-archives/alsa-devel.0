@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000362]: System freeze while playing music on AWE32 PnP
-Date: Fri, 8 Apr 2005 09:34:00 +0200
-Message-ID: <613ebf6e4f3342539f8ab7471bf93790@bugtrack.alsa-project.org>
+From: "Dominic Espinosa" <dcespin@fastmail.fm>
+Subject: Perl interface to alsalib MIDI?
+Date: Fri, 08 Apr 2005 02:33:08 -0700
+Message-ID: <1112952788.6701.231408303@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4B1A1C2
-	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 09:34:00 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +16,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=362> 
-======================================================================
-Reported By:                Theo
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   362
-Category:                   ISA - sb16/sbawe
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             Linux CC695620-a 2.6.6-1.435.2.1
-======================================================================
-Date Submitted:             07-02-2004 23:02 CEST
-Last Modified:              04-08-2005 09:34 CEST
-======================================================================
-Summary:                    System freeze while playing music on AWE32 PnP
-Description: 
-This is a clean install of Fedora Core 2. Sound card is a ISA Sound Blaster
-AWE32 PnP. The system freezes while playing music (and ONLY while playing
-music) after about 1-15 minutes. The music keeps playing until the song
-ends, but the system itself is frozen.
-======================================================================
+I'm interested in developing a rather specialized MIDI application, and
+I could use some advice. I'm a sound technician and I work with a Roland
+VM-7200 virtual mixing system. For the sorts of things I need to do with
+it in live performance, I would like to be able to control the mixer via
+MIDI. This is possible, but only through SysEx messages which use the
+Data Set/Data Transfer method outlined by Roland in the MIDI
+implementation for the device. The mixer has a zillion controls, and the
+implementation chart alone is some 10 pages of tiny font (to give you an
+idea of how much texty stuff I would have to handle). What I want to do
+is send a series of SysEx messages, set up in advance, according to
+certain keypresses. So, for example, pressing one key might mute a
+predefined set of mixer tracks, and pressing another key might change
+the parameters of the onboard effects unit and increase the volume of 3
+faders by some value. Since the only thing I'm doing is
+remote-controlling a MIDI device by sending a bunch of SysEx's, an
+ordinary sequencer program is unsuitable. 
 
-----------------------------------------------------------------------
- jdthood - 04-07-05 20:58 
-----------------------------------------------------------------------
-Submitter: Has there been any improvement in later ALSA releases?
+As you can see, this will be pretty heavy in the string-manipulation
+department, since several hundred control messages have to be defined,
+and then the user has to be able to set up a config file which describes
+sets of control messages to send. There is not really any timing
+requirement, except that all the messages should be sent within 1 - 2
+seconds, and the app has to wait for at least 20 ms between each one (to
+accomodate the mixer's protocol).
 
-----------------------------------------------------------------------
- Theo - 04-08-05 09:34 
-----------------------------------------------------------------------
-I'm sorry, I don't have this system anymore, so I can't check :(
+My first thought was to use perl, since it would be a simple matter to
+set up a big hash of the possible control messages and then select the
+sets and parameter values according to the user's config file. However,
+I have not been able to find any references to using perl with alsalib.
+Before I leap into perl-XS-land and write my own interface, I thought I
+would ask whether this is likely to work well in the first place. I have
+not done much audio development and this approach may be misguided.
+There are a few MIDI modules for perl, but none of them are quite what I
+need and they all rely on the OSS interface anyway.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-02-04 23:02 Theo           New Issue                                    
-07-02-04 23:02 Theo           Distribution              => Fedora Core 2   
-07-02-04 23:02 Theo           Kernel Version            => Linux CC695620-a
-2.6.6-1.435.2.1
-04-07-05 20:58 jdthood        Note Added: 0004366                          
-04-08-05 09:34 Theo           Note Added: 0004372                          
-======================================================================
+A second approach would be to write in C and use XML or Guile as the
+configuration language, but it seems like this would involve a lot more
+code and may not be as flexible -- if I'm going for interpreted
+functionality anyway, it seems better to write the whole app in an
+interpreted language in the first place if possible. A third thing is
+that I noticed something called 'alsalisp' in the distro, but I have no
+idea what it is and can't find any docs.
 
+Any advice would be appreciated!
+
+-- 
+  Dominic Espinosa
+  dcespin@fastmail.fm
 
 
 
