@@ -1,10 +1,9 @@
-From: gardie <margo@gmx.net>
-Subject: =?Windows-1251?B?z9DO1MXR0cjOzcDL3M3A3yAgRS1tYWlsINDA0dHby8rA?=
-Date: Fri, 08 Apr 2005 12:00:15 +0000
-Message-ID: <E1DJsX0-0004Vq-LS@sc8-sf-mx1.sourceforge.net>
+From: dzln11/Bang_&_Olufsen/DK <dzln11/Bang_&_Olufsen/DK@bang-olufsen.dk>
+Subject: Report to Recipient(s)
+Date: Fri, 8 Apr 2005 14:26:15 +0200
+Message-ID: <OF48565245.893A3A5D-ONC1256FDD.00445293@bang-olufsen.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=Windows-1251
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,22 +17,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-=CF=D0=CE=D4=C5=D1=D1=C8=CE=CD=C0=CB=DC=CD=C0=DF  E-mail =D0=C0=D1=D1=DB=CB=
-=CA=C0  =20
- =D0=C5=CA=CB=C0=CC=C0,=20
- =DD=D4=D4=C5=CA=D2 =CA=CE=D2=CE=D0=CE=C9 =C2=C8=C4=C5=CD =D1=D0=C0=C7=D3=
-.
-=D1=CE=CE=D2=C2=C5=D2=D1=D2=C2=C8=C5 =D6=C5=CD=DB =C8 =CA=C0=D7=C5=D1=D2=C2=
-=C0.
+Incident Information:-
 
-                           505-49-31    587313=20
+Originator: alsa-devel-admin@lists.sourceforge.net
+Recipients: alsa-devel@lists.sourceforge.net
+Subject:    Alsa-devel digest, Vol 1 #2723 - 5 msgs
 
+WARNING:  The file mime (00000b29.eml) you received was infected with the
+Exploit-MIME.gen.exe virus.  The file attachment was not successfully
+cleaned. Attachment was quarantined.
 
-=00
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
