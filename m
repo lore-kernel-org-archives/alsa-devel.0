@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000405]: PCM playback causes hard freeze under kernel 2.6.x
-Date: Fri, 8 Apr 2005 22:28:00 +0200
-Message-ID: <edb0a7bebf9fe269fbdeb7b7a096ff09@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000406]: Multiple Kernel OOPS with multiple threads accessing sound device
+Date: Fri, 8 Apr 2005 22:27:15 +0200
+Message-ID: <6029b3a7937c3f0895dd4e3d46cece03@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 401B924D
-	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 22:28:00 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AE84B1F0
+	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 22:27:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=405> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=406> 
 ======================================================================
-Reported By:                comac
+Reported By:                nickkral
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   405
-Category:                   ISA - opl3sa2
-Reproducibility:            always
+Issue ID:                   406
+Category:                   CORE OSS - pcm
+Reproducibility:            random
 Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.7
+Distribution:               Gentoo
+Kernel Version:             2.6.7-gentoo-r5
 ======================================================================
-Date Submitted:             07-25-2004 20:07 CEST
+Date Submitted:             07-26-2004 07:55 CEST
 Last Modified:              04-08-2005 22:27 CEST
 ======================================================================
-Summary:                    PCM playback causes hard freeze under kernel 2.6.x
+Summary:                    Multiple Kernel OOPS with multiple threads accessing
+sound device
 Description: 
-System freezes after a few seconds of playback thru integrated "OPL3-SA3
-Snd System" (as reported by pnpdump) with any 2.6 kernel. (tested 2.6.0,
-2.6.5, 2.6.7, 2.6.7-ck[15] and perhaps some other)
+I have a program with two threads (pthreads)
 
-Problem shows up both with kernel alsa modules AND 1.0.5 modules compiled
-from alsa-project tarballs. Worked flawlessly on 2.4.x on the same
-system.
+One thread continually writes to /dev/dsp, and the other thread
+continually calls the SNDCTL_DSP_GETODELAY ioctl.
 
-Playback time before freeze varies from a few seconds to a few minutes and
-seems to be related to system or disk load. While playing, sound gets
-distorted (seems to skip) when disk is accessed.
-
-I've tried disabling preemptive, messing with PnP settings on BIOS and
-checked the card has its own DMA and IRQ (not shared with anyone else)
-without any success.
-
+At startup, there appears to be a race condition in the initialization of
+some data structures which causes OOPSes in the linux kernel.
 ======================================================================
-
-----------------------------------------------------------------------
- heyzuess - 07-28-04 02:57 
-----------------------------------------------------------------------
-I have the same problem - and tried everything to resolve it (re-compiled
-the kernel about 20 times with different options each time) and I don't
-think this is specific to alsa since it also happens with the OSS drivers
-for me as well.
-
-I'm using SB Live emu10k.
-
-I can break the freeze by ssh'ing in from another box, then killing
-whatever is trying to produce sound.
 
 ----------------------------------------------------------------------
  jdthood - 04-08-05 22:27 
 ----------------------------------------------------------------------
-Was this problem solved in later ALSA releases?
+Submitter: Was this problem ever solved in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-25-04 20:07 comac          New Issue                                    
-07-25-04 20:07 comac          Distribution              => Gentoo Linux    
-07-25-04 20:07 comac          Kernel Version            => 2.6.7           
-07-28-04 02:57 heyzuess       Note Added: 0001479                          
-04-08-05 22:27 jdthood        Note Added: 0004377                          
+07-26-04 07:55 nickkral       New Issue                                    
+07-26-04 07:55 nickkral       Distribution              => Gentoo          
+07-26-04 07:55 nickkral       Kernel Version            => 2.6.7-gentoo-r5 
+04-08-05 22:27 jdthood        Note Added: 0004376                          
 ======================================================================
 
 
