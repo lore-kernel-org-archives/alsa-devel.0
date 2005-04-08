@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001033]: hda sound 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-Date: Fri, 8 Apr 2005 21:08:24 +0200
-Message-ID: <354cda0103910d68ea05e73da5cd6232@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000155]: Crackly / sizzly recording on VIA VT82C686 AC97 since 2.6.3
+Date: Fri, 8 Apr 2005 22:23:59 +0200
+Message-ID: <bc6bde427fabb5a9684f590281edd42b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E8CEE24F
-	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 21:08:24 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 706D11F0
+	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 22:24:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,95 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1033> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=155> 
 ======================================================================
-Reported By:                sjankie
-Assigned To:                
+Reported By:                sim
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1033
-Category:                   PCI - azx
+Issue ID:                   155
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.11.6
+Status:                     feedback
+Distribution:               Debian unstable
+Kernel Version:             2.6.3 through 2.6.5-rc2
 ======================================================================
-Date Submitted:             04-03-2005 15:07 CEST
-Last Modified:              04-08-2005 21:08 CEST
+Date Submitted:             03-24-2004 06:03 CET
+Last Modified:              04-08-2005 22:23 CEST
 ======================================================================
-Summary:                    hda sound 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+Summary:                    Crackly / sizzly recording on VIA VT82C686 AC97
+since 2.6.3
 Description: 
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
+Hello,
 
-azx driver compliens about: NO AFG found.
+I have a mythtv box set up and recently upgraded the kernel from
+2.6.0-test9 to 2.6.4.  Everything appeared to play normally, but new
+recordings since the upgrade all sound crackly.  2.6.5-rc2 and 2.6.3 also
+seem to be broken.  2.6.2 works as expected.
 
-alsmixer starts, but no sound.
+There appear to be a large number of changes to the ALSA core between
+2.6.2 and 2.6.3.  How should I attempt to track the problem down further?
+
+Athlon 1800 XP, MSI K7 Master (MS-6330), 48 KHz stereo recording and
+playback.  The problem also shows up with Audacity, and as such does not
+appear to be application specific.  I can send a sample of the poor sound
+recording upon request.
 ======================================================================
 
 ----------------------------------------------------------------------
- Thomas - 04-05-05 19:50 
+ tiwai - 07-16-04 12:45 
 ----------------------------------------------------------------------
-Same problem here. Modules loaded but no sound.
-I tried all models (even cmi while my card is supposed to be a realtek
-ALC880.)
-tested with 1.0.8, 1.0.9rc2, cvs.
-
-lspci -v output:
-0000:00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 04)
-        Subsystem: Rioworks: Unknown device 203d
-        Flags: bus master, fast devsel, latency 0, IRQ 169
-        Memory at 80000000 (64-bit, non-prefetchable)
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
-
-lspci -vn:
-0000:00:1b.0 Class 0403: 8086:2668 (rev 04)
-        Subsystem: 161f:203d
-
-
-dmesg output:
-ALSA
-/root/install/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:552:
-codec_mask = 0x3
-ALSA
-/root/install/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_codec.c:511:
-hda_codec: no AFG node found
-
-I'll provide any additional informations required.
+Something wrong in oss emulation...
 
 ----------------------------------------------------------------------
- Thomas - 04-08-05 21:08 
+ jdthood - 04-08-05 22:23 
 ----------------------------------------------------------------------
-After some tweakings (don't ask me exactly what I did, I changed lots of
-stuff), I've got it working.
-
-Some problems though. Headphone and my laptop speaker are not working.
-"Front" output works but there is lot of noise.
-"Surround" "Center/LFE" don't work. It might be normal as "Front" is not
-plugged.
-
-I can't test inputs.
+tiwai: Can this be closed now?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-03-05 15:07 sjankie        New Issue                                    
-04-03-05 15:07 sjankie        Kernel Version            => 2.6.11.6        
-04-03-05 15:08 sjankie        Issue Monitored: sjankie                     
-04-03-05 15:08 sjankie        Issue End Monitor: sjankie                    
-04-03-05 15:08 sjankie        Issue Monitored: sjankie                     
-04-04-05 17:09 1g0R           Note Added: 0004328                          
-04-05-05 14:52 sjankie        Note Added: 0004337                          
-04-05-05 18:48 Thomas         Issue Monitored: Thomas                      
-04-05-05 19:50 Thomas         Note Added: 0004339                          
-04-08-05 21:08 Thomas         Note Added: 0004373                          
+03-24-04 06:03 sim            New Issue                                    
+03-24-04 06:03 sim            Distribution              => Debian unstable 
+03-24-04 06:03 sim            Kernel Version            => 2.6.3 through
+2.6.5-rc2
+04-08-04 15:15 m9715936       Issue Monitored: m9715936                    
+04-08-04 15:25 m9715936       Note Added: 0000767                          
+04-08-04 15:29 m9715936       Note Edited: 0000767                         
+04-10-04 10:13 m9715936       Note Edited: 0000767                         
+04-11-04 19:28 uli            Note Added: 0000780                          
+04-23-04 17:29 tiwai          Status                   new => assigned     
+04-23-04 17:29 tiwai          Assigned To               => tiwai           
+04-23-04 17:30 tiwai          Note Added: 0000907                          
+04-23-04 18:02 m9715936       Note Added: 0000913                          
+04-23-04 18:07 tiwai          Note Added: 0000914                          
+04-23-04 18:36 m9715936       Note Added: 0000915                          
+04-23-04 18:40 tiwai          Note Added: 0000916                          
+04-23-04 18:59 m9715936       Note Added: 0000917                          
+06-13-04 11:27 sim            File Added: patch-2.6.3-rc1-try2.11.works         
+          
+06-13-04 11:32 sim            Note Added: 0001303                          
+06-20-04 11:41 uli            Note Added: 0001324                          
+06-22-04 18:41 tiwai          Status                   assigned => resolved
+06-22-04 18:41 tiwai          Resolution               open => fixed       
+07-16-04 12:45 tiwai          Status                   resolved => feedback
+07-16-04 12:45 tiwai          Resolution               fixed => reopened   
+07-16-04 12:45 tiwai          Note Added: 0001450                          
+04-08-05 22:23 jdthood        Note Added: 0004374                          
 ======================================================================
 
 
