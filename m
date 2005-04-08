@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000420]: driver blocks/times out after suspend on IBM Thinkpad 390E (2626E0U)
-Date: Fri, 8 Apr 2005 22:36:33 +0200
-Message-ID: <2b053fed2758a0765be13524609fb5fd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000405]: PCM playback causes hard freeze under kernel 2.6.x
+Date: Sat, 9 Apr 2005 00:10:45 +0200
+Message-ID: <a00b58eb51436948393c3a31bc2ddbba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3071824F
-	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 22:36:34 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 423DC260
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 00:10:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=420> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=405> 
 ======================================================================
-Reported By:                jmartin
+Reported By:                comac
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   420
-Category:                   PCI - es1938
+Issue ID:                   405
+Category:                   ISA - opl3sa2
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Debian GNU/Linux
-Kernel Version:             unmodified Linux 2.6.7, compiled from sources
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             08-03-2004 12:14 CEST
-Last Modified:              04-08-2005 22:36 CEST
+Date Submitted:             07-25-2004 20:07 CEST
+Last Modified:              04-09-2005 00:10 CEST
 ======================================================================
-Summary:                    driver blocks/times out after suspend on IBM
-Thinkpad 390E (2626E0U)
+Summary:                    PCM playback causes hard freeze under kernel 2.6.x
 Description: 
-When I suspend (to ram) my Thinkpad and then resume it again, sound does
-not work any more. Programs trying to use the sound device block for a
-long time and time out eventually. There are no kernel messages.
+System freezes after a few seconds of playback thru integrated "OPL3-SA3
+Snd System" (as reported by pnpdump) with any 2.6 kernel. (tested 2.6.0,
+2.6.5, 2.6.7, 2.6.7-ck[15] and perhaps some other)
 
-The problem existed also in earlier ALSA and OSS versions. Sometimes I
-received messages about lost interrupts or similar (if I remember
-correctly).
+Problem shows up both with kernel alsa modules AND 1.0.5 modules compiled
+from alsa-project tarballs. Worked flawlessly on 2.4.x on the same
+system.
 
-In earlier versions, I also tried to 
-- unload/reload the module after resume,
-- unload the module before suspend, reload after resume,
-both with now success.
+Playback time before freeze varies from a few seconds to a few minutes and
+seems to be related to system or disk load. While playing, sound gets
+distorted (seems to skip) when disk is accessed.
+
+I've tried disabling preemptive, messing with PnP settings on BIOS and
+checked the card has its own DMA and IRQ (not shared with anyone else)
+without any success.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jmartin - 08-04-04 17:56 
+ jdthood - 04-08-05 22:27 
 ----------------------------------------------------------------------
-Thanks for the patch - that was quick. Unfortunately, you were right with
-your assumption that the problem will be the same as if I reload the
-driver after resume.
-
-As far as I could test, sampling rates up to 11025 work after resume,
-22050 does sometimes, 22050 stereo and up certainly not.
+Was this problem solved in later ALSA releases?
 
 ----------------------------------------------------------------------
- jdthood - 04-08-05 22:36 
+ comac - 04-09-05 00:10 
 ----------------------------------------------------------------------
-Submitter: Has the (re)initialization problem been fixed?
+I've been trying 2.6.x kernels as they are released up to 2.6.11.5, using
+the included alsa code. And all kernels have shown the same problem so
+far.
+
+Is there any combination of kernel + alsa I should try?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-03-04 12:14 jmartin        New Issue                                    
-08-03-04 12:14 jmartin        Distribution              => Debian GNU/Linux
-08-03-04 12:14 jmartin        Kernel Version            => unmodified Linux
-2.6.7, compiled from sources
-08-03-04 19:37 tiwai          Note Added: 0001529                          
-08-03-04 21:19 jmartin        Note Added: 0001530                          
-08-04-04 08:41 jmartin        Note Added: 0001532                          
-08-04-04 12:38 tiwai          Note Added: 0001533                          
-08-04-04 12:42 tiwai          File Added: es1938-pm.dif                    
-08-04-04 17:56 jmartin        Note Added: 0001534                          
-04-08-05 22:36 jdthood        Note Added: 0004379                          
+07-25-04 20:07 comac          New Issue                                    
+07-25-04 20:07 comac          Distribution              => Gentoo Linux    
+07-25-04 20:07 comac          Kernel Version            => 2.6.7           
+07-28-04 02:57 heyzuess       Note Added: 0001479                          
+04-08-05 22:27 jdthood        Note Added: 0004377                          
+04-09-05 00:10 comac          Note Added: 0004380                          
 ======================================================================
 
 
