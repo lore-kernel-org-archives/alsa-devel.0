@@ -1,14 +1,14 @@
-From: "Dominic Espinosa" <dcespin@fastmail.fm>
-Subject: Re: Perl interface to alsalib MIDI?
-Date: Fri, 08 Apr 2005 04:44:58 -0700
-Message-ID: <1112960698.15152.231415978@webmail.messagingengine.com>
-References: <Pine.HPX.4.33n.0504081152460.3042-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001040]: ice1724: Invalid EEPROM (size = 255)
+Date: Fri, 8 Apr 2005 14:10:58 +0200
+Message-ID: <a7ed9afdd2070d80e7feef373fa7a9aa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0504081152460.3042-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BE8C91FF
+	for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2005 14:10:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,30 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 8 Apr 2005 12:27:05 +0200 (METDST), "Clemens Ladisch"
-<clemens@ladisch.de> said:
-> Dominic Espinosa wrote:
-> > I have not been able to find any references to using perl with alsalib.
-> > ...
-> > Before I leap into perl-XS-land and write my own interface, I thought I
-> > would ask whether this is likely to work well in the first place.
-> 
-> Probably.  But you could just call amidi.
 
-Interesting, I had completely missed that program! I'll try that first,
-although if I run into latency troubles I might have to do something
-else. I'd still be interested to know about alsalisp though, if there
-are any docs around. I skimmed the source but I didn't notice a lot of
-comments.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1040> 
+======================================================================
+Reported By:                lorenb
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1040
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             04-08-2005 14:10 CEST
+Last Modified:              04-08-2005 14:10 CEST
+======================================================================
+Summary:                    ice1724: Invalid EEPROM (size = 255)
+Description: 
+Have a Shuttle SN25P based system:
+http://global.shuttle.com/Product/Barebone/SN25P.asp
 
-Thanks for your help.
--- 
-  Dominic Espinosa
-  dcespin@fastmail.fm
+It comes with VIA Envy24PT audio controller:
+http://www.via.com.tw/en/products/audio/controllers/envy24pt/
+
+Every time I tried and load the ice1724 driver I get an error about
+invalid EEPROM size.
+
+I saw this old bug:
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000142
+
+Which indicated this issue was resolved in 1.0.5a.  I'm using v1.0.9rc2.
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-08-05 14:10 lorenb         New Issue                                    
+04-08-05 14:10 lorenb         Distribution              => Gentoo          
+04-08-05 14:10 lorenb         Kernel Version            => 2.6.11          
+======================================================================
+
 
 
 
