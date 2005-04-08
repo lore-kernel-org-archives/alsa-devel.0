@@ -1,11 +1,13 @@
-From: Martin Habets <errandir_news@mph.eclipse.co.uk>
-Subject: [PATCH] latencytest for PPC (and maybe others)
-Date: Fri, 8 Apr 2005 16:49:58 +0100
-Message-ID: <20050408154958.GA27711@palantir8>
+From: Andy Robinson <andy@seventhstring.com>
+Subject: Re: Memory allocation and the "prealloc" procfile
+Date: Fri, 08 Apr 2005 17:07:49 +0100
+Message-ID: <1112976469.6902.2.camel@andys_dellm60.ss82amr.net>
+References: <20050408154303.E61098C466@sc8-sf-spam1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <20050408154303.E61098C466@sc8-sf-spam1.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,37 +17,122 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I have been able to do some latency testing on my powerbook using
-2.6.11 and a number of patches:
+> Message: 5
+> Date: Fri, 8 Apr 2005 12:55:29 +0200 (METDST)
+> From: Clemens Ladisch <clemens@ladisch.de>
+> To: Andy Robinson <andy@seventhstring.com>
+> cc: ALSA devel <alsa-devel@lists.sourceforge.net>
+> Subject: Re: [Alsa-devel] Re: Memory allocation and the "prealloc" procfile
+> 
+> Andy Robinson wrote:
+> > But I'm still curious to know, what is all that
+> > /proc/asound/card0/pcm0p/sub0/prealloc memory used for?
+> 
+> For the buffer. :)
+> 
+> > I specify 128k but only get a 32k buffer reported by
+> > SNDCTL_DSP_GETOSPACE (and one of my users gets only 4k of buffer)
+> 
+> Doesn't happen on my machine.  What parameters are you using?
+> 
+> 
+> $ cat ospace.c
+> #include <stdio.h>
+> #include <fcntl.h>
+> #include <sys/soundcard.h>
+> 
+> int main()
+> {
+> 	int fd;
+> 	audio_buf_info i;
+> 	int x;
+> 
+> 	fd = open("/dev/dsp", O_WRONLY);
+> 	x = 1;
+> 	ioctl(fd, SNDCTL_DSP_STEREO, &x);
+> 	x = AFMT_S16_LE;
+> 	ioctl(fd, SNDCTL_DSP_SETFMT, &x);
+> 	x = 48000;
+> 	ioctl(fd, SNDCTL_DSP_SPEED, &x);
+> 	ioctl(fd, SNDCTL_DSP_GETOSPACE, &i);
+> 	close(fd);
+> 	printf("buffer bytes: %d * %d = %d\n", i.fragstotal, i.fragsize, i.fragstotal * i.fragsize);
+> 	return 0;
+> }
+> $ cat /proc/asound/cards
+> 0 [ICH5           ]: ICH4 - Intel ICH5
+>                      Intel ICH5 with AD1985 at 0xfebff400, irq 209
+> $ cat /proc/asound/card0/pcm0p/sub0/prealloc
+> 64
+> $ ospace
+> buffer bytes: 16 * 4096 = 65536
+> $ echo 128 > /proc/asound/card0/pcm0p/sub0/prealloc
+> $ ospace
+> buffer bytes: 16 * 8192 = 131072
+> 
+> 
+> Regards,
+> Clemens
 
-[1] A patch for the genrtc kernel driver
-    http://www.mph.eclipse.co.uk/pub/linux/patches/2.6.11/genrtc.c.patch
-The ioctls added can be tested using
-    http://www.mph.eclipse.co.uk/pub/linux/patches/rtctest2.c
-It is important to run to this to find out the accuracy of the clock on
-your platform. On PPC 1024Hz is probably the highest accurate frequency.
-Any machine using genrtc should be able to use these ioctls, not just PPC.
+Amazing! Thank you enormously for this, which produces the same result
+on my system as yours. It is indeed a matter of ioctl order, as Takashi
+Iwai also suggests.
 
-[2] A patch against latencytest.0.5.5
-    http://www.mph.eclipse.co.uk/pub/linux/patches/latencytest.patch
-With USE_GENERIC_TIMER selected in the makefile, this should work on
-any platform. For PPC I'd recommend setting USE_PPC_VEA_TIMEBASE in the
-Makefile.
-Takashi, would you be willing to include this patch?
+If I add extra SNDCTL_DSP_GETOSPACE/printf at each point to your sample
+then I see the following (prealloc is 128) :
 
-Results: Initial testing showed serious latency from the X11 tests, but
-the rest looks okay.
-[3] http://www.mph.eclipse.co.uk/pub/linux/latency/test3/index.html
-With a (questionable) DRM patch for the Radeon driver the results become:
-[4] http://www.mph.eclipse.co.uk/pub/linux/latency/test7/index.html
-Jack shows 11.6msec latency with -r44100 -p128 -n4.
+       fd = open("/dev/dsp", O_WRONLY);
+buffer bytes: 8 * 4096 = 32768
 
-I hope this will be of use to other machines using genrtc.
--- 
-Martin
+        ioctl(fd, SNDCTL_DSP_STEREO, &x);
+buffer bytes: 8 * 8192 = 65536
+
+        ioctl(fd, SNDCTL_DSP_SETFMT, &x);
+buffer bytes: 32 * 4096 = 131072
+
+        ioctl(fd, SNDCTL_DSP_SPEED, &x);
+buffer bytes: 16 * 8192 = 131072
+
+I don't know know if this surprises you but it certainly surprises me! I
+would have expected that if prealloc is 128k then SNDCTL_DSP_GETOSPACE
+would tell us 128k ... instead of 32k, just after opening the device.
+
+I have been using the following order:
+- open
+- SNDCTL_DSP_SETFRAGMENT
+- SNDCTL_DSP_GETOSPACE
+- set up other parameters (sample rate & format)
+
+my reasoning being that I have read, with regard to
+SNDCTL_DSP_SETFRAGMENT in native OSS, that
+"NOTE! This ioctl call must be used as early as possible. The optimum
+location is immediately after opening the device."
+and it seemed natural to me that after SNDCTL_DSP_SETFRAGMENT to ask for
+what we want, we call SNDCTL_DSP_GETOSPACE to see what we got. And in
+fact this does seem to work on native OSS.
+
+So I will change this to:
+- open
+- SNDCTL_DSP_SETFRAGMENT
+- set up other parameters (sample rate & format)
+- SNDCTL_DSP_GETOSPACE
+
+Which seems like it should be ok on native OSS and ALSA too. Come to
+think of it, if I was a sloppier programmer and hadn't bothered to call
+SNDCTL_DSP_GETOSPACE at all, then everything would have been fine.
+
+I am very happy to have an answer to this problem which has been bugging
+me for months, and has prevented some people from using the Linux
+version of my software - thank you again. You may be wondering why I
+didn't switch to using ALSA directly, but the point is that I want
+maximum compatibility, including older systems which don't use ALSA.
+
+Regards,
+Andy Robinson, Seventh String Software, www.seventhstring.com
+
 
 
 -------------------------------------------------------
