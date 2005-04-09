@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000405]: PCM playback causes hard freeze under kernel 2.6.x
-Date: Sat, 9 Apr 2005 04:20:40 +0200
-Message-ID: <53f0001b191aea7dde1d7eb59a0b223d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000369]: SPDIF gives continous output on later versions of ALSA
+Date: Sat, 9 Apr 2005 04:24:54 +0200
+Message-ID: <47103b8f410ffb4541b6d7a00fb8aba8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 15CDA200
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 04:20:41 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A4EA926A
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 04:24:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=405> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=369> 
 ======================================================================
-Reported By:                comac
+Reported By:                Alphix
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   405
-Category:                   ISA - opl3sa2
+Issue ID:                   369
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.7
+Status:                     resolved
+Distribution:               Debian
+Kernel Version:             2.4.25 and 2.6.7
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-25-2004 20:07 CEST
-Last Modified:              04-09-2005 04:20 CEST
+Date Submitted:             07-06-2004 20:26 CEST
+Last Modified:              04-09-2005 04:24 CEST
 ======================================================================
-Summary:                    PCM playback causes hard freeze under kernel 2.6.x
+Summary:                    SPDIF gives continous output on later versions of
+ALSA
 Description: 
-System freezes after a few seconds of playback thru integrated "OPL3-SA3
-Snd System" (as reported by pnpdump) with any 2.6 kernel. (tested 2.6.0,
-2.6.5, 2.6.7, 2.6.7-ck[15] and perhaps some other)
+First I was using this box with Linux kernel 2.4.25 and ALSA 1.0.3 (both
+downloaded and built myself). Everything worked great, I have both the
+SPDIF and regular stereo jack connected to my reciever. 
 
-Problem shows up both with kernel alsa modules AND 1.0.5 modules compiled
-from alsa-project tarballs. Worked flawlessly on 2.4.x on the same
-system.
+The reason for this is that the OSS emulation won't work with the SPDIF as
+it's underlying device. This was no problem however, since the reciever
+could detect if there was activity on the digital input and automatically
+switch between digital and analogous.
 
-Playback time before freeze varies from a few seconds to a few minutes and
-seems to be related to system or disk load. While playing, sound gets
-distorted (seems to skip) when disk is accessed.
-
-I've tried disabling preemptive, messing with PnP settings on BIOS and
-checked the card has its own DMA and IRQ (not shared with anyone else)
-without any success.
+However, I've been working on moving to a 2.6 based kernel, and one of the
+last few annoyances that stop me is that ALSA as shipped with the 2.6.7
+kernel (it seems to be 1.0.5a) seems to fool the reciever into believing
+that there is input on the SPDIF wire constantly. Therefore auto-switching
+doesn't work anymore (playback via both devices still work, it's just the
+autoswitching that stopped working so I now have to switch manually).
 
 ======================================================================
 
 ----------------------------------------------------------------------
- heyzuess - 07-28-04 02:57 
+ Alphix - 08-05-04 21:49 
 ----------------------------------------------------------------------
-I have the same problem - and tried everything to resolve it (re-compiled
-the kernel about 20 times with different options each time) and I don't
-think this is specific to alsa since it also happens with the OSS drivers
-for me as well.
+I've investigated this some more and it turns out that everything works as
+expected when ALSA is built from sources downloaded from the ALSA website
+on either a 2.4 or 2.6 kernel (tried 1.0.3, 1.0.5a and 1.0.6a and they all
+worked on 2.4.25 and 2.6.7).
 
-I'm using SB Live emu10k.
+I've also managed to find out that the in-kernel ALSA tree (in 2.6.7)
+*does* work as expected, provided that IEC958 is muted (then both digital
+and analogue playback works as expected).
 
-I can break the freeze by ssh'ing in from another box, then killing
-whatever is trying to produce sound.
+I don't know if the in-kernel version of ALSA or the out-of-kernel one is
+the version which has got it wrong but it seems to me that they should be
+consistent.
 
-----------------------------------------------------------------------
- jdthood - 04-08-05 22:27 
-----------------------------------------------------------------------
-Was this problem solved in later ALSA releases?
-
-----------------------------------------------------------------------
- comac - 04-09-05 00:10 
-----------------------------------------------------------------------
-I've been trying 2.6.x kernels as they are released up to 2.6.11.5, using
-the included alsa code. And all kernels have shown the same problem so
-far.
-
-Is there any combination of kernel + alsa I should try?
+This is now a very minor severity as a easy workaround exists.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-25-04 20:07 comac          New Issue                                    
-07-25-04 20:07 comac          Distribution              => Gentoo Linux    
-07-25-04 20:07 comac          Kernel Version            => 2.6.7           
-07-28-04 02:57 heyzuess       Note Added: 0001479                          
-04-08-05 22:27 jdthood        Note Added: 0004377                          
-04-09-05 00:10 comac          Note Added: 0004380                          
-04-09-05 04:19 jdthood        Status                   new => confirmed    
-04-09-05 04:20 jdthood        Status                   confirmed => acknowledged
+07-06-04 20:26 Alphix         New Issue                                    
+07-06-04 20:26 Alphix         Distribution              => Debian          
+07-06-04 20:26 Alphix         Kernel Version            => 2.4.25 and 2.6.7
+08-05-04 21:49 Alphix         Note Added: 0001537                          
+04-09-05 04:24 jdthood        Status                   new => resolved     
+04-09-05 04:24 jdthood        Resolution               open => not an issue
 ======================================================================
 
 
