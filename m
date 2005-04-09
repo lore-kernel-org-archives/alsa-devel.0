@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000446]: System freezes everytime when I start recording.
-Date: Sat, 9 Apr 2005 04:26:23 +0200
-Message-ID: <91f60d04849001b7f2cd4c6b96ea7814@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000468]: stuttering audio output with SDL_audio applications
+Date: Sat, 9 Apr 2005 04:28:03 +0200
+Message-ID: <d0af074e35550a053d249587b1383992@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8233326A
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 04:26:23 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BAD4426A
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 04:28:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=446> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=468> 
 ======================================================================
-Reported By:                Marc_R
+Reported By:                int-e
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   446
-Category:                   PCI - es1938
-Reproducibility:            always
-Severity:                   crash
+Issue ID:                   468
+Category:                   PCI - via82xx
+Reproducibility:            sometimes
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian GNU/Linux / DeMuDi
-Kernel Version:             every kernel I tried 2.4.x / 2.6.x
+Distribution:               Gentoo
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             08-16-2004 22:24 CEST
-Last Modified:              04-09-2005 04:26 CEST
+Date Submitted:             08-27-2004 03:48 CEST
+Last Modified:              04-09-2005 04:28 CEST
 ======================================================================
-Summary:                    System freezes everytime when I start recording.
+Summary:                    stuttering audio output with SDL_audio applications
+
 Description: 
-I have a Terratec 128i PCI soundcard which works great as long as I don't
-record something.
-I tried recording from cd, microphone, and mix via arecord and Audacity.
-The capture devices were set correctly.
-As soon as the recording begins, the system freezes immediately. Even the
-Magic SysRq doesn't work so I have to reset the PC.
-I had this problem with every Linux-kernel version I tried from 2.4.x to
-2.6.8.1.
-I even installed DeMuDi but had the same problem there.
+I traced this down to the check that's now called check_invalid_pos() in
+calc_linear_pos() in the driver being triggered with lastpos==bufsize and
+res==bufsize/2.
 
-After some more testing I found out that recording works more or less,
-when I unload the usb-module (uhci_hcd). But I have to unload it when X is
-not running (?!), otherwise the system still crashes.
+I think lastpos should be 0 at that point.
 
-I then borrowed another soundcard (SB 128) and got it working with no
-problems. So it seems that there is some bug in the recording part of the
-es1938-driver...
-
-If there's additional information needed, please ask.
+Moving the assignment viadev->lastpos = res; at the end of that function
+after the wrap handling if() solved the problem for me.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 04:26 
+ jdthood - 04-09-05 04:28 
 ----------------------------------------------------------------------
-Submitter: Do you see any improvement in later ALSA releases?
+Submitter: Does the problem still exist in the latest ALSA release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-16-04 22:24 Marc_R         New Issue                                    
-08-16-04 22:24 Marc_R         Distribution              => Debian GNU/Linux /
-DeMuDi
-08-16-04 22:24 Marc_R         Kernel Version            => every kernel I tried
-2.4.x / 2.6.x
-04-09-05 04:26 jdthood        Note Added: 0004382                          
+08-27-04 03:48 int-e          New Issue                                    
+08-27-04 03:48 int-e          File Added: via82xx.diff                     
+08-27-04 03:48 int-e          Distribution              => Gentoo          
+08-27-04 03:48 int-e          Kernel Version            => 2.6.8.1         
+04-09-05 04:28 jdthood        Note Added: 0004383                          
 ======================================================================
 
 
