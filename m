@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000331]: possible incompatibility with cpu-freq
-Date: Sat, 9 Apr 2005 17:29:10 +0200
-Message-ID: <011beab82a2f5aa0519dc9c090fe7a24@bugtrack.alsa-project.org>
+Date: Sat, 9 Apr 2005 17:30:07 +0200
+Message-ID: <d5bb50ef0949f4135864ca65b40d8b95@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9D387220
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:29:10 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B6206220
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:30:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0000535.
+The following issue has been ACKNOWLEDGED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=331> 
 ======================================================================
@@ -35,12 +35,12 @@ Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     acknowledged
 Distribution:               Debian testing
 Kernel Version:             2.6.4 - 2.6.6
 ======================================================================
 Date Submitted:             06-10-2004 15:42 CEST
-Last Modified:              04-09-2005 17:29 CEST
+Last Modified:              04-09-2005 17:30 CEST
 ======================================================================
 Summary:                    possible incompatibility with cpu-freq
 Description: 
@@ -70,6 +70,7 @@ Date Modified  Username       Field                    Change
 09-07-04 16:44 ichino         Issue End Monitor: ichino                    
 04-07-05 20:55 jdthood        Note Added: 0004363                          
 04-09-05 17:29 jdthood        Relationship added       related to 0000535  
+04-09-05 17:30 jdthood        Status                   new => acknowledged 
 ======================================================================
 
 
