@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000647]: Random garbage output out of the card -- always
-Date: Sat, 9 Apr 2005 17:04:01 +0200
-Message-ID: <d12cbd26e107a1dcd1d7a8d03e1c7751@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000589]: ICH5 S/PDIF audio drops out occasionally
+Date: Sat, 9 Apr 2005 17:08:35 +0200
+Message-ID: <7db1d551eb4ed74efc7a5323c4a9d954@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E05DE1E6
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:04:01 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6CFFA1E6
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:08:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,129 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=647> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=589> 
 ======================================================================
-Reported By:                amitshah
+Reported By:                squarooticus
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   647
-Category:                   PCI - ens1371
+Issue ID:                   589
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               Debian sid
-Kernel Version:             2.6.8.1
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian Unstable (sid)
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             11-13-2004 20:14 CET
-Last Modified:              04-09-2005 17:04 CEST
+Date Submitted:             10-21-2004 02:42 CEST
+Last Modified:              04-09-2005 17:08 CEST
 ======================================================================
-Summary:                    Random garbage output out of the card -- always
+Summary:                    ICH5 S/PDIF audio drops out occasionally
 Description: 
-I have two audio cards, one is an on-board intel chipset and one is a
-creative sound blaster. When I plug speakers into the creative output
-jack, several distorted hissing sounds come out of it.
+I'm using the on-board audio of my Abit IC7-MAX3 ("Intel Corp. 82801EB/ER
+(ICH5/ICH5R) AC'97 Audio Controller (rev 02)") with ALSA driver
+snd_intel8x0 for my home theater setup.  In every application I've tried,
+which includes mythtv, xine, and ogg123, through both native alsa and OSS
+emulation, the audio output from the S/PDIF port drops out for a second
+every so often---maybe once a minute, or every few minutes; it's not
+periodic.
 
-This started happening at least 3 months back. I can't say if this was due
-to a kernel change or userspace utils change.
+I don't know whether analog output also drops out, since I don't have
+analog output hooked up or enabled.
 
-Please ask if you need more information.
+This is with the CVS build as of October 19.  My asound.conf is:
+
+pcm.krose-dmix {
+  type dmix
+  ipc_key 3516
+  ipc_key_add_uid yes
+  slave {
+        pcm "hw:0,4"
+        period_time 0
+        period_size 4096
+        #buffer_size 16384
+        buffer_size 131072
+        period_time 84000
+        buffer_time 340000
+        rate 48000
+        channels 2
+  }
+  bindings.0 0
+  bindings.1 1
+}
+
+pcm.dsp0 {
+  type plug
+  slave.pcm "krose-dmix"
+}
+
+ctl.mixer0 {
+ type hw
+ card 0
+}
+
+pcm.!default {
+ type plug
+ slave.pcm "krose-dmix"
+}
+
+I can't find any options to compile in debug logging: I'm not really sure
+what the cause of the drop out is, e.g., buffer underrun, PCI contention,
+etc.  I'm happy to spend time to try to debug this, but I need a starting
+point.
+
+Of course, it'd also be great to know if anyone has ever seen this kind of
+behavior before.  I don't believe the SPD/IF port is turning itself off
+because the receiver doesn't blip, which normally it would if the input
+were to disappear temporarily.
+
+The CPU is a 3.2G P4 with hyperthreading turned on.  I never see the CPU
+usage go above 50%.
+
+Interestingly, I see similar behavior on my dual Opteron machine with an
+AMD-8111 audio controller using the same driver (snd_intel8x0).  I never
+had this problem with the emu10k1 driver when I was using SB Lives, but I
+have run into PCI slot limitations in my HTPC, so I have to use mobo
+audio.
+
+Suggestions?
 ======================================================================
 
 ----------------------------------------------------------------------
- amitshah - 11-13-04 20:18 
+ squarooticus - 11-24-04 18:07 
 ----------------------------------------------------------------------
-oops, I just read https://bugtrack.alsa-project.org/alsa-bug/view.php?id=622 and
-found out it is a KDE issue. Sorry guys.
+Here's another thread:
+
+http://forum.abit-usa.com/showthread.php?s=&threadid=58064&highlight=ic7max3+sound+drops+out
+
+This makes it sound like there's a software workaround for this.
+
+----------------------------------------------------------------------
+ jdthood - 04-09-05 17:08 
+----------------------------------------------------------------------
+squarooticus: Has there been any improvement in the latest ALSA release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-13-04 20:14 amitshah       New Issue                                    
-11-13-04 20:14 amitshah       Distribution              => Debian sid      
-11-13-04 20:14 amitshah       Kernel Version            => 2.6.8.1         
-11-13-04 20:18 amitshah       Note Added: 0002401                          
-04-09-05 17:04 jdthood        Status                   new => closed       
-04-09-05 17:04 jdthood        Resolution               open => not an issue
+10-21-04 02:42 squarooticus   New Issue                                    
+10-21-04 02:42 squarooticus   Distribution              => Debian Unstable (sid)
+10-21-04 02:42 squarooticus   Kernel Version            => 2.6.7           
+10-21-04 23:40 squarooticus   Issue Monitored: squarooticus                    
+10-27-04 16:54 squarooticus   Note Added: 0002275                          
+11-10-04 12:26 tiwai          Note Added: 0002367                          
+11-12-04 06:23 squarooticus   Note Added: 0002392                          
+11-15-04 20:24 squarooticus   Note Added: 0002419                          
+11-16-04 02:50 squarooticus   Note Added: 0002423                          
+11-16-04 05:14 squarooticus   Note Added: 0002424                          
+11-18-04 17:51 tiwai          Note Added: 0002452                          
+11-24-04 16:33 squarooticus   Note Added: 0002571                          
+11-24-04 17:55 squarooticus   Note Added: 0002575                          
+11-24-04 18:07 squarooticus   Note Added: 0002577                          
+04-09-05 17:08 jdthood        Note Added: 0004418                          
 ======================================================================
 
 
