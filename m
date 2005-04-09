@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000578]:  No soundcard detected on Chaintech 9CJS
-Date: Sat, 9 Apr 2005 16:09:41 +0200
-Message-ID: <9e9ceed57bb76417581c5668dde0b3c2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
+Date: Sat, 9 Apr 2005 16:09:02 +0200
+Message-ID: <6c32316a21c46d44f3e04c4de4ed9ad8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D7D7162
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:09:41 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 15567134
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:09:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=578> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
 ======================================================================
-Reported By:                tarsi
+Reported By:                minmax
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   578
-Category:                   PCI - ice1724
+Issue ID:                   557
+Category:                   CORE OSS - pcm
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               mandrake linux 10.1
-Kernel Version:             2.6.8.1-10mdksmp
+Distribution:               Debian unstable
+Kernel Version:             vanilla 2.6.7
 ======================================================================
-Date Submitted:             10-11-2004 12:58 CEST
+Date Submitted:             10-01-2004 16:18 CEST
 Last Modified:              04-09-2005 16:09 CEST
 ======================================================================
-Summary:                     No soundcard detected on Chaintech 9CJS
+Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
+situation
 Description: 
- cat /proc/asound/cards don't stop and gives many lines "--no souncards--"
-
-/etc/init.d/alsaconf found ice1724 card, but exiting gives:
-.... 
-
-/usr/sbin/alsactl: save_state:1066: No soundcards found...
-
+When the first few writes to the oss emulation device are done in specific
+way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 10-11-04 15:59 
-----------------------------------------------------------------------
-Try model=k8x800 module option.  This will force the model type.
 
 ----------------------------------------------------------------------
  jdthood - 04-09-05 16:09 
 ----------------------------------------------------------------------
-Submitter: Did you find a solution for this problem?
+Submitter: Does this bug still exist?  Can you give more details about the
+specific situation in which it appears?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-11-04 12:58 tarsi          New Issue                                    
-10-11-04 12:58 tarsi          File Added: command-outputs.tar.bz2               
-    
-10-11-04 12:58 tarsi          Distribution              => mandrake linux 10.1
-10-11-04 12:58 tarsi          Kernel Version            => 2.6.8.1-10mdksmp
-10-11-04 12:58 tarsi          Issue Monitored: tarsi                       
-10-11-04 15:59 tiwai          Note Added: 0002081                          
-04-09-05 16:09 jdthood        Note Added: 0004407                          
+10-01-04 16:18 minmax         New Issue                                    
+10-01-04 16:18 minmax         Distribution              => Debian unstable 
+10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
+10-02-04 10:52 minmax         Issue Monitored: minmax                      
+04-09-05 16:09 jdthood        Note Added: 0004406                          
 ======================================================================
 
 
