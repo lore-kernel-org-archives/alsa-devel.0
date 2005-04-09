@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000481]: IEC958 Output doesn't work
-Date: Sat, 9 Apr 2005 16:20:59 +0200
-Message-ID: <7efc2f4bc217309e07c9b88d19f71282@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
+Date: Sat, 9 Apr 2005 16:22:29 +0200
+Message-ID: <977df797899d7a992980228fdf3db479@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5895624F
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:20:59 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E8D5924F
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:22:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0000562 has been set as DUPLICATE OF the following issue.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=481> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
 ======================================================================
-Reported By:                somnione
+Reported By:                minmax
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   481
-Category:                   PCI - cs46xx
+Issue ID:                   557
+Category:                   CORE OSS - pcm
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               LFS
-Kernel Version:             2.4.23
+Distribution:               Debian unstable
+Kernel Version:             vanilla 2.6.7
 ======================================================================
-Date Submitted:             09-04-2004 13:17 CEST
-Last Modified:              09-04-2004 13:17 CEST
+Date Submitted:             10-01-2004 16:18 CEST
+Last Modified:              04-09-2005 16:22 CEST
 ======================================================================
-Summary:                    IEC958 Output doesn't work
+Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
+situation
 Description: 
-I had Version 0.9.8 and in the mixer i could switch on "IEC 958 Output"
-wich would activate the optical out on the card, but with version 1.0.6a
-I'm missing this option and thus the card is silent via optical out. It
-has "IEC958" but nothing happens.
+When the first few writes to the oss emulation device are done in specific
+way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
 ======================================================================
-Relationships       ID      Summary
+
 ----------------------------------------------------------------------
-has duplicate       0000562 No AC3 sound playable through S/PDIF wi...
-======================================================================
+ jdthood - 04-09-05 16:09 
+----------------------------------------------------------------------
+Submitter: Does this bug still exist?  Can you give more details about the
+specific situation in which it appears?
+
+----------------------------------------------------------------------
+ minmax - 04-09-05 16:22 
+----------------------------------------------------------------------
+i've got new laptop since i reported this bug.
+
+I've stumbled upon a bug when using Cinelerra (video editing software),
+and since then i have patched the software to ignore the excessively wrong
+results gotten from SNDCTL_DSP_GETOPTR
+
+        if(!ioctl(get_output(0), SNDCTL_DSP_GETOPTR, &info))
+        {
+//printf("AudioOSS::device_position %d %d %d\n", info.bytes,
+device->get_obits(), device->get_ochannels());
+// workaround for ALSA OSS emulation driver's bug
+// the problem is that if the first write to sound device was not full
+lenght fragment then
+// _GETOPTR returns insanely large numbers at first moments of play
+                if (info.bytes > 2100000000)
+                        return 0;
+                else
+                        return info.bytes /
+                                (device->get_obits() / 8) /
+                                device->get_ochannels();
+        }
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-04-04 13:17 somnione       New Issue                                    
-09-04-04 13:17 somnione       Distribution              => LFS             
-09-04-04 13:17 somnione       Kernel Version            => 2.4.23          
-04-09-05 16:20 jdthood        Relationship added       has duplicate 0000562
+10-01-04 16:18 minmax         New Issue                                    
+10-01-04 16:18 minmax         Distribution              => Debian unstable 
+10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
+10-02-04 10:52 minmax         Issue Monitored: minmax                      
+04-09-05 16:09 jdthood        Note Added: 0004406                          
+04-09-05 16:22 minmax         Note Added: 0004410                          
 ======================================================================
 
 
