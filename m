@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000715]: pc speaker always routed through laptop speakers
-Date: Sat, 9 Apr 2005 17:21:42 +0200
-Message-ID: <2365629bafca7f8caf339c7178808dd5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000706]: SERR: Status=4210 followed by NMI reason 34 leading to reboot
+Date: Sat, 9 Apr 2005 17:23:58 +0200
+Message-ID: <9798b30b6bb6ec353976100b818f0c29@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C49C220
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:21:43 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 83517220
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:23:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,109 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=715> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=706> 
 ======================================================================
-Reported By:                rafi
+Reported By:                dlc
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   715
-Category:                   PCI - intel8x0
+Issue ID:                   706
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.9 (from source)
+Distribution:               DeMuDi1.2.0
+Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             12-08-2004 06:02 CET
-Last Modified:              04-09-2005 17:21 CEST
+Date Submitted:             12-04-2004 00:36 CET
+Last Modified:              04-09-2005 17:23 CEST
 ======================================================================
-Summary:                    pc speaker always routed through laptop speakers
+Summary:                    SERR: Status=4210 followed by NMI reason 34 leading
+to reboot
 Description: 
-When the pc speaker driver is loaded, it always beeps through the laptop's
-speakers, even when something is plugged into the headphone jack, or the
-headphone jack on the docking station.
-
-Also, if audio is being played through the other devices, it also switches
-to the sspeakers for the duration of the beep.  And the beep is not
-affected by any of the volume controlls.
+System reboots when attempting to install a game under Wine.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-08-04 12:12 
+ dlc - 12-16-04 21:46 
 ----------------------------------------------------------------------
-Try the CVS version.  You might have 'Headphone Jack Detect' switch.
-Otherwise, you may turn on/off the speaker via either 'External Amplifer'
-or 'Mono Playback Switch' separately.
+The drivers are loaded:
 
-Also, please provide contents of /proc/asound/card0/codec97#0/* files and
-the current /etc/asound.state for debugging.
+dlc@muse:~$ /sbin/lsmod
+Module                  Size  Used by    Not tainted
+nls_iso8859-1           2812   1 (autoclean)
+ide-cd                 28128   1 (autoclean)
+cdrom                  25344   0 (autoclean) [ide-cd]
+isofs                  23480   1 (autoclean)
+floppy                 45916   0 (autoclean)
+snd-seq-midi            3968   0 (autoclean) (unused)
+snd-seq-oss            31584   0 (autoclean) (unused)
+snd-seq-midi-event      3680   0 (autoclean) [snd-seq-midi snd-seq-oss]
+snd-seq                42192   5 (autoclean) [snd-seq-midi snd-seq-oss
+snd-seq-midi-event]
+binfmt_misc             5700   1
+usb-ohci               17320   0 (unused)
+usbcore                56684   1 [usb-ohci]
+pcnet32                13056   1
+mii                     2096   0 [pcnet32]
+crc32                   2864   0 [pcnet32]
+snd-ice1712            46372   2
+snd-pcm-oss            39784   0 (unused)
+snd-mixer-oss          14168   1 [snd-pcm-oss]
+snd-pcm                65760   0 [snd-ice1712 snd-pcm-oss]
+snd-timer              17092   0 [snd-seq snd-pcm]
+snd-ac97-codec         57328   0 [snd-ice1712]
+snd-ice17xx-ak4xxx      1520   0 [snd-ice1712]
+snd-cs8427              6664   0 [snd-ice1712]
+snd-i2c                 2732   0 [snd-ice1712 snd-cs8427]
+snd-mpu401-uart         4096   0 [snd-ice1712]
+snd-rawmidi            14880   0 [snd-seq-midi snd-mpu401-uart]
+snd-seq-device          4340   0 [snd-seq-midi snd-seq-oss snd-seq
+snd-rawmidi]
+snd-ak4xxx-adda         3868   0 [snd-ice1712 snd-ice17xx-ak4xxx]
+snd                    37284   1 [snd-seq-midi snd-seq-oss
+snd-seq-midi-event snd-seq snd-ice1712 snd-pcm-oss snd-mixer-oss snd-pcm
+snd-timer snd-ac97-codec snd-cs8427 snd-i2c snd-mpu401-uart snd-rawmidi
+snd-seq-device snd-ak4xxx-adda]
+snd-page-alloc          5356   0 [snd-seq-oss snd-seq snd-mixer-oss
+snd-pcm snd-timer snd-i2c snd-rawmidi snd-seq-device snd]
+soundcore               3876   7 [snd]
+ide-detect               288   0 (unused)
+ide-scsi                8656   0
+ide-core               98268   1 [ide-cd ide-detect ide-scsi]
+ext3                   71144   4 (autoclean)
+jbd                    40312   4 (autoclean) [ext3]
+sd_mod                 10540  12 (autoclean)
+aic7xxx               130284   6 (autoclean)
+scsi_mod               89312   3 (autoclean) [ide-scsi sd_mod aic7xxx]
+unix                   16236  31 (autoclean)
+dlc@muse:~$ 
+
+envy24control loads, although its faders and mutes don't affect the
+signals.  All pcm meters display identically.  When I patch the first two
+PCM outs to the H/W outs, I get signal out the output jacks.
+
+I'll see about doing a clean reinstallation of DeMuDi selecting the 2.6
+kernel as soon as possible (don't hold your breath)...
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 17:21 
+ jdthood - 04-09-05 17:23 
 ----------------------------------------------------------------------
-Submitter: Is the bug fixed in the latest ALSA release?
+Submitter: Do you have any new information about this problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-08-04 06:02 rafi           New Issue                                    
-12-08-04 06:02 rafi           Distribution              => debian          
-12-08-04 06:02 rafi           Kernel Version            => 2.6.9 (from source)
-12-08-04 12:12 tiwai          Note Added: 0002778                          
-04-09-05 17:21 jdthood        Note Added: 0004421                          
+12-04-04 00:36 dlc            New Issue                                    
+12-04-04 00:36 dlc            Distribution              => DeMuDi1.2.0     
+12-04-04 00:36 dlc            Kernel Version            => 2.4.25          
+12-07-04 18:52 tiwai          Note Added: 0002760                          
+12-07-04 19:22 dlc            Note Added: 0002763                          
+12-16-04 17:45 dlc            Note Added: 0002830                          
+12-16-04 18:22 tiwai          Note Added: 0002832                          
+12-16-04 21:46 dlc            Note Added: 0002842                          
+04-09-05 17:23 jdthood        Note Added: 0004422                          
 ======================================================================
 
 
