@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000369]: SPDIF gives continous output on later versions of ALSA
-Date: Sat, 9 Apr 2005 04:24:54 +0200
-Message-ID: <47103b8f410ffb4541b6d7a00fb8aba8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000446]: System freezes everytime when I start recording.
+Date: Sat, 9 Apr 2005 04:26:23 +0200
+Message-ID: <91f60d04849001b7f2cd4c6b96ea7814@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A4EA926A
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 04:24:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8233326A
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 04:26:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,76 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=369> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=446> 
 ======================================================================
-Reported By:                Alphix
+Reported By:                Marc_R
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   369
-Category:                   PCI - intel8x0
+Issue ID:                   446
+Category:                   PCI - es1938
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian
-Kernel Version:             2.4.25 and 2.6.7
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian GNU/Linux / DeMuDi
+Kernel Version:             every kernel I tried 2.4.x / 2.6.x
 ======================================================================
-Date Submitted:             07-06-2004 20:26 CEST
-Last Modified:              04-09-2005 04:24 CEST
+Date Submitted:             08-16-2004 22:24 CEST
+Last Modified:              04-09-2005 04:26 CEST
 ======================================================================
-Summary:                    SPDIF gives continous output on later versions of
-ALSA
+Summary:                    System freezes everytime when I start recording.
 Description: 
-First I was using this box with Linux kernel 2.4.25 and ALSA 1.0.3 (both
-downloaded and built myself). Everything worked great, I have both the
-SPDIF and regular stereo jack connected to my reciever. 
+I have a Terratec 128i PCI soundcard which works great as long as I don't
+record something.
+I tried recording from cd, microphone, and mix via arecord and Audacity.
+The capture devices were set correctly.
+As soon as the recording begins, the system freezes immediately. Even the
+Magic SysRq doesn't work so I have to reset the PC.
+I had this problem with every Linux-kernel version I tried from 2.4.x to
+2.6.8.1.
+I even installed DeMuDi but had the same problem there.
 
-The reason for this is that the OSS emulation won't work with the SPDIF as
-it's underlying device. This was no problem however, since the reciever
-could detect if there was activity on the digital input and automatically
-switch between digital and analogous.
+After some more testing I found out that recording works more or less,
+when I unload the usb-module (uhci_hcd). But I have to unload it when X is
+not running (?!), otherwise the system still crashes.
 
-However, I've been working on moving to a 2.6 based kernel, and one of the
-last few annoyances that stop me is that ALSA as shipped with the 2.6.7
-kernel (it seems to be 1.0.5a) seems to fool the reciever into believing
-that there is input on the SPDIF wire constantly. Therefore auto-switching
-doesn't work anymore (playback via both devices still work, it's just the
-autoswitching that stopped working so I now have to switch manually).
+I then borrowed another soundcard (SB 128) and got it working with no
+problems. So it seems that there is some bug in the recording part of the
+es1938-driver...
 
+If there's additional information needed, please ask.
 ======================================================================
 
 ----------------------------------------------------------------------
- Alphix - 08-05-04 21:49 
+ jdthood - 04-09-05 04:26 
 ----------------------------------------------------------------------
-I've investigated this some more and it turns out that everything works as
-expected when ALSA is built from sources downloaded from the ALSA website
-on either a 2.4 or 2.6 kernel (tried 1.0.3, 1.0.5a and 1.0.6a and they all
-worked on 2.4.25 and 2.6.7).
-
-I've also managed to find out that the in-kernel ALSA tree (in 2.6.7)
-*does* work as expected, provided that IEC958 is muted (then both digital
-and analogue playback works as expected).
-
-I don't know if the in-kernel version of ALSA or the out-of-kernel one is
-the version which has got it wrong but it seems to me that they should be
-consistent.
-
-This is now a very minor severity as a easy workaround exists.
+Submitter: Do you see any improvement in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-06-04 20:26 Alphix         New Issue                                    
-07-06-04 20:26 Alphix         Distribution              => Debian          
-07-06-04 20:26 Alphix         Kernel Version            => 2.4.25 and 2.6.7
-08-05-04 21:49 Alphix         Note Added: 0001537                          
-04-09-05 04:24 jdthood        Status                   new => resolved     
-04-09-05 04:24 jdthood        Resolution               open => not an issue
+08-16-04 22:24 Marc_R         New Issue                                    
+08-16-04 22:24 Marc_R         Distribution              => Debian GNU/Linux /
+DeMuDi
+08-16-04 22:24 Marc_R         Kernel Version            => every kernel I tried
+2.4.x / 2.6.x
+04-09-05 04:26 jdthood        Note Added: 0004382                          
 ======================================================================
 
 
