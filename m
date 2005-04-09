@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000405]: PCM playback causes hard freeze under kernel 2.6.x
-Date: Sat, 9 Apr 2005 04:19:42 +0200
-Message-ID: <a61b7423ff0afe72cb131a1ca5f4bc1d@bugtrack.alsa-project.org>
+Date: Sat, 9 Apr 2005 04:20:40 +0200
+Message-ID: <53f0001b191aea7dde1d7eb59a0b223d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4F73200
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 04:19:42 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 15CDA200
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 04:20:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CONFIRMED.
+The following issue has been ACKNOWLEDGED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=405> 
 ======================================================================
@@ -35,12 +35,12 @@ Category:                   ISA - opl3sa2
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
-Status:                     confirmed
+Status:                     acknowledged
 Distribution:               Gentoo Linux
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             07-25-2004 20:07 CEST
-Last Modified:              04-09-2005 04:19 CEST
+Last Modified:              04-09-2005 04:20 CEST
 ======================================================================
 Summary:                    PCM playback causes hard freeze under kernel 2.6.x
 Description: 
@@ -99,6 +99,7 @@ Date Modified  Username       Field                    Change
 04-08-05 22:27 jdthood        Note Added: 0004377                          
 04-09-05 00:10 comac          Note Added: 0004380                          
 04-09-05 04:19 jdthood        Status                   new => confirmed    
+04-09-05 04:20 jdthood        Status                   confirmed => acknowledged
 ======================================================================
 
 
