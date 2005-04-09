@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000185]: Audigy2 SPDIF CDROM data noise after stop
-Date: Sat, 9 Apr 2005 20:55:58 +0200
-Message-ID: <51f695a6ab6334d1b6b5e22f526f50be@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000715]: pc speaker always routed through laptop speakers
+Date: Sat, 9 Apr 2005 21:03:56 +0200
+Message-ID: <a0bb975d810328ed3efe4e6f2df8898c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0061D236
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 20:55:58 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4BEFF266
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 21:03:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=185> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=715> 
 ======================================================================
-Reported By:                pavouk
+Reported By:                rafi
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   185
-Category:                   PCI - emu10k1
+Issue ID:                   715
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Mandrake 10.0
-Kernel Version:             2.6.5
+Distribution:               debian
+Kernel Version:             2.6.9 (from source)
 ======================================================================
-Date Submitted:             04-04-2004 21:07 CEST
-Last Modified:              04-09-2005 20:55 CEST
+Date Submitted:             12-08-2004 06:02 CET
+Last Modified:              04-09-2005 21:03 CEST
 ======================================================================
-Summary:                    Audigy2 SPDIF CDROM data noise after stop
+Summary:                    pc speaker always routed through laptop speakers
 Description: 
-My DVDROM DV-5700B is connected through digital SPDIF input to Audigy2 PCI
-card. When I play AudioCD, that after STOP or end of CD is heard from
-speakers loud purl or something like data noise. Same hardware with
-Soundblaster Live! card works great.
-This problem was visible with older kernel and Alsa versions too.
+When the pc speaker driver is loaded, it always beeps through the laptop's
+speakers, even when something is plugged into the headphone jack, or the
+headphone jack on the docking station.
+
+Also, if audio is being played through the other devices, it also switches
+to the sspeakers for the duration of the beep.  And the beep is not
+affected by any of the volume controlls.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 04:38 
+ jdthood - 04-09-05 17:21 
 ----------------------------------------------------------------------
-Submitter: Is there any improvement in later ALSA releases?
+Submitter: Is the bug fixed in the latest ALSA release?
 
 ----------------------------------------------------------------------
- pavouk - 04-09-05 20:55 
+ rafi - 04-09-05 21:03 
 ----------------------------------------------------------------------
-I have now another PC VIA C3 1GHz with kernel 2.6.11.6, Mandrake10.1 but
-same DVD Rom and Audigy2 card. Problem is still here, but maybe not too
-often. When I made few stop/play actions, that sometimes after stop is
-audio silent (which is good), but sometimes is heared constant low
-frequency buzzing and strange sounds if DVDROM works with medium.
-Situation was changed, but not definitely solved.
+Sorry, I missed the note about the registers earlier.
+I've retested with:
+drive: 1.0.9rc2
+lib: 1.0.8
+kernel: 2.6.11.6
+
+twiddled the mixer settings for a while
+
+And I see no change, beeps still coming from the laptop speakers.
+
+Should I have pcspkr loaded or not?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-04-04 21:07 pavouk         New Issue                                    
-04-04-04 21:07 pavouk         Distribution              => Mandrake 10.0   
-04-04-04 21:07 pavouk         Kernel Version            => 2.6.5           
-09-03-04 23:19 pavouk         Note Added: 0001698                          
-04-09-05 04:38 jdthood        Note Added: 0004387                          
-04-09-05 20:55 pavouk         Note Added: 0004428                          
+12-08-04 06:02 rafi           New Issue                                    
+12-08-04 06:02 rafi           Distribution              => debian          
+12-08-04 06:02 rafi           Kernel Version            => 2.6.9 (from source)
+12-08-04 12:12 tiwai          Note Added: 0002778                          
+04-09-05 17:21 jdthood        Note Added: 0004421                          
+04-09-05 20:58 rafi           Issue Monitored: rafi                        
+04-09-05 21:00 rafi           File Added: ac97#0-0                         
+04-09-05 21:00 rafi           File Added: ac97#0-0+regs                    
+04-09-05 21:01 rafi           File Added: asound.state                     
+04-09-05 21:03 rafi           Note Added: 0004429                          
 ======================================================================
 
 
