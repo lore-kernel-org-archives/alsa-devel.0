@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000478]: front/rear microphone switch button wrongly labeld
-Date: Sat, 9 Apr 2005 04:36:59 +0200
-Message-ID: <32ab15d8f13b89ed123d12767f60f032@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000185]: Audigy2 SPDIF CDROM data noise after stop
+Date: Sat, 9 Apr 2005 04:38:19 +0200
+Message-ID: <12c542ea595f4333c32281d8da263841@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9995126E
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 04:36:59 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4366126E
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 04:38:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,42 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=478> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=185> 
 ======================================================================
-Reported By:                dorchain
+Reported By:                pavouk
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   478
-Category:                   PCI - intel8x0
+Issue ID:                   185
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Mandrake 10.0
+Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             09-02-2004 18:12 CEST
-Last Modified:              04-09-2005 04:36 CEST
+Date Submitted:             04-04-2004 21:07 CEST
+Last Modified:              04-09-2005 04:38 CEST
 ======================================================================
-Summary:                    front/rear microphone switch button wrongly labeld
+Summary:                    Audigy2 SPDIF CDROM data noise after stop
 Description: 
-This happens on an asus a7n8x motherboard builtin soundcard, pci id
-10de:006b, 10de:006a.
-To activate the front panel mic in, you have to enable the "Mic as
-Center/LFE" button. (The "Mic select" button does nothing.
+My DVDROM DV-5700B is connected through digital SPDIF input to Audigy2 PCI
+card. When I play AudioCD, that after STOP or end of CD is heard from
+speakers loud purl or something like data noise. Same hardware with
+Soundblaster Live! card works great.
+This problem was visible with older kernel and Alsa versions too.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 04:36 
+ pavouk - 09-03-04 23:19 
 ----------------------------------------------------------------------
-Submitter: Are the control still wrongly labelled?
+Some behavior with OSS emu10k1 driver. But with KX project drivers on win98
+it works great. Probably there doesn't work AUTOMUTE function on SPDIF
+input.
+Tested with kernel 2.6.8.1.
+
+----------------------------------------------------------------------
+ jdthood - 04-09-05 04:38 
+----------------------------------------------------------------------
+Submitter: Is there any improvement in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-02-04 18:12 dorchain       New Issue                                    
-04-09-05 04:36 jdthood        Note Added: 0004386                          
+04-04-04 21:07 pavouk         New Issue                                    
+04-04-04 21:07 pavouk         Distribution              => Mandrake 10.0   
+04-04-04 21:07 pavouk         Kernel Version            => 2.6.5           
+09-03-04 23:19 pavouk         Note Added: 0001698                          
+04-09-05 04:38 jdthood        Note Added: 0004387                          
 ======================================================================
 
 
