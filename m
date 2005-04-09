@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000562]: No AC3 sound playable through S/PDIF with certain amplifiers
-Date: Sat, 9 Apr 2005 16:20:58 +0200
-Message-ID: <80886b0e1be56aa8121256fecc69c484@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000481]: IEC958 Output doesn't work
+Date: Sat, 9 Apr 2005 16:20:59 +0200
+Message-ID: <7efc2f4bc217309e07c9b88d19f71282@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3EDF724F
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:20:58 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5895624F
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:20:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,87 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0000481.
+The issue 0000562 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=562> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=481> 
 ======================================================================
-Reported By:                herpes
+Reported By:                somnione
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   562
+Issue ID:                   481
 Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.8.1
+Distribution:               LFS
+Kernel Version:             2.4.23
 ======================================================================
-Date Submitted:             10-03-2004 10:38 CEST
-Last Modified:              04-09-2005 16:20 CEST
+Date Submitted:             09-04-2004 13:17 CEST
+Last Modified:              09-04-2004 13:17 CEST
 ======================================================================
-Summary:                    No AC3 sound playable through S/PDIF with certain
-amplifiers
+Summary:                    IEC958 Output doesn't work
 Description: 
-This has already been on the mailing list, see also
-http://www.mail-archive.com/alsa-user%40lists.sourceforge.net/msg13822.html.
-
-When playing AC3 through the S/PDIF out on my Terratec 512i, I get no
-sound at all. Normal PCM and DTS streams work.
+I had Version 0.9.8 and in the mixer i could switch on "IEC 958 Output"
+wich would activate the optical out on the card, but with version 1.0.6a
+I'm missing this option and thus the card is silent via optical out. It
+has "IEC958" but nothing happens.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0000481 IEC958 Output doesn't work
+has duplicate       0000562 No AC3 sound playable through S/PDIF wi...
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 10-06-04 12:14 
-----------------------------------------------------------------------
-Yes, it's a long-standing bug about AC3 on cs46xx.
-cs46xx driver seems not passing the IEC958 status bits correctly.
-
-----------------------------------------------------------------------
- tiwai - 10-12-04 14:48 
-----------------------------------------------------------------------
-One possibility is that the board uses the SPDIF output through
-AC97 codec.  In this case, the IEC958 status must be updated on
-AC97 chip.
-
-Could you show /proc/asound/card0/codec97#*/* files during
-AC3 playback?
-
-----------------------------------------------------------------------
- herpes - 10-19-04 00:58 
-----------------------------------------------------------------------
-I added two files: the AC97 codec details as requested. The AC3 file was
-generated during sound replay with ac3dec -6 -C ac3test.ac3. I can hear
-sound, but no center and surround channels. The dts is played perfectly.
-
-The question is: Both files are exactly the same. But why does dts work,
-and AC3 not?
-
-----------------------------------------------------------------------
- tiwai - 10-19-04 12:37 
-----------------------------------------------------------------------
-Some receiver requires the non-audio bit in IEC958 status for AC3
-but not for DTS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-03-04 10:38 herpes         New Issue                                    
-10-03-04 10:38 herpes         Distribution              => Debian          
-10-03-04 10:38 herpes         Kernel Version            => 2.6.8.1         
-10-06-04 12:14 tiwai          Note Added: 0002023                          
-10-12-04 14:48 tiwai          Note Added: 0002097                          
-10-19-04 00:46 herpes         File Added: codec-details-while-playing-dts.txt   
-                
-10-19-04 00:46 herpes         File Added: codec-details-while-playing-AC3.txt   
-                
-10-19-04 00:58 herpes         Note Added: 0002201                          
-10-19-04 12:37 tiwai          Note Added: 0002203                          
-04-09-05 16:20 jdthood        Relationship added       duplicate of 0000481
+09-04-04 13:17 somnione       New Issue                                    
+09-04-04 13:17 somnione       Distribution              => LFS             
+09-04-04 13:17 somnione       Kernel Version            => 2.4.23          
+04-09-05 16:20 jdthood        Relationship added       has duplicate 0000562
 ======================================================================
 
 
