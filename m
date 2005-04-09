@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000331]: possible incompatibility with cpu-freq
-Date: Sat, 9 Apr 2005 17:30:07 +0200
-Message-ID: <d5bb50ef0949f4135864ca65b40d8b95@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000740]: SPDIF Broken
+Date: Sat, 9 Apr 2005 17:32:56 +0200
+Message-ID: <eba72917d30db4d939ce412221ccf1df@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B6206220
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:30:07 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EB464147
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:32:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=331> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=740> 
 ======================================================================
-Reported By:                souvarine
+Reported By:                nostar
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   331
-Category:                   PCI - intel8x0
+Issue ID:                   740
+Category:                   PCI - ice1712
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Debian testing
-Kernel Version:             2.6.4 - 2.6.6
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             06-10-2004 15:42 CEST
-Last Modified:              04-09-2005 17:30 CEST
+Date Submitted:             12-21-2004 23:55 CET
+Last Modified:              04-09-2005 17:32 CEST
 ======================================================================
-Summary:                    possible incompatibility with cpu-freq
+Summary:                    SPDIF Broken
 Description: 
-On my Sony VAIO PCG NV105 with kernel 2.6.4 and 2.6.6 (I have not tried
-2.6.5) the sound is horrible when the systeme is not very bussy. When the
-systeme is on full load the sound became clean.
-After a serie of kernel recompil I found that when I disable cpu-freq I
-don't have this problem any more.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000535 via82xx: &quot;codec 0 is not valid...&...
+S/PDIF appears to be broken in the ice1712 driver on recent versions of
+alsa.  I used to use it fine on 2.4 kernels (alsa 1.0 - 1.0.3), then I
+quit using it for a while.  Now on 2.6 / 1.0.7 (cvs) I can't get S/PDIF to
+work. I get silence untill I start screwing with Master Clock settings in
+envy24control, then I get loud white noise.  I was able to get correct
+sound once, by doing the following:
+
+Revert from 1.0.7(cvs) to 1.0.4 (driver, lib, and envy24control).  I load
+the driver, then I start jack, then I play a file via xmms (using
+xmms-jack of course), then run envy24control, and click 'Word Clock' as
+Master Clock.  If I do this in exactly this order I get sound.  If I click
+any other Clock setting I get white noise that cant be reversed untill I
+unload the driver.
+
+I went back to 1.0.7 (cvs) to do the same thing, but when I click Word
+Clock it doesnt stay, it immediately jumps back to its original state
+(usually Internal 48000).  I can hear the audio for a split second
+everytime I click Word Clock.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-07-05 20:55 
+ jdthood - 04-09-05 17:32 
 ----------------------------------------------------------------------
-Do you think that the ALSA driver should itself disable cpu-freq?
+Submitter: Do you see any improvement in the 1.0.8 release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-10-04 15:42 souvarine      New Issue                                    
-06-10-04 15:42 souvarine      Distribution              => Debian testing  
-06-10-04 15:42 souvarine      Kernel Version            => 2.6.4 - 2.6.6   
-09-07-04 16:41 ichino         Issue Monitored: ichino                      
-09-07-04 16:44 ichino         Issue End Monitor: ichino                    
-04-07-05 20:55 jdthood        Note Added: 0004363                          
-04-09-05 17:29 jdthood        Relationship added       related to 0000535  
-04-09-05 17:30 jdthood        Status                   new => acknowledged 
+12-21-04 23:55 nostar         New Issue                                    
+12-21-04 23:55 nostar         Kernel Version            => 2.6.9           
+04-09-05 17:32 jdthood        Note Added: 0004425                          
 ======================================================================
 
 
