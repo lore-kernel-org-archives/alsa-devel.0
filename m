@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000689]: No Optical output/toslink on riser card for Envy 24PT onboard
-Date: Sat, 9 Apr 2005 17:14:37 +0200
-Message-ID: <b6e3a1ebf2a931f774f3c8389c36814e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000723]: Wrong Speaker mapping on Chaintech AV-710 (Envy HT-s)
+Date: Sat, 9 Apr 2005 17:17:31 +0200
+Message-ID: <da044fc75635762d7c8e070b5b4abddc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 154FB1E6
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:14:38 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 772E1217
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:17:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,80 +22,44 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=689> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=723> 
 ======================================================================
-Reported By:                bana
+Reported By:                Crashoverride
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   689
+Issue ID:                   723
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Fedora Core
+Status:                     new
+Distribution:               Suse 9.2
 Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-29-2004 02:17 CET
-Last Modified:              04-09-2005 17:14 CEST
+Date Submitted:             12-12-2004 21:06 CET
+Last Modified:              04-09-2005 17:17 CEST
 ======================================================================
-Summary:                    No Optical output/toslink on riser card for Envy
-24PT onboard
+Summary:                    Wrong Speaker mapping on Chaintech AV-710 (Envy
+HT-s)
 Description: 
-After getting my sound working for my headphones for my onboard Envy24PT
-soundcard (on a Chaintech ZNF5-150) my optical isn't working (has never
-worked). It is on a riser card off of the motherboard (a CNR slot type
-card) that came with the motherboard. I have tried the different outputs
-by alsaplay -D hw:0,x /home/bana/test.wav but the only thing that works is
-putting in default. 
+Center and Left Rear Surround channels swapped in 5.1. 
 ======================================================================
 
 ----------------------------------------------------------------------
- bana - 11-29-04 02:26 
+ jdthood - 04-09-05 17:17 
 ----------------------------------------------------------------------
-Readout of lspci -vv: 
-
-01:0f.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
-[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 32
-        Interrupt: pin A routed to IRQ 5
-        Region 0: I/O ports at c800 [size=32]
-        Region 1: I/O ports at cc00 [size=128]
-        Capabilities: [80] Power Management version 1
-                Flags: PMEClk- DSI- D1- D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-cat /proc/asound/cards:
-0 [ZNF3150        ]: ICE1724 - Chaintech ZNF3-150
-                     Chaintech ZNF3-150 at 0xc800, irq 5
-
-----------------------------------------------------------------------
- tiwai - 11-29-04 15:12 
-----------------------------------------------------------------------
-It's not supported in the current driver.  We need the detailed technical
-information to implement this feature, i.e. which SPDIF controller is used
-(either via ac97, an independent controller or directly from envy chip)
-and how is it connected with envy chip (e.g. which GPIO pins if any).
+Submitter: Was this fixed in the latest ALSA release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-29-04 02:17 bana           New Issue                                    
-11-29-04 02:17 bana           Distribution              => Fedora Core     
-11-29-04 02:17 bana           Kernel Version            => 2.6.9           
-11-29-04 02:26 bana           Note Added: 0002630                          
-11-29-04 02:26 bana           Issue Monitored: bana                        
-11-29-04 15:12 tiwai          Note Added: 0002635                          
-04-09-05 17:14 jdthood        Status                   new => acknowledged 
-04-09-05 17:14 jdthood        Resolution               open => not fixable 
+12-12-04 21:06 Crashoverride  New Issue                                    
+12-12-04 21:06 Crashoverride  Distribution              => Suse 9.2        
+12-12-04 21:06 Crashoverride  Kernel Version            => 2.6.9           
+04-09-05 17:17 jdthood        Note Added: 0004419                          
 ======================================================================
 
 
