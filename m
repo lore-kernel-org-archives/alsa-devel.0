@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000491]: Corrupted sounds recorded after using mjpeg's glav utility
-Date: Sat, 9 Apr 2005 14:30:08 +0200
-Message-ID: <10d4af953c1a369a8e283240860fa6a6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000501]: on-board vt1720 doesn't work in Albatron 865PE Pro II mobo.
+Date: Sat, 9 Apr 2005 14:31:50 +0200
+Message-ID: <baa7a82b99c342f3db36b4b54ba4524c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A41F212
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 14:30:09 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E04221D
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 14:31:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,134 +24,173 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=491> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=501> 
 ======================================================================
-Reported By:                derekfountain
+Reported By:                byly
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   491
-Category:                   ISA - sb16/sbawe
+Issue ID:                   501
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               debian
+Kernel Version:             2.4.26, 2.6.7
 ======================================================================
-Date Submitted:             09-09-2004 08:17 CEST
-Last Modified:              04-09-2005 14:30 CEST
+Date Submitted:             09-14-2004 17:28 CEST
+Last Modified:              04-09-2005 14:31 CEST
 ======================================================================
-Summary:                    Corrupted sounds recorded after using mjpeg's glav
-utility
+Summary:                    on-board vt1720 doesn't work in Albatron 865PE Pro
+II mobo.
 Description: 
-Running a standard, self compiled 2.6.7 kernel on top of SUSE-9.1 for IA32.
-Dual PIII-500 box with an old ISA Sound Blaster 16 card. Also mjpegtools
-1.6.2 (tried SUSE's and my own self compiled version).
+on-board vt1720 doesn't work in Albatron 865PE Pro II mobo.
 
-The problem is corrupted sound being recorded. The underlying sound is
-there - you can hear the conversation, or whatever - but over the top
-there is a pulsing crackle. The crackle pulses every second or so.
+I've tried alsa-drivers-1.0.6a, 1.0.7rc1
+with kernel 2.4.26, 2.6.7
 
-The corruption only happens after the mjpeg "glav" playback utility is
-used. That is, run "lavrec" to record video/sound , and it's OK. Play it
-back using "glav" and it sounds fine. Now run "lavrec" again and what gets
-recorded has this sound corruption.
+I use SB live! (snd_emu10k1) as a reference card and I've seen
+no problem with it (but may be it's related to it's multiple open()
+capability?)
 
-If I ensure the sound system is reset (rcaslasound restart) before I run
-"lavrec" the sound comes out fine, so at least I have a workaround.
+After modprobe snd-ice1724 I have an
+'ice1724: Invalid EEPROM version 0' message.
 
-The mjpeg guys acknowledge they do some funky stuff to get the best from
-the sound hardware, and indeed, if I playback using mplayer then try
-"lavrec" a second time it doesn't corrupt the sound. Something in glav is
-upsetting the ISA sound blaster driver. No other sound card has (yet) been
-found which suffers the same problem. OSS on a 2.4 kernel always worked
-flawlessly on this machine.
+More or less reproducable behaviour is:
 
-I'm not up on the sound system - it "just worked" in the past. I'm not
-even sure what modules I'm using. The sound system worked fine out of the
-SUSE box until I came across this problem. My modules list:
+1. in kmix presense 'mplayer -ao alsa9' hangs on audio init.
 
-# lsmod
-Module                  Size  Used by
-iptable_filter          3200  0
-ip_tables              18560  1 iptable_filter
-udf                    90372  0
-snd_seq_oss            35712  0
-snd_pcm_oss            63912  0
-snd_mixer_oss          21504  1 snd_pcm_oss
-snd_seq_midi            9888  0
-snd_seq_midi_event      8064  2 snd_seq_oss,snd_seq_midi
-snd_opl3_synth         17796  0
-snd_seq_instr           9600  1 snd_opl3_synth
-snd_seq_midi_emul       8576  1 snd_opl3_synth
-snd_seq                59024  9
-snd_seq_oss,snd_seq_midi,snd_seq_midi_event,snd_opl3_synth,snd_seq_instr,snd_seq_midi_emul
-snd_ainstr_fm           3072  1 snd_opl3_synth
-snd_sb16               15340  4
-snd_opl3_lib           12416  2 snd_opl3_synth,snd_sb16
-snd_sb16_dsp           13440  1 snd_sb16
-snd_pcm               108804  2 snd_pcm_oss,snd_sb16_dsp
-snd_timer              28932  3 snd_seq,snd_opl3_lib,snd_pcm
-snd_sb16_csp           22528  1 snd_sb16
-snd_sb_common          17408  3 snd_sb16,snd_sb16_dsp,snd_sb16_csp
-snd_hwdep              10628  2 snd_opl3_lib,snd_sb16_csp
-snd_mpu401_uart         8832  1 snd_sb16
-snd_rawmidi            27300  2 snd_seq_midi,snd_mpu401_uart
-snd_seq_device          9224  6
-snd_seq_oss,snd_seq_midi,snd_opl3_synth,snd_seq,snd_opl3_lib,snd_rawmidi
-snd                    65924  29
-snd_seq_oss,snd_pcm_oss,snd_mixer_oss,snd_seq_midi,snd_seq_midi_event,snd_opl3_synth,snd_seq_instr,snd_seq_midi_emul,snd_seq,snd_sb16,snd_opl3_lib,snd_sb16_dsp,snd_pcm,snd_timer,snd_sb16_csp,snd_sb_common,snd_hwdep,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-nls_cp437               6144  1
-nls_iso8859_1           4480  1
-smbfs                  67064  2
-parport_pc             38720  1
-lp                     11144  0
-parport                40648  2 parport_pc,lp
-edd                    10904  0
-joydev                 10048  0
-sg                     38432  0
-sr_mod                 17572  0
-ide_cd                 40992  0
-cdrom                  38044  2 sr_mod,ide_cd
-nvram                   9608  0
-intel_agp              19100  1
-agpgart                33580  1 intel_agp
-uhci_hcd               31504  0
-snd_page_alloc         12680  1 snd_pcm
-soundcore               9824  1 snd
-ipv6                  252128  36
-tulip                  47264  0
-zr36060                10124  1
-adv7175                 6664  0
-saa7110                 8200  0
-zr36067               134140  0
-i2c_algo_bit            9480  1 zr36067
-i2c_core               24320  3 adv7175,saa7110,i2c_algo_bit
-videocodec              8468  2 zr36060,zr36067
-pwcx                   91648  0
-pwc                    51952  1 pwcx
-usbcore               109536  4 uhci_hcd,pwc
-videodev                9984  2 zr36067,pwc
-dm_mod                 43680  4
-reiserfs              256464  4
-aic7xxx               189624  2
-sd_mod                 21760  3
-scsi_mod              117060  4 sg,sr_mod,aic7xxx,sd_mod
+2. in kmix absense mplayer works but stalls sometimes for several
+seconds.
+
+3. xmms (using oss output, I use devfs and snd_pcm_oss)
+plays ok but after each track it stops and you need to press 'play' to
+play next track.
+
+As for the technical aspects:
+
+Chips on board likely related are:
+'Envy24PT VT1720', VT1616, WM8728, RT9131 and CS8415A-CS on the SPDIF
+bracket.
+
+There is unlikely EEPROM on board.
+
+According to common sense my mobo should be almost identical to
+Albatron K8X800 Pro II supported in alsa.
+
+Subvendor: 0x12142417 is similar to amp.h but it's likely wrong.
+
+Anyway I've tried to recompile swapping subvendor id's but w/o great
+difference in behaviour.
+
+I've attached a couple of files below:
+
+greza:card1# cat /proc/interrupts
+           CPU0
+  0:   35336377    IO-APIC-edge  timer
+  1:      15799    IO-APIC-edge  keyboard
+  2:          0          XT-PIC  cascade
+  3:     131866    IO-APIC-edge  serial
+  7:          2    IO-APIC-edge  parport0
+  8:          3    IO-APIC-edge  rtc
+ 12:     325712    IO-APIC-edge  PS/2 Mouse
+ 14:    3877075    IO-APIC-edge  ide0
+ 15:    3810592    IO-APIC-edge  ide1
+ 16:          0   IO-APIC-level  usb-uhci, usb-uhci
+ 17:       3115   IO-APIC-level  ICE1724
+ 18:    9347119   IO-APIC-level  ide2, ide3, eth1, usb-uhci
+ 19:     668864   IO-APIC-level  usb-uhci, EMU10K1
+ 20:     595115   IO-APIC-level  ncr53c8xx
+ 21:    5203249   IO-APIC-level  ide4, ide5
+ 23:    1201336   IO-APIC-level  eth0
+
+greza:card1# cat ice1724
+AMP Ltd AUDIO2000 at 0x8800, irq 17
+
+EEPROM:
+  Subvendor        : 0x12142417
+  Size             : 32 bytes
+  Version          : 7
+  System Config    : 0x18
+  ACLink           : 0x40
+  I2S              : 0x7
+  S/PDIF           : 0x38
+  GPIO direction   : 0x3e0
+  GPIO mask        : 0x70078
+  GPIO state       : 0x74058
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=18        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=19        : 0x7
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=20        : 0x18
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=21        : 0xf0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=22        : 0x3
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=23        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=24        : 0xe0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=25        : 0x1
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=26        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=27        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=28        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=29        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=30        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=31        : 0x0
+
+Registers:
+  PSDOUT03 : 0x00000000
+  CCS00    : 0x00
+  CCS01    : 0xa0
+  CCS02    : 0x00
+  CCS03    : 0x00
+  CCS04    : 0x18
+  CCS05    : 0x00
+  CCS06    : 0x07
+  CCS07    : 0x78
+  CCS08    : 0x00
+  CCS09    : 0x00
+  CCS0a    : 0x00
+  CCS0b    : 0x00
+  CCS0c    : 0x00
+  CCS0d    : 0x0a
+  CCS0e    : 0x00
+  CCS0f    : 0x00
+  CCS10    : 0x00
+  CCS11    : 0x00
+  CCS12    : 0x00
+  CCS13    : 0x00
+  CCS14    : 0x17
+  CCS15    : 0xf8
+  CCS16    : 0x78
+  CCS17    : 0x00
+  CCS18    : 0xe0
+  CCS19    : 0x03
+  CCS1a    : 0x00
+  CCS1b    : 0x00
+  CCS1c    : 0x00
+  CCS1d    : 0x00
+  CCS1e    : 0x57
+  CCS1f    : 0x07
+  MT00     : 0x00
+  MT01     : 0x00
+  MT02     : 0x00
+  MT03     : 0x08
+  MT04     : 0x3c
+  MT05     : 0x08
+  MT06     : 0x00
+  MT07     : 0x00
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 14:30 
+ jdthood - 04-09-05 14:31 
 ----------------------------------------------------------------------
-Submitter: Has this bug been fixed in a later ALSA release?
+Submitter: Has there been any progress on this issue?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-09-04 08:17 derekfountain  New Issue                                    
-09-18-04 08:32 derekfountain  Issue Monitored: derekfountain                    
-04-09-05 14:30 jdthood        Note Added: 0004399                          
+09-14-04 17:28 byly           New Issue                                    
+09-14-04 17:28 byly           Distribution              => debian          
+09-14-04 17:28 byly           Kernel Version            => 2.4.26, 2.6.7   
+04-09-05 14:31 jdthood        Note Added: 0004400                          
 ======================================================================
 
 
