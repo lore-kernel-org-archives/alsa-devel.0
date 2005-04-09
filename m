@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000373]: Sound in Quake 3 does not work
-Date: Sat, 9 Apr 2005 16:42:41 +0200
-Message-ID: <944851d9706717d0a2e0fe8adc484062@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000270]: Audigy 2 ZS side surround channels not supported
+Date: Sat, 9 Apr 2005 16:50:19 +0200
+Message-ID: <4c9b07528f004c10b5bc5a5f3e5a11d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3BCFA184
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:42:41 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8CE2724F
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:50:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,185 +22,95 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=373> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=270> 
 ======================================================================
-Reported By:                damage
+Reported By:                wraiden
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   373
-Category:                   PCI - via82xx
+Issue ID:                   270
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Suse Linux 9.1
-Kernel Version:             2.6.5-7.95-default
+Status:                     resolved
+Distribution:               LFS
+Kernel Version:             2.6.9-mm1
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-09-2004 21:37 CEST
-Last Modified:              04-09-2005 16:42 CEST
+Date Submitted:             05-11-2004 11:14 CEST
+Last Modified:              04-09-2005 16:50 CEST
 ======================================================================
-Summary:                    Sound in Quake 3 does not work
+Summary:                    Audigy 2 ZS side surround channels not supported
 Description: 
-I already tried several things to get sound working in Quake 3. It doesn't
+There is no Support for the side surround channels on SB Audigy 2 ZS (
+Platinum Pro ) in Alsa.
 
-work. Sound in other applications, such as xmms, works without problems.
-My System: SUSE Linux 9.1 Pro 64bit, MSI K8T Neo FIS2R, Athlon 64 3200,
-1GB 
-RAM, VIA 8237 on board sound
-
-I tried it with the ALSA version that comes with the Default Suse Kernel,
-then 
-with version 1.05a and at the moment I've installed a version from CVS two
-
-days ago. I loaded the alsa module with dxs_support 0 to 4, that didn't 
-resolve the issue.
-
-Without changing anything in the ALSA configuration Quake 3 starts and the
-
-game runs without problems, but there is no sound. The following error 
-message is displayed when Quake 3 starts.
-------- sound initialization -------
-Could not mmap dma buffer PROT_WRITE|PROT_READ
-trying mmap PROT_WRITE (with associated better compatibility / less 
-performance code)
-/dev/dsp: Input/output error
-Could not mmap /dev/dsp
-------------------------------------
-
-Enabling direct access to the OSS playback device and disabling the OSS 
-capture device with 
-echo "quake3.x86 0 0 direct" > /proc/asound/card0/pcm0p/oss
-echo "quake3.x86 0 0 disable" > /proc/asound/card0/pcm0c/oss
-I get sound in the Quake 3 menu, but as soon as I enter a map the game
-hangs 
-and the only way to get back to X is to kill the process.
-
-I also tried the user space ALSA OSS wrapper library. With this library I
-only 
-get some crackling noises in the menu and in the game.
-
-With xrun_debug 1 I get a few of the following messages (at least with the
-
-actually installed drivers from CVS) in the system log. These messages are
-
-also there when I run other applications than Quake 3.
-Jul  8 19:07:48 mordor kernel: ALSA sound/core/pcm_lib.c:199: Unexpected 
-hw_pointer value [1] (stream = 0, delta: -1024, max jitter = 8192): wrong
-
-interrupt acknowledge?
-Jul  8 19:07:48 mordor kernel: ALSA sound/pci/via82xx.c:731: invalid 
-via82xx_cur_ptr, using last valid pointer
-Jul  8 19:08:00 mordor last message repeated 194 times
-
-I don't know whether that has something to do with the problem.
-
+I'll try to get it work and test everything you give me to test.
 ======================================================================
 
 ----------------------------------------------------------------------
- damage - 07-09-04 21:46 
+ wraiden - 10-28-04 20:41 
 ----------------------------------------------------------------------
-I did some minor corrections to the uploaded file and uploaded it a second
-time, as the comments were wrong.
-
-This bug seems to be related to the following bugs which are filed for
-other sound cards:
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000254
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000015
-
-----------------------------------------------------------------------
- tokugawa - 07-11-04 00:04 
-----------------------------------------------------------------------
-"I get sound in the Quake 3 menu, but as soon as I enter a map the game
-hangs
-and the only way to get back to X is to kill the process."
-
-Hi, the same here...  i'm going on vacation right now, so i can't help
-much... but:
-
-1) open the pk3 (like baseq3/pak0.pk3) files (these are zip)
-2) move from them music dir to some other (so q3 will not found them)
-3) run q3
-4) tada!! qukae3 works, music hangs the game, without it game works
-5) But there are no 'turn off music' in quake3 (music volume option don't
-work... hangs are happen even if you turn down music completly in
-options), so I just deleted music dirs from my pk3's. (just run zip -vd
-pak0.pk3 'music/*' )
-
-Heh... but you can't play online, because you have a hacked pk3 files...,
-so we have to wait for a real fix
-
-I'm hope that will help in bug hunting. If you can, please confirm that
-behaviour.
+well, ok ... my card is the "Audigy 2 ZS Platinum Pro" ( thats the version
+with external drive ) and i think creative is not so crazy after all
+because the Platinum Pro card has more chanels to mix volume for ... after
+all the PCI id for my card was 0x2001 not 0x2002 and it culd be that all
+versions of the ZS have different id's ... i'm hounting for the currently
+not working channels ( LineIn 2 / Digital and Analog CD [ and mybe more ]
+) of my card and will post patches inside new bugreports ... btw, the
+current mixer for audigy 2 ZS Platium Pro is horrible ( morst chanels are
+useless ) ... i post details on demand ... i'll try to get this fixed up
+along with the remaining channels
 
 ----------------------------------------------------------------------
- damage - 07-11-04 02:35 
+ jdthood - 04-09-05 16:50 
 ----------------------------------------------------------------------
-I can absolutely confirm all of what tokugawa said. Deleting the music
-files makes the game work with sound. Of course then there is no music in
-the game and you can't play online anymore. The latter makes the game
-kinda boring ;) .
-
-----------------------------------------------------------------------
- damage - 07-18-04 19:13 
-----------------------------------------------------------------------
-Does anybody have a tip on how to debug this? I tried several things, like
-getting an strace, and running it in gdb, but neither was really helpful
-at locating the reason for the freeze (at least for me). The strace looks
-nearly identical when running with and without music. gdb doesn't tell me
-much as I get either a _really_ big list when I want a backtrace after
-interrupting the frozen game, or there is nothing at all in the backtrace.
-Seems to depend on the time I interrupt the process.
-Perhaps a debugging statement somewhere in the ALSA source could help?
-
-----------------------------------------------------------------------
- Deelight - 07-26-04 16:20 
-----------------------------------------------------------------------
-Using kernel 2.6.7, i have a similar problem :
-
-------- sound initialization -------
-Could not mmap dma buffer PROT_WRITE|PROT_READ
-trying mmap PROT_WRITE (with associated better compatibility / less
-performance code)
-/dev/dsp0: Input/output error
-Could not mmap /dev/dsp0
-
-After typing :
-echo "quake3.x86 0 0 direct" > /proc/asound/card0/pcm0p/oss
-echo "quake3.x86 0 0 disable" > /proc/asound/card0/pcm0c/oss
-I get :
-
-------- sound initialization -------
-/dev/dsp0: Invalid argument
-Could not set /dev/dsp0 to stereo=1------------------------------------
-
-----------------------------------------------------------------------
- badbunny - 10-27-04 00:37 
-----------------------------------------------------------------------
-Have you tried seting the dxs_support options yet. In modprobe.conf try
-adding 
-"options via82xx dxs_support=4".
+Code equivalent to that in alsa-audigy2zs-detection-fix.patch
+is present in the current ALSA cvs.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-04 21:37 damage         New Issue                                    
-07-09-04 21:37 damage         File Added: alsa_q3_debug.txt                    
-07-09-04 21:37 damage         Distribution              => Suse Linux 9.1  
-07-09-04 21:37 damage         Kernel Version            => 2.6.5-7.95-default
-07-09-04 21:41 damage         File Added: alsa_q3_debug.txt                    
-07-09-04 21:46 damage         Note Added: 0001396                          
-07-09-04 21:50 damage         Issue Monitored: damage                      
-07-11-04 00:04 tokugawa       Note Added: 0001406                          
-07-11-04 02:35 damage         Note Added: 0001407                          
-07-18-04 19:13 damage         Note Added: 0001459                          
-07-26-04 16:20 Deelight       Note Added: 0001474                          
-10-27-04 00:37 badbunny       Note Added: 0002268                          
-04-09-05 16:42 jdthood        Status                   new => acknowledged 
-04-09-05 16:42 jdthood        Description Updated                          
-04-09-05 16:42 jdthood        Additional Information Updated                    
+05-11-04 11:14 wraiden        New Issue                                    
+05-11-04 11:14 wraiden        Distribution              => LFS             
+05-11-04 11:14 wraiden        Kernel Version            => 2.6.5           
+05-11-04 14:41 pzad           Note Added: 0001084                          
+05-21-04 16:15 wraiden        File Added: wraiden-alsa-emu10k1-side.patch       
+            
+05-21-04 16:21 wraiden        Note Added: 0001166                          
+05-24-04 09:21 pzad           Note Added: 0001181                          
+05-24-04 16:18 wraiden        Note Added: 0001188                          
+05-31-04 08:32 pzad           File Added: audigy2zs_driver.diff                 
+  
+05-31-04 08:38 pzad           Note Added: 0001281                          
+06-10-04 22:48 bryanhundven   Note Added: 0001298                          
+06-15-04 15:56 wraiden        Note Added: 0001309                          
+06-15-04 16:41 pzad           Note Added: 0001310                          
+06-15-04 19:44 wraiden        Note Added: 0001311                          
+06-15-04 19:55 wraiden        Note Edited: 0001311                         
+06-22-04 13:00 pzad           Note Added: 0001328                          
+06-22-04 16:39 elklein        Note Added: 0001329                          
+06-27-04 22:00 wraiden        Note Added: 0001341                          
+06-27-04 22:53 jcdutton       Note Added: 0001342                          
+07-30-04 12:46 BiO            Issue Monitored: BiO                         
+07-30-04 12:47 BiO            Issue End Monitor: BiO                       
+08-27-04 20:20 jcdutton       Status                   new => closed       
+08-27-04 20:20 jcdutton       Note Added: 0001656                          
+10-25-04 13:20 wraiden        Kernel Version           2.6.5 => 2.6.9-mm1  
+10-25-04 13:20 wraiden        Status                   closed => feedback  
+10-25-04 13:20 wraiden        Resolution               open => reopened    
+10-25-04 13:20 wraiden        Note Added: 0002261                          
+10-25-04 13:21 wraiden        File Added: alsa-audigy2zs-detection-fix.patch    
+               
+10-25-04 21:36 lee            Note Added: 0002262                          
+10-28-04 20:41 wraiden        Note Added: 0002286                          
+04-09-05 16:50 jdthood        Note Added: 0004414                          
+04-09-05 16:50 jdthood        Status                   feedback => resolved
+04-09-05 16:50 jdthood        Resolution               reopened => fixed   
 ======================================================================
 
 
