@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
-Date: Sat, 9 Apr 2005 16:37:55 +0200
-Message-ID: <0754080dad6778abf8fe1995e19ced9c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000537]: VIA VT8237: rear L/R switched with Center/LFE
+Date: Sat, 9 Apr 2005 16:39:07 +0200
+Message-ID: <7501b9be74aafca222a384b3a4c61018@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C7C4B24F
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:37:55 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F17E024F
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:39:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,131 +22,188 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The issue 0000523 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=523> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=537> 
 ======================================================================
-Reported By:                pharm
-Assigned To:                
+Reported By:                gertverv
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   523
+Issue ID:                   537
 Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work
-either)
+Status:                     closed
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.8.1
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             09-22-2004 22:48 CEST
-Last Modified:              04-09-2005 16:37 CEST
+Date Submitted:             09-24-2004 19:41 CEST
+Last Modified:              12-16-2004 18:16 CET
 ======================================================================
-Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
+Summary:                    VIA VT8237: rear L/R switched with Center/LFE
 Description: 
-I have a Biostar IDEQ 210V minipc. As well as 6 channel analog out (which
-appears to work, at least stereo analog out does for certain) there are
-two digital (optical) SPDIF outputs. Unfortunately I can't get anything to
-recognise these -- mplayer complains about the lack of IEC958 mixer
-entries if I try to use the hwac3 output, and if I point the 
-alsa output at any of the list of hardware outputs I get nothing from the
-digital amp -- it doesn't appear to get any signal.
+While playing back 5.1 audio, it looks like the rear L/R channels are
+swapped with the Center/LFE channels. The rear L/R and Center/LFE are
+connected via Gigabyte Surround-Kit.
 
-Assuming I'm not doing something dumb, is there anything else I should
-try? I've tried all the ac97_quirk options.
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000523 Unable to get SPDIF output on Biostar I...
 ======================================================================
 
 ----------------------------------------------------------------------
- pharm - 10-21-04 15:29 
+ gertverv - 09-24-04 19:50 
 ----------------------------------------------------------------------
-Argh. Lets try that again: With speaker-test -Dsurround51 -c6
-
-Output    Output heard
-Front R   Front L
-Front L   Front R
-Rear R    Center[*]
-Rear L    Center[*]
-Center    (Nothing)   
-LFE       (Nothing)
-
-[*] Could be the LFE output -- I'm note sure which way round these usually
-are. Treated as an ordinary stereo out, I only get audio from the right
-speaker of the pair.
-
-I'll attach the register values which got the above, and see if I can get
-any further later on. cheers, Phil
+Forgot to mention, 5.1 audio works correctly when using Windows XP on this
+machine
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 16:37 
+ tiwai - 10-12-04 15:06 
 ----------------------------------------------------------------------
-So far as I can make out, the remaining problem was: 
+Does 4.0 output work properly?
 
-> Output    Output heard
-> Front R   Front L
-> Front L   Front R
-> Rear R    Center[*]
-> Rear L    Center[*]
-> Center    (Nothing)
-> LFE       (Nothing)
+Also, please attach /proc/asound/card0/codec97#0/ac97#0-0+regs
+during speaker-test is running with 5.1 mode.
 
-This was reported in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=537
-so I am marking this report a duplicate of that
-one.
+----------------------------------------------------------------------
+ gertverv - 10-12-04 18:21 
+----------------------------------------------------------------------
+> Does 4.0 output work properly?
+
+Yes, it does.
+
+>Also, please attach /proc/asound/card0/codec97#0/ac97#0-0+regs
+>during speaker-test is running with 5.1 mode.
+
+0:00 = 0180
+0:02 = bf3f
+0:04 = 0000
+0:06 = 0000
+0:08 = 0000
+0:0a = 001e
+0:0c = 0000
+0:0e = 031f
+0:10 = 0404
+0:12 = 9f1f
+0:14 = 0000
+0:16 = 9f1f
+0:18 = 0606
+0:1a = 0000
+0:1c = 0000
+0:1e = 8000
+0:20 = 0000
+0:22 = 0000
+0:24 = 0000
+0:26 = 000f
+0:28 = 09c7
+0:2a = 05f5
+0:2c = ac44
+0:2e = ac44
+0:30 = ac44
+0:32 = bb80
+0:34 = bb80
+0:36 = 0e0d
+0:38 = 0707
+0:3a = 0824
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0000
+0:5e = 0000
+0:60 = 0000
+0:62 = 0000
+0:64 = 0808
+0:66 = 0808
+0:68 = 0aea
+0:6a = 8000
+0:6c = 3601
+0:6e = 0002
+0:70 = 0008
+0:72 = 0000
+0:74 = 0105
+0:76 = 0000
+0:78 = 0002
+0:7a = 40b3
+0:7c = 414c
+0:7e = 4780
+
+----------------------------------------------------------------------
+ tiwai - 10-13-04 16:20 
+----------------------------------------------------------------------
+Does the attached patch have any influence?
+
+If not, the recent 823x chip seems not supporting the slot assignment
+feature
+any more.  We'll need a software routing in alsa-lib...
+
+----------------------------------------------------------------------
+ gertverv - 10-13-04 19:21 
+----------------------------------------------------------------------
+> Does the attached patch have any influence?
+
+No, this patch doesn't seem to have any influence on the problem
+
+----------------------------------------------------------------------
+ tiwai - 10-14-04 12:28 
+----------------------------------------------------------------------
+Then we need a software routing.
+Please try the attached patch for the driver.  Then, copy
+the attached VIA8237.conf to /usr/share/alsa/cards.
+
+----------------------------------------------------------------------
+ gertverv - 10-14-04 18:51 
+----------------------------------------------------------------------
+Thanks, now it seems to work. I tested the patch and config file with the
+speaker-test program and playing back a DVD with xine.
+
+I noticed with alsamixer that when I was running the speaker-test program,
+that the Line-In was switched to surround (also the sound of the TV card
+connected to line-in disappeared).
+In the VIA8237.conf, I changed the value of "Line-In As Surround" and "Mic
+As Center/LFE" to off. Because I have the rear L/R and Center/LFE
+connected via the Gigabyte Surround kit, so I don't have to use the
+Line-In and Mic connectors for this.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-04 22:48 pharm          New Issue                                    
-09-22-04 22:48 pharm          Distribution              => Debian unstable 
-09-22-04 22:48 pharm          Kernel Version            => 2.4.27-1-k7 with alsa
-1.0.6a (1.0.7rc1 doesn't work either)
-09-23-04 18:25 tiwai          Note Added: 0001829                          
-09-23-04 18:26 tiwai          File Added: cm9761-add.dif                    
-09-23-04 22:09 pharm          Note Added: 0001851                          
-09-24-04 09:28 pharm          Issue Monitored: pharm                       
-09-24-04 12:03 tiwai          Note Added: 0001869                          
-09-24-04 12:28 pharm          Note Added: 0001877                          
-09-24-04 13:34 pharm          Note Added: 0001882                          
-09-24-04 14:33 tiwai          Note Added: 0001886                          
-09-24-04 15:29 tiwai          Note Added: 0001890                          
-09-24-04 15:29 tiwai          File Added: cm9761-add-take2.dif                  
- 
-09-24-04 15:57 pharm          Note Added: 0001892                          
-09-24-04 16:05 tiwai          Note Added: 0001893                          
-09-24-04 16:05 tiwai          File Added: cm9761-add-take3.dif                  
- 
-09-24-04 16:31 pharm          Note Added: 0001894                          
-09-24-04 16:43 pharm          Note Added: 0001895                          
-09-24-04 17:08 tiwai          Note Added: 0001896                          
-09-24-04 17:08 tiwai          File Added: cm9761-add-take4.dif                  
- 
-09-24-04 17:23 pharm          File Added: 1.0.7rc1-ac97#0-0                    
-09-24-04 17:24 pharm          File Added: 1.0.7rc1-ac97#0-0+regs                
-   
-09-24-04 17:32 pharm          File Added: take4-ac97#0-0                    
-09-24-04 17:32 pharm          File Added: take4-ac97#0-0+regs                   
-
-09-24-04 17:33 pharm          Note Added: 0001897                          
-09-24-04 17:39 tiwai          Note Added: 0001898                          
-09-24-04 17:41 pharm          Note Added: 0001899                          
-09-24-04 17:45 tiwai          Note Added: 0001900                          
-09-24-04 17:58 pharm          Note Added: 0001901                          
-09-24-04 18:06 tiwai          Note Added: 0001902                          
-09-27-04 09:56 pharm          Note Added: 0001933                          
-09-27-04 15:16 tiwai          Note Added: 0001939                          
-09-27-04 15:17 tiwai          File Added: cm9761-add-take5.dif                  
- 
-10-12-04 14:59 tiwai          Note Added: 0002102                          
-10-12-04 15:10 pharm          Note Added: 0002105                          
-10-13-04 23:46 pharm          Note Added: 0002135                          
-10-14-04 12:46 tiwai          Note Added: 0002142                          
-10-21-04 15:14 pharm          Note Added: 0002220                          
-10-21-04 15:25 pharm          Note Added: 0002221                          
-10-21-04 15:29 pharm          Note Added: 0002222                          
-10-21-04 15:30 pharm          File Added: partially-working-reg                 
-  
-04-09-05 16:37 jdthood        Note Added: 0004413                          
+09-24-04 19:41 gertverv       New Issue                                    
+09-24-04 19:41 gertverv       Distribution              => Fedora Core 2   
+09-24-04 19:41 gertverv       Kernel Version            => 2.6.8.1         
+09-24-04 19:50 gertverv       Note Added: 0001903                          
+10-12-04 15:06 tiwai          Note Added: 0002104                          
+10-12-04 18:21 gertverv       Note Added: 0002106                          
+10-13-04 16:20 tiwai          Note Added: 0002125                          
+10-13-04 16:20 tiwai          File Added: via-6ch-slot.diff                    
+10-13-04 19:21 gertverv       Note Added: 0002133                          
+10-14-04 12:28 tiwai          Note Added: 0002140                          
+10-14-04 12:29 tiwai          File Added: via8237.diff                     
+10-14-04 12:29 tiwai          File Added: VIA8237.conf                     
+10-14-04 18:51 gertverv       Note Added: 0002158                          
+11-10-04 14:01 tiwai          Status                   new => resolved     
+11-10-04 14:01 tiwai          Resolution               open => fixed       
+11-10-04 14:01 tiwai          Assigned To               => tiwai           
+12-16-04 18:16 tiwai          Status                   resolved => closed  
+04-09-05 16:39 jdthood        Relationship added       has duplicate 0000523
 ======================================================================
 
 
