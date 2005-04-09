@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000554]: TerraTec EWS88D Supports ADAT In and ADAT Out
-Date: Sat, 9 Apr 2005 14:42:45 +0200
-Message-ID: <4e6b8b2b1ee633cbbdd86fb4c8ac1a32@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000263]: Maya44 MKII (Envy 24HT processor) probes correctly yet doesn't work.
+Date: Sat, 9 Apr 2005 15:03:58 +0200
+Message-ID: <2e751db11bada3aeaca967ea9932ea5e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5FDF21D
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 14:42:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 664771CE
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 15:03:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CONFIRMED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=554> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=263> 
 ======================================================================
-Reported By:                theitch
+Reported By:                Vladimir Dyakov
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   554
-Category:                   PCI - ice1712
+Issue ID:                   263
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   text
+Severity:                   feature
 Priority:                   normal
-Status:                     confirmed
-Distribution:               Fedora Core 1 - CCRMA
-Kernel Version:             2.4.26
+Status:                     new
+Distribution:               ASPLinux 9.2 (base on Fedora Core 1)
+Kernel Version:             kernel-2.6.5-mm6
 ======================================================================
-Date Submitted:             09-30-2004 19:45 CEST
-Last Modified:              04-09-2005 14:42 CEST
+Date Submitted:             05-08-2004 08:27 CEST
+Last Modified:              04-09-2005 15:03 CEST
 ======================================================================
-Summary:                    TerraTec EWS88D Supports ADAT In and ADAT Out
+Summary:                    Maya44 MKII (Envy 24HT processor) probes correctly
+yet doesn't work.
 Description: 
-I am able to record and playback with ADAT In and ADAT Out on TerraTec
-EWS88D (connected to Behringer ADA8000). The notes section on the sound
-card matrix can be updated to include "[Aio]"
+I've got Audiotrak Maya44 MKII soundcard and Linux kernel-2.6.5-mm6 with
+alsa-1.0.4rc2. If I am not mistaken my soundcard is base on Envy24HT
+processor. There's a driver in alsa for this processor called ice1724.
+It's written in it's source that it supports only Prodigy 7.1.
+
+Is there any way to make driver work with my audio card?
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 14:42 
+ jdthood - 04-08-05 22:26 
 ----------------------------------------------------------------------
-tiwai: Checking the sound card matrix at
+Submitter: Did you have better luck with later ALSA releases?
 
-   
-http://alsa-project.org/alsa-doc/index.php?vendor=vendor-Terratec#matrix
-
-I see that this remains to be done.
+----------------------------------------------------------------------
+ Vladimir Dyakov - 04-09-05 15:03 
+----------------------------------------------------------------------
+> Submitter: Did you have better luck with later ALSA releases?
+Nope, 1.0.8 seems not ot support AudioTrak Maya MKII
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-30-04 19:45 theitch        New Issue                                    
-09-30-04 19:45 theitch        Distribution              => Fedora Core 1 - CCRMA
-09-30-04 19:45 theitch        Kernel Version            => 2.4.26          
-04-09-05 14:42 jdthood        Note Added: 0004403                          
-04-09-05 14:42 jdthood        Status                   new => confirmed    
+05-08-04 08:27 Vladimir DyakovNew Issue                                    
+05-08-04 08:27 Vladimir DyakovDistribution              => ASPLinux 9.2 (base on
+Fedora Core 1)
+05-08-04 08:27 Vladimir DyakovKernel Version            => kernel-2.6.5-mm6
+05-08-04 08:35 Vladimir DyakovNote Added: 0001070                          
+05-11-04 07:03 Vladimir DyakovNote Added: 0001081                          
+05-11-04 07:07 Vladimir DyakovNote Added: 0001082                          
+05-18-04 20:44 tiwai          Note Added: 0001144                          
+05-19-04 13:31 Vladimir DyakovNote Added: 0001151                          
+05-19-04 13:35 Vladimir DyakovNote Added: 0001152                          
+05-25-04 14:51 tiwai          Note Added: 0001212                          
+05-26-04 04:33 Vladimir DyakovNote Added: 0001245                          
+05-26-04 14:35 tiwai          Note Added: 0001256                          
+05-31-04 05:26 Vladimir DyakovNote Added: 0001279                          
+05-31-04 05:29 Vladimir DyakovNote Added: 0001280                          
+06-17-04 06:51 Vladimir DyakovNote Added: 0001314                          
+06-17-04 08:02 Apostolos DimitromanolakisNote Added: 0001315                    
+     
+06-17-04 08:39 Vladimir DyakovNote Added: 0001316                          
+06-17-04 08:46 Vladimir DyakovNote Added: 0001317                          
+06-18-04 18:02 Apostolos DimitromanolakisIssue Monitored: Apostolos
+Dimitromanolakis                    
+07-16-04 13:34 Vladimir DyakovNote Added: 0001452                          
+04-08-05 22:26 jdthood        Note Added: 0004375                          
+04-09-05 15:03 Vladimir DyakovNote Added: 0004404                          
 ======================================================================
 
 
