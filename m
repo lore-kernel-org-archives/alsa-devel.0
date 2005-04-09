@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000589]: ICH5 S/PDIF audio drops out occasionally
-Date: Sat, 9 Apr 2005 17:08:35 +0200
-Message-ID: <7db1d551eb4ed74efc7a5323c4a9d954@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000689]: No Optical output/toslink on riser card for Envy 24PT onboard
+Date: Sat, 9 Apr 2005 17:14:37 +0200
+Message-ID: <b6e3a1ebf2a931f774f3c8389c36814e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6CFFA1E6
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:08:35 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 154FB1E6
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:14:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,129 +22,80 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been ACKNOWLEDGED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=589> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=689> 
 ======================================================================
-Reported By:                squarooticus
+Reported By:                bana
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   589
-Category:                   PCI - intel8x0
+Issue ID:                   689
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian Unstable (sid)
-Kernel Version:             2.6.7
+Status:                     acknowledged
+Distribution:               Fedora Core
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             10-21-2004 02:42 CEST
-Last Modified:              04-09-2005 17:08 CEST
+Date Submitted:             11-29-2004 02:17 CET
+Last Modified:              04-09-2005 17:14 CEST
 ======================================================================
-Summary:                    ICH5 S/PDIF audio drops out occasionally
+Summary:                    No Optical output/toslink on riser card for Envy
+24PT onboard
 Description: 
-I'm using the on-board audio of my Abit IC7-MAX3 ("Intel Corp. 82801EB/ER
-(ICH5/ICH5R) AC'97 Audio Controller (rev 02)") with ALSA driver
-snd_intel8x0 for my home theater setup.  In every application I've tried,
-which includes mythtv, xine, and ogg123, through both native alsa and OSS
-emulation, the audio output from the S/PDIF port drops out for a second
-every so often---maybe once a minute, or every few minutes; it's not
-periodic.
-
-I don't know whether analog output also drops out, since I don't have
-analog output hooked up or enabled.
-
-This is with the CVS build as of October 19.  My asound.conf is:
-
-pcm.krose-dmix {
-  type dmix
-  ipc_key 3516
-  ipc_key_add_uid yes
-  slave {
-        pcm "hw:0,4"
-        period_time 0
-        period_size 4096
-        #buffer_size 16384
-        buffer_size 131072
-        period_time 84000
-        buffer_time 340000
-        rate 48000
-        channels 2
-  }
-  bindings.0 0
-  bindings.1 1
-}
-
-pcm.dsp0 {
-  type plug
-  slave.pcm "krose-dmix"
-}
-
-ctl.mixer0 {
- type hw
- card 0
-}
-
-pcm.!default {
- type plug
- slave.pcm "krose-dmix"
-}
-
-I can't find any options to compile in debug logging: I'm not really sure
-what the cause of the drop out is, e.g., buffer underrun, PCI contention,
-etc.  I'm happy to spend time to try to debug this, but I need a starting
-point.
-
-Of course, it'd also be great to know if anyone has ever seen this kind of
-behavior before.  I don't believe the SPD/IF port is turning itself off
-because the receiver doesn't blip, which normally it would if the input
-were to disappear temporarily.
-
-The CPU is a 3.2G P4 with hyperthreading turned on.  I never see the CPU
-usage go above 50%.
-
-Interestingly, I see similar behavior on my dual Opteron machine with an
-AMD-8111 audio controller using the same driver (snd_intel8x0).  I never
-had this problem with the emu10k1 driver when I was using SB Lives, but I
-have run into PCI slot limitations in my HTPC, so I have to use mobo
-audio.
-
-Suggestions?
+After getting my sound working for my headphones for my onboard Envy24PT
+soundcard (on a Chaintech ZNF5-150) my optical isn't working (has never
+worked). It is on a riser card off of the motherboard (a CNR slot type
+card) that came with the motherboard. I have tried the different outputs
+by alsaplay -D hw:0,x /home/bana/test.wav but the only thing that works is
+putting in default. 
 ======================================================================
 
 ----------------------------------------------------------------------
- squarooticus - 11-24-04 18:07 
+ bana - 11-29-04 02:26 
 ----------------------------------------------------------------------
-Here's another thread:
+Readout of lspci -vv: 
 
-http://forum.abit-usa.com/showthread.php?s=&threadid=58064&highlight=ic7max3+sound+drops+out
+01:0f.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
+[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32
+        Interrupt: pin A routed to IRQ 5
+        Region 0: I/O ports at c800 [size=32]
+        Region 1: I/O ports at cc00 [size=128]
+        Capabilities: [80] Power Management version 1
+                Flags: PMEClk- DSI- D1- D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-This makes it sound like there's a software workaround for this.
+cat /proc/asound/cards:
+0 [ZNF3150        ]: ICE1724 - Chaintech ZNF3-150
+                     Chaintech ZNF3-150 at 0xc800, irq 5
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 17:08 
+ tiwai - 11-29-04 15:12 
 ----------------------------------------------------------------------
-squarooticus: Has there been any improvement in the latest ALSA release?
+It's not supported in the current driver.  We need the detailed technical
+information to implement this feature, i.e. which SPDIF controller is used
+(either via ac97, an independent controller or directly from envy chip)
+and how is it connected with envy chip (e.g. which GPIO pins if any).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-04 02:42 squarooticus   New Issue                                    
-10-21-04 02:42 squarooticus   Distribution              => Debian Unstable (sid)
-10-21-04 02:42 squarooticus   Kernel Version            => 2.6.7           
-10-21-04 23:40 squarooticus   Issue Monitored: squarooticus                    
-10-27-04 16:54 squarooticus   Note Added: 0002275                          
-11-10-04 12:26 tiwai          Note Added: 0002367                          
-11-12-04 06:23 squarooticus   Note Added: 0002392                          
-11-15-04 20:24 squarooticus   Note Added: 0002419                          
-11-16-04 02:50 squarooticus   Note Added: 0002423                          
-11-16-04 05:14 squarooticus   Note Added: 0002424                          
-11-18-04 17:51 tiwai          Note Added: 0002452                          
-11-24-04 16:33 squarooticus   Note Added: 0002571                          
-11-24-04 17:55 squarooticus   Note Added: 0002575                          
-11-24-04 18:07 squarooticus   Note Added: 0002577                          
-04-09-05 17:08 jdthood        Note Added: 0004418                          
+11-29-04 02:17 bana           New Issue                                    
+11-29-04 02:17 bana           Distribution              => Fedora Core     
+11-29-04 02:17 bana           Kernel Version            => 2.6.9           
+11-29-04 02:26 bana           Note Added: 0002630                          
+11-29-04 02:26 bana           Issue Monitored: bana                        
+11-29-04 15:12 tiwai          Note Added: 0002635                          
+04-09-05 17:14 jdthood        Status                   new => acknowledged 
+04-09-05 17:14 jdthood        Resolution               open => not fixable 
 ======================================================================
 
 
