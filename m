@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001013]: Sound is not working on the MacMini
-Date: Sat, 9 Apr 2005 14:26:09 +0200
-Message-ID: <bed9ccb5995be267392e500004c30eb7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000411]: IEC958 status non-audio (and others) bits are not updated on iec958 stream
+Date: Sat, 9 Apr 2005 14:27:07 +0200
+Message-ID: <dddae54f0f80a5cc7a9b3f079e2e4b60@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 57BAE217
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 14:26:09 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 16EE4217
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 14:27:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,87 +22,84 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1013> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=411> 
 ======================================================================
-Reported By:                timing
-Assigned To:                tiwai
+Reported By:                domi
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1013
-Category:                   PPC - powermac
+Issue ID:                   411
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.11.5
+Status:                     feedback
+Distribution:               Debian unstable
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             03-24-2005 19:27 CET
-Last Modified:              04-09-2005 14:26 CEST
+Date Submitted:             07-28-2004 21:04 CEST
+Last Modified:              04-09-2005 14:27 CEST
 ======================================================================
-Summary:                    Sound is not working on the MacMini
+Summary:                    IEC958 status non-audio (and others) bits are not
+updated on iec958 stream
 Description: 
-Sound is not working on the MacMini. When loading the dmasound_pmac i get
-the following error:
+To investigate a problem where AC3 is not working
+with my Yamaha amplifer and my Asus a7n8x deluxe board,
+I've set up a loopback between the rear spdif output (RCA)
+and the on-board spdif input.
 
-FATAL: Error inserting dmasound_pmac
-(/lib/modules/2.6.11.5/kernel/sound/oss/dmasound/dmasound_pmac.ko): No
-such device
+Reading the 'SPDIF In Status' status line in  the card0/codec97#0/ac97#0-0
+file, I've noticed that the status, non-audio or any other information
+sent through the spdif stream are not sent on the wire.
 
-When trying to play music i get an "maybe your device is busy?" error.
+This behavior would explain the problems found in bug 00369 (SPDIF always
+on) and 00214 (AC3 not working)
 
-I've found a solution on the ubuntuforums(
-http://www.ubuntuforums.org/showthread.php?t=12748 )
-
-it says:
-
-To manually apply the patch (just as easy in this case),
-just open the file linux/sound/ppc/pmac.c in an editor,
-and search for OAKeylargo.
-Where it says SNAPPER right below, you change to SCREAMER (in uppercase).
-(In kernel 2.6.10 it's at line 967). 
-
-this solution is very minimal, the alsamixer is slow, and my computer
-hangs for a couple of seconds before the start of every new process (when
-opening a new window in gnome etc.). When i edit pmac.c in the old way my
-system runs normal again.
+Note that the 'SPDIF Control' line and ac97#0-0+regs file are updated
+correctly, only the information sent on the
+stream are lost.
 ======================================================================
 
 ----------------------------------------------------------------------
- perchrh - 04-09-05 02:45 
+ domi - 09-07-04 14:10 
 ----------------------------------------------------------------------
-Ok, so I found a nice way of doing it myself. 
-I'll post a patch this weekend.
+I've tried the driver from Nvidia (nvsound) whose latest release
+features [1] :
+- AC3 passthrough
+- Added support for SoundStorm
+
+And, lo and behold, the ac3 works ! I finally got the AC3 stream
+recognized by my Yamaha amplifier.
+
+Moreover, simple stereo is also converted to AC3 by the SoundStorm
+stuff (OK, that's not so great for HiFi :-/ ).
+
+So my hardware is not faulty. There's no bug in the ALC650.
+
+I think tiwai is right, the soundstorm chip gets in the way.
 
 ----------------------------------------------------------------------
- perchrh - 04-09-05 14:26 
+ jdthood - 04-09-05 14:27 
 ----------------------------------------------------------------------
-Patch at 
-http://marc.theaimsgroup.com/?l=linux-kernel&m=111304762025261&w=2
+> So my hardware is not faulty. There's no bug in the ALC650.
+
+Can this bug report be closed, or is there something that remains to be
+done?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-24-05 19:27 timing         New Issue                                    
-03-24-05 19:27 timing         Distribution              => Ubuntu          
-03-24-05 19:27 timing         Kernel Version            => 2.6.11.5        
-03-24-05 19:32 timing         Note Added: 0004194                          
-03-24-05 19:35 timing         Issue Monitored: timing                      
-03-24-05 19:48 tiwai          Note Added: 0004197                          
-03-24-05 21:35 timing         Note Added: 0004202                          
-03-25-05 21:44 perchrh        Note Added: 0004212                          
-03-25-05 21:50 perchrh        Note Edited: 0004212                         
-03-25-05 21:52 perchrh        Issue Monitored: perchrh                     
-03-25-05 22:57 timing         Note Edited: 0004202                         
-03-25-05 23:27 timing         Note Edited: 0004202                         
-04-03-05 13:44 perchrh        Note Added: 0004309                          
-04-03-05 14:29 perchrh        Note Edited: 0004309                         
-04-03-05 14:30 perchrh        Note Edited: 0004309                         
-04-03-05 14:36 perchrh        Note Added: 0004310                          
-04-09-05 02:45 perchrh        Note Added: 0004381                          
-04-09-05 14:26 perchrh        Note Added: 0004396                          
+07-28-04 21:04 domi           New Issue                                    
+07-28-04 21:04 domi           Distribution              => Debian unstable 
+07-28-04 21:04 domi           Kernel Version            => 2.6.7           
+08-05-04 20:18 domi           Note Added: 0001535                          
+08-07-04 18:09 domi           Note Added: 0001544                          
+08-19-04 19:01 tiwai          Note Added: 0001590                          
+09-07-04 14:10 domi           Note Added: 0001707                          
+04-09-05 14:27 jdthood        Note Added: 0004397                          
+04-09-05 14:27 jdthood        Status                   new => feedback     
 ======================================================================
 
 
