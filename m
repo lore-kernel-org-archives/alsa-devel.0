@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000740]: SPDIF Broken
-Date: Sat, 9 Apr 2005 17:32:56 +0200
-Message-ID: <eba72917d30db4d939ce412221ccf1df@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000411]: IEC958 status non-audio (and others) bits are not updated on iec958 stream
+Date: Sat, 9 Apr 2005 18:37:05 +0200
+Message-ID: <614122b6d0a072d2531c2450e1024b22@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EB464147
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:32:56 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BB03A238
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 18:37:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=740> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=411> 
 ======================================================================
-Reported By:                nostar
+Reported By:                domi
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   740
-Category:                   PCI - ice1712
+Issue ID:                   411
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.9
+Status:                     feedback
+Distribution:               Debian unstable
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             12-21-2004 23:55 CET
-Last Modified:              04-09-2005 17:32 CEST
+Date Submitted:             07-28-2004 21:04 CEST
+Last Modified:              04-09-2005 18:37 CEST
 ======================================================================
-Summary:                    SPDIF Broken
+Summary:                    IEC958 status non-audio (and others) bits are not
+updated on iec958 stream
 Description: 
-S/PDIF appears to be broken in the ice1712 driver on recent versions of
-alsa.  I used to use it fine on 2.4 kernels (alsa 1.0 - 1.0.3), then I
-quit using it for a while.  Now on 2.6 / 1.0.7 (cvs) I can't get S/PDIF to
-work. I get silence untill I start screwing with Master Clock settings in
-envy24control, then I get loud white noise.  I was able to get correct
-sound once, by doing the following:
+To investigate a problem where AC3 is not working
+with my Yamaha amplifer and my Asus a7n8x deluxe board,
+I've set up a loopback between the rear spdif output (RCA)
+and the on-board spdif input.
 
-Revert from 1.0.7(cvs) to 1.0.4 (driver, lib, and envy24control).  I load
-the driver, then I start jack, then I play a file via xmms (using
-xmms-jack of course), then run envy24control, and click 'Word Clock' as
-Master Clock.  If I do this in exactly this order I get sound.  If I click
-any other Clock setting I get white noise that cant be reversed untill I
-unload the driver.
+Reading the 'SPDIF In Status' status line in  the card0/codec97#0/ac97#0-0
+file, I've noticed that the status, non-audio or any other information
+sent through the spdif stream are not sent on the wire.
 
-I went back to 1.0.7 (cvs) to do the same thing, but when I click Word
-Clock it doesnt stay, it immediately jumps back to its original state
-(usually Internal 48000).  I can hear the audio for a split second
-everytime I click Word Clock.
+This behavior would explain the problems found in bug 00369 (SPDIF always
+on) and 00214 (AC3 not working)
 
+Note that the 'SPDIF Control' line and ac97#0-0+regs file are updated
+correctly, only the information sent on the
+stream are lost.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 17:32 
+ jdthood - 04-09-05 14:27 
 ----------------------------------------------------------------------
-Submitter: Do you see any improvement in the 1.0.8 release?
+> So my hardware is not faulty. There's no bug in the ALC650.
+
+Can this bug report be closed, or is there something that remains to be
+done?
+
+----------------------------------------------------------------------
+ domi - 04-09-05 18:37 
+----------------------------------------------------------------------
+To solve this bug, the SoundStorm chip must be reverse-engineered. 
+
+James Courtier Dutton mentioned a while ago that he should be able to
+solve this
+problem once he got a Nforce2 hardware. So he asked for a HW donation. 
+
+I got no more news and did not see anything that suggest that some work 
+was done on this part. 
+
+I've just tried with kernel 2.6.9 alsa 1.0.6 and it still does not work.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-21-04 23:55 nostar         New Issue                                    
-12-21-04 23:55 nostar         Kernel Version            => 2.6.9           
-04-09-05 17:32 jdthood        Note Added: 0004425                          
+07-28-04 21:04 domi           New Issue                                    
+07-28-04 21:04 domi           Distribution              => Debian unstable 
+07-28-04 21:04 domi           Kernel Version            => 2.6.7           
+08-05-04 20:18 domi           Note Added: 0001535                          
+08-07-04 18:09 domi           Note Added: 0001544                          
+08-19-04 19:01 tiwai          Note Added: 0001590                          
+09-07-04 14:10 domi           Note Added: 0001707                          
+04-09-05 14:27 jdthood        Note Added: 0004397                          
+04-09-05 14:27 jdthood        Status                   new => feedback     
+04-09-05 18:37 domi           Note Added: 0004426                          
 ======================================================================
 
 
