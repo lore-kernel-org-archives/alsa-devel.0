@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000535]: via82xx: "codec 0 is not valid..."
-Date: Sat, 9 Apr 2005 17:26:30 +0200
-Message-ID: <7be61bda69565893715ef547686f7726@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000737]: Background noise in master when no playing sound on Asus A7N8X Deluxe (nforce 2)
+Date: Sat, 9 Apr 2005 17:26:21 +0200
+Message-ID: <c6e570e38240c078d9d88397770ae83d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A5A5E220
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:26:30 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 03E81220
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:26:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +22,91 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=535> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=737> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                keymon
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   535
-Category:                   PCI - via82xx
-Reproducibility:            have not tried
-Severity:                   major
+Issue ID:                   737
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               
-Kernel Version:             
+Status:                     feedback
+Distribution:               Debian
+Kernel Version:             2.6.6
 ======================================================================
-Date Submitted:             09-24-2004 14:29 CEST
+Date Submitted:             12-21-2004 09:28 CET
 Last Modified:              04-09-2005 17:26 CEST
 ======================================================================
-Summary:                    via82xx: "codec 0 is not valid..."
+Summary:                    Background noise in master when no playing sound on
+Asus A7N8X Deluxe (nforce 2)
 Description: 
-Trying to play any sound at all generates lines like this in the syslog:
+Quoting http://www.nvnews.net/vbulletin/printthread.php?t=35148:
 
-kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/via82xx.c:588:
-codec_read: codec 0 is not valid [0xfe0000]
-kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/via82xx.c:727:
-invalid via82xx_cur_ptr, using last valid pointer
+Every Asus A7N8X Deluxe Rev 2.0 Board has a problem with a weird "whining"
+"whirring" or "buzzing" "static" noise coming out of the speakers AND out
+of the motherboard itself. 
 
+When speakers are connected and the volume is turned up to normal levels,
+the noise is very loud, approx 20% of the signal.
 
-with no sound ever being produced.  I don't know anything about sound
-hardware, so don't know what other information you need.  It's an onboard
-chip, listed in the debconf data below.
+This noise appear when the card is not playing sound and there is low CPU
+using. As soon as you play sound, noise stops. If you pause xmms or any
+player, noise returns.
 
+Muting all the channels does not stop the noise, but if you exec: "alsactl
+power 0 off" &https://bugtrack.alsa-project.org/alsa-bug/view.php?id=161;noise
+stops!, but you have to exec "alsactl power 0 on"
+to use the card again. The driver could do the same than "alsactl power 0
+off" when it isn't playing sound.
+
+If you use the lastest nforce drivers (1.0-0283 or newer) noise stops.
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- flapointe - 11-18-04 06:17 
+ tiwai - 12-21-04 18:40 
 ----------------------------------------------------------------------
-I have a similar issue here on a amd64 computer. When I try to play a sound
-after a fresh boot, it plays a few seconds (sometimes with sound, but most
-of the time without) and then it spits lots of "codec_ready: codec 0 is
-not ready [0x124fff0]
-codec_read: codec 0 is not valid [0x1a40000]
-codec_read: codec 0 is not valid [0x1a40000]
-codec_read: codec 0 is not valid [0x1a40000]" and the player stops playing
-like it's paused. Afterward, it's impossible to play any file again until
-a reboot. I am using a 2.6.9-gentoo-r1 kernel (ALSA 1.0.6 compiled as
-modules) but I had the same problem with previous releases and ALSA
-compiled in the kernel. The computer does not seem to be able to boot
-without ACPI enabled so it's there to stay.
+Please show /proc/asound/card0/codec97#0/ac97#0-0* files?
+
+You can try to flip bits of POWER ac97 register (0x26) by writing to
+ac97#0-0+regs proc file above such as:
+
+   # echo 26 803f > /proc/asound/card0/codec97#0/ac97#0-0+regs
+
+This feature is enabled only when compiled with debug option (e.g.
+--with-debug=full).  Read the previous value, and change some bits.
+
+Try first to turn bit 15 (0x8000) on.  This can be an EAPD control.
+Bit 14 (0x4000) is HP power down, Bit 8 and 9 (0x0300) are ADC/DAC power
+down.  Also, bit 10 is analog mixer (vref).  In the power-down code in
+ac97_codec.c, all these bits are turned on.
+
+If it's EAPD, you can control via 'External Amplifier' mixer swithc, too. 
+Other bits are essential, so in general you shouldn't turn off during the
+operation.
 
 ----------------------------------------------------------------------
- flapointe - 04-09-05 17:26 
+ jdthood - 04-09-05 17:26 
 ----------------------------------------------------------------------
-The sound works normally when I stop using CPU frequency stepping.
+Submitter: You were asked to provide additional information.
+Can you please provide it?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 14:29 jdthood        New Issue                                    
-09-24-04 14:54 tiwai          Note Added: 0001889                          
-11-05-04 11:53 jdthood        Note Added: 0002306                          
-11-09-04 18:34 tiwai          Note Added: 0002330                          
-11-18-04 05:49 flapointe      Issue Monitored: flapointe                    
-11-18-04 05:50 flapointe      Issue End Monitor: flapointe                    
-11-18-04 06:10 flapointe      File Added: lsmod                            
-11-18-04 06:11 flapointe      File Added: lspci                            
-11-18-04 06:11 flapointe      File Added: dmesg                            
-11-18-04 06:17 flapointe      Note Added: 0002444                          
-11-18-04 06:18 flapointe      Issue Monitored: flapointe                    
-04-09-05 17:04 jdthood        Status                   new => acknowledged 
-04-09-05 17:26 flapointe      Note Added: 0004424                          
+12-21-04 09:28 keymon         New Issue                                    
+12-21-04 09:28 keymon         Distribution              => Debian          
+12-21-04 09:28 keymon         Kernel Version            => 2.6.6           
+12-21-04 09:28 keymon         Issue Monitored: keymon                      
+12-21-04 18:40 tiwai          Note Added: 0002900                          
+04-09-05 17:26 jdthood        Note Added: 0004423                          
+04-09-05 17:26 jdthood        Status                   new => feedback     
 ======================================================================
 
 
