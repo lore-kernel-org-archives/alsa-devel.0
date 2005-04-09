@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000594]: Sound level is extremely low
-Date: Sat, 9 Apr 2005 16:26:57 +0200
-Message-ID: <edb443b612e7d0ca98ef753bb44214d7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
+Date: Sat, 9 Apr 2005 16:37:55 +0200
+Message-ID: <0754080dad6778abf8fe1995e19ced9c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 208081D5
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:26:58 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C7C4B24F
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:37:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,129 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=594> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=523> 
 ======================================================================
-Reported By:                danstef
+Reported By:                pharm
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   594
-Category:                   PCI - intel8x0
+Issue ID:                   523
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.4.20
+Distribution:               Debian unstable
+Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work
+either)
 ======================================================================
-Date Submitted:             10-21-2004 23:19 CEST
-Last Modified:              04-09-2005 16:26 CEST
+Date Submitted:             09-22-2004 22:48 CEST
+Last Modified:              04-09-2005 16:37 CEST
 ======================================================================
-Summary:                    Sound level is extremely low
+Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
 Description: 
-I compiled and installed drivers and utilities without a 
-problem. 
-I used the alsamixer and unmute all channels and raise levels. I also used
-aumix to max the gain. When I play
-a wave file (play --volume=100) I can barely hear the sound.
-I have speakers hooked up to the line out and a front panel
-speaker. Sound is coming out of both at the same really, really low level.
+I have a Biostar IDEQ 210V minipc. As well as 6 channel analog out (which
+appears to work, at least stereo analog out does for certain) there are
+two digital (optical) SPDIF outputs. Unfortunately I can't get anything to
+recognise these -- mplayer complains about the lack of IEC958 mixer
+entries if I try to use the hwac3 output, and if I point the 
+alsa output at any of the list of hardware outputs I get nothing from the
+digital amp -- it doesn't appear to get any signal.
+
+Assuming I'm not doing something dumb, is there anything else I should
+try? I've tried all the ac97_quirk options.
 ======================================================================
 
 ----------------------------------------------------------------------
- danstef - 10-21-04 23:21 
+ pharm - 10-21-04 15:29 
 ----------------------------------------------------------------------
-I am installing windows on the machine just to see if I can get the card
-to
-work to make sure there is not a hardware issue.
+Argh. Lets try that again: With speaker-test -Dsurround51 -c6
+
+Output    Output heard
+Front R   Front L
+Front L   Front R
+Rear R    Center[*]
+Rear L    Center[*]
+Center    (Nothing)   
+LFE       (Nothing)
+
+[*] Could be the LFE output -- I'm note sure which way round these usually
+are. Treated as an ordinary stereo out, I only get audio from the right
+speaker of the pair.
+
+I'll attach the register values which got the above, and see if I can get
+any further later on. cheers, Phil
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 16:26 
+ jdthood - 04-09-05 16:37 
 ----------------------------------------------------------------------
-> I am installing windows on the machine just to see if I can
-> get the card to work to make sure there is not a hardware issue.
+So far as I can make out, the remaining problem was: 
 
-So you are sure that this is an ALSA bug?
+> Output    Output heard
+> Front R   Front L
+> Front L   Front R
+> Rear R    Center[*]
+> Rear L    Center[*]
+> Center    (Nothing)
+> LFE       (Nothing)
+
+This was reported in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=537
+so I am marking this report a duplicate of that
+one.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-04 23:19 danstef        New Issue                                    
-10-21-04 23:19 danstef        Kernel Version            => 2.4.20          
-10-21-04 23:21 danstef        Note Added: 0002224                          
-04-09-05 16:26 jdthood        Note Added: 0004412                          
+09-22-04 22:48 pharm          New Issue                                    
+09-22-04 22:48 pharm          Distribution              => Debian unstable 
+09-22-04 22:48 pharm          Kernel Version            => 2.4.27-1-k7 with alsa
+1.0.6a (1.0.7rc1 doesn't work either)
+09-23-04 18:25 tiwai          Note Added: 0001829                          
+09-23-04 18:26 tiwai          File Added: cm9761-add.dif                    
+09-23-04 22:09 pharm          Note Added: 0001851                          
+09-24-04 09:28 pharm          Issue Monitored: pharm                       
+09-24-04 12:03 tiwai          Note Added: 0001869                          
+09-24-04 12:28 pharm          Note Added: 0001877                          
+09-24-04 13:34 pharm          Note Added: 0001882                          
+09-24-04 14:33 tiwai          Note Added: 0001886                          
+09-24-04 15:29 tiwai          Note Added: 0001890                          
+09-24-04 15:29 tiwai          File Added: cm9761-add-take2.dif                  
+ 
+09-24-04 15:57 pharm          Note Added: 0001892                          
+09-24-04 16:05 tiwai          Note Added: 0001893                          
+09-24-04 16:05 tiwai          File Added: cm9761-add-take3.dif                  
+ 
+09-24-04 16:31 pharm          Note Added: 0001894                          
+09-24-04 16:43 pharm          Note Added: 0001895                          
+09-24-04 17:08 tiwai          Note Added: 0001896                          
+09-24-04 17:08 tiwai          File Added: cm9761-add-take4.dif                  
+ 
+09-24-04 17:23 pharm          File Added: 1.0.7rc1-ac97#0-0                    
+09-24-04 17:24 pharm          File Added: 1.0.7rc1-ac97#0-0+regs                
+   
+09-24-04 17:32 pharm          File Added: take4-ac97#0-0                    
+09-24-04 17:32 pharm          File Added: take4-ac97#0-0+regs                   
+
+09-24-04 17:33 pharm          Note Added: 0001897                          
+09-24-04 17:39 tiwai          Note Added: 0001898                          
+09-24-04 17:41 pharm          Note Added: 0001899                          
+09-24-04 17:45 tiwai          Note Added: 0001900                          
+09-24-04 17:58 pharm          Note Added: 0001901                          
+09-24-04 18:06 tiwai          Note Added: 0001902                          
+09-27-04 09:56 pharm          Note Added: 0001933                          
+09-27-04 15:16 tiwai          Note Added: 0001939                          
+09-27-04 15:17 tiwai          File Added: cm9761-add-take5.dif                  
+ 
+10-12-04 14:59 tiwai          Note Added: 0002102                          
+10-12-04 15:10 pharm          Note Added: 0002105                          
+10-13-04 23:46 pharm          Note Added: 0002135                          
+10-14-04 12:46 tiwai          Note Added: 0002142                          
+10-21-04 15:14 pharm          Note Added: 0002220                          
+10-21-04 15:25 pharm          Note Added: 0002221                          
+10-21-04 15:29 pharm          Note Added: 0002222                          
+10-21-04 15:30 pharm          File Added: partially-working-reg                 
+  
+04-09-05 16:37 jdthood        Note Added: 0004413                          
 ======================================================================
 
 
