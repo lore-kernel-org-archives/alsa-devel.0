@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001013]: Sound is not working on the MacMini
-Date: Sat, 9 Apr 2005 02:45:02 +0200
-Message-ID: <b5a60d8426efaa6b6e09b44f34cdf905@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000405]: PCM playback causes hard freeze under kernel 2.6.x
+Date: Sat, 9 Apr 2005 04:19:42 +0200
+Message-ID: <a61b7423ff0afe72cb131a1ca5f4bc1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5D0B9265
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 02:45:02 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4F73200
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 04:19:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,88 +22,83 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CONFIRMED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1013> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=405> 
 ======================================================================
-Reported By:                timing
-Assigned To:                tiwai
+Reported By:                comac
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1013
-Category:                   PPC - powermac
+Issue ID:                   405
+Category:                   ISA - opl3sa2
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.11.5
+Status:                     confirmed
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             03-24-2005 19:27 CET
-Last Modified:              04-09-2005 02:45 CEST
+Date Submitted:             07-25-2004 20:07 CEST
+Last Modified:              04-09-2005 04:19 CEST
 ======================================================================
-Summary:                    Sound is not working on the MacMini
+Summary:                    PCM playback causes hard freeze under kernel 2.6.x
 Description: 
-Sound is not working on the MacMini. When loading the dmasound_pmac i get
-the following error:
+System freezes after a few seconds of playback thru integrated "OPL3-SA3
+Snd System" (as reported by pnpdump) with any 2.6 kernel. (tested 2.6.0,
+2.6.5, 2.6.7, 2.6.7-ck[15] and perhaps some other)
 
-FATAL: Error inserting dmasound_pmac
-(/lib/modules/2.6.11.5/kernel/sound/oss/dmasound/dmasound_pmac.ko): No
-such device
+Problem shows up both with kernel alsa modules AND 1.0.5 modules compiled
+from alsa-project tarballs. Worked flawlessly on 2.4.x on the same
+system.
 
-When trying to play music i get an "maybe your device is busy?" error.
+Playback time before freeze varies from a few seconds to a few minutes and
+seems to be related to system or disk load. While playing, sound gets
+distorted (seems to skip) when disk is accessed.
 
-I've found a solution on the ubuntuforums(
-http://www.ubuntuforums.org/showthread.php?t=12748 )
+I've tried disabling preemptive, messing with PnP settings on BIOS and
+checked the card has its own DMA and IRQ (not shared with anyone else)
+without any success.
 
-it says:
-
-To manually apply the patch (just as easy in this case),
-just open the file linux/sound/ppc/pmac.c in an editor,
-and search for OAKeylargo.
-Where it says SNAPPER right below, you change to SCREAMER (in uppercase).
-(In kernel 2.6.10 it's at line 967). 
-
-this solution is very minimal, the alsamixer is slow, and my computer
-hangs for a couple of seconds before the start of every new process (when
-opening a new window in gnome etc.). When i edit pmac.c in the old way my
-system runs normal again.
 ======================================================================
 
 ----------------------------------------------------------------------
- perchrh - 04-03-05 14:36 
+ heyzuess - 07-28-04 02:57 
 ----------------------------------------------------------------------
-Just wanted to let you know I've examined the mac mini sound issue some
-more, and know what is causing it and how to fix it. 
-Not sure how to add the support in a good way, though, was hoping you
-could help out.
+I have the same problem - and tried everything to resolve it (re-compiled
+the kernel about 20 times with different options each time) and I don't
+think this is specific to alsa since it also happens with the OSS drivers
+for me as well.
+
+I'm using SB Live emu10k.
+
+I can break the freeze by ssh'ing in from another box, then killing
+whatever is trying to produce sound.
 
 ----------------------------------------------------------------------
- perchrh - 04-09-05 02:45 
+ jdthood - 04-08-05 22:27 
 ----------------------------------------------------------------------
-Ok, so I found a nice way of doing it myself. 
-I'll post a patch this weekend.
+Was this problem solved in later ALSA releases?
+
+----------------------------------------------------------------------
+ comac - 04-09-05 00:10 
+----------------------------------------------------------------------
+I've been trying 2.6.x kernels as they are released up to 2.6.11.5, using
+the included alsa code. And all kernels have shown the same problem so
+far.
+
+Is there any combination of kernel + alsa I should try?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-24-05 19:27 timing         New Issue                                    
-03-24-05 19:27 timing         Distribution              => Ubuntu          
-03-24-05 19:27 timing         Kernel Version            => 2.6.11.5        
-03-24-05 19:32 timing         Note Added: 0004194                          
-03-24-05 19:35 timing         Issue Monitored: timing                      
-03-24-05 19:48 tiwai          Note Added: 0004197                          
-03-24-05 21:35 timing         Note Added: 0004202                          
-03-25-05 21:44 perchrh        Note Added: 0004212                          
-03-25-05 21:50 perchrh        Note Edited: 0004212                         
-03-25-05 21:52 perchrh        Issue Monitored: perchrh                     
-03-25-05 22:57 timing         Note Edited: 0004202                         
-03-25-05 23:27 timing         Note Edited: 0004202                         
-04-03-05 13:44 perchrh        Note Added: 0004309                          
-04-03-05 14:29 perchrh        Note Edited: 0004309                         
-04-03-05 14:30 perchrh        Note Edited: 0004309                         
-04-03-05 14:36 perchrh        Note Added: 0004310                          
-04-09-05 02:45 perchrh        Note Added: 0004381                          
+07-25-04 20:07 comac          New Issue                                    
+07-25-04 20:07 comac          Distribution              => Gentoo Linux    
+07-25-04 20:07 comac          Kernel Version            => 2.6.7           
+07-28-04 02:57 heyzuess       Note Added: 0001479                          
+04-08-05 22:27 jdthood        Note Added: 0004377                          
+04-09-05 00:10 comac          Note Added: 0004380                          
+04-09-05 04:19 jdthood        Status                   new => confirmed    
 ======================================================================
 
 
