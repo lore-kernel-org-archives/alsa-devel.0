@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000715]: pc speaker always routed through laptop speakers
-Date: Sat, 9 Apr 2005 22:03:11 +0200
-Message-ID: <985f4cdb5910dc10fb085d3925f4efc8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001043]: gstreamer cannot play flacs or oggs when p16v is enabled.
+Date: Sat, 9 Apr 2005 22:37:47 +0200
+Message-ID: <7cdf55f1cc816ac954bb60d2a6951e67@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 794ED272
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 22:03:11 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C77F2272
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 22:37:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=715> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1043> 
 ======================================================================
-Reported By:                rafi
+Reported By:                stuNNed
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   715
-Category:                   PCI - intel8x0
+Issue ID:                   1043
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               debian
-Kernel Version:             2.6.9 (from source)
+Status:                     new
+Distribution:               Ubuntu Linux 5.0.4
+Kernel Version:             2.6.10-5-686-smp
 ======================================================================
-Date Submitted:             12-08-2004 06:02 CET
-Last Modified:              04-09-2005 22:03 CEST
+Date Submitted:             04-09-2005 21:46 CEST
+Last Modified:              04-09-2005 22:37 CEST
 ======================================================================
-Summary:                    pc speaker always routed through laptop speakers
+Summary:                    gstreamer cannot play flacs or oggs when p16v is
+enabled.
 Description: 
-When the pc speaker driver is loaded, it always beeps through the laptop's
-speakers, even when something is plugged into the headphone jack, or the
-headphone jack on the docking station.
+Please see bug report at gnome.org:
 
-Also, if audio is being played through the other devices, it also switches
-to the sspeakers for the duration of the beep.  And the beep is not
-affected by any of the volume controlls.
+http://bugzilla.gnome.org/show_bug.cgi?id=171131
+
+gstreamer apps muine and rhythmbox can play mp3 files fine but cannot play
+ogg vorbis files or flac files.  i'm guessing this might be an issue with
+the driver and alsa-lib?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-08-04 12:12 
+ stuNNed - 04-09-05 21:49 
 ----------------------------------------------------------------------
-Try the CVS version.  You might have 'Headphone Jack Detect' switch.
-Otherwise, you may turn on/off the speaker via either 'External Amplifer'
-or 'Mono Playback Switch' separately.
-
-Also, please provide contents of /proc/asound/card0/codec97#0/* files and
-the current /etc/asound.state for debugging.
+that above gnome url didn't pan out, the bug # at http://bugzilla.gnome.org
+is 171131
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 17:21 
+ stuNNed - 04-09-05 22:37 
 ----------------------------------------------------------------------
-Submitter: Is the bug fixed in the latest ALSA release?
+/etc/asound.conf reads:
 
-----------------------------------------------------------------------
- rafi - 04-09-05 21:03 
-----------------------------------------------------------------------
-Sorry, I missed the note about the registers earlier.
-I've retested with:
-drive: 1.0.9rc2
-lib: 1.0.8
-kernel: 2.6.11.6
+pcm.emu10k1 { type plug  slave.pcm "hw:0,4" }  ctl.emu10k1 { type hw  card
+0 }
 
-twiddled the mixer settings for a while
+custom alsasink reads:
 
-And I see no change, beeps still coming from the laptop speakers.
-
-Should I have pcspkr loaded or not?
+audioscale ! audioconvert ! alsasink device="hw:0,4"
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-08-04 06:02 rafi           New Issue                                    
-12-08-04 06:02 rafi           Distribution              => debian          
-12-08-04 06:02 rafi           Kernel Version            => 2.6.9 (from source)
-12-08-04 12:12 tiwai          Note Added: 0002778                          
-04-09-05 17:21 jdthood        Note Added: 0004421                          
-04-09-05 20:58 rafi           Issue Monitored: rafi                        
-04-09-05 21:00 rafi           File Added: ac97#0-0                         
-04-09-05 21:00 rafi           File Added: ac97#0-0+regs                    
-04-09-05 21:01 rafi           File Added: asound.state                     
-04-09-05 21:03 rafi           Note Added: 0004429                          
-04-09-05 22:03 jdthood        Status                   new => acknowledged 
+04-09-05 21:46 stuNNed        New Issue                                    
+04-09-05 21:46 stuNNed        Distribution              => Ubuntu Linux 5.0.4
+04-09-05 21:46 stuNNed        Kernel Version            => 2.6.10-5-686-smp
+04-09-05 21:49 stuNNed        Note Added: 0004430                          
+04-09-05 22:11 stuNNed        Issue Monitored: stuNNed                     
+04-09-05 22:37 stuNNed        Note Added: 0004431                          
 ======================================================================
 
 
