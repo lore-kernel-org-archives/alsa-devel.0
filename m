@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000537]: VIA VT8237: rear L/R switched with Center/LFE
-Date: Sat, 9 Apr 2005 16:39:07 +0200
-Message-ID: <7501b9be74aafca222a384b3a4c61018@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
+Date: Sat, 9 Apr 2005 16:39:04 +0200
+Message-ID: <856a053a84b580d6192dd65a244307af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F17E024F
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:39:07 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D62024F
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:39:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,188 +22,393 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0000523 has been set as DUPLICATE OF the following issue.
+The following issue has been set as DUPLICATE OF issue 0000537.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=537> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=523> 
 ======================================================================
-Reported By:                gertverv
-Assigned To:                tiwai
+Reported By:                pharm
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   537
+Issue ID:                   523
 Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8.1
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work
+either)
 ======================================================================
-Date Submitted:             09-24-2004 19:41 CEST
-Last Modified:              12-16-2004 18:16 CET
+Date Submitted:             09-22-2004 22:48 CEST
+Last Modified:              04-09-2005 16:39 CEST
 ======================================================================
-Summary:                    VIA VT8237: rear L/R switched with Center/LFE
+Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
 Description: 
-While playing back 5.1 audio, it looks like the rear L/R channels are
-swapped with the Center/LFE channels. The rear L/R and Center/LFE are
-connected via Gigabyte Surround-Kit.
+I have a Biostar IDEQ 210V minipc. As well as 6 channel analog out (which
+appears to work, at least stereo analog out does for certain) there are
+two digital (optical) SPDIF outputs. Unfortunately I can't get anything to
+recognise these -- mplayer complains about the lack of IEC958 mixer
+entries if I try to use the hwac3 output, and if I point the 
+alsa output at any of the list of hardware outputs I get nothing from the
+digital amp -- it doesn't appear to get any signal.
 
-
+Assuming I'm not doing something dumb, is there anything else I should
+try? I've tried all the ac97_quirk options.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0000523 Unable to get SPDIF output on Biostar I...
+duplicate of        0000537 VIA VT8237: rear L/R switched with Cent...
 ======================================================================
 
 ----------------------------------------------------------------------
- gertverv - 09-24-04 19:50 
+ tiwai - 09-23-04 18:25 
 ----------------------------------------------------------------------
-Forgot to mention, 5.1 audio works correctly when using Windows XP on this
-machine
+Could you try the attached patch?
+(Note that it's totally untested.)
 
 ----------------------------------------------------------------------
- tiwai - 10-12-04 15:06 
+ pharm - 09-23-04 22:09 
 ----------------------------------------------------------------------
-Does 4.0 output work properly?
+What am I looking for? It seems to detect OK:
+/proc/asound/card0/codec97#0/ac97#0-0 contains the new ID string.
 
-Also, please attach /proc/asound/card0/codec97#0/ac97#0-0+regs
-during speaker-test is running with 5.1 mode.
+but there's no sound output :( (unless I've fouled up the mixer -- will
+check again)
 
-----------------------------------------------------------------------
- gertverv - 10-12-04 18:21 
-----------------------------------------------------------------------
-> Does 4.0 output work properly?
-
-Yes, it does.
-
->Also, please attach /proc/asound/card0/codec97#0/ac97#0-0+regs
->during speaker-test is running with 5.1 mode.
-
-0:00 = 0180
-0:02 = bf3f
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 001e
-0:0c = 0000
-0:0e = 031f
-0:10 = 0404
-0:12 = 9f1f
-0:14 = 0000
-0:16 = 9f1f
-0:18 = 0606
-0:1a = 0000
-0:1c = 0000
-0:1e = 8000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 000f
-0:28 = 09c7
-0:2a = 05f5
-0:2c = ac44
-0:2e = ac44
-0:30 = ac44
-0:32 = bb80
-0:34 = bb80
-0:36 = 0e0d
-0:38 = 0707
-0:3a = 0824
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0808
-0:66 = 0808
-0:68 = 0aea
-0:6a = 8000
-0:6c = 3601
-0:6e = 0002
-0:70 = 0008
-0:72 = 0000
-0:74 = 0105
-0:76 = 0000
-0:78 = 0002
-0:7a = 40b3
-0:7c = 414c
-0:7e = 4780
+Is there stuff I can twiddle to see what works? I'll have a spelunk
+through the patch, but I'm not familiar with the alsa internals
+unfortunately...
 
 ----------------------------------------------------------------------
- tiwai - 10-13-04 16:20 
+ tiwai - 09-24-04 12:03 
 ----------------------------------------------------------------------
-Does the attached patch have any influence?
-
-If not, the recent 823x chip seems not supporting the slot assignment
-feature
-any more.  We'll need a software routing in alsa-lib...
+What about th spdif output with the patch?
+(make sure to use 1.0.7rc, not 1.0.6a)
 
 ----------------------------------------------------------------------
- gertverv - 10-13-04 19:21 
+ pharm - 09-24-04 12:28 
 ----------------------------------------------------------------------
-> Does the attached patch have any influence?
-
-No, this patch doesn't seem to have any influence on the problem
+Ah. Think I may have applied it to 1.0.6a. Will retest!
 
 ----------------------------------------------------------------------
- tiwai - 10-14-04 12:28 
+ pharm - 09-24-04 13:34 
 ----------------------------------------------------------------------
-Then we need a software routing.
-Please try the attached patch for the driver.  Then, copy
-the attached VIA8237.conf to /usr/share/alsa/cards.
+Ah ha. With patch applied to 1.0.7rc1 the rear SPDIF now lights up.
+Still no sound out of analogue or digital outputs as far as I can hear
+though.
+
+cheers, Phil
 
 ----------------------------------------------------------------------
- gertverv - 10-14-04 18:51 
+ tiwai - 09-24-04 14:33 
 ----------------------------------------------------------------------
-Thanks, now it seems to work. I tested the patch and config file with the
-speaker-test program and playing back a DVD with xine.
+Can you try ac3dec in alsa-utils package for testing SPDIF output?
+Run with -C option so that it works in the ac3 passthru mode.
 
-I noticed with alsamixer that when I was running the speaker-test program,
-that the Line-In was switched to surround (also the sound of the TV card
-connected to line-in disappeared).
-In the VIA8237.conf, I changed the value of "Line-In As Surround" and "Mic
-As Center/LFE" to off. Because I have the rear L/R and Center/LFE
-connected via the Gigabyte Surround kit, so I don't have to use the
-Line-In and Mic connectors for this.
+----------------------------------------------------------------------
+ tiwai - 09-24-04 15:29 
+----------------------------------------------------------------------
+Could you try the second patch?  Revert the last patch before applying the
+new one.
+Reboot your machine after installing the new driver to be sure.
+
+Also, if this still doesn't work, try to remove lines in
+alsa-kernel/pci/ac97/ac97_patch.c:1910,
+
+	/* FIXME: set up GPIO */
+	snd_ac97_write_cache(ac97, 0x70, 0x0100);
+	snd_ac97_write_cache(ac97, 0x72, 0x0020);
+
+----------------------------------------------------------------------
+ pharm - 09-24-04 15:57 
+----------------------------------------------------------------------
+$ ./tools/extract_ac3 dolby-aurora.vob | ./ac3dec -C
+Using PCM device 'plug:iec958:{AES0 0x2 AES1 0x82 AES2 0x0 AES3 0x2}'
+ALSA lib setup.c:548:(add_elem) Cannot obtain info for CTL elem
+(MIXER,'IEC958 Playback AC97-SPSA',0,0,0): No such file or directory
+snd_pcm_open: No such file or directory
+Output open failed
+
+$ ./tools/extract_ac3 dolby-aurora.vob | ./ac3dec -C -D hw:0,0
+Using PCM device 'hw:0,0'
+AC3 Stream 48.0 KHz 448 kbps
+
+but no sound from the latter with either hw:0,0 or hw:0,1
+
+----------------------------------------------------------------------
+ tiwai - 09-24-04 16:05 
+----------------------------------------------------------------------
+Let's try take3 patch.
+
+----------------------------------------------------------------------
+ pharm - 09-24-04 16:31 
+----------------------------------------------------------------------
+with or without the GPIO lines? (Currently compiling with)
+
+----------------------------------------------------------------------
+ pharm - 09-24-04 16:43 
+----------------------------------------------------------------------
+OK. No joy :( -- precisely the same results as before. There's no IEC958
+mixer entry, so -C fails, while using -C -D hw:0,1 or hw:0,0 gets no
+audible output.
+
+Incidentally, with your patches, should I be expecting analogue audio to
+work? I can switch back to the 1.0.6a modules & analogue audio works, but
+I get no analogue audio out with any of the patches so far.
+
+cheers, Phil
+
+----------------------------------------------------------------------
+ tiwai - 09-24-04 17:08 
+----------------------------------------------------------------------
+Looks like this codec doesn't set extended ID register properly
+for SPDIF.  Ok, I added a workaround.  Try take4 patch.
+
+Did you get analog outs on 1.0.7rc1 without patches?
+If so, keep using 1.0.7.  
+
+The GPIO section might affect the analog outputs, too.
+I have no clue what they do.
+
+Anyway, please attach /proc/asound/card0/codec97#0/* files
+and /etc/asound.state after "alsactl store" for both
+with and without the patch (i.e. analog working and not working).
+
+----------------------------------------------------------------------
+ pharm - 09-24-04 17:33 
+----------------------------------------------------------------------
+Success! take4 gives me digital out with ac3dec -C
+
+Analogue out is still broken -- I've attached the register details as
+requested.
+
+cheers, Phil
+
+----------------------------------------------------------------------
+ tiwai - 09-24-04 17:39 
+----------------------------------------------------------------------
+If you compiled the drver with debug option (CONFIG_SND_DEBUG=y), you
+can change the AC97 register value directly by writing to the proc
+file.
+
+Try the following (as root):
+
+    echo 64 3038 > /proc/asound/card0/codec97#0/ac97#0-0+regs
+
+If this solves the analog-out problem, we need to figure out which
+bit affects it...
+
+----------------------------------------------------------------------
+ pharm - 09-24-04 17:41 
+----------------------------------------------------------------------
+Analogue out isn't being echoed to the SPDIF either -- only AC3 output is
+working at this point. cheers, Phil
+
+----------------------------------------------------------------------
+ tiwai - 09-24-04 17:45 
+----------------------------------------------------------------------
+Did you try like the following?
+
+   % aplay -Dplug:spdif foo.wav
+
+----------------------------------------------------------------------
+ pharm - 09-24-04 17:58 
+----------------------------------------------------------------------
+Ah, no: I thought the sound would be mirrored automatically.
+
+Success all round then! With aplay -Dplug:spdif sound.wav I get sound out
+from
+the SPDIF and having done the echo to the ac97 registers I get analogue
+audio out from aplay sound.wav
+
+Any specific bits I should be twiddling in the ac97 registers?
+
+----------------------------------------------------------------------
+ tiwai - 09-24-04 18:06 
+----------------------------------------------------------------------
+Could you try each bit on/off and check which bit affects the
+behavior?
+I guess it's either bit 9 (0200) or bit 5 (0020).
+
+Also, try 'Line-In As Surround' and 'Mic-As-Center' on/off
+with 4.0/5.1 analog outputs.  You can use ac3dec like
+
+    % ac3dec -4 foo.ac3
+    % ac3dec -6 foo.ac3
+
+for 4.0 and 5.1 analog outputs, respectively.
+
+----------------------------------------------------------------------
+ pharm - 09-27-04 09:56 
+----------------------------------------------------------------------
+I'll give it a go when I get some time this week. Last I checked, 4 channel
+sound worked, but 6 (ie Mic-as-center) didn't seem to. Will check again to
+confirm.
+
+----------------------------------------------------------------------
+ tiwai - 09-27-04 15:16 
+----------------------------------------------------------------------
+To make sure, I uploaded my lastest patch (take5).
+
+----------------------------------------------------------------------
+ tiwai - 10-12-04 14:59 
+----------------------------------------------------------------------
+Did you try the latest one?  Nevertheless, alsa-driver-1.0.7rc2 already
+includes the patch.  You can try it instead.
+
+----------------------------------------------------------------------
+ pharm - 10-12-04 15:10 
+----------------------------------------------------------------------
+Apologies -- busy during last week. It's all compiled up, but I haven't had
+time to actually test it :( Should have a spare few minutes tomorrow
+hopefully.
+
+cheers, Phil
+
+----------------------------------------------------------------------
+ pharm - 10-13-04 23:46 
+----------------------------------------------------------------------
+OK. I must have been confused before. After going through all the options,
+it appears that analogue audio still doesn't work with any of the 1.0.7
+patches so far. 1.0.6a works, but not for 6 channel surround -- 4 channels
+appears to work ok, but when decoding 5.1, nothing is heard on the extra 2
+audio channels (this is with one of the Dolby DTS sample files). Apologies
+for the misleading info. I must have switched back to the original modules
+at some point :(
+
+So the only remaining option is presumably a binary chop of the
+differences between the ac93 register values for 1.0.6a and 1.0.7rc2. Not
+something I have time for tonight -- maybe at the weekend.
+
+Incidentally, an additional extra -- this box actually has 2 SPDIF in/out
+ports (front and back). The current working one is the rear SPDIF. Just
+FYI.
+
+thanks again for the coding efforts, Phil
+
+----------------------------------------------------------------------
+ tiwai - 10-14-04 12:46 
+----------------------------------------------------------------------
+For testing analog outputs, speaker-test in alsa-utils would be helpful.
+And yes, please compare ac97 registers between different versions.
+
+----------------------------------------------------------------------
+ pharm - 10-21-04 15:14 
+----------------------------------------------------------------------
+OK, I've been going through the register diffs between 1.07rc1 and take4 &
+playing with speaker-test. It turns out that setting 6c to 2000 instead of
+2209 will turn on the front stereo outputs. Unfortunately they seem to be
+switched left<->right. I'll check to make sure I haven't swapped the
+cables somewhere, which is perfectly possible of course.
+
+Nothing from the surround or centre/LFE outputs yet though. I note from
+the docs for prior versions of this chipset that it seems to have two
+different sets of analogue outputs, the first set is stereo only, whilst
+the second is 6 channels. Perhaps I've turned on the former and the latter
+is still off?
+
+----------------------------------------------------------------------
+ pharm - 10-21-04 15:25 
+----------------------------------------------------------------------
+OK. Another addendum, after realising that the surround and centre/LFE
+mixers
+were muted by default, I turned them up. With speaker-test -Dsurround51
+-c6 I get the following:
+
+Output (speaker test)
+
+----------------------------------------------------------------------
+ pharm - 10-21-04 15:29 
+----------------------------------------------------------------------
+Argh. Lets try that again: With speaker-test -Dsurround51 -c6
+
+Output    Output heard
+Front R   Front L
+Front L   Front R
+Rear R    Center[*]
+Rear L    Center[*]
+Center    (Nothing)   
+LFE       (Nothing)
+
+[*] Could be the LFE output -- I'm note sure which way round these usually
+are. Treated as an ordinary stereo out, I only get audio from the right
+speaker of the pair.
+
+I'll attach the register values which got the above, and see if I can get
+any further later on. cheers, Phil
+
+----------------------------------------------------------------------
+ jdthood - 04-09-05 16:37 
+----------------------------------------------------------------------
+So far as I can make out, the remaining problem was: 
+
+> Output    Output heard
+> Front R   Front L
+> Front L   Front R
+> Rear R    Center[*]
+> Rear L    Center[*]
+> Center    (Nothing)
+> LFE       (Nothing)
+
+This was reported in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=537
+so I am marking this report a duplicate of that
+one.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 19:41 gertverv       New Issue                                    
-09-24-04 19:41 gertverv       Distribution              => Fedora Core 2   
-09-24-04 19:41 gertverv       Kernel Version            => 2.6.8.1         
-09-24-04 19:50 gertverv       Note Added: 0001903                          
-10-12-04 15:06 tiwai          Note Added: 0002104                          
-10-12-04 18:21 gertverv       Note Added: 0002106                          
-10-13-04 16:20 tiwai          Note Added: 0002125                          
-10-13-04 16:20 tiwai          File Added: via-6ch-slot.diff                    
-10-13-04 19:21 gertverv       Note Added: 0002133                          
-10-14-04 12:28 tiwai          Note Added: 0002140                          
-10-14-04 12:29 tiwai          File Added: via8237.diff                     
-10-14-04 12:29 tiwai          File Added: VIA8237.conf                     
-10-14-04 18:51 gertverv       Note Added: 0002158                          
-11-10-04 14:01 tiwai          Status                   new => resolved     
-11-10-04 14:01 tiwai          Resolution               open => fixed       
-11-10-04 14:01 tiwai          Assigned To               => tiwai           
-12-16-04 18:16 tiwai          Status                   resolved => closed  
-04-09-05 16:39 jdthood        Relationship added       has duplicate 0000523
+09-22-04 22:48 pharm          New Issue                                    
+09-22-04 22:48 pharm          Distribution              => Debian unstable 
+09-22-04 22:48 pharm          Kernel Version            => 2.4.27-1-k7 with alsa
+1.0.6a (1.0.7rc1 doesn't work either)
+09-23-04 18:25 tiwai          Note Added: 0001829                          
+09-23-04 18:26 tiwai          File Added: cm9761-add.dif                    
+09-23-04 22:09 pharm          Note Added: 0001851                          
+09-24-04 09:28 pharm          Issue Monitored: pharm                       
+09-24-04 12:03 tiwai          Note Added: 0001869                          
+09-24-04 12:28 pharm          Note Added: 0001877                          
+09-24-04 13:34 pharm          Note Added: 0001882                          
+09-24-04 14:33 tiwai          Note Added: 0001886                          
+09-24-04 15:29 tiwai          Note Added: 0001890                          
+09-24-04 15:29 tiwai          File Added: cm9761-add-take2.dif                  
+ 
+09-24-04 15:57 pharm          Note Added: 0001892                          
+09-24-04 16:05 tiwai          Note Added: 0001893                          
+09-24-04 16:05 tiwai          File Added: cm9761-add-take3.dif                  
+ 
+09-24-04 16:31 pharm          Note Added: 0001894                          
+09-24-04 16:43 pharm          Note Added: 0001895                          
+09-24-04 17:08 tiwai          Note Added: 0001896                          
+09-24-04 17:08 tiwai          File Added: cm9761-add-take4.dif                  
+ 
+09-24-04 17:23 pharm          File Added: 1.0.7rc1-ac97#0-0                    
+09-24-04 17:24 pharm          File Added: 1.0.7rc1-ac97#0-0+regs                
+   
+09-24-04 17:32 pharm          File Added: take4-ac97#0-0                    
+09-24-04 17:32 pharm          File Added: take4-ac97#0-0+regs                   
+
+09-24-04 17:33 pharm          Note Added: 0001897                          
+09-24-04 17:39 tiwai          Note Added: 0001898                          
+09-24-04 17:41 pharm          Note Added: 0001899                          
+09-24-04 17:45 tiwai          Note Added: 0001900                          
+09-24-04 17:58 pharm          Note Added: 0001901                          
+09-24-04 18:06 tiwai          Note Added: 0001902                          
+09-27-04 09:56 pharm          Note Added: 0001933                          
+09-27-04 15:16 tiwai          Note Added: 0001939                          
+09-27-04 15:17 tiwai          File Added: cm9761-add-take5.dif                  
+ 
+10-12-04 14:59 tiwai          Note Added: 0002102                          
+10-12-04 15:10 pharm          Note Added: 0002105                          
+10-13-04 23:46 pharm          Note Added: 0002135                          
+10-14-04 12:46 tiwai          Note Added: 0002142                          
+10-21-04 15:14 pharm          Note Added: 0002220                          
+10-21-04 15:25 pharm          Note Added: 0002221                          
+10-21-04 15:29 pharm          Note Added: 0002222                          
+10-21-04 15:30 pharm          File Added: partially-working-reg                 
+  
+04-09-05 16:37 jdthood        Note Added: 0004413                          
+04-09-05 16:39 jdthood        Relationship added       duplicate of 0000537
 ======================================================================
 
 
