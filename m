@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000535]: via82xx: "codec 0 is not valid..."
-Date: Sat, 9 Apr 2005 17:04:49 +0200
-Message-ID: <e6f09d17c5a31d56924cd24cf0254cac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000647]: Random garbage output out of the card -- always
+Date: Sat, 9 Apr 2005 17:04:01 +0200
+Message-ID: <d12cbd26e107a1dcd1d7a8d03e1c7751@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C92C1E6
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:04:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E05DE1E6
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:04:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,97 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=535> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=647> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                amitshah
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   535
-Category:                   PCI - via82xx
-Reproducibility:            have not tried
+Issue ID:                   647
+Category:                   PCI - ens1371
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               
-Kernel Version:             
+Status:                     closed
+Distribution:               Debian sid
+Kernel Version:             2.6.8.1
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             09-24-2004 14:29 CEST
+Date Submitted:             11-13-2004 20:14 CET
 Last Modified:              04-09-2005 17:04 CEST
 ======================================================================
-Summary:                    via82xx: "codec 0 is not valid..."
+Summary:                    Random garbage output out of the card -- always
 Description: 
-Trying to play any sound at all generates lines like this in the syslog:
+I have two audio cards, one is an on-board intel chipset and one is a
+creative sound blaster. When I plug speakers into the creative output
+jack, several distorted hissing sounds come out of it.
 
-kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/via82xx.c:588:
-codec_read: codec 0 is not valid [0xfe0000]
-kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/via82xx.c:727:
-invalid via82xx_cur_ptr, using last valid pointer
+This started happening at least 3 months back. I can't say if this was due
+to a kernel change or userspace utils change.
 
-
-with no sound ever being produced.  I don't know anything about sound
-hardware, so don't know what other information you need.  It's an onboard
-chip, listed in the debconf data below.
-
-
-
+Please ask if you need more information.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-24-04 14:54 
+ amitshah - 11-13-04 20:18 
 ----------------------------------------------------------------------
-Try to turn off ACPI?
-
-----------------------------------------------------------------------
- jdthood - 11-05-04 11:53 
-----------------------------------------------------------------------
-In reply to the "turn off ACPI" suggestion the submitter replies "No
-change".
-
-----------------------------------------------------------------------
- tiwai - 11-09-04 18:34 
-----------------------------------------------------------------------
-The first message (codec 0...) is likely harmless.  I know other devices 
-show the same message but working.
-
-The second one (using last ptr) is more serious, but the system should
-still work, at least produce some sounds.
-The fact that he doesn't get any sound implies that the mixer
-configuration is not properly done.
-
-----------------------------------------------------------------------
- flapointe - 11-18-04 06:17 
-----------------------------------------------------------------------
-I have a similar issue here on a amd64 computer. When I try to play a sound
-after a fresh boot, it plays a few seconds (sometimes with sound, but most
-of the time without) and then it spits lots of "codec_ready: codec 0 is
-not ready [0x124fff0]
-codec_read: codec 0 is not valid [0x1a40000]
-codec_read: codec 0 is not valid [0x1a40000]
-codec_read: codec 0 is not valid [0x1a40000]" and the player stops playing
-like it's paused. Afterward, it's impossible to play any file again until
-a reboot. I am using a 2.6.9-gentoo-r1 kernel (ALSA 1.0.6 compiled as
-modules) but I had the same problem with previous releases and ALSA
-compiled in the kernel. The computer does not seem to be able to boot
-without ACPI enabled so it's there to stay.
+oops, I just read https://bugtrack.alsa-project.org/alsa-bug/view.php?id=622 and
+found out it is a KDE issue. Sorry guys.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 14:29 jdthood        New Issue                                    
-09-24-04 14:54 tiwai          Note Added: 0001889                          
-11-05-04 11:53 jdthood        Note Added: 0002306                          
-11-09-04 18:34 tiwai          Note Added: 0002330                          
-11-18-04 05:49 flapointe      Issue Monitored: flapointe                    
-11-18-04 05:50 flapointe      Issue End Monitor: flapointe                    
-11-18-04 06:10 flapointe      File Added: lsmod                            
-11-18-04 06:11 flapointe      File Added: lspci                            
-11-18-04 06:11 flapointe      File Added: dmesg                            
-11-18-04 06:17 flapointe      Note Added: 0002444                          
-11-18-04 06:18 flapointe      Issue Monitored: flapointe                    
-04-09-05 17:04 jdthood        Status                   new => acknowledged 
+11-13-04 20:14 amitshah       New Issue                                    
+11-13-04 20:14 amitshah       Distribution              => Debian sid      
+11-13-04 20:14 amitshah       Kernel Version            => 2.6.8.1         
+11-13-04 20:18 amitshah       Note Added: 0002401                          
+04-09-05 17:04 jdthood        Status                   new => closed       
+04-09-05 17:04 jdthood        Resolution               open => not an issue
 ======================================================================
 
 
