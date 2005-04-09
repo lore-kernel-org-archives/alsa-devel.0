@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000321]: Left front channel always muted on boot
-Date: Sat, 9 Apr 2005 17:24:57 +0200
-Message-ID: <042adccf69bdeb7dd014a5968f36a011@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000535]: via82xx: "codec 0 is not valid..."
+Date: Sat, 9 Apr 2005 17:26:30 +0200
+Message-ID: <7be61bda69565893715ef547686f7726@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F3835220
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:24:57 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A5A5E220
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:26:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,81 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=321> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=535> 
 ======================================================================
-Reported By:                64bitten
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   321
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   535
+Category:                   PCI - via82xx
+Reproducibility:            have not tried
+Severity:                   major
 Priority:                   normal
 Status:                     acknowledged
-Distribution:               gentoo
-Kernel Version:             2.6.6
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-02-2004 08:09 CEST
-Last Modified:              04-09-2005 17:24 CEST
+Date Submitted:             09-24-2004 14:29 CEST
+Last Modified:              04-09-2005 17:26 CEST
 ======================================================================
-Summary:                    Left front channel always muted on boot
+Summary:                    via82xx: "codec 0 is not valid..."
 Description: 
-ice1724 (M Audio Revolution 7.1 in my case) always restores the mixer
-settings at boot, but the left front channel is muted regardless.  The fix
-is to run alsamixer and adjust the slider again.  This forces the channel
-to unmute.  Should I be worried "amixer scontrols" reports everything as
-"Mono" as well?
+Trying to play any sound at all generates lines like this in the syslog:
+
+kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/via82xx.c:588:
+codec_read: codec 0 is not valid [0xfe0000]
+kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/via82xx.c:727:
+invalid via82xx_cur_ptr, using last valid pointer
+
+
+with no sound ever being produced.  I don't know anything about sound
+hardware, so don't know what other information you need.  It's an onboard
+chip, listed in the debconf data below.
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- K6-III - 12-17-04 03:15 
+ flapointe - 11-18-04 06:17 
 ----------------------------------------------------------------------
-Happens to me as well with the Revo 7.1.
-
-----------------------------------------------------------------------
- herby - 12-17-04 06:46 
-----------------------------------------------------------------------
-I've got an M-Audio Revolution 7.1 as well.  I noted that after boot it
-mutes a channel as well.  This was back using ALSA 0.9.6.  What I did to
-get around it was to set the level down, then up a bit.  While it didn't
-cure the base problem, it was a viable work around.  The problem has
-existed for quite a few revisions.  While this does not provide a cure, it
-does show that the problem has existed for a while.  If I remember, the
-problem might be described in the ALSA development mailing list archives.
-
-----------------------------------------------------------------------
- rlrevell - 12-17-04 06:51 
-----------------------------------------------------------------------
-Please try this:
-
-reboot
-
-amixer > amixer.bad
-
-unmute the muted channel
-
-amixer > amixer.good
-
-then post the output of "diff amixer.bad amixer.good"
+I have a similar issue here on a amd64 computer. When I try to play a sound
+after a fresh boot, it plays a few seconds (sometimes with sound, but most
+of the time without) and then it spits lots of "codec_ready: codec 0 is
+not ready [0x124fff0]
+codec_read: codec 0 is not valid [0x1a40000]
+codec_read: codec 0 is not valid [0x1a40000]
+codec_read: codec 0 is not valid [0x1a40000]" and the player stops playing
+like it's paused. Afterward, it's impossible to play any file again until
+a reboot. I am using a 2.6.9-gentoo-r1 kernel (ALSA 1.0.6 compiled as
+modules) but I had the same problem with previous releases and ALSA
+compiled in the kernel. The computer does not seem to be able to boot
+without ACPI enabled so it's there to stay.
 
 ----------------------------------------------------------------------
- 64bitten - 12-21-04 07:10 
+ flapointe - 04-09-05 17:26 
 ----------------------------------------------------------------------
-The files diff identically.  Please see the attached amixer.bad file as an
-example of the output.
+The sound works normally when I stop using CPU frequency stepping.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-02-04 08:09 64bitten       New Issue                                    
-06-02-04 08:09 64bitten       Distribution              => gentoo          
-06-02-04 08:09 64bitten       Kernel Version            => 2.6.6           
-12-17-04 03:15 K6-III         Note Added: 0002845                          
-12-17-04 06:46 herby          Note Added: 0002846                          
-12-17-04 06:51 rlrevell       Note Added: 0002847                          
-12-21-04 07:09 64bitten       File Added: amixer.bad                       
-12-21-04 07:10 64bitten       Note Added: 0002896                          
-04-09-05 17:24 jdthood        Status                   new => acknowledged 
+09-24-04 14:29 jdthood        New Issue                                    
+09-24-04 14:54 tiwai          Note Added: 0001889                          
+11-05-04 11:53 jdthood        Note Added: 0002306                          
+11-09-04 18:34 tiwai          Note Added: 0002330                          
+11-18-04 05:49 flapointe      Issue Monitored: flapointe                    
+11-18-04 05:50 flapointe      Issue End Monitor: flapointe                    
+11-18-04 06:10 flapointe      File Added: lsmod                            
+11-18-04 06:11 flapointe      File Added: lspci                            
+11-18-04 06:11 flapointe      File Added: dmesg                            
+11-18-04 06:17 flapointe      Note Added: 0002444                          
+11-18-04 06:18 flapointe      Issue Monitored: flapointe                    
+04-09-05 17:04 jdthood        Status                   new => acknowledged 
+04-09-05 17:26 flapointe      Note Added: 0004424                          
 ======================================================================
 
 
