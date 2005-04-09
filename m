@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000411]: IEC958 status non-audio (and others) bits are not updated on iec958 stream
-Date: Sat, 9 Apr 2005 18:37:05 +0200
-Message-ID: <614122b6d0a072d2531c2450e1024b22@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001042]: Segfault when using "arecord -fS16_LE -r96000 -c2 -Ddefault" with the hardware doing 48000.
+Date: Sat, 9 Apr 2005 18:48:02 +0200
+Message-ID: <a7fe6d2d6b4f68c360b16d827c07cdde@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BB03A238
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 18:37:05 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B0DDD25F
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 18:48:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=411> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1042> 
 ======================================================================
-Reported By:                domi
+Reported By:                jcdutton
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   411
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1042
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Debian unstable
-Kernel Version:             2.6.7
+Status:                     new
 ======================================================================
-Date Submitted:             07-28-2004 21:04 CEST
-Last Modified:              04-09-2005 18:37 CEST
+Date Submitted:             04-09-2005 18:48 CEST
+Last Modified:              04-09-2005 18:48 CEST
 ======================================================================
-Summary:                    IEC958 status non-audio (and others) bits are not
-updated on iec958 stream
+Summary:                    Segfault when using "arecord -fS16_LE -r96000 -c2
+-Ddefault" with the hardware doing 48000.
 Description: 
-To investigate a problem where AC3 is not working
-with my Yamaha amplifer and my Asus a7n8x deluxe board,
-I've set up a loopback between the rear spdif output (RCA)
-and the on-board spdif input.
+(gdb) run -fS16_LE -r96000 -c2 -Ddefault:2
+Starting program: /usr/bin/arecord -fS16_LE -r96000 -c2 -Ddefault:2
+[Thread debugging using libthread_db enabled]
+[New Thread 16384 (LWP 10130)]
+RIFF$\uffff\uffffWAVEfmt w\uffffdata\uffff\uffffRecording WAVE 'stdout' :
+Signed 16 bit Little Endian, Rate 96000 Hz, Stereo
 
-Reading the 'SPDIF In Status' status line in  the card0/codec97#0/ac97#0-0
-file, I've noticed that the status, non-audio or any other information
-sent through the spdif stream are not sent on the wire.
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 16384 (LWP 10130)]
+snd_pcm_rate_expand_s16 (dst_areas=0x805c000, dst_offset=0,
+dst_frames=8192, src_areas=0x806e380, src_offset=0,
+    src_frames=4096, channels=2, rate=0x80556b8) at pcm_rate.c:187
+187                     new_sample = rate->old_sample[channel];
+(gdb) bt
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0 
+snd_pcm_rate_expand_s16 (dst_areas=0x805c000, dst_offset=0,
+dst_frames=8192, src_areas=0x806e380, src_offset=0,
+    src_frames=4096, channels=2, rate=0x80556b8) at pcm_rate.c:187
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0xb7e63e0e in
+snd_pcm_rate_avail_update (pcm=0x8055530) at
+pcm_rate.c:785
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0xb7e46edb in
+snd_pcm_avail_update (pcm=0x2000) at pcm.c:2265
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0xb7e4cc14 in
+snd_pcm_read_areas (pcm=0x8055530, areas=0xbfe01ad0,
+offset=0, size=8192,
+    func=0xb7e680b0 <snd_pcm_mmap_read_areas>) at pcm.c:6250
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0xb7e6838f in
+snd_pcm_mmap_readi (pcm=0x8055530, buffer=0x2000,
+size=8192) at pcm_mmap.c:236
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0xb7e44e88 in
+snd_pcm_readi (pcm=0x0, buffer=0x8071170, size=8192) at
+pcm_local.h:402
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x0804dc8b in
+capture_go ()
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x0804f234 in capture
+()
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8  0x08050bde in main ()
 
-This behavior would explain the problems found in bug 00369 (SPDIF always
-on) and 00214 (AC3 not working)
-
-Note that the 'SPDIF Control' line and ac97#0-0+regs file are updated
-correctly, only the information sent on the
-stream are lost.
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 04-09-05 14:27 
-----------------------------------------------------------------------
-> So my hardware is not faulty. There's no bug in the ALC650.
-
-Can this bug report be closed, or is there something that remains to be
-done?
-
-----------------------------------------------------------------------
- domi - 04-09-05 18:37 
-----------------------------------------------------------------------
-To solve this bug, the SoundStorm chip must be reverse-engineered. 
-
-James Courtier Dutton mentioned a while ago that he should be able to
-solve this
-problem once he got a Nforce2 hardware. So he asked for a HW donation. 
-
-I got no more news and did not see anything that suggest that some work 
-was done on this part. 
-
-I've just tried with kernel 2.6.9 alsa 1.0.6 and it still does not work.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-28-04 21:04 domi           New Issue                                    
-07-28-04 21:04 domi           Distribution              => Debian unstable 
-07-28-04 21:04 domi           Kernel Version            => 2.6.7           
-08-05-04 20:18 domi           Note Added: 0001535                          
-08-07-04 18:09 domi           Note Added: 0001544                          
-08-19-04 19:01 tiwai          Note Added: 0001590                          
-09-07-04 14:10 domi           Note Added: 0001707                          
-04-09-05 14:27 jdthood        Note Added: 0004397                          
-04-09-05 14:27 jdthood        Status                   new => feedback     
-04-09-05 18:37 domi           Note Added: 0004426                          
+04-09-05 18:48 jcdutton       New Issue                                    
 ======================================================================
 
 
