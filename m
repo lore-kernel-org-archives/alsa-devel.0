@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000462]: Sound OK but w/o mixer
-Date: Sat, 9 Apr 2005 14:28:33 +0200
-Message-ID: <17bc78a6a87caee90523092527a64658@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000491]: Corrupted sounds recorded after using mjpeg's glav utility
+Date: Sat, 9 Apr 2005 14:30:08 +0200
+Message-ID: <10d4af953c1a369a8e283240860fa6a6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4E75217
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 14:28:33 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A41F212
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 14:30:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,171 +22,136 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=462> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=491> 
 ======================================================================
-Reported By:                equake
+Reported By:                derekfountain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   462
-Category:                   PCI - via82xx
+Issue ID:                   491
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     feedback
-Distribution:               Debian Unstable
-Kernel Version:             2.6.8
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-23-2004 02:13 CEST
-Last Modified:              04-09-2005 14:28 CEST
+Date Submitted:             09-09-2004 08:17 CEST
+Last Modified:              04-09-2005 14:30 CEST
 ======================================================================
-Summary:                    Sound OK but w/o mixer
+Summary:                    Corrupted sounds recorded after using mjpeg's glav
+utility
 Description: 
-I have a Soyo SY-KT600 Dragon Plus v2.0 mother board, w/ the VIA 8233
-chipset.
-When I load the drivers, I can hear sound but everything that I change on
-alsamixergui simply have no effect. I can set Master Volume to ZERO and I
-still have the sound, at the same volume.
-Any idea?
-I've tried ac97_quirk from -1 to 4 and nothing.
+Running a standard, self compiled 2.6.7 kernel on top of SUSE-9.1 for IA32.
+Dual PIII-500 box with an old ISA Sound Blaster 16 card. Also mjpegtools
+1.6.2 (tried SUSE's and my own self compiled version).
 
-# lspci -vv
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-        Subsystem: Elitegroup Computer Systems: Unknown device a101
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin C routed to IRQ 193
-        Region 0: I/O ports at c000 [size=256]
-        Capabilities: [c0] Power Management version 2
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+The problem is corrupted sound being recorded. The underlying sound is
+there - you can hear the conversation, or whatever - but over the top
+there is a pulsing crackle. The crackle pulses every second or so.
 
-# cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: C-Media Electronics id 83
+The corruption only happens after the mjpeg "glav" playback utility is
+used. That is, run "lavrec" to record video/sound , and it's OK. Play it
+back using "glav" and it sounds fine. Now run "lavrec" again and what gets
+recorded has this sound corruption.
 
-Revision         : 0x01
-Compat. Class    : 0x03
-Subsys. Vendor ID: 0xffff
-Subsys. ID       : 0xffff
+If I ensure the sound system is reset (rcaslasound restart) before I run
+"lavrec" the sound comes out fine, so at least I have a workaround.
 
-Capabilities     :
-DAC resolution   : 16-bit
-ADC resolution   : 16-bit
-3D enhancement   : No 3D Stereo Enhancement
+The mjpeg guys acknowledge they do some funky stuff to get the best from
+the sound hardware, and indeed, if I playback using mplayer then try
+"lavrec" a second time it doesn't corrupt the sound. Something in glav is
+upsetting the ISA sound blaster driver. No other sound card has (yet) been
+found which suffers the same problem. OSS on a 2.4 kernel always worked
+flawlessly on this machine.
 
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=2 AMAP LDAC SDAC CDAC DSA=0 DRA
-Extended status  : SPCV LDAC SDAC CDAC
+I'm not up on the sound system - it "just worked" in the past. I'm not
+even sure what modules I'm using. The sound system worked fine out of the
+SUSE box until I came across this problem. My modules list:
 
-
-# cat /proc/asound/card0/codec97#0/ac97#0-0+regs
-0:00 = 0000
-0:02 = 1a1a
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 801e
-0:0c = 0000
-0:0e = 801f
-0:10 = 9f1f
-0:12 = 9f1f
-0:14 = 0000
-0:16 = 9f1f
-0:18 = 0808
-0:1a = 0000
-0:1c = 0000
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 000f
-0:28 = 0bc2
-0:2a = 05f0
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 8080
-0:38 = 8080
-0:3a = 2000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0004
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 3038
-0:66 = 0016
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 0030
-0:74 = c000
-0:76 = 393c
-0:78 = 0000
-0:7a = 0000
-0:7c = 434d
-0:7e = 4983
+# lsmod
+Module                  Size  Used by
+iptable_filter          3200  0
+ip_tables              18560  1 iptable_filter
+udf                    90372  0
+snd_seq_oss            35712  0
+snd_pcm_oss            63912  0
+snd_mixer_oss          21504  1 snd_pcm_oss
+snd_seq_midi            9888  0
+snd_seq_midi_event      8064  2 snd_seq_oss,snd_seq_midi
+snd_opl3_synth         17796  0
+snd_seq_instr           9600  1 snd_opl3_synth
+snd_seq_midi_emul       8576  1 snd_opl3_synth
+snd_seq                59024  9
+snd_seq_oss,snd_seq_midi,snd_seq_midi_event,snd_opl3_synth,snd_seq_instr,snd_seq_midi_emul
+snd_ainstr_fm           3072  1 snd_opl3_synth
+snd_sb16               15340  4
+snd_opl3_lib           12416  2 snd_opl3_synth,snd_sb16
+snd_sb16_dsp           13440  1 snd_sb16
+snd_pcm               108804  2 snd_pcm_oss,snd_sb16_dsp
+snd_timer              28932  3 snd_seq,snd_opl3_lib,snd_pcm
+snd_sb16_csp           22528  1 snd_sb16
+snd_sb_common          17408  3 snd_sb16,snd_sb16_dsp,snd_sb16_csp
+snd_hwdep              10628  2 snd_opl3_lib,snd_sb16_csp
+snd_mpu401_uart         8832  1 snd_sb16
+snd_rawmidi            27300  2 snd_seq_midi,snd_mpu401_uart
+snd_seq_device          9224  6
+snd_seq_oss,snd_seq_midi,snd_opl3_synth,snd_seq,snd_opl3_lib,snd_rawmidi
+snd                    65924  29
+snd_seq_oss,snd_pcm_oss,snd_mixer_oss,snd_seq_midi,snd_seq_midi_event,snd_opl3_synth,snd_seq_instr,snd_seq_midi_emul,snd_seq,snd_sb16,snd_opl3_lib,snd_sb16_dsp,snd_pcm,snd_timer,snd_sb16_csp,snd_sb_common,snd_hwdep,snd_mpu401_uart,snd_rawmidi,snd_seq_device
+nls_cp437               6144  1
+nls_iso8859_1           4480  1
+smbfs                  67064  2
+parport_pc             38720  1
+lp                     11144  0
+parport                40648  2 parport_pc,lp
+edd                    10904  0
+joydev                 10048  0
+sg                     38432  0
+sr_mod                 17572  0
+ide_cd                 40992  0
+cdrom                  38044  2 sr_mod,ide_cd
+nvram                   9608  0
+intel_agp              19100  1
+agpgart                33580  1 intel_agp
+uhci_hcd               31504  0
+snd_page_alloc         12680  1 snd_pcm
+soundcore               9824  1 snd
+ipv6                  252128  36
+tulip                  47264  0
+zr36060                10124  1
+adv7175                 6664  0
+saa7110                 8200  0
+zr36067               134140  0
+i2c_algo_bit            9480  1 zr36067
+i2c_core               24320  3 adv7175,saa7110,i2c_algo_bit
+videocodec              8468  2 zr36060,zr36067
+pwcx                   91648  0
+pwc                    51952  1 pwcx
+usbcore               109536  4 uhci_hcd,pwc
+videodev                9984  2 zr36067,pwc
+dm_mod                 43680  4
+reiserfs              256464  4
+aic7xxx               189624  2
+sd_mod                 21760  3
+scsi_mod              117060  4 sg,sr_mod,aic7xxx,sd_mod
 
 ======================================================================
 
 ----------------------------------------------------------------------
- equake - 09-09-04 04:46 
+ jdthood - 04-09-05 14:30 
 ----------------------------------------------------------------------
-Sorry about the delay. The file is attached.
-Tks!
-
-----------------------------------------------------------------------
- jdthood - 04-09-05 14:28 
-----------------------------------------------------------------------
-Submitter: Has this bug been fixed now?
+Submitter: Has this bug been fixed in a later ALSA release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-23-04 02:13 equake         New Issue                                    
-08-23-04 02:13 equake         Distribution              => Debian Unstable 
-08-23-04 02:13 equake         Kernel Version            => 2.6.8           
-08-25-04 19:58 tiwai          Note Added: 0001626                          
-08-25-04 19:58 tiwai          File Added: cm9761-add.dif                    
-08-27-04 02:53 equake         Note Added: 0001640                          
-08-27-04 02:59 equake         Note Added: 0001641                          
-08-27-04 19:36 tiwai          Note Added: 0001646                          
-09-09-04 04:46 equake         File Added: asound.state                     
-09-09-04 04:46 equake         Note Added: 0001743                          
-04-09-05 14:28 jdthood        Note Added: 0004398                          
-04-09-05 14:28 jdthood        Status                   new => feedback     
+09-09-04 08:17 derekfountain  New Issue                                    
+09-18-04 08:32 derekfountain  Issue Monitored: derekfountain                    
+04-09-05 14:30 jdthood        Note Added: 0004399                          
 ======================================================================
 
 
