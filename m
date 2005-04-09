@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000481]: IEC958 Output doesn't work
-Date: Sat, 9 Apr 2005 16:23:54 +0200
-Message-ID: <19c7db6092db5eee9db1f0f92c7a5e6e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000594]: Sound level is extremely low
+Date: Sat, 9 Apr 2005 16:26:57 +0200
+Message-ID: <edb443b612e7d0ca98ef753bb44214d7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3583624F
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:23:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 208081D5
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:26:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=481> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=594> 
 ======================================================================
-Reported By:                somnione
+Reported By:                danstef
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   481
-Category:                   PCI - cs46xx
+Issue ID:                   594
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               LFS
-Kernel Version:             2.4.23
+Distribution:               
+Kernel Version:             2.4.20
 ======================================================================
-Date Submitted:             09-04-2004 13:17 CEST
-Last Modified:              04-09-2005 16:23 CEST
+Date Submitted:             10-21-2004 23:19 CEST
+Last Modified:              04-09-2005 16:26 CEST
 ======================================================================
-Summary:                    IEC958 Output doesn't work
+Summary:                    Sound level is extremely low
 Description: 
-I had Version 0.9.8 and in the mixer i could switch on "IEC 958 Output"
-wich would activate the optical out on the card, but with version 1.0.6a
-I'm missing this option and thus the card is silent via optical out. It
-has "IEC958" but nothing happens.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000562 No AC3 sound playable through S/PDIF wi...
+I compiled and installed drivers and utilities without a 
+problem. 
+I used the alsamixer and unmute all channels and raise levels. I also used
+aumix to max the gain. When I play
+a wave file (play --volume=100) I can barely hear the sound.
+I have speakers hooked up to the line out and a front panel
+speaker. Sound is coming out of both at the same really, really low level.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 16:23 
+ danstef - 10-21-04 23:21 
 ----------------------------------------------------------------------
-Submitter: This appears to be the same problem as was reported in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=562.
+I am installing windows on the machine just to see if I can get the card
+to
+work to make sure there is not a hardware issue.
+
+----------------------------------------------------------------------
+ jdthood - 04-09-05 16:26 
+----------------------------------------------------------------------
+> I am installing windows on the machine just to see if I can
+> get the card to work to make sure there is not a hardware issue.
+
+So you are sure that this is an ALSA bug?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-04-04 13:17 somnione       New Issue                                    
-09-04-04 13:17 somnione       Distribution              => LFS             
-09-04-04 13:17 somnione       Kernel Version            => 2.4.23          
-04-09-05 16:20 jdthood        Relationship added       has duplicate 0000562
-04-09-05 16:23 jdthood        Note Added: 0004411                          
+10-21-04 23:19 danstef        New Issue                                    
+10-21-04 23:19 danstef        Kernel Version            => 2.4.20          
+10-21-04 23:21 danstef        Note Added: 0002224                          
+04-09-05 16:26 jdthood        Note Added: 0004412                          
 ======================================================================
 
 
