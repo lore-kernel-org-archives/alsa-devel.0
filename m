@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000616]: codec read/write timeout is reported on module load, and card is not detected
-Date: Sat, 9 Apr 2005 17:03:14 +0200
-Message-ID: <a1e7ae9660a01583066cf95ff3a187db@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000535]: via82xx: "codec 0 is not valid..."
+Date: Sat, 9 Apr 2005 17:04:49 +0200
+Message-ID: <e6f09d17c5a31d56924cd24cf0254cac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A2C81E6
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:03:14 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C92C1E6
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:04:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,97 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been ACKNOWLEDGED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=616> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=535> 
 ======================================================================
-Reported By:                jcpetruzza
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   616
-Category:                   PCI - ens1371
-Reproducibility:            always
+Issue ID:                   535
+Category:                   PCI - via82xx
+Reproducibility:            have not tried
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     acknowledged
 Distribution:               
-Kernel Version:             2.6.8-gentoo-r3
+Kernel Version:             
 ======================================================================
-Date Submitted:             10-29-2004 17:09 CEST
-Last Modified:              04-09-2005 17:03 CEST
+Date Submitted:             09-24-2004 14:29 CEST
+Last Modified:              04-09-2005 17:04 CEST
 ======================================================================
-Summary:                    codec read/write timeout is reported on module load,
-and card is not detected
+Summary:                    via82xx: "codec 0 is not valid..."
 Description: 
-My Ensoniq 1371 rev 7 based card is not detected.
+Trying to play any sound at all generates lines like this in the syslog:
 
-dmesg shows:
+kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/via82xx.c:588:
+codec_read: codec 0 is not valid [0xfe0000]
+kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/via82xx.c:727:
+invalid via82xx_cur_ptr, using last valid pointer
 
-PCI: Found IRQ 12 for device 0000:00:09.0
-codec write timeout at 0xec14 [0x40000000]
-es1371: codec read timeout at 0xec14 [0x40000000]
-es1371: codec read timeout at 0xec14 [0x40000000]
-es1371: codec read timeout at 0xec14 [0x40000000]
-.
-.
-.
-codec write timeout at 0xec14 [0x40000000]
-es1371: codec read timeout at 0xec14 [0x40000000]
-AC'97 0 does not respond - RESET
-es1371: codec read timeout at 0xec14 [0x40000000]
-es1371: codec read timeout at 0xec14 [0x40000000]
-AC'97 0 access is not valid [0x0], removing mixer.
-ENS1371: probe of 0000:00:09.0 failed with error -5
+
+with no sound ever being produced.  I don't know anything about sound
+hardware, so don't know what other information you need.  It's an onboard
+chip, listed in the debconf data below.
+
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jcpetruzza - 11-12-04 15:12 
+ tiwai - 09-24-04 14:54 
 ----------------------------------------------------------------------
-I'd be glad to help in the diagnose and fixup of this problem if any
-directions are given
+Try to turn off ACPI?
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 17:03 
+ jdthood - 11-05-04 11:53 
 ----------------------------------------------------------------------
-Submitter: Is this still a problem with the latest ALSA release?
+In reply to the "turn off ACPI" suggestion the submitter replies "No
+change".
+
+----------------------------------------------------------------------
+ tiwai - 11-09-04 18:34 
+----------------------------------------------------------------------
+The first message (codec 0...) is likely harmless.  I know other devices 
+show the same message but working.
+
+The second one (using last ptr) is more serious, but the system should
+still work, at least produce some sounds.
+The fact that he doesn't get any sound implies that the mixer
+configuration is not properly done.
+
+----------------------------------------------------------------------
+ flapointe - 11-18-04 06:17 
+----------------------------------------------------------------------
+I have a similar issue here on a amd64 computer. When I try to play a sound
+after a fresh boot, it plays a few seconds (sometimes with sound, but most
+of the time without) and then it spits lots of "codec_ready: codec 0 is
+not ready [0x124fff0]
+codec_read: codec 0 is not valid [0x1a40000]
+codec_read: codec 0 is not valid [0x1a40000]
+codec_read: codec 0 is not valid [0x1a40000]" and the player stops playing
+like it's paused. Afterward, it's impossible to play any file again until
+a reboot. I am using a 2.6.9-gentoo-r1 kernel (ALSA 1.0.6 compiled as
+modules) but I had the same problem with previous releases and ALSA
+compiled in the kernel. The computer does not seem to be able to boot
+without ACPI enabled so it's there to stay.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-29-04 17:09 jcpetruzza     New Issue                                    
-10-29-04 17:09 jcpetruzza     Kernel Version            => 2.6.8-gentoo-r3 
-11-12-04 15:12 jcpetruzza     Note Added: 0002397                          
-04-09-05 17:03 jdthood        Note Added: 0004417                          
+09-24-04 14:29 jdthood        New Issue                                    
+09-24-04 14:54 tiwai          Note Added: 0001889                          
+11-05-04 11:53 jdthood        Note Added: 0002306                          
+11-09-04 18:34 tiwai          Note Added: 0002330                          
+11-18-04 05:49 flapointe      Issue Monitored: flapointe                    
+11-18-04 05:50 flapointe      Issue End Monitor: flapointe                    
+11-18-04 06:10 flapointe      File Added: lsmod                            
+11-18-04 06:11 flapointe      File Added: lspci                            
+11-18-04 06:11 flapointe      File Added: dmesg                            
+11-18-04 06:17 flapointe      Note Added: 0002444                          
+11-18-04 06:18 flapointe      Issue Monitored: flapointe                    
+04-09-05 17:04 jdthood        Status                   new => acknowledged 
 ======================================================================
 
 
