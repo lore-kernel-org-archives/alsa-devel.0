@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000448]: System hangs up
-Date: Sat, 9 Apr 2005 14:23:48 +0200
-Message-ID: <12a52cfc00aa39c1159bd6d4d7e0a49d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001013]: Sound is not working on the MacMini
+Date: Sat, 9 Apr 2005 14:26:09 +0200
+Message-ID: <bed9ccb5995be267392e500004c30eb7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 910CB217
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 14:23:48 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 57BAE217
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 14:26:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,85 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=448> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1013> 
 ======================================================================
-Reported By:                zadnica
-Assigned To:                
+Reported By:                timing
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   448
-Category:                   PCI - via82xx
+Issue ID:                   1013
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   crash
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.11.5
 ======================================================================
-Date Submitted:             08-17-2004 13:02 CEST
-Last Modified:              04-09-2005 14:23 CEST
+Date Submitted:             03-24-2005 19:27 CET
+Last Modified:              04-09-2005 14:26 CEST
 ======================================================================
-Summary:                    System hangs up
+Summary:                    Sound is not working on the MacMini
 Description: 
-Systems hangs up, when modules snd-via82xx is loaded. When I using OSS
-module via82cxxx_audio everything works fine.
+Sound is not working on the MacMini. When loading the dmasound_pmac i get
+the following error:
+
+FATAL: Error inserting dmasound_pmac
+(/lib/modules/2.6.11.5/kernel/sound/oss/dmasound/dmasound_pmac.ko): No
+such device
+
+When trying to play music i get an "maybe your device is busy?" error.
+
+I've found a solution on the ubuntuforums(
+http://www.ubuntuforums.org/showthread.php?t=12748 )
+
+it says:
+
+To manually apply the patch (just as easy in this case),
+just open the file linux/sound/ppc/pmac.c in an editor,
+and search for OAKeylargo.
+Where it says SNAPPER right below, you change to SCREAMER (in uppercase).
+(In kernel 2.6.10 it's at line 967). 
+
+this solution is very minimal, the alsamixer is slow, and my computer
+hangs for a couple of seconds before the start of every new process (when
+opening a new window in gnome etc.). When i edit pmac.c in the old way my
+system runs normal again.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-06-04 18:29 
+ perchrh - 04-09-05 02:45 
 ----------------------------------------------------------------------
-Hmm, then I'd say it's a bug of BIOS.
-
-We can add a workaround code, of course, although it's really
-ugly and I'd like to avoid it as much as possible...
+Ok, so I found a nice way of doing it myself. 
+I'll post a patch this weekend.
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 14:23 
+ perchrh - 04-09-05 14:26 
 ----------------------------------------------------------------------
-sventura: Was this bug fixed or worked around in a later ALSA release?
+Patch at 
+http://marc.theaimsgroup.com/?l=linux-kernel&m=111304762025261&w=2
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-17-04 13:02 zadnica        New Issue                                    
-08-22-04 09:51 sventura       Note Added: 0001607                          
-08-22-04 09:52 sventura       File Added: myvia82xx.tar.gz                    
-08-23-04 14:59 tiwai          Note Added: 0001611                          
-08-23-04 14:59 tiwai          File Added: via-crash-fix.dif                    
-09-06-04 18:25 sventura       Note Added: 0001700                          
-09-06-04 18:26 sventura       Note Edited: 0001700                         
-09-06-04 18:27 sventura       Note Edited: 0001700                         
-09-06-04 18:29 tiwai          Note Added: 0001701                          
-09-06-04 18:40 sventura       File Added: via-bug448-fix.diff                   
-
-04-09-05 14:23 jdthood        Note Added: 0004395                          
+03-24-05 19:27 timing         New Issue                                    
+03-24-05 19:27 timing         Distribution              => Ubuntu          
+03-24-05 19:27 timing         Kernel Version            => 2.6.11.5        
+03-24-05 19:32 timing         Note Added: 0004194                          
+03-24-05 19:35 timing         Issue Monitored: timing                      
+03-24-05 19:48 tiwai          Note Added: 0004197                          
+03-24-05 21:35 timing         Note Added: 0004202                          
+03-25-05 21:44 perchrh        Note Added: 0004212                          
+03-25-05 21:50 perchrh        Note Edited: 0004212                         
+03-25-05 21:52 perchrh        Issue Monitored: perchrh                     
+03-25-05 22:57 timing         Note Edited: 0004202                         
+03-25-05 23:27 timing         Note Edited: 0004202                         
+04-03-05 13:44 perchrh        Note Added: 0004309                          
+04-03-05 14:29 perchrh        Note Edited: 0004309                         
+04-03-05 14:30 perchrh        Note Edited: 0004309                         
+04-03-05 14:36 perchrh        Note Added: 0004310                          
+04-09-05 02:45 perchrh        Note Added: 0004381                          
+04-09-05 14:26 perchrh        Note Added: 0004396                          
 ======================================================================
 
 
