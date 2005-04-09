@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000535]: via82xx: "codec 0 is not valid..."
-Date: Sat, 9 Apr 2005 17:29:11 +0200
-Message-ID: <e307849a2e324e06e7e9a2d1e08952af@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000331]: possible incompatibility with cpu-freq
+Date: Sat, 9 Apr 2005 17:29:10 +0200
+Message-ID: <011beab82a2f5aa0519dc9c090fe7a24@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6E9D4225
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:29:11 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9D387220
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:29:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,108 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0000331.
+The following issue has been set as RELATED TO issue 0000535.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=535> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=331> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                souvarine
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   535
-Category:                   PCI - via82xx
-Reproducibility:            have not tried
+Issue ID:                   331
+Category:                   PCI - intel8x0
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Debian testing
+Kernel Version:             2.6.4 - 2.6.6
 ======================================================================
-Date Submitted:             09-24-2004 14:29 CEST
-Last Modified:              04-09-2005 17:26 CEST
+Date Submitted:             06-10-2004 15:42 CEST
+Last Modified:              04-09-2005 17:29 CEST
 ======================================================================
-Summary:                    via82xx: "codec 0 is not valid..."
+Summary:                    possible incompatibility with cpu-freq
 Description: 
-Trying to play any sound at all generates lines like this in the syslog:
-
-kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/via82xx.c:588:
-codec_read: codec 0 is not valid [0xfe0000]
-kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/via82xx.c:727:
-invalid via82xx_cur_ptr, using last valid pointer
-
-
-with no sound ever being produced.  I don't know anything about sound
-hardware, so don't know what other information you need.  It's an onboard
-chip, listed in the debconf data below.
-
-
-
+On my Sony VAIO PCG NV105 with kernel 2.6.4 and 2.6.6 (I have not tried
+2.6.5) the sound is horrible when the systeme is not very bussy. When the
+systeme is on full load the sound became clean.
+After a serie of kernel recompil I found that when I disable cpu-freq I
+don't have this problem any more.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0000331 possible incompatibility with cpu-freq
+related to          0000535 via82xx: &quot;codec 0 is not valid...&...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-24-04 14:54 
+ jdthood - 04-07-05 20:55 
 ----------------------------------------------------------------------
-Try to turn off ACPI?
-
-----------------------------------------------------------------------
- jdthood - 11-05-04 11:53 
-----------------------------------------------------------------------
-In reply to the "turn off ACPI" suggestion the submitter replies "No
-change".
-
-----------------------------------------------------------------------
- tiwai - 11-09-04 18:34 
-----------------------------------------------------------------------
-The first message (codec 0...) is likely harmless.  I know other devices 
-show the same message but working.
-
-The second one (using last ptr) is more serious, but the system should
-still work, at least produce some sounds.
-The fact that he doesn't get any sound implies that the mixer
-configuration is not properly done.
-
-----------------------------------------------------------------------
- flapointe - 11-18-04 06:17 
-----------------------------------------------------------------------
-I have a similar issue here on a amd64 computer. When I try to play a sound
-after a fresh boot, it plays a few seconds (sometimes with sound, but most
-of the time without) and then it spits lots of "codec_ready: codec 0 is
-not ready [0x124fff0]
-codec_read: codec 0 is not valid [0x1a40000]
-codec_read: codec 0 is not valid [0x1a40000]
-codec_read: codec 0 is not valid [0x1a40000]" and the player stops playing
-like it's paused. Afterward, it's impossible to play any file again until
-a reboot. I am using a 2.6.9-gentoo-r1 kernel (ALSA 1.0.6 compiled as
-modules) but I had the same problem with previous releases and ALSA
-compiled in the kernel. The computer does not seem to be able to boot
-without ACPI enabled so it's there to stay.
-
-----------------------------------------------------------------------
- flapointe - 04-09-05 17:26 
-----------------------------------------------------------------------
-The sound works normally when I stop using CPU frequency stepping.
+Do you think that the ALSA driver should itself disable cpu-freq?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 14:29 jdthood        New Issue                                    
-09-24-04 14:54 tiwai          Note Added: 0001889                          
-11-05-04 11:53 jdthood        Note Added: 0002306                          
-11-09-04 18:34 tiwai          Note Added: 0002330                          
-11-18-04 05:49 flapointe      Issue Monitored: flapointe                    
-11-18-04 05:50 flapointe      Issue End Monitor: flapointe                    
-11-18-04 06:10 flapointe      File Added: lsmod                            
-11-18-04 06:11 flapointe      File Added: lspci                            
-11-18-04 06:11 flapointe      File Added: dmesg                            
-11-18-04 06:17 flapointe      Note Added: 0002444                          
-11-18-04 06:18 flapointe      Issue Monitored: flapointe                    
-04-09-05 17:04 jdthood        Status                   new => acknowledged 
-04-09-05 17:26 flapointe      Note Added: 0004424                          
-04-09-05 17:29 jdthood        Relationship added       related to 0000331  
+06-10-04 15:42 souvarine      New Issue                                    
+06-10-04 15:42 souvarine      Distribution              => Debian testing  
+06-10-04 15:42 souvarine      Kernel Version            => 2.6.4 - 2.6.6   
+09-07-04 16:41 ichino         Issue Monitored: ichino                      
+09-07-04 16:44 ichino         Issue End Monitor: ichino                    
+04-07-05 20:55 jdthood        Note Added: 0004363                          
+04-09-05 17:29 jdthood        Relationship added       related to 0000535  
 ======================================================================
 
 
