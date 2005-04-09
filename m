@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000625]: ISA - 4232 has no CD sound
-Date: Sat, 9 Apr 2005 16:59:00 +0200
-Message-ID: <145a82b057f2242c22925c075516f4a8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000624]: crash with alc850 when driver alsa intel8x0 is use
+Date: Sat, 9 Apr 2005 17:00:52 +0200
+Message-ID: <9c13556dc788d24c6166c4332d4ce2be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC50714A
-	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 16:59:00 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 668A31E6
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 17:00:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,210 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=625> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=624> 
 ======================================================================
-Reported By:                hugovanwoerkom
+Reported By:                xmoucheron
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   625
-Category:                   ISA - cs4232
+Issue ID:                   624
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian Sarge
-Kernel Version:             2.6.9
-Resolution:                 not an issue
+Distribution:               
+Kernel Version:             2.6.8.1 mdk
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-03-2004 13:49 CET
-Last Modified:              04-09-2005 16:59 CEST
+Date Submitted:             11-02-2004 20:24 CET
+Last Modified:              04-09-2005 17:00 CEST
 ======================================================================
-Summary:                    ISA - 4232 has no CD sound
+Summary:                    crash with alc850 when driver alsa intel8x0 is use
 Description: 
-Switched from OSS to Alsa. Enabled sound, alsa, OSS emulation and cs4232
-isa card in kernel. Tried with modules and without. Has sound but not from
-the CD. System ran OSS module  with sound from the CD previous to kernel
-compile, so everything that OSS needed is still there.
+When mandrakelinux boot and when a song is played then the song is stopped
+and the acess to internet is stopped too.
+
+This problem isreproducibility every days and allways.
 ======================================================================
 
 ----------------------------------------------------------------------
- hugovanwoerkom - 11-11-04 13:47 
+ xmoucheron - 11-11-04 14:48 
 ----------------------------------------------------------------------
-On Debian systems:
-/var/lib/alsa/asound.state
-follows:
+I come to install the mandrakelinux 10.1  64bit edition with alsa driver
+1.0.6 and the problem with this driver (intel 8x0) on mandrakelinux 64bit
+is most important.
 
-state.CS4236 {
-	control.1 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'PCM Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 52
-		value.1 52
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Line Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Line Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Aux Playback Switch'
-		value.0 false
-		value.1 false
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Aux Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Aux Playback Switch'
-		index 1
-		value.0 false
-		value.1 false
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Aux Playback Volume'
-		index 1
-		value.0 31
-		value.1 31
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mono Playback Switch'
-		value false
-	}
-	control.10 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name 'Mono Playback Volume'
-		value 15
-	}
-	control.11 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mono Output Playback Switch'
-		value false
-	}
-	control.12 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mono Output Playback Bypass'
-		value false
-	}
-	control.13 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name 'Capture Volume'
-		value.0 11
-		value.1 11
-	}
-	control.14 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.item.0 Line
-		comment.item.1 Aux
-		comment.item.2 Mic
-		comment.item.3 Mix
-		iface MIXER
-		name 'Capture Source'
-		value.0 Mic
-		value.1 Mic
-	}
-	control.15 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mic Boost'
-		value.0 false
-		value.1 false
-	}
-	control.16 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Loopback Capture Switch'
-		value false
-	}
-	control.17 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'Loopback Capture Volume'
-		value 63
-	}
-}
-
-I would turn on CD Playback Switch if I knew how.
+There is none sound with this version 64bit with alsa 1.0.6.
 
 ----------------------------------------------------------------------
- tiwai - 11-11-04 14:40 
+ tiwai - 11-11-04 14:59 
 ----------------------------------------------------------------------
-Ah ok you're using cs4232 (the category was missing - added now).
-Then there is no CD volume control indeed.
-
-Try to turn on 'Aux Playback Switch' (or unmute 'Aux' on alsamixer).
+Perhaps when the "crash" occurs, you get a kernel message something like
+"interrupt disabled".
+If so, it's basically not a problem of the driver but because of purious
+interrupts by unknown device - likely a BIOS problem.
+As a workaround, you can set "buggy_irq=1" module option to snd-intel8x0
+(for ALSA 1.0.7).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-03-04 13:49 hugovanwoerkom New Issue                                    
-11-03-04 13:49 hugovanwoerkom Distribution              => Debian Sarge    
-11-03-04 13:49 hugovanwoerkom Kernel Version            => 2.6.9           
-11-09-04 18:49 tiwai          Note Added: 0002333                          
-11-11-04 13:47 hugovanwoerkom Note Added: 0002384                          
-11-11-04 14:30 tiwai          Category                 ISA - cs4236 => ISA -
-cs4232
-11-11-04 14:40 tiwai          Note Added: 0002385                          
-04-09-05 16:59 jdthood        Status                   new => resolved     
-04-09-05 16:59 jdthood        Resolution               open => not an issue
+11-02-04 20:24 xmoucheron     New Issue                                    
+11-02-04 20:24 xmoucheron     Kernel Version            => 2.6.8.1 mdk     
+11-04-04 13:36 xmoucheron     Note Added: 0002304                          
+11-09-04 10:46 tiwai          Note Added: 0002318                          
+11-09-04 10:47 tiwai          Note Added: 0002319                          
+11-10-04 21:12 xmoucheron     Note Added: 0002376                          
+11-10-04 21:16 xmoucheron     Note Edited: 0002376                         
+11-11-04 14:48 xmoucheron     Note Added: 0002386                          
+11-11-04 14:59 tiwai          Note Added: 0002387                          
+04-09-05 17:00 jdthood        Status                   new => resolved     
+04-09-05 17:00 jdthood        Resolution               open => unable to
+duplicate
 ======================================================================
 
 
