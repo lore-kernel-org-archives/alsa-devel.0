@@ -1,14 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [PATCH] 1/5 echomixer GUI changes
-Date: Sat, 9 Apr 2005 10:15:57 +0200
-Message-ID: <20050409101557.26ee93d7.pochini@shiny.it>
-References: <20050403154210.4eb3cc24.pochini@shiny.it>
-	<s5hu0mlf7vx.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000447]: Capture Switch control is read only
+Date: Sat, 9 Apr 2005 10:56:02 +0200
+Message-ID: <a0adc38ae201351f3f245c5d0349c84a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: Quoted-Printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hu0mlf7vx.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E9311227
+	for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2005 10:56:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,27 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 05 Apr 2005 19:30:58 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
 
-> > Signed-off-by: Giuliano Pochini <pochini@shiny.it>
->=20
-> Thanks, all patches are applied now.
->=20
-> BTW, the patch 3 was in quoted-printable.  Please avoid it at the next
-> time.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=447> 
+======================================================================
+Reported By:                Andrew
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   447
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-17-2004 11:22 CEST
+Last Modified:              04-09-2005 10:56 CEST
+======================================================================
+Summary:                    Capture Switch control is read only
+Description: 
+Second value of the Capture Switch control is read only
+(always on)
+======================================================================
 
-Yes, but I didn't use q-p...
+----------------------------------------------------------------------
+ jdthood - 04-09-05 04:41 
+----------------------------------------------------------------------
+Submitter: Has this been fixed in later ALSA releases?
 
-latin-1 *8bit* test: =E0 =E8 =E9 =EC =F2 =F9
+----------------------------------------------------------------------
+ Andrew - 04-09-05 10:56 
+----------------------------------------------------------------------
+Yes, it was. I think, the issue may be closed.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-17-04 11:22 Andrew         New Issue                                    
+04-09-05 04:41 jdthood        Note Added: 0004388                          
+04-09-05 10:56 Andrew         Note Added: 0004389                          
+======================================================================
 
 
---
-Giuliano.
 
 
 -------------------------------------------------------
