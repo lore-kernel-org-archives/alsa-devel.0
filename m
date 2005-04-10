@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000416]: Signal but no sound on digital out (Nforce 1)
-Date: Mon, 11 Apr 2005 09:43:35 +0200
-Message-ID: <e8aae7131eecbce268b90946ad30da77@bugtrack.alsa-project.org>
+Date: Sun, 10 Apr 2005 23:49:52 +0200
+Message-ID: <b07d87bf24c6b545b6b6e9b16402a5ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4855F295
-	for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2005 09:43:35 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 105FD16E
+	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 23:49:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=416> 
 ======================================================================
@@ -35,12 +35,12 @@ Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
+Status:                     new
 Distribution:               SuSE 9.0
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             07-31-2004 21:46 CEST
-Last Modified:              04-11-2005 09:43 CEST
+Last Modified:              04-10-2005 23:49 CEST
 ======================================================================
 Summary:                    Signal but no sound on digital out (Nforce 1)
 Description: 
@@ -57,29 +57,12 @@ as under Windows and really switch of the Digital output?
 ======================================================================
 
 ----------------------------------------------------------------------
- bonbons - 08-01-04 18:19 
-----------------------------------------------------------------------
-After additionnal trying an looking around, digital out works (PCM mode).
-But it seems not possible to mute or stop the digital output.
-So the following lines are (partially) incorrect:
-
-"Independently of the status of the "Digital" element in alsamixer (muted
-or not) my digital reciever connected to the Digital output of my
-mainboard displays availability of PCM signal, but the sound output to my
-head-phones through Line-Out is not available on the digital out.
- 
-There is no sound at all output to the digital out, no matter what
-selections are done in AlsaMixer."
-
-The last part about mutichannel digital output is still unknown...
-
-----------------------------------------------------------------------
  jdthood - 04-08-05 22:34 
 ----------------------------------------------------------------------
 Submitter: Has this problem been solved in later ALSA releases?
 
 ----------------------------------------------------------------------
- bonbons - 04-10-05 23:50 
+ bonbons - 04-10-05 23:49 
 ----------------------------------------------------------------------
 With drivers with kernel 2.6.10 (1.0.6) the digital output was never
 switched off, no matter what mixer settings were (using alsamixer)
@@ -98,9 +81,6 @@ volume changes had no effect either.
 
 PS: How can I test 5.1 channel output to digital out? As all playback I
 currently got is stereo PCM
-PS2: Since previous note I changed distribution from SuSE to Gentoo
-
-
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -111,8 +91,6 @@ Date Modified  Username       Field                    Change
 08-01-04 18:19 bonbons        Note Added: 0001517                          
 04-08-05 22:34 jdthood        Note Added: 0004378                          
 04-10-05 23:49 bonbons        Note Added: 0004440                          
-04-10-05 23:50 bonbons        Note Edited: 0004440                         
-04-11-05 09:43 jdthood        Status                   new => acknowledged 
 ======================================================================
 
 
