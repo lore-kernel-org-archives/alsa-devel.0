@@ -1,11 +1,14 @@
-From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Subject: [PATCH] ld10k1: Don't require as10k1
-Date: Sun, 10 Apr 2005 12:24:37 +0200
-Message-ID: <4258FEE5.8040608@glocalnet.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001014]: card detect function is never called in pxa2xx-ac97
+Date: Sun, 10 Apr 2005 17:25:11 +0200
+Message-ID: <bb963a8eb12e52febbb4b494a8c2d6e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------030003070102060100030306"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 77A091A4
+	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 17:25:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,67 +18,137 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------030003070102060100030306
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Summary:
-Don't require as10k1 in the configure script and remove the .emu10k1
-files in maintainer-clean instead of clean, since the assembled
-.emu10k1 files are included in the alsa-tools dist.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1014> 
+======================================================================
+Reported By:                twinsen
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1014
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               custom: PXA255/uClibc
+Kernel Version:             2.6.11.5
+======================================================================
+Date Submitted:             03-25-2005 00:04 CET
+Last Modified:              04-10-2005 17:25 CEST
+======================================================================
+Summary:                    card detect function is never called in pxa2xx-ac97
+Description: 
+Hi there,
+I have a some problem with this driver. The environment:
+ALSA source: alsa-driver-1.0.9rc1
+Kernel source: linux-2.6.11.5 (stock)
 
-diffstat output:
-  configure.in              |    4 +---
-  setup/effects/Makefile.am |    6 ++++--
-  2 files changed, 5 insertions(+), 5 deletions(-)
+I cross compiled the kernel and the alsa source for arm target with a 
+toolchain from handhelds.org. I used the following configure command
+line:
 
-Signed-off-by: Mikael Magnusson <mikma@users.sourceforge.net>
+./configure --with-cards=pxa2xx-ac97 
+--with-kernel=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
+--with-build=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
+--with-cross=/usr/local/arm/3.3.2/bin/arm-linux-
+
+config runs without problems, when running make gcc complains about
+"pci_dev_present" being redefined (alsa-driver-1.0.9rc1/include/adriver.h,
+orig: include/linux/pci.h), but compiles ok. 
+
+The problem:
+I loaded all modules (snd, snd-timer, snd-page-alloc, snd-pcm,
+snd-ac97-codec, snd-pxa2xx-pcm, snd-pxa2xx-ac97) but still no soundcard in
+/proc/asound/cards.
+I looked a bit inside the driver, and when snd-pxa2xx-ac97 is loaded, the
+module init function registers the new driver:
+driver_register(&pxa2xx_ac97_driver);
+
+The driver struct contains a probe function:
+.probe          = pxa2xx_ac97_probe,
+but it's never called, so the driver doesn't even check the existance of
+the sound card. Why is that? Did I srcew up the cross compiling?
+Thanks:
+	George
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 04-07-05 16:46 
+----------------------------------------------------------------------
+Set LIBASOUND_DEBUG=1 environemnt variable to see verbose error messages
+from alsa-lib.
+The swparams ioctl returns correct, so it's not the driver side error.
+
+You can ignore the error from mmap.  Mmap of control/status records isn't
+supported on ARM.  Only the mmap of DMA buffer is supported.
+
+----------------------------------------------------------------------
+ twinsen - 04-10-05 17:25 
+----------------------------------------------------------------------
+I compiled the lib with the following options:
+./configure --target=arm-linux --host=arm-linux --build=i386-pc-linux-gnu
+--prefix=/usr --with-softfloat --with-debug=yes
+
+Then issued on the target device:
+[root@trizeps2 ~]# export LIBASOUND_DEBUG=1
+[root@trizeps2 ~]# aplay /tmp/music.wav
+Playing WAVE '/tmp/music.wav' : Signed 16 bit Little Endian, Rate 44100
+Hz, Stereo
+aplay: set_params:960: unable to install sw params:
+start_mode: DATA
+xrun_mode: STOP
+tstamp_mode: NONE
+period_step: 1
+sleep_min: 0
+avail_min: 0
+xfer_align: 10
+silence_threshold: 0
+silence_size: 0
+boundary: 1310720000
+[root@trizeps2 ~]# speaker-test -c 2 -Dhw:0,0 -r 44100 -f 440 -F S16_LE
+
+speaker-test 0.0.7
+
+Playback device is hw:0,0
+Stream parameters are 44100Hz, S16_LE, 2 channels
+Sine wave rate is 440.0000Hz
+Rate set to 44100Hz (requested 44100Hz)
+Buffer size range from 8 to 32768
+Period size range from 8 to 2040
+Periods = 4
+Buffer time size 575
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 0
+was set buffer_size = 15056
+Unable to set sw params for playback: Invalid argument
+Setting of swparams failed: Invalid argument
+
+It's no more verbose than before. :(
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-25-05 00:04 twinsen        New Issue                                    
+03-25-05 00:04 twinsen        Distribution              => custom: PXA255/uClibc
+03-25-05 00:04 twinsen        Kernel Version            => 2.6.11.5        
+03-29-05 16:25 tiwai          Note Added: 0004247                          
+03-29-05 23:43 twinsen        Note Added: 0004259                          
+04-03-05 21:47 twinsen        Note Added: 0004321                          
+04-03-05 22:28 twinsen        Note Added: 0004322                          
+04-04-05 20:51 twinsen        Note Added: 0004330                          
+04-06-05 19:20 twinsen        Note Added: 0004351                          
+04-07-05 16:46 tiwai          Note Added: 0004359                          
+04-10-05 17:25 twinsen        Note Added: 0004439                          
+======================================================================
 
 
---------------030003070102060100030306
-Content-Type: text/x-patch;
- name="ld10k1-as10k1.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ld10k1-as10k1.patch"
-
-diff -ur ld10k1.cvs/configure.in ld10k1/configure.in
---- ld10k1.cvs/configure.in	2005-03-21 15:24:51.000000000 +0100
-+++ ld10k1/configure.in	2005-04-10 12:01:52.168577208 +0200
-@@ -16,9 +16,7 @@
- AC_SUBST(effectsdir)
- 
- AC_CHECK_PROG(AS10K1, as10k1, as10k1)
--if test -z "$AS10K1"; then
--  AC_MSG_ERROR([as10k1 is not installed])
--fi
-+AM_CONDITIONAL(HAVE_AS10K1, test x"$AS10K1" != x)
- 
- #taken from alsa-lib
- dnl Make a symlink for inclusion of lo10k1/xxx.h
-diff -ur ld10k1.cvs/setup/effects/Makefile.am ld10k1/setup/effects/Makefile.am
---- ld10k1.cvs/setup/effects/Makefile.am	2005-04-10 11:57:55.004887745 +0200
-+++ ld10k1/setup/effects/Makefile.am	2005-04-10 12:05:19.069307463 +0200
-@@ -10,9 +10,11 @@
- 	sto51.emu10k1 switch_6.emu10k1 copy_2.emu10k1 \
- 	prologic.emu10k1 fxbus.emu10k1
- 
--CLEANFILES = $(dist_effects_DATA)
-+MAINTAINERCLEANFILES = $(dist_effects_DATA)
- 
--SUFFIXEC = .asm .emu10k1
-+SUFFIXES = .asm .emu10k1
- 
-+if HAVE_AS10K1
- .asm.emu10k1:
- 	$(AS10K1) -o $@ $<
-+endif HAVE_AS10K1
-
---------------030003070102060100030306--
 
 
 -------------------------------------------------------
