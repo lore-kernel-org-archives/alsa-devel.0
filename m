@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000487]: Driver builds, but offers wrong mixer controls and no sound
-Date: Sun, 10 Apr 2005 12:21:48 +0200
-Message-ID: <318037913771b4e6b83da4ecccd784eb@bugtrack.alsa-project.org>
+From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+Subject: [PATCH] ld10k1: Don't require as10k1
+Date: Sun, 10 Apr 2005 12:24:37 +0200
+Message-ID: <4258FEE5.8040608@glocalnet.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------030003070102060100030306"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4547322C
-	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 12:21:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,75 +15,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------030003070102060100030306
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=487> 
-======================================================================
-Reported By:                Quietti
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   487
-Category:                   PARISC - harmony
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     acknowledged
-Distribution:               Debian
-Kernel Version:             2.6.8.1-pa7
-======================================================================
-Date Submitted:             09-08-2004 06:40 CEST
-Last Modified:              04-10-2005 12:21 CEST
-======================================================================
-Summary:                    Driver builds, but offers wrong mixer controls and
-no sound
-Description: 
-The driver builds with the correct options, the module can be loaded, but
-the mixer control it offers do not correspond to my model 712 (Gecko)
-hardware. 
+Summary:
+Don't require as10k1 in the configure script and remove the .emu10k1
+files in maintainer-clean instead of clean, since the assembled
+.emu10k1 files are included in the alsa-tools dist.
 
-Additionally, trying to send sound to the module produces horrible
-chainsaw noise in the speakers. Esound also informs me that the hardware
-does not support any suitable sample rate. Something is evidently broken.
+diffstat output:
+  configure.in              |    4 +---
+  setup/effects/Makefile.am |    6 ++++--
+  2 files changed, 5 insertions(+), 5 deletions(-)
 
-I am quite positive that the corresponding Harmony OSS driver in kernel
-2.4 works well with this workstation, so this is definitely not a hardware
-problem (the same module in kernel 2.6 has been broken from day 1).
-======================================================================
-
-----------------------------------------------------------------------
- Quietti - 04-10-05 12:15 
-----------------------------------------------------------------------
-FYI the current PA-RISC Linux ALSA tree is at:
-
-http://cvs.parisc-linux.org/linux-2.6/sound/parisc/
-
-----------------------------------------------------------------------
- Quietti - 04-10-05 12:21 
-----------------------------------------------------------------------
-Still unresolved as of kernel 2.6.11-pa1 from the PA-RISC Linux tree.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-08-04 06:40 Quietti        New Issue                                    
-09-08-04 06:40 Quietti        Distribution              => Debian          
-09-08-04 06:40 Quietti        Kernel Version            => 2.6.8.1-pa7     
-09-14-04 10:13 Quietti        Note Added: 0001757                          
-09-21-04 12:42 tiwai          Note Added: 0001801                          
-09-21-04 12:53 Quietti        Note Added: 0001802                          
-04-09-05 16:07 jdthood        Note Added: 0004405                          
-04-10-05 10:51 Quietti        Note Added: 0004435                          
-04-10-05 12:07 jdthood        Status                   new => acknowledged 
-04-10-05 12:15 Quietti        Note Added: 0004436                          
-04-10-05 12:21 Quietti        Note Added: 0004437                          
-======================================================================
+Signed-off-by: Mikael Magnusson <mikma@users.sourceforge.net>
 
 
+--------------030003070102060100030306
+Content-Type: text/x-patch;
+ name="ld10k1-as10k1.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ld10k1-as10k1.patch"
+
+diff -ur ld10k1.cvs/configure.in ld10k1/configure.in
+--- ld10k1.cvs/configure.in	2005-03-21 15:24:51.000000000 +0100
++++ ld10k1/configure.in	2005-04-10 12:01:52.168577208 +0200
+@@ -16,9 +16,7 @@
+ AC_SUBST(effectsdir)
+ 
+ AC_CHECK_PROG(AS10K1, as10k1, as10k1)
+-if test -z "$AS10K1"; then
+-  AC_MSG_ERROR([as10k1 is not installed])
+-fi
++AM_CONDITIONAL(HAVE_AS10K1, test x"$AS10K1" != x)
+ 
+ #taken from alsa-lib
+ dnl Make a symlink for inclusion of lo10k1/xxx.h
+diff -ur ld10k1.cvs/setup/effects/Makefile.am ld10k1/setup/effects/Makefile.am
+--- ld10k1.cvs/setup/effects/Makefile.am	2005-04-10 11:57:55.004887745 +0200
++++ ld10k1/setup/effects/Makefile.am	2005-04-10 12:05:19.069307463 +0200
+@@ -10,9 +10,11 @@
+ 	sto51.emu10k1 switch_6.emu10k1 copy_2.emu10k1 \
+ 	prologic.emu10k1 fxbus.emu10k1
+ 
+-CLEANFILES = $(dist_effects_DATA)
++MAINTAINERCLEANFILES = $(dist_effects_DATA)
+ 
+-SUFFIXEC = .asm .emu10k1
++SUFFIXES = .asm .emu10k1
+ 
++if HAVE_AS10K1
+ .asm.emu10k1:
+ 	$(AS10K1) -o $@ $<
++endif HAVE_AS10K1
+
+--------------030003070102060100030306--
 
 
 -------------------------------------------------------
