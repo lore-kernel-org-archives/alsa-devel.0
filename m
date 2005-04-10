@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: A suggestion for better resamplers in alsa.
-Date: Sun, 10 Apr 2005 10:15:16 +0100
-Message-ID: <4258EEA4.6030405@superbug.co.uk>
-References: <s5h1x9qdcex.wl@alsa2.suse.de>	<Pine.HPX.4.33n.0504041709240.17949-100000@studcom.urz.uni-halle.de>	<s5hfyy6bjzm.wl@alsa2.suse.de>	<4252EDF9.6090608@superbug.co.uk>	<Pine.LNX.4.58.0504070946140.1763@pnote.perex-int.cz> <s5hr7hnj8c9.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000487]: Driver builds, but offers wrong mixer controls and no sound
+Date: Sun, 10 Apr 2005 12:15:17 +0200
+Message-ID: <608ce883c52ed0af65eaf3f235916394@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hr7hnj8c9.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 60E9922C
+	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 12:15:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,29 +18,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
->>
->>I like this idea. This setup belongs to:
->>
->>snd_pcm_hw_params_set_rate_noresample()
-> 
-> 
-> This feature would be nice especially also for the sound servers which
-> do resampling by themselves.
-> 
 
-Ok, so how do we actually implement it. We need to be able to detect the
-presence or absence of this function by the application at run time.
-We can't exactly have an application call this function against an older
-version of the lib that does not contain it.
-I will look into adding the function anyway, and we can worry about the
-runtime detection problem later.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=487> 
+======================================================================
+Reported By:                Quietti
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   487
+Category:                   PARISC - harmony
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     acknowledged
+Distribution:               Debian
+Kernel Version:             2.6.8.1-pa7
+======================================================================
+Date Submitted:             09-08-2004 06:40 CEST
+Last Modified:              04-10-2005 12:15 CEST
+======================================================================
+Summary:                    Driver builds, but offers wrong mixer controls and
+no sound
+Description: 
+The driver builds with the correct options, the module can be loaded, but
+the mixer control it offers do not correspond to my model 712 (Gecko)
+hardware. 
 
-James
+Additionally, trying to send sound to the module produces horrible
+chainsaw noise in the speakers. Esound also informs me that the hardware
+does not support any suitable sample rate. Something is evidently broken.
+
+I am quite positive that the corresponding Harmony OSS driver in kernel
+2.4 works well with this workstation, so this is definitely not a hardware
+problem (the same module in kernel 2.6 has been broken from day 1).
+======================================================================
+
+----------------------------------------------------------------------
+ Quietti - 04-10-05 10:51 
+----------------------------------------------------------------------
+Yes, I do. 
+
+The PA-RISC Linux team now has someone working specifically on this
+issue:
+Kyle McMartin <kyle@parisc-linux.org>
+
+It might be a good idea to contact him and to offer him to commit directly
+to the ALSA CVS, instead of passing thru the PA-RISC Linux project's CVS,
+since their CVS tree very seldom gets merged with Linus' bitkeeper tree.
+
+----------------------------------------------------------------------
+ Quietti - 04-10-05 12:15 
+----------------------------------------------------------------------
+FYI the current PA-RISC Linux ALSA tree is at:
+
+http://cvs.parisc-linux.org/linux-2.6/sound/parisc/
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-08-04 06:40 Quietti        New Issue                                    
+09-08-04 06:40 Quietti        Distribution              => Debian          
+09-08-04 06:40 Quietti        Kernel Version            => 2.6.8.1-pa7     
+09-14-04 10:13 Quietti        Note Added: 0001757                          
+09-21-04 12:42 tiwai          Note Added: 0001801                          
+09-21-04 12:53 Quietti        Note Added: 0001802                          
+04-09-05 16:07 jdthood        Note Added: 0004405                          
+04-10-05 10:51 Quietti        Note Added: 0004435                          
+04-10-05 12:07 jdthood        Status                   new => acknowledged 
+04-10-05 12:15 Quietti        Note Added: 0004436                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
