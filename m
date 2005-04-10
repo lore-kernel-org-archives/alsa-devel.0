@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000487]: Driver builds, but offers wrong mixer controls and no sound
-Date: Sun, 10 Apr 2005 10:51:45 +0200
-Message-ID: <5c7c6fdd537ec90c7f3e71b2b1d1488d@bugtrack.alsa-project.org>
+Date: Sun, 10 Apr 2005 12:07:25 +0200
+Message-ID: <b314a68db99b09c4b50f8f90fdc1f9f9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D12BD22E
-	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 10:51:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 12BDB22B
+	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 12:07:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been ACKNOWLEDGED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=487> 
 ======================================================================
@@ -35,12 +35,12 @@ Category:                   PARISC - harmony
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     acknowledged
 Distribution:               Debian
 Kernel Version:             2.6.8.1-pa7
 ======================================================================
 Date Submitted:             09-08-2004 06:40 CEST
-Last Modified:              04-10-2005 10:51 CEST
+Last Modified:              04-10-2005 12:07 CEST
 ======================================================================
 Summary:                    Driver builds, but offers wrong mixer controls and
 no sound
@@ -57,6 +57,30 @@ I am quite positive that the corresponding Harmony OSS driver in kernel
 2.4 works well with this workstation, so this is definitely not a hardware
 problem (the same module in kernel 2.6 has been broken from day 1).
 ======================================================================
+
+----------------------------------------------------------------------
+ Quietti - 09-14-04 10:13 
+----------------------------------------------------------------------
+I would like to point out that this bug is still unresolved in
+2.6.8.1-pa11.
+
+----------------------------------------------------------------------
+ tiwai - 09-21-04 12:42 
+----------------------------------------------------------------------
+No developer is working on this driver because of lack of hardware.
+Any patches appreciated, of course :)
+
+----------------------------------------------------------------------
+ Quietti - 09-21-04 12:53 
+----------------------------------------------------------------------
+Actually, someone from the Debian hppa port is working on this. 
+
+As such, there have been recent changes done to the Harmony ALSA driver on
+the parisc-linux CVS. It might be a good idea to contact them and ask for
+the patches to be merged back or, better yet, to have them join the ALSA
+core team and commit directly to ALSA upstream. 
+
+http://www.parisc-linux.org/
 
 ----------------------------------------------------------------------
  jdthood - 04-09-05 16:07 
@@ -87,6 +111,7 @@ Date Modified  Username       Field                    Change
 09-21-04 12:53 Quietti        Note Added: 0001802                          
 04-09-05 16:07 jdthood        Note Added: 0004405                          
 04-10-05 10:51 Quietti        Note Added: 0004435                          
+04-10-05 12:07 jdthood        Status                   new => acknowledged 
 ======================================================================
 
 
