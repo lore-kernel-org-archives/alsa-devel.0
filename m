@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000349]: can't play MIDI through ALSA / MPU-401 but non-ALSA "midiplayer" to MIDI device works
-Date: Sun, 10 Apr 2005 07:54:15 +0200
-Message-ID: <d8afeb118f3bd716f369a83a7342306b@bugtrack.alsa-project.org>
+Date: Sun, 10 Apr 2005 09:53:55 +0200
+Message-ID: <ab8b2bc256ab878267afae40a06e8582@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EDA0327D
-	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 07:54:15 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6CC2522B
+	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 09:53:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been ACKNOWLEDGED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=349> 
 ======================================================================
@@ -35,12 +35,12 @@ Category:                   ISA - sb16/sbawe
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     acknowledged
 Distribution:               Debian
 Kernel Version:             2.6.5-1 (problem also showed with 2.4.24)
 ======================================================================
 Date Submitted:             06-29-2004 07:58 CEST
-Last Modified:              04-10-2005 07:54 CEST
+Last Modified:              04-10-2005 09:53 CEST
 ======================================================================
 Summary:                    can't play MIDI through ALSA / MPU-401 but non-ALSA
 "midiplayer" to MIDI device works
@@ -86,6 +86,7 @@ Date Modified  Username       Field                    Change
 showed with 2.4.24)
 04-07-05 20:57 jdthood        Note Added: 0004365                          
 04-10-05 07:54 amarsh04       Note Added: 0004434                          
+04-10-05 09:53 jdthood        Status                   new => acknowledged 
 ======================================================================
 
 
