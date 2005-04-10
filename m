@@ -1,14 +1,14 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] sound/pci/ymfpci/ymfpci_main.c: remove dead code
-Date: Sun, 10 Apr 2005 01:12:11 +0200
-Message-ID: <20050409231211.GT3632@stusta.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000573]: no SPDIF output with vt82xx/ICEnsemble VT1616i
+Date: Sun, 10 Apr 2005 06:05:24 +0200
+Message-ID: <50c2cac88856a98b53c1c2b05b4f90ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id A5817236
-	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 01:12:12 +0200 (MEST)
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7BEB7267
+	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 06:05:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,142 +18,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch removes some dead code found by the Coverity checker.
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=573> 
+======================================================================
+Reported By:                vladimir
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   573
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3 test 2
+Kernel Version:             2.6.8-1.541, as shipped with FC3t2
+======================================================================
+Date Submitted:             10-09-2004 00:59 CEST
+Last Modified:              04-10-2005 06:05 CEST
+======================================================================
+Summary:                    no SPDIF output with vt82xx/ICEnsemble VT1616i
+Description: 
+With alsa 1.0.6 (in kernel), 1.0.7rc1, or CVS, I'm unable to reliably get
+SPDIF output to work -- it might work once out of a dozen or so times. 
+The attached patch improves things -- ignoring the cached values in
+ac97_read_cache gives me working spdif playbac.  The values I see printed
+with the printk added in ac97_read_cache by the patch are:
 
----
+AC97_read_cache: register 0x002a has real value 0x01f1 cached 0x05f1 
+AC97_read_cache: register 0x002a has real value 0x05f1 cached 0x01f1 
 
- sound/pci/ymfpci/ymfpci_main.c |   31 ++++++++-----------------------
- 1 files changed, 8 insertions(+), 23 deletions(-)
+which indicates a change in the read-only SPCV bit.  Perhaps registers
+with read-only status bits shouldn't be cached?  I'm not sure if that's
+the fix, or if there's a deeper issue here.
 
---- linux-2.6.12-rc2-mm2-full/sound/pci/ymfpci/ymfpci_main.c.old	2005-04-09 22:22:16.000000000 +0200
-+++ linux-2.6.12-rc2-mm2-full/sound/pci/ymfpci/ymfpci_main.c	2005-04-09 22:38:00.000000000 +0200
-@@ -1418,44 +1418,40 @@
-   .private_value = reg }
+======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 04-09-05 16:17 
+----------------------------------------------------------------------
+tiwai wrote:
+> the attached patch fixes the cache mismatch
+> in the original comments.
+
+Submitter: What are the remaining problems after application of that
+patch?
+
+----------------------------------------------------------------------
+ vladimir - 04-10-05 06:05 
+----------------------------------------------------------------------
+I ended up RMA'ing my EPIA ME6000 for an identical one, and just recently
+got around to setting the machine up. Reinstalling stock FC3, and updating
+to the latest kernel -- kernel-2.6.10-1.770_FC3 -- and now I've yet to get
+any SPDIF output at all.  Trying to track it down..
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-09-04 00:59 vladimir       New Issue                                    
+10-09-04 00:59 vladimir       File Added: ac97_codec-no-readcache.patch         
+          
+10-09-04 00:59 vladimir       Distribution              => Fedora Core 3 test 2
+10-09-04 00:59 vladimir       Kernel Version            => 2.6.8-1.541, as
+shipped with FC3t2
+10-11-04 08:21 vladimir       Note Added: 0002070                          
+10-11-04 12:54 tiwai          Note Added: 0002076                          
+10-11-04 19:46 vladimir       Note Added: 0002083                          
+10-12-04 14:31 tiwai          Note Added: 0002092                          
+10-12-04 14:31 tiwai          File Added: ac97-spcv-debug.diff                  
  
- static int snd_ymfpci_info_single(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo)
- {
--	unsigned int mask = 1;
--
- 	switch (kcontrol->private_value) {
- 	case YDSXGR_SPDIFOUTCTRL: break;
- 	case YDSXGR_SPDIFINCTRL: break;
- 	default: return -EINVAL;
- 	}
--	uinfo->type = mask == 1 ? SNDRV_CTL_ELEM_TYPE_BOOLEAN : SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
- 	uinfo->count = 1;
- 	uinfo->value.integer.min = 0;
--	uinfo->value.integer.max = mask;
-+	uinfo->value.integer.max = 1;
- 	return 0;
- }
- 
- static int snd_ymfpci_get_single(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol)
- {
- 	ymfpci_t *chip = snd_kcontrol_chip(kcontrol);
- 	int reg = kcontrol->private_value;
--	unsigned int shift = 0, mask = 1, invert = 0;
-+	unsigned int shift = 0, mask = 1;
- 	
- 	switch (kcontrol->private_value) {
- 	case YDSXGR_SPDIFOUTCTRL: break;
- 	case YDSXGR_SPDIFINCTRL: break;
- 	default: return -EINVAL;
- 	}
- 	ucontrol->value.integer.value[0] = (snd_ymfpci_readl(chip, reg) >> shift) & mask;
--	if (invert)
--		ucontrol->value.integer.value[0] = mask - ucontrol->value.integer.value[0];
- 	return 0;
- }
- 
- static int snd_ymfpci_put_single(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol)
- {
- 	ymfpci_t *chip = snd_kcontrol_chip(kcontrol);
- 	int reg = kcontrol->private_value;
--	unsigned int shift = 0, mask = 1, invert = 0;
-+	unsigned int shift = 0, mask = 1;
- 	int change;
- 	unsigned int val, oval;
- 	
- 	switch (kcontrol->private_value) {
-@@ -1463,10 +1459,8 @@
- 	case YDSXGR_SPDIFINCTRL: break;
- 	default: return -EINVAL;
- 	}
- 	val = (ucontrol->value.integer.value[0] & mask);
--	if (invert)
--		val = mask - val;
- 	val <<= shift;
- 	spin_lock_irq(&chip->reg_lock);
- 	oval = snd_ymfpci_readl(chip, reg);
- 	val = (oval & ~(mask << shift)) | val;
-@@ -1484,24 +1478,23 @@
- 
- static int snd_ymfpci_info_double(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo)
- {
- 	unsigned int reg = kcontrol->private_value;
--	unsigned int mask = 16383;
- 
- 	if (reg < 0x80 || reg >= 0xc0)
- 		return -EINVAL;
--	uinfo->type = mask == 1 ? SNDRV_CTL_ELEM_TYPE_BOOLEAN : SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
- 	uinfo->count = 2;
- 	uinfo->value.integer.min = 0;
--	uinfo->value.integer.max = mask;
-+	uinfo->value.integer.max = 16383;
- 	return 0;
- }
- 
- static int snd_ymfpci_get_double(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol)
- {
- 	ymfpci_t *chip = snd_kcontrol_chip(kcontrol);
- 	unsigned int reg = kcontrol->private_value;
--	unsigned int shift_left = 0, shift_right = 16, mask = 16383, invert = 0;
-+	unsigned int shift_left = 0, shift_right = 16, mask = 16383;
- 	unsigned int val;
- 	
- 	if (reg < 0x80 || reg >= 0xc0)
- 		return -EINVAL;
-@@ -1509,31 +1502,23 @@
- 	val = snd_ymfpci_readl(chip, reg);
- 	spin_unlock_irq(&chip->reg_lock);
- 	ucontrol->value.integer.value[0] = (val >> shift_left) & mask;
- 	ucontrol->value.integer.value[1] = (val >> shift_right) & mask;
--	if (invert) {
--		ucontrol->value.integer.value[0] = mask - ucontrol->value.integer.value[0];
--		ucontrol->value.integer.value[1] = mask - ucontrol->value.integer.value[1];
--	}
- 	return 0;
- }
- 
- static int snd_ymfpci_put_double(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol)
- {
- 	ymfpci_t *chip = snd_kcontrol_chip(kcontrol);
- 	unsigned int reg = kcontrol->private_value;
--	unsigned int shift_left = 0, shift_right = 16, mask = 16383, invert = 0;
-+	unsigned int shift_left = 0, shift_right = 16, mask = 16383;
- 	int change;
- 	unsigned int val1, val2, oval;
- 	
- 	if (reg < 0x80 || reg >= 0xc0)
- 		return -EINVAL;
- 	val1 = ucontrol->value.integer.value[0] & mask;
- 	val2 = ucontrol->value.integer.value[1] & mask;
--	if (invert) {
--		val1 = mask - val1;
--		val2 = mask - val2;
--	}
- 	val1 <<= shift_left;
- 	val2 <<= shift_right;
- 	spin_lock_irq(&chip->reg_lock);
- 	oval = snd_ymfpci_readl(chip, reg);
+10-12-04 19:44 vladimir       Note Added: 0002107                          
+10-13-04 11:16 tiwai          Note Added: 0002118                          
+10-13-04 11:17 tiwai          File Added: ac97-ea-fix.diff                    
+04-09-05 16:17 jdthood        Note Added: 0004409                          
+04-10-05 06:05 vladimir       Note Added: 0004432                          
+======================================================================
+
 
 
 
