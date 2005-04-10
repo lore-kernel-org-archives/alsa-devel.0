@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000349]: can't play MIDI through ALSA / MPU-401 but non-ALSA "midiplayer" to MIDI device works
-Date: Sun, 10 Apr 2005 09:53:55 +0200
-Message-ID: <ab8b2bc256ab878267afae40a06e8582@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000487]: Driver builds, but offers wrong mixer controls and no sound
+Date: Sun, 10 Apr 2005 10:51:45 +0200
+Message-ID: <5c7c6fdd537ec90c7f3e71b2b1d1488d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6CC2522B
-	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 09:53:55 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D12BD22E
+	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 10:51:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=349> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=487> 
 ======================================================================
-Reported By:                amarsh04
+Reported By:                Quietti
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   349
-Category:                   ISA - sb16/sbawe
+Issue ID:                   487
+Category:                   PARISC - harmony
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     acknowledged
+Status:                     new
 Distribution:               Debian
-Kernel Version:             2.6.5-1 (problem also showed with 2.4.24)
+Kernel Version:             2.6.8.1-pa7
 ======================================================================
-Date Submitted:             06-29-2004 07:58 CEST
-Last Modified:              04-10-2005 09:53 CEST
+Date Submitted:             09-08-2004 06:40 CEST
+Last Modified:              04-10-2005 10:51 CEST
 ======================================================================
-Summary:                    can't play MIDI through ALSA / MPU-401 but non-ALSA
-"midiplayer" to MIDI device works
+Summary:                    Driver builds, but offers wrong mixer controls and
+no sound
 Description: 
-With ISA SB16 PNP, aplaymidi -l reports:
-Port    Client name                      Port name
- 64:0    Sound Blaster 16 MIDI - Rawmidi  Sound Blaster 16 MIDI
- 65:0    OPL3 FM synth                    OPL3 FM Port
+The driver builds with the correct options, the module can be loaded, but
+the mixer control it offers do not correspond to my model 712 (Gecko)
+hardware. 
 
-Neither 
-aplaymidi -p 64:0 myfile.mid
-nor 
-aplaymidi -p 65:0 myfile.mid 
-work, but the non-ALSA "midiplayer" works playing directly to the MIDI
-device:
+Additionally, trying to send sound to the module produces horrible
+chainsaw noise in the speakers. Esound also informs me that the hardware
+does not support any suitable sample rate. Something is evidently broken.
 
-playmidi -v -D0 myfile.mid
-
-
+I am quite positive that the corresponding Harmony OSS driver in kernel
+2.4 works well with this workstation, so this is definitely not a hardware
+problem (the same module in kernel 2.6 has been broken from day 1).
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-07-05 20:57 
+ jdthood - 04-09-05 16:07 
 ----------------------------------------------------------------------
-Submitter: Have you ever made any progress on this issue?
+Submitter: Do you have any new information about this issue?
 
 ----------------------------------------------------------------------
- amarsh04 - 04-10-05 07:54 
+ Quietti - 04-10-05 10:51 
 ----------------------------------------------------------------------
-No progress unfortunately. In the meantime have updated to kernel 2.6.11
-and found the alsa - udev incompatibility, so removed udev. My hardware
-has been also updated, to Pentium 233MMX.
+Yes, I do. 
 
-Is there any kind of diagnostic to tell if the MIDI data is actually being
-received by the sound card?
+The PA-RISC Linux team now has someone working specifically on this
+issue:
+Kyle McMartin <kyle@parisc-linux.org>
+
+It might be a good idea to contact him and to offer him to commit directly
+to the ALSA CVS, instead of passing thru the PA-RISC Linux project's CVS,
+since their CVS tree very seldom gets merged with Linus' bitkeeper tree.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-29-04 07:58 amarsh04       New Issue                                    
-06-29-04 07:58 amarsh04       Distribution              => Debian          
-06-29-04 07:58 amarsh04       Kernel Version            => 2.6.5-1 (problem also
-showed with 2.4.24)
-04-07-05 20:57 jdthood        Note Added: 0004365                          
-04-10-05 07:54 amarsh04       Note Added: 0004434                          
-04-10-05 09:53 jdthood        Status                   new => acknowledged 
+09-08-04 06:40 Quietti        New Issue                                    
+09-08-04 06:40 Quietti        Distribution              => Debian          
+09-08-04 06:40 Quietti        Kernel Version            => 2.6.8.1-pa7     
+09-14-04 10:13 Quietti        Note Added: 0001757                          
+09-21-04 12:42 tiwai          Note Added: 0001801                          
+09-21-04 12:53 Quietti        Note Added: 0001802                          
+04-09-05 16:07 jdthood        Note Added: 0004405                          
+04-10-05 10:51 Quietti        Note Added: 0004435                          
 ======================================================================
 
 
