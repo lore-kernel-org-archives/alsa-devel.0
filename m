@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000487]: Driver builds, but offers wrong mixer controls and no sound
-Date: Sun, 10 Apr 2005 12:15:17 +0200
-Message-ID: <608ce883c52ed0af65eaf3f235916394@bugtrack.alsa-project.org>
+Date: Sun, 10 Apr 2005 12:21:48 +0200
+Message-ID: <318037913771b4e6b83da4ecccd784eb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 60E9922C
-	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 12:15:17 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4547322C
+	for <alsa-devel@alsa-project.org>; Sun, 10 Apr 2005 12:21:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.8.1-pa7
 ======================================================================
 Date Submitted:             09-08-2004 06:40 CEST
-Last Modified:              04-10-2005 12:15 CEST
+Last Modified:              04-10-2005 12:21 CEST
 ======================================================================
 Summary:                    Driver builds, but offers wrong mixer controls and
 no sound
@@ -59,24 +59,16 @@ problem (the same module in kernel 2.6 has been broken from day 1).
 ======================================================================
 
 ----------------------------------------------------------------------
- Quietti - 04-10-05 10:51 
-----------------------------------------------------------------------
-Yes, I do. 
-
-The PA-RISC Linux team now has someone working specifically on this
-issue:
-Kyle McMartin <kyle@parisc-linux.org>
-
-It might be a good idea to contact him and to offer him to commit directly
-to the ALSA CVS, instead of passing thru the PA-RISC Linux project's CVS,
-since their CVS tree very seldom gets merged with Linus' bitkeeper tree.
-
-----------------------------------------------------------------------
  Quietti - 04-10-05 12:15 
 ----------------------------------------------------------------------
 FYI the current PA-RISC Linux ALSA tree is at:
 
 http://cvs.parisc-linux.org/linux-2.6/sound/parisc/
+
+----------------------------------------------------------------------
+ Quietti - 04-10-05 12:21 
+----------------------------------------------------------------------
+Still unresolved as of kernel 2.6.11-pa1 from the PA-RISC Linux tree.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -91,6 +83,7 @@ Date Modified  Username       Field                    Change
 04-10-05 10:51 Quietti        Note Added: 0004435                          
 04-10-05 12:07 jdthood        Status                   new => acknowledged 
 04-10-05 12:15 Quietti        Note Added: 0004436                          
+04-10-05 12:21 Quietti        Note Added: 0004437                          
 ======================================================================
 
 
