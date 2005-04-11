@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001045]: Cirrus Logic cs4236B
-Date: Mon, 11 Apr 2005 20:46:03 +0200
-Message-ID: <c951b201752f3692a282fe04c79e8448@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: [PATCH] fix configure.in typo
+Date: Mon, 11 Apr 2005 15:33:50 -0400
+Message-ID: <1113248031.5226.1.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 386D1295
-	for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2005 20:46:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +15,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+fix cosmetic typo
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1045> 
-======================================================================
-Reported By:                atiounkine
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1045
-Category:                   ISA - cs4236
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.11 Custom preempt SMP
-======================================================================
-Date Submitted:             04-11-2005 20:46 CEST
-Last Modified:              04-11-2005 20:46 CEST
-======================================================================
-Summary:                    Cirrus Logic cs4236B
-Description: 
-Hello
-  I can't insert a module of snd-cs4236  for my chip that detected by
-"pnpdump" as CS4236B.
+Signed-Off-By: Lee Revell <rlrevell@joe-job.com>`
 
- I can use with snd-cs4232 but it have not a mic volume (it appear as mic
-option w/o volume) and I cannot record with it.
-
- I can record with "Xandros Linux 1.0" with kernel "2.4.19-x1" and cs4232
-OSS driver.
-
-I will add more information about isapnp detection.
- Thanks.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-11-05 20:46 atiounkine     New Issue                                    
-04-11-05 20:46 atiounkine     Distribution              => Debian Sarge    
-04-11-05 20:46 atiounkine     Kernel Version            => 2.6.11 Custom preempt
-SMP
-======================================================================
+Index: alsa/alsa-driver/configure.in
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/configure.in,v
+retrieving revision 1.300
+diff -u -r1.300 configure.in
+--- alsa/alsa-driver/configure.in	4 Apr 2005 06:50:48 -0000	1.300
++++ alsa/alsa-driver/configure.in	11 Apr 2005 19:32:46 -0000
+@@ -2009,7 +2009,7 @@
+ 
+ dnl New unlocked/compat_ioctl
+ if test "$kversion.$kpatchlevel" = "2.6"; then
+-  AC_MSG_CHECKING(for new unlocked/comapt_ioctl)
++  AC_MSG_CHECKING(for new unlocked/compat_ioctl)
+   new_ioctl="0"
+   ac_save_CFLAGS="$CFLAGS"
+   ac_save_CC="$CC"
 
 
 
