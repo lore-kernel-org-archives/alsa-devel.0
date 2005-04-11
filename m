@@ -1,11 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: [PATCH] fix configure.in typo
-Date: Mon, 11 Apr 2005 15:33:50 -0400
-Message-ID: <1113248031.5226.1.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000155]: Crackly / sizzly recording on VIA VT82C686 AC97 since 2.6.3
+Date: Mon, 11 Apr 2005 22:47:51 +0200
+Message-ID: <f9bc5740959e34c9c693cc8d0e065112@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F3CAA29C
+	for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2005 22:47:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,29 +18,98 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-fix cosmetic typo
 
-Signed-Off-By: Lee Revell <rlrevell@joe-job.com>`
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=155> 
+======================================================================
+Reported By:                sim
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   155
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               Debian unstable
+Kernel Version:             2.6.3 through 2.6.5-rc2
+======================================================================
+Date Submitted:             03-24-2004 06:03 CET
+Last Modified:              04-11-2005 22:47 CEST
+======================================================================
+Summary:                    Crackly / sizzly recording on VIA VT82C686 AC97
+since 2.6.3
+Description: 
+Hello,
 
-Index: alsa/alsa-driver/configure.in
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/configure.in,v
-retrieving revision 1.300
-diff -u -r1.300 configure.in
---- alsa/alsa-driver/configure.in	4 Apr 2005 06:50:48 -0000	1.300
-+++ alsa/alsa-driver/configure.in	11 Apr 2005 19:32:46 -0000
-@@ -2009,7 +2009,7 @@
- 
- dnl New unlocked/compat_ioctl
- if test "$kversion.$kpatchlevel" = "2.6"; then
--  AC_MSG_CHECKING(for new unlocked/comapt_ioctl)
-+  AC_MSG_CHECKING(for new unlocked/compat_ioctl)
-   new_ioctl="0"
-   ac_save_CFLAGS="$CFLAGS"
-   ac_save_CC="$CC"
+I have a mythtv box set up and recently upgraded the kernel from
+2.6.0-test9 to 2.6.4.  Everything appeared to play normally, but new
+recordings since the upgrade all sound crackly.  2.6.5-rc2 and 2.6.3 also
+seem to be broken.  2.6.2 works as expected.
+
+There appear to be a large number of changes to the ALSA core between
+2.6.2 and 2.6.3.  How should I attempt to track the problem down further?
+
+Athlon 1800 XP, MSI K7 Master (MS-6330), 48 KHz stereo recording and
+playback.  The problem also shows up with Audacity, and as such does not
+appear to be application specific.  I can send a sample of the poor sound
+recording upon request.
+======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 04-08-05 22:23 
+----------------------------------------------------------------------
+tiwai: Can this be closed now?
+
+----------------------------------------------------------------------
+ tiwai - 04-11-05 22:47 
+----------------------------------------------------------------------
+The patch was NOT applied yet.
+It seems that some OSS apps don't like avail_min=1 (i.e. poll woke up as
+soon as any data is available).
+Since no corresponding bug reports for the playback direction, this seems
+to be specific to capture.
+
+Could you test the latest ALSA together with the patch attached
+(pcm-oss-capture-fix.diff)?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-24-04 06:03 sim            New Issue                                    
+03-24-04 06:03 sim            Distribution              => Debian unstable 
+03-24-04 06:03 sim            Kernel Version            => 2.6.3 through
+2.6.5-rc2
+04-08-04 15:15 m9715936       Issue Monitored: m9715936                    
+04-08-04 15:25 m9715936       Note Added: 0000767                          
+04-08-04 15:29 m9715936       Note Edited: 0000767                         
+04-10-04 10:13 m9715936       Note Edited: 0000767                         
+04-11-04 19:28 uli            Note Added: 0000780                          
+04-23-04 17:29 tiwai          Status                   new => assigned     
+04-23-04 17:29 tiwai          Assigned To               => tiwai           
+04-23-04 17:30 tiwai          Note Added: 0000907                          
+04-23-04 18:02 m9715936       Note Added: 0000913                          
+04-23-04 18:07 tiwai          Note Added: 0000914                          
+04-23-04 18:36 m9715936       Note Added: 0000915                          
+04-23-04 18:40 tiwai          Note Added: 0000916                          
+04-23-04 18:59 m9715936       Note Added: 0000917                          
+06-13-04 11:27 sim            File Added: patch-2.6.3-rc1-try2.11.works         
+          
+06-13-04 11:32 sim            Note Added: 0001303                          
+06-20-04 11:41 uli            Note Added: 0001324                          
+06-22-04 18:41 tiwai          Status                   assigned => resolved
+06-22-04 18:41 tiwai          Resolution               open => fixed       
+07-16-04 12:45 tiwai          Status                   resolved => feedback
+07-16-04 12:45 tiwai          Resolution               fixed => reopened   
+07-16-04 12:45 tiwai          Note Added: 0001450                          
+04-08-05 22:23 jdthood        Note Added: 0004374                          
+04-11-05 22:47 tiwai          Note Added: 0004444                          
+======================================================================
 
 
 
