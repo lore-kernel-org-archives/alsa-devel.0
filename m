@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001044]: Heavily distorted audio
-Date: Mon, 11 Apr 2005 17:41:25 +0200
-Message-ID: <356bbae32845a17f9f18cb61654caeee@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001014]: card detect function is never called in pxa2xx-ac97
+Date: Mon, 11 Apr 2005 18:24:17 +0200
+Message-ID: <0521e957e729e61c9829903a079fa490@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9A7F3295
-	for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2005 17:41:25 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D31F295
+	for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2005 18:24:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,126 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1044> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1014> 
 ======================================================================
-Reported By:                jefferai
-Assigned To:                
+Reported By:                twinsen
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1044
-Category:                   PCI - intel8x0
+Issue ID:                   1014
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.11-ck3
+Status:                     assigned
+Distribution:               custom: PXA255/uClibc
+Kernel Version:             2.6.11.5
 ======================================================================
-Date Submitted:             04-11-2005 17:41 CEST
-Last Modified:              04-11-2005 17:41 CEST
+Date Submitted:             03-25-2005 00:04 CET
+Last Modified:              04-11-2005 18:24 CEST
 ======================================================================
-Summary:                    Heavily distorted audio
+Summary:                    card detect function is never called in pxa2xx-ac97
 Description: 
-I have a laptop that is fine by itself, but when plugged into my docking
-station I get heavily distorted audio when something plays either
-directly to hw0:0 or through the OSS emulation. The problem seems to be
-with sample rate conversion -- if I create my own dmix-based device that
-resamples audio to 48KHz and then plays it to hw0:0, and I have an
-ALSA-aware app that lets me define which device to use and set it to
-that device, the audio is beautiful both on and off of the docking
-station.  Unfortunately, not all apps allow these settings, so things such
-as RealPlayer and Flash (in Firefox) sound horrid if I'm on my docking
-station, which is most of the time.
+Hi there,
+I have a some problem with this driver. The environment:
+ALSA source: alsa-driver-1.0.9rc1
+Kernel source: linux-2.6.11.5 (stock)
 
-I've seen this same problem through three Linux distributions now
-(Gentoo, SuSE, and Fedora Core 3) on the same laptop so I know it's an
-ALSA issue (or configuration issue) and not distribution-specific.
+I cross compiled the kernel and the alsa source for arm target with a 
+toolchain from handhelds.org. I used the following configure command
+line:
 
-I've hard-set the ac97 clock option in the snd-intel8x0 module to 48000
-but this
-doesn't help, and my clock is detected as being 48000Hz anyways.  I
-don't know what to do.  Some people have said to point OSS apps to
-/dev/adsp but apps complain it's not a valid device, and anyways pointing
-to anything but /dev/dsp doesn't seem to be an option for all apps. 
-Besides, I'd still have the ALSA issues for apps that don't let you define
-which device to use.
+./configure --with-cards=pxa2xx-ac97 
+--with-kernel=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
+--with-build=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
+--with-cross=/usr/local/arm/3.3.2/bin/arm-linux-
 
-Following are relevant snippets of files.  I'm on up-to-date Gentoo
-linux using the Gentoo alsa-driver, alsa-tools, alsa-headers, alsa-lib,
-and alsa-oss ebuilds, all 1.0.8.  Configuration files are the defaults
-(I added the extra device with a .asoundrc).
+config runs without problems, when running make gcc complains about
+"pci_dev_present" being redefined (alsa-driver-1.0.9rc1/include/adriver.h,
+orig: include/linux/pci.h), but compiles ok. 
 
-TIA,
-Jeff
+The problem:
+I loaded all modules (snd, snd-timer, snd-page-alloc, snd-pcm,
+snd-ac97-codec, snd-pxa2xx-pcm, snd-pxa2xx-ac97) but still no soundcard in
+/proc/asound/cards.
+I looked a bit inside the driver, and when snd-pxa2xx-ac97 is loaded, the
+module init function registers the new driver:
+driver_register(&pxa2xx_ac97_driver);
+
+The driver struct contains a probe function:
+.probe          = pxa2xx_ac97_probe,
+but it's never called, so the driver doesn't even check the existance of
+the sound card. Why is that? Did I srcew up the cross compiling?
+Thanks:
+	George
 ======================================================================
+
+----------------------------------------------------------------------
+ twinsen - 04-10-05 17:25 
+----------------------------------------------------------------------
+I compiled the lib with the following options:
+./configure --target=arm-linux --host=arm-linux --build=i386-pc-linux-gnu
+--prefix=/usr --with-softfloat --with-debug=yes
+
+Then issued on the target device:
+[root@trizeps2 ~]# export LIBASOUND_DEBUG=1
+[root@trizeps2 ~]# aplay /tmp/music.wav
+Playing WAVE '/tmp/music.wav' : Signed 16 bit Little Endian, Rate 44100
+Hz, Stereo
+aplay: set_params:960: unable to install sw params:
+start_mode: DATA
+xrun_mode: STOP
+tstamp_mode: NONE
+period_step: 1
+sleep_min: 0
+avail_min: 0
+xfer_align: 10
+silence_threshold: 0
+silence_size: 0
+boundary: 1310720000
+[root@trizeps2 ~]# speaker-test -c 2 -Dhw:0,0 -r 44100 -f 440 -F S16_LE
+
+speaker-test 0.0.7
+
+Playback device is hw:0,0
+Stream parameters are 44100Hz, S16_LE, 2 channels
+Sine wave rate is 440.0000Hz
+Rate set to 44100Hz (requested 44100Hz)
+Buffer size range from 8 to 32768
+Period size range from 8 to 2040
+Periods = 4
+Buffer time size 575
+To choose buffer_size = 15052
+To choose period_size = 3763
+was set period_size = 0
+was set buffer_size = 15056
+Unable to set sw params for playback: Invalid argument
+Setting of swparams failed: Invalid argument
+
+It's no more verbose than before. :(
+
+----------------------------------------------------------------------
+ tiwai - 04-11-05 18:24 
+----------------------------------------------------------------------
+avail_min=0 is the culprit.  I don't know yet why it's set so...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-11-05 17:41 jefferai       New Issue                                    
-04-11-05 17:41 jefferai       Distribution              => Gentoo          
-04-11-05 17:41 jefferai       Kernel Version            => 2.6.11-ck3      
+03-25-05 00:04 twinsen        New Issue                                    
+03-25-05 00:04 twinsen        Distribution              => custom: PXA255/uClibc
+03-25-05 00:04 twinsen        Kernel Version            => 2.6.11.5        
+03-29-05 16:25 tiwai          Note Added: 0004247                          
+03-29-05 23:43 twinsen        Note Added: 0004259                          
+04-03-05 21:47 twinsen        Note Added: 0004321                          
+04-03-05 22:28 twinsen        Note Added: 0004322                          
+04-04-05 20:51 twinsen        Note Added: 0004330                          
+04-06-05 19:20 twinsen        Note Added: 0004351                          
+04-07-05 16:46 tiwai          Note Added: 0004359                          
+04-10-05 17:25 twinsen        Note Added: 0004439                          
+04-11-05 18:24 tiwai          Note Added: 0004443                          
 ======================================================================
 
 
