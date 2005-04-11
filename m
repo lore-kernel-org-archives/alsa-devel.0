@@ -1,12 +1,14 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: [PATCH] snd-fm801: Add PCI ID for Gallant Odyssey Sound 4
-Date: Sun, 10 Apr 2005 20:14:59 +0400
-Message-ID: <20050410161459.GB2101@procyon.home>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000307]: Can't play 6 channels wave file
+Date: Mon, 11 Apr 2005 09:03:24 +0200
+Message-ID: <f40141535dae07765c5d17378fad9efb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="OwLcNYc0lM97+oe1"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DC249292
+	for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2005 09:03:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,47 +18,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---OwLcNYc0lM97+oe1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=307> 
+======================================================================
+Reported By:                pshou
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   307
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     new
+Distribution:               Redhat7.3
+Kernel Version:             2.4.18-3
+======================================================================
+Date Submitted:             05-26-2004 04:28 CEST
+Last Modified:              04-11-2005 09:03 CEST
+======================================================================
+Summary:                    Can't play 6 channels wave file
+Description: 
+I have a ALC655 for ICH5 motherboard.
+I used the aplay to play a 5.1 channels wave file, then show a error
+message "Can't use period equal to buffer size"
+I used the ICH2, ICH4 and ATi motherboard have the same problem.
+======================================================================
 
-The Gallant Odyssey Sound 4 card is based on the ForteMedia FM801
-chip, but has a different PCI ID.
+----------------------------------------------------------------------
+ jdthood - 04-04-05 22:24 
+----------------------------------------------------------------------
+Submitter: Do you still have this problem?
 
-Signed-off-by: Sergey Vlasov <vsu@altlinux.ru>
+----------------------------------------------------------------------
+ pshou - 04-11-05 09:03 
+----------------------------------------------------------------------
+The problem is fixed by the newest ALSA driver. Thank's very much your
+help.
 
---- alsa-driver-1.0.9rc2/alsa-kernel/pci/fm801.c.fm801-more-ids	2005-04-10 =
-20:04:03 +0400
-+++ alsa-driver-1.0.9rc2/alsa-kernel/pci/fm801.c	2005-04-10 20:04:44 +0400
-@@ -195,6 +195,7 @@ struct _snd_fm801 {
-=20
- static struct pci_device_id snd_fm801_ids[] =3D {
- 	{ 0x1319, 0x0801, PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_MULTIMEDIA_AUDIO << 8=
-, 0xffff00, 0, },   /* FM801 */
-+	{ 0x5213, 0x0510, PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_MULTIMEDIA_AUDIO << 8=
-, 0xffff00, 0, },   /* Gallant Odyssey Sound 4 */
- 	{ 0, }
- };
-=20
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-26-04 04:28 pshou          New Issue                                    
+05-26-04 04:28 pshou          Distribution              => Redhat7.3       
+05-26-04 04:28 pshou          Kernel Version            => 2.4.18-3        
+05-26-04 13:36 tiwai          Note Added: 0001251                          
+04-04-05 22:24 jdthood        Note Added: 0004332                          
+04-11-05 09:03 pshou          Note Added: 0004441                          
+======================================================================
 
---OwLcNYc0lM97+oe1
-Content-Type: application/pgp-signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQFCWVEDW82GfkQfsqIRAgl3AJ9xNNSl+IaSwS19TRV6Fs3tORDuDgCfZcGl
-0fZYN/ULqizRmz3shIZBZ9E=
-=SBSh
------END PGP SIGNATURE-----
-
---OwLcNYc0lM97+oe1--
 
 
 -------------------------------------------------------
