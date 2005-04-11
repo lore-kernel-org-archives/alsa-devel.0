@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000307]: Can't play 6 channels wave file
-Date: Mon, 11 Apr 2005 09:03:24 +0200
-Message-ID: <f40141535dae07765c5d17378fad9efb@bugtrack.alsa-project.org>
+Date: Mon, 11 Apr 2005 09:45:34 +0200
+Message-ID: <ec069625b14381d592452bafed11e59e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DC249292
-	for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2005 09:03:24 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 197F7295
+	for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2005 09:45:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=307> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   CORE - pcm
 Reproducibility:            always
 Severity:                   tweak
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Redhat7.3
 Kernel Version:             2.4.18-3
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             05-26-2004 04:28 CEST
-Last Modified:              04-11-2005 09:03 CEST
+Last Modified:              04-11-2005 09:45 CEST
 ======================================================================
 Summary:                    Can't play 6 channels wave file
 Description: 
@@ -70,6 +72,8 @@ Date Modified  Username       Field                    Change
 05-26-04 13:36 tiwai          Note Added: 0001251                          
 04-04-05 22:24 jdthood        Note Added: 0004332                          
 04-11-05 09:03 pshou          Note Added: 0004441                          
+04-11-05 09:45 jdthood        Status                   new => resolved     
+04-11-05 09:45 jdthood        Resolution               open => fixed       
 ======================================================================
 
 
