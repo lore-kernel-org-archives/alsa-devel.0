@@ -1,15 +1,14 @@
-From: "Jared D. McNeill" <jared.mcneill@gmail.com>
-Subject: Re: intel8x0m and conexant ac97 modem codecs
-Date: Tue, 12 Apr 2005 15:14:53 -0300
-Message-ID: <41d6f0b905041211143edfd71e@mail.gmail.com>
-References: <41d6f0b90504120905d469db0@mail.gmail.com>
-	 <1113329101.31159.23.camel@mindpipe>
-Reply-To: "Jared D. McNeill" <jared.mcneill@gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
+Date: Tue, 12 Apr 2005 19:46:45 +0200
+Message-ID: <0a0593534178979e37b289a5bbfde03d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1113329101.31159.23.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 374FE27C
+	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 19:46:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,42 +18,97 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net, jmcneill@netbsd.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Apr 12, 2005 3:05 PM, Lee Revell <rlrevell@joe-job.com> wrote:
-> On Tue, 2005-04-12 at 13:05 -0300, Jared D. McNeill wrote:
-> > Hi folks, not sure if this is the right place to ask but I might as
-> > well give it a shot anyway --
-> >
-> > I'm working on adding AC97 modem support to NetBSD, and I have run
-> > into a stumbling block. From what I've read, it looks like Conexant
-> > AC97 modem codecs aren't supported by the ALSA intel8x0m / slmodem
-> > solution. What are the technical reasons for this?
-> 
-> Do you know if any open source driver ever existed for these?  "Lack of
-> documentation" is the obvious suspect...
 
-I was under the impression that all AC97 modem codecs were supposed to
-work the same (as in, use them as the AC97 spec says to). The NetBSD
-driver appears to be working for non-Conexant codecs, but I can't get
-a Conexant chip to power up through the same initialization routine.
-ac97_read(as, AC97_REG_EXT_MODEM_CTRL, &reg) always returns 0xff00
-("everything powered down" in the AC97 modem world) on the few
-variations of Conexant codecs we've tried.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+======================================================================
+Reported By:                yafrank
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1023
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
+======================================================================
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              04-12-2005 19:46 CEST
+======================================================================
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Description: 
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-"Lack of documentation" is most likely the reason; I guess I was just
-looking for confirmation from another group that either "Yes, these
-chips are broken, we don't support them because we don't have any
-documentation", or "Yes, these chips are broken, we had to work around
-the problem by doing foo".
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
 
-Meanwhile, I'm still working on getting some useful documentation from
-Conexant..
 
-Cheers,
-Jared
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 04-12-05 16:29 
+----------------------------------------------------------------------
+I see "PCM" control in both /etc/asound.state files.
+So I don't understand why PCM disappears on your mixer app.
+Are you sure that /etc/asound.state you attached is the newest output from
+alsactl?  Run "alsactl store" as root, and check whether "PCM Playback
+Volume" and "PCM Playback Switch" exist on /etc/asound.state.
+
+----------------------------------------------------------------------
+ yafrank - 04-12-05 19:46 
+----------------------------------------------------------------------
+The /etc/asound.state I pasted is the one I'm currently using in
+2.6.10-1.770_FC3 kernel and it works fine with it. I'll get the
+correspondent in 2.6.11-1.14_FC3 after rebooting and running "alsactl
+store" right away.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+04-12-05 16:29 tiwai          Note Added: 0004447                          
+04-12-05 19:46 yafrank        Note Added: 0004459                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
