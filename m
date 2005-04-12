@@ -1,13 +1,14 @@
-From: Steve deRosier <derosier@pianodisc.com>
-Subject: Re: usage of snd_seq_queue_status_get_real_time()
-Date: Tue, 12 Apr 2005 12:15:32 -0700
-Message-ID: <425C1E54.1040705@pianodisc.com>
-References: <Pine.HPX.4.33n.0504111044370.22583-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000594]: Sound level is extremely low
+Date: Tue, 12 Apr 2005 23:51:51 +0200
+Message-ID: <3115770841c2890526f5e512cf1a228c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0504111044370.22583-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6482027E
+	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 23:51:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,56 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ah, good point, color me dumb.  ;)  I've fixed that.  Thanks.
 
-Note however it doesn't seem to fix the issue.  What did make it work for me was using
-snd_seq_queue_status_malloc() and snd_seq_queue_status_free() instead of using the snd_seq_queue_status_alloca() macro.  Not sure why the macro didn't work for me, but the full fledged functions seem to make everything work.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=594> 
+======================================================================
+Reported By:                danstef
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   594
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.4.20
+======================================================================
+Date Submitted:             10-21-2004 23:19 CEST
+Last Modified:              04-12-2005 23:51 CEST
+======================================================================
+Summary:                    Sound level is extremely low
+Description: 
+I compiled and installed drivers and utilities without a 
+problem. 
+I used the alsamixer and unmute all channels and raise levels. I also used
+aumix to max the gain. When I play
+a wave file (play --volume=100) I can barely hear the sound.
+I have speakers hooked up to the line out and a front panel
+speaker. Sound is coming out of both at the same really, really low level.
+======================================================================
 
-My final working function (in case anyone cares):
-snd_seq_real_time_t CMIDIPort::GetRealQueueTime( void )
-{
-  snd_seq_queue_status_t * qs;
-  snd_seq_real_time_t rt;
-  rt.tv_sec = 0;
-  rt.tv_nsec = 0;
+----------------------------------------------------------------------
+ tiwai - 04-12-05 17:44 
+----------------------------------------------------------------------
+Please attach /etc/asound.state and /proc/asound/card0/codec97#0/* files
+for debugging.
 
-  if( snd_seq_queue_status_malloc( &qs ) )
-    return rt;
-  if( snd_seq_get_queue_status( hSeq, mQueue, qs ) == 0 )
-    rt = *snd_seq_queue_status_get_real_time( qs );
-  snd_seq_queue_status_free( qs );
+----------------------------------------------------------------------
+ danstef - 04-12-05 23:51 
+----------------------------------------------------------------------
+Please disregard this issue.
+This is not an alsa bug, we found that we need to use an audio amplifier
+with the motherboard we are using, the previous motherboard had enough
+power out to not need an amplifier. 
+Thanks for looking into this.
 
-  return rt;
-}
- 
-An interesting note... On repeated calls, it will return the same time value for a few calls in a row.  Does the status information only get updated every so often?  Like maybe the driver only transfers a chunk at a time and so the time info in the status only gets updated each time the buffer is full or empty?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-21-04 23:19 danstef        New Issue                                    
+10-21-04 23:19 danstef        Kernel Version            => 2.4.20          
+10-21-04 23:21 danstef        Note Added: 0002224                          
+04-09-05 16:26 jdthood        Note Added: 0004412                          
+04-12-05 17:44 tiwai          Note Added: 0004456                          
+04-12-05 23:51 danstef        Note Added: 0004466                          
+======================================================================
 
-Thanks for you help,
-- Steve
 
-
-Clemens Ladisch wrote:
-> Steve deRosier wrote:
-> 
->>I figured that it returns a pointer to a local var considering the
->>const in the return type, but that still doesn't explain why the
->>data never changes.
-> 
-> 
-> Local variables cease to exist when the function returns.  The data on
-> the stack will be overwritten by the calling function (which explains
-> why you see a constant, meaningless value).
-> 
-> You should return the snd_seq_real_time_t by value.
-> 
-> 
-> HTH
-> Clemens
-> 
 
 
 -------------------------------------------------------
