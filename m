@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
-Date: Tue, 12 Apr 2005 19:46:45 +0200
-Message-ID: <0a0593534178979e37b289a5bbfde03d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Tue, 12 Apr 2005 20:51:34 +0200
+Message-ID: <50ce26d334ea87a34d7e9e58d1d69a87@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 374FE27C
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 19:46:46 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A6B4927D
+	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 20:51:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,88 +24,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
-Reported By:                yafrank
-Assigned To:                
+Reported By:                alien999999999
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   CORE - pcm
-Reproducibility:            always
+Issue ID:                   1047
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
 Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
+Status:                     assigned
+Distribution:               Mandrake
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              04-12-2005 19:46 CEST
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              04-12-2005 20:51 CEST
 ======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Summary:                    module hangs at seemingly random times
 Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
 
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
+
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
 
 
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-12-05 16:29 
+ alien999999999 - 04-12-05 20:48 
 ----------------------------------------------------------------------
-I see "PCM" control in both /etc/asound.state files.
-So I don't understand why PCM disappears on your mixer app.
-Are you sure that /etc/asound.state you attached is the newest output from
-alsactl?  Run "alsactl store" as root, and check whether "PCM Playback
-Volume" and "PCM Playback Switch" exist on /etc/asound.state.
+i forgot to note that i have the mdk 10.1 x86_64 distro and my version has
+a few 64bit fixes to get past kernel hangs and kernel oopses
 
 ----------------------------------------------------------------------
- yafrank - 04-12-05 19:46 
+ alien999999999 - 04-12-05 20:51 
 ----------------------------------------------------------------------
-The /etc/asound.state I pasted is the one I'm currently using in
-2.6.10-1.770_FC3 kernel and it works fine with it. I'll get the
-correspondent in 2.6.11-1.14_FC3 after rebooting and running "alsactl
-store" right away.
+i have attached the changed files (since i don't have a CVS version of alsa
+to diff against)
+
+these files are located in the alsa-driver-1.0.8/alsa-kernel/pci/au88x0/
+path
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
 ======================================================================
 
 
