@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000594]: Sound level is extremely low
-Date: Tue, 12 Apr 2005 23:51:51 +0200
-Message-ID: <3115770841c2890526f5e512cf1a228c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000715]: pc speaker always routed through laptop speakers
+Date: Wed, 13 Apr 2005 00:50:31 +0200
+Message-ID: <09488a46b6b1697740feb8515a869878@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6482027E
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 23:51:51 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 12DF5254
+	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 00:50:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=594> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=715> 
 ======================================================================
-Reported By:                danstef
+Reported By:                rafi
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   594
+Issue ID:                   715
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.4.20
+Status:                     acknowledged
+Distribution:               debian
+Kernel Version:             2.6.9 (from source)
 ======================================================================
-Date Submitted:             10-21-2004 23:19 CEST
-Last Modified:              04-12-2005 23:51 CEST
+Date Submitted:             12-08-2004 06:02 CET
+Last Modified:              04-13-2005 00:50 CEST
 ======================================================================
-Summary:                    Sound level is extremely low
+Summary:                    pc speaker always routed through laptop speakers
 Description: 
-I compiled and installed drivers and utilities without a 
-problem. 
-I used the alsamixer and unmute all channels and raise levels. I also used
-aumix to max the gain. When I play
-a wave file (play --volume=100) I can barely hear the sound.
-I have speakers hooked up to the line out and a front panel
-speaker. Sound is coming out of both at the same really, really low level.
+When the pc speaker driver is loaded, it always beeps through the laptop's
+speakers, even when something is plugged into the headphone jack, or the
+headphone jack on the docking station.
+
+Also, if audio is being played through the other devices, it also switches
+to the sspeakers for the duration of the beep.  And the beep is not
+affected by any of the volume controlls.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-12-05 17:44 
+ tiwai - 04-12-05 16:48 
 ----------------------------------------------------------------------
-Please attach /etc/asound.state and /proc/asound/card0/codec97#0/* files
-for debugging.
+Did you try to turn off "Master Mono"?
+
+If the beep volume can't change via "PC Speaker" mixer volume, it means
+that the signal is not routed through AC97.  It's not controllable without
+an (unknown) initialization.
 
 ----------------------------------------------------------------------
- danstef - 04-12-05 23:51 
+ rafi - 04-13-05 00:50 
 ----------------------------------------------------------------------
-Please disregard this issue.
-This is not an alsa bug, we found that we need to use an audio amplifier
-with the motherboard we are using, the previous motherboard had enough
-power out to not need an amplifier. 
-Thanks for looking into this.
+I did, and I see no affect from Master Mono.  What's it supposed to do?
+
+Is there anything I can do to help figure out what needs to be done to
+initialize it?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-04 23:19 danstef        New Issue                                    
-10-21-04 23:19 danstef        Kernel Version            => 2.4.20          
-10-21-04 23:21 danstef        Note Added: 0002224                          
-04-09-05 16:26 jdthood        Note Added: 0004412                          
-04-12-05 17:44 tiwai          Note Added: 0004456                          
-04-12-05 23:51 danstef        Note Added: 0004466                          
+12-08-04 06:02 rafi           New Issue                                    
+12-08-04 06:02 rafi           Distribution              => debian          
+12-08-04 06:02 rafi           Kernel Version            => 2.6.9 (from source)
+12-08-04 12:12 tiwai          Note Added: 0002778                          
+04-09-05 17:21 jdthood        Note Added: 0004421                          
+04-09-05 20:58 rafi           Issue Monitored: rafi                        
+04-09-05 21:00 rafi           File Added: ac97#0-0                         
+04-09-05 21:00 rafi           File Added: ac97#0-0+regs                    
+04-09-05 21:01 rafi           File Added: asound.state                     
+04-09-05 21:03 rafi           Note Added: 0004429                          
+04-09-05 22:03 jdthood        Status                   new => acknowledged 
+04-12-05 16:48 tiwai          Note Added: 0004451                          
+04-13-05 00:50 rafi           Note Added: 0004467                          
 ======================================================================
 
 
