@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001044]: Heavily distorted audio
-Date: Tue, 12 Apr 2005 18:39:23 +0200
-Message-ID: <1068b5152a3f3f891ffa7bc825b203b1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
+Date: Tue, 12 Apr 2005 20:00:48 +0200
+Message-ID: <c12d5332121698ea08e11a75bbb48329@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 07AEA215
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 18:39:23 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F384225
+	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 20:00:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,85 +24,273 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1044> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
 ======================================================================
-Reported By:                jefferai
+Reported By:                yafrank
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1044
-Category:                   PCI - intel8x0
+Issue ID:                   1023
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.11-ck3
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
-Date Submitted:             04-11-2005 17:41 CEST
-Last Modified:              04-12-2005 18:39 CEST
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              04-12-2005 20:00 CEST
 ======================================================================
-Summary:                    Heavily distorted audio
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
-I have a laptop that is fine by itself, but when plugged into my docking
-station I get heavily distorted audio when something plays either
-directly to hw0:0 or through the OSS emulation. The problem seems to be
-with sample rate conversion -- if I create my own dmix-based device that
-resamples audio to 48KHz and then plays it to hw0:0, and I have an
-ALSA-aware app that lets me define which device to use and set it to
-that device, the audio is beautiful both on and off of the docking
-station.  Unfortunately, not all apps allow these settings, so things such
-as RealPlayer and Flash (in Firefox) sound horrid if I'm on my docking
-station, which is most of the time.
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-I've seen this same problem through three Linux distributions now
-(Gentoo, SuSE, and Fedora Core 3) on the same laptop so I know it's an
-ALSA issue (or configuration issue) and not distribution-specific.
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
 
-I've hard-set the ac97 clock option in the snd-intel8x0 module to 48000
-but this
-doesn't help, and my clock is detected as being 48000Hz anyways.  I
-don't know what to do.  Some people have said to point OSS apps to
-/dev/adsp but apps complain it's not a valid device, and anyways pointing
-to anything but /dev/dsp doesn't seem to be an option for all apps. 
-Besides, I'd still have the ALSA issues for apps that don't let you define
-which device to use.
 
-Following are relevant snippets of files.  I'm on up-to-date Gentoo
-linux using the Gentoo alsa-driver, alsa-tools, alsa-headers, alsa-lib,
-and alsa-oss ebuilds, all 1.0.8.  Configuration files are the defaults
-(I added the extra device with a .asoundrc).
-
-TIA,
-Jeff
 ======================================================================
 
 ----------------------------------------------------------------------
- jefferai - 04-12-05 18:13 
+ yafrank - 04-12-05 19:46 
 ----------------------------------------------------------------------
-Will do.  I'm recompiling at the moment, although I'll be unable to test it
-out until later.  I'll post results at that time.  I'm using Gentoo
-sources...alsa-lib, alsa-driver, alsa-headers are the only ones with
-1.09rc2 available.  Will this be enough to see if 1.09rc2 fixes my
-problem, or am I going to need to build the whole alsa set from stock
-sources?
+The /etc/asound.state I pasted is the one I'm currently using in
+2.6.10-1.770_FC3 kernel and it works fine with it. I'll get the
+correspondent in 2.6.11-1.14_FC3 after rebooting and running "alsactl
+store" right away.
 
 ----------------------------------------------------------------------
- tiwai - 04-12-05 18:39 
+ yafrank - 04-12-05 20:00 
 ----------------------------------------------------------------------
-Both alsa-driver and alsa-lib must be updated to the same version.
-Especially, 1.0.9rc2 alsa-lib might lead to a kernel Oops with the older
-alsa-driver.  alsa-utils can be kept old, though.
+The former pasted /etc/asound.state and /proc/asound/card0/codec97#0/* are
+actually both from 2.6.11-1.14_FC3 kernel. I only forgot to run a "alsactl
+store" then. The latest /etc/asound.state should be as following:
+ 
+[root@twinhead ~]# uname -r
+2.6.11-1.14_FC3
+[root@twinhead ~]# cp /etc/asound.state /tmp
+[root@twinhead ~]# alsactl store
+[root@twinhead ~]# cat /etc/asound.state
+state.AudioPCI {
+        control.1 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Master Playback Volume'
+                value.0 0
+                value.1 0
+        }
+        control.2 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Center Playback Switch'
+                value false
+        }
+        control.3 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Center Playback Volume'
+                value 31
+        }
+        control.4 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'LFE Playback Switch'
+                value false
+        }
+        control.5 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 31'
+                iface MIXER
+                name 'LFE Playback Volume'
+                value 0
+        }
+        control.6 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Master Mono Playback Volume'
+                value 0
+        }
+        control.7 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Tone Control - Bass'
+                value 0
+        }
+        control.8 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Tone Control - Treble'
+                value 0
+        }
+        control.9 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'PC Speaker Playback Switch'
+                value false
+        }
+        control.10 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 15'
+                iface MIXER
+                name 'PC Speaker Playback Volume'
+                value 0
+        }
+        control.11 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Mic Boost (+20dB)'
+                value false
+        }
+        control.12 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Aux Playback Volume'
+                value.0 0
+                value.1 0
+        }
+        control.13 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 2
+                comment.item.0 Mic
+                comment.item.1 CD
+                comment.item.2 Video
+                comment.item.3 Aux
+                comment.item.4 Line
+                comment.item.5 Mix
+                comment.item.6 'Mix Mono'
+                comment.item.7 Phone
+                iface MIXER
+                name 'Capture Source'
+                value.0 Mic
+                value.1 Mic
+        }
+        control.14 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Capture Volume'
+                value.0 0
+                value.1 0
+        }
+        control.15 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Mic Capture Switch'
+                value true
+        }
+        control.16 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Mic Capture Volume'
+                value 0
+        }
+        control.17 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 Mic1
+                comment.item.1 Mic2
+                iface MIXER
+                name 'Mic Select'
+                value Mic1
+        }
+        control.18 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 15'
+                iface MIXER
+                name '3D Control - Center'
+                value 0
+        }
+        control.19 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 15'
+                iface MIXER
+                name '3D Control - Depth'
+                value 0
+        }
+}
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-11-05 17:41 jefferai       New Issue                                    
-04-11-05 17:41 jefferai       Distribution              => Gentoo          
-04-11-05 17:41 jefferai       Kernel Version            => 2.6.11-ck3      
-04-12-05 16:32 tiwai          Note Added: 0004448                          
-04-12-05 18:13 jefferai       Note Added: 0004457                          
-04-12-05 18:39 tiwai          Note Added: 0004458                          
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+04-12-05 16:29 tiwai          Note Added: 0004447                          
+04-12-05 19:46 yafrank        Note Added: 0004459                          
+04-12-05 20:00 yafrank        Note Added: 0004460                          
 ======================================================================
 
 
