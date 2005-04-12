@@ -1,13 +1,11 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: intel8x0m and conexant ac97 modem codecs
-Date: Tue, 12 Apr 2005 20:17:37 +0200
-Message-ID: <425C10C1.3020202@pobox.sk>
-References: <41d6f0b90504120905d469db0@mail.gmail.com>
+From: Timothy J Brandt <brandt@kcco.com>
+Subject: Azalia drivers and azx drivers
+Date: Tue, 12 Apr 2005 11:54:41 -0500
+Message-ID: <425BFD51.2050600@kcco.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41d6f0b90504120905d469db0@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,36 +15,15 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Jared D. McNeill" <jared.mcneill@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net, jmcneill@NetBSD.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I am courious as to why the azx and azalia drivers from relatek are not
+in any of the releases.  At least I candnot find them.  Realtek seems to
+have released open source ALSA drivers and yet they are not in 1.0.9rc1
+or 1.0.8.  Am I confused?
 
-Last time I google for this I found, that no one knows how to setup 
-analog part of modem - no docs.
-One not technical reason - licence of slmodem package forbit use of 
-their drivers with modem not made by them - then there is no modem 
-software to use alsa modem driver.
-
-Peter Zubaj
- 
-Jared D. McNeill wrote:
-
->Hi folks, not sure if this is the right place to ask but I might as
->well give it a shot anyway --
->
->I'm working on adding AC97 modem support to NetBSD, and I have run
->into a stumbling block. From what I've read, it looks like Conexant
->AC97 modem codecs aren't supported by the ALSA intel8x0m / slmodem
->solution. What are the technical reasons for this?
->
->Thanks,
->Jared (jmcneill AT NetBSD.org)
->
->  
->
-
+Tim Brandt
 
 
 -------------------------------------------------------
