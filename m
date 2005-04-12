@@ -1,16 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: James Courtier-Dutton <James@superbug.co.uk>
 Subject: Re: A suggestion for better resamplers in alsa.
-Date: Tue, 12 Apr 2005 14:12:13 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0504121410240.3045@pnote.perex-int.cz>
-References: <s5h1x9qdcex.wl@alsa2.suse.de>
- <Pine.HPX.4.33n.0504041709240.17949-100000@studcom.urz.uni-halle.de>
- <s5hfyy6bjzm.wl@alsa2.suse.de> <4252EDF9.6090608@superbug.co.uk>
- <Pine.LNX.4.58.0504070946140.1763@pnote.perex-int.cz> <s5hr7hnj8c9.wl@alsa2.suse.de>
- <4258EEA4.6030405@superbug.co.uk>
+Date: Tue, 12 Apr 2005 13:24:14 +0100
+Message-ID: <425BBDEE.4@superbug.co.uk>
+References: <s5h1x9qdcex.wl@alsa2.suse.de> <Pine.HPX.4.33n.0504041709240.17949-100000@studcom.urz.uni-halle.de> <s5hfyy6bjzm.wl@alsa2.suse.de> <4252EDF9.6090608@superbug.co.uk> <Pine.LNX.4.58.0504070946140.1763@pnote.perex-int.cz> <s5hr7hnj8c9.wl@alsa2.suse.de> <4258EEA4.6030405@superbug.co.uk> <Pine.LNX.4.58.0504121410240.3045@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4258EEA4.6030405@superbug.co.uk>
+In-Reply-To: <Pine.LNX.4.58.0504121410240.3045@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,39 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 10 Apr 2005, James Courtier-Dutton wrote:
+Jaroslav Kysela wrote:
 
-> Takashi Iwai wrote:
-> >>
-> >>I like this idea. This setup belongs to:
-> >>
-> >>snd_pcm_hw_params_set_rate_noresample()
-> > 
-> > 
-> > This feature would be nice especially also for the sound servers which
-> > do resampling by themselves.
-> > 
-> 
-> Ok, so how do we actually implement it. We need to be able to detect the
-> presence or absence of this function by the application at run time.
-> We can't exactly have an application call this function against an older
-> version of the lib that does not contain it.
-> I will look into adding the function anyway, and we can worry about the
-> runtime detection problem later.
+>I just tried to implement this function. Please, could you test 
+>snd_pcm_hw_params_set_rate_resample() function (in current CVS)?
+>
+>						Jaroslav
+>  
+>
+Why not s/resample/no_resampling/  ?
 
-I just tried to implement this function. Please, could you test 
-snd_pcm_hw_params_set_rate_resample() function (in current CVS)?
+I.e. There should really be the word "no" in there somewhere because we 
+are asking for no resampling to take place.
 
-						Jaroslav
+I assume this is called before one calls snd_pcm_set_rate()  ?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+If I get time, I will try to test this tonight.
+
+James
+
+
 
 
 -------------------------------------------------------
