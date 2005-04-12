@@ -1,13 +1,14 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: intel8x0m and conexant ac97 modem codecs
-Date: Tue, 12 Apr 2005 20:42:14 +0200
-Message-ID: <425C1686.8020100@pobox.sk>
-References: <41d6f0b90504120905d469db0@mail.gmail.com>	 <425C10C1.3020202@pobox.sk> <41d6f0b9050412112249f3d1f7@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Tue, 12 Apr 2005 20:43:58 +0200
+Message-ID: <c90ebbfa469f2022e5aac4fdd32beea8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41d6f0b9050412112249f3d1f7@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1B4C827C
+	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 20:43:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,49 +18,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Jared D. McNeill" <jared.mcneill@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net, jmcneill@netbsd.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am not lawyer.
 
-slmodem consists from two part one comes with source (BSD Licence) and 
-second only as compiled object (dsplibs.o part).
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
+======================================================================
+Reported By:                alien999999999
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1047
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Mandrake
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              04-12-2005 20:43 CEST
+======================================================================
+Summary:                    module hangs at seemingly random times
+Description: 
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
 
-Peter Zubaj
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
 
-Jared D. McNeill wrote:
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
 
->On Apr 12, 2005 3:17 PM, Peter Zubaj <pzad@pobox.sk> wrote:
->  
->
->>Last time I google for this I found, that no one knows how to setup
->>analog part of modem - no docs.
->>    
->>
->
->Interesting -- figures that the only hardware that I can actually test
->myself would be broken.
->
->  
->
->>One not technical reason - licence of slmodem package forbit use of
->>their drivers with modem not made by them - then there is no modem
->>software to use alsa modem driver.
->>    
->>
->
->The slmodem sources that I've been working with (slmodem-2.9.9b) don't
->mention this restriction. The COPYING file in 2.9.9b appears to be a
->standard BSD license; the COPYING file in 2.9.10 mentions this
->restriction though.
->
->Cheers,
->Jared
->
->
->  
->
+
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+======================================================================
+
 
 
 
