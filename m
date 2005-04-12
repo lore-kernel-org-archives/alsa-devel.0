@@ -1,17 +1,14 @@
-From: Andrew Morton <akpm@osdl.org>
-Subject: Re: OSS emulation, CS46xx, 2.6.12-rc2
-Date: Mon, 11 Apr 2005 17:59:57 -0700
-Message-ID: <20050411175957.53e023f6.akpm@osdl.org>
-References: <20050411012145.29c390a3.akpm@osdl.org>
-	<s5hbr8lpimi.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
+Date: Tue, 12 Apr 2005 06:02:13 +0200
+Message-ID: <8bf245affa66ee491655898bd7738e57@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="Multipart=_Mon__11_Apr_2005_17_59_57_-0700_3MjVLlI=t7PlhE4p"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp.osdl.org (fire.osdl.org [65.172.181.4])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A465E29D
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 03:00:10 +0200 (MEST)
-In-Reply-To: <s5hbr8lpimi.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9DF192A3
+	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 06:02:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,222 +18,485 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---Multipart=_Mon__11_Apr_2005_17_59_57_-0700_3MjVLlI=t7PlhE4p
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+======================================================================
+Reported By:                yafrank
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1023
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
+======================================================================
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              04-12-2005 06:02 CEST
+======================================================================
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Description: 
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-Takashi Iwai <tiwai@suse.de> wrote:
->
-> At Mon, 11 Apr 2005 01:21:45 -0700,
-> Andrew Morton wrote:
-> > 
-> > I fired up 2.6.12-rc2 on an IBM A21P laptop and cannot get any audio to
-> > come out of gmplayer, which appears to use the OSS APIs (?).  `play' is
-> > also silent.
-> > 
-> > Killing off artsd didn't help.  It all works OK if I use the kernel's OSS
-> > drivers.
-> > 
-> > I noticed that if I cranked up the "Mic" amplification in aumix, some white
-> > noise comes out.
-> 
-> Could you check whether 'External Amplifier' is turned on?
-
-I don't know how to do that.
-
-> It seems that the recent change of the "reversed EAPD" hack sets this
-> control off as default unexpectedly.
-> 
-> Anyway, /etc/asound.state (if you have) and
-
-Attached
-
-> /proc/asound/card0/codec97#0/* files would be helpful for debugging.
-
-I don't seem to have such a thing.  I tarred up /proc/asound.  Also attached.
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
 
 
+======================================================================
 
---Multipart=_Mon__11_Apr_2005_17_59_57_-0700_3MjVLlI=t7PlhE4p
-Content-Type: application/octet-stream;
- name="asound.state"
-Content-Disposition: attachment;
- filename="asound.state"
-Content-Transfer-Encoding: base64
+----------------------------------------------------------------------
+ mmadore - 04-07-05 18:32 
+----------------------------------------------------------------------
+Hi,
 
-c3RhdGUuQ1M0Nnh4IHsKCWNvbnRyb2wuMSB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUn
-CgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ01hc3RlciBQbGF5
-YmFjayBTd2l0Y2gnCgkJdmFsdWUgdHJ1ZQoJfQoJY29udHJvbC4yIHsKCQljb21tZW50LmFjY2Vz
-cyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgSU5URUdFUgoJCWNvbW1lbnQucmFuZ2UgJzAg
-LSA2MycKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ01hc3RlciBQbGF5YmFjayBWb2x1bWUnCgkJdmFs
-dWUuMCA1MwoJCXZhbHVlLjEgNTMKCX0KCWNvbnRyb2wuMyB7CgkJY29tbWVudC5hY2Nlc3MgJ3Jl
-YWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0hl
-YWRwaG9uZSBQbGF5YmFjayBTd2l0Y2gnCgkJdmFsdWUgdHJ1ZQoJfQoJY29udHJvbC40IHsKCQlj
-b21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgSU5URUdFUgoJCWNvbW1l
-bnQucmFuZ2UgJzAgLSAzMScKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0hlYWRwaG9uZSBQbGF5YmFj
-ayBWb2x1bWUnCgkJdmFsdWUuMCAyNgoJCXZhbHVlLjEgMjYKCX0KCWNvbnRyb2wuNSB7CgkJY29t
-bWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlpZmFjZSBN
-SVhFUgoJCW5hbWUgJ01hc3RlciBNb25vIFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1ZSB0cnVlCgl9
-Cgljb250cm9sLjYgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlw
-ZSBJTlRFR0VSCgkJY29tbWVudC5yYW5nZSAnMCAtIDMxJwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAn
-TWFzdGVyIE1vbm8gUGxheWJhY2sgVm9sdW1lJwoJCXZhbHVlIDAKCX0KCWNvbnRyb2wuNyB7CgkJ
-Y29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlpZmFj
-ZSBNSVhFUgoJCW5hbWUgJ1BDIFNwZWFrZXIgUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlIHRydWUK
-CX0KCWNvbnRyb2wuOCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50
-eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMTUnCgkJaWZhY2UgTUlYRVIKCQluYW1l
-ICdQQyBTcGVha2VyIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZSAxMwoJfQoJY29udHJvbC45IHsK
-CQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgQk9PTEVBTgoJCWlm
-YWNlIE1JWEVSCgkJbmFtZSAnUGhvbmUgUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlIHRydWUKCX0K
-CWNvbnRyb2wuMTAgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlw
-ZSBJTlRFR0VSCgkJY29tbWVudC5yYW5nZSAnMCAtIDMxJwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAn
-UGhvbmUgUGxheWJhY2sgVm9sdW1lJwoJCXZhbHVlIDAKCX0KCWNvbnRyb2wuMTEgewoJCWNvbW1l
-bnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJaWZhY2UgTUlY
-RVIKCQluYW1lICdNaWMgUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wu
-MTIgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VS
-CgkJY29tbWVudC5yYW5nZSAnMCAtIDMxJwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWljIFBsYXli
-YWNrIFZvbHVtZScKCQl2YWx1ZSAyCgl9Cgljb250cm9sLjEzIHsKCQljb21tZW50LmFjY2VzcyAn
-cmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgQk9PTEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAn
-TWljIEJvb3N0ICgrMjBkQiknCgkJdmFsdWUgdHJ1ZQoJfQoJY29udHJvbC4xNCB7CgkJY29tbWVu
-dC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlpZmFjZSBNSVhF
-UgoJCW5hbWUgJ0xpbmUgUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wu
-MTUgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VS
-CgkJY29tbWVudC5yYW5nZSAnMCAtIDMxJwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTGluZSBQbGF5
-YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAyNgoJCXZhbHVlLjEgMjYKCX0KCWNvbnRyb2wuMTYgewoJ
-CWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJaWZh
-Y2UgTUlYRVIKCQluYW1lICdDRCBQbGF5YmFjayBTd2l0Y2gnCgkJdmFsdWUgdHJ1ZQoJfQoJY29u
-dHJvbC4xNyB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElO
-VEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMzEnCgkJaWZhY2UgTUlYRVIKCQluYW1lICdDRCBQ
-bGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAyNQoJCXZhbHVlLjEgMjUKCX0KCWNvbnRyb2wuMTgg
-ewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJ
-aWZhY2UgTUlYRVIKCQluYW1lICdWaWRlbyBQbGF5YmFjayBTd2l0Y2gnCgkJdmFsdWUgdHJ1ZQoJ
-fQoJY29udHJvbC4xOSB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50
-eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMzEnCgkJaWZhY2UgTUlYRVIKCQluYW1l
-ICdWaWRlbyBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAwCgkJdmFsdWUuMSAwCgl9Cgljb250
-cm9sLjIwIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgQk9P
-TEVBTgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnQXV4IFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1ZSB0
-cnVlCgl9Cgljb250cm9sLjIxIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21t
-ZW50LnR5cGUgSU5URUdFUgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAzMScKCQlpZmFjZSBNSVhFUgoJ
-CW5hbWUgJ0F1eCBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAyMgoJCXZhbHVlLjEgMjIKCX0K
-CWNvbnRyb2wuMjIgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlw
-ZSBCT09MRUFOCgkJaWZhY2UgTUlYRVIKCQluYW1lICdQQ00gUGxheWJhY2sgU3dpdGNoJwoJCXZh
-bHVlIHRydWUKCX0KCWNvbnRyb2wuMjMgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJ
-CWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5yYW5nZSAnMCAtIDMxJwoJCWlmYWNlIE1J
-WEVSCgkJbmFtZSAnUENNIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZS4wIDI5CgkJdmFsdWUuMSAy
-OQoJfQoJY29udHJvbC4yNCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVu
-dC50eXBlIEVOVU1FUkFURUQKCQljb21tZW50Lml0ZW0uMCBNaWMKCQljb21tZW50Lml0ZW0uMSBD
-RAoJCWNvbW1lbnQuaXRlbS4yIFZpZGVvCgkJY29tbWVudC5pdGVtLjMgQXV4CgkJY29tbWVudC5p
-dGVtLjQgTGluZQoJCWNvbW1lbnQuaXRlbS41IE1peAoJCWNvbW1lbnQuaXRlbS42ICdNaXggTW9u
-bycKCQljb21tZW50Lml0ZW0uNyBQaG9uZQoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnQ2FwdHVyZSBT
-b3VyY2UnCgkJdmFsdWUuMCBNaXgKCQl2YWx1ZS4xIE1peAoJfQoJY29udHJvbC4yNSB7CgkJY29t
-bWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlpZmFjZSBN
-SVhFUgoJCW5hbWUgJ0NhcHR1cmUgU3dpdGNoJwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuMjYg
-ewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJ
-Y29tbWVudC5yYW5nZSAnMCAtIDE1JwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnQ2FwdHVyZSBWb2x1
-bWUnCgkJdmFsdWUuMCAxMQoJCXZhbHVlLjEgMTEKCX0KCWNvbnRyb2wuMjcgewoJCWNvbW1lbnQu
-YWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJaWZhY2UgTUlYRVIK
-CQluYW1lICczRCBDb250cm9sIC0gU3dpdGNoJwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuMjgg
-ewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBFTlVNRVJBVEVE
-CgkJY29tbWVudC5pdGVtLjAgTWl4CgkJY29tbWVudC5pdGVtLjEgTWljCgkJaWZhY2UgTUlYRVIK
-CQluYW1lICdNb25vIE91dHB1dCBTZWxlY3QnCgkJdmFsdWUgTWl4Cgl9Cgljb250cm9sLjI5IHsK
-CQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgRU5VTUVSQVRFRAoJ
-CWNvbW1lbnQuaXRlbS4wIE1pYzEKCQljb21tZW50Lml0ZW0uMSBNaWMyCgkJaWZhY2UgTUlYRVIK
-CQluYW1lICdNaWMgU2VsZWN0JwoJCXZhbHVlIE1pYzEKCX0KCWNvbnRyb2wuMzAgewoJCWNvbW1l
-bnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5y
-YW5nZSAnMCAtIDE1JwoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnM0QgQ29udHJvbCAtIENlbnRlcicK
-CQl2YWx1ZSAwCgl9Cgljb250cm9sLjMxIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScK
-CQljb21tZW50LnR5cGUgSU5URUdFUgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAxNScKCQlpZmFjZSBN
-SVhFUgoJCW5hbWUgJzNEIENvbnRyb2wgLSBEZXB0aCcKCQl2YWx1ZSAwCgl9Cgljb250cm9sLjMy
-IHsKCQljb21tZW50LmFjY2VzcyByZWFkCgkJY29tbWVudC50eXBlIElFQzk1OAoJCWlmYWNlIE1J
-WEVSCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIENvbiBNYXNrJwoJCXZhbHVlICcwZmZmMDAwZjAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-JwoJfQoJY29udHJvbC4zMyB7CgkJY29tbWVudC5hY2Nlc3MgcmVhZAoJCWNvbW1lbnQudHlwZSBJ
-RUM5NTgKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0lFQzk1OCBQbGF5YmFjayBQcm8gTWFzaycKCQl2
-YWx1ZSBjZjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwCgl9Cgljb250cm9sLjM0IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3
-cml0ZScKCQljb21tZW50LnR5cGUgSUVDOTU4CgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTgg
-UGxheWJhY2sgRGVmYXVsdCcKCQl2YWx1ZSAnMDA4MjAwMDIwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCcKCX0KCWNvbnRyb2wuMzUgewoJ
-CWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJaWZh
-Y2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlIHRydWUKCX0K
-CWNvbnRyb2wuMzYgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlw
-ZSBCT09MRUFOCgkJaWZhY2UgTUlYRVIKCQluYW1lICdFeHRlcm5hbCBBbXBsaWZpZXInCgkJdmFs
-dWUgdHJ1ZQoJfQoJY29udHJvbC4zNyB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJ
-Y29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMzI3NjcnCgkJaWZhY2Ug
-TUlYRVIKCQluYW1lICdEQUMgVm9sdW1lJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJfQoJY29u
-dHJvbC4zOCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElO
-VEVHRVIKCQljb21tZW50LnJhbmdlICcwIC0gMzI3NjcnCgkJaWZhY2UgTUlYRVIKCQluYW1lICdB
-REMgVm9sdW1lJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJfQoJY29udHJvbC4zOSB7CgkJY29t
-bWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlpZmFjZSBN
-SVhFUgoJCW5hbWUgJ0FEQyBDYXB0dXJlIFN3aXRjaCcKCQl2YWx1ZSBmYWxzZQoJfQoJY29udHJv
-bC40MCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xF
-QU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0RBQyBDYXB0dXJlIFN3aXRjaCcKCQl2YWx1ZSBmYWxz
-ZQoJfQoJY29udHJvbC40MSB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVu
-dC50eXBlIEJPT0xFQU4KCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0lFQzk1OCBPdXRwdXQgU3dpdGNo
-JwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuNDIgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdy
-aXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTgg
-SW5wdXQgU3dpdGNoJwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuNDMgewoJCWNvbW1lbnQuYWNj
-ZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBJRUM5NTgKCQlpZmFjZSBQQ00KCQluYW1l
-ICdJRUM5NTggUGxheWJhY2sgRGVmYXVsdCcKCQl2YWx1ZSAnMDAwMDAwMDIwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCcKCX0KCWNvbnRy
-b2wuNDQgewoJCWNvbW1lbnQuYWNjZXNzIHJlYWQKCQljb21tZW50LnR5cGUgSUVDOTU4CgkJaWZh
-Y2UgUENNCgkJbmFtZSAnSUVDOTU4IFBsYXliYWNrIE1hc2snCgkJdmFsdWUgZmZmZjAwZmYwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMAoJ
-fQoJY29udHJvbC40NSB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50
-eXBlIElFQzk1OAoJCWlmYWNlIFBDTQoJCW5hbWUgJ0lFQzk1OCBQbGF5YmFjayBQQ00gU3RyZWFt
-JwoJCXZhbHVlICcwMDgyMDAwMjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
-MDAwMDAwMDAwMDAwMDAwMDAwMDAwJwoJfQp9Cg==
+I have attached the files you requested.  Also if I replace the following
+files in the current version with those from 2.6.10, then I am able to get
+sound working.  Hopefully this will narrow it down a little bit.
 
---Multipart=_Mon__11_Apr_2005_17_59_57_-0700_3MjVLlI=t7PlhE4p
-Content-Type: application/x-gzip;
- name="asound.tar.gz"
-Content-Disposition: attachment;
- filename="asound.tar.gz"
-Content-Transfer-Encoding: base64
+sound/core/pcm.c 
+sound/core/pcm_lib.c 
+sound/core/pcm_memory.c 
+sound/core/pcm_native.c 
+sound/pci/ac97/*.c 
+sound/pci/ac97/*.h 
+include/sound/pcm.h 
+include/sound/pcm-indirect.h 
+include/sound/pcm_params.h 
+include/sound/ac97_codec.h 
+include/sound/ak4531_codec.h
 
-H4sIAFgdW0IAA+2Y3WqEMBBG91F8g+bf5xETqNDVXaP29RttLsJebDEwg4Xv3ERUGM1xNJ9dnNbR
-f9woEQlr7TEmXsdjWwqlnJPO6rRfKi3MrbGkV5VZ49LNTXObp2l5d95fx19v7p/Q/fp/9He6Gvt8
-GGPO+G/b5J9lEuF/978M9zBHohrn/WurBPxzkP1/fvvwoKpR4V8r9D8L2X/fzZ6q/av8Swn/HGT/
-PmxDH4iegAr/Trfwz0H2v6Wv/zCNNDUq/LdCwT8H2X8MT7oMuM/HufynRYv8x0Lh38/DRhICzve/
-MU6j/zko/B8ZkKJGhX+pLPxzUPjvv4YwLhfpf+Pgn4PC/3MNK0kEqPCvJfI/C4X/KV4o/yH/85D9
-J/eXWv9LKbD+56DwH0ef5uLtTdZR8f63Av3PQuGf7B9ghX9jkP8AAAAAAEj4AT1gTO4AKAAA
+----------------------------------------------------------------------
+ yafrank - 04-12-05 06:02 
+----------------------------------------------------------------------
+Just came back from vacation. I've read tiwai's request of
+/etc/asound.state and /proc/asound/card0/codec97#0/* files. Since someone
+else had attached them already, I'll paste mine here avoiding overwritten.
+The former customized 2.6.11-1.8_FC3 kernel had been removed and this time
+I'm using 2.6.11-1.14_FC3 with similar behavior. 
 
---Multipart=_Mon__11_Apr_2005_17_59_57_-0700_3MjVLlI=t7PlhE4p--
+[frank@twinhead ~]$ cd /proc/asound/card0/codec97#0/
+[frank@twinhead codec97#0]$ ls
+ac97#0-0  ac97#0-0+regs
+[frank@twinhead codec97#0]$ cat ac97#0-0
+0-0/0: 0x8a058384
+?&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=65533;
+
+Capabilities     : -dedicated MIC PCM IN channel- -bass & treble-
+DAC resolution   : 16-bit
+ADC resolution   : 20-bit
+3D enhancement   : Reserved 29
+
+Current setup
+Mic gain         : +20dB [+0dB]
+POP path         : post 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : on
+Mono output      : Mic
+Mic select       : Mic2
+ADC/DAC loopback : off
+Extended modem ID: codec=3 CID2 CID1 HSET LIN2 LIN1
+Modem status     : GPIO MREF ADC1 DAC1 ADC2 DAC2 HADC HDAC PRA(GPIO)
+PRB(res) PRC(ADC1) PRD(DAC1) PRE(ADC2) PRF(DAC2) PRG(HADC) PRH(HDAC)
+Line1 rate       : 65535Hz
+Line2 rate       : 65535Hz
+Headset rate     : 65535Hz
+[frank@twinhead codec97#0]$ cat ac97#0-0+regs
+0:00 = ffff
+0:02 = 0140
+0:04 = 9f1f
+0:06 = 8000
+0:08 = ffff
+0:0a = ffff
+0:0c = 811f
+0:0e = 8001
+0:10 = 8001
+0:12 = 8101
+0:14 = 9f1f
+0:16 = 9f1f
+0:18 = 9f1f
+0:1a = 8101
+0:1c = 9818
+0:1e = 0000
+0:20 = ffff
+0:22 = 0000
+0:24 = 0000
+0:26 = ffff
+0:28 = 000f
+0:2a = ffff
+0:2c = ffff
+0:2e = ffff
+0:30 = ffff
+0:32 = ffff
+0:34 = ffff
+0:36 = ffff
+0:38 = ffff
+0:3a = ffff
+0:3c = ffff
+0:3e = ffff
+0:40 = ffff
+0:42 = ffff
+0:44 = ffff
+0:46 = ffff
+0:48 = ffff
+0:4a = ffff
+0:4c = ffff
+0:4e = ffff
+0:50 = ffff
+0:52 = ffff
+0:54 = ffff
+0:56 = ffff
+0:58 = ffff
+0:5a = ffff
+0:5c = 0000
+0:5e = 0000
+0:60 = 0000
+0:62 = ffff
+0:64 = ffff
+0:66 = ffff
+0:68 = ffff
+0:6a = ffff
+0:6c = ffff
+0:6e = ffff
+0:70 = ffff
+0:72 = ffff
+0:74 = ffff
+0:76 = ffff
+0:78 = ffff
+0:7a = ffff
+0:7c = ffff
+0:7e = 8384
+
+[frank@twinhead codec97#0]$ cat /etc/asound.state
+state.AudioPCI {
+        control.1 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Master Playback Switch'
+                value true
+        }
+        control.2 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Master Playback Volume'
+                value.0 29
+                value.1 29
+        }
+        control.3 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Center Playback Switch'
+                value false
+        }
+        control.4 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Center Playback Volume'
+                value 0
+        }
+        control.5 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'LFE Playback Switch'
+                value true
+        }
+        control.6 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 31'
+                iface MIXER
+                name 'LFE Playback Volume'
+                value 0
+        }
+        control.7 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Master Mono Playback Switch'
+                value false
+        }
+        control.8 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Master Mono Playback Volume'
+                value 0
+        }
+        control.9 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Tone Control - Bass'
+                value 2
+        }
+        control.10 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Tone Control - Treble'
+                value 0
+        }
+        control.11 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'PC Speaker Playback Switch'
+                value true
+        }
+        control.12 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 15'
+                iface MIXER
+                name 'PC Speaker Playback Volume'
+                value 0
+        }
+        control.13 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Phone Playback Switch'
+                value false
+        }
+        control.14 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Phone Playback Volume'
+                value 0
+        }
+        control.15 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Mic Playback Switch'
+                value false
+        }
+        control.16 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Mic Playback Volume'
+                value 0
+        }
+        control.17 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Mic Boost (+20dB)'
+                value false
+        }
+        control.18 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Line Playback Switch'
+                value false
+        }
+        control.19 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Line Playback Volume'
+                value.0 0
+                value.1 0
+        }
+        control.20 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'CD Playback Switch'
+                value false
+        }
+        control.21 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'CD Playback Volume'
+                value.0 0
+                value.1 0
+        }
+        control.22 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Video Playback Switch'
+                value false
+        }
+        control.23 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Video Playback Volume'
+                value.0 0
+                value.1 0
+        }
+        control.24 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Aux Playback Switch'
+                value false
+        }
+        control.25 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'Aux Playback Volume'
+                value.0 0
+                value.1 0
+        }
+        control.26 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'PCM Playback Switch'
+                value true
+        }
+        control.27 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 31'
+                iface MIXER
+                name 'PCM Playback Volume'
+                value.0 10
+                value.1 10
+        }
+        control.28 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 2
+                comment.item.0 Mic
+                comment.item.1 CD
+                comment.item.2 Video
+                comment.item.3 Aux
+                comment.item.4 Line
+                comment.item.5 Mix
+                comment.item.6 'Mix Mono'
+                comment.item.7 Phone
+                iface MIXER
+                name 'Capture Source'
+                value.0 'Mix Mono'
+                value.1 'Mix Mono'
+        }
+        control.29 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Capture Volume'
+                value.0 0
+                value.1 0
+        }
+        control.30 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 1
+                iface MIXER
+                name 'Mic Capture Switch'
+                value false
+        }
+        control.31 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 1
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Mic Capture Volume'
+                value 0
+        }
+}
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
