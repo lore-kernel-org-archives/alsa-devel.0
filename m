@@ -1,13 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Azalia drivers and azx drivers
-Date: Tue, 12 Apr 2005 14:04:04 -0400
-Message-ID: <1113329044.31159.20.camel@mindpipe>
-References: <425BFD51.2050600@kcco.com>
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: intel8x0m and conexant ac97 modem codecs
+Date: Tue, 12 Apr 2005 20:42:14 +0200
+Message-ID: <425C1686.8020100@pobox.sk>
+References: <41d6f0b90504120905d469db0@mail.gmail.com>	 <425C10C1.3020202@pobox.sk> <41d6f0b9050412112249f3d1f7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <425BFD51.2050600@kcco.com>
+In-Reply-To: <41d6f0b9050412112249f3d1f7@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,19 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Timothy J Brandt <brandt@kcco.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: "Jared D. McNeill" <jared.mcneill@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net, jmcneill@netbsd.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-04-12 at 11:54 -0500, Timothy J Brandt wrote:
-> I am courious as to why the azx and azalia drivers from relatek are not
-> in any of the releases.  At least I candnot find them.  Realtek seems to
-> have released open source ALSA drivers and yet they are not in 1.0.9rc1
-> or 1.0.8.  Am I confused?
+I am not lawyer.
 
-They are now called "snd-hda-intel".
+slmodem consists from two part one comes with source (BSD Licence) and 
+second only as compiled object (dsplibs.o part).
 
-Lee
+Peter Zubaj
+
+Jared D. McNeill wrote:
+
+>On Apr 12, 2005 3:17 PM, Peter Zubaj <pzad@pobox.sk> wrote:
+>  
+>
+>>Last time I google for this I found, that no one knows how to setup
+>>analog part of modem - no docs.
+>>    
+>>
+>
+>Interesting -- figures that the only hardware that I can actually test
+>myself would be broken.
+>
+>  
+>
+>>One not technical reason - licence of slmodem package forbit use of
+>>their drivers with modem not made by them - then there is no modem
+>>software to use alsa modem driver.
+>>    
+>>
+>
+>The slmodem sources that I've been working with (slmodem-2.9.9b) don't
+>mention this restriction. The COPYING file in 2.9.9b appears to be a
+>standard BSD license; the COPYING file in 2.9.10 mentions this
+>restriction though.
+>
+>Cheers,
+>Jared
+>
+>
+>  
+>
 
 
 
