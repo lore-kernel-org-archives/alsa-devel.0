@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000594]: Sound level is extremely low
-Date: Tue, 12 Apr 2005 17:44:49 +0200
-Message-ID: <0105b4c5873a15bb34c97fdfb0c51aed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000616]: codec read/write timeout is reported on module load, and card is not detected
+Date: Tue, 12 Apr 2005 17:43:23 +0200
+Message-ID: <7f8cbfc63d96c4947aa3431263f4c9a2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 85FAD27E
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 17:44:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2F92E27E
+	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 17:43:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=594> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=616> 
 ======================================================================
-Reported By:                danstef
+Reported By:                jcpetruzza
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   594
-Category:                   PCI - intel8x0
+Issue ID:                   616
+Category:                   PCI - ens1371
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               
-Kernel Version:             2.4.20
+Kernel Version:             2.6.8-gentoo-r3
 ======================================================================
-Date Submitted:             10-21-2004 23:19 CEST
-Last Modified:              04-12-2005 17:44 CEST
+Date Submitted:             10-29-2004 17:09 CEST
+Last Modified:              04-12-2005 17:43 CEST
 ======================================================================
-Summary:                    Sound level is extremely low
+Summary:                    codec read/write timeout is reported on module load,
+and card is not detected
 Description: 
-I compiled and installed drivers and utilities without a 
-problem. 
-I used the alsamixer and unmute all channels and raise levels. I also used
-aumix to max the gain. When I play
-a wave file (play --volume=100) I can barely hear the sound.
-I have speakers hooked up to the line out and a front panel
-speaker. Sound is coming out of both at the same really, really low level.
+My Ensoniq 1371 rev 7 based card is not detected.
+
+dmesg shows:
+
+PCI: Found IRQ 12 for device 0000:00:09.0
+codec write timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+.
+.
+.
+codec write timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+AC'97 0 does not respond - RESET
+es1371: codec read timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+AC'97 0 access is not valid [0x0], removing mixer.
+ENS1371: probe of 0000:00:09.0 failed with error -5
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 16:26 
+ jdthood - 04-09-05 17:03 
 ----------------------------------------------------------------------
-> I am installing windows on the machine just to see if I can
-> get the card to work to make sure there is not a hardware issue.
-
-So you are sure that this is an ALSA bug?
+Submitter: Is this still a problem with the latest ALSA release?
 
 ----------------------------------------------------------------------
- tiwai - 04-12-05 17:44 
+ tiwai - 04-12-05 17:43 
 ----------------------------------------------------------------------
-Please attach /etc/asound.state and /proc/asound/card0/codec97#0/* files
-for debugging.
+I'd bet rather an ACPI-related problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-04 23:19 danstef        New Issue                                    
-10-21-04 23:19 danstef        Kernel Version            => 2.4.20          
-10-21-04 23:21 danstef        Note Added: 0002224                          
-04-09-05 16:26 jdthood        Note Added: 0004412                          
-04-12-05 17:44 tiwai          Note Added: 0004456                          
+10-29-04 17:09 jcpetruzza     New Issue                                    
+10-29-04 17:09 jcpetruzza     Kernel Version            => 2.6.8-gentoo-r3 
+11-12-04 15:12 jcpetruzza     Note Added: 0002397                          
+04-09-05 17:03 jdthood        Note Added: 0004417                          
+04-12-05 17:43 tiwai          Note Added: 0004455                          
 ======================================================================
 
 
