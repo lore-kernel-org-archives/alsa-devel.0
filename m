@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001044]: Heavily distorted audio
-Date: Tue, 12 Apr 2005 18:13:14 +0200
-Message-ID: <5a78120710c511670b40492d9b2e71f0@bugtrack.alsa-project.org>
+Date: Tue, 12 Apr 2005 18:39:23 +0200
+Message-ID: <1068b5152a3f3f891ffa7bc825b203b1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DFB17240
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 18:13:14 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 07AEA215
+	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 18:39:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.11-ck3
 ======================================================================
 Date Submitted:             04-11-2005 17:41 CEST
-Last Modified:              04-12-2005 18:13 CEST
+Last Modified:              04-12-2005 18:39 CEST
 ======================================================================
 Summary:                    Heavily distorted audio
 Description: 
@@ -78,11 +78,6 @@ Jeff
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-12-05 16:32 
-----------------------------------------------------------------------
-Try 1.0.9rc2.
-
-----------------------------------------------------------------------
  jefferai - 04-12-05 18:13 
 ----------------------------------------------------------------------
 Will do.  I'm recompiling at the moment, although I'll be unable to test it
@@ -92,6 +87,13 @@ sources...alsa-lib, alsa-driver, alsa-headers are the only ones with
 problem, or am I going to need to build the whole alsa set from stock
 sources?
 
+----------------------------------------------------------------------
+ tiwai - 04-12-05 18:39 
+----------------------------------------------------------------------
+Both alsa-driver and alsa-lib must be updated to the same version.
+Especially, 1.0.9rc2 alsa-lib might lead to a kernel Oops with the older
+alsa-driver.  alsa-utils can be kept old, though.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -100,6 +102,7 @@ Date Modified  Username       Field                    Change
 04-11-05 17:41 jefferai       Kernel Version            => 2.6.11-ck3      
 04-12-05 16:32 tiwai          Note Added: 0004448                          
 04-12-05 18:13 jefferai       Note Added: 0004457                          
+04-12-05 18:39 tiwai          Note Added: 0004458                          
 ======================================================================
 
 
