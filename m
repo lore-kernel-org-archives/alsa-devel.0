@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000715]: pc speaker always routed through laptop speakers
-Date: Wed, 13 Apr 2005 00:50:31 +0200
-Message-ID: <09488a46b6b1697740feb8515a869878@bugtrack.alsa-project.org>
+From: andreas <lalitha@walla.com>
+Subject: =?Windows-1251?B?z9DO1MXR0cjOzcDL3M3A3yAgRS1tYWlsINDA0dHby8rA?=
+Date: Tue, 12 Apr 2005 23:47:27 +0000
+Message-ID: <E1DLVO1-0004vS-51@sc8-sf-mx2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=Windows-1251
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 12DF5254
-	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 00:50:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +15,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=715> 
-======================================================================
-Reported By:                rafi
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   715
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     acknowledged
-Distribution:               debian
-Kernel Version:             2.6.9 (from source)
-======================================================================
-Date Submitted:             12-08-2004 06:02 CET
-Last Modified:              04-13-2005 00:50 CEST
-======================================================================
-Summary:                    pc speaker always routed through laptop speakers
-Description: 
-When the pc speaker driver is loaded, it always beeps through the laptop's
-speakers, even when something is plugged into the headphone jack, or the
-headphone jack on the docking station.
-
-Also, if audio is being played through the other devices, it also switches
-to the sspeakers for the duration of the beep.  And the beep is not
-affected by any of the volume controlls.
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 04-12-05 16:48 
-----------------------------------------------------------------------
-Did you try to turn off "Master Mono"?
-
-If the beep volume can't change via "PC Speaker" mixer volume, it means
-that the signal is not routed through AC97.  It's not controllable without
-an (unknown) initialization.
-
-----------------------------------------------------------------------
- rafi - 04-13-05 00:50 
-----------------------------------------------------------------------
-I did, and I see no affect from Master Mono.  What's it supposed to do?
-
-Is there anything I can do to help figure out what needs to be done to
-initialize it?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-08-04 06:02 rafi           New Issue                                    
-12-08-04 06:02 rafi           Distribution              => debian          
-12-08-04 06:02 rafi           Kernel Version            => 2.6.9 (from source)
-12-08-04 12:12 tiwai          Note Added: 0002778                          
-04-09-05 17:21 jdthood        Note Added: 0004421                          
-04-09-05 20:58 rafi           Issue Monitored: rafi                        
-04-09-05 21:00 rafi           File Added: ac97#0-0                         
-04-09-05 21:00 rafi           File Added: ac97#0-0+regs                    
-04-09-05 21:01 rafi           File Added: asound.state                     
-04-09-05 21:03 rafi           Note Added: 0004429                          
-04-09-05 22:03 jdthood        Status                   new => acknowledged 
-04-12-05 16:48 tiwai          Note Added: 0004451                          
-04-13-05 00:50 rafi           Note Added: 0004467                          
-======================================================================
+=CF=F0=EE=F4=E5=F1=F1=E8=EE=ED=E0=EB=FC=ED=E0=FF =F0=E0=F1=F1=FB=EB=EA=E0=
+ =E2 =E8=ED=F2=E5=F0=ED=E5=F2=E5.
+=C5=E6=E5=ED=E5=E4=E5=EB=FC=ED=EE=E5 =EE=E1=ED=EE=E2=EB=E5=ED=E8=E5 =E1=E0=
+=E7.
+=CF=EE=EC=EE=F9=FC =E2 =F1=EE=F1=F2=E0=E2=EB=E5=ED=E8=E8 =EC=E0=EA=E5=F2=E0=
+.
+=CB=FE=E1=E0=FF =F4=EE=F0=EC=E0 =EE=EF=EB=E0=F2=FB.
+518-73-13
 
 
+=00
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
