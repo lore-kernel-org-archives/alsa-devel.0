@@ -1,16 +1,11 @@
-From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
-Subject: PCI_D0 and PCI_D3hot in atiixp_modem.c not defined in pci.h
-Date: Wed, 13 Apr 2005 07:53:07 +0800
-Message-ID: <92C0412E07F63549B2A2F2345D3DB51501E4B074@cm-msg-02.cmedia.com.tw>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: HTTP redirects
+Date: Tue, 12 Apr 2005 16:04:00 -0400
+Message-ID: <1113336240.31159.63.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cm-msg-02.cmedia.com.tw (61-30-17-228.static.tfn.net.tw [61.30.17.228])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6452E254
-	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 02:28:03 +0200 (MEST)
-Content-Class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,39 +15,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Currently, http://bugtrack.alsa-project.org redirects to
+https://internet.perex.cz/html/modules/articles/ and
+http://cvs.alsa-project.org to http://sourceforge.net.  This is not too
+useful.
 
-The CVS version of atiixp_modem.c use PCI_D0 and PCI_D3hot. These =
-constants are not defined in pci.h before kernel version 2.6.11, compile =
-the file will cause compile error as following:
+Would it be possible to point these to more useful locations?  I think
+http://bugtrack.alsa-project.org should go to
+https://bugtrack.alsa-project.org/alsa-bug/main_page.php and
+http://cvs.alsa-project.org to
+http://cvs.sourceforge.net/viewcvs.py/alsa/.
 
-  CC [M]  /home/cltien/work/alsa-cvs/alsa-driver/pci/atiixp_modem.o
-In file included from =
-/home/cltien/work/alsa-cvs/alsa-driver/pci/atiixp_modem.c:1:
-/home/cltien/work/alsa-cvs/alsa-driver/pci/../alsa-kernel/pci/atiixp_mode=
-m.c: In function `snd_atiixp_suspend':
-/home/cltien/work/alsa-cvs/alsa-driver/pci/../alsa-kernel/pci/atiixp_mode=
-m.c:1124: error: `PCI_D3hot' undeclared (first use in this function)
-/home/cltien/work/alsa-cvs/alsa-driver/pci/../alsa-kernel/pci/atiixp_mode=
-m.c:1124: error: (Each undeclared identifier is reported only once
-/home/cltien/work/alsa-cvs/alsa-driver/pci/../alsa-kernel/pci/atiixp_mode=
-m.c:1124: error: for each function it appears in.)
-/home/cltien/work/alsa-cvs/alsa-driver/pci/../alsa-kernel/pci/atiixp_mode=
-m.c: In function `snd_atiixp_resume':
-/home/cltien/work/alsa-cvs/alsa-driver/pci/../alsa-kernel/pci/atiixp_mode=
-m.c:1135: error: `PCI_D0' undeclared (first use in this function)
-make[4]: *** [/home/cltien/work/alsa-cvs/alsa-driver/pci/atiixp_modem.o] =
-Error 1make[3]: *** [/home/cltien/work/alsa-cvs/alsa-driver/pci] Error 2
-make[2]: *** [_module_/home/cltien/work/alsa-cvs/alsa-driver] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/lib/modules/2.6.9-1.667/build'
-make: *** [compile] Error 2
+Lee
 
-Sincerely,
-ChenLi Tien
 
 
 -------------------------------------------------------
