@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001045]: Cirrus Logic cs4236B
-Date: Tue, 12 Apr 2005 17:15:35 +0200
-Message-ID: <5548061ade238f58dbefcc8e45f4e7a3@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: au88x0_synth
+Date: Tue, 12 Apr 2005 22:14:06 +0800
+Message-ID: <425BD7AE.20104@netvigator.com>
+References: <424A5D7D.2070400@netvigator.com> <Pine.HPX.4.33n.0503301007400.20197-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A14FF211
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 17:15:35 +0200 (MEST)
+In-Reply-To: <Pine.HPX.4.33n.0503301007400.20197-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +17,114 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1045> 
-======================================================================
-Reported By:                atiounkine
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1045
-Category:                   ISA - cs4236
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.11 Custom preempt SMP
-======================================================================
-Date Submitted:             04-11-2005 20:46 CEST
-Last Modified:              04-12-2005 17:15 CEST
-======================================================================
-Summary:                    Cirrus Logic cs4236B
-Description: 
-Hello
-  I can't insert a module of snd-cs4236  for my chip that detected by
-"pnpdump" as CS4236B.
+How do I find out where the problem is (segment fault when loading 
+soundfont) ?
 
- I can use with snd-cs4232 but it have not a mic volume (it appear as mic
-option w/o volume) and I cannot record with it.
 
- I can record with "Xandros Linux 1.0" with kernel "2.4.19-x1" and cs4232
-OSS driver.
+Unable to handle kernel NULL pointer dereference at virtual address 00000000
+  printing eip:
+00000000
+*pde = 00000000
+Oops: 0000
+snd-pcm-oss snd-mixer-oss snd-seq-midi snd-au8830-synth
+snd-seq-midi-emul snd-hwdep snd-seq-virmidi snd-seq-midi-event snd-seq
+snd-intel8x0 snd-au8830 snd-uti
+CPU:    0
+EIP:    0060:[<00000000>]    Tainted: P
+EFLAGS: 00010202
 
-I will add more information about isapnp detection.
- Thanks.
-======================================================================
+EIP is at [unresolved] (2.4.22-1.2199.nptl)
+eax: da711280   ebx: d34c9a00   ecx: df450800   edx: 00008f88
+esi: 00011f10   edi: dc96defc   ebp: d34c9b00   esp: dc96dec4
+ds: 0068   es: 0068   ss: 0068
+Process asfxload (pid: 7569, stackpage=dc96d000)
+Stack: e1f1df3a da711280 d34c9a00 db4d6b80 084b5f80 00011f10 00000000
+00000000
+        00008f68 00006190 00008f60 00008f88 00000000 00000000 084b5f60
+ffffffea
+        dc96df34 00000000 e1f1d22c df450800 084b5f60 00011f30 00000011
+00000000
+Call Trace:   [<e1f1df3a>] load_data [snd-au8830-synth] 0x16a (0xdc96dec4)
+[<e1f1d22c>] snd_soundfont_load [snd-au8830-synth] 0x14c (0xdc96df0c)
+[<e1f20886>] snd_vortex_hwdep_load_patch [snd-au8830-synth] 0x96
+(0xdc96df44)
+[<e1f20960>] snd_vortex_hwdep_ioctl [snd-au8830-synth] 0x0 (0xdc96df6c)
+[<e1f17755>] snd_hwdep_ioctl [snd-hwdep] 0x65 (0xdc96df78)
+[<c0153719>] sys_ioctl [kernel] 0xc9 (0xdc96df94)
+[<c010dad4>] syscall_trace [kernel] 0x54 (0xdc96dfac)
+[<c01097b3>] tracesys [kernel] 0x1f (0xdc96dfc0)
 
-----------------------------------------------------------------------
- atiounkine - 04-12-05 17:15 
-----------------------------------------------------------------------
-I have configured cs4236 with alsaconf and it's working!
 
- In alsaconf is necesary select only cs4236 and in this case will
-configure it correctly.
- 
-  Before I tried  insert modules with "modprobe" and it print error "no
-such device".
-  Best regards
+Code:  Bad EIP value.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-11-05 20:46 atiounkine     New Issue                                    
-04-11-05 20:46 atiounkine     Distribution              => Debian Sarge    
-04-11-05 20:46 atiounkine     Kernel Version            => 2.6.11 Custom preempt
-SMP
-04-11-05 20:49 atiounkine     Issue Monitored: atiounkine                    
-04-12-05 17:15 atiounkine     Note Added: 0004453                          
-======================================================================
+
+
+
+Manuel Jander wrote:
+> Raymond wrote:
+>
+>>http://www.alsa-project.org/~frank/alsa-sequencer/node12.html
+>>
+>>The midi port only need to support 16 voices, the 16 sample rate
+>>convertors are just enough to produce 16 voices using the mono sound
+>>samples in the soundfonts au30gm.arl
+>
+>
+> Yes, but the ADB engine is intended for normal wave playback. The WT
+> engine is more suited  for Wavetable stuff. It also has some envelope
+> filters and such for effects. With only 16  voices, you will run out of
+> them pretty fast (overlapping notes).
+>
+Only enough for solo of single instrument and no reverb/chrous effect
+when using ADB.
+
+Some of the "pitch-shift" rates of the sample seem to be outside the
+5000Hz-48000Hz range of hw:0,0
+
+How can I play the soundfont sample loaded in memory through hw:0,0 in
+snd-au8830-synth and bypass the 5000Hz-48000Hz range ?
+
+>
+>
+>>The current alsa driver do not even use the timer VORTEX_SMP_TIME or
+>>timer interrupt VORTEX_SMP_TIMER
+>>
+>>3) Is there any way to find out the resolution of the timer ?
+>
+>
+> Yes. Measuring it :)
+>
+
+The clock VORTEX_SMP_TIME seem to tick at 12.288Mhz (256 * 48000Hz)
+which is one-quarter of the 49.152Mhz oscillator on all the vortex
+sound cards.
+
+Is there any way to disable the loading of the ALSA and au88x0 during
+boot if some fatal bug occur when testing the timer interrupt
+VORTEX_SMP_TIMER ?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
