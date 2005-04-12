@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001045]: Cirrus Logic cs4236B
-Date: Tue, 12 Apr 2005 17:17:36 +0200
-Message-ID: <453e8cb1c573387642551b28bc091150@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000771]: snd-pcm-oss makes /dev/sound device, not directory, if loaded before sound card drivers
+Date: Tue, 12 Apr 2005 21:32:40 +0200
+Message-ID: <6dac62a3a29b06dbf076d3ecdb161441@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C303127E
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 17:17:36 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A41F827C
+	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 21:32:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1045> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=771> 
 ======================================================================
-Reported By:                atiounkine
+Reported By:                roothorick
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1045
-Category:                   ISA - cs4236
+Issue ID:                   771
+Category:                   CORE OSS - pcm
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.11 Custom preempt SMP
+Status:                     resolved
+Distribution:               Gentoo Linux 2004.0
+Kernel Version:             2.6.10-gentoo-r1
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-11-2005 20:46 CEST
-Last Modified:              04-12-2005 17:17 CEST
+Date Submitted:             12-31-2004 18:57 CET
+Last Modified:              04-12-2005 21:32 CEST
 ======================================================================
-Summary:                    Cirrus Logic cs4236B
+Summary:                    snd-pcm-oss makes /dev/sound device, not directory,
+if loaded before sound card drivers
 Description: 
-Hello
-  I can't insert a module of snd-cs4236  for my chip that detected by
-"pnpdump" as CS4236B.
+If snd-pcm-oss is loaded before the soundcard drivers are loaded,
+/dev/sound is created as a character special with major 116 and minor 33.
+When the soundcard drivers are later loaded, /dev/sound remains a device,
+which means there's nowhere for the OSS compatibility devices to go.
 
- I can use with snd-cs4232 but it have not a mic volume (it appear as mic
-option w/o volume) and I cannot record with it.
-
- I can record with "Xandros Linux 1.0" with kernel "2.4.19-x1" and cs4232
-OSS driver.
-
-I will add more information about isapnp detection.
- Thanks.
+This system uses udev.
 ======================================================================
 
 ----------------------------------------------------------------------
- atiounkine - 04-12-05 17:15 
+ tiwai - 01-03-05 12:15 
 ----------------------------------------------------------------------
-I have configured cs4236 with alsaconf and it's working!
-
- In alsaconf is necesary select only cs4236 and in this case will
-configure it correctly.
- 
-  Before I tried  insert modules with "modprobe" and it print error "no
-such device".
-  Best regards
-
-----------------------------------------------------------------------
- atiounkine - 04-12-05 17:17 
-----------------------------------------------------------------------
-And mic input and mic volume also working!
+I believe it's a problem of udev.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-11-05 20:46 atiounkine     New Issue                                    
-04-11-05 20:46 atiounkine     Distribution              => Debian Sarge    
-04-11-05 20:46 atiounkine     Kernel Version            => 2.6.11 Custom preempt
-SMP
-04-11-05 20:49 atiounkine     Issue Monitored: atiounkine                    
-04-12-05 17:15 atiounkine     Note Added: 0004453                          
-04-12-05 17:17 atiounkine     Note Added: 0004454                          
+12-31-04 18:57 roothorick     New Issue                                    
+12-31-04 18:57 roothorick     Distribution              => Gentoo Linux 2004.0
+12-31-04 18:57 roothorick     Kernel Version            => 2.6.10-gentoo-r1
+01-03-05 12:15 tiwai          Note Added: 0003057                          
+04-12-05 21:32 jdthood        Status                   new => resolved     
+04-12-05 21:32 jdthood        Resolution               open => not an issue
 ======================================================================
 
 
