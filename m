@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Tue, 12 Apr 2005 20:43:58 +0200
-Message-ID: <c90ebbfa469f2022e5aac4fdd32beea8@bugtrack.alsa-project.org>
+Date: Tue, 12 Apr 2005 20:48:34 +0200
+Message-ID: <b2d66750d485871eb591d6e658020c8c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1B4C827C
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 20:43:58 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2269827C
+	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 20:48:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Mandrake
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              04-12-2005 20:43 CEST
+Last Modified:              04-12-2005 20:48 CEST
 ======================================================================
 Summary:                    module hangs at seemingly random times
 Description: 
@@ -81,12 +81,19 @@ which never gave problems like this, and i am always able to "modprobe -r
 snd-emu10k1" ...
 ======================================================================
 
+----------------------------------------------------------------------
+ alien999999999 - 04-12-05 20:48 
+----------------------------------------------------------------------
+i forgot to note that i have the mdk 10.1 x86_64 distro and my version has
+a few 64bit fixes to get past kernel hangs and kernel oopses
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-12-05 20:43 alien999999999 New Issue                                    
 04-12-05 20:43 alien999999999 Distribution              => Mandrake        
 04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
 ======================================================================
 
 
