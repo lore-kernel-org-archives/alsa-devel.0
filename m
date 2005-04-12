@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Tue, 12 Apr 2005 20:51:34 +0200
-Message-ID: <50ce26d334ea87a34d7e9e58d1d69a87@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000416]: Signal but no sound on digital out (Nforce 1)
+Date: Tue, 12 Apr 2005 16:37:27 +0200
+Message-ID: <15bd8c53a71277716ad11b62f7a16537@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A6B4927D
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 20:51:34 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3D49A1CA
+	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 16:37:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,90 +24,81 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=416> 
 ======================================================================
-Reported By:                alien999999999
-Assigned To:                mjander
+Reported By:                bonbons
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1047
-Category:                   PCI - au88x0
-Reproducibility:            sometimes
-Severity:                   block
+Issue ID:                   416
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
+Status:                     acknowledged
+Distribution:               SuSE 9.0
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              04-12-2005 20:51 CEST
+Date Submitted:             07-31-2004 21:46 CEST
+Last Modified:              04-12-2005 16:37 CEST
 ======================================================================
-Summary:                    module hangs at seemingly random times
+Summary:                    Signal but no sound on digital out (Nforce 1)
 Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
+Independently of the status of the "Digital" element in alsamixer (muted or
+not) my digital reciever connected to the Digital output of my mainboard
+displays availability of PCM signal, but the sound output to my
+head-phones through Line-Out is not available on the digital out.
 
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
+There is no sound at all output to the digital out, no matter what
+selections are done in AlsaMixer.
 
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
-
-
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
-
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
-
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
+Is there a means to switch output mode of digital output to DolbyDigital
+as under Windows and really switch of the Digital output?
 ======================================================================
 
 ----------------------------------------------------------------------
- alien999999999 - 04-12-05 20:48 
+ bonbons - 04-10-05 23:50 
 ----------------------------------------------------------------------
-i forgot to note that i have the mdk 10.1 x86_64 distro and my version has
-a few 64bit fixes to get past kernel hangs and kernel oopses
+With drivers with kernel 2.6.10 (1.0.6) the digital output was never
+switched off, no matter what mixer settings were (using alsamixer)
+
+I did test with drives included with Linux-2.6.11 kernel release (1.0.8):
+
+No mixer item has effect on the output to digital out
+
+I was playing sound with this command:
+aplay -D plughw:0,2 file.wav
+
+At same time on other console a toggled the mute flags on each channel
+individually (using alsamixer), sound output was not muted at all, and
+volume changes had no effect either.
+
+
+PS: How can I test 5.1 channel output to digital out? As all playback I
+currently got is stereo PCM
+PS2: Since previous note I changed distribution from SuSE to Gentoo
+
+
 
 ----------------------------------------------------------------------
- alien999999999 - 04-12-05 20:51 
+ tiwai - 04-12-05 16:37 
 ----------------------------------------------------------------------
-i have attached the changed files (since i don't have a CVS version of alsa
-to diff against)
-
-these files are located in the alsa-driver-1.0.8/alsa-kernel/pci/au88x0/
-path
+The non-audio SPDIF output has never worked properly on nForce because of
+lack of hardware information.  Try to complain Nvidia, so that we'll get
+the necessary information to program the driver code...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
+07-31-04 21:46 bonbons        New Issue                                    
+07-31-04 21:46 bonbons        Distribution              => SuSE 9.0        
+07-31-04 21:46 bonbons        Kernel Version            => 2.4.26          
+08-01-04 18:19 bonbons        Note Added: 0001517                          
+04-08-05 22:34 jdthood        Note Added: 0004378                          
+04-10-05 23:49 bonbons        Note Added: 0004440                          
+04-10-05 23:50 bonbons        Note Edited: 0004440                         
+04-11-05 09:43 jdthood        Status                   new => acknowledged 
+04-12-05 16:37 tiwai          Note Added: 0004449                          
 ======================================================================
 
 
