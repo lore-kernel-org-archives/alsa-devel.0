@@ -1,16 +1,12 @@
-From: "Marilyn Glenn " <hansen@ppmbmg.com>
-Subject: FW:FW:Choose the quote that matches your financial needs
-Date: Tue, 12 Apr 2005 19:43:14 +0400
-Message-ID: <redirect-22198129@mail.stalker.com>
+From: "Jared D. McNeill" <jared.mcneill@gmail.com>
+Subject: intel8x0m and conexant ac97 modem codecs
+Date: Tue, 12 Apr 2005 13:05:46 -0300
+Message-ID: <41d6f0b90504120905d469db0@mail.gmail.com>
+Reply-To: "Jared D. McNeill" <jared.mcneill@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 88EC624C
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 17:49:50 +0200 (MEST)
-Received: from 82.113.61.162 (unknown [61.249.50.21])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 40BE16A33B
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 17:49:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,19 +16,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: jmcneill@NetBSD.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi folks, not sure if this is the right place to ask but I might as
+well give it a shot anyway --
 
-You have been pre-approved for a $400,000 Home Loan at a 3.25% Fixed Rate.
-This offer is being extended to you unconditionally and your credit is in no way a factor.
+I'm working on adding AC97 modem support to NetBSD, and I have run
+into a stumbling block. From what I've read, it looks like Conexant
+AC97 modem codecs aren't supported by the ALSA intel8x0m / slmodem
+solution. What are the technical reasons for this?
 
-To take Advantage of this Limited Time opportunity
-
-All we ask is that you visit our Website and complete
-The 1 minute post Approval Form 
-
-http://www.lendersx.com/index2.php?refid=phade
+Thanks,
+Jared (jmcneill AT NetBSD.org)
 
 
 -------------------------------------------------------
