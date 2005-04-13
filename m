@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000961]: No hardware mixing on SBLive 5.1 which supported OSS hardware mixing under previous OS
-Date: Wed, 13 Apr 2005 22:03:21 +0200
-Message-ID: <2880ff1cd7efba0f0cc411613d525c70@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000862]: emu10k1 always has random clicks in wavetable MIDI synth playback but never in PCM playback
+Date: Wed, 13 Apr 2005 22:26:25 +0200
+Message-ID: <bc32753f96aa11164049dd81de0e8807@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3B5E523B
-	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 22:03:21 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1770C244
+	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 22:26:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,135 +24,138 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=961> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=862> 
 ======================================================================
-Reported By:                redemption042
+Reported By:                Will
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   961
+Issue ID:                   862
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu 4.10
-Kernel Version:             2.6.7
+Distribution:               
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             03-04-2005 01:33 CET
-Last Modified:              04-13-2005 22:03 CEST
+Date Submitted:             01-30-2005 15:24 CET
+Last Modified:              04-13-2005 22:26 CEST
 ======================================================================
-Summary:                    No hardware mixing on SBLive 5.1 which supported OSS
-hardware mixing under previous OS
+Summary:                    emu10k1 always has random clicks in wavetable MIDI
+synth playback but never in PCM playback
 Description: 
-Previously, I was running knoppix 3.1 with a 2.4 family kernel, I believe. 
-Under this distro, hardware mixing on my soundcard was supported with
-multiple applications being able to grab /dev/dsp (TeamSpeak and
-Enemy-Territory, for example)
+An Audigy 2 LS 5.1 PCI soundcard with emu10k1 chipset (the PCI id is
+1102:0004 (rev 04)) always has random clicks in wavetable MIDI synth
+playback but never in PCM playback using any version of alsa-driver. I
+think this clicking is probably an emu10k1 driver bug.
 
-When I loaded up Ubuntu 4.10, I lost the hardware mixing capabilities  of
-my sound card.   I have tried loading the latest version of the driver
-(1.0.8) which, while providing sound, does not seem to allow hardware
-mixing.
+It makes no difference which driver or kernel is used; the problem exists
+with alsa-driver-CVS, alsa-driver-1.0.8, and all previous versions since
+before alsa-driver-0.9.7 and with all mainline kernel versions of Linux
+2.4.x and Linux 2.6.x including 2.6.10. 
 
-my /proc/asound/pcm:
-00-00: emu10k1 : EMU10K1 : playback 32 : capture 1
-00-01: emu10k1 mic : EMU10K1 MIC : capture 1
-00-02: emu10k1 efx : EMU10K1 EFX : playback 8 : capture 1
+It makes no difference which kernel is used (2.4.x or 2.6.x). I recently
+started using CONFIG_ACPI_* with CONFIG_PCI_[GO]BIOS in 2.6.10 but it
+makes no difference. I use the default PCI latencies.
 
-output of lsmod:
+It makes no difference whether or not the emu10k1 IRQ is shared and the
+clicking is exactly the same regardless of which other device shares the
+IRQ, e.g. "IRQ 17: 78129 IO-APIC-level  libata, EMU10K1" or "IRQ 16: 9554 
+IO-APIC-level  eth0, EMU10K1".
 
-Module                  Size  Used by
-usblp                  15360  0
-udf                    94724  0
-binfmt_misc            12424  1
-md5                     7808  1
-ipv6                  262880  6
-af_packet              22152  2
-joydev                 11968  0
-usbhid                 34240  0
-snd_emu10k1           108712  6
-snd_rawmidi            28480  1 snd_emu10k1
-snd_seq_device         12428  2 snd_emu10k1,snd_rawmidi
-snd_ac97_codec         80376  1 snd_emu10k1
-snd_pcm_oss            57768  0
-snd_mixer_oss          24064  3 snd_pcm_oss
-snd_pcm                94624  4 snd_emu10k1,snd_ac97_codec,snd_pcm_oss
-snd_timer              29956  2 snd_emu10k1,snd_pcm
-snd_page_alloc         13576  2 snd_emu10k1,snd_pcm
-snd_util_mem            7936  1 snd_emu10k1
-snd_hwdep              13984  1 snd_emu10k1
-snd                    57828  18
-snd_emu10k1,snd_rawmidi,snd_seq_device,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_util_mem,snd_hwdep
-soundcore              11872  3 snd
-usb_storage            68928  0
-ehci_hcd               33028  0
-ohci_hcd               23428  0
-usbcore               105824  7
-usblp,usbhid,usb_storage,ehci_hcd,ohci_hcd
-nvidia_agp             10012  1
-agpgart                32172  2 nvidia_agp
-evdev                  11520  0
-nls_iso8859_1           7936  1
-nls_cp437               9600  1
-nvidia               4826100  12
-ide_generic             5248  0
-ide_cd                 43524  0
-cdrom                  41248  1 ide_cd
+From: Lee Revell <rlrevell AT ...>
+Subject: Re: [Alsa-devel] [PATCH] emu10k1 multichannel support
+Date: Sat, 29 Jan 2005 16:28:47 -0500
+To: William <walsac3 AT ...>
+Message-Id: <1107034127.24676.55.camel@krustophenia.net>
+Content-Type: text/plain
 
-/proc/asound/cards:
-0 [Live           ]: EMU10K1 - Sound Blaster Live!
-                     Sound Blaster Live! (rev.7, serial:0x80611102) at
-0xc000, irq 17
+(sorry for the late reply)
 
-/proc/asound/devices:
-  4: [0- 0]: hardware dependent
-  8: [0- 0]: raw midi
- 18: [0- 2]: digital audio playback
- 26: [0- 2]: digital audio capture
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
+On Wed, 2005-01-19 at 19:16 +0000, William wrote:
+>
+> I'll mention the following in case you might be interested to look at
+it.
+> An issue that's been around since the very beginning of the emu10k1
+driver
+> is that playing a MIDI file on the wavetable often produces a
+> rapid but irregular sequence of very noticeable clicks at a
+> rate of 2 or 3 per second continuing for up to about 10 seconds.
+> The clicking starts happening once every minute or so but without any
+> clear pattern - it doesn't seem to be depend much on the contents of the
+MIDI
+> files.
+>
+> Interestingly I never hear any clicks when using the PCM and
+> a soft synth like fluidsynth or timidity as an alternative method
+> of MIDI playback, which is why I think it might be a bug (haven't
+checked
+> whether something similar has already been logged on the bugtracker).
+> I had a brief look into it, but didn't find anything conclusive in the
+code.
+> One possibly interesting feature was I notice that I could trigger lots
+of
+> clicks if I tried doing real-time variable attenuation of already
+playing
+> notes via update_voice(vp, SNDRV_EMUX_UPDATE_VOLUME) in
+emu10k1_callback.c
 
+I would actually be interested in looking at this.  I have noticed some
+areas in the code where things are commented out for odd reasons.
+Specifically the samples cache is not cleared like it is for PCM voices.
+If you have time please file an ALSA bug report (you can just copy and
+paste this message).
 
+> By the way, do you know the original purpose of
+snd_emu10k1_sum_vol_attn()
+> in emu10k1/io.c which has just been removed in alsa-driver-1.0.8?
+> The cumulative volume conversion algorithm in that function
+> seems like it would probably have been based on the original emu10k1
+chipset
+> documentation provided by Creative during its open-source era.
+> It seems like a useful function to keep around for future extensions of
+> the emu10k1 driver.  Maybe it should be re-instated.
+>
+> >From the 1.0.8 announcement:
+>
+>     - Summary: ALSA PCI drivers: misc cleanups
+>       The patch below does the following cleanups under sound/pci/ :
+>       - remove the following unused global functions:
+>         - emu10k1/io.c: snd_emu10k1_sum_vol_attn
+>
+
+Yes, I asked Takashi about this and he said it just does some simple
+calculation.  Check the alsa-devel archive.  But, maybe there's
+something to it.  It could be related to your clicking problem.
+
+I have heard something similar when using PCM at really low latencies.
+
+Lee
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-13-05 21:48 
+ jdthood - 04-13-05 22:01 
 ----------------------------------------------------------------------
-> Previously, I was running knoppix 3.1 with a 2.4 family kernel,
-> I believe. Under this distro, hardware mixing on my soundcard was
-> supported with multiple applications being able to grab /dev/dsp
-> (TeamSpeak and Enemy-Territory, for example)
-
-
-Were you using the OSS or the ALSA sound system under that old OS and
-kernel?
+Submitter: Do you have any new information about the problem?
 
 ----------------------------------------------------------------------
- redemption042 - 04-13-05 22:03 
+ rlrevell - 04-13-05 22:26 
 ----------------------------------------------------------------------
-I was using OSS.  :-) I figured that about a month ago and switched to the
-OSS driver and completely forgot I posted this here.  When I tried to run
-ET or TS through OSS emulation with ALSA they'd either segfault or freeze.
- I figured it was just less of a problem to switch to OSS.
+This is probably still an issue.  The wavetable synth has not changed in a
+long time.
 
-A further addendum to the above stuff would be that hardware mixing WAS
-working for most apps.  Just apps that tried to grab the /dev/dsp device
-had problems.
+It does work for me though, I don't get the clicks or dropped notes that
+many people report.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-05 01:33 redemption042  New Issue                                    
-03-04-05 01:33 redemption042  Distribution              => Ubuntu 4.10     
-03-04-05 01:33 redemption042  Kernel Version            => 2.6.7           
-03-04-05 01:43 redemption042  Note Added: 0003793                          
-04-13-05 21:48 jdthood        Note Added: 0004476                          
-04-13-05 22:03 redemption042  Note Added: 0004481                          
+01-30-05 15:24 Will           New Issue                                    
+01-30-05 15:24 Will           Kernel Version            => 2.6.10          
+04-13-05 22:01 jdthood        Note Added: 0004480                          
+04-13-05 22:26 rlrevell       Note Added: 0004484                          
 ======================================================================
 
 
