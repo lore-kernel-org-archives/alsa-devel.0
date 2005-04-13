@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000961]: Please support hardware mixing via OSS emulation on SBLive 5.1 -- OSS supports this!
-Date: Wed, 13 Apr 2005 22:09:53 +0200
-Message-ID: <9ac69dfb5c440e2c6eec6969f5af92c0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000961]: No hardware mixing on SBLive 5.1 which supported OSS hardware mixing under previous OS
+Date: Wed, 13 Apr 2005 22:03:21 +0200
+Message-ID: <2880ff1cd7efba0f0cc411613d525c70@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F3D98255
-	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 22:09:53 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3B5E523B
+	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 22:03:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=961> 
 ======================================================================
@@ -33,17 +33,17 @@ Project:                    ALSA - driver
 Issue ID:                   961
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     acknowledged
+Status:                     new
 Distribution:               Ubuntu 4.10
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             03-04-2005 01:33 CET
-Last Modified:              04-13-2005 22:09 CEST
+Last Modified:              04-13-2005 22:03 CEST
 ======================================================================
-Summary:                    Please support hardware mixing via OSS emulation on
-SBLive 5.1 -- OSS supports this!
+Summary:                    No hardware mixing on SBLive 5.1 which supported OSS
+hardware mixing under previous OS
 Description: 
 Previously, I was running knoppix 3.1 with a 2.4 family kernel, I believe. 
 Under this distro, hardware mixing on my soundcard was supported with
@@ -121,13 +121,6 @@ cdrom                  41248  1 ide_cd
 ======================================================================
 
 ----------------------------------------------------------------------
- redemption042 - 03-04-05 01:43 
-----------------------------------------------------------------------
-When I attempt to run a program that tries to grab /dev/dsp (i.e. an OSS
-program such as Teamspeak or Enemy-Territory) I'm given the error message
-"unable to find device or device busy"
-
-----------------------------------------------------------------------
  jdthood - 04-13-05 21:48 
 ----------------------------------------------------------------------
 > Previously, I was running knoppix 3.1 with a 2.4 family kernel,
@@ -151,15 +144,6 @@ A further addendum to the above stuff would be that hardware mixing WAS
 working for most apps.  Just apps that tried to grab the /dev/dsp device
 had problems.
 
-----------------------------------------------------------------------
- jdthood - 04-13-05 22:09 
-----------------------------------------------------------------------
-Does ALSA claim that its OSS emulation supports multiple applications being
-able to open /dev/dsp?
-
-On the assumption that ALSA does not claim this, I am downgrading this to
-a feature request.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -169,12 +153,6 @@ Date Modified  Username       Field                    Change
 03-04-05 01:43 redemption042  Note Added: 0003793                          
 04-13-05 21:48 jdthood        Note Added: 0004476                          
 04-13-05 22:03 redemption042  Note Added: 0004481                          
-04-13-05 22:09 jdthood        Note Added: 0004482                          
-04-13-05 22:09 jdthood        Severity                 minor => feature    
-04-13-05 22:09 jdthood        Status                   new => acknowledged 
-04-13-05 22:09 jdthood        Summary                  No hardware mixing on
-SBLive 5.1 which supported OSS hardware mixing under previous OS => Please
-support hardware mixing via OSS emulation on SBLive 5.1 -- OSS supports this!
 ======================================================================
 
 
