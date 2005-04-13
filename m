@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001050]: Sound Blaster Audigy2 NX does not support 44,1kHz
-Date: Wed, 13 Apr 2005 17:22:34 +0200
-Message-ID: <6bb57900bc833406953286f3a62863e5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000092]: 2 channels on the 3 ones are totally off
+Date: Wed, 13 Apr 2005 17:22:45 +0200
+Message-ID: <9b39a6375d6de0447d0c9bcaf4444e8f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AC4C0181
-	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 17:22:34 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3247E1A4
+	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 17:22:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +22,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1050> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=92> 
 ======================================================================
-Reported By:                gears
-Assigned To:                Clemens Ladisch
+Reported By:                BeTa
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1050
-Category:                   USB - usb-audio
+Issue ID:                   92
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 5.04
-Kernel Version:             2.6.10
+Status:                     resolved
+Distribution:               Debian GNU/Linux sid
+Kernel Version:             2.6.3 (and also 2.6.2) vanilla
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-13-2005 17:22 CEST
+Date Submitted:             02-26-2004 22:49 CET
 Last Modified:              04-13-2005 17:22 CEST
 ======================================================================
-Summary:                    Sound Blaster Audigy2 NX does not support 44,1kHz
+Summary:                    2 channels on the 3 ones are totally off
 Description: 
-For my hardware (Sound Blaster Audigy2 NX) the system also needs to set up
-automatic sound conversion to 48000 instead of default 44100 or the sound
-gets
-badly distorted (at least it does so when using the spdif output). It also
-needs
-its speaker output unmuted.
-
-the sound distortion is because ALSA claims it supports 44,1 kHz (hw:X),
-although it really doesn't
+Only the rear speakers are working, and only when we set up "duplicate
+front". The other ones are totally quiet.
 ======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 03-19-05 09:32 
+----------------------------------------------------------------------
+Submitter: Do you have the same problem with current ALSA releases?
+
+----------------------------------------------------------------------
+ jdthood - 04-13-05 17:22 
+----------------------------------------------------------------------
+Lost contact with the submitter.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 17:22 gears          New Issue                                    
-04-13-05 17:22 gears          Distribution              => Ubuntu 5.04     
-04-13-05 17:22 gears          Kernel Version            => 2.6.10          
+02-26-04 22:49 BeTa           New Issue                                    
+02-26-04 22:49 BeTa           Issue Monitored: BeTa                        
+03-12-04 19:27 BeTa           Note Added: 0000581                          
+03-12-04 19:29 BeTa           Note Added: 0000582                          
+03-16-04 13:27 BeTa           Note Added: 0000626                          
+03-17-04 14:26 BeTa           Note Deleted: 0000582                        
+03-17-04 14:34 BeTa           Note Added: 0000634                          
+03-17-04 14:41 BeTa           Note Edited: 0000634                         
+03-17-04 14:42 BeTa           Note Deleted: 0000634                        
+03-17-04 16:00 BeTa           Note Added: 0000635                          
+03-18-04 18:07 BeTa           Note Deleted: 0000635                        
+03-18-04 18:11 BeTa           Note Added: 0000642                          
+03-19-05 09:32 jdthood        Note Added: 0004020                          
+04-13-05 17:22 jdthood        Note Added: 0004474                          
+04-13-05 17:22 jdthood        Status                   new => resolved     
+04-13-05 17:22 jdthood        Resolution               open => unable to
+duplicate
 ======================================================================
 
 
