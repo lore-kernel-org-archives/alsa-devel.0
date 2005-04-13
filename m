@@ -1,11 +1,11 @@
-From: andreas <lalitha@walla.com>
-Subject: =?Windows-1251?B?z9DO1MXR0cjOzcDL3M3A3yAgRS1tYWlsINDA0dHby8rA?=
-Date: Tue, 12 Apr 2005 23:47:27 +0000
-Message-ID: <E1DLVO1-0004vS-51@sc8-sf-mx2.sourceforge.net>
+From: Matt <matt@embeddedalley.com>
+Subject: [PATCH][1/2] hda: fix vref cap and ctl values
+Date: Wed, 13 Apr 2005 00:38:05 -0700
+Message-ID: <20050413003805.E24624@cox.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=Windows-1251
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,21 +18,67 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-=CF=F0=EE=F4=E5=F1=F1=E8=EE=ED=E0=EB=FC=ED=E0=FF =F0=E0=F1=F1=FB=EB=EA=E0=
- =E2 =E8=ED=F2=E5=F0=ED=E5=F2=E5.
-=C5=E6=E5=ED=E5=E4=E5=EB=FC=ED=EE=E5 =EE=E1=ED=EE=E2=EB=E5=ED=E8=E5 =E1=E0=
-=E7.
-=CF=EE=EC=EE=F9=FC =E2 =F1=EE=F1=F2=E0=E2=EB=E5=ED=E8=E8 =EC=E0=EA=E5=F2=E0=
-.
-=CB=FE=E1=E0=FF =F4=EE=F0=EC=E0 =EE=EF=EB=E0=F2=FB.
-518-73-13
+Fix some vref defines so they are valid for the different bits in
+the pin cap and pin control registers. Please apply.
 
+Signed-off-by: Matt <matt@embeddedalley.com>
 
-=00
+Index: alsa-kernel/pci/hda/hda_codec.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/hda_codec.h,v
+retrieving revision 1.4
+diff -u -r1.4 hda_codec.h
+--- alsa-kernel/pci/hda/hda_codec.h	22 Feb 2005 17:17:58 -0000	1.4
++++ alsa-kernel/pci/hda/hda_codec.h	13 Apr 2005 07:11:14 -0000
+@@ -176,15 +176,21 @@
+ #define AC_PINCAP_OUT			(1<<4)	/* output capable */
+ #define AC_PINCAP_IN			(1<<5)	/* input capable */
+ #define AC_PINCAP_BALANCE		(1<<6)	/* balanced I/O capable */
+-#define AC_PINCAP_VREF			(7<<8)
++#define AC_PINCAP_VREF			(0x37<<8)
+ #define AC_PINCAP_VREF_SHIFT		8
+ #define AC_PINCAP_EAPD			(1<<16)	/* EAPD capable */
+-/* Vref status (used in pin cap and pin ctl) */
+-#define AC_PIN_VREF_HIZ			(1<<0)	/* Hi-Z */
+-#define AC_PIN_VREF_50			(1<<1)	/* 50% */
+-#define AC_PIN_VREF_GRD			(1<<2)	/* ground */
+-#define AC_PIN_VREF_80			(1<<4)	/* 80% */
+-#define AC_PIN_VREF_100			(1<<5)	/* 100% */
++/* Vref status (used in pin cap) */
++#define AC_PINCAP_VREF_HIZ		(1<<0)	/* Hi-Z */
++#define AC_PINCAP_VREF_50		(1<<1)	/* 50% */
++#define AC_PINCAP_VREF_GRD		(1<<2)	/* ground */
++#define AC_PINCAP_VREF_80		(1<<4)	/* 80% */
++#define AC_PINCAP_VREF_100		(1<<5)	/* 100% */
++/* Vref setting (used in pin ctl) */
++#define AC_PINCTL_VREF_HIZ		(0)	/* Hi-Z */
++#define AC_PINCTL_VREF_50		(1)	/* 50% */
++#define AC_PINCTL_VREF_GRD		(2)	/* ground */
++#define AC_PINCTL_VREF_80		(4)	/* 80% */
++#define AC_PINCTL_VREF_100		(5)	/* 100% */
+ 
+ 
+ /* Amplifier capabilities */
+Index: alsa-kernel/pci/hda/hda_generic.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/hda_generic.c,v
+retrieving revision 1.3
+diff -u -r1.3 hda_generic.c
+--- alsa-kernel/pci/hda/hda_generic.c	22 Mar 2005 15:34:38 -0000	1.3
++++ alsa-kernel/pci/hda/hda_generic.c	13 Apr 2005 07:11:34 -0000
+@@ -426,7 +426,7 @@
+ 		return "Line";
+ 	case AC_JACK_CD:
+ 		if (pinctl)
+-			*pinctl |= AC_PIN_VREF_GRD;
++			*pinctl |= AC_PINCTL_VREF_GRD;
+ 		return "CD";
+ 	case AC_JACK_AUX:
+ 		if ((location & 0x0f) == AC_JACK_LOC_FRONT)
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
