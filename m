@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000961]: No hardware mixing on SBLive 5.1 which supported OSS hardware mixing under previous OS
-Date: Wed, 13 Apr 2005 21:48:45 +0200
-Message-ID: <6501fa2dd03e928883764a78ebf6eb91@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000873]: Great delay when loading snd_ali5451 which does not occur with the trident OSS driver
+Date: Wed, 13 Apr 2005 21:57:45 +0200
+Message-ID: <d39d2c07d6c386959d367e3aaaed7326@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA6AF120
-	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 21:48:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BF69623B
+	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 21:57:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,131 +22,129 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been ACKNOWLEDGED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=961> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=873> 
 ======================================================================
-Reported By:                redemption042
+Reported By:                tbm
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   961
-Category:                   PCI - emu10k1
+Issue ID:                   873
+Category:                   PCI - ali5451
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 4.10
-Kernel Version:             2.6.7
+Status:                     acknowledged
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.6.10, 2.6.9
 ======================================================================
-Date Submitted:             03-04-2005 01:33 CET
-Last Modified:              04-13-2005 21:48 CEST
+Date Submitted:             02-01-2005 01:57 CET
+Last Modified:              04-13-2005 21:57 CEST
 ======================================================================
-Summary:                    No hardware mixing on SBLive 5.1 which supported OSS
-hardware mixing under previous OS
+Summary:                    Great delay when loading snd_ali5451 which does not
+occur with the trident OSS driver
 Description: 
-Previously, I was running knoppix 3.1 with a 2.4 family kernel, I believe. 
-Under this distro, hardware mixing on my soundcard was supported with
-multiple applications being able to grab /dev/dsp (TeamSpeak and
-Enemy-Territory, for example)
+When I load the snd_ali5451 module there is a delay of about 10 seconds
+until the module is successfully loaded and the device recognized.  This
+delay does not occur with the OSS trident driver (which loads immediately)
+which shows that this is not a hardware problem.
 
-When I loaded up Ubuntu 4.10, I lost the hardware mixing capabilities  of
-my sound card.   I have tried loading the latest version of the driver
-(1.0.8) which, while providing sound, does not seem to allow hardware
-mixing.
-
-my /proc/asound/pcm:
-00-00: emu10k1 : EMU10K1 : playback 32 : capture 1
-00-01: emu10k1 mic : EMU10K1 MIC : capture 1
-00-02: emu10k1 efx : EMU10K1 EFX : playback 8 : capture 1
-
-output of lsmod:
-
-Module                  Size  Used by
-usblp                  15360  0
-udf                    94724  0
-binfmt_misc            12424  1
-md5                     7808  1
-ipv6                  262880  6
-af_packet              22152  2
-joydev                 11968  0
-usbhid                 34240  0
-snd_emu10k1           108712  6
-snd_rawmidi            28480  1 snd_emu10k1
-snd_seq_device         12428  2 snd_emu10k1,snd_rawmidi
-snd_ac97_codec         80376  1 snd_emu10k1
-snd_pcm_oss            57768  0
-snd_mixer_oss          24064  3 snd_pcm_oss
-snd_pcm                94624  4 snd_emu10k1,snd_ac97_codec,snd_pcm_oss
-snd_timer              29956  2 snd_emu10k1,snd_pcm
-snd_page_alloc         13576  2 snd_emu10k1,snd_pcm
-snd_util_mem            7936  1 snd_emu10k1
-snd_hwdep              13984  1 snd_emu10k1
-snd                    57828  18
-snd_emu10k1,snd_rawmidi,snd_seq_device,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_util_mem,snd_hwdep
-soundcore              11872  3 snd
-usb_storage            68928  0
-ehci_hcd               33028  0
-ohci_hcd               23428  0
-usbcore               105824  7
-usblp,usbhid,usb_storage,ehci_hcd,ohci_hcd
-nvidia_agp             10012  1
-agpgart                32172  2 nvidia_agp
-evdev                  11520  0
-nls_iso8859_1           7936  1
-nls_cp437               9600  1
-nvidia               4826100  12
-ide_generic             5248  0
-ide_cd                 43524  0
-cdrom                  41248  1 ide_cd
-
-/proc/asound/cards:
-0 [Live           ]: EMU10K1 - Sound Blaster Live!
-                     Sound Blaster Live! (rev.7, serial:0x80611102) at
-0xc000, irq 17
-
-/proc/asound/devices:
-  4: [0- 0]: hardware dependent
-  8: [0- 0]: raw midi
- 18: [0- 2]: digital audio playback
- 26: [0- 2]: digital audio capture
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
-
+I have put some get_seconds() statements in the driver to see where the
+delay occurs.  It seems to be related to codec_read() and reg=7eh.  See
+attachment.
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- redemption042 - 03-04-05 01:43 
+ tiwai - 02-02-05 10:56 
 ----------------------------------------------------------------------
-When I attempt to run a program that tries to grab /dev/dsp (i.e. an OSS
-program such as Teamspeak or Enemy-Territory) I'm given the error message
-"unable to find device or device busy"
+ALSA checks REG_GAIN control at the probe of codec (ac97_reset_wait in
+ac97_codec.c).  Maybe this register can't get read well on your chip?
+But this still doesn't explain the whole 10sec delay...
 
 ----------------------------------------------------------------------
- jdthood - 04-13-05 21:48 
+ tbm - 02-06-05 18:38 
 ----------------------------------------------------------------------
-> Previously, I was running knoppix 3.1 with a 2.4 family kernel,
-> I believe. Under this distro, hardware mixing on my soundcard was
-> supported with multiple applications being able to grab /dev/dsp
-> (TeamSpeak and Enemy-Territory, for example)
+No, ac97_reset_wait() does not seem to be responsible for the delay.  It is
+only called once and leaves the function pretty quickly.  I put in some
+printk()s in ac97_reset_wait() but I only get:
+
+mixer building ...
+codec_write (1107711298): reg=0h data=0h.
+entering ac97_reset_wait() (1107711298)
+  in do() loop (1107711298)
+codec_read (1107711298) reg=0h.
+codec_read (1107711298) reg=7ch.
+codec_read (1107711298) reg=7eh.
+codec_write (1107711298): reg=1ch data=8a05h.
+....
+
+So it's in ac97_reset_wait() for only a short time.
+
+----------------------------------------------------------------------
+ tiwai - 02-09-05 11:40 
+----------------------------------------------------------------------
+Hmm, could you check which function takes too long time?
+
+----------------------------------------------------------------------
+ tbm - 02-09-05 14:03 
+----------------------------------------------------------------------
+It seems the codec is not ready when reading register 7eh.
+
+What happens is that codec_read() calls snd_ali_codec_peek(); this obtains
+the
+port, checks whether the codec and the stimer is ready, then it calls
+snd_ali_5451_poke() and then it checks if the stimer and codec is ready. 
+Here, the snd_ali_codec_ready() function calls snd_ali_5451_peek() several
+ten-thousand times, and takes about 2 seconds.  7eh is read 4 times, i.e.
+> 8 secods plus a bit gives 10 secods...
 
 
-Were you using the OSS or the ALSA sound system under that old OS and
-kernel?
+codec_read (1107951511) reg=7eh.
+entering snd_ali_codec_peek(), (1107951511)
+  obtaining port, (1107951511)
+  ... done, (1107951511)
+  calling snd_ali_codec_ready(), (1107951511)
+    entering snd_ali_5451_peek(), (1107951511)
+  ... done, (1107951511)
+  calling snd_ali_stimer_ready(), (1107951511)
+    entering snd_ali_5451_peek(), (1107951511)
+last message repeated 2 times
+  ... done, (1107951511)
+  calling snd_ali_5451_poke(), (1107951511)
+    entering snd_ali_5451_poke(), (1107951511)
+    ... exiting, (1107951511)
+  ... done, (1107951511)
+  calling snd_ali_stimer_ready(), (1107951511)
+    entering snd_ali_5451_peek(), (1107951511)
+last message repeated 2 times
+  calling snd_ali_codec_ready(), (1107951511)
+    entering snd_ali_5451_peek(), (1107951511)
+last message repeated 2029 times
+    entering snd_ali_5451_peek(), (1107951512)
+last message repeated 31382 times
+    entering snd_ali_5451_peek(), (1107951513)
+last message repeated 36084 times
+    entering snd_ali_5451_peek(), (1107951514)
+last message repeated 13506 times
+    entering snd_ali_5451_poke(), (1107951514)
+    ... exiting, (1107951514)
+codec_write (1107951514): reg=74h data=4001h.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-05 01:33 redemption042  New Issue                                    
-03-04-05 01:33 redemption042  Distribution              => Ubuntu 4.10     
-03-04-05 01:33 redemption042  Kernel Version            => 2.6.7           
-03-04-05 01:43 redemption042  Note Added: 0003793                          
-04-13-05 21:48 jdthood        Note Added: 0004476                          
+02-01-05 01:57 tbm            New Issue                                    
+02-01-05 01:57 tbm            File Added: ali                              
+02-01-05 01:57 tbm            Distribution              => Debian GNU/Linux
+02-01-05 01:57 tbm            Kernel Version            => 2.6.10, 2.6.9   
+02-02-05 10:56 tiwai          Note Added: 0003480                          
+02-06-05 18:38 tbm            Note Added: 0003527                          
+02-09-05 11:40 tiwai          Note Added: 0003540                          
+02-09-05 14:03 tbm            Note Added: 0003553                          
+04-13-05 21:57 jdthood        Status                   new => acknowledged 
 ======================================================================
 
 
