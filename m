@@ -1,14 +1,14 @@
-From: didi@tau.ac.il (Yedidyah Bar-David)
-Subject: via82xx on CLE266
-Date: Wed, 13 Apr 2005 21:57:11 +0300
-Message-ID: <20050413185711.GA4587@nova.cs.tau.ac.il>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001051]: Master <--> PCM
+Date: Wed, 13 Apr 2005 21:16:31 +0200
+Message-ID: <9d5f2aea2dfa07f82dc8fbd5105f95f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cs.tau.ac.il (nova.cs.tau.ac.il [132.67.192.133])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A1CF24C
-	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 20:57:13 +0200 (MEST)
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 40421206
+	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 21:16:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,49 +21,62 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-I recently bought a Matsonic MSCLE266-f board, based on VIA CLE266.
-When insmoding, I got a message asking to report if dxs_support
-works. So I do. If that's not the right address, sorry.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1051> 
+======================================================================
+Reported By:                kayandus
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1051
+Category:                   PCI - via82xx
+Reproducibility:            N/A
+Severity:                   tweak
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu
+Kernel Version:             2.6.10-5-k7
+======================================================================
+Date Submitted:             04-13-2005 21:16 CEST
+Last Modified:              04-13-2005 21:16 CEST
+======================================================================
+Summary:                    Master <--> PCM
+Description: 
+Hello,
 
-lspci:
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
+I bought a Targa Traveller 811 laptop a couple of months ago with an
+onboard 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 50) audio controller. It
+works fine with the via82xx driver, but there's only one minor problem.
+Let me explain my problem.
 
-lspci -nvv:
------------------------------------------------------------------------
-0000:00:11.5 0401: 1106:3059 (rev 50)
-        Subsystem: 1019:a101
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin C routed to IRQ 5
-        Region 0: I/O ports at e000 [size=256]
-        Capabilities: [c0] Power Management version 2
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
------------------------------------------------------------------------
+There are 3 major volume controls for me,
+Master: Controls the volume of the internal laptop speaker, so when there
+is a plug/earphones in my LINE IN, it changes nothing. (!!)
+Headphones: Controls volume of the LINE IN, so does nothing when there is
+nothing my LINE IN.
+PCM: Controls both interal speaker and LINE IN, so volume goes up and down
+whether im using the internal speaker or not.
 
-dxs_support=4 does work. That is, it allows to record/play in freqs
-other than 48k.
+Probably the problem is clear already to u, most programs control only
+Master, so when I have my laptop attached to my stereo, those programs
+don't change my volume =(
+I hope u guys can fix this, I suggest by making an option to change Master
+with PCM.
 
-I might add that it took me quite a lot of time to figure out that
-the driver works (with or without dxs_support), mainly because the
-mixer settings were very unintuitive (at least for me) - to hear
-sound, I had to turn off "IEC958 Capture Monitor". The "master"
-does not affect anything I could see. Maybe the real master is
-confused to be "IEC958 Capture Monitor"?
+Thanks in advance, Harm te Hennepe
+======================================================================
 
-Anyway, now sound seems to work pretty well on this board. Thanks
-a lot for your efforts.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-13-05 21:16 kayandus       New Issue                                    
+04-13-05 21:16 kayandus       Distribution              => Ubuntu          
+04-13-05 21:16 kayandus       Kernel Version            => 2.6.10-5-k7     
+======================================================================
 
-I am not subcribed to the list, so CC me if you want (e.g. to make
-some more tests).
--- 
-Didi
 
 
 
