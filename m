@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000092]: 2 channels on the 3 ones are totally off
-Date: Wed, 13 Apr 2005 17:22:45 +0200
-Message-ID: <9b39a6375d6de0447d0c9bcaf4444e8f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000937]: No sound unless using OSS driver
+Date: Wed, 13 Apr 2005 17:24:04 +0200
+Message-ID: <c9d7be625c8bb8dee519880c693ff4f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3247E1A4
-	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 17:22:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 68DE323C
+	for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2005 17:24:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=92> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=937> 
 ======================================================================
-Reported By:                BeTa
+Reported By:                ruffasdagut
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   92
+Issue ID:                   937
 Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian GNU/Linux sid
-Kernel Version:             2.6.3 (and also 2.6.2) vanilla
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Status:                     new
+Distribution:               Fedora
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             02-26-2004 22:49 CET
-Last Modified:              04-13-2005 17:22 CEST
+Date Submitted:             02-24-2005 01:14 CET
+Last Modified:              04-13-2005 17:24 CEST
 ======================================================================
-Summary:                    2 channels on the 3 ones are totally off
+Summary:                    No sound unless using OSS driver
 Description: 
-Only the rear speakers are working, and only when we set up "duplicate
-front". The other ones are totally quiet.
+I have no sound from the system unless using the OSS option in gstreamer
+properties. If I do this I get sound but no control over the volume or
+mute. I dont really need all the digital parts, but just the Basic sound
+would be nice. I am going to include the ouput from the alsa debug program
+I found online. Thanks for looking into this issue.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 09:32 
+ ruffasdagut - 02-24-05 23:27 
 ----------------------------------------------------------------------
-Submitter: Do you have the same problem with current ALSA releases?
+Either I didnt install the CVS properly or it didnt fix the problem. I have
+sound, but no control over the volume. I am not 100% I did the CVS install
+correct. Also did I need to remove the version that Fedora put?
 
 ----------------------------------------------------------------------
- jdthood - 04-13-05 17:22 
+ jdthood - 04-13-05 17:24 
 ----------------------------------------------------------------------
-Lost contact with the submitter.
+Submitter: Any improvement in the 1.0.9rc2 release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-26-04 22:49 BeTa           New Issue                                    
-02-26-04 22:49 BeTa           Issue Monitored: BeTa                        
-03-12-04 19:27 BeTa           Note Added: 0000581                          
-03-12-04 19:29 BeTa           Note Added: 0000582                          
-03-16-04 13:27 BeTa           Note Added: 0000626                          
-03-17-04 14:26 BeTa           Note Deleted: 0000582                        
-03-17-04 14:34 BeTa           Note Added: 0000634                          
-03-17-04 14:41 BeTa           Note Edited: 0000634                         
-03-17-04 14:42 BeTa           Note Deleted: 0000634                        
-03-17-04 16:00 BeTa           Note Added: 0000635                          
-03-18-04 18:07 BeTa           Note Deleted: 0000635                        
-03-18-04 18:11 BeTa           Note Added: 0000642                          
-03-19-05 09:32 jdthood        Note Added: 0004020                          
-04-13-05 17:22 jdthood        Note Added: 0004474                          
-04-13-05 17:22 jdthood        Status                   new => resolved     
-04-13-05 17:22 jdthood        Resolution               open => unable to
-duplicate
+02-24-05 01:14 ruffasdagut    New Issue                                    
+02-24-05 01:14 ruffasdagut    File Added: debug.log                        
+02-24-05 01:14 ruffasdagut    Distribution              => Fedora          
+02-24-05 01:14 ruffasdagut    Kernel Version            => 2.6             
+02-24-05 22:00 tiwai          Note Added: 0003725                          
+02-24-05 23:27 ruffasdagut    Note Added: 0003730                          
+02-24-05 23:29 ruffasdagut    Issue Monitored: ruffasdagut                    
+02-24-05 23:29 ruffasdagut    Issue End Monitor: ruffasdagut                    
+04-13-05 17:24 jdthood        Note Added: 0004475                          
 ======================================================================
 
 
