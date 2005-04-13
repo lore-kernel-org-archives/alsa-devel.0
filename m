@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000416]: Signal but no sound on digital out (Nforce 1)
-Date: Tue, 12 Apr 2005 16:37:27 +0200
-Message-ID: <15bd8c53a71277716ad11b62f7a16537@bugtrack.alsa-project.org>
+From: Josh Green <josh@resonance.org>
+Subject: Intel Azalia problems
+Date: Wed, 13 Apr 2005 05:07:07 -0700
+Message-ID: <1113394027.16526.3.camel@SillyPuddy.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3D49A1CA
-	for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2005 16:37:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,88 +15,91 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello, I recently purchased a new laptop which has an Intel Azalia sound
+interface.  I noticed that this is a pretty recent addition to the ALSA
+drivers.  Although it seems to be basically working, I'm having a couple
+problems.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=416> 
-======================================================================
-Reported By:                bonbons
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   416
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     acknowledged
-Distribution:               SuSE 9.0
-Kernel Version:             2.4.26
-======================================================================
-Date Submitted:             07-31-2004 21:46 CEST
-Last Modified:              04-12-2005 16:37 CEST
-======================================================================
-Summary:                    Signal but no sound on digital out (Nforce 1)
-Description: 
-Independently of the status of the "Digital" element in alsamixer (muted or
-not) my digital reciever connected to the Digital output of my mainboard
-displays availability of PCM signal, but the sound output to my
-head-phones through Line-Out is not available on the digital out.
+The first problem has to do with the headphone jack, which on this
+laptop is an SPDIF/output combo jack. I can hear output on the built in
+speakers (after un-muting and turning up the "Front" level), but when I
+plug in headphones I don't hear anything (despite the fact that the
+"Headphone" mixer is turned up and unmuted).
 
-There is no sound at all output to the digital out, no matter what
-selections are done in AlsaMixer.
+The other problem is with certain applications which use oss.  Quake3
+for example prints the following in the terminal it is started from:
 
-Is there a means to switch output mode of digital output to DolbyDigital
-as under Windows and really switch of the Digital output?
-======================================================================
+------- sound initialization -------
+Could not mmap dma buffer PROT_WRITE|PROT_READ
+trying mmap PROT_WRITE (with associated better compatibility / less
+performance code)
+/dev/dsp: Input/output error
+Could not mmap /dev/dsp
+------------------------------------
 
-----------------------------------------------------------------------
- bonbons - 04-10-05 23:50 
-----------------------------------------------------------------------
-With drivers with kernel 2.6.10 (1.0.6) the digital output was never
-switched off, no matter what mixer settings were (using alsamixer)
+An strace reveals this, which may or may not be helpful.
 
-I did test with drives included with Linux-2.6.11 kernel release (1.0.8):
+[pid 15829] open("/dev/dsp", O_RDWR)    = 20
+[pid 15829] getuid32()                  = 501
+[pid 15829] setresuid32(-1, 501, -1)    = 0
+[pid 15829] ioctl(20, SNDCTL_DSP_GETCAPS, 0xbffff574) = 0
+[pid 15829] ioctl(20, SNDCTL_DSP_SPEED or SOUND_PCM_READ_RATE,
+0x81776ac) = 0
+[pid 15829] ioctl(20, SNDCTL_DSP_STEREO, 0xbffff56c) = 0
+[pid 15829] ioctl(20, SNDCTL_DSP_SPEED or SOUND_PCM_READ_RATE,
+0x88446b4) = 0
+[pid 15829] ioctl(20, SNDCTL_DSP_SETFMT or SOUND_PCM_READ_BITS,
+0xbffff568) = 0
+[pid 15829] ioctl(20, SNDCTL_DSP_GETOSPACE, 0xbffff580) = 0
+[pid 15829] mmap2(NULL, 32768, PROT_READ|PROT_WRITE, MAP_SHARED, 20, 0)
+= -1 EIO (Input/output error)
+[pid 15829] write(2, "Could not mmap dma buffer PROT_W"..., 47Could not
+mmap dma buffer PROT_WRITE|PROT_READ
+) = 47
+[pid 15829] write(2, "trying mmap PROT_WRITE (with ass"..., 86trying
+mmap PROT_WRITE (with associated better compatibility / less performance
+code)
 
-No mixer item has effect on the output to digital out
+Other OSS programs (such as "play") work fine, so perhaps its just
+programs that try and MMAP the device.
 
-I was playing sound with this command:
-aplay -D plughw:0,2 file.wav
+I copied the file /usr/share/alsa/cards/Azalia.conf to /etc/asound.conf,
+but with the same results.  Despite the low volume output of the
+internal speakers, I can hear clicks in the output with mplayer and
+totem (perhaps a sampling rate issue?)
 
-At same time on other console a toggled the mute flags on each channel
-individually (using alsamixer), sound output was not muted at all, and
-volume changes had no effect either.
+Here is some info about my system:
+alsa-driver 1.0.9rc2
+alsa-lib 1.0.9rc2
+alsa-utils 1.0.8
+kernel 2.6.7-gentoo-r11
+NVidia GeForce Go 6600 (I'm using the commercial drivers)
+
+ALSA modules loaded:
+
+snd_hda_intel          16496  2
+snd_hda_codec          59008  1 snd_hda_intel
+snd_seq_oss            36480  0
+snd_seq_midi_event      8064  1 snd_seq_oss
+snd_seq                53392  4 snd_seq_oss,snd_seq_midi_event
+snd_seq_device          8972  2 snd_seq_oss,snd_seq
+snd_pcm_oss            52008  0
+snd_pcm                92680  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
+snd_timer              25604  2 snd_seq,snd_pcm
+snd_page_alloc         10120  2 snd_hda_intel,snd_pcm
+snd_mixer_oss          20096  2 snd_pcm_oss
+snd                    54884  13
+snd_hda_intel,snd_hda_codec,snd_seq_oss,snd_seq_midi_event,snd_seq,snd_seq_device,snd_pcm_oss,snd_pcm,snd_timer,snd_mixer_oss
+soundcore               9952  2 snd
 
 
-PS: How can I test 5.1 channel output to digital out? As all playback I
-currently got is stereo PCM
-PS2: Since previous note I changed distribution from SuSE to Gentoo
-
-
-
-----------------------------------------------------------------------
- tiwai - 04-12-05 16:37 
-----------------------------------------------------------------------
-The non-audio SPDIF output has never worked properly on nForce because of
-lack of hardware information.  Try to complain Nvidia, so that we'll get
-the necessary information to program the driver code...
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-31-04 21:46 bonbons        New Issue                                    
-07-31-04 21:46 bonbons        Distribution              => SuSE 9.0        
-07-31-04 21:46 bonbons        Kernel Version            => 2.4.26          
-08-01-04 18:19 bonbons        Note Added: 0001517                          
-04-08-05 22:34 jdthood        Note Added: 0004378                          
-04-10-05 23:49 bonbons        Note Added: 0004440                          
-04-10-05 23:50 bonbons        Note Edited: 0004440                         
-04-11-05 09:43 jdthood        Status                   new => acknowledged 
-04-12-05 16:37 tiwai          Note Added: 0004449                          
-======================================================================
+I would appreciate any info on using this card with ALSA.  Also, it
+seems my modem is tied into this card as well (HDAUDIO soft modem), any
+idea if this is supported or if there are plans to?  Cheers!
+Josh Green
 
 
 
