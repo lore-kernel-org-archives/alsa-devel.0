@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000862]: emu10k1 always has random clicks in wavetable MIDI synth playback but never in PCM playback
-Date: Thu, 14 Apr 2005 22:01:23 +0200
-Message-ID: <35a2ca29f7d5b1b7f769ae032de42030@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000578]:  No soundcard detected on Chaintech 9CJS
+Date: Thu, 14 Apr 2005 22:00:30 +0200
+Message-ID: <6ec1d666f4931c8847d051ba7e4c1102@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 89B5E1E1
-	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 22:01:23 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4A8B6170
+	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 22:00:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,145 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ACKNOWLEDGED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=862> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=578> 
 ======================================================================
-Reported By:                Will
+Reported By:                tarsi
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   862
-Category:                   PCI - emu10k1
+Issue ID:                   578
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     acknowledged
-Distribution:               
-Kernel Version:             2.6.10
+Distribution:               mandrake linux 10.1
+Kernel Version:             2.6.8.1-10mdksmp
 ======================================================================
-Date Submitted:             01-30-2005 15:24 CET
-Last Modified:              04-14-2005 22:01 CEST
+Date Submitted:             10-11-2004 12:58 CEST
+Last Modified:              04-14-2005 22:00 CEST
 ======================================================================
-Summary:                    emu10k1 always has random clicks in wavetable MIDI
-synth playback but never in PCM playback
+Summary:                     No soundcard detected on Chaintech 9CJS
 Description: 
-An Audigy 2 LS 5.1 PCI soundcard with emu10k1 chipset (the PCI id is
-1102:0004 (rev 04)) always has random clicks in wavetable MIDI synth
-playback but never in PCM playback using any version of alsa-driver. I
-think this clicking is probably an emu10k1 driver bug.
+ cat /proc/asound/cards don't stop and gives many lines "--no souncards--"
 
-It makes no difference which driver or kernel is used; the problem exists
-with alsa-driver-CVS, alsa-driver-1.0.8, and all previous versions since
-before alsa-driver-0.9.7 and with all mainline kernel versions of Linux
-2.4.x and Linux 2.6.x including 2.6.10. 
+/etc/init.d/alsaconf found ice1724 card, but exiting gives:
+.... 
 
-It makes no difference which kernel is used (2.4.x or 2.6.x). I recently
-started using CONFIG_ACPI_* with CONFIG_PCI_[GO]BIOS in 2.6.10 but it
-makes no difference. I use the default PCI latencies.
-
-It makes no difference whether or not the emu10k1 IRQ is shared and the
-clicking is exactly the same regardless of which other device shares the
-IRQ, e.g. "IRQ 17: 78129 IO-APIC-level  libata, EMU10K1" or "IRQ 16: 9554 
-IO-APIC-level  eth0, EMU10K1".
-
-From: Lee Revell <rlrevell AT ...>
-Subject: Re: [Alsa-devel] [PATCH] emu10k1 multichannel support
-Date: Sat, 29 Jan 2005 16:28:47 -0500
-To: William <walsac3 AT ...>
-Message-Id: <1107034127.24676.55.camel@krustophenia.net>
-Content-Type: text/plain
-
-(sorry for the late reply)
-
-On Wed, 2005-01-19 at 19:16 +0000, William wrote:
->
-> I'll mention the following in case you might be interested to look at
-it.
-> An issue that's been around since the very beginning of the emu10k1
-driver
-> is that playing a MIDI file on the wavetable often produces a
-> rapid but irregular sequence of very noticeable clicks at a
-> rate of 2 or 3 per second continuing for up to about 10 seconds.
-> The clicking starts happening once every minute or so but without any
-> clear pattern - it doesn't seem to be depend much on the contents of the
-MIDI
-> files.
->
-> Interestingly I never hear any clicks when using the PCM and
-> a soft synth like fluidsynth or timidity as an alternative method
-> of MIDI playback, which is why I think it might be a bug (haven't
-checked
-> whether something similar has already been logged on the bugtracker).
-> I had a brief look into it, but didn't find anything conclusive in the
-code.
-> One possibly interesting feature was I notice that I could trigger lots
-of
-> clicks if I tried doing real-time variable attenuation of already
-playing
-> notes via update_voice(vp, SNDRV_EMUX_UPDATE_VOLUME) in
-emu10k1_callback.c
-
-I would actually be interested in looking at this.  I have noticed some
-areas in the code where things are commented out for odd reasons.
-Specifically the samples cache is not cleared like it is for PCM voices.
-If you have time please file an ALSA bug report (you can just copy and
-paste this message).
-
-> By the way, do you know the original purpose of
-snd_emu10k1_sum_vol_attn()
-> in emu10k1/io.c which has just been removed in alsa-driver-1.0.8?
-> The cumulative volume conversion algorithm in that function
-> seems like it would probably have been based on the original emu10k1
-chipset
-> documentation provided by Creative during its open-source era.
-> It seems like a useful function to keep around for future extensions of
-> the emu10k1 driver.  Maybe it should be re-instated.
->
-> >From the 1.0.8 announcement:
->
->     - Summary: ALSA PCI drivers: misc cleanups
->       The patch below does the following cleanups under sound/pci/ :
->       - remove the following unused global functions:
->         - emu10k1/io.c: snd_emu10k1_sum_vol_attn
->
-
-Yes, I asked Takashi about this and he said it just does some simple
-calculation.  Check the alsa-devel archive.  But, maybe there's
-something to it.  It could be related to your clicking problem.
-
-I have heard something similar when using PCM at really low latencies.
-
-Lee
+/usr/sbin/alsactl: save_state:1066: No soundcards found...
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-13-05 22:01 
+ tiwai - 10-11-04 15:59 
 ----------------------------------------------------------------------
-Submitter: Do you have any new information about the problem?
+Try model=k8x800 module option.  This will force the model type.
 
 ----------------------------------------------------------------------
- rlrevell - 04-13-05 22:26 
+ jdthood - 04-09-05 16:09 
 ----------------------------------------------------------------------
-This is probably still an issue.  The wavetable synth has not changed in a
-long time.
-
-It does work for me though, I don't get the clicks or dropped notes that
-many people report.
+Submitter: Did you find a solution for this problem?
 
 ----------------------------------------------------------------------
- Will - 04-14-05 15:20 
+ tarsi - 04-14-05 12:53 
 ----------------------------------------------------------------------
-No, no change!
+using "model=k8x800", soundcard is detected correctly. After some week, my
+soundcard have others problems with sound quality (very disturbed) but i
+think not related with this bug.
+
+----------------------------------------------------------------------
+ jdthood - 04-14-05 22:00 
+----------------------------------------------------------------------
+Perhaps this card model can be detected?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-30-05 15:24 Will           New Issue                                    
-01-30-05 15:24 Will           Kernel Version            => 2.6.10          
-04-13-05 22:01 jdthood        Note Added: 0004480                          
-04-13-05 22:26 rlrevell       Note Added: 0004484                          
-04-14-05 15:20 Will           Note Added: 0004493                          
-04-14-05 22:01 jdthood        Status                   new => acknowledged 
+10-11-04 12:58 tarsi          New Issue                                    
+10-11-04 12:58 tarsi          File Added: command-outputs.tar.bz2               
+    
+10-11-04 12:58 tarsi          Distribution              => mandrake linux 10.1
+10-11-04 12:58 tarsi          Kernel Version            => 2.6.8.1-10mdksmp
+10-11-04 12:58 tarsi          Issue Monitored: tarsi                       
+10-11-04 15:59 tiwai          Note Added: 0002081                          
+04-09-05 16:09 jdthood        Note Added: 0004407                          
+04-14-05 12:53 tarsi          Note Added: 0004491                          
+04-14-05 22:00 jdthood        Note Added: 0004496                          
+04-14-05 22:00 jdthood        Severity                 block => major      
+04-14-05 22:00 jdthood        Status                   new => acknowledged 
+04-14-05 22:00 jdthood        Additional Information Updated                    
 ======================================================================
 
 
