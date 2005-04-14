@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
-Date: Thu, 14 Apr 2005 17:34:39 +0200
-Message-ID: <7a7c45c976cf630d4884f5a1ce905d4e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001053]: cannot change line-in volume on MSI K8N Platinum that has SBLive! 24 bit
+Date: Thu, 14 Apr 2005 19:27:22 +0200
+Message-ID: <dd7a91d66db4a83f98f9708e19663b0d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5960221
-	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 17:34:39 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 889FD1FF
+	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 19:27:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1053> 
 ======================================================================
-Reported By:                sHINOBI
+Reported By:                Cimmo
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   907
+Issue ID:                   1053
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.766_FC3
+Status:                     assigned
+Distribution:               Fedora Core 4 test 2
+Kernel Version:             2.6.11-1.1236 FC4-x86_64 that contains 2.6.12rc2
 ======================================================================
-Date Submitted:             02-13-2005 11:36 CET
-Last Modified:              04-14-2005 17:34 CEST
+Date Submitted:             04-14-2005 19:27 CEST
+Last Modified:              04-14-2005 19:27 CEST
 ======================================================================
-Summary:                    The sound is choppy and sometimes played at wrong
-speed
+Summary:                    cannot change line-in volume on MSI K8N Platinum
+that has SBLive! 24 bit
 Description: 
-The soundcard is working, although the sound is choppy when playing sound
-at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
+I have a MSI K8N Platinum motherboard that has SBLive! 24 bit integrated.
+(Un)fortunatelly this motherboard provide two different jacks for Mic and
+Line-In instead of one single jack in the pci version of the sb live 24
+bit (see image).
+
+The result is that I cannot use line-in for my soundcard becuase the
+volume is 0 and I cannot change it.
+
+The "Capture feedback into playback" in the mixer change the mic's volume.
 ======================================================================
-
-----------------------------------------------------------------------
- Cimmo - 04-14-05 13:25 
-----------------------------------------------------------------------
-2 questions:
-
-1) Have you finally received some documentation from Creative?
-2) How to compile only CA0106 module?
-
-Thanx
-
-----------------------------------------------------------------------
- Cimmo - 04-14-05 17:34 
-----------------------------------------------------------------------
-I'm sorry but cannot give feedback without help :(
-
-I've download alsa-driver 1.0.9rc2, downloaded all files from
-CVS/alsa-kernel/pci/ca0106 and overwritten files in the .09rc2
-
-so recompiled all package and just copied snd-ca0106.ko to my
-/lib/modules/2.6.11-1.1236_FC4/kernel/sound/pci/ca0106
-
-Rebooted an no more sound!
-
-Strange thing:
-old file is about 60 KB, new compiled file is over 500 KB.
-
-
-Where I have wrong?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-05 11:36 sHINOBI        New Issue                                    
-02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
-02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
-02-13-05 11:38 sHINOBI        Note Added: 0003583                          
-03-02-05 13:22 Juha           Note Added: 0003770                          
-03-19-05 18:24 jcdutton       Note Added: 0004064                          
-03-22-05 22:14 tiwai          Note Added: 0004138                          
-03-22-05 22:56 sHINOBI        Note Added: 0004144                          
-03-23-05 12:56 tiwai          Note Added: 0004155                          
-03-23-05 19:40 sHINOBI        Note Added: 0004185                          
-03-27-05 01:13 sHINOBI        Note Added: 0004219                          
-03-27-05 16:08 Cimmo          Note Added: 0004222                          
-03-27-05 16:09 Cimmo          File Added: .asoundrc                        
-03-28-05 01:31 Alinoe         Issue Monitored: Alinoe                      
-03-28-05 14:09 Alinoe         Note Added: 0004240                          
-04-14-05 12:51 jcdutton       Note Added: 0004490                          
-04-14-05 12:51 jcdutton       Status                   assigned => feedback
-04-14-05 13:25 Cimmo          Note Added: 0004492                          
-04-14-05 17:34 Cimmo          Note Added: 0004494                          
+04-14-05 19:27 Cimmo          New Issue                                    
+04-14-05 19:27 Cimmo          File Added: MSIK8N.jpg                       
+04-14-05 19:27 Cimmo          Distribution              => Fedora Core 4 test 2
+04-14-05 19:27 Cimmo          Kernel Version            => 2.6.11-1.1236
+FC4-x86_64 that contains 2.6.12rc2
 ======================================================================
 
 
