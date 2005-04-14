@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
-Date: Thu, 14 Apr 2005 12:51:40 +0200
-Message-ID: <4b6d408c5cef128f158560bfb9665963@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000578]:  No soundcard detected on Chaintech 9CJS
+Date: Thu, 14 Apr 2005 12:53:44 +0200
+Message-ID: <262a918eaf9a4dc3f5e8f6d2dd83a93a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3B7F821C
-	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 12:51:40 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4030D221
+	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 12:53:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=578> 
 ======================================================================
-Reported By:                sHINOBI
-Assigned To:                jcdutton
+Reported By:                tarsi
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   907
-Category:                   PCI - ca0106
+Issue ID:                   578
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.766_FC3
+Status:                     new
+Distribution:               mandrake linux 10.1
+Kernel Version:             2.6.8.1-10mdksmp
 ======================================================================
-Date Submitted:             02-13-2005 11:36 CET
-Last Modified:              04-14-2005 12:51 CEST
+Date Submitted:             10-11-2004 12:58 CEST
+Last Modified:              04-14-2005 12:53 CEST
 ======================================================================
-Summary:                    The sound is choppy and sometimes played at wrong
-speed
+Summary:                     No soundcard detected on Chaintech 9CJS
 Description: 
-The soundcard is working, although the sound is choppy when playing sound
-at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
+ cat /proc/asound/cards don't stop and gives many lines "--no souncards--"
+
+/etc/init.d/alsaconf found ice1724 card, but exiting gives:
+.... 
+
+/usr/sbin/alsactl: save_state:1066: No soundcards found...
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Alinoe - 03-28-05 14:09 
+ jdthood - 04-09-05 16:09 
 ----------------------------------------------------------------------
-xmms doesn't work for me too (choppy and fast ;))
-only alsaplayer can play correctly a sound ;o)
+Submitter: Did you find a solution for this problem?
 
 ----------------------------------------------------------------------
- jcdutton - 04-14-05 12:51 
+ tarsi - 04-14-05 12:53 
 ----------------------------------------------------------------------
-The latest alsa-driver cvs has some improvements. Please try it and report.
+using "model=k8x800", soundcard is detected correctly. After some week, my
+soundcard have others problems with sound quality (very disturbed) but i
+think not related with this bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-05 11:36 sHINOBI        New Issue                                    
-02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
-02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
-02-13-05 11:38 sHINOBI        Note Added: 0003583                          
-03-02-05 13:22 Juha           Note Added: 0003770                          
-03-19-05 18:24 jcdutton       Note Added: 0004064                          
-03-22-05 22:14 tiwai          Note Added: 0004138                          
-03-22-05 22:56 sHINOBI        Note Added: 0004144                          
-03-23-05 12:56 tiwai          Note Added: 0004155                          
-03-23-05 19:40 sHINOBI        Note Added: 0004185                          
-03-27-05 01:13 sHINOBI        Note Added: 0004219                          
-03-27-05 16:08 Cimmo          Note Added: 0004222                          
-03-27-05 16:09 Cimmo          File Added: .asoundrc                        
-03-28-05 01:31 Alinoe         Issue Monitored: Alinoe                      
-03-28-05 14:09 Alinoe         Note Added: 0004240                          
-04-14-05 12:51 jcdutton       Note Added: 0004490                          
-04-14-05 12:51 jcdutton       Status                   assigned => feedback
+10-11-04 12:58 tarsi          New Issue                                    
+10-11-04 12:58 tarsi          File Added: command-outputs.tar.bz2               
+    
+10-11-04 12:58 tarsi          Distribution              => mandrake linux 10.1
+10-11-04 12:58 tarsi          Kernel Version            => 2.6.8.1-10mdksmp
+10-11-04 12:58 tarsi          Issue Monitored: tarsi                       
+10-11-04 15:59 tiwai          Note Added: 0002081                          
+04-09-05 16:09 jdthood        Note Added: 0004407                          
+04-14-05 12:53 tarsi          Note Added: 0004491                          
 ======================================================================
 
 
