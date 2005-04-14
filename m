@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000578]:  No soundcard detected on Chaintech 9CJS
-Date: Thu, 14 Apr 2005 12:53:44 +0200
-Message-ID: <262a918eaf9a4dc3f5e8f6d2dd83a93a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
+Date: Thu, 14 Apr 2005 13:25:40 +0200
+Message-ID: <ccff1a9f90d3238d1ef1850aa672ff8c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4030D221
-	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 12:53:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 89ECF221
+	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 13:25:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=578> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
 ======================================================================
-Reported By:                tarsi
-Assigned To:                
+Reported By:                sHINOBI
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   578
-Category:                   PCI - ice1724
+Issue ID:                   907
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               mandrake linux 10.1
-Kernel Version:             2.6.8.1-10mdksmp
+Status:                     feedback
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10-1.766_FC3
 ======================================================================
-Date Submitted:             10-11-2004 12:58 CEST
-Last Modified:              04-14-2005 12:53 CEST
+Date Submitted:             02-13-2005 11:36 CET
+Last Modified:              04-14-2005 13:25 CEST
 ======================================================================
-Summary:                     No soundcard detected on Chaintech 9CJS
+Summary:                    The sound is choppy and sometimes played at wrong
+speed
 Description: 
- cat /proc/asound/cards don't stop and gives many lines "--no souncards--"
-
-/etc/init.d/alsaconf found ice1724 card, but exiting gives:
-.... 
-
-/usr/sbin/alsactl: save_state:1066: No soundcards found...
-
+The soundcard is working, although the sound is choppy when playing sound
+at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 16:09 
+ jcdutton - 04-14-05 12:51 
 ----------------------------------------------------------------------
-Submitter: Did you find a solution for this problem?
+The latest alsa-driver cvs has some improvements. Please try it and report.
 
 ----------------------------------------------------------------------
- tarsi - 04-14-05 12:53 
+ Cimmo - 04-14-05 13:25 
 ----------------------------------------------------------------------
-using "model=k8x800", soundcard is detected correctly. After some week, my
-soundcard have others problems with sound quality (very disturbed) but i
-think not related with this bug.
+2 questions:
+
+1) Have you finally received some documentation from Creative?
+2) How to compile only CA0106 module?
+
+Thanx
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-11-04 12:58 tarsi          New Issue                                    
-10-11-04 12:58 tarsi          File Added: command-outputs.tar.bz2               
-    
-10-11-04 12:58 tarsi          Distribution              => mandrake linux 10.1
-10-11-04 12:58 tarsi          Kernel Version            => 2.6.8.1-10mdksmp
-10-11-04 12:58 tarsi          Issue Monitored: tarsi                       
-10-11-04 15:59 tiwai          Note Added: 0002081                          
-04-09-05 16:09 jdthood        Note Added: 0004407                          
-04-14-05 12:53 tarsi          Note Added: 0004491                          
+02-13-05 11:36 sHINOBI        New Issue                                    
+02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
+02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
+02-13-05 11:38 sHINOBI        Note Added: 0003583                          
+03-02-05 13:22 Juha           Note Added: 0003770                          
+03-19-05 18:24 jcdutton       Note Added: 0004064                          
+03-22-05 22:14 tiwai          Note Added: 0004138                          
+03-22-05 22:56 sHINOBI        Note Added: 0004144                          
+03-23-05 12:56 tiwai          Note Added: 0004155                          
+03-23-05 19:40 sHINOBI        Note Added: 0004185                          
+03-27-05 01:13 sHINOBI        Note Added: 0004219                          
+03-27-05 16:08 Cimmo          Note Added: 0004222                          
+03-27-05 16:09 Cimmo          File Added: .asoundrc                        
+03-28-05 01:31 Alinoe         Issue Monitored: Alinoe                      
+03-28-05 14:09 Alinoe         Note Added: 0004240                          
+04-14-05 12:51 jcdutton       Note Added: 0004490                          
+04-14-05 12:51 jcdutton       Status                   assigned => feedback
+04-14-05 13:25 Cimmo          Note Added: 0004492                          
 ======================================================================
 
 
