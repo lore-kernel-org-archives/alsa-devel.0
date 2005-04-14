@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000711]: Sound still bad with alsa on sb audigyls / ca0106
-Date: Thu, 14 Apr 2005 12:46:05 +0200
-Message-ID: <3884465319a0efeabe66049a01ce6022@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000906]: OSS mixer does not work
+Date: Thu, 14 Apr 2005 12:49:58 +0200
+Message-ID: <d54c0a712f1137c5a6dfc62224a5718b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 804D9221
-	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 12:46:05 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8454F1FD
+	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 12:49:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,93 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been ACKNOWLEDGED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=711> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=906> 
 ======================================================================
-Reported By:                scorpion77
+Reported By:                adaviel
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   711
+Issue ID:                   906
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9-1.6_FC2custom
+Status:                     acknowledged
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             12-07-2004 18:12 CET
-Last Modified:              04-14-2005 12:46 CEST
+Date Submitted:             02-13-2005 07:02 CET
+Last Modified:              04-14-2005 12:49 CEST
 ======================================================================
-Summary:                    Sound still bad with alsa on sb audigyls / ca0106
+Summary:                    OSS mixer does not work
 Description: 
-Sound is choppy and at wrong speed with both the snd-audigyls from alsa
-1.0.7 and snd-ca0106 from alsa CVS. CVS seems worse, which bugs me since
-last bug report was closed woth a "Use snd-ca0106 from CVS remark"!
-Workaround seems to select (Threaded)OSS as artsd backend instead of Alsa.
-Esd as artsd backend only works / fixes things in 1.0.7, it crashes when
-the CVS version is used.
+OSS-based mixers such as aumix or xmixer will not
+work. aumix says "no device found". A second sound device on the same PC
+configured as snd-card-1 appears to work as /dev/mixer1
+Alsamixer appears to work on both the Audigy and Intel devices
+(at the time of writing I do not have physical access to the device
+to verify sound output)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-08-04 12:35 
+ tiwai - 02-14-05 16:27 
 ----------------------------------------------------------------------
-Moved to snd-ca0106 category.  Sorry for the delay.
+Do you have /dev/mixer with a proper permission?
 
+----------------------------------------------------------------------
+ adaviel - 02-14-05 23:30 
+----------------------------------------------------------------------
+lrwxrwxrwx    1 root     root          /dev/mixer -> /dev/mixer0
+crw-rw-rw-    1 root     root      14, /dev/mixer0
+crw-rw-rw-    1 root     root      14, /dev/mixer1
+
+card 0 is ca0106
+card 1 is Intel ich5 which seems to work OK
+
+I want to use the vrvs.org/Mbone tool "rat" which needs full-duplex
+audio at (usually) 8kHz o 16kHz with microphone/speakers
+I cannot get any input on the VU meter with any input selected in
+alsamixer or
+with "capture into playback" set high. The input levels won't move in
+alsamixer
+for any inputs e.g. "AC97 in". I don't see "mic in" - but I'm not very
+familiar with ALSA or with this card. It's what a user found in a store
+when
+they wanted to retrofit sound to an older PC running RedHat 7.3.
+
+When I use OSS "play" on a WAV file the sound is very choppy and the rate
+sounds
+wrong. When I try aplay it's not choppy but the rate is still odd.
+However mpg123 sounds OK on an MP3 file. Will this card work for me in
+Rat,
+or is it only really good for playing DVDs/CDs ?
 
 ----------------------------------------------------------------------
- jcdutton - 04-14-05 12:46 
+ jcdutton - 03-19-05 18:25 
 ----------------------------------------------------------------------
-The latest alsa-driver CVS has some improvements. Please give it a try.
-Sound capture will not be supported any time soon, due to lack of
-datasheet documentation.
+Known problem. "Master" control needs to be added to the sound card driver.
+
+----------------------------------------------------------------------
+ jcdutton - 04-14-05 12:49 
+----------------------------------------------------------------------
+If problem is known about. Please use "alsamixer" to adjust volumes.
+This is not a bug, it is a function that the sound card hardware does not
+have. Master volume control will instead be implemented in alsa-lib, when
+the appropriate functionallity is in alsa-lib.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-07-04 18:12 scorpion77     New Issue                                    
-12-07-04 18:12 scorpion77     Distribution              => Fedora Core 2   
-12-07-04 18:12 scorpion77     Kernel Version            => 2.6.9-1.6_FC2custom
-12-07-04 20:24 rlrevell       Note Added: 0002764                          
-12-07-04 21:40 scorpion77     Note Added: 0002765                          
-12-07-04 21:53 jcdutton       Note Added: 0002766                          
-12-08-04 00:21 scorpion77     Note Added: 0002769                          
-12-08-04 00:22 scorpion77     Note Edited: 0002769                         
-12-08-04 01:23 jcdutton       Note Added: 0002770                          
-12-08-04 01:26 scorpion77     Note Added: 0002771                          
-12-08-04 03:40 scorpion77     Note Added: 0002773                          
-12-08-04 12:35 tiwai          Note Added: 0002781                          
-12-08-04 12:35 tiwai          Category                 PCI - audigyls => PCI -
-ca0106
-01-15-05 12:50 Kane32         Issue Monitored: Kane32                      
-04-14-05 12:46 jcdutton       Note Added: 0004487                          
-04-14-05 12:46 jcdutton       Status                   assigned => feedback
+02-13-05 07:02 adaviel        New Issue                                    
+02-13-05 07:02 adaviel        Distribution              => Fedora Core 1   
+02-13-05 07:02 adaviel        Kernel Version            => 2.4.22          
+02-14-05 16:27 tiwai          Note Added: 0003600                          
+02-14-05 23:30 adaviel        Note Added: 0003614                          
+03-19-05 18:25 jcdutton       Note Added: 0004065                          
+04-14-05 12:49 jcdutton       Note Added: 0004489                          
+04-14-05 12:49 jcdutton       Status                   assigned => acknowledged
 ======================================================================
 
 
