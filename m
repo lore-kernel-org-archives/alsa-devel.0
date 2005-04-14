@@ -1,14 +1,15 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: Re: Speaker-test improvements
-Date: Thu, 14 Apr 2005 16:28:33 +0200
-Message-ID: <20050414142833.GA18792@tuba>
-References: <425D7AD7.2010706@superbug.co.uk> <s5hzmw1ec8n.wl@alsa2.suse.de> <yw1xr7hdebl6.fsf@ford.inprovide.com>
+From: Tim Phipps <tim@phipps-hutton.freeserve.co.uk>
+Subject: Re: dxs_support=1 works on an Insight P4-ITX board
+Date: Thu, 14 Apr 2005 15:39:59 +0100
+Message-ID: <200504141540.00124.tim@phipps-hutton.freeserve.co.uk>
+References: <200504131645.22926.tim@phipps-hutton.freeserve.co.uk> <200504141400.57845.tim@phipps-hutton.freeserve.co.uk> <s5hy8blec5a.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hy8blec5a.wl@alsa2.suse.de>
 Content-Disposition: inline
-In-Reply-To: <yw1xr7hdebl6.fsf@ford.inprovide.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,49 +19,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mru@inprovide.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 14, 2005 at 03:23:33PM +0200, M=E5ns Rullg=E5rd wrote:
-> Takashi Iwai <tiwai@suse.de> writes:
->=20
-> > At Wed, 13 Apr 2005 21:02:31 +0100,
-> > James Courtier-Dutton wrote:
-> >>=20
-> >> Hi,
-> >>=20
-> >> I have got some voice samples saying things like "Front Right" etc. =
-that
-> >> I want the speaker-test program to output instead of the loud sine w=
-ave
-> >> it currently does. The sine wave will stay there as an option as I f=
-ind
-> >> it useful for some things.
-> >>=20
-> >> The samples are 10 .wav files in 48khz mono S16_LE format.
-> >> Where abouts should I put them in the CVS, and where abouts should t=
-hey
-> >> get installed to, so that speaker-test can find them?
+On Thursday 14 Apr 2005 14:11, Takashi Iwai wrote:
+> At Thu, 14 Apr 2005 14:00:57 +0100,
+>
+> Tim Phipps wrote:
+> > On Wednesday 13 Apr 2005 16:45, Tim Phipps wrote:
+> > > Good afternoon,
+> > > 	I'd like to report that the snd-via82xx driver works nicely with
+> > > dxs_support=1.  I've had 4 lots of music playing at once (44100:16:2,
+> > > ALSA) and it sounds like jazz.
 > >
-> > That's great.  (Is the voice female or male?  We might need both to b=
-e
-> > PC ;)
->=20
-> Not to mention all the languages of the world.
+> > Pants! I stuffed up and it doesn't work. VIA_DXS_48k works nicely but
+> > VIA_DXS_ENABLE makes it sound like a Dalek convention. Sorry to yank on
+> > your chains. I thought 'modprobe snd-via82xx dxs_support=1' was the way
+> > to test it.
+>
+> Try dxs_support=4.  (If you use the CVS version, try dxs_support=5.)
+> It works better for the recent devices in general.  dxs_support=1
+> works for some old hardwares.
 
-But then a morse code matrix would be more efficient :)
+dxs_support=4 means VIA_DXS_48K in the driver doesn't it? How difficult is it 
+to get the CVS version to compile in 2.6.11?
 
-.... Front left
-..._ Front right
-.._. Back left
-..__ Back right
-
-martin
+Cheers,
+Tim.
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
