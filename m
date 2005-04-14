@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
-Date: Thu, 14 Apr 2005 11:55:03 +0200
-Message-ID: <517982c46579ade8ab15440e739cbd65@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000729]: arts error on boot: AudioSubSystem:handleIO:write failed
+Date: Thu, 14 Apr 2005 12:47:25 +0200
+Message-ID: <fb8a5d4a3e60efc65255f995f27c07e3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D78D5221
-	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 11:55:04 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 69366221
+	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 12:47:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,80 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=857> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=729> 
 ======================================================================
-Reported By:                mart
-Assigned To:                sashak
+Reported By:                jbailo
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   857
-Category:                   PCI - intel8x0m
+Issue ID:                   729
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               slackware 10
-Kernel Version:             2.6.10
+Status:                     feedback
+Distribution:               Suse 9.1
+Kernel Version:             2.6.5-7.11
 ======================================================================
-Date Submitted:             01-29-2005 16:43 CET
-Last Modified:              04-14-2005 11:55 CEST
+Date Submitted:             12-19-2004 11:50 CET
+Last Modified:              04-14-2005 12:47 CEST
 ======================================================================
-Summary:                    intel8x0m does not work on asus a3n laptop
+Summary:                    arts error on boot: AudioSubSystem:handleIO:write
+failed
 Description: 
-with this laptop, the sound by intel8x0 works ok, but the modem with the 
-alsa-driver intel8x0m and slmodemd 2.9.10 does not.
-slmodemd starts ok, it opens the alsa device hw:1 that is tje modem, but
-when i try to dial a number (i tried with kppp and minicom) the modem does
-dial, but after a while it quits with a NO ANSWER error.
-making some exprtiments, i found that when i connect under windows, if i
-listen to the phone connected to the same line, i can hear the tones
-gererated by the modem, but when i dial under linux i can't hear anything,
-so i think this is a driver issue, the driver that can't make the modem
-produce any sound.
+On book, an arts error message alert appears:
 
-this is what lspci tells me on that modem:
-00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
+AudioSubSystem:handleIO: write failed
+len = 3760, can_write = 3762, errno=32 (Broken pipe)
+This mightbe a sound hardware/driver specific problem (see aRts FAQ)
+
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000509 Conexant Moden &quot;not ready&quot;
-related to          0000890 no dialtone with modem &amp; strange lo...
-======================================================================
 
 ----------------------------------------------------------------------
- metal - 04-05-05 21:29 
+ jbailo - 03-04-05 03:39 
 ----------------------------------------------------------------------
-The patch was reject, but I patched file manualy. This patch fix only
-errors in log, but not problem. When I try connect, I get NO DIALTONE
-error.
+I just cvs installed the 1.08 alsa system with the ca0106 driver which is
+now in the supported drivers list for my card, the Sound Blaster Live!
+24-bit.
+
+However, after modprobe, the same error as originally reported appears:
+
+Sound server fatal error:
+AudioSubSystem::handleIO: write failed
+len = 3760, can_write = 3762, errno = 32 (Broken pipe)
+This might be a sound hardware/driver specific problem (see aRts FAQ)
+
+I was originally using a OSS driver in the interim, however, I uninstalled
+it completely before installing the 1.08 Alsa system and ca0106 driver.
 
 ----------------------------------------------------------------------
- sashak - 04-14-05 11:55 
+ jcdutton - 04-14-05 12:47 
 ----------------------------------------------------------------------
-Try with ATX3 before ATDT.
-Also with recent intel8x0m (I guess >= 1.0.9_rc1) you need to hook-off
-line from mixer. I need to add this function to slmodemd, but not done
-yet.
+The latest alsa-driver CVS has some improvements. Please try it and report.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-29-05 16:43 mart           New Issue                                    
-01-29-05 16:43 mart           Distribution              => slackware 10    
-01-29-05 16:43 mart           Kernel Version            => 2.6.10          
-01-29-05 16:44 mart           Issue Monitored: mart                        
-02-03-05 21:55 mart           Note Added: 0003494                          
-02-03-05 23:21 sashak         Note Added: 0003495                          
-02-04-05 13:10 mart           Note Added: 0003501                          
-03-02-05 14:12 perex          Relationship added       related to 0000509  
-03-02-05 15:19 perex          Relationship added       related to 0000890  
-03-24-05 20:25 metal          Note Added: 0004200                          
-04-03-05 01:49 sashak         Note Added: 0004301                          
-04-05-05 21:29 metal          Note Added: 0004342                          
-04-14-05 11:55 sashak         Note Added: 0004486                          
+12-19-04 11:50 jbailo         New Issue                                    
+12-19-04 11:50 jbailo         File Added: boot.msg                         
+12-19-04 11:50 jbailo         Distribution              => Suse 9.1        
+12-19-04 11:50 jbailo         Kernel Version            => 2.6.5-7.11      
+12-19-04 11:51 jbailo         Issue Monitored: jbailo                      
+03-04-05 03:39 jbailo         Note Added: 0003796                          
+04-14-05 12:47 jcdutton       Note Added: 0004488                          
+04-14-05 12:47 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
