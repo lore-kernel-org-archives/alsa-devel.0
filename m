@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001053]: cannot change line-in volume on MSI K8N Platinum that has SBLive! 24 bit
-Date: Thu, 14 Apr 2005 21:42:32 +0200
-Message-ID: <e9223f8c0e49c6632b3add9dce688a5a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000862]: emu10k1 always has random clicks in wavetable MIDI synth playback but never in PCM playback
+Date: Thu, 14 Apr 2005 22:01:23 +0200
+Message-ID: <35a2ca29f7d5b1b7f769ae032de42030@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4CDD0146
-	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 21:42:32 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 89B5E1E1
+	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 22:01:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,145 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been ACKNOWLEDGED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1053> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=862> 
 ======================================================================
-Reported By:                Cimmo
-Assigned To:                jcdutton
+Reported By:                Will
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1053
-Category:                   PCI - ca0106
+Issue ID:                   862
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     acknowledged
-Distribution:               Fedora Core 4 test 2
-Kernel Version:             2.6.11-1.1236 FC4-x86_64 that contains 2.6.12rc2
+Distribution:               
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             04-14-2005 19:27 CEST
-Last Modified:              04-14-2005 21:42 CEST
+Date Submitted:             01-30-2005 15:24 CET
+Last Modified:              04-14-2005 22:01 CEST
 ======================================================================
-Summary:                    cannot change line-in volume on MSI K8N Platinum
-that has SBLive! 24 bit
+Summary:                    emu10k1 always has random clicks in wavetable MIDI
+synth playback but never in PCM playback
 Description: 
-I have a MSI K8N Platinum motherboard that has SBLive! 24 bit integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack in the pci version of the sb live 24
-bit (see image).
+An Audigy 2 LS 5.1 PCI soundcard with emu10k1 chipset (the PCI id is
+1102:0004 (rev 04)) always has random clicks in wavetable MIDI synth
+playback but never in PCM playback using any version of alsa-driver. I
+think this clicking is probably an emu10k1 driver bug.
 
-The result is that I cannot use line-in for my soundcard becuase the
-volume is 0 and I cannot change it.
+It makes no difference which driver or kernel is used; the problem exists
+with alsa-driver-CVS, alsa-driver-1.0.8, and all previous versions since
+before alsa-driver-0.9.7 and with all mainline kernel versions of Linux
+2.4.x and Linux 2.6.x including 2.6.10. 
 
-The "Capture feedback into playback" in the mixer change the mic's volume.
+It makes no difference which kernel is used (2.4.x or 2.6.x). I recently
+started using CONFIG_ACPI_* with CONFIG_PCI_[GO]BIOS in 2.6.10 but it
+makes no difference. I use the default PCI latencies.
+
+It makes no difference whether or not the emu10k1 IRQ is shared and the
+clicking is exactly the same regardless of which other device shares the
+IRQ, e.g. "IRQ 17: 78129 IO-APIC-level  libata, EMU10K1" or "IRQ 16: 9554 
+IO-APIC-level  eth0, EMU10K1".
+
+From: Lee Revell <rlrevell AT ...>
+Subject: Re: [Alsa-devel] [PATCH] emu10k1 multichannel support
+Date: Sat, 29 Jan 2005 16:28:47 -0500
+To: William <walsac3 AT ...>
+Message-Id: <1107034127.24676.55.camel@krustophenia.net>
+Content-Type: text/plain
+
+(sorry for the late reply)
+
+On Wed, 2005-01-19 at 19:16 +0000, William wrote:
+>
+> I'll mention the following in case you might be interested to look at
+it.
+> An issue that's been around since the very beginning of the emu10k1
+driver
+> is that playing a MIDI file on the wavetable often produces a
+> rapid but irregular sequence of very noticeable clicks at a
+> rate of 2 or 3 per second continuing for up to about 10 seconds.
+> The clicking starts happening once every minute or so but without any
+> clear pattern - it doesn't seem to be depend much on the contents of the
+MIDI
+> files.
+>
+> Interestingly I never hear any clicks when using the PCM and
+> a soft synth like fluidsynth or timidity as an alternative method
+> of MIDI playback, which is why I think it might be a bug (haven't
+checked
+> whether something similar has already been logged on the bugtracker).
+> I had a brief look into it, but didn't find anything conclusive in the
+code.
+> One possibly interesting feature was I notice that I could trigger lots
+of
+> clicks if I tried doing real-time variable attenuation of already
+playing
+> notes via update_voice(vp, SNDRV_EMUX_UPDATE_VOLUME) in
+emu10k1_callback.c
+
+I would actually be interested in looking at this.  I have noticed some
+areas in the code where things are commented out for odd reasons.
+Specifically the samples cache is not cleared like it is for PCM voices.
+If you have time please file an ALSA bug report (you can just copy and
+paste this message).
+
+> By the way, do you know the original purpose of
+snd_emu10k1_sum_vol_attn()
+> in emu10k1/io.c which has just been removed in alsa-driver-1.0.8?
+> The cumulative volume conversion algorithm in that function
+> seems like it would probably have been based on the original emu10k1
+chipset
+> documentation provided by Creative during its open-source era.
+> It seems like a useful function to keep around for future extensions of
+> the emu10k1 driver.  Maybe it should be re-instated.
+>
+> >From the 1.0.8 announcement:
+>
+>     - Summary: ALSA PCI drivers: misc cleanups
+>       The patch below does the following cleanups under sound/pci/ :
+>       - remove the following unused global functions:
+>         - emu10k1/io.c: snd_emu10k1_sum_vol_attn
+>
+
+Yes, I asked Takashi about this and he said it just does some simple
+calculation.  Check the alsa-devel archive.  But, maybe there's
+something to it.  It could be related to your clicking problem.
+
+I have heard something similar when using PCM at really low latencies.
+
+Lee
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 04-14-05 21:42 
+ jdthood - 04-13-05 22:01 
 ----------------------------------------------------------------------
-You are lucky to get any capture features at all.
-Count your blessings.
+Submitter: Do you have any new information about the problem?
 
+----------------------------------------------------------------------
+ rlrevell - 04-13-05 22:26 
+----------------------------------------------------------------------
+This is probably still an issue.  The wavetable synth has not changed in a
+long time.
+
+It does work for me though, I don't get the clicks or dropped notes that
+many people report.
+
+----------------------------------------------------------------------
+ Will - 04-14-05 15:20 
+----------------------------------------------------------------------
+No, no change!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-14-05 19:27 Cimmo          New Issue                                    
-04-14-05 19:27 Cimmo          File Added: MSIK8N.jpg                       
-04-14-05 19:27 Cimmo          Distribution              => Fedora Core 4 test 2
-04-14-05 19:27 Cimmo          Kernel Version            => 2.6.11-1.1236
-FC4-x86_64 that contains 2.6.12rc2
-04-14-05 21:42 jcdutton       Note Added: 0004495                          
-04-14-05 21:42 jcdutton       Status                   assigned => acknowledged
+01-30-05 15:24 Will           New Issue                                    
+01-30-05 15:24 Will           Kernel Version            => 2.6.10          
+04-13-05 22:01 jdthood        Note Added: 0004480                          
+04-13-05 22:26 rlrevell       Note Added: 0004484                          
+04-14-05 15:20 Will           Note Added: 0004493                          
+04-14-05 22:01 jdthood        Status                   new => acknowledged 
 ======================================================================
 
 
