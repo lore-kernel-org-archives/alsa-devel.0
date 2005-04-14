@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: au88x0_synth
-Date: Thu, 14 Apr 2005 23:31:17 +0800
-Message-ID: <425E8CC5.3030601@netvigator.com>
-References: <424A5D7D.2070400@netvigator.com> <Pine.HPX.4.33n.0503301007400.20197-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
+Date: Thu, 14 Apr 2005 17:34:39 +0200
+Message-ID: <7a7c45c976cf630d4884f5a1ce905d4e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0503301007400.20197-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5960221
+	for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2005 17:34:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,63 +18,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Raymond wrote:
->>1) Is the Trident Wavetable working ?
->
->
-> Very limited.  It's no proper "MIDI" wavetable implementation.
-> IIRC, only a module player worked with trident driver.
->
 
-# aplaymidi -l
-  Port    Client name                      Port name
-  64:0    MPU-401 MIDI 0-0                 MPU-401 MIDI 0-0
-  65:0    au8830 WaveTable                 au8830 Port 0
-  65:1    au8830 WaveTable                 au8830 Port 1
-  65:2    au8830 WaveTable                 au8830 Port 2
-  65:3    au8830 WaveTable                 au8830 Port 3
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
+======================================================================
+Reported By:                sHINOBI
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   907
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10-1.766_FC3
+======================================================================
+Date Submitted:             02-13-2005 11:36 CET
+Last Modified:              04-14-2005 17:34 CEST
+======================================================================
+Summary:                    The sound is choppy and sometimes played at wrong
+speed
+Description: 
+The soundcard is working, although the sound is choppy when playing sound
+at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
+======================================================================
 
-# ls /proc/asound/au8830
-codec97#0  midi0  midi2  midi4  pcm0p  pcm2p  wavetableD1
-id         midi1  midi3  pcm0c  pcm1p  pcm3p
+----------------------------------------------------------------------
+ Cimmo - 04-14-05 13:25 
+----------------------------------------------------------------------
+2 questions:
+
+1) Have you finally received some documentation from Creative?
+2) How to compile only CA0106 module?
+
+Thanx
+
+----------------------------------------------------------------------
+ Cimmo - 04-14-05 17:34 
+----------------------------------------------------------------------
+I'm sorry but cannot give feedback without help :(
+
+I've download alsa-driver 1.0.9rc2, downloaded all files from
+CVS/alsa-kernel/pci/ca0106 and overwritten files in the .09rc2
+
+so recompiled all package and just copied snd-ca0106.ko to my
+/lib/modules/2.6.11-1.1236_FC4/kernel/sound/pci/ca0106
+
+Rebooted an no more sound!
+
+Strange thing:
+old file is about 60 KB, new compiled file is over 500 KB.
 
 
-# more /proc/asound/au8830/wavetableD1
-Device: au8830
-Ports: 4
-Addresses: 65:0 65:1 65:2 65:3
-Use Counter: 0
-Max Voices: 64
-Allocated Voices: 0
-Memory Size: 16777216
-Memory Available: 16777216
-Allocated Blocks: 0
-SoundFonts: 0
-Instruments: 0
-Samples: 0
-Locked Instruments: 0
-Locked Samples: 0
+Where I have wrong?
 
-# more /proc/asound/hwdep
-00-02: au8830 WaveTable
-
-
-1) What value of memsize will need to pass into snd_util_memhdr_new(int
-memsize) if au30gm.arl is about 5 Mb ?
-
-2) Do au88x0 DMA (scatter-gather) has any alignment requirement or
-maximum size of the samples ?
-
-3) Is it correct to implement functions snd_soundfont_load_arlpatch(),
-load_arlpatch() in soundfont.c to load arl ?
-
-
-
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-13-05 11:36 sHINOBI        New Issue                                    
+02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
+02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
+02-13-05 11:38 sHINOBI        Note Added: 0003583                          
+03-02-05 13:22 Juha           Note Added: 0003770                          
+03-19-05 18:24 jcdutton       Note Added: 0004064                          
+03-22-05 22:14 tiwai          Note Added: 0004138                          
+03-22-05 22:56 sHINOBI        Note Added: 0004144                          
+03-23-05 12:56 tiwai          Note Added: 0004155                          
+03-23-05 19:40 sHINOBI        Note Added: 0004185                          
+03-27-05 01:13 sHINOBI        Note Added: 0004219                          
+03-27-05 16:08 Cimmo          Note Added: 0004222                          
+03-27-05 16:09 Cimmo          File Added: .asoundrc                        
+03-28-05 01:31 Alinoe         Issue Monitored: Alinoe                      
+03-28-05 14:09 Alinoe         Note Added: 0004240                          
+04-14-05 12:51 jcdutton       Note Added: 0004490                          
+04-14-05 12:51 jcdutton       Status                   assigned => feedback
+04-14-05 13:25 Cimmo          Note Added: 0004492                          
+04-14-05 17:34 Cimmo          Note Added: 0004494                          
+======================================================================
 
 
 
