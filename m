@@ -1,13 +1,12 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH]usx2y: prevent oops & dead keyboard on hot
- usb unplugging
-Date: Fri, 15 Apr 2005 18:25:15 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0504151822220.5917-100000@studcom.urz.uni-halle.de>
-References: <s5hmzs0ca43.wl@alsa2.suse.de>
+Subject: Re: GPL Violation in Aldi PC Medion MD95500
+Date: Fri, 15 Apr 2005 18:50:27 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0504151831520.8806-100000@studcom.urz.uni-halle.de>
+References: <Pine.LNX.4.58.0504101821320.12537@tigger.tange.dk>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hmzs0ca43.wl@alsa2.suse.de>
+In-Reply-To: <Pine.LNX.4.58.0504101821320.12537@tigger.tange.dk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,30 +16,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: karsten wiese <annabellesgarden@yahoo.de>, Devel Alsa <alsa-devel@lists.sourceforge.net>
+To: legal@lists.gpl-violations.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> karsten wiese wrote:
-> > (-: You apply my patch now?
->
-> No, not enough :)  This is exactly why snd_card_free_in_thread() was
-> introduced.
->
-> As I asked, please make sure that the files are all released before
-> snd_card_free().  Otherwise the disconnect callback hangs at this
-> point because of this check.
+Ole Tange wrote:
+> I just bought Aldi PC Medion MD95500. It comes with a neat system for
+> playing DVDs without starting Microsoft Windows. It boots a small Linux
+> system for this. The manual does not contain GPL. None of the unwrapped
+> CDs contain GPL.
+> ...
+> ./image-mnt/lib/modules/snd-seq-device.ko
+> ./image-mnt/lib/modules/snd-pcm.ko
+> ./image-mnt/lib/modules/snd.ko
+> ./image-mnt/lib/modules/snd-mixer-oss.ko
+> ./image-mnt/lib/modules/snd-timer.ko
+> ./image-mnt/lib/modules/snd-seq-midi-event.ko
+> ./image-mnt/lib/modules/snd-page-alloc.ko
+> ./image-mnt/lib/modules/snd-pcm-oss.ko
+> ./image-mnt/lib/modules/snd-seq-oss.ko
+> ./image-mnt/lib/modules/snd-seq.ko
 
-Most programs close the device file when an error occurs, so you have
-to test it with something like this to keep the file open:
+These are ALSA modules.  A few lines of code in these were written by
+me.  Most was written by Jaroslaw Kysela and Takashi Iwai (both are
+SUSE employees).
 
-#include <stdio.h>
-int main()
-{
-  fopen("/dev/snd/hwC1D0", "rb");
-  getchar();
-}
+
+Ole, could you please send me the snd.ko file so that I can determine
+which ALSA version this is?
 
 
 Regards,
