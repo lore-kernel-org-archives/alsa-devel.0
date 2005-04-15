@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001056]: Realtek ALC 880 on board sound chip not detected.
-Date: Fri, 15 Apr 2005 15:52:50 +0200
-Message-ID: <a31cdaf512f90edf6af5830f983d5c2e@bugtrack.alsa-project.org>
+Date: Fri, 15 Apr 2005 15:57:08 +0200
+Message-ID: <15771cb6f4f02c70e333d7515be5b90f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 838CE1E4
-	for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2005 15:52:51 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 293A91E4
+	for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2005 15:57:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             04-15-2005 15:51 CEST
-Last Modified:              04-15-2005 15:52 CEST
+Last Modified:              04-15-2005 15:57 CEST
 ======================================================================
 Summary:                    Realtek ALC 880 on board sound chip not detected.
 Description: 
@@ -86,11 +86,17 @@ video_buf              25413  4 cx8800,cx88_blackbird,cx8802,cx88xx
 btcx_risc               8905  3 cx8800,cx8802,cx88xx
 videodev               13633  3 cx8800,cx88_blackbird,cx88xx
 
+----------------------------------------------------------------------
+ pzad - 04-15-05 15:57 
+----------------------------------------------------------------------
+Use alsa 1.0.9rc2.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-15-05 15:51 David Kinzer   New Issue                                    
 04-15-05 15:52 David Kinzer   Note Added: 0004501                          
+04-15-05 15:57 pzad           Note Added: 0004502                          
 ======================================================================
 
 
