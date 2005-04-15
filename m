@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001049]: No sound at all
-Date: Fri, 15 Apr 2005 12:08:30 +0200
-Message-ID: <cb856cf7cfa58cbea0a7ab901f1349a4@bugtrack.alsa-project.org>
+Date: Fri, 15 Apr 2005 12:38:30 +0200
+Message-ID: <1fc232026e7649920ba56d9749082fc4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 44E9725D
-	for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2005 12:08:30 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3402F25D
+	for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2005 12:38:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -42,7 +42,7 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Thu Feb 24 14:00:06 EST
 2005 i686 i686 i386 GNU/Linux
 ======================================================================
 Date Submitted:             04-13-2005 11:25 CEST
-Last Modified:              04-15-2005 12:08 CEST
+Last Modified:              04-15-2005 12:38 CEST
 ======================================================================
 Summary:                    No sound at all
 Description: 
@@ -61,17 +61,6 @@ Enable-
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 04-13-05 17:19 
-----------------------------------------------------------------------
-First, remove non-standard definition in ~/.asoundrc until the culprit is
-found.
-
-The problem is likely the misconfiguration of assignment of pin nodes.
-Try to pass module option "model=5stack" to snd-hda-intel.  And check
-whether you get outputs from other jacks (surround and center/lfe).
-Check even input jacks whether any sound comes out.
 
 ----------------------------------------------------------------------
  DF5JT - 04-15-05 12:08 
@@ -122,6 +111,12 @@ So somehow the "wiring" seems to be incorrect.
 
 Arrgh.
 
+----------------------------------------------------------------------
+ stransky - 04-15-05 12:38 
+----------------------------------------------------------------------
+The bug is maybee in alsa-lib-stack.patch included to alsa-utils-1.0.6, in
+FC3. Could you please try remove this patch from src.rpm and test it?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -135,6 +130,7 @@ https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Thu Feb 24 14:00:06 EST
 04-13-05 16:52 DF5JT          Note Added: 0004470                          
 04-13-05 17:19 tiwai          Note Added: 0004473                          
 04-15-05 12:08 DF5JT          Note Added: 0004497                          
+04-15-05 12:38 stransky       Note Added: 0004498                          
 ======================================================================
 
 
