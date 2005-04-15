@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001049]: No sound at all
-Date: Fri, 15 Apr 2005 14:09:21 +0200
-Message-ID: <833852fe1798dda95e19ddd157319d2b@bugtrack.alsa-project.org>
+From: Josh Green <josh@resonance.org>
+Subject: Re: Intel Azalia problems (some progress)
+Date: Fri, 15 Apr 2005 05:12:59 -0700
+Message-ID: <1113567180.7140.17.camel@SillyPuddy.localdomain>
+References: <1113394027.16526.3.camel@SillyPuddy.localdomain>
+	 <s5hll7mg30n.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4BB1421D
-	for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2005 14:09:21 +0200 (MEST)
+In-Reply-To: <s5hll7mg30n.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +18,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I finally got headphone output with my Azalia sound interface.  I ended
+up trying all the models listed in the patch_realtek.c file until
+finally "model=w810" worked and I now get headphone output.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1049> 
-======================================================================
-Reported By:                DF5JT
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1049
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.770_FC3
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Thu Feb 24 14:00:06 EST
-2005 i686 i686 i386 GNU/Linux
-======================================================================
-Date Submitted:             04-13-2005 11:25 CEST
-Last Modified:              04-15-2005 14:09 CEST
-======================================================================
-Summary:                    No sound at all
-Description: 
-00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 04)
-        Subsystem: Rioworks: Unknown device 203d
-        Flags: bus master, fast devsel, latency 0, IRQ 10
-        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+Useful info from lspci:
+
+lspci
+0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 04)
+
+lspci -n
+0000:00:1b.0 Class 0403: 8086:2668 (rev 04)
 
 
+I imagine this probably isn't exactly the right model.  The "Surround"
+control affects the headphone volume but not the "Front" output (it
+seems there is no volume level for the "Headphone" control for the w810
+model).  The "Front" volume works as expected (internal speakers).  I
+have not tested it any more than that.
 
-======================================================================
+Still clicking in output, seemingly even with 48KHz audio, still
+investigating.  Also many programs lock up at the end of the audio
+output (like Rhythmbox when a song is finished for instance).
 
-----------------------------------------------------------------------
- stransky - 04-15-05 12:38 
-----------------------------------------------------------------------
-The bug is maybee in alsa-lib-stack.patch included to alsa-utils-1.0.6, in
-FC3. Could you please try remove this patch from src.rpm and test it?
-
-----------------------------------------------------------------------
- DF5JT - 04-15-05 14:09 
-----------------------------------------------------------------------
-Hello Martin,
-
-I changed the SPEC file to exclude the patch and rebuilt the package.
-Alas, no change after installation and restart of the soundsystem.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-13-05 11:25 DF5JT          New Issue                                    
-04-13-05 11:25 DF5JT          Distribution              => Fedora Core 3   
-04-13-05 11:25 DF5JT          Kernel Version            => 2.6.10-1.770_FC3
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Thu Feb 24 14:00:06 EST
-2005 i686 i686 i386 GNU/Linux
-04-13-05 11:25 DF5JT          Issue Monitored: DF5JT                       
-04-13-05 16:34 tiwai          Note Added: 0004469                          
-04-13-05 16:52 DF5JT          Note Added: 0004470                          
-04-13-05 17:19 tiwai          Note Added: 0004473                          
-04-15-05 12:08 DF5JT          Note Added: 0004497                          
-04-15-05 12:38 stransky       Note Added: 0004498                          
-04-15-05 14:09 DF5JT          Note Added: 0004499                          
-======================================================================
+I'd like to look into getting proper support for this configuration, any
+tips on what kind of info to try and obtain?  Cheers!
+	Josh Green
 
 
 
