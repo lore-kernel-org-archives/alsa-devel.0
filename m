@@ -1,16 +1,14 @@
-From: Josh Green <josh@resonance.org>
-Subject: Re: Intel Azalia problems (some progress)
-Date: Fri, 15 Apr 2005 12:49:53 -0700
-Message-ID: <1113594593.28862.18.camel@SillyPuddy.localdomain>
-References: <1113394027.16526.3.camel@SillyPuddy.localdomain>
-	 <s5hll7mg30n.wl@alsa2.suse.de>
-	 <1113567180.7140.17.camel@SillyPuddy.localdomain>
-	 <s5h4qe8dxfj.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001054]: Alsa Segmentation Fault
+Date: Fri, 15 Apr 2005 22:55:38 +0200
+Message-ID: <8e0336d11ef8d57a49c6ffc02de430cd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4qe8dxfj.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B987B219
+	for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2005 22:55:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,55 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-04-15 at 14:41 +0200, Takashi Iwai wrote:
-> > 
-> > I imagine this probably isn't exactly the right model.  The "Surround"
-> > control affects the headphone volume but not the "Front" output (it
-> > seems there is no volume level for the "Headphone" control for the w810
-> > model).  The "Front" volume works as expected (internal speakers).  I
-> > have not tested it any more than that.
-> 
-> That means the pin 0x16 is connected to the headphoone output.
-> Note that ALC880 has no overall playback controls for all channels.
-> The volume of each stereo channels is controlled independently.
-> (That's why there is no "Master" control there.)
-> 
-> Does the device have surround and center-lfe outputs?  Are they shared
-> with line-in and mic-in?
-> Also, does "Front" volume affect the internal speaker volume?
-> 
 
-It basically has two jacks, one labeled S/PDIF which is S/PDIF and
-headphone out combined, and the other seems to be mic input.  There is
-also a built in mic at the top of the LCD screen.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1054> 
+======================================================================
+Reported By:                bultom
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1054
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo linux
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             04-15-2005 02:39 CEST
+Last Modified:              04-15-2005 22:55 CEST
+======================================================================
+Summary:                    Alsa Segmentation Fault
+Description: 
+Alsa driver make all my application who use it crashing ( compiled built in
+my kernel )
+======================================================================
 
-I just figured out that this notebook is based on the Z71V ASUS platform
-which should help a lot.  Yes, "Front" volume works as expected and
-controls internal speaker volume.
+----------------------------------------------------------------------
+ bultom - 04-15-05 22:55 
+----------------------------------------------------------------------
+I've found the bug solution , i've just to re compile all apps who use alsa
+cause they have been compiled with alsa 1.0.6 and now i'm in 1.0.8
 
-> 
-> > Still clicking in output, seemingly even with 48KHz audio, still
-> > investigating.  Also many programs lock up at the end of the audio
-> > output (like Rhythmbox when a song is finished for instance).
-> 
-> This is an unknown problem, so far.
-> We got a similar problem but it was solved by setting TCREG bits 0-2.
-> Possibly a similar mis-configuration by broken BIOS.
-> 
-
-Anything I can try?  I'll poke around in the source for the register you
-mentioned.
-
-> 
-> Takashi
-> 
-
-Cheers!
-	Josh Green
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-15-05 02:39 bultom         New Issue                                    
+04-15-05 02:39 bultom         Distribution              => Gentoo linux    
+04-15-05 02:39 bultom         Kernel Version            => 2.6.11          
+04-15-05 02:41 bultom         Issue Monitored: bultom                      
+04-15-05 22:55 bultom         Note Added: 0004503                          
+======================================================================
 
 
 
