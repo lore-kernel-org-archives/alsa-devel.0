@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001056]: Realtek ALC 880 on board sound chip not detected.
-Date: Fri, 15 Apr 2005 15:57:08 +0200
-Message-ID: <15771cb6f4f02c70e333d7515be5b90f@bugtrack.alsa-project.org>
+From: karsten wiese <annabellesgarden@yahoo.de>
+Subject: Re: [PATCH]usx2y: prevent oops & dead keyboard on hot usb unplugging
+Date: Fri, 15 Apr 2005 15:59:25 +0200 (CEST)
+Message-ID: <20050415135925.86800.qmail@web26502.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 293A91E4
-	for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2005 15:57:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,92 +15,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Devel Alsa <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1056> 
-======================================================================
-Reported By:                David Kinzer
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1056
-Category:                   alisp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             04-15-2005 15:51 CEST
-Last Modified:              04-15-2005 15:57 CEST
-======================================================================
-Summary:                    Realtek ALC 880 on board sound chip not detected.
-Description: 
-Description of problem:
-New HP m7060n Media Center PC. (Private ASUS motherboard with integrated
-sound.)
-Install FC3 core (workstation config) from scratch.
-Sound chip is not detected.
-Core is "up2date"
+--- Lee Revell <rlrevell@joe-job.com> wrote:
+> On Thu, 2005-04-14 at 20:59 +0200, karsten wiese wrote:
+> > Hi Clemens & Takashi
+> >=20
+> > Please commit the patch.
+>=20
+> Is the ALSA in kernel 2.6.11 affected?  If so, this
 
->From Specs sheet:
-      Integrated Intel High Definition (TM) audio (Azalia) 
+Think so, yes. The keyboard dead effect + described oops
+has been around for quiet a long time.
+(There is a lkml mail from yesterday about an usb-cellphone
+setup,
+where the same oops + dead keyboard happens also:
+http://marc.theaimsgroup.com/?i=3D<20050414230621.49663f75.vsu%20()%20alt=
+linux%20!%20ru>
+)
+There is also an alsa-bug with snd-usb-audio in the
+bugbase.
+Clemens seams not to be convinced about this aproach yet.
+maybe 'cause the comment of snd_card_free_in_thread
+explicitly states that its the one to be called for
+hotplug:
+/**
+ *  snd_card_free_in_thread - call snd_card_free() in
+thread
+ *  @card: soundcard structure
+ *
+ *  This function schedules the call of snd_card_free()
+function in a
+ *  work queue.  When all devices are released (non-busy),
+the work
+ *  is woken up and calls snd_card_free().
+ *
+ *  When a card can be disconnected at any time by hotplug
+service,
+ *  this function should be used in disconnect (or detach)
+callback
+ *  instead of calling snd_card_free() directly.
+ * =20
+ *  Returns - zero otherwise a negative error code if the
+start of thread failed.
+ */
 
-          o Realtek ALC 880 chipset
-          o THX certification support
-          o 8-channels for Full Dolby 5.1/6.1/7.1 surround sound support
-with Dolby Pro Logic IIx
-          o Dolby 5.1
+Also I remember , that snd_card_free didn't work ok when i
+used it in the first implementations of usx2y-module some 2
+years ago.
+but that was on kernel 2.4.something.......
+maybe above comment is from kernel 2.4 also and the hotplug
+system has changed ? anybody?
 
-
-
-======================================================================
-
-----------------------------------------------------------------------
- David Kinzer - 04-15-05 15:52 
-----------------------------------------------------------------------
-I could not find anything similar enough using search facilities, this
-seems to be the stuff that experts ask for:
-lspci -v excerpt:
-02:04.2 Multimedia controller: Conexant: Unknown device 8802 (rev 05)
-        Subsystem: ASUSTeK Computer Inc.: Unknown device 4823
-        Flags: bus master, medium devsel, latency 64, IRQ 169
-        Memory at ce000000 (32-bit, non-prefetchable) [size=16M]
-        Capabilities: [4c] Power Management version 2
-
-lsmod excerpt:
-cx8800                 34765  0
-v4l1_compat            17605  1 cx8800
-v4l2_common             9793  1 cx8800
-cx88_blackbird         18501  0
-cx8802                 14277  1 cx88_blackbird
-cx88xx                 51797  3 cx8800,cx88_blackbird,cx8802
-i2c_algo_bit           13001  1 cx88xx
-video_buf              25413  4 cx8800,cx88_blackbird,cx8802,cx88xx
-btcx_risc               8905  3 cx8800,cx8802,cx88xx
-videodev               13633  3 cx8800,cx88_blackbird,cx88xx
-
-----------------------------------------------------------------------
- pzad - 04-15-05 15:57 
-----------------------------------------------------------------------
-Use alsa 1.0.9rc2.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-15-05 15:51 David Kinzer   New Issue                                    
-04-15-05 15:52 David Kinzer   Note Added: 0004501                          
-04-15-05 15:57 pzad           Note Added: 0004502                          
-======================================================================
+rgds,
+Karsten=20
 
 
+=09
+
+=09
+	=09
+___________________________________________________________=20
+Gesendet von Yahoo! Mail - Jetzt mit 250MB Speicher kostenlos - Hier anme=
+lden: http://mail.yahoo.de
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
