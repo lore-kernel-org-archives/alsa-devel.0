@@ -1,12 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: GPL Violation in Aldi PC Medion MD95500
-Date: Fri, 15 Apr 2005 18:50:27 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0504151831520.8806-100000@studcom.urz.uni-halle.de>
-References: <Pine.LNX.4.58.0504101821320.12537@tigger.tange.dk>
+From: "IDOIT .IEF" <idoit.ief@gmail.com>
+Subject: auto capture feature according to sound amplitude?
+Date: Fri, 15 Apr 2005 19:59:56 +0300
+Message-ID: <d8c9df6c050415095914e35449@mail.gmail.com>
+Reply-To: "IDOIT .IEF" <idoit.ief@gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0504101821320.12537@tigger.tange.dk>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,39 +17,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: legal@lists.gpl-violations.org
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Ole Tange wrote:
-> I just bought Aldi PC Medion MD95500. It comes with a neat system for
-> playing DVDs without starting Microsoft Windows. It boots a small Linux
-> system for this. The manual does not contain GPL. None of the unwrapped
-> CDs contain GPL.
-> ...
-> ./image-mnt/lib/modules/snd-seq-device.ko
-> ./image-mnt/lib/modules/snd-pcm.ko
-> ./image-mnt/lib/modules/snd.ko
-> ./image-mnt/lib/modules/snd-mixer-oss.ko
-> ./image-mnt/lib/modules/snd-timer.ko
-> ./image-mnt/lib/modules/snd-seq-midi-event.ko
-> ./image-mnt/lib/modules/snd-page-alloc.ko
-> ./image-mnt/lib/modules/snd-pcm-oss.ko
-> ./image-mnt/lib/modules/snd-seq-oss.ko
-> ./image-mnt/lib/modules/snd-seq.ko
-
-These are ALSA modules.  A few lines of code in these were written by
-me.  Most was written by Jaroslaw Kysela and Takashi Iwai (both are
-SUSE employees).
-
-
-Ole, could you please send me the snd.ko file so that I can determine
-which ALSA version this is?
-
-
-Regards,
-Clemens
-
+Hi All
+I'm working on a small voice recognition project and i want a library
+or some APIs automates capturing process so it'll start capturing only
+if there is a voice and it'll stay waiting unless
+I'm new to Alsa .. or you can say i'm new to audio programming .. i
+don't know if ALSA has such a feature .. or any other library
+i thought about implementing this feature by my self .. but i don't
+think i have time to do it
+Thanks in Advance
+IDOIT
 
 
 -------------------------------------------------------
