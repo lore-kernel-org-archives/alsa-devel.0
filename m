@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: ALSA Oops (triggered by xmms)
-Date: Thu, 14 Apr 2005 19:35:19 -0400
-Message-ID: <1113521720.19830.35.camel@mindpipe>
-References: <425EFB32.2010000@g-house.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001054]: Alsa Segmentation Fault
+Date: Fri, 15 Apr 2005 02:39:28 +0200
+Message-ID: <f356591f2f12dfdc254b3967afd24ab2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <425EFB32.2010000@g-house.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 78C4D268
+	for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2005 02:39:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,17 +18,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Christian Kujau <evil@g-house.de>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-04-15 at 01:22 +0200, Christian Kujau wrote:
-> maybe some guru can shed some light on what's going on in xmms-oops.txt
-> and tell me who's to bug here :->
 
-Fixed in 2.6.11.7.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1054> 
+======================================================================
+Reported By:                bultom
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1054
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo linux
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             04-15-2005 02:39 CEST
+Last Modified:              04-15-2005 02:39 CEST
+======================================================================
+Summary:                    Alsa Segmentation Fault
+Description: 
+Alsa driver make all my application who use it crashing ( compiled built in
+my kernel )
+======================================================================
 
-Lee
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-15-05 02:39 bultom         New Issue                                    
+04-15-05 02:39 bultom         Distribution              => Gentoo linux    
+04-15-05 02:39 bultom         Kernel Version            => 2.6.11          
+======================================================================
+
 
 
 
