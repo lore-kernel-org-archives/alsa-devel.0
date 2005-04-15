@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001054]: Alsa Segmentation Fault
-Date: Fri, 15 Apr 2005 02:39:28 +0200
-Message-ID: <f356591f2f12dfdc254b3967afd24ab2@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001055]: noise occurs when implementing 24bit recording
+Date: Fri, 15 Apr 2005 05:54:02 +0200
+Message-ID: <078e65ae9d36a4fcc68496388a6109ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 78C4D268
-	for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2005 02:39:28 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 54EA21F2
+	for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2005 05:54:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,36 +24,31 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1054> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1055> 
 ======================================================================
-Reported By:                bultom
+Reported By:                hostaudio1
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1054
-Category:                   PCI - emu10k1
+Project:                    ALSA - utils
+Issue ID:                   1055
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo linux
-Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             04-15-2005 02:39 CEST
-Last Modified:              04-15-2005 02:39 CEST
+Date Submitted:             04-15-2005 05:54 CEST
+Last Modified:              04-15-2005 05:54 CEST
 ======================================================================
-Summary:                    Alsa Segmentation Fault
+Summary:                    noise occurs when implementing 24bit recording
 Description: 
-Alsa driver make all my application who use it crashing ( compiled built in
-my kernel )
+arecord -c 2 -f S24_LE -r 96000 w1.wav
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-15-05 02:39 bultom         New Issue                                    
-04-15-05 02:39 bultom         Distribution              => Gentoo linux    
-04-15-05 02:39 bultom         Kernel Version            => 2.6.11          
+04-15-05 05:54 hostaudio1     New Issue                                    
 ======================================================================
 
 
