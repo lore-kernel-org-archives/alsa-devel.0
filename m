@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - WWW server 0001041]: link to "ALSA wiki" is broken
-Date: Sat, 16 Apr 2005 11:53:47 +0200
-Message-ID: <8034e45107ee069cd2c00463d09ec9fe@bugtrack.alsa-project.org>
+Date: Sat, 16 Apr 2005 12:33:06 +0200
+Message-ID: <2e9d9ed136246cc8619abe0a9bdefc6e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 95E3C239
-	for <alsa-devel@alsa-project.org>; Sat, 16 Apr 2005 11:53:51 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AF95020F
+	for <alsa-devel@alsa-project.org>; Sat, 16 Apr 2005 12:33:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             04-09-2005 15:31 CEST
-Last Modified:              04-16-2005 11:53 CEST
+Last Modified:              04-16-2005 12:33 CEST
 ======================================================================
 Summary:                    link to "ALSA wiki" is broken
 Description: 
@@ -48,20 +48,16 @@ a dead end (404 Not Found).
 ======================================================================
 
 ----------------------------------------------------------------------
- Stephan Wurm - 04-16-05 11:39 
-----------------------------------------------------------------------
-I've recognized, that the link "ALSA Dev Wiki" on the top-menu is broken,
-too.
-It points to nonexistent http://wiki.alsa-project.org/wiki
-
-If the Wiki's aren't ready to browse, why don't you simply link to a dummy
-page, that points out that reason?
-
-----------------------------------------------------------------------
  jcdutton - 04-16-05 11:53 
 ----------------------------------------------------------------------
 Works fine here. It gets redirected to
 https://bugtrack.alsa-project.org/wiki/wikka.php?wakka=AlsaWiki
+
+----------------------------------------------------------------------
+ Stephan Wurm - 04-16-05 12:33 
+----------------------------------------------------------------------
+Strange, I've tried Mozilla Firefox and Lynx to get the described result.
+Maybe it's a DNS-Problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -69,6 +65,7 @@ Date Modified  Username       Field                    Change
 04-09-05 15:31 Stephan Wurm   New Issue                                    
 04-16-05 11:39 Stephan Wurm   Note Added: 0004506                          
 04-16-05 11:53 jcdutton       Note Added: 0004507                          
+04-16-05 12:33 Stephan Wurm   Note Added: 0004508                          
 ======================================================================
 
 
