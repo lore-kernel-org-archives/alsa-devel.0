@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001041]: link to "ALSA wiki" is broken
-Date: Sat, 16 Apr 2005 12:33:06 +0200
-Message-ID: <2e9d9ed136246cc8619abe0a9bdefc6e@bugtrack.alsa-project.org>
+From: fab <fab@gnux.info>
+Subject: Intel HDA == No sound
+Date: Sat, 16 Apr 2005 15:34:30 +0200
+Message-ID: <20050416133430.GA14581@blackmilk.localzone.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AF95020F
-	for <alsa-devel@alsa-project.org>; Sat, 16 Apr 2005 12:33:06 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,57 +15,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+I have a new Medion laptop and the card is intel hda, I got the last
+alsa version (devel, 1.0.9rc2) and the module loads OK.
+I can get the mixer so it seems to be OK.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1041> 
-======================================================================
-Reported By:                Stephan Wurm
-Assigned To:                
-======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1041
-Category:                   bad link
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             04-09-2005 15:31 CEST
-Last Modified:              04-16-2005 12:33 CEST
-======================================================================
-Summary:                    link to "ALSA wiki" is broken
-Description: 
-On your main page, the link to "ALSA wiki"
-(http://www.alsa-project.org/local-alsa/index.php/) on left menu leads to
-a dead end (404 Not Found).
-======================================================================
+I don't know if it's revealent but when the module loads I get :
+ALSA
+/home/fab/drv/sound/alsa/alsa-driver-1.0.9rc2/alsa-kernel/pci/hda/hda_codec
+.c:512: hda_codec: no AFG node found
 
-----------------------------------------------------------------------
- jcdutton - 04-16-05 11:53 
-----------------------------------------------------------------------
-Works fine here. It gets redirected to
-https://bugtrack.alsa-project.org/wiki/wikka.php?wakka=AlsaWiki
+If I want to play sound I have no output at all, even console beep :(
+I put all my outputs at 100% so it's not levels.
+I discovered that if I plug something in the output jack It plays !
+But the internal speaker isn't active...
 
-----------------------------------------------------------------------
- Stephan Wurm - 04-16-05 12:33 
-----------------------------------------------------------------------
-Strange, I've tried Mozilla Firefox and Lynx to get the described result.
-Maybe it's a DNS-Problem?
+alsaplayer don't makes any warnings but when I play with mplayer I get:
+alsa-space: xrun of at least 0,002 msecs. resetting stream                                                                                           
+alsa-space: xrun of at least 0,001 msecs. resetting stream                                                                                           
+alsa-space: xrun of at least 0,001 msecs. resetting stream                                                                                           
+alsa-space: xrun of at least 0,001 msecs. resetting stream                                                                                           
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-09-05 15:31 Stephan Wurm   New Issue                                    
-04-16-05 11:39 Stephan Wurm   Note Added: 0004506                          
-04-16-05 11:53 jcdutton       Note Added: 0004507                          
-04-16-05 12:33 Stephan Wurm   Note Added: 0004508                          
-======================================================================
+And the sound is chunky.
+If I put -ao oss I don't get this warning and the sound plays well.
 
+I don't know if there is an issue to this 2 problems.
 
+Best regards.
+Fabien Devaux.
+
+PS: I've not subscribed to the list.
 
 
 -------------------------------------------------------
