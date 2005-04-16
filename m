@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001056]: Realtek ALC 880 on board sound chip not detected.
-Date: Sat, 16 Apr 2005 08:58:20 +0200
-Message-ID: <0afa613f15858c09be8e87b4e0e8fb98@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0001041]: link to "ALSA wiki" is broken
+Date: Sat, 16 Apr 2005 11:39:20 +0200
+Message-ID: <5487dc07401fc52d6c756dec5f9e59dd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 43261234
-	for <alsa-devel@alsa-project.org>; Sat, 16 Apr 2005 08:58:20 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E2147239
+	for <alsa-devel@alsa-project.org>; Sat, 16 Apr 2005 11:39:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,44 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1056> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1041> 
 ======================================================================
-Reported By:                David Kinzer
+Reported By:                Stephan Wurm
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1056
-Category:                   alisp
+Project:                    ALSA - WWW server
+Issue ID:                   1041
+Category:                   bad link
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             04-15-2005 15:51 CEST
-Last Modified:              04-16-2005 08:58 CEST
+Date Submitted:             04-09-2005 15:31 CEST
+Last Modified:              04-16-2005 11:39 CEST
 ======================================================================
-Summary:                    Realtek ALC 880 on board sound chip not detected.
+Summary:                    link to "ALSA wiki" is broken
 Description: 
-Description of problem:
-New HP m7060n Media Center PC. (Private ASUS motherboard with integrated
-sound.)
-Install FC3 core (workstation config) from scratch.
-Sound chip is not detected.
-Core is "up2date"
-
->From Specs sheet:
-      Integrated Intel High Definition (TM) audio (Azalia) 
-
-          o Realtek ALC 880 chipset
-          o THX certification support
-          o 8-channels for Full Dolby 5.1/6.1/7.1 surround sound support
-with Dolby Pro Logic IIx
-          o Dolby 5.1
-
-
-
+On your main page, the link to "ALSA wiki"
+(http://www.alsa-project.org/local-alsa/index.php/) on left menu leads to
+a dead end (404 Not Found).
 ======================================================================
 
 ----------------------------------------------------------------------
- David Kinzer - 04-16-05 04:41 
+ Stephan Wurm - 04-16-05 11:39 
 ----------------------------------------------------------------------
-Downloaded  alsa 1.0.9rc2 & uncompress.
-./configure --libdir=/lib
-su
-make install
-#no errors
-#dates on /lib/libasound* files updated indicating successful install
+I've recognized, that the link "ALSA Dev Wiki" on the top-menu is broken,
+too.
+It points to nonexistent http://wiki.alsa-project.org/wiki
 
-/usr/sbin/system-config-soundcard  => "No Soundcards were detected."
-reboot
-/usr/sbin/system-config-soundcare  => "No Soundcards were detected."
-
-Linux newbie, I might need more handholding....
-
-----------------------------------------------------------------------
- pzad - 04-16-05 08:58 
-----------------------------------------------------------------------
-You need alsa driver 1.0.9rc2. (look in file /proc/asound/version)
-In default fedora kernel is alsa 1.0.6 (this doesn't suppport azalia)
-
-On fedora is compilation of alsa-driver simple. Just download alsa-driver,
-run configure, make, make instal and restart alsa (/etc/init.d/alsasound
-restart) or restart computer.
+If the Wiki's aren't ready to browse, why don't you simply link to a dummy
+page, that points out that reason?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-15-05 15:51 David Kinzer   New Issue                                    
-04-15-05 15:52 David Kinzer   Note Added: 0004501                          
-04-15-05 15:57 pzad           Note Added: 0004502                          
-04-16-05 04:41 David Kinzer   Note Added: 0004504                          
-04-16-05 08:58 pzad           Note Added: 0004505                          
+04-09-05 15:31 Stephan Wurm   New Issue                                    
+04-16-05 11:39 Stephan Wurm   Note Added: 0004506                          
 ======================================================================
 
 
