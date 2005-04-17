@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000546]: 5.1 surround sound output on NForce2 is broken through native output
-Date: Sun, 17 Apr 2005 22:27:06 +0200
-Message-ID: <ec953de81ef29fda1c0783b3be9ed120@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001056]: Realtek ALC 880 on board sound chip not detected.
+Date: Sun, 17 Apr 2005 22:55:30 +0200
+Message-ID: <113259c3335fe7b76bb7bf0cd23f424e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4318B223
-	for <alsa-devel@alsa-project.org>; Sun, 17 Apr 2005 22:27:06 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 36DA3226
+	for <alsa-devel@alsa-project.org>; Sun, 17 Apr 2005 22:55:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,90 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=546> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1056> 
 ======================================================================
-Reported By:                AdamW
+Reported By:                David Kinzer
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   546
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1056
+Category:                   alisp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Mandrakelinux Cooker
-Kernel Version:             2.6.8.1 (10mdk revision)
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             09-26-2004 20:23 CEST
-Last Modified:              04-17-2005 22:27 CEST
+Date Submitted:             04-15-2005 15:51 CEST
+Last Modified:              04-17-2005 22:55 CEST
 ======================================================================
-Summary:                    5.1 surround sound output on NForce2 is broken
-through native output
+Summary:                    Realtek ALC 880 on board sound chip not detected.
 Description: 
-Despite much fiddling with levels, it seems to be impossible to get 5.1
-sound to play correctly through NForce2's onboard sound with native ALSA
-output and the snd-intel8x0 driver. I have a test file which plays a sound
-through each speaker of a 5.1 setup in turn and using native ALSA output
-through mplayer -channels 6, totem, aplay or any other app mangles it;
-depending on the mixer setting I can get some of the sounds through some
-of the speakers but never all the sounds and never anywhere near the right
-speakers. However, if I use OSS output instead of native ALSA output, it
-works perfectly; the speaker identification file plays exactly correct and
-my 5.1 movies sound great. Having it working through native output would
-obviously be better, though.
+Description of problem:
+New HP m7060n Media Center PC. (Private ASUS motherboard with integrated
+sound.)
+Install FC3 core (workstation config) from scratch.
+Sound chip is not detected.
+Core is "up2date"
+
+>From Specs sheet:
+      Integrated Intel High Definition (TM) audio (Azalia) 
+
+          o Realtek ALC 880 chipset
+          o THX certification support
+          o 8-channels for Full Dolby 5.1/6.1/7.1 surround sound support
+with Dolby Pro Logic IIx
+          o Dolby 5.1
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- AdamW - 04-17-05 22:19 
+ David Kinzer - 04-17-05 01:03 
 ----------------------------------------------------------------------
-Yes, it's pretty much fixed, I can now get proper 5.1 output via native
-ALSA output or OSS emulation. Oddly enough I need _different_ mixer
-settings for each method, but that's not too much of a hassle. I can
-provide the two asound.state files if anyone's interested, but this is
-basically fixed.
+Ah, I had installed libs instead of the driver.  Thanks.  Things are
+getting better now, speaker-test works, though no other applications make
+sounds.  Alsamixer is unmuted and properly controls the sound levels
+during the speaker-test.  
+
+Seems like this is no longer an alsa issue, thanks very much for your
+help.  Any additional hints on getting sound from other applications (like
+cd player, or games, or gnome volume slider, etc.) would be appreciated.
+
+/usr/sbin/system-config-soundcard still reports "No Soundcards were
+detected."
 
 ----------------------------------------------------------------------
- jdthood - 04-17-05 22:27 
+ David Kinzer - 04-17-05 22:55 
 ----------------------------------------------------------------------
-Thanks for the update.
+By fiddling with enough things that I read about on the web I have managed
+to get everything working at this point.  
+
+Thanks again for your assistance.
+
+Notes for future readers:
+
+Desktop & game noises started working after running the test in
+Preferences->More Preferences->Multimedia System Selector.  I don't know
+why.
+
+This computer does not ship with an analog audio connection to the CD
+drive, the Gnome CD player requires this.  I loaded XMMS and XMMS-cdread
+to get a CD player working.  Use cd-rom drive (/dev/cdrom1) instead of
+burner drive which would skip regularily as it spun up and down in speed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-04 20:23 AdamW          New Issue                                    
-09-26-04 20:23 AdamW          Distribution              => Mandrakelinux Cooker
-09-26-04 20:23 AdamW          Kernel Version            => 2.6.8.1 (10mdk
-revision)
-09-28-04 16:01 djtm           Note Added: 0001946                          
-09-29-04 17:37 AdamW          Note Added: 0001972                          
-04-09-05 14:39 jdthood        Note Added: 0004402                          
-04-17-05 22:19 AdamW          Note Added: 0004512                          
-04-17-05 22:27 jdthood        Note Added: 0004513                          
-04-17-05 22:27 jdthood        Status                   new => resolved     
-04-17-05 22:27 jdthood        Resolution               open => fixed       
+04-15-05 15:51 David Kinzer   New Issue                                    
+04-15-05 15:52 David Kinzer   Note Added: 0004501                          
+04-15-05 15:57 pzad           Note Added: 0004502                          
+04-16-05 04:41 David Kinzer   Note Added: 0004504                          
+04-16-05 08:58 pzad           Note Added: 0004505                          
+04-17-05 01:03 David Kinzer   Note Added: 0004509                          
+04-17-05 22:55 David Kinzer   Note Added: 0004514                          
 ======================================================================
 
 
