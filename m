@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000546]: 5.1 surround sound output on NForce2 is broken through native output
-Date: Sun, 17 Apr 2005 22:19:47 +0200
-Message-ID: <572a8b130f06db2ef898e77d6807abf5@bugtrack.alsa-project.org>
+Date: Sun, 17 Apr 2005 22:27:06 +0200
+Message-ID: <ec953de81ef29fda1c0783b3be9ed120@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 13020223
-	for <alsa-devel@alsa-project.org>; Sun, 17 Apr 2005 22:19:47 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4318B223
+	for <alsa-devel@alsa-project.org>; Sun, 17 Apr 2005 22:27:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=546> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Mandrakelinux Cooker
 Kernel Version:             2.6.8.1 (10mdk revision)
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             09-26-2004 20:23 CEST
-Last Modified:              04-17-2005 22:19 CEST
+Last Modified:              04-17-2005 22:27 CEST
 ======================================================================
 Summary:                    5.1 surround sound output on NForce2 is broken
 through native output
@@ -59,11 +61,6 @@ obviously be better, though.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-09-05 14:39 
-----------------------------------------------------------------------
-Submitter: Has this problem been fixed in a later ALSA release?
-
-----------------------------------------------------------------------
  AdamW - 04-17-05 22:19 
 ----------------------------------------------------------------------
 Yes, it's pretty much fixed, I can now get proper 5.1 output via native
@@ -71,6 +68,11 @@ ALSA output or OSS emulation. Oddly enough I need _different_ mixer
 settings for each method, but that's not too much of a hassle. I can
 provide the two asound.state files if anyone's interested, but this is
 basically fixed.
+
+----------------------------------------------------------------------
+ jdthood - 04-17-05 22:27 
+----------------------------------------------------------------------
+Thanks for the update.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +85,9 @@ revision)
 09-29-04 17:37 AdamW          Note Added: 0001972                          
 04-09-05 14:39 jdthood        Note Added: 0004402                          
 04-17-05 22:19 AdamW          Note Added: 0004512                          
+04-17-05 22:27 jdthood        Note Added: 0004513                          
+04-17-05 22:27 jdthood        Status                   new => resolved     
+04-17-05 22:27 jdthood        Resolution               open => fixed       
 ======================================================================
 
 
