@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001059]: dsx_support and APIC interaction
-Date: Sun, 17 Apr 2005 20:42:36 +0200
-Message-ID: <bba31cb10110b89087f32fc0c739a319@bugtrack.alsa-project.org>
+Date: Sun, 17 Apr 2005 21:44:46 +0200
+Message-ID: <a7c0ee91b52af707f747611cd2da3543@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 046BE214
-	for <alsa-devel@alsa-project.org>; Sun, 17 Apr 2005 20:42:36 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2BB391E4
+	for <alsa-devel@alsa-project.org>; Sun, 17 Apr 2005 21:44:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10.0
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             04-17-2005 20:41 CEST
-Last Modified:              04-17-2005 20:42 CEST
+Last Modified:              04-17-2005 21:44 CEST
 ======================================================================
 Summary:                    dsx_support and APIC interaction
 Description: 
@@ -157,6 +157,14 @@ should report it to ALSA developers (e.g., in their bug tracking
 system, https://bugtrack.alsa-project.org/alsa-bug/ ) - your message
 to LKML will likely be lost.
 
+----------------------------------------------------------------------
+ systemloc - 04-17-05 21:44 
+----------------------------------------------------------------------
+After upgrading to kernel version 2.6.11.7 with the same options, APIC/ACPI
+enabled, the via82xx driver worked correctly without any dxs_support
+options enabled. I'm guessing this may have been a bug with APIC or
+something, which was already fixed, as suggested by Sergey Vlasov.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -164,6 +172,7 @@ Date Modified  Username       Field                    Change
 04-17-05 20:41 systemloc      Distribution              => Slackware 10.0  
 04-17-05 20:41 systemloc      Kernel Version            => 2.6.7           
 04-17-05 20:42 systemloc      Note Added: 0004510                          
+04-17-05 21:44 systemloc      Note Added: 0004511                          
 ======================================================================
 
 
