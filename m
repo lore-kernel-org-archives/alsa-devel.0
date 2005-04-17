@@ -1,12 +1,14 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: Links to mailing list archives on the website are broken
-Date: Sun, 17 Apr 2005 22:09:22 +0400
-Message-ID: <20050417180922.GA12680@procyon.home>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001059]: dsx_support and APIC interaction
+Date: Sun, 17 Apr 2005 20:41:14 +0200
+Message-ID: <87e9b54295a00f6967bb628f02c4026b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 42F77214
+	for <alsa-devel@alsa-project.org>; Sun, 17 Apr 2005 20:41:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,59 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---x+6KMIRAuhnl3hBn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1059> 
+======================================================================
+Reported By:                systemloc
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1059
+Category:                   PCI - via82xx
+Reproducibility:            have not tried
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware 10.0
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             04-17-2005 20:41 CEST
+Last Modified:              04-17-2005 20:41 CEST
+======================================================================
+Summary:                    dsx_support and APIC interaction
+Description: 
+I was using the 2.6.7 kernel without APIC or ACPI support, and the via82xx
 
-Hello!
+driver worked perfectly, compiled as a module, without any options. I
+built a 
+new 2.6.7 kernel on the same hardware with APIC and ACPI support in the 
+kernel, as the board supports it, and the driver did not work correctly.
+When 
+sound was played, a short, 1 second long bit of the sound to be played was
 
-The "Mailing Lists" pages on the ALSA website
-(http://www.alsa-project.org/mailing-lists.php) has several links to
-archives of ALSA mailing lists.  However, seems that all these links
-are either broken, or archives are stale:
+looped. Possibly this is the clicking noise described by some people? The
 
-- http://www.mail-archive.com/alsa-announce%40lists.sourceforge.net -
-  stops at 2004/11/16
-- http://www.geocrawler.com/redir-sf.php?list=3Dalsa-announce -
-  Connection refused
+driver works fine with this new kernel after adding the option 
+"dxs_support=1". I hope this interaction with ACPI and APIC sheds some
+light 
+on some of the troubles with this driver. I can provide more information
+if 
+anyone wants it. Please CC me, I'm not on the list.
 
-- http://www.mail-archive.com/alsa-devel%40lists.sourceforge.net -
-  stops at 2004/06/07
-- http://www.geocrawler.com/lists/3/SourceForge/12349/0/ - Connection
-  refused
-- http://www.geocrawler.com/redir-sf.php?list=3Dalsa-devel - Connection
-  refused
+TJ
 
-=2E.. further mail-archive.com archives are stale, geocrawler.com links
-are broken...
 
-- http://hyppo.screwdriver.net/list.phtml?archive=3Dalsa-devel - gives
-  some broken page
+======================================================================
 
-Looks like all those links need to be scrapped and replaced by some
-working ones (like Gmane).
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-17-05 20:41 systemloc      New Issue                                    
+04-17-05 20:41 systemloc      Distribution              => Slackware 10.0  
+04-17-05 20:41 systemloc      Kernel Version            => 2.6.7           
+======================================================================
 
---=20
-Sergey Vlasov
 
---x+6KMIRAuhnl3hBn
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQFCYqZSW82GfkQfsqIRAm92AJ908IjbTse2hsz4NsjSuhXHLTEx2ACfRae/
-DYTFyuGTEf0t7dcWwLtvKEM=
-=fHAQ
------END PGP SIGNATURE-----
-
---x+6KMIRAuhnl3hBn--
 
 
 -------------------------------------------------------
