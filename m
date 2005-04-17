@@ -1,7 +1,7 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH] echoaudio, typo fix
-Date: Sun, 17 Apr 2005 15:48:43 +0200
-Message-ID: <20050417154843.0d179f2f.pochini@shiny.it>
+Subject: Same PCI ID, different cards - rfc
+Date: Sun, 17 Apr 2005 17:25:29 +0200
+Message-ID: <20050417172529.7dea3b59.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -19,24 +19,20 @@ To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-- Fix an Oops when an error occurs.
 
+I did some work in order to solve the problem about the Gina3G and the
+Layla3G which share the same PCI card so it's impossible to say what card is
+installed before probing.
 
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
+The main difference between the two cards is the number of channels. I added
+those data in chip_t and I replaced the related macros with inline functions
+(defined in echoaudio.h). Those functions return a constant for all non-3G
+cards, so no overhead is added. The patch has been tested on my Gina24 and
+Gina3G only. It's quite big because it touches a lot of code and it replaces
+a few files but the relevant changes are only in echoaudio.h, echo3g.c and
+echo3g_dsp.c .
 
-diff -du alsa-driver__cvs/pci/echoaudio/echoaudio.c alsa-driver/pci/echoaudio/echoaudio.c
---- alsa-driver__cvs/pci/echoaudio/echoaudio.c	Sat Apr 16 10:56:47 2005
-+++ alsa-driver/pci/echoaudio/echoaudio.c	Sun Apr 17 15:39:35 2005
-@@ -402,7 +402,7 @@
- 		chip->can_set_rate=0;
- dout_exit:
- 	up(&chip->mode_mutex);
--	return 0;
-+	return err;
- }
- 
- #endif /* !ECHOCARD_HAS_VMIXER */
-
+http://xoomer.virgilio.it/g_pochini/e3g.patch
 
 
 --
