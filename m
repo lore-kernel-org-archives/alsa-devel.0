@@ -1,11 +1,12 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Same PCI ID, different cards - rfc
-Date: Sun, 17 Apr 2005 17:25:29 +0200
-Message-ID: <20050417172529.7dea3b59.pochini@shiny.it>
+From: Sergey Vlasov <vsu@altlinux.ru>
+Subject: Links to mailing list archives on the website are broken
+Date: Sun, 17 Apr 2005 22:09:22 +0400
+Message-ID: <20050417180922.GA12680@procyon.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,28 +16,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
+--x+6KMIRAuhnl3hBn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I did some work in order to solve the problem about the Gina3G and the
-Layla3G which share the same PCI card so it's impossible to say what card is
-installed before probing.
+Hello!
 
-The main difference between the two cards is the number of channels. I added
-those data in chip_t and I replaced the related macros with inline functions
-(defined in echoaudio.h). Those functions return a constant for all non-3G
-cards, so no overhead is added. The patch has been tested on my Gina24 and
-Gina3G only. It's quite big because it touches a lot of code and it replaces
-a few files but the relevant changes are only in echoaudio.h, echo3g.c and
-echo3g_dsp.c .
+The "Mailing Lists" pages on the ALSA website
+(http://www.alsa-project.org/mailing-lists.php) has several links to
+archives of ALSA mailing lists.  However, seems that all these links
+are either broken, or archives are stale:
 
-http://xoomer.virgilio.it/g_pochini/e3g.patch
+- http://www.mail-archive.com/alsa-announce%40lists.sourceforge.net -
+  stops at 2004/11/16
+- http://www.geocrawler.com/redir-sf.php?list=3Dalsa-announce -
+  Connection refused
 
+- http://www.mail-archive.com/alsa-devel%40lists.sourceforge.net -
+  stops at 2004/06/07
+- http://www.geocrawler.com/lists/3/SourceForge/12349/0/ - Connection
+  refused
+- http://www.geocrawler.com/redir-sf.php?list=3Dalsa-devel - Connection
+  refused
 
---
-Giuliano.
+=2E.. further mail-archive.com archives are stale, geocrawler.com links
+are broken...
+
+- http://hyppo.screwdriver.net/list.phtml?archive=3Dalsa-devel - gives
+  some broken page
+
+Looks like all those links need to be scrapped and replaced by some
+working ones (like Gmane).
+
+--=20
+Sergey Vlasov
+
+--x+6KMIRAuhnl3hBn
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+
+iD8DBQFCYqZSW82GfkQfsqIRAm92AJ908IjbTse2hsz4NsjSuhXHLTEx2ACfRae/
+DYTFyuGTEf0t7dcWwLtvKEM=
+=fHAQ
+-----END PGP SIGNATURE-----
+
+--x+6KMIRAuhnl3hBn--
 
 
 -------------------------------------------------------
