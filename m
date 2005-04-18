@@ -1,12 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: HW mix
-Date: Mon, 18 Apr 2005 12:06:54 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0504181206180.1759@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0504181156540.10408-100000@studcom.urz.uni-halle.de>
+From: Dirk Jagdmann <doj@cubic.org>
+Subject: Alsa support for Realtek ALC850
+Date: Mon, 18 Apr 2005 12:39:36 +0200
+Message-ID: <42638E68.9080400@cubic.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0504181156540.10408-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,30 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Dino <dino@e4a.it>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 18 Apr 2005, Clemens Ladisch wrote:
+Hello developers,
 
-> Dino wrote:
-> >    i want to mix some pcm streams using hardware (where possible). One process
-> > with some thread witch want to play with one device (hw:0,0). Actually i simply
-> > open the device as it can (32 at max for me) with snd_pcm_open() and hw:0,0 as
-> > the device. It's seems to work but i don't know if it's the rigth way.
-> 
-> "hw:0,0" will fail if another program has already opened it.
-> Use "hw:0" which instructs ALSA to open the first available subdevice.
+I recently purchased an ASUS P4P800-E mainboard which features i865 
+chipset with an Realtek ALC850 AC'97 Codec. This codec is recognized by 
+the i8x0 drivers (I tested this with Alsa 1.0.8) as an 6 channel device. 
+However this chip supports 8 channels, but this is not 
+supported/recognized by Alsa currently. I had a quick look into the i8x0 
+sources, but did not find the correct spot, where to patch the source to 
+support 8 channels. I ask you for assistance on this subject. Please 
+tell me which contents of /proc or /sys you'd like to see or please give 
+me some pointers into the source.
 
-Nope, hw:0,0 is correct (CARD,DEVICE). You meant probably hw:0,0,0 
-(CARD,DEVICE,SUBDEVICE).
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+-- 
+---> doj / cubic
+----> http://cubic.org/~doj
+-----> http://llg.cubic.org
 
 
 -------------------------------------------------------
