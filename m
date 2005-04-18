@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000148]: Master volume only controls front output
-Date: Mon, 18 Apr 2005 20:18:47 +0200
-Message-ID: <a4a95fe5d22ceae158a21495797563ae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
+Date: Mon, 18 Apr 2005 20:42:08 +0200
+Message-ID: <0ef17735dff0592da59301278ae14149@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0751925A
-	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2005 20:18:48 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8102E25A
+	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2005 20:42:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0001063 has been set as DUPLICATE OF the following issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=148> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1064> 
 ======================================================================
-Reported By:                wzzrd
-Assigned To:                perex
+Reported By:                jwiegley
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   148
-Category:                   PCI - emu10k1
+Issue ID:                   1064
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo Linux 1.4
-Kernel Version:             2.6.4
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian-pure64
+Kernel Version:             2.6.12-rc2
 ======================================================================
-Date Submitted:             03-22-2004 16:06 CET
-Last Modified:              03-23-2004 16:18 CET
+Date Submitted:             04-18-2005 20:42 CEST
+Last Modified:              04-18-2005 20:42 CEST
 ======================================================================
-Summary:                    Master volume only controls front output
+Summary:                    snd_hda_intel does not recognize acl880 sound chip
 Description: 
-Setting the alsamixer Master Volume slider only controls the front two
-speakers. The rear speakers have to be controlled with the Wave Surround
-setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
-bug. If I'm wrong putting it here, sorry.
+I bought a Shuttle ST20G5 box. Sound doesn't get detected or
+seem to work with manual load.
 
-It would be very convenient to be able to control all four speakers with
-the Master Volume setting and to have a Front and Rear slider to control
-the front and rear speakers individually.
+chipset:
+  ATI Xpress 200 northbridge
+  ULI 1573 southbridge
+
+The documentation says the sound is:
+  Realtek ALC880
+
+alsaconf detects nothing
+manually loading snd_hda_intel also doesn't print anything in the
+log files; though it does seem to load all the snd stuff just fine.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001063 master volume change and mute only affe...
-======================================================================
-
-----------------------------------------------------------------------
- perex - 03-23-04 16:18 
-----------------------------------------------------------------------
-Please, make this report for the alsa-lib project. We need to design an
-abstraction layer which will provide this "expected" behaviour.
-
-Actually, we follow the hardware and rear output is totaly independent in
-case
-of SB Live.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-04 16:06 wzzrd          New Issue                                    
-03-22-04 16:06 wzzrd          Distribution              => Gentoo Linux 1.4
-03-22-04 16:06 wzzrd          Kernel Version            => 2.6.4           
-03-23-04 16:18 perex          Status                   new => resolved     
-03-23-04 16:18 perex          Resolution               open => not an issue
-03-23-04 16:18 perex          Assigned To               => perex           
-03-23-04 16:18 perex          Note Added: 0000665                          
-04-18-05 20:18 rlrevell       Relationship added       has duplicate 0001063
+04-18-05 20:42 jwiegley       New Issue                                    
+04-18-05 20:42 jwiegley       File Added: ST20G5lspci.txt                    
+04-18-05 20:42 jwiegley       Distribution              => Debian-pure64   
+04-18-05 20:42 jwiegley       Kernel Version            => 2.6.12-rc2      
 ======================================================================
 
 
