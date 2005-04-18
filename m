@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001048]: support for aopen aw850
-Date: Mon, 18 Apr 2005 22:34:38 +0200
-Message-ID: <d097bd3919bd3608c1aaa03ea8813e89@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000772]: Analog/Digital output not working.
+Date: Mon, 18 Apr 2005 23:16:44 +0200
+Message-ID: <761be2ac49ffac886f79c76b4fe120ff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4E90F208
-	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2005 22:34:38 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9C91E25A
+	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2005 23:16:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,95 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1048> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=772> 
 ======================================================================
-Reported By:                xaos5
-Assigned To:                tiwai
+Reported By:                ianw1234
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1048
-Category:                   PCI - cmipci
+Issue ID:                   772
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.4.29, 2.6.11.6, 2.6.11.7
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.9-1.681_FC3
 ======================================================================
-Date Submitted:             04-12-2005 23:37 CEST
-Last Modified:              04-18-2005 22:34 CEST
+Date Submitted:             12-31-2004 23:02 CET
+Last Modified:              04-18-2005 23:16 CEST
 ======================================================================
-Summary:                    support for aopen aw850
+Summary:                    Analog/Digital output not working.
 Description: 
-can't get the aopen aw850 stable as it goes to almost complete static after
-about a minute or two and crashes knotify. I've tryed updating alsa to
-1.0.9rc2 and artsd to latest and kernel to 2.6.11.7 which all help a bit
-but never fixed the problem. With alsa only in xmms it takes upto an hour
-sometimes for it to become staticy, artsd speeds up the process to about 5
-minutes sometimes faster depending on how many programs require audio
-output. I know this card isn't in the support list but the chip is
-(CMI8738) which should be semi easy to get working with tweaking.
+I've been unable to get my SB Live! to send analog pcm out through the
+Analog/Digital port. It's connected through this port to my receiver, and
+while AC3 over the digital port works fine, I can't get anything else to
+go over the line. I have a 48kHz wave file I've been testing, and I've
+tried playing it with aplay over hw0,0 (no good), hw0,1 (doesn't exist),
+and hw0,2 (no effect). 
+
+I have the master, IEC Coaxial, AC97, External amplifier, and SB Live
+Analog/Digital Output Jack all either unmuted or set to max volume. I've
+tried loading the snd_pcm_oss module with various snd_dsp_map settings
+without success.
+
+I've tried this on 1.0.7 and 1.0.8rc1. I dimly remember this working in
+the past, so I don't know if this was broken in the upgrade to 1.0.7
+(which I had to do because AC3 passthrough didn't work in the version that
+came with the 2.6.9 kernel) or whether I have some strange
+misconfiguration. Help is appreciated! Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-13-05 11:43 
+ jukkat - 01-02-05 19:20 
 ----------------------------------------------------------------------
-I don't know of these problems at all.
-Both could be either the application problem or the system problem.
-Could you describe more details about both symptoms?
+Im running Gentoo with 2.6.9-gentoo-r9 and alsa 1.0.8rc1 (driver, tools,
+lib, utils). Have also tried 1.0.7, 1.0.6a and 1.0.5a. 
+
+I have the /etc/asound.conf copied from
+/usr/share/alsa/cards/EMU10K1.conf, don't know, if I should use another
+asound.conf.
+
+The hardware is an Athlon 2600+ with Asus A7N8X-E Deluxe mb and SB Live
+5.1 player sound card.
+
+ac3 does not work. mplayer -ao alsa works fine, if i add -ac hwac3, to the
+command line, the IEC958 Optical Raw gets enabled automatically, but no
+audio whatsoever.   Also my amp won't show "Dolby Digital" on the display.
+Same problem with xine, if I set speakers to Pass Through, Optical Raw
+gets enabled, but no audio. This can be a problem with Yamaha amplifiers
+being very picky on the correctness of the ac3-stream. I have also an
+Nforce2 onboard audio on my computer, the symptoms are the same.
+Everything else works (even DTS), no ac3 audio.
+
+
 
 ----------------------------------------------------------------------
- xaos5 - 04-18-05 22:34 
+ jdthood - 04-18-05 23:16 
 ----------------------------------------------------------------------
-I've been having this problem in alot of different distros so I believe its
-within alsa or a setting I need to specify. no matter the program it will
-randomly give out static, sometimes not for 10 minutes, other times when
-the sound volume of the file is high. 
-
-Just changed to gentoo 2005.0 and still having the same problem. its
-working better with artsd though, but even without artsd its still has
-static.
-
-alsaconf detects it find (cmipci) and everything plays find (no errors)
-just am getting static.
+Submitter: Any improvement in more recent ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-05 23:37 xaos5          New Issue                                    
-04-12-05 23:37 xaos5          Distribution              => Slackware       
-04-12-05 23:37 xaos5          Kernel Version            => 2.4.29, 2.6.11.6,
-2.6.11.7
-04-13-05 11:43 tiwai          Note Added: 0004468                          
-04-18-05 22:34 xaos5          Note Added: 0004515                          
+12-31-04 23:02 ianw1234       New Issue                                    
+12-31-04 23:02 ianw1234       Kernel Version            => 2.6.9-1.681_FC3 
+01-01-05 00:33 ianw1234       Note Added: 0003028                          
+01-01-05 02:28 rlrevell       Note Added: 0003030                          
+01-01-05 10:01 pzad           Note Added: 0003031                          
+01-01-05 22:48 ianw1234       Note Added: 0003039                          
+01-01-05 23:03 pzad           Note Added: 0003041                          
+01-02-05 19:15 jukkat         Note Added: 0003046                          
+01-02-05 19:20 jukkat         Note Edited: 0003046                         
+01-04-05 21:57 visit0r        Issue Monitored: visit0r                     
+04-18-05 23:16 jdthood        Note Added: 0004516                          
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-SF email is sponsored by - The IT Product Guide
-Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+This SF.Net email is sponsored by: New Crystal Reports XI.
+Version 11 adds new functionality designed to reduce time involved in
+creating, integrating, and deploying reporting solutions. Free runtime info,
+new features, or free trial, at: http://www.businessobjects.com/devxi/728
