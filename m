@@ -1,13 +1,12 @@
-From: Dino <dino@e4a.it>
-Subject: Re: snd_pcm_writei vs snd_pcm_mmap_writei
-Date: Mon, 18 Apr 2005 14:18:02 +0200
-Message-ID: <1113826682.4263a57a58490@mail.e4a.it>
-References: <Pine.HPX.4.33n.0504181406110.5619-100000@studcom.urz.uni-halle.de>
+From: "rwd" <rwd@arcor.de>
+Subject: maestro3 hardware volume control
+Date: Mon, 18 Apr 2005 15:22:58 +0200
+Message-ID: <000e01c54419$bd8665a0$6502a8c0@SCA600>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0504181406110.5619-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,36 +19,24 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Perfect!
-BTW i suggest to modify online documentation as it's no so clear, and has=
- some
-minors errors.
+Hi,
 
-bye,
-   Dino
+the maestro3 runs fine on my compaq evo n400c (ES1988). Just one thing
+remains unsolved - the 2 nice volume control buttons that seem to be wired
+directly to the ES1988 won't work until now. 
 
-Scrive Clemens Ladisch <clemens@ladisch.de>:
-> Dino wrote:
-> > So i have to use the pairs: snd_pcm_mmap_begin snd_pcm_mmap_commit to=
- make
-> use
-> > of a "real" mmap pcm, instead of snd_pcm_mmap_writei?
->
-> Yes.  snd_pcm_mmap_writei just calls the _begin/_commit functions
-> before/after copying the buffer.  If you call them yourself, you can
-> do something else instead of simple copying.
->
->
-> HTH
-> Clemens
->
->
+I'm relatively new to linux and not a driver programmer, but scrolling
+through the documentation of the chip & the driver source quickly revealed
+that the volume can be controlled directly by two buttons, but the driver
+doesn't seem make use of that. 
 
+Can anybody give me a hint how to use/enable the hardware volume control on
+that chip? Is a major rewrite of the driver required? Maybe some other
+driver could do that? The es1968 seems to support hw vol, might that driver
+run also on the ES1988?
 
+Thanks & best regards, Ruediger
 
-
-----------------------------------------------------------------
-This message was sent using IMP, the Internet Messaging Program.
 
 
 -------------------------------------------------------
