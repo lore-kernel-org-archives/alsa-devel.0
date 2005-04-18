@@ -1,11 +1,13 @@
 From: Dino <dino@e4a.it>
-Subject: snd_pcm_writei vs snd_pcm_mmap_writei
-Date: Mon, 18 Apr 2005 11:40:16 +0200
-Message-ID: <1113817216.4263808022931@mail.e4a.it>
+Subject: HW mix
+Date: Mon, 18 Apr 2005 11:46:24 +0200
+Message-ID: <1113817584.426381f09f175@mail.e4a.it>
+References: <E1DNSGJ-00024N-Di@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <E1DNSGJ-00024N-Di@externalmx-1.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,12 +20,17 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-  these functions are similar : snd_pcm_writei and snd_pcm_mmap_writei
-but witch is the best or witch is fastest?
+hi all,
+   i want to mix some pcm streams using hardware (where possible). One pr=
+ocess
+with some thread witch want to play with one device (hw:0,0). Actually i =
+simply
+open the device as it can (32 at max for me) with snd_pcm_open() and hw:0=
+,0 as
+the device. It's seems to work but i don't know if it's the rigth way.
 
-bye,
-  Dino
+tnx,
+   Dino
 
 
 ----------------------------------------------------------------
