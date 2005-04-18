@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001060]: snd-azx rear speakers volume is too low
-Date: Sun, 17 Apr 2005 23:56:33 +0200
-Message-ID: <4fa9ecd42b9cf5d524cf0df6a6366d61@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001061]: can't test audio with aplay using 16-bit signed LE format; 1.0.7 however works
+Date: Mon, 18 Apr 2005 03:24:55 +0200
+Message-ID: <9ba8a39fec3325d6e39789be95be2048@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BD75B223
-	for <alsa-devel@alsa-project.org>; Sun, 17 Apr 2005 23:56:33 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 12C3A24B
+	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2005 03:24:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,40 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1060> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1061> 
 ======================================================================
-Reported By:                maranik
+Reported By:                ukr
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1060
-Category:                   PCI - azx
+Issue ID:                   1061
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu Linux
-Kernel Version:             2.6.11.7
+Distribution:               Fedora Core 3
+Kernel Version:             Linux 2.6.11
 ======================================================================
-Date Submitted:             04-17-2005 23:56 CEST
-Last Modified:              04-17-2005 23:56 CEST
+Date Submitted:             04-18-2005 03:24 CEST
+Last Modified:              04-18-2005 03:24 CEST
 ======================================================================
-Summary:                    snd-azx rear speakers volume is too low
+Summary:                    can't test audio with aplay using 16-bit signed LE
+format; 1.0.7 however works
 Description: 
-I have a Azalia sound chip, sound works with snd-azx module, but i can only
-listen to front speakers. Rear speakers are like inesistent. 
-Sound is too low. 
-I set 6ch in alsamixer.
+I usually test my speakers with aplay using
 
-TIA.
+aplay -t raw -f S16_LE -c 6 -r 48000 -Dsurround51
+
+With 1.0.8, when I do this, nothing goes to any of the speakers. However,
+when I revert to alsa-driver 1.0.7, it works correctly. I have Intel ICH5
+audio with Realtek ALC650F chip with 5.1 channel audio.
+
+Thanks,
+            Uday.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-17-05 23:56 maranik        New Issue                                    
-04-17-05 23:56 maranik        Distribution              => Ubuntu Linux    
-04-17-05 23:56 maranik        Kernel Version            => 2.6.11.7        
+04-18-05 03:24 ukr            New Issue                                    
+04-18-05 03:24 ukr            Distribution              => Fedora Core 3   
+04-18-05 03:24 ukr            Kernel Version            => Linux 2.6.11    
 ======================================================================
 
 
