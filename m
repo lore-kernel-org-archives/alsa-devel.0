@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001062]: creative mp3+ doesnt work with external usb hub
-Date: Mon, 18 Apr 2005 12:04:44 +0200
-Message-ID: <e24800c96bdc4c516629163309c43d13@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: HW mix
+Date: Mon, 18 Apr 2005 12:06:54 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0504181206180.1759@pnote.perex-int.cz>
+References: <Pine.HPX.4.33n.0504181156540.10408-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EBC80278
-	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2005 12:04:44 +0200 (MEST)
+In-Reply-To: <Pine.HPX.4.33n.0504181156540.10408-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +16,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Dino <dino@e4a.it>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 18 Apr 2005, Clemens Ladisch wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1062> 
-======================================================================
-Reported By:                TheCoop
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1062
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.12-rc2-mm3
-======================================================================
-Date Submitted:             04-18-2005 12:04 CEST
-Last Modified:              04-18-2005 12:04 CEST
-======================================================================
-Summary:                    creative mp3+ doesnt work with external usb hub
-Description: 
-My usb creative mp3+ only works when it is plugged directly into the
-computer. When it is plugged into an external usb hub, sound doesnt play
-(the timer is stuck at 0:00), the following appears in the command line:
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
+> Dino wrote:
+> >    i want to mix some pcm streams using hardware (where possible). One process
+> > with some thread witch want to play with one device (hw:0,0). Actually i simply
+> > open the device as it can (32 at max for me) with snd_pcm_open() and hw:0,0 as
+> > the device. It's seems to work but i don't know if it's the rigth way.
+> 
+> "hw:0,0" will fail if another program has already opened it.
+> Use "hw:0" which instructs ALSA to open the first available subdevice.
 
-and the following appears in dmesg:
-cannot submit datapipe for urb 0, err = -38
-cannot submit datapipe for urb 0, err = -38
-cannot submit datapipe for urb 0, err = -38
+Nope, hw:0,0 is correct (CARD,DEVICE). You meant probably hw:0,0,0 
+(CARD,DEVICE,SUBDEVICE).
 
-Details at http://forums.gentoo.org/viewtopic-t-272854.html
-======================================================================
+						Jaroslav
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-18-05 12:04 TheCoop        New Issue                                    
-04-18-05 12:04 TheCoop        Distribution              => Gentoo          
-04-18-05 12:04 TheCoop        Kernel Version            => 2.6.12-rc2-mm3  
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
