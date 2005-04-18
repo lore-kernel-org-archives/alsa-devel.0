@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001064]: snd_hda_intel does not recognize acl880 sound chip
-Date: Mon, 18 Apr 2005 20:42:08 +0200
-Message-ID: <0ef17735dff0592da59301278ae14149@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001065]: bugtrack category for hda_intel needed
+Date: Mon, 18 Apr 2005 20:43:21 +0200
+Message-ID: <aa6f167189aa6e3e86e2c78846de8fbe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8102E25A
-	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2005 20:42:08 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3DE8D166
+	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2005 20:43:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,35 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1064> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1065> 
 ======================================================================
 Reported By:                jwiegley
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1064
+Issue ID:                   1065
 Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   major
+Severity:                   trivial
 Priority:                   normal
 Status:                     new
-Distribution:               Debian-pure64
-Kernel Version:             2.6.12-rc2
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-18-2005 20:42 CEST
-Last Modified:              04-18-2005 20:42 CEST
+Date Submitted:             04-18-2005 20:43 CEST
+Last Modified:              04-18-2005 20:43 CEST
 ======================================================================
-Summary:                    snd_hda_intel does not recognize acl880 sound chip
+Summary:                    bugtrack category for hda_intel needed
 Description: 
-I bought a Shuttle ST20G5 box. Sound doesn't get detected or
-seem to work with manual load.
-
-chipset:
-  ATI Xpress 200 northbridge
-  ULI 1573 southbridge
-
-The documentation says the sound is:
-  Realtek ALC880
-
-alsaconf detects nothing
-manually loading snd_hda_intel also doesn't print anything in the
-log files; though it does seem to load all the snd stuff just fine.
+The azx driver was recently renamed hda_intel. Bugtrack needs a
+PCI - hda_intel
+category I think.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-05 20:42 jwiegley       New Issue                                    
-04-18-05 20:42 jwiegley       File Added: ST20G5lspci.txt                    
-04-18-05 20:42 jwiegley       Distribution              => Debian-pure64   
-04-18-05 20:42 jwiegley       Kernel Version            => 2.6.12-rc2      
+04-18-05 20:43 jwiegley       New Issue                                    
 ======================================================================
 
 
