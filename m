@@ -1,12 +1,12 @@
-From: "rwd" <rwd@arcor.de>
-Subject: maestro3 hardware volume control
-Date: Mon, 18 Apr 2005 15:22:58 +0200
-Message-ID: <000e01c54419$bd8665a0$6502a8c0@SCA600>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Alsa support for Realtek ALC850
+Date: Mon, 18 Apr 2005 18:00:19 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0504181746170.5619-100000@studcom.urz.uni-halle.de>
+References: <42638E68.9080400@cubic.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <42638E68.9080400@cubic.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,26 +16,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Dirk Jagdmann <doj@cubic.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Dirk Jagdmann wrote:
+> I recently purchased an ASUS P4P800-E mainboard which features i865
+> chipset with an Realtek ALC850 AC'97 Codec. This codec is recognized by
+> the i8x0 drivers (I tested this with Alsa 1.0.8) as an 6 channel device.
+> However this chip supports 8 channels, but this is not
+> supported/recognized by Alsa currently. I had a quick look into the i8x0
+> sources, but did not find the correct spot, where to patch the source to
+> support 8 channels.
 
-the maestro3 runs fine on my compaq evo n400c (ES1988). Just one thing
-remains unsolved - the 2 nice volume control buttons that seem to be wired
-directly to the ES1988 won't work until now. 
+The ICH5 southbridge does not support 8-channel streams.  However, it
+would be possible to combine the standard 6-channel device and the
+SPDIF device into an 8-channel device, if the codec expects the last
+two channels on the AC'97 slots usually used for SPDIF.
 
-I'm relatively new to linux and not a driver programmer, but scrolling
-through the documentation of the chip & the driver source quickly revealed
-that the volume can be controlled directly by two buttons, but the driver
-doesn't seem make use of that. 
+Put the following into your ~/.asoundrc file:
 
-Can anybody give me a hint how to use/enable the hardware volume control on
-that chip? Is a major rewrite of the driver required? Maybe some other
-driver could do that? The es1968 seems to support hw vol, might that driver
-run also on the ES1988?
+pcm.ch123456 {
+	type hw
+	card 0
+	device 0
+}
 
-Thanks & best regards, Ruediger
+pcm.ch78 {
+	type hw
+	card 0
+	device 4
+}
+
+pcm.eight {
+	type plug
+	slave.pcm {
+		type multi
+		slaves.a {
+			pcm ch123456
+			channels 6
+		}
+		slaves.b {
+			pcm ch78
+			channels 2
+		}
+		bindings [
+			{ slave a channel 0 }
+			{ slave a channel 1 }
+			{ slave a channel 2 }
+			{ slave a channel 3 }
+			{ slave a channel 4 }
+			{ slave a channel 5 }
+			{ slave b channel 0 }
+			{ slave b channel 1 }
+		]
+	}
+}
+
+
+However, it might be possible that the chip needs some configuration
+bit to be set that the driver doesn't yet know about.
+
+
+HTH
+Clemens
 
 
 
