@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001063]: master volume change and mute only affect front speakers on sound blaster live
-Date: Mon, 18 Apr 2005 20:18:46 +0200
-Message-ID: <e08b71cbcc7a61d68a1ed11a7e0a511b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000148]: Master volume only controls front output
+Date: Mon, 18 Apr 2005 20:18:47 +0200
+Message-ID: <a4a95fe5d22ceae158a21495797563ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2C36125A
-	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2005 20:18:47 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0751925A
+	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2005 20:18:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,43 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0000148.
+The issue 0001063 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1063> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=148> 
 ======================================================================
-Reported By:                borge3
-Assigned To:                
+Reported By:                wzzrd
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1063
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   148
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Distribution:               Gentoo Linux 1.4
+Kernel Version:             2.6.4
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-18-2005 13:03 CEST
-Last Modified:              04-18-2005 20:18 CEST
+Date Submitted:             03-22-2004 16:06 CET
+Last Modified:              03-23-2004 16:18 CET
 ======================================================================
-Summary:                    master volume change and mute only affect front
-speakers on sound blaster live
+Summary:                    Master volume only controls front output
 Description: 
-master volume change and mute only affect front speakers, rear speakers are
-affected by "wave surround"
+Setting the alsamixer Master Volume slider only controls the front two
+speakers. The rear speakers have to be controlled with the Wave Surround
+setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
+bug. If I'm wrong putting it here, sorry.
 
-the sound card is a "sound blister live!"
-
+It would be very convenient to be able to control all four speakers with
+the Master Volume setting and to have a Front and Rear slider to control
+the front and rear speakers individually.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0000148 Master volume only controls front output
+has duplicate       0001063 master volume change and mute only affe...
 ======================================================================
+
+----------------------------------------------------------------------
+ perex - 03-23-04 16:18 
+----------------------------------------------------------------------
+Please, make this report for the alsa-lib project. We need to design an
+abstraction layer which will provide this "expected" behaviour.
+
+Actually, we follow the hardware and rear output is totaly independent in
+case
+of SB Live.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-05 13:03 borge3         New Issue                                    
-04-18-05 20:18 rlrevell       Relationship added       duplicate of 0000148
+03-22-04 16:06 wzzrd          New Issue                                    
+03-22-04 16:06 wzzrd          Distribution              => Gentoo Linux 1.4
+03-22-04 16:06 wzzrd          Kernel Version            => 2.6.4           
+03-23-04 16:18 perex          Status                   new => resolved     
+03-23-04 16:18 perex          Resolution               open => not an issue
+03-23-04 16:18 perex          Assigned To               => perex           
+03-23-04 16:18 perex          Note Added: 0000665                          
+04-18-05 20:18 rlrevell       Relationship added       has duplicate 0001063
 ======================================================================
 
 
