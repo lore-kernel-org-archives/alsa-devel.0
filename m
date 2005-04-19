@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001058]: CMI9880 sometimes produces distorted sound
-Date: Tue, 19 Apr 2005 17:47:02 +0200
-Message-ID: <5976b043c911997367f23213e116a2bb@bugtrack.alsa-project.org>
+Date: Tue, 19 Apr 2005 17:47:31 +0200
+Message-ID: <14eaa2e77e53d6214dbe09d497f3c8cd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6ACFA18C
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 17:47:02 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1DB4318C
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 17:47:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1058> 
 ======================================================================
@@ -31,7 +31,7 @@ Assigned To:
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1058
-Category:                   OTHERS
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
@@ -105,6 +105,7 @@ Date Modified  Username       Field                    Change
 04-16-05 16:37 ahessling      Distribution              => Gentoo          
 04-16-05 16:37 ahessling      Kernel Version            => 2.6.11.6        
 04-19-05 17:47 tiwai          Note Added: 0004527                          
+04-19-05 17:47 tiwai          Category                 OTHERS => PCI - hda-intel
 ======================================================================
 
 
