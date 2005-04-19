@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001066]: autodetection fails
-Date: Tue, 19 Apr 2005 17:25:18 +0200
-Message-ID: <b88e26ed5bef7eb876ab2ae49fc9e87b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001048]: support for aopen aw850
+Date: Tue, 19 Apr 2005 17:30:38 +0200
+Message-ID: <5aa5dfb48145a360304f24c657d9d682@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DBA8723A
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 17:25:18 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CD0B323A
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 17:30:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1066> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1048> 
 ======================================================================
-Reported By:                El Santo
-Assigned To:                
+Reported By:                xaos5
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1066
-Category:                   PCI - via82xx
+Issue ID:                   1048
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               linux from scratch
-Kernel Version:             2.6.11.7
+Status:                     assigned
+Distribution:               Slackware
+Kernel Version:             2.4.29, 2.6.11.6, 2.6.11.7
 ======================================================================
-Date Submitted:             04-19-2005 08:54 CEST
-Last Modified:              04-19-2005 17:25 CEST
+Date Submitted:             04-12-2005 23:37 CEST
+Last Modified:              04-19-2005 17:30 CEST
 ======================================================================
-Summary:                    autodetection fails
+Summary:                    support for aopen aw850
 Description: 
-i own a asus a8v (kt800pro) deluxe motherboard. it has a realtec alc850
-ac97 codec....
-
-i though this codec was supported
-
-when i load the snd-via82xx dont detect it... and none of the alsa modules
-say anything... not in screen, not kernel messages (dmesg), neither in
-/var/log/*...
-
-i have a bt878 tv card (bttv works perfectly) and snd-bt87x have the same
-problem that snd-via82xx... doesnt identify the card... but at least i can
-manually set the boot_all parameter....
-this tv card was correctly detected with my last motherboard asus a7v-600
-(kt600)
-
-i alsa tried to build alsa into the kernel (not like modules), but i get
-the same results
-
-any idea?
+can't get the aopen aw850 stable as it goes to almost complete static after
+about a minute or two and crashes knotify. I've tryed updating alsa to
+1.0.9rc2 and artsd to latest and kernel to 2.6.11.7 which all help a bit
+but never fixed the problem. With alsa only in xmms it takes upto an hour
+sometimes for it to become staticy, artsd speeds up the process to about 5
+minutes sometimes faster depending on how many programs require audio
+output. I know this card isn't in the support list but the chip is
+(CMI8738) which should be semi easy to get working with tweaking.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-19-05 17:25 
+ xaos5 - 04-18-05 22:36 
 ----------------------------------------------------------------------
-Check lspci whether you have the entry for VIA8233/8235/8237.  If not, it's
-likely a BIOS configuration that you disabled the onboard sound.
+I've been having this problem in alot of different distros so I believe its
+within alsa or a setting I need to specify. no matter the program it will
+randomly give out static, sometimes not for 10 minutes, other times when
+the sound volume of the file is high, most of the time when cpu usage is
+high (above 95%) 
+
+Just changed to gentoo 2005.0 and still having the same problem. its
+working better with artsd though, but even without artsd its still has
+static.
+
+alsaconf detects it find (cmipci) and everything plays find (no errors)
+just am getting static.
+
+also the crashes on kde I believe where on part my fault or unstable to
+begin with.
+
+
+
+----------------------------------------------------------------------
+ tiwai - 04-19-05 17:30 
+----------------------------------------------------------------------
+The static output might mean that the sound device is blocked by another
+application (e.g. sound daemon) although multiple ALSA native apps work
+with dmix.
+
+If the silence output occurs, check what process is using the device.
+For example, you can get the process id via lsof /dev/snd/pcmC0D0p.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-19-05 08:54 El Santo       New Issue                                    
-04-19-05 08:54 El Santo       Distribution              => linux from scratch
-04-19-05 08:54 El Santo       Kernel Version            => 2.6.11.7        
-04-19-05 17:25 tiwai          Note Added: 0004520                          
+04-12-05 23:37 xaos5          New Issue                                    
+04-12-05 23:37 xaos5          Distribution              => Slackware       
+04-12-05 23:37 xaos5          Kernel Version            => 2.4.29, 2.6.11.6,
+2.6.11.7
+04-13-05 11:43 tiwai          Note Added: 0004468                          
+04-18-05 22:34 xaos5          Note Added: 0004515                          
+04-18-05 22:35 xaos5          Note Edited: 0004515                         
+04-18-05 22:36 xaos5          Note Edited: 0004515                         
+04-19-05 17:30 tiwai          Note Added: 0004521                          
 ======================================================================
 
 
