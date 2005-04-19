@@ -1,13 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH]usx2y: prevent oops & dead keyboard on hot
- usb unplugging
-Date: Tue, 19 Apr 2005 16:27:49 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0504191619140.11659-100000@studcom.urz.uni-halle.de>
-References: <s5h8y3fce7o.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001066]: autodetection fails
+Date: Tue, 19 Apr 2005 17:25:18 +0200
+Message-ID: <b88e26ed5bef7eb876ab2ae49fc9e87b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h8y3fce7o.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DBA8723A
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 17:25:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,30 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: karsten wiese <annabellesgarden@yahoo.de>, Devel Alsa <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> karsten wiese wrote:
-> > P.S.: how about adding a kernelversion depending macro for
-> > backward compatibility,... when was
-> > snd_card_free_in_thread() introduced?
->
-> Agreed.  The problem is that how to know which version has still this
-> problem..?  At least, 2.4 kernel must have a problem without
-> snd_card_free_in_thread().
 
-I think all 2.6 kernels have reference counted kernel objects.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1066> 
+======================================================================
+Reported By:                El Santo
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1066
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               linux from scratch
+Kernel Version:             2.6.11.7
+======================================================================
+Date Submitted:             04-19-2005 08:54 CEST
+Last Modified:              04-19-2005 17:25 CEST
+======================================================================
+Summary:                    autodetection fails
+Description: 
+i own a asus a8v (kt800pro) deluxe motherboard. it has a realtec alc850
+ac97 codec....
 
-The actual crash is caused by the class_simple_device_remove() call in
-snd_unregister_device() (which is a dummy in kernels before 2.6).
-Perhaps this call should be put into the snd_disconnect_device()
-function (which doesn't yet exist).
+i though this codec was supported
 
+when i load the snd-via82xx dont detect it... and none of the alsa modules
+say anything... not in screen, not kernel messages (dmesg), neither in
+/var/log/*...
 
-Regards,
-Clemens
+i have a bt878 tv card (bttv works perfectly) and snd-bt87x have the same
+problem that snd-via82xx... doesnt identify the card... but at least i can
+manually set the boot_all parameter....
+this tv card was correctly detected with my last motherboard asus a7v-600
+(kt600)
+
+i alsa tried to build alsa into the kernel (not like modules), but i get
+the same results
+
+any idea?
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 04-19-05 17:25 
+----------------------------------------------------------------------
+Check lspci whether you have the entry for VIA8233/8235/8237.  If not, it's
+likely a BIOS configuration that you disabled the onboard sound.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-19-05 08:54 El Santo       New Issue                                    
+04-19-05 08:54 El Santo       Distribution              => linux from scratch
+04-19-05 08:54 El Santo       Kernel Version            => 2.6.11.7        
+04-19-05 17:25 tiwai          Note Added: 0004520                          
+======================================================================
+
 
 
 
