@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001065]: bugtrack category for hda_intel needed
-Date: Mon, 18 Apr 2005 20:43:21 +0200
-Message-ID: <aa6f167189aa6e3e86e2c78846de8fbe@bugtrack.alsa-project.org>
+From: Dirk Jagdmann <doj@cubic.org>
+Subject: Re: Alsa support for Realtek ALC850
+Date: Mon, 18 Apr 2005 21:16:39 -0800
+Message-ID: <42649437.3080003@cubic.org>
+References: <Pine.HPX.4.33n.0504181746170.5619-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3DE8D166
-	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2005 20:43:21 +0200 (MEST)
+In-Reply-To: <Pine.HPX.4.33n.0504181746170.5619-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,44 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> The ICH5 southbridge does not support 8-channel streams.  However, it
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1065> 
-======================================================================
-Reported By:                jwiegley
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1065
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             04-18-2005 20:43 CEST
-Last Modified:              04-18-2005 20:43 CEST
-======================================================================
-Summary:                    bugtrack category for hda_intel needed
-Description: 
-The azx driver was recently renamed hda_intel. Bugtrack needs a
-PCI - hda_intel
-category I think.
-======================================================================
+My manual says it's an ICH5R. The board is pretty new. The datasheet for 
+the ALC850 codec claims it can do 8 channel sound. Thus I have just made 
+a check (under windows) by playing back an 8 channel wav. All eight 
+channels are clearly present on the 4 stereo 3.5mm (onboard jacks). 
+Further the S/PDIF connector is the same as the first two channels 
+(front l/r). So I conclude I have a true 8 channel codec.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-18-05 20:43 jwiegley       New Issue                                    
-======================================================================
+> However, it might be possible that the chip needs some configuration
+> bit to be set that the driver doesn't yet know about.
 
+I say yes.
 
+So, how can I help in supporting this chip.
+
+Website for ALC850: 
+http://www.realtek.com.tw/products/products1-2.aspx?modelid=2003101
+
+-- 
+---> doj / cubic
+----> http://cubic.org/~doj
+-----> http://llg.cubic.org
 
 
 -------------------------------------------------------
