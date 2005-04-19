@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000343]: au8820 hangs the system at some occasions
-Date: Tue, 19 Apr 2005 09:47:12 +0200
-Message-ID: <b34ac0e4f4a2bb26c2486123b160de9d@bugtrack.alsa-project.org>
+Date: Tue, 19 Apr 2005 10:03:48 +0200
+Message-ID: <b4078b658e0e3472faa6891d5edc0ebe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE5851F9
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 09:47:12 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 042441EB
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 10:03:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been ACKNOWLEDGED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=343> 
 ======================================================================
@@ -35,12 +35,12 @@ Category:                   PCI - au88x0
 Reproducibility:            sometimes
 Severity:                   crash
 Priority:                   normal
-Status:                     assigned
+Status:                     acknowledged
 Distribution:               RedHat 9
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             06-23-2004 07:20 CEST
-Last Modified:              04-19-2005 09:47 CEST
+Last Modified:              04-19-2005 10:03 CEST
 ======================================================================
 Summary:                    au8820 hangs the system at some occasions
 Description: 
@@ -76,6 +76,7 @@ Date Modified  Username       Field                    Change
 04-12-05 20:26 alien999999999 Issue Monitored: alien999999999                   
 
 04-19-05 09:47 sandman        Note Added: 0004519                          
+04-19-05 10:03 jdthood        Status                   assigned => acknowledged
 ======================================================================
 
 
