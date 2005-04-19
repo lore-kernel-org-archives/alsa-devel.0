@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000961]: Please support hardware mixing via OSS emulation on SBLive 5.1 -- OSS supports this!
-Date: Tue, 19 Apr 2005 18:21:13 +0200
-Message-ID: <cd6d0dd23c6aad6b2289c264a9f7d133@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001051]: Master <--> PCM
+Date: Tue, 19 Apr 2005 18:26:50 +0200
+Message-ID: <f578d83ca96cee239f7ebb99f5634209@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B863A201
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 18:21:13 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0F961204
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 18:26:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,136 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=961> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1051> 
 ======================================================================
-Reported By:                redemption042
+Reported By:                kayandus
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   961
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   feature
+Issue ID:                   1051
+Category:                   PCI - via82xx
+Reproducibility:            N/A
+Severity:                   tweak
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Ubuntu 4.10
-Kernel Version:             2.6.7
+Status:                     new
+Distribution:               Ubuntu
+Kernel Version:             2.6.10-5-k7
 ======================================================================
-Date Submitted:             03-04-2005 01:33 CET
-Last Modified:              04-19-2005 18:21 CEST
+Date Submitted:             04-13-2005 21:16 CEST
+Last Modified:              04-19-2005 18:26 CEST
 ======================================================================
-Summary:                    Please support hardware mixing via OSS emulation on
-SBLive 5.1 -- OSS supports this!
+Summary:                    Master <--> PCM
 Description: 
-Previously, I was running knoppix 3.1 with a 2.4 family kernel, I believe. 
-Under this distro, hardware mixing on my soundcard was supported with
-multiple applications being able to grab /dev/dsp (TeamSpeak and
-Enemy-Territory, for example)
+Hello,
 
-When I loaded up Ubuntu 4.10, I lost the hardware mixing capabilities  of
-my sound card.   I have tried loading the latest version of the driver
-(1.0.8) which, while providing sound, does not seem to allow hardware
-mixing.
+I bought a Targa Traveller 811 laptop a couple of months ago with an
+onboard 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 50) audio controller. It
+works fine with the via82xx driver, but there's only one minor problem.
+Let me explain my problem.
 
-my /proc/asound/pcm:
-00-00: emu10k1 : EMU10K1 : playback 32 : capture 1
-00-01: emu10k1 mic : EMU10K1 MIC : capture 1
-00-02: emu10k1 efx : EMU10K1 EFX : playback 8 : capture 1
+There are 3 major volume controls for me,
+Master: Controls the volume of the internal laptop speaker, so when there
+is a plug/earphones in my LINE IN, it changes nothing. (!!)
+Headphones: Controls volume of the LINE IN, so does nothing when there is
+nothing my LINE IN.
+PCM: Controls both interal speaker and LINE IN, so volume goes up and down
+whether im using the internal speaker or not.
 
-output of lsmod:
+Probably the problem is clear already to u, most programs control only
+Master, so when I have my laptop attached to my stereo, those programs
+don't change my volume =(
+I hope u guys can fix this, I suggest by making an option to change Master
+with PCM.
 
-Module                  Size  Used by
-usblp                  15360  0
-udf                    94724  0
-binfmt_misc            12424  1
-md5                     7808  1
-ipv6                  262880  6
-af_packet              22152  2
-joydev                 11968  0
-usbhid                 34240  0
-snd_emu10k1           108712  6
-snd_rawmidi            28480  1 snd_emu10k1
-snd_seq_device         12428  2 snd_emu10k1,snd_rawmidi
-snd_ac97_codec         80376  1 snd_emu10k1
-snd_pcm_oss            57768  0
-snd_mixer_oss          24064  3 snd_pcm_oss
-snd_pcm                94624  4 snd_emu10k1,snd_ac97_codec,snd_pcm_oss
-snd_timer              29956  2 snd_emu10k1,snd_pcm
-snd_page_alloc         13576  2 snd_emu10k1,snd_pcm
-snd_util_mem            7936  1 snd_emu10k1
-snd_hwdep              13984  1 snd_emu10k1
-snd                    57828  18
-snd_emu10k1,snd_rawmidi,snd_seq_device,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_util_mem,snd_hwdep
-soundcore              11872  3 snd
-usb_storage            68928  0
-ehci_hcd               33028  0
-ohci_hcd               23428  0
-usbcore               105824  7
-usblp,usbhid,usb_storage,ehci_hcd,ohci_hcd
-nvidia_agp             10012  1
-agpgart                32172  2 nvidia_agp
-evdev                  11520  0
-nls_iso8859_1           7936  1
-nls_cp437               9600  1
-nvidia               4826100  12
-ide_generic             5248  0
-ide_cd                 43524  0
-cdrom                  41248  1 ide_cd
-
-/proc/asound/cards:
-0 [Live           ]: EMU10K1 - Sound Blaster Live!
-                     Sound Blaster Live! (rev.7, serial:0x80611102) at
-0xc000, irq 17
-
-/proc/asound/devices:
-  4: [0- 0]: hardware dependent
-  8: [0- 0]: raw midi
- 18: [0- 2]: digital audio playback
- 26: [0- 2]: digital audio capture
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
-
-
-
+Thanks in advance, Harm te Hennepe
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-13-05 22:09 
+ tiwai - 04-19-05 18:26 
 ----------------------------------------------------------------------
-Does ALSA claim that its OSS emulation supports multiple applications being
-able to open /dev/dsp?
-
-On the assumption that ALSA does not claim this, I am downgrading this to
-a feature request.
-
-----------------------------------------------------------------------
- tiwai - 04-19-05 18:21 
-----------------------------------------------------------------------
-The multi-playback should work on OSS-emulation, too.
-
-The problem might be that "capture" device is not multiple openable.
-In that case, you may avoid it by adjusting the OSS-open mode via proc
-file as written in OSS-Emulation.txt.
+Try ac97_quirk=hp_only module option (with the latest ALSA).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-05 01:33 redemption042  New Issue                                    
-03-04-05 01:33 redemption042  Distribution              => Ubuntu 4.10     
-03-04-05 01:33 redemption042  Kernel Version            => 2.6.7           
-03-04-05 01:43 redemption042  Note Added: 0003793                          
-04-13-05 21:48 jdthood        Note Added: 0004476                          
-04-13-05 22:03 redemption042  Note Added: 0004481                          
-04-13-05 22:09 jdthood        Note Added: 0004482                          
-04-13-05 22:09 jdthood        Severity                 minor => feature    
-04-13-05 22:09 jdthood        Status                   new => acknowledged 
-04-13-05 22:09 jdthood        Summary                  No hardware mixing on
-SBLive 5.1 which supported OSS hardware mixing under previous OS => Please
-support hardware mixing via OSS emulation on SBLive 5.1 -- OSS supports this!
-04-19-05 18:21 tiwai          Note Added: 0004534                          
+04-13-05 21:16 kayandus       New Issue                                    
+04-13-05 21:16 kayandus       Distribution              => Ubuntu          
+04-13-05 21:16 kayandus       Kernel Version            => 2.6.10-5-k7     
+04-13-05 21:20 kayandus       Issue Monitored: kayandus                    
+04-19-05 17:46 kayandus       Issue End Monitor: kayandus                    
+04-19-05 18:26 tiwai          Note Added: 0004535                          
 ======================================================================
 
 
