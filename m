@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001051]: Master <--> PCM
-Date: Tue, 19 Apr 2005 18:26:50 +0200
-Message-ID: <f578d83ca96cee239f7ebb99f5634209@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000155]: Crackly / sizzly recording on VIA VT82C686 AC97 since 2.6.3
+Date: Tue, 19 Apr 2005 18:35:36 +0200
+Message-ID: <7b6333c1b43bca398e8e5ddf77a7eb9e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0F961204
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 18:26:50 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5A055204
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 18:35:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,100 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1051> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=155> 
 ======================================================================
-Reported By:                kayandus
-Assigned To:                
+Reported By:                sim
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1051
+Issue ID:                   155
 Category:                   PCI - via82xx
-Reproducibility:            N/A
-Severity:                   tweak
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             2.6.10-5-k7
+Status:                     resolved
+Distribution:               Debian unstable
+Kernel Version:             2.6.3 through 2.6.5-rc2
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-13-2005 21:16 CEST
-Last Modified:              04-19-2005 18:26 CEST
+Date Submitted:             03-24-2004 06:03 CET
+Last Modified:              04-19-2005 18:35 CEST
 ======================================================================
-Summary:                    Master <--> PCM
+Summary:                    Crackly / sizzly recording on VIA VT82C686 AC97
+since 2.6.3
 Description: 
 Hello,
 
-I bought a Targa Traveller 811 laptop a couple of months ago with an
-onboard 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50) audio controller. It
-works fine with the via82xx driver, but there's only one minor problem.
-Let me explain my problem.
+I have a mythtv box set up and recently upgraded the kernel from
+2.6.0-test9 to 2.6.4.  Everything appeared to play normally, but new
+recordings since the upgrade all sound crackly.  2.6.5-rc2 and 2.6.3 also
+seem to be broken.  2.6.2 works as expected.
 
-There are 3 major volume controls for me,
-Master: Controls the volume of the internal laptop speaker, so when there
-is a plug/earphones in my LINE IN, it changes nothing. (!!)
-Headphones: Controls volume of the LINE IN, so does nothing when there is
-nothing my LINE IN.
-PCM: Controls both interal speaker and LINE IN, so volume goes up and down
-whether im using the internal speaker or not.
+There appear to be a large number of changes to the ALSA core between
+2.6.2 and 2.6.3.  How should I attempt to track the problem down further?
 
-Probably the problem is clear already to u, most programs control only
-Master, so when I have my laptop attached to my stereo, those programs
-don't change my volume =(
-I hope u guys can fix this, I suggest by making an option to change Master
-with PCM.
-
-Thanks in advance, Harm te Hennepe
+Athlon 1800 XP, MSI K7 Master (MS-6330), 48 KHz stereo recording and
+playback.  The problem also shows up with Audacity, and as such does not
+appear to be application specific.  I can send a sample of the poor sound
+recording upon request.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-19-05 18:26 
+ tiwai - 04-11-05 22:47 
 ----------------------------------------------------------------------
-Try ac97_quirk=hp_only module option (with the latest ALSA).
+The patch was NOT applied yet.
+It seems that some OSS apps don't like avail_min=1 (i.e. poll woke up as
+soon as any data is available).
+Since no corresponding bug reports for the playback direction, this seems
+to be specific to capture.
+
+Could you test the latest ALSA together with the patch attached
+(pcm-oss-capture-fix.diff)?
+
+----------------------------------------------------------------------
+ tiwai - 04-19-05 18:35 
+----------------------------------------------------------------------
+I applied the patch to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 21:16 kayandus       New Issue                                    
-04-13-05 21:16 kayandus       Distribution              => Ubuntu          
-04-13-05 21:16 kayandus       Kernel Version            => 2.6.10-5-k7     
-04-13-05 21:20 kayandus       Issue Monitored: kayandus                    
-04-19-05 17:46 kayandus       Issue End Monitor: kayandus                    
-04-19-05 18:26 tiwai          Note Added: 0004535                          
+03-24-04 06:03 sim            New Issue                                    
+03-24-04 06:03 sim            Distribution              => Debian unstable 
+03-24-04 06:03 sim            Kernel Version            => 2.6.3 through
+2.6.5-rc2
+04-08-04 15:15 m9715936       Issue Monitored: m9715936                    
+04-08-04 15:25 m9715936       Note Added: 0000767                          
+04-08-04 15:29 m9715936       Note Edited: 0000767                         
+04-10-04 10:13 m9715936       Note Edited: 0000767                         
+04-11-04 19:28 uli            Note Added: 0000780                          
+04-23-04 17:29 tiwai          Status                   new => assigned     
+04-23-04 17:29 tiwai          Assigned To               => tiwai           
+04-23-04 17:30 tiwai          Note Added: 0000907                          
+04-23-04 18:02 m9715936       Note Added: 0000913                          
+04-23-04 18:07 tiwai          Note Added: 0000914                          
+04-23-04 18:36 m9715936       Note Added: 0000915                          
+04-23-04 18:40 tiwai          Note Added: 0000916                          
+04-23-04 18:59 m9715936       Note Added: 0000917                          
+06-13-04 11:27 sim            File Added: patch-2.6.3-rc1-try2.11.works         
+          
+06-13-04 11:32 sim            Note Added: 0001303                          
+06-20-04 11:41 uli            Note Added: 0001324                          
+06-22-04 18:41 tiwai          Status                   assigned => resolved
+06-22-04 18:41 tiwai          Resolution               open => fixed       
+07-16-04 12:45 tiwai          Status                   resolved => feedback
+07-16-04 12:45 tiwai          Resolution               fixed => reopened   
+07-16-04 12:45 tiwai          Note Added: 0001450                          
+04-08-05 22:23 jdthood        Note Added: 0004374                          
+04-11-05 22:47 tiwai          Note Added: 0004444                          
+04-11-05 22:48 tiwai          File Added: pcm-oss-capture-fix.diff              
+     
+04-19-05 18:35 tiwai          Status                   feedback => resolved
+04-19-05 18:35 tiwai          Resolution               reopened => fixed   
+04-19-05 18:35 tiwai          Note Added: 0004536                          
 ======================================================================
 
 
