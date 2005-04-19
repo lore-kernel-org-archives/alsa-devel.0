@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001060]: snd-azx rear speakers volume is too low
-Date: Tue, 19 Apr 2005 17:41:30 +0200
-Message-ID: <77d08c3edb4de9dead07483eaebf6ee9@bugtrack.alsa-project.org>
+Date: Tue, 19 Apr 2005 17:41:09 +0200
+Message-ID: <5cb9ab7e68a318cea1bc2b410d37cf49@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 51EE318C
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 17:41:30 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CFC9218C
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 17:41:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1060> 
 ======================================================================
@@ -31,7 +31,7 @@ Assigned To:
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1060
-Category:                   PCI - hda-intel
+Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
@@ -65,8 +65,6 @@ Date Modified  Username       Field                    Change
 04-17-05 23:56 maranik        Distribution              => Ubuntu Linux    
 04-17-05 23:56 maranik        Kernel Version            => 2.6.11.7        
 04-19-05 17:41 tiwai          Note Added: 0004525                          
-04-19-05 17:41 tiwai          Category                 PCI - azx => PCI -
-hda-intel
 ======================================================================
 
 
