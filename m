@@ -1,14 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Same PCI ID, different cards - rfc
-Date: Tue, 19 Apr 2005 20:37:05 +0200
-Message-ID: <20050419203705.71ad2efa.pochini@shiny.it>
-References: <20050417172529.7dea3b59.pochini@shiny.it>
-	<s5hbr8a2ab3.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001060]: snd-azx rear speakers volume is too low
+Date: Tue, 19 Apr 2005 20:56:59 +0200
+Message-ID: <f5192a68d70bd7e91dd15b371d808817@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbr8a2ab3.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87C4A1C7
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 20:56:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +18,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19 Apr 2005 14:57:52 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
 
-> At Sun, 17 Apr 2005 17:25:29 +0200,
-> Giuliano Pochini wrote:
-> > 
-> > I did some work in order to solve the problem about the Gina3G and the
-> > Layla3G which share the same PCI card so it's impossible to say what card is
-> > installed before probing.
-> > 
-> > The main difference between the two cards is the number of channels. I added
-> > those data in chip_t and I replaced the related macros with inline functions
-> > (defined in echoaudio.h). Those functions return a constant for all non-3G
-> > cards, so no overhead is added. The patch has been tested on my Gina24 and
-> > Gina3G only. It's quite big because it touches a lot of code and it replaces
-> > a few files but the relevant changes are only in echoaudio.h, echo3g.c and
-> > echo3g_dsp.c .
-> > 
-> > http://xoomer.virgilio.it/g_pochini/e3g.patch
-> 
-> The patch looks fine.
-> Could you give me the summary and signed-off-by as usual?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1060> 
+======================================================================
+Reported By:                maranik
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1060
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu Linux
+Kernel Version:             2.6.11.7
+======================================================================
+Date Submitted:             04-17-2005 23:56 CEST
+Last Modified:              04-19-2005 20:56 CEST
+======================================================================
+Summary:                    snd-azx rear speakers volume is too low
+Description: 
+I have a Azalia sound chip, sound works with snd-azx module, but i can only
+listen to front speakers. Rear speakers are like inesistent. 
+Sound is too low. 
+I set 6ch in alsamixer.
+
+TIA.
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 04-19-05 17:41 
+----------------------------------------------------------------------
+First, try 1.0.9rc2.  If you have still problem, attach the contents of
+/etc/asound.state and /proc/asound/card0/codec#* files for debugging.
+
+----------------------------------------------------------------------
+ maranik - 04-19-05 20:56 
+----------------------------------------------------------------------
+I installed 1.0.9rc2 and i loaded snd-hda-intel. The problem persists, and
+the sound quality is worse than before.
+I hope you can help me. 
+
+TIA
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-17-05 23:56 maranik        New Issue                                    
+04-17-05 23:56 maranik        Distribution              => Ubuntu Linux    
+04-17-05 23:56 maranik        Kernel Version            => 2.6.11.7        
+04-19-05 17:41 tiwai          Note Added: 0004525                          
+04-19-05 17:41 tiwai          Category                 PCI - azx => PCI -
+hda-intel
+04-19-05 20:53 maranik        File Added: asound.state                     
+04-19-05 20:53 maranik        File Added: codec#2                          
+04-19-05 20:56 maranik        Note Added: 0004539                          
+======================================================================
 
 
-
-Ok, This is a slightly modified patch. There is a small bugfix, it removes
-some no more used #define's and it doesn't contain the "return err" fix that
-has already been merged.
-
-
-
-- This patch unifies the Gina3G and the Layla3G drivers. The new driver is
-called snd-echo3g.
-
-
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
-
-http://xoomer.virgilio.it/g_pochini/echo3g.patch
-
-
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
