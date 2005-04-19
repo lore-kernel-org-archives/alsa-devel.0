@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001055]: noise occurs when implementing 24bit recording
-Date: Tue, 19 Apr 2005 18:12:18 +0200
-Message-ID: <ae9b64860a96c9ede6b3135504b10c2e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000578]:  No soundcard detected on Chaintech 9CJS
+Date: Tue, 19 Apr 2005 18:15:05 +0200
+Message-ID: <8de8aa95744831778f49be2ee60a3a6b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A77D201
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 18:12:19 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2710F201
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 18:15:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,39 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1055> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=578> 
 ======================================================================
-Reported By:                hostaudio1
+Reported By:                tarsi
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1055
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   578
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     acknowledged
+Distribution:               mandrake linux 10.1
+Kernel Version:             2.6.8.1-10mdksmp
 ======================================================================
-Date Submitted:             04-15-2005 05:54 CEST
-Last Modified:              04-19-2005 18:12 CEST
+Date Submitted:             10-11-2004 12:58 CEST
+Last Modified:              04-19-2005 18:15 CEST
 ======================================================================
-Summary:                    noise occurs when implementing 24bit recording
+Summary:                     No soundcard detected on Chaintech 9CJS
 Description: 
-arecord -c 2 -f S24_LE -r 96000 w1.wav
+ cat /proc/asound/cards don't stop and gives many lines "--no souncards--"
+
+/etc/init.d/alsaconf found ice1724 card, but exiting gives:
+.... 
+
+/usr/sbin/alsactl: save_state:1066: No soundcards found...
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-19-05 18:12 
+ jdthood - 04-14-05 22:00 
 ----------------------------------------------------------------------
-S24_LE is a format to pack 24-bit into the *lower* 3 bytes of 4 bytes
-alignment.  I guess you want to use S24_3LE, which packs the data in 3
-bytes?
+Perhaps this card model can be detected?
+
+----------------------------------------------------------------------
+ tiwai - 04-19-05 18:15 
+----------------------------------------------------------------------
+The noise problem might have been fixed recently.  Try 1.0.9rc2.
+
+The latest ice1724 driver already has an entry for Chaintech 9CJS.  So,
+please make sure that the driver does _NOT_ work with the latest ALSA.
+
+If the model=k8x800 works, it's simple to fix.  Please show the output of
+lspci -nv.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-15-05 05:54 hostaudio1     New Issue                                    
-04-19-05 18:12 tiwai          Note Added: 0004532                          
+10-11-04 12:58 tarsi          New Issue                                    
+10-11-04 12:58 tarsi          File Added: command-outputs.tar.bz2               
+    
+10-11-04 12:58 tarsi          Distribution              => mandrake linux 10.1
+10-11-04 12:58 tarsi          Kernel Version            => 2.6.8.1-10mdksmp
+10-11-04 12:58 tarsi          Issue Monitored: tarsi                       
+10-11-04 15:59 tiwai          Note Added: 0002081                          
+04-09-05 16:09 jdthood        Note Added: 0004407                          
+04-14-05 12:53 tarsi          Note Added: 0004491                          
+04-14-05 22:00 jdthood        Note Added: 0004496                          
+04-14-05 22:00 jdthood        Severity                 block => major      
+04-14-05 22:00 jdthood        Status                   new => acknowledged 
+04-14-05 22:00 jdthood        Additional Information Updated                    
+04-19-05 18:15 tiwai          Note Added: 0004533                          
 ======================================================================
 
 
