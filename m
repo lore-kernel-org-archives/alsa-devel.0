@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001058]: CMI9880 sometimes produces distorted sound
-Date: Tue, 19 Apr 2005 17:47:31 +0200
-Message-ID: <14eaa2e77e53d6214dbe09d497f3c8cd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001054]: Alsa Segmentation Fault
+Date: Tue, 19 Apr 2005 17:49:05 +0200
+Message-ID: <3a98ec6872cc2f67eb88f01e57f0ec7b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1DB4318C
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 17:47:32 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 54E40186
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 17:49:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,90 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1058> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1054> 
 ======================================================================
-Reported By:                ahessling
-Assigned To:                
+Reported By:                bultom
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1058
-Category:                   PCI - hda-intel
+Issue ID:                   1054
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.11.6
+Status:                     resolved
+Distribution:               Gentoo linux
+Kernel Version:             2.6.11
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-16-2005 16:37 CEST
-Last Modified:              04-19-2005 17:47 CEST
+Date Submitted:             04-15-2005 02:39 CEST
+Last Modified:              04-19-2005 17:49 CEST
 ======================================================================
-Summary:                    CMI9880 sometimes produces distorted sound
+Summary:                    Alsa Segmentation Fault
 Description: 
-I am using the CVS version of alsa-kernel from a few days and because of
-the soundchip CMI9880, I have to activate Intel HDA in the kernel.
-Sound is working quite fine in stereo mode, but if I want to play a DVD
-with 5.1 sound, all speakers are activated but the sound is a little bit
-distorted.
-xine uses plug:surround51:0 as the surround device.
-
-My asound.conf looks like this:
-pcm.!default {
-type plug
-slave.pcm "svol"
-}
-
-pcm.svol {
-type softvol
-slave.pcm "hw:0,0"
-control {
-name "PCM Playback Volume"
-}
-}
-
-I also tried the one from http://www.sabi.co.uk/Cfg/ALSA/
-Again, stereo sound works fine and also dmix does its work, but this time
-I only get stereo sound in xine although the same configuration of xine is
-used.
-
-I also noticed that playing some files using aplay produces the same
-distortions, e.g.:
-
-aplay /usr/share/sounds/k3b_success1.wav
-Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
-8000 Hz, Mono
-
-Seems to have to do something with sample rate.
-Using the other asound.conf from the homepage above just gives an error:
-Playing WAVE '/usr/share/sounds/k3b_success1.wav' : Unsigned 8 bit, Rate
-8000 Hz, Mono
-aplay: set_params:857: Sample format non available
- 
-Is there a way to play 5.1 sound without these distortions? Maybe some
-lines added to my asound.conf would do the work.
-
-Thanks in advance!
-
-Regards,
-André
+Alsa driver make all my application who use it crashing ( compiled built in
+my kernel )
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-19-05 17:47 
+ bultom - 04-15-05 22:55 
 ----------------------------------------------------------------------
-The noise from aplay with a low-rate sample might be the bug of rate plugin
-that was fixed recently.  Try 1.0.9rc2.
+I've found the bug solution , i've just to re compile all apps who use alsa
+cause they have been compiled with alsa 1.0.6 and now i'm in 1.0.8
+
+----------------------------------------------------------------------
+ tiwai - 04-19-05 17:49 
+----------------------------------------------------------------------
+OK, closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-05 16:37 ahessling      New Issue                                    
-04-16-05 16:37 ahessling      Distribution              => Gentoo          
-04-16-05 16:37 ahessling      Kernel Version            => 2.6.11.6        
-04-19-05 17:47 tiwai          Note Added: 0004527                          
-04-19-05 17:47 tiwai          Category                 OTHERS => PCI - hda-intel
+04-15-05 02:39 bultom         New Issue                                    
+04-15-05 02:39 bultom         Distribution              => Gentoo linux    
+04-15-05 02:39 bultom         Kernel Version            => 2.6.11          
+04-15-05 02:41 bultom         Issue Monitored: bultom                      
+04-15-05 22:55 bultom         Note Added: 0004503                          
+04-19-05 17:49 tiwai          Status                   new => resolved     
+04-19-05 17:49 tiwai          Resolution               open => fixed       
+04-19-05 17:49 tiwai          Assigned To               => tiwai           
+04-19-05 17:49 tiwai          Note Added: 0004528                          
 ======================================================================
 
 
