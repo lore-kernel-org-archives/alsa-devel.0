@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000806]: No sound at all
-Date: Mon, 18 Apr 2005 23:22:10 +0200
-Message-ID: <4c740e6ddd6ea391c16996e1e8c68fe7@bugtrack.alsa-project.org>
+From: Glenn Maynard <glenn@zewt.org>
+Subject: Re: HW mix
+Date: Tue, 19 Apr 2005 02:06:47 -0400
+Message-ID: <20050419060647.GG6018@zewt.org>
+References: <Pine.HPX.4.33n.0504181156540.10408-100000@studcom.urz.uni-halle.de> <Pine.LNX.4.58.0504181206180.1759@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9474C25A
-	for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2005 23:22:10 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0504181206180.1759@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Apr 18, 2005 at 12:06:54PM +0200, Jaroslav Kysela wrote:
+> On Mon, 18 Apr 2005, Clemens Ladisch wrote:
+> 
+> > Dino wrote:
+> > >    i want to mix some pcm streams using hardware (where possible). One process
+> > > with some thread witch want to play with one device (hw:0,0). Actually i simply
+> > > open the device as it can (32 at max for me) with snd_pcm_open() and hw:0,0 as
+> > > the device. It's seems to work but i don't know if it's the rigth way.
+> > 
+> > "hw:0,0" will fail if another program has already opened it.
+> > Use "hw:0" which instructs ALSA to open the first available subdevice.
+> 
+> Nope, hw:0,0 is correct (CARD,DEVICE). You meant probably hw:0,0,0 
+> (CARD,DEVICE,SUBDEVICE).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=806> 
-======================================================================
-Reported By:                misnagid
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   806
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora FC3
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             01-11-2005 11:18 CET
-Last Modified:              04-18-2005 23:22 CEST
-======================================================================
-Summary:                    No sound at all
-Description: 
-Hi guys!
+Is there anything wrong with using "hw:0" instead of "hw:0,0", or are they
+equivalent?  It's what I've always used, without issue.
 
-Peter Zubaj helped me with trying to get ALSA to work under Fedora FC3
-with EMU10K1 with a Creative Labs Audigy 2.  Worked fine with Suse, RHEL,
-Mandrake, Debian, you name it, EVERYTHING!  Couldn't get it to work with
-my current distro FC3.  Please see:
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749
-
-I reported it to Fedora.  NO RESPONSE!!!
-
-So I bought a new sound card.  The M-Audio Revolution 7.1
-
-Again no sound, no matter what I do!
-Using a working under all other distro's Asus A7N8X-E Deluxe with latest
-Bios.  Please help??
-======================================================================
-
-----------------------------------------------------------------------
- jdthood - 04-18-05 23:22 
-----------------------------------------------------------------------
-If it only fails to work in one distro then the problem is unlikely to be
-in ALSA.  Have you made any progress with this issue?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-11-05 11:18 misnagid       New Issue                                    
-01-11-05 11:18 misnagid       File Added: m-audio.state                    
-01-11-05 11:18 misnagid       Distribution              => Fedora FC3      
-01-11-05 11:18 misnagid       Kernel Version            => 2.6.9           
-04-18-05 23:22 jdthood        Note Added: 0004518                          
-======================================================================
-
-
+-- 
+Glenn Maynard
 
 
 -------------------------------------------------------
