@@ -1,23 +1,14 @@
-From: Jesper Juhl <juhl-lkml@dif.dk>
-Subject: [PATCH] sound: trivial warning fix for emu10k1
-Date: Tue, 19 Apr 2005 23:45:16 +0200 (CEST)
-Message-ID: <Pine.LNX.4.62.0504192338090.2074@dragon.hyggekrogen.localhost>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001067]: sound partially working on medion laptop
+Date: Tue, 19 Apr 2005 23:47:09 +0200
+Message-ID: <c0dc03df8681275eb5b68beecbd7866f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from saerimmer.dif.dk (mail.dif.dk [193.138.115.101])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C48BF1DA
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 23:42:14 +0200 (MEST)
-Received: from localhost (localhost [127.0.0.1])
-	by saerimmer.dif.dk (Postfix) with ESMTP id 294C3FF8EB
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 23:53:04 +0200 (CEST)
-Received: from saerimmer.dif.dk ([127.0.0.1])
- by localhost (saerimmer [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
- id 10749-06 for <alsa-devel@alsa-project.org>;
- Tue, 19 Apr 2005 23:53:01 +0200 (CEST)
-Received: from diftmgw2.backbone.dif.dk (diftmgw2.backbone.dif.dk [10.227.136.246])
-	by saerimmer.dif.dk (Postfix) with ESMTP id CE5A8FF41C
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 23:53:01 +0200 (CEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 746B91DA
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 23:47:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -27,39 +18,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, rlrevell@joe-job.com, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When building with gcc -W sound/pci/emu10k1/emupcm.c produces this little 
-warning in 2.6.12-rc2-mm3 : 
-  sound/pci/emu10k1/emupcm.c:265: warning: `inline' is not at beginning of declaration
-No big deal, but trivial to fix.
 
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1067> 
+======================================================================
+Reported By:                fab31
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1067
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               ubuntu 5.04
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             04-19-2005 23:47 CEST
+Last Modified:              04-19-2005 23:47 CEST
+======================================================================
+Summary:                    sound partially working on medion laptop
+Description: 
+I have a medion laptop with an hda intel card, I have 3 outputs for 5.1    
+                                                
+(works well), one output for spdif (not tested), two inputs (not          
+                                                 
+tested) AND one output for headphones (no sound) and 2 internal speakers  
+                                                 
++ 1 bass stuff (no sound).                                                
+                                                 
+                                                                          
+                                                 
+I don't even have console beep on the two last...                         
+                                                 
+I can do sniffing, try reverse-engenering etc... I kept XP for now so I   
+                                                 
+may sniff something ? I need someone to point me the way, I can't stand   
+                                                 
+having no sound on those speakers...                                      
+                                                 
+                                                                          
+                                                 In fact, I never got 5.1
+cards so I can't say but when I play some
+sound, only the "Front"  and "Surround" are outputing a sound, Center
+don't do nothing too... The sound seems to have been "bass cut", I can
+ear only Trebbles...
 
-Signed-off-by: Jesper Juhl <juhl-lkml@dif.dk>
----
+Here is a screenshot of my mixer:
+http://fab.gnux.info/mixer/mixer.png
 
- sound/pci/emu10k1/emupcm.c |    2 +-
- 1 files changed, 1 insertion(+), 1 deletion(-)
+======================================================================
 
---- linux-2.6.12-rc2-mm3-orig/sound/pci/emu10k1/emupcm.c	2005-04-11 21:20:58.000000000 +0200
-+++ linux-2.6.12-rc2-mm3/sound/pci/emu10k1/emupcm.c	2005-04-19 23:37:10.000000000 +0200
-@@ -262,7 +262,7 @@ static unsigned int emu10k1_select_inter
-  *
-  * returns: cache invalidate size in samples
-  */
--static int inline emu10k1_ccis(int stereo, int w_16)
-+static inline int emu10k1_ccis(int stereo, int w_16)
- {
- 	if (w_16) {
- 		return stereo ? 24 : 26;
-
-
-
-
---- 
-PS. Please CC me on replies.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-19-05 23:47 fab31          New Issue                                    
+04-19-05 23:47 fab31          Distribution              => ubuntu 5.04     
+04-19-05 23:47 fab31          Kernel Version            => 2.6.11          
+======================================================================
 
 
 
