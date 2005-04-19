@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001054]: Alsa Segmentation Fault
-Date: Tue, 19 Apr 2005 17:49:05 +0200
-Message-ID: <3a98ec6872cc2f67eb88f01e57f0ec7b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001049]: No sound at all
+Date: Tue, 19 Apr 2005 17:52:15 +0200
+Message-ID: <7ac15363295d32589b719df66e81eb88@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 54E40186
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 17:49:05 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 43FC61C2
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 17:52:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1054> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1049> 
 ======================================================================
-Reported By:                bultom
-Assigned To:                tiwai
+Reported By:                DF5JT
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1054
-Category:                   PCI - emu10k1
+Issue ID:                   1049
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo linux
-Kernel Version:             2.6.11
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10-1.770_FC3
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Thu Feb 24 14:00:06 EST
+2005 i686 i686 i386 GNU/Linux
 ======================================================================
-Date Submitted:             04-15-2005 02:39 CEST
-Last Modified:              04-19-2005 17:49 CEST
+Date Submitted:             04-13-2005 11:25 CEST
+Last Modified:              04-19-2005 17:52 CEST
 ======================================================================
-Summary:                    Alsa Segmentation Fault
+Summary:                    No sound at all
 Description: 
-Alsa driver make all my application who use it crashing ( compiled built in
-my kernel )
+00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 04)
+        Subsystem: Rioworks: Unknown device 203d
+        Flags: bus master, fast devsel, latency 0, IRQ 10
+        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- bultom - 04-15-05 22:55 
+ DF5JT - 04-15-05 14:09 
 ----------------------------------------------------------------------
-I've found the bug solution , i've just to re compile all apps who use alsa
-cause they have been compiled with alsa 1.0.6 and now i'm in 1.0.8
+Hello Martin,
+
+I changed the SPEC file to exclude the patch and rebuilt the package.
+Alas, no change after installation and restart of the soundsystem.
 
 ----------------------------------------------------------------------
- tiwai - 04-19-05 17:49 
+ tiwai - 04-19-05 17:52 
 ----------------------------------------------------------------------
-OK, closing now.
+Try to pass model=5stack-digout module option to snd-hda-intel module.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-15-05 02:39 bultom         New Issue                                    
-04-15-05 02:39 bultom         Distribution              => Gentoo linux    
-04-15-05 02:39 bultom         Kernel Version            => 2.6.11          
-04-15-05 02:41 bultom         Issue Monitored: bultom                      
-04-15-05 22:55 bultom         Note Added: 0004503                          
-04-19-05 17:49 tiwai          Status                   new => resolved     
-04-19-05 17:49 tiwai          Resolution               open => fixed       
-04-19-05 17:49 tiwai          Assigned To               => tiwai           
-04-19-05 17:49 tiwai          Note Added: 0004528                          
+04-13-05 11:25 DF5JT          New Issue                                    
+04-13-05 11:25 DF5JT          Distribution              => Fedora Core 3   
+04-13-05 11:25 DF5JT          Kernel Version            => 2.6.10-1.770_FC3
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Thu Feb 24 14:00:06 EST
+2005 i686 i686 i386 GNU/Linux
+04-13-05 11:25 DF5JT          Issue Monitored: DF5JT                       
+04-13-05 16:34 tiwai          Note Added: 0004469                          
+04-13-05 16:52 DF5JT          Note Added: 0004470                          
+04-13-05 17:19 tiwai          Note Added: 0004473                          
+04-15-05 12:08 DF5JT          Note Added: 0004497                          
+04-15-05 12:38 stransky       Note Added: 0004498                          
+04-15-05 14:09 DF5JT          Note Added: 0004499                          
+04-19-05 17:52 tiwai          Note Added: 0004529                          
 ======================================================================
 
 
