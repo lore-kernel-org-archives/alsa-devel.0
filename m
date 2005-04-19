@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001066]: autodetection fails
-Date: Tue, 19 Apr 2005 08:54:01 +0200
-Message-ID: <cb17aeac02553dce5ddbf95e9efc3df0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000343]: au8820 hangs the system at some occasions
+Date: Tue, 19 Apr 2005 09:47:12 +0200
+Message-ID: <b34ac0e4f4a2bb26c2486123b160de9d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A38D2239
-	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 08:54:01 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE5851F9
+	for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2005 09:47:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1066> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=343> 
 ======================================================================
-Reported By:                El Santo
-Assigned To:                
+Reported By:                sandman
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1066
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   343
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               linux from scratch
-Kernel Version:             2.6.11.7
+Status:                     assigned
+Distribution:               RedHat 9
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             04-19-2005 08:54 CEST
-Last Modified:              04-19-2005 08:54 CEST
+Date Submitted:             06-23-2004 07:20 CEST
+Last Modified:              04-19-2005 09:47 CEST
 ======================================================================
-Summary:                    autodetection fails
+Summary:                    au8820 hangs the system at some occasions
 Description: 
-i own a asus a8v (kt800pro) deluxe motherboard. it has a realtec alc850
-ac97 codec....
-
-i though this codec was supported
-
-when i load the snd-via82xx dont detect it... and none of the alsa modules
-say anything... not in screen, not kernel messages (dmesg), neither in
-/var/log/*...
-
-i have a bt878 tv card (bttv works perfectly) and snd-bt87x have the same
-problem that snd-via82xx... doesnt identify the card... but at least i can
-manually set the boot_all parameter....
-this tv card was correctly detected with my last motherboard asus a7v-600
-(kt600)
-
-i alsa tried to build alsa into the kernel (not like modules), but i get
-the same results
-
-any idea?
+At some occasions the system hangs without any means
+to recover other than reset button. No mouse, no pings and
+even the alt-SysRq feature doesn't help.
+As a result I reboot the system a few times a day (sometimes).
+The problem is present in 2.6.5, 2.6.6 and 2.6.7 kernels at
+least. 
 ======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 04-07-05 21:04 
+----------------------------------------------------------------------
+Submitter: Has there been any improvement with later ALSA releases?
+
+----------------------------------------------------------------------
+ sandman - 04-19-05 09:47 
+----------------------------------------------------------------------
+I currently have FC3 (with alsa-lib 1.0.6) on my box and the problem
+remains.
+A good way to reproduce this is by having firefox display a site with
+flash that
+uses sound and run xine at the same time
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-19-05 08:54 El Santo       New Issue                                    
-04-19-05 08:54 El Santo       Distribution              => linux from scratch
-04-19-05 08:54 El Santo       Kernel Version            => 2.6.11.7        
+06-23-04 07:20 sandman        New Issue                                    
+06-23-04 07:20 sandman        Distribution              => RedHat 9        
+06-23-04 07:20 sandman        Kernel Version            => 2.6.7           
+04-07-05 21:04 jdthood        Note Added: 0004370                          
+04-12-05 20:26 alien999999999 Issue Monitored: alien999999999                   
+
+04-19-05 09:47 sandman        Note Added: 0004519                          
 ======================================================================
 
 
