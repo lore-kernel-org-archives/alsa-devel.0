@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
-Date: Wed, 20 Apr 2005 17:00:50 +0200
-Message-ID: <ffdc84fbb6261d48c940c0fa67b1a27d@bugtrack.alsa-project.org>
+Date: Wed, 20 Apr 2005 18:23:37 +0200
+Message-ID: <3ff4fcc3c820b310ae64c99a502367fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 177E41CB
-	for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2005 17:00:51 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C6F501D5
+	for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2005 18:23:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.10-1.766_FC3
 ======================================================================
 Date Submitted:             02-13-2005 11:36 CET
-Last Modified:              04-20-2005 17:00 CEST
+Last Modified:              04-20-2005 18:23 CEST
 ======================================================================
 Summary:                    The sound is choppy and sometimes played at wrong
 speed
@@ -48,25 +48,6 @@ Description:
 The soundcard is working, although the sound is choppy when playing sound
 at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
 ======================================================================
-
-----------------------------------------------------------------------
- Cimmo - 04-14-05 17:34 
-----------------------------------------------------------------------
-I'm sorry but cannot give feedback without help :(
-
-I've download alsa-driver 1.0.9rc2, downloaded all files from
-CVS/alsa-kernel/pci/ca0106 and overwritten files in the .09rc2
-
-so recompiled all package and just copied snd-ca0106.ko to my
-/lib/modules/2.6.11-1.1236_FC4/kernel/sound/pci/ca0106
-
-Rebooted an no more sound!
-
-Strange thing:
-old file is about 60 KB, new compiled file is over 500 KB.
-
-
-Where I have wrong?
 
 ----------------------------------------------------------------------
  Cimmo - 04-20-05 17:00 
@@ -77,6 +58,27 @@ With dmesg command I receive this snd_ca0106 related string:
 snd_ca0106: disagrees about version of symbol struct_module
 
 what can I do? jcdutton please help me I want give you feedback :)
+
+----------------------------------------------------------------------
+ Cimmo - 04-20-05 18:23 
+----------------------------------------------------------------------
+Ok resolver, I have to do 'make install' instead of copying only one
+module.
+
+Seems that your patch works!!! I played some files that previous has some
+choppy sound, now seems OK!!!
+
+Only doom3 has always bad sound, and it always write in the terminal:
+idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
+snd_pcm_writei short write: 690 out of 1024
+snd_pcm_writei short write: 690 out of 1024
+snd_pcm_writei short write: 690 out of 1024
+snd_pcm_writei short write: 690 out of 1024
+snd_pcm_writei short write: 690 out of 1024
+snd_pcm_writei short write: 690 out of 1024
+
+
+OVER OVER AND OVER AGAIN!
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -101,6 +103,7 @@ Date Modified  Username       Field                    Change
 04-14-05 13:25 Cimmo          Note Added: 0004492                          
 04-14-05 17:34 Cimmo          Note Added: 0004494                          
 04-20-05 17:00 Cimmo          Note Added: 0004541                          
+04-20-05 18:23 Cimmo          Note Added: 0004542                          
 ======================================================================
 
 
