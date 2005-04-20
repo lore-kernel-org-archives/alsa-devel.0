@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
-Date: Wed, 20 Apr 2005 18:23:37 +0200
-Message-ID: <3ff4fcc3c820b310ae64c99a502367fd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000711]: Sound still bad with alsa on sb audigyls / ca0106
+Date: Wed, 20 Apr 2005 18:25:10 +0200
+Message-ID: <2d4ea1cf068298e94a2faf50c31acc37@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C6F501D5
-	for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2005 18:23:37 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8797A1D5
+	for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2005 18:25:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,44 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=711> 
 ======================================================================
-Reported By:                sHINOBI
+Reported By:                scorpion77
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   907
+Issue ID:                   711
 Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     feedback
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.766_FC3
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.9-1.6_FC2custom
 ======================================================================
-Date Submitted:             02-13-2005 11:36 CET
-Last Modified:              04-20-2005 18:23 CEST
+Date Submitted:             12-07-2004 18:12 CET
+Last Modified:              04-20-2005 18:25 CEST
 ======================================================================
-Summary:                    The sound is choppy and sometimes played at wrong
-speed
+Summary:                    Sound still bad with alsa on sb audigyls / ca0106
 Description: 
-The soundcard is working, although the sound is choppy when playing sound
-at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
+Sound is choppy and at wrong speed with both the snd-audigyls from alsa
+1.0.7 and snd-ca0106 from alsa CVS. CVS seems worse, which bugs me since
+last bug report was closed woth a "Use snd-ca0106 from CVS remark"!
+Workaround seems to select (Threaded)OSS as artsd backend instead of Alsa.
+Esd as artsd backend only works / fixes things in 1.0.7, it crashes when
+the CVS version is used.
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 04-20-05 17:00 
+ jcdutton - 04-14-05 12:46 
 ----------------------------------------------------------------------
-Please help, cannot give feedback without knowing how to update my module.
-
-With dmesg command I receive this snd_ca0106 related string:
-snd_ca0106: disagrees about version of symbol struct_module
-
-what can I do? jcdutton please help me I want give you feedback :)
+The latest alsa-driver CVS has some improvements. Please give it a try.
+Sound capture will not be supported any time soon, due to lack of
+datasheet documentation.
 
 ----------------------------------------------------------------------
- Cimmo - 04-20-05 18:23 
+ Cimmo - 04-20-05 18:25 
 ----------------------------------------------------------------------
-Ok resolver, I have to do 'make install' instead of copying only one
-module.
-
 Seems that your patch works!!! I played some files that previous has some
 choppy sound, now seems OK!!!
 
@@ -83,27 +80,24 @@ OVER OVER AND OVER AGAIN!
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-05 11:36 sHINOBI        New Issue                                    
-02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
-02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
-02-13-05 11:38 sHINOBI        Note Added: 0003583                          
-03-02-05 13:22 Juha           Note Added: 0003770                          
-03-19-05 18:24 jcdutton       Note Added: 0004064                          
-03-22-05 22:14 tiwai          Note Added: 0004138                          
-03-22-05 22:56 sHINOBI        Note Added: 0004144                          
-03-23-05 12:56 tiwai          Note Added: 0004155                          
-03-23-05 19:40 sHINOBI        Note Added: 0004185                          
-03-27-05 01:13 sHINOBI        Note Added: 0004219                          
-03-27-05 16:08 Cimmo          Note Added: 0004222                          
-03-27-05 16:09 Cimmo          File Added: .asoundrc                        
-03-28-05 01:31 Alinoe         Issue Monitored: Alinoe                      
-03-28-05 14:09 Alinoe         Note Added: 0004240                          
-04-14-05 12:51 jcdutton       Note Added: 0004490                          
-04-14-05 12:51 jcdutton       Status                   assigned => feedback
-04-14-05 13:25 Cimmo          Note Added: 0004492                          
-04-14-05 17:34 Cimmo          Note Added: 0004494                          
-04-20-05 17:00 Cimmo          Note Added: 0004541                          
-04-20-05 18:23 Cimmo          Note Added: 0004542                          
+12-07-04 18:12 scorpion77     New Issue                                    
+12-07-04 18:12 scorpion77     Distribution              => Fedora Core 2   
+12-07-04 18:12 scorpion77     Kernel Version            => 2.6.9-1.6_FC2custom
+12-07-04 20:24 rlrevell       Note Added: 0002764                          
+12-07-04 21:40 scorpion77     Note Added: 0002765                          
+12-07-04 21:53 jcdutton       Note Added: 0002766                          
+12-08-04 00:21 scorpion77     Note Added: 0002769                          
+12-08-04 00:22 scorpion77     Note Edited: 0002769                         
+12-08-04 01:23 jcdutton       Note Added: 0002770                          
+12-08-04 01:26 scorpion77     Note Added: 0002771                          
+12-08-04 03:40 scorpion77     Note Added: 0002773                          
+12-08-04 12:35 tiwai          Note Added: 0002781                          
+12-08-04 12:35 tiwai          Category                 PCI - audigyls => PCI -
+ca0106
+01-15-05 12:50 Kane32         Issue Monitored: Kane32                      
+04-14-05 12:46 jcdutton       Note Added: 0004487                          
+04-14-05 12:46 jcdutton       Status                   assigned => feedback
+04-20-05 18:25 Cimmo          Note Added: 0004543                          
 ======================================================================
 
 
