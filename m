@@ -1,11 +1,11 @@
-From: =?ISO-8859-1?Q?Istv=E1n_V=E1radi?= <ivaradi@gmail.com>
-Subject: ALSA on AMD64 with a 32-bit userspace
-Date: Fri, 22 Apr 2005 11:04:53 +0200
-Message-ID: <dbdd6db90504220204e2f80ac@mail.gmail.com>
-Reply-To: =?ISO-8859-1?Q?Istv=E1n_V=E1radi?= <ivaradi@gmail.com>
+From: Susie Conklin <scentsations@gci.net>
+Subject: Rolex's for ever !   [echelon]
+Date: Thu, 21 Apr 2005 13:52:37 -0700
+Message-ID: <18493868620305811438.7258@gci.net>
+Reply-To: egito@digi.com.br
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_349_5011630.1114160693328"
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -19,72 +19,103 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_349_5011630.1114160693328
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+<html>
+<body>
+<P align=3Dcenter><FONT color=3D#ff0000>Thank you for expressing interest=
+ in Replicas watches Bazaar. </FONT>
 
-Hi,
+</P>
+<P align=3Dcenter>We would like to take this opportunity to offer you our=
+ fine
+selection of Italian crafted Rolex Timepieces. </P>
+<P align=3Dcenter><FONT color=3D#ff0000>You can view our large
+selection of Rolexes (including Breitling, Tag Heuer, Cartier etc) at:
+</FONT>
+</P>
+<P align=3Dcenter>
+<a href=3D"http://www.standardreplicas.com/index.php?ref=3Djoint1921"> Gr=
+and Replcas watches market</a> </P>
+<P align=3Dcenter>
 
-I am using ALSA with a 64-bit AMD64 kernel (2.6.11) but with 32-bit
-applications. While trying to use Rosegarden4 (with JACK and
-Fluidsynth), I encountered some problems:
 
-- some sequencer-related ioctl's did not work correctly because the
-kernel member of seq_port_info structure was not initialized. I
-attached a patch that initializes this to 0.
+As we are the direct manufacturers, you are guaranteed of
+lowest prices and highest quality each and every time you purchase from u=
+s.
 
-- start the playback with snd_pcm_hw_start failed with -EPIPE, because
-some pointers were not updated. I attached a patch for alsa-lib 1.0.8,
-in which sync_ptr is called before SNDRV_PCM_IOCTL_START. It seems to
-solve the problem, though I don't know alsa-lib enough to be sure that
-this is the right solution...
 
-With these patches playback works, but JACK always reports xruns,
-whereas there aren't any. I discovered that the xruns are detected in
-the alsa_driver_wait function in alsa_driver.c (in JACK) returns 0,
-because the snd_pcm_avail_update calls in that function return 0.
-Putting sync_ptr into snd_pcm_avail_update does not seem to solve the
-problem.
+You may also be interested to know
+that we have the following brands available in our wide selection as well=
+:</P>
+<P align=3Dcenter></P>
 
-JACK works properly when run with a 32-bit kernel or when compiled
-into a 64-bit executable.
+<table cellSpacing=3D"0" cellPadding=3D"3" border=3D"0" align=3Dcenter st=
+yle=3D"WIDTH: 184px;">
+<tr>
+<td width=3D"100%">
+<li>
+IWC
+<li>
+Rado
+<li>
+Alain Silberstein
+<li>
+Vip Rolex
+<li>
+Panerai
+<li>
+Zenith
+<li>
+Sinn=20
+<li>
+Van Der Bauwede
+<li>
+Glashute Original
+<li>
+etc...
+</li>
+</td>
+</tr>
 
-Could you give me some hints as to what can I try? Or what can I do to
-help you debugging this problem? (Please reply to me directly, since I
-am not on the list).
+</table>
+<P align=3Dcenter><FONT color=3D#ff0000>
+If you see anything that might interest you, or if you have
+any questions, please don't hesitate to visit our website at:<br style=3D=
+"mso-special-character: line-break">
+<br style=3D"mso-special-character: line-break"></FONT></P>
+<P align=3Dcenter>
 
-Thanks,
+<a href=3D"http://www.standardreplicas.com/index.php?ref=3Djoint1921">Gra=
+nd Replcas watches market</a> </P>
+<P></P>
+<br>
+<br>
+<br>
+Founded in 1985 alexandranbsbrasilia. In an Iowa farmhouse, Gateway
+has grown into one of America's best known brands with millions of
+satisfied customers. shincivetmeticulous Starting with a 10,000
+guaranteed by his grandmother, a rented computer and a three-page
+business plan, Ted Waitt turned Gateway into a revolutionary company
+whose concertolydia innovations helped shape the technology industry.
+The company - clarkealcmenagaithersburg previously called Gateway 2000 - =
+received
+national acclaim in 1991 when it introduced its distinctive electrolysis
+cow-spotted boxes, a tribute to its farm heritage. In 1993, him
+it cracked the Fortune 500 and went public, trading on the NASDAQ before
+moving to the New York backup Stock Exchange in 1997. The following
+year, Gateway shifted its headquarters from North Sioux City, South Dakot=
+a
+to revilemetcalf the San Diego area.Founded in 1985 cooleysqueak. In an
+Iowa farmhouse, Gateway has grown into one of America's best known brands
+with The company - airframerena previously called.
+</body>
 
-Istv=E1n
+</html>
 
-------=_Part_349_5011630.1114160693328
-Content-Type: text/x-patch; name="alsa-ioctl32-2.6.11.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="alsa-ioctl32-2.6.11.patch"
 
-LS0tIHNvdW5kL2NvcmUvaW9jdGwzMi9zZXEzMi5jLm9yaWcJMjAwNS0wMy0wMiAwODozODozMy4w
-MDAwMDAwMDAgKzAxMDAKKysrIHNvdW5kL2NvcmUvaW9jdGwzMi9zZXEzMi5jCTIwMDUtMDQtMTYg
-MTY6Mzk6MDIuMDAwMDAwMDAwICswMjAwCkBAIC01OSw2ICs1OSw3IEBACiAJQ09QWSh3cml0ZV91
-c2UpO1wKIAlDT1BZKGZsYWdzKTtcCiAJQ09QWSh0aW1lX3F1ZXVlKTtcCisgICAgICAgIGRzdC0+
-a2VybmVsID0gMDtcCiB9CiAKIERFRklORV9BTFNBX0lPQ1RMKHNlcV9wb3J0X2luZm8pOwo=
-------=_Part_349_5011630.1114160693328
-Content-Type: text/x-patch; name="alsa_pcm_hw.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="alsa_pcm_hw.patch"
-
-LS0tIHNyYy9wY20vcGNtX2h3LmMub3JpZwkyMDA0LTEyLTIxIDE1OjExOjAyLjAwMDAwMDAwMCAr
-MDEwMAorKysgc3JjL3BjbS9wY21faHcuYwkyMDA1LTA0LTE2IDE5OjA5OjExLjAwMDAwMDAwMCAr
-MDIwMApAQCAtNTQzLDYgKzU0Myw3IEBACiAJYXNzZXJ0KHBjbS0+c3RyZWFtICE9IFNORF9QQ01f
-U1RSRUFNX1BMQVlCQUNLIHx8CiAJICAgICAgIHNuZF9wY21fbW1hcF9wbGF5YmFja19od19hdmFp
-bChwY20pID4gMCk7CiAjZW5kaWYKKyAgICAgICAgc3luY19wdHIoaHcsIDApOwogCWlmIChpb2N0
-bChody0+ZmQsIFNORFJWX1BDTV9JT0NUTF9TVEFSVCkgPCAwKSB7CiAJCWVyciA9IC1lcnJubzsK
-IAkJU1lTTVNHKCJTTkRSVl9QQ01fSU9DVExfU1RBUlQgZmFpbGVkIik7Cg==
-------=_Part_349_5011630.1114160693328--
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
