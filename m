@@ -1,17 +1,14 @@
-From: "rwd" <rwd@arcor.de>
-Subject: maestro3 hardware volume control
-Date: Thu, 21 Apr 2005 16:17:55 +0200
-Message-ID: <000001c5467c$ea1bb2e0$6502a8c0@SCA600>
-References: <s5hu0m3asei.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001051]: Master <--> PCM
+Date: Thu, 21 Apr 2005 20:59:33 +0200
+Message-ID: <33baa411a68e43647a17f092963e58b1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail-in-03.arcor-online.net (mail-in-03.arcor-online.net [151.189.21.43])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1F5D61B8
-	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2005 16:18:03 +0200 (MEST)
-In-Reply-To: <s5hu0m3asei.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E63F619C
+	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2005 20:59:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,55 +18,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> Von: alsa-devel-admin@lists.sourceforge.net 
-> von Takashi Iwai
-> Gesendet: Dienstag, 19. April 2005 14:00
-> 
-> The registers above didn't work at the last time we tried.
-> Feel free to debug it :)
-> 
-> 
-> Takashi
-> 
 
-Hi,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1051> 
+======================================================================
+Reported By:                kayandus
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1051
+Category:                   PCI - via82xx
+Reproducibility:            N/A
+Severity:                   tweak
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu
+Kernel Version:             2.6.10-5-k7
+======================================================================
+Date Submitted:             04-13-2005 21:16 CEST
+Last Modified:              04-21-2005 20:59 CEST
+======================================================================
+Summary:                    Master <--> PCM
+Description: 
+Hello,
 
-I tried to :)
-Some findings:
+I bought a Targa Traveller 811 laptop a couple of months ago with an
+onboard 0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 50) audio controller. It
+works fine with the via82xx driver, but there's only one minor problem.
+Let me explain my problem.
 
-I configured the PCI_ALLEGRO_CONFIG with additional  HV_CTRL_ENABLE |
-HV_BUTTON_FROM_GD
-to enable the HV according to the wiring of the buttons in my box.
+There are 3 major volume controls for me,
+Master: Controls the volume of the internal laptop speaker, so when there
+is a plug/earphones in my LINE IN, it changes nothing. (!!)
+Headphones: Controls volume of the LINE IN, so does nothing when there is
+nothing my LINE IN.
+PCM: Controls both interal speaker and LINE IN, so volume goes up and down
+whether im using the internal speaker or not.
 
-snd_m3_interrupt constantly comes up with status 0x04 !?! What's that? Bad
-docu - no info, as you said, any idea?
-When i press a HV button, status changes to 0x44 -> HV interrupt pending!
-Also you can see the HV registers SHADOW_MIX_REG_VOICE 0x1C etc. changing
-when the buttons are pressed.
-Looks like i'm almost there??
+Probably the problem is clear already to u, most programs control only
+Master, so when I have my laptop attached to my stereo, those programs
+don't change my volume =(
+I hope u guys can fix this, I suggest by making an option to change Master
+with PCM.
 
-Still some questions:
-- I tried to apply HV_INT_ENABLE to the HOST_INT_CTRL register. Box freezes
-when i press a button - obviously an interrupt is fired & not handled
-correctly - no idea how to do it. Is it required anyway? Buttons respond
-even without HV_INT_ENABLE.
+Thanks in advance, Harm te Hennepe
+======================================================================
 
-- status from snd_m3_interrupt is stuck to 0x44. Any way to clear/ack the
-pending interrupts?
+----------------------------------------------------------------------
+ tiwai - 04-19-05 18:26 
+----------------------------------------------------------------------
+Try ac97_quirk=hp_only module option (with the latest ALSA).
 
-- now that i can read the buttons - what's the right way to change the
-master/mixer/whatever volume (oops, i admit i'm a rookie...:) ?
+----------------------------------------------------------------------
+ kayandus - 04-21-05 20:59 
+----------------------------------------------------------------------
+probably that would solve the problems when i have my laptop attached to
+the stereo, but not when i use the built-in speakers :( (right?)
 
-Thanks, Ruediger
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-13-05 21:16 kayandus       New Issue                                    
+04-13-05 21:16 kayandus       Distribution              => Ubuntu          
+04-13-05 21:16 kayandus       Kernel Version            => 2.6.10-5-k7     
+04-13-05 21:20 kayandus       Issue Monitored: kayandus                    
+04-19-05 17:46 kayandus       Issue End Monitor: kayandus                    
+04-19-05 18:26 tiwai          Note Added: 0004535                          
+04-21-05 20:59 kayandus       Note Added: 0004552                          
+======================================================================
+
 
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by: New Crystal Reports XI.
-Version 11 adds new functionality designed to reduce time involved in
-creating, integrating, and deploying reporting solutions. Free runtime info,
-new features, or free trial, at: http://www.businessobjects.com/devxi/728
+SF email is sponsored by - The IT Product Guide
+Read honest & candid reviews on hundreds of IT Products from real users.
+Discover which products truly live up to the hype. Start reading now.
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
