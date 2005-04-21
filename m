@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001068]: enable dmix by default
-Date: Thu, 21 Apr 2005 07:59:30 +0200
-Message-ID: <5c68bbb92b909fe8eedeb85dde21aaa8@bugtrack.alsa-project.org>
+Date: Thu, 21 Apr 2005 08:39:41 +0200
+Message-ID: <bf13bb9cd02c73b5dda3b93bba2514da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2E51219D
-	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2005 07:59:30 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E4B31A8
+	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2005 08:39:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             04-21-2005 06:49 CEST
-Last Modified:              04-21-2005 07:59 CEST
+Last Modified:              04-21-2005 08:39 CEST
 ======================================================================
 Summary:                    enable dmix by default
 Description: 
@@ -54,11 +54,25 @@ please enable it by default.
 ----------------------------------------------------------------------
 AFAIK this was done in alsa 1.0.9rc2.
 
+----------------------------------------------------------------------
+ mandreiana - 04-21-05 08:39 
+----------------------------------------------------------------------
+On a system with alsa 1.0.8 (Fedora Core 4 test 2), what minimum packages
+do I need to upgrade to test this?
+
+I have
+alsa-utils-1.0.8-4
+alsa-lib-1.0.8-4
+and the drivers are in kernel.
+
+Thanks!
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-21-05 06:49 mandreiana     New Issue                                    
 04-21-05 07:59 pzad           Note Added: 0004546                          
+04-21-05 08:39 mandreiana     Note Added: 0004547                          
 ======================================================================
 
 
