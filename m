@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000711]: Sound still bad with alsa on sb audigyls / ca0106
-Date: Thu, 21 Apr 2005 01:42:17 +0200
-Message-ID: <25d7e6ea5fada8ef29757fc98b9685af@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001068]: enable dmix by default
+Date: Thu, 21 Apr 2005 06:49:24 +0200
+Message-ID: <83fb729b5bbf7c5ccdbd876fe333479b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6DD001AB
-	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2005 01:42:17 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A82941A2
+	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2005 06:49:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +22,37 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=711> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1068> 
 ======================================================================
-Reported By:                scorpion77
-Assigned To:                jcdutton
+Reported By:                mandreiana
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   711
-Category:                   PCI - ca0106
+Project:                    ALSA - lib
+Issue ID:                   1068
+Category:                   mixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9-1.6_FC2custom
+Status:                     new
 ======================================================================
-Date Submitted:             12-07-2004 18:12 CET
-Last Modified:              04-21-2005 01:42 CEST
+Date Submitted:             04-21-2005 06:49 CEST
+Last Modified:              04-21-2005 06:49 CEST
 ======================================================================
-Summary:                    Sound still bad with alsa on sb audigyls / ca0106
+Summary:                    enable dmix by default
 Description: 
-Sound is choppy and at wrong speed with both the snd-audigyls from alsa
-1.0.7 and snd-ca0106 from alsa CVS. CVS seems worse, which bugs me since
-last bug report was closed woth a "Use snd-ca0106 from CVS remark"!
-Workaround seems to select (Threaded)OSS as artsd backend instead of Alsa.
-Esd as artsd backend only works / fixes things in 1.0.7, it crashes when
-the CVS version is used.
+Please see this bug report:
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=155421
+
+Someone suggested to change /etc/asound.conf so dmix is turned on, but
+please enable it by default.
 ======================================================================
-
-----------------------------------------------------------------------
- Cimmo - 04-20-05 18:25 
-----------------------------------------------------------------------
-Seems that your patch works!!! I played some files that previous has some
-choppy sound, now seems OK!!!
-
-Only doom3 has always bad sound, and it always write in the terminal:
-idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
-snd_pcm_writei short write: 690 out of 1024
-snd_pcm_writei short write: 690 out of 1024
-snd_pcm_writei short write: 690 out of 1024
-snd_pcm_writei short write: 690 out of 1024
-snd_pcm_writei short write: 690 out of 1024
-snd_pcm_writei short write: 690 out of 1024
-
-
-OVER OVER AND OVER AGAIN!
-
-----------------------------------------------------------------------
- scorpion77 - 04-21-05 01:42 
-----------------------------------------------------------------------
-I don't own an AudigyLS anymore so I'm sorry but can't test the new cvs.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-07-04 18:12 scorpion77     New Issue                                    
-12-07-04 18:12 scorpion77     Distribution              => Fedora Core 2   
-12-07-04 18:12 scorpion77     Kernel Version            => 2.6.9-1.6_FC2custom
-12-07-04 20:24 rlrevell       Note Added: 0002764                          
-12-07-04 21:40 scorpion77     Note Added: 0002765                          
-12-07-04 21:53 jcdutton       Note Added: 0002766                          
-12-08-04 00:21 scorpion77     Note Added: 0002769                          
-12-08-04 00:22 scorpion77     Note Edited: 0002769                         
-12-08-04 01:23 jcdutton       Note Added: 0002770                          
-12-08-04 01:26 scorpion77     Note Added: 0002771                          
-12-08-04 03:40 scorpion77     Note Added: 0002773                          
-12-08-04 12:35 tiwai          Note Added: 0002781                          
-12-08-04 12:35 tiwai          Category                 PCI - audigyls => PCI -
-ca0106
-01-15-05 12:50 Kane32         Issue Monitored: Kane32                      
-04-14-05 12:46 jcdutton       Note Added: 0004487                          
-04-14-05 12:46 jcdutton       Status                   assigned => feedback
-04-20-05 18:25 Cimmo          Note Added: 0004543                          
-04-21-05 01:42 scorpion77     Note Added: 0004545                          
+04-21-05 06:49 mandreiana     New Issue                                    
 ======================================================================
 
 
