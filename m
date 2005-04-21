@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001068]: enable dmix by default
-Date: Thu, 21 Apr 2005 08:42:27 +0200
-Message-ID: <65d7dc682afeb4daab365968d8fce23a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000711]: Sound still bad with alsa on sb audigyls / ca0106
+Date: Thu, 21 Apr 2005 10:47:12 +0200
+Message-ID: <3b38181d315bd068551102576a62f14d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 289BA12E
-	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2005 08:42:28 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0067B1A0
+	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2005 10:47:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1068> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=711> 
 ======================================================================
-Reported By:                mandreiana
-Assigned To:                
+Reported By:                scorpion77
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1068
-Category:                   mixer
+Project:                    ALSA - driver
+Issue ID:                   711
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.9-1.6_FC2custom
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-21-2005 06:49 CEST
-Last Modified:              04-21-2005 08:42 CEST
+Date Submitted:             12-07-2004 18:12 CET
+Last Modified:              04-21-2005 10:47 CEST
 ======================================================================
-Summary:                    enable dmix by default
+Summary:                    Sound still bad with alsa on sb audigyls / ca0106
 Description: 
-Please see this bug report:
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=155421
-
-Someone suggested to change /etc/asound.conf so dmix is turned on, but
-please enable it by default.
+Sound is choppy and at wrong speed with both the snd-audigyls from alsa
+1.0.7 and snd-ca0106 from alsa CVS. CVS seems worse, which bugs me since
+last bug report was closed woth a "Use snd-ca0106 from CVS remark"!
+Workaround seems to select (Threaded)OSS as artsd backend instead of Alsa.
+Esd as artsd backend only works / fixes things in 1.0.7, it crashes when
+the CVS version is used.
 ======================================================================
 
 ----------------------------------------------------------------------
- mandreiana - 04-21-05 08:39 
+ scorpion77 - 04-21-05 01:42 
 ----------------------------------------------------------------------
-On a system with alsa 1.0.8 (Fedora Core 4 test 2), what minimum packages
-do I need to upgrade to test this?
-
-I have
-alsa-utils-1.0.8-4
-alsa-lib-1.0.8-4
-and the drivers are in kernel.
-
-Thanks!
+I don't own an AudigyLS anymore so I'm sorry but can't test the new cvs.
 
 ----------------------------------------------------------------------
- mandreiana - 04-21-05 08:42 
+ jcdutton - 04-21-05 10:47 
 ----------------------------------------------------------------------
-Note: The ChangeLog hasn't been maintained since 0.2.0 in these
-alsa-lib-1.0.9rc2.tar.bz2
-alsa-utils-1.0.9rc2.tar.bz2
+Reporter cannot provide feedback as they don't have the card any more. So I
+am changing state to closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-21-05 06:49 mandreiana     New Issue                                    
-04-21-05 07:59 pzad           Note Added: 0004546                          
-04-21-05 08:39 mandreiana     Note Added: 0004547                          
-04-21-05 08:42 mandreiana     Note Added: 0004548                          
+12-07-04 18:12 scorpion77     New Issue                                    
+12-07-04 18:12 scorpion77     Distribution              => Fedora Core 2   
+12-07-04 18:12 scorpion77     Kernel Version            => 2.6.9-1.6_FC2custom
+12-07-04 20:24 rlrevell       Note Added: 0002764                          
+12-07-04 21:40 scorpion77     Note Added: 0002765                          
+12-07-04 21:53 jcdutton       Note Added: 0002766                          
+12-08-04 00:21 scorpion77     Note Added: 0002769                          
+12-08-04 00:22 scorpion77     Note Edited: 0002769                         
+12-08-04 01:23 jcdutton       Note Added: 0002770                          
+12-08-04 01:26 scorpion77     Note Added: 0002771                          
+12-08-04 03:40 scorpion77     Note Added: 0002773                          
+12-08-04 12:35 tiwai          Note Added: 0002781                          
+12-08-04 12:35 tiwai          Category                 PCI - audigyls => PCI -
+ca0106
+01-15-05 12:50 Kane32         Issue Monitored: Kane32                      
+04-14-05 12:46 jcdutton       Note Added: 0004487                          
+04-14-05 12:46 jcdutton       Status                   assigned => feedback
+04-20-05 18:25 Cimmo          Note Added: 0004543                          
+04-21-05 01:42 scorpion77     Note Added: 0004545                          
+04-21-05 10:47 jcdutton       Status                   feedback => closed  
+04-21-05 10:47 jcdutton       Note Added: 0004549                          
 ======================================================================
 
 
