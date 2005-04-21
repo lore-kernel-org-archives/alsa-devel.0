@@ -1,7 +1,7 @@
 From: Ville Syrjala <syrjala@sci.fi>
-Subject: [PATCH 1/3] maestro3: Fix interrupt ack and disable
+Subject: [PATCH 3/3] maestro3: HP OmniBook HW volume button magic
 Date: Thu, 21 Apr 2005 22:08:54 +0300 (EEST)
-Message-ID: <20050421190854.462B47A@kuori.saunalahti.fi>
+Message-ID: <20050421190854.7ED467B@kuori.saunalahti.fi>
 Content-Type: text
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
@@ -16,35 +16,39 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Due to a typo interrupts were never actually acked or disabled.
+Some HP OmniBook laptops (500 and 6000 at least) require some GPIO magic
+before the HW volume buttons work. This patch makes them work mostly.
+Something is still missing to make them work perfectly. However I have been
+unable to figure out what exactly.
 
 Signed-off-by: Ville Syrjala <syrjala@sci.fi>
 ---
 
- maestro3.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ maestro3.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+)
 
 diff -urN linux/sound/pci/maestro3.c linux/sound/pci/maestro3.c
---- linux/sound/pci/maestro3.c	2005-04-21 21:42:51.000000000 +0300
-+++ linux/sound/pci/maestro3.c	2005-04-21 21:43:47.000000000 +0300
-@@ -1605,7 +1605,7 @@
- #endif
+--- linux/sound/pci/maestro3.c	2005-04-21 21:43:56.000000000 +0300
++++ linux/sound/pci/maestro3.c	2005-04-21 21:44:06.000000000 +0300
+@@ -2392,6 +2392,18 @@
+ 	       DISABLE_LEGACY);
+ 	pci_write_config_word(pcidev, PCI_LEGACY_AUDIO_CTRL, w);
  
- 	/* ack ints */
--	snd_m3_outw(chip, HOST_INT_STATUS, status);
-+	outb(status, chip->iobase + HOST_INT_STATUS);
- 
- 	return IRQ_HANDLED;
- }
-@@ -2367,7 +2367,7 @@
- 		kfree(chip->substreams);
- 	}
- 	if (chip->iobase) {
--		snd_m3_outw(chip, HOST_INT_CTRL, 0); /* disable ints */
-+		outw(0, chip->iobase + HOST_INT_CTRL); /* disable ints */
- 	}
- 
- #ifdef CONFIG_PM
++	/*
++	 * Volume buttons on some HP OmniBook laptops (500 and 6000 at least)
++	 * don't work correctly. This makes them work for the most part.
++	 * Volume up and down buttons on the laptop side work perfectly.
++	 * Fn+cursor_up (volme up) works, Fn+cursor_down (volume down) doesn't,
++	 * Fn+F8 (mute) works acts as volume up.
++	 */
++	outw(~(GPI_VOL_DOWN|GPI_VOL_UP), io + GPIO_MASK);
++	outw(inw(io + GPIO_DIRECTION) & ~(GPI_VOL_DOWN|GPI_VOL_UP), io + GPIO_DIRECTION);
++	outw((GPI_VOL_DOWN|GPI_VOL_UP), io + GPIO_DATA);
++	outw(0xffff, io + GPIO_MASK);
++
+ 	pci_read_config_dword(pcidev, PCI_ALLEGRO_CONFIG, &n);
+ 	n &= ~HV_BUTTON_FROM_GD;
+ 	n |= HV_CTRL_ENABLE | REDUCED_DEBOUNCE;
 
 
 
