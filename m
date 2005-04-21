@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001063]: master volume change and mute only affect front speakers on sound blaster live
-Date: Thu, 21 Apr 2005 12:42:21 +0200
-Message-ID: <63b328a983cef6e723a97aa4504c585b@bugtrack.alsa-project.org>
+From: "rwd" <rwd@arcor.de>
+Subject: maestro3 hardware volume control
+Date: Thu, 21 Apr 2005 16:17:55 +0200
+Message-ID: <000001c5467c$ea1bb2e0$6502a8c0@SCA600>
+References: <s5hu0m3asei.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D6CB1B1
-	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2005 12:42:21 +0200 (MEST)
+Received: from mail-in-03.arcor-online.net (mail-in-03.arcor-online.net [151.189.21.43])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1F5D61B8
+	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2005 16:18:03 +0200 (MEST)
+In-Reply-To: <s5hu0m3asei.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +21,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+> Von: alsa-devel-admin@lists.sourceforge.net 
+> von Takashi Iwai
+> Gesendet: Dienstag, 19. April 2005 14:00
+> 
+> The registers above didn't work at the last time we tried.
+> Feel free to debug it :)
+> 
+> 
+> Takashi
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1063> 
-======================================================================
-Reported By:                borge3
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1063
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             04-18-2005 13:03 CEST
-Last Modified:              04-21-2005 12:42 CEST
-======================================================================
-Summary:                    master volume change and mute only affect front
-speakers on sound blaster live
-Description: 
-master volume change and mute only affect front speakers, rear speakers are
-affected by "wave surround"
+Hi,
 
-the sound card is a "sound blister live!"
+I tried to :)
+Some findings:
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000148 Master volume only controls front output
-======================================================================
+I configured the PCI_ALLEGRO_CONFIG with additional  HV_CTRL_ENABLE |
+HV_BUTTON_FROM_GD
+to enable the HV according to the wiring of the buttons in my box.
 
-----------------------------------------------------------------------
- adamk75 - 04-21-05 12:42 
-----------------------------------------------------------------------
-This is a known bug... Already reported a year ago as
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154
+snd_m3_interrupt constantly comes up with status 0x04 !?! What's that? Bad
+docu - no info, as you said, any idea?
+When i press a HV button, status changes to 0x44 -> HV interrupt pending!
+Also you can see the HV registers SHADOW_MIX_REG_VOICE 0x1C etc. changing
+when the buttons are pressed.
+Looks like i'm almost there??
 
-Lee Revell thought he'd have it working real soon now back in February. 
-Please continue being patient and I'm sure it'll get done.
+Still some questions:
+- I tried to apply HV_INT_ENABLE to the HOST_INT_CTRL register. Box freezes
+when i press a button - obviously an interrupt is fired & not handled
+correctly - no idea how to do it. Is it required anyway? Buttons respond
+even without HV_INT_ENABLE.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-18-05 13:03 borge3         New Issue                                    
-04-18-05 20:18 rlrevell       Relationship added       duplicate of 0000148
-04-21-05 12:42 adamk75        Note Added: 0004551                          
-======================================================================
+- status from snd_m3_interrupt is stuck to 0x44. Any way to clear/ack the
+pending interrupts?
 
+- now that i can read the buttons - what's the right way to change the
+master/mixer/whatever volume (oops, i admit i'm a rookie...:) ?
+
+Thanks, Ruediger
 
 
 
