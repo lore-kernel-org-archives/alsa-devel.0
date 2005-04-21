@@ -1,9 +1,14 @@
-From: Ville Syrjala <syrjala@sci.fi>
-Subject: [PATCH 3/3] maestro3: HP OmniBook HW volume button magic
-Date: Thu, 21 Apr 2005 22:08:54 +0300 (EEST)
-Message-ID: <20050421190854.7ED467B@kuori.saunalahti.fi>
-Content-Type: text
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>
+Subject: Re: maestro3 hardware volume control
+Date: Thu, 21 Apr 2005 22:13:01 +0300
+Message-ID: <20050421191301.GA9740@sci.fi>
+References: <000e01c54419$bd8665a0$6502a8c0@SCA600>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <000e01c54419$bd8665a0$6502a8c0@SCA600>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -13,43 +18,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: rwd <rwd@arcor.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Some HP OmniBook laptops (500 and 6000 at least) require some GPIO magic
-before the HW volume buttons work. This patch makes them work mostly.
-Something is still missing to make them work perfectly. However I have been
-unable to figure out what exactly.
+On Mon, Apr 18, 2005 at 03:22:58PM +0200, rwd wrote:
+> Hi,
+>=20
+> the maestro3 runs fine on my compaq evo n400c (ES1988). Just one thing
+> remains unsolved - the 2 nice volume control buttons that seem to be wi=
+red
+> directly to the ES1988 won't work until now.=20
 
-Signed-off-by: Ville Syrjala <syrjala@sci.fi>
----
+I just sent three patches that make the buttons work on my HP OmniBook 50=
+0=20
+and 6000 laptops.
 
- maestro3.c |   12 ++++++++++++
- 1 files changed, 12 insertions(+)
-
-diff -urN linux/sound/pci/maestro3.c linux/sound/pci/maestro3.c
---- linux/sound/pci/maestro3.c	2005-04-21 21:43:56.000000000 +0300
-+++ linux/sound/pci/maestro3.c	2005-04-21 21:44:06.000000000 +0300
-@@ -2392,6 +2392,18 @@
- 	       DISABLE_LEGACY);
- 	pci_write_config_word(pcidev, PCI_LEGACY_AUDIO_CTRL, w);
- 
-+	/*
-+	 * Volume buttons on some HP OmniBook laptops (500 and 6000 at least)
-+	 * don't work correctly. This makes them work for the most part.
-+	 * Volume up and down buttons on the laptop side work perfectly.
-+	 * Fn+cursor_up (volme up) works, Fn+cursor_down (volume down) doesn't,
-+	 * Fn+F8 (mute) works acts as volume up.
-+	 */
-+	outw(~(GPI_VOL_DOWN|GPI_VOL_UP), io + GPIO_MASK);
-+	outw(inw(io + GPIO_DIRECTION) & ~(GPI_VOL_DOWN|GPI_VOL_UP), io + GPIO_DIRECTION);
-+	outw((GPI_VOL_DOWN|GPI_VOL_UP), io + GPIO_DATA);
-+	outw(0xffff, io + GPIO_MASK);
-+
- 	pci_read_config_dword(pcidev, PCI_ALLEGRO_CONFIG, &n);
- 	n &= ~HV_BUTTON_FROM_GD;
- 	n |= HV_CTRL_ENABLE | REDUCED_DEBOUNCE;
-
+--=20
+Ville Syrj=E4l=E4
+syrjala@sci.fi
+http://www.sci.fi/~syrjala/
 
 
 -------------------------------------------------------
