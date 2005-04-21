@@ -1,14 +1,14 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: Re: maestro3 hardware volume control
-Date: Thu, 21 Apr 2005 22:13:01 +0300
-Message-ID: <20050421191301.GA9740@sci.fi>
-References: <000e01c54419$bd8665a0$6502a8c0@SCA600>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001069]: Scratchy sound through AC3 passthrough with userspace version 1.0.9rc2
+Date: Thu, 21 Apr 2005 21:46:43 +0200
+Message-ID: <c6520b420b0cf376651c16150ceb795e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <000e01c54419$bd8665a0$6502a8c0@SCA600>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E5121186
+	for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2005 21:46:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,26 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: rwd <rwd@arcor.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 18, 2005 at 03:22:58PM +0200, rwd wrote:
-> Hi,
->=20
-> the maestro3 runs fine on my compaq evo n400c (ES1988). Just one thing
-> remains unsolved - the 2 nice volume control buttons that seem to be wi=
-red
-> directly to the ES1988 won't work until now.=20
 
-I just sent three patches that make the buttons work on my HP OmniBook 50=
-0=20
-and 6000 laptops.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1069> 
+======================================================================
+Reported By:                Creideiki
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1069
+Category:                   general
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             04-21-2005 21:46 CEST
+Last Modified:              04-21-2005 21:46 CEST
+======================================================================
+Summary:                    Scratchy sound through AC3 passthrough with
+userspace version 1.0.9rc2
+Description: 
+I have an Audigy 2 ZS sound card connected via S/PDIF to a Logitech Z-680
+decoder/speaker system. After upgrading ALSA userspace (alsa-headers,
+alsa-lib) to 1.0.9rc2, with no configuration changes, all I got when
+trying to play DVD:s using AC3 passthrough was scratchy noises, and the
+external decoder indicated that it did not think it was getting AC3 data.
+Software decoding worked, but not hardware passthrough. Both Xine and
+MPlayer had this problem. I am not running aRts, or any other sound
+server, and have no ~/.asoundrc file.
 
---=20
-Ville Syrj=E4l=E4
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
+Downgrading to userspace version 1.0.8 made it work again.
+
+I have no idea how to debug ALSA problems, so please let me know how to
+generate any extra information you might require.
+
+By the way, the "Product Version" field in Mantis doesn't let me select
+any version higher than 1.0.8.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-21-05 21:46 Creideiki      New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
