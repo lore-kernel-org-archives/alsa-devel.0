@@ -1,12 +1,19 @@
-From: Susie Conklin <scentsations@gci.net>
-Subject: Rolex's for ever !   [echelon]
-Date: Thu, 21 Apr 2005 13:52:37 -0700
-Message-ID: <18493868620305811438.7258@gci.net>
-Reply-To: egito@digi.com.br
+From: =?iso-8859-1?B?TmV3V2F5?= <noreply@sendername777.com>
+Subject: =?iso-8859-1?B?SWYgeW91IHdhbnQgdG8gc3RvcCA=?=
+ =?iso-8859-1?B?c21va2luZywuLi4=?=
+Date: Fri, 22 Apr 2005 20:21:40 +0900
+Message-ID: <20050422112040.562656C6B7@mail.perex.cz>
 Mime-Version: 1.0
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CF6811DB
+	for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2005 13:20:41 +0200 (MEST)
+Received: from alsa-devel (unknown [221.166.150.73])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 562656C6B7
+	for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2005 13:20:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,101 +23,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: =?iso-8859-1?B?YWxzYS1kZXZlbA==?= <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<body>
-<P align=3Dcenter><FONT color=3D#ff0000>Thank you for expressing interest=
- in Replicas watches Bazaar. </FONT>
 
-</P>
-<P align=3Dcenter>We would like to take this opportunity to offer you our=
- fine
-selection of Italian crafted Rolex Timepieces. </P>
-<P align=3Dcenter><FONT color=3D#ff0000>You can view our large
-selection of Rolexes (including Breitling, Tag Heuer, Cartier etc) at:
-</FONT>
-</P>
-<P align=3Dcenter>
-<a href=3D"http://www.standardreplicas.com/index.php?ref=3Djoint1921"> Gr=
-and Replcas watches market</a> </P>
-<P align=3Dcenter>
-
-
-As we are the direct manufacturers, you are guaranteed of
-lowest prices and highest quality each and every time you purchase from u=
-s.
-
-
-You may also be interested to know
-that we have the following brands available in our wide selection as well=
-:</P>
-<P align=3Dcenter></P>
-
-<table cellSpacing=3D"0" cellPadding=3D"3" border=3D"0" align=3Dcenter st=
-yle=3D"WIDTH: 184px;">
-<tr>
-<td width=3D"100%">
-<li>
-IWC
-<li>
-Rado
-<li>
-Alain Silberstein
-<li>
-Vip Rolex
-<li>
-Panerai
-<li>
-Zenith
-<li>
-Sinn=20
-<li>
-Van Der Bauwede
-<li>
-Glashute Original
-<li>
-etc...
-</li>
-</td>
-</tr>
-
-</table>
-<P align=3Dcenter><FONT color=3D#ff0000>
-If you see anything that might interest you, or if you have
-any questions, please don't hesitate to visit our website at:<br style=3D=
-"mso-special-character: line-break">
-<br style=3D"mso-special-character: line-break"></FONT></P>
-<P align=3Dcenter>
-
-<a href=3D"http://www.standardreplicas.com/index.php?ref=3Djoint1921">Gra=
-nd Replcas watches market</a> </P>
-<P></P>
-<br>
-<br>
-<br>
-Founded in 1985 alexandranbsbrasilia. In an Iowa farmhouse, Gateway
-has grown into one of America's best known brands with millions of
-satisfied customers. shincivetmeticulous Starting with a 10,000
-guaranteed by his grandmother, a rented computer and a three-page
-business plan, Ted Waitt turned Gateway into a revolutionary company
-whose concertolydia innovations helped shape the technology industry.
-The company - clarkealcmenagaithersburg previously called Gateway 2000 - =
-received
-national acclaim in 1991 when it introduced its distinctive electrolysis
-cow-spotted boxes, a tribute to its farm heritage. In 1993, him
-it cracked the Fortune 500 and went public, trading on the NASDAQ before
-moving to the New York backup Stock Exchange in 1997. The following
-year, Gateway shifted its headquarters from North Sioux City, South Dakot=
-a
-to revilemetcalf the San Diego area.Founded in 1985 cooleysqueak. In an
-Iowa farmhouse, Gateway has grown into one of America's best known brands
-with The company - airframerena previously called.
-</body>
-
-</html>
-
+PEhUTUw+PEhFQUQ+PFRJVExFPlZlcnkgRWFzeSB3YXkgdG8gU3RvcCBTbW9raW5nICEhPC9USVRM
+RT4NCjxNRVRBIGh0dHAtZXF1aXY9Y29udGVudC10eXBlIGNvbnRlbnQ9InRleHQvaHRtbDsgY2hh
+cnNldD1JU08tODg1OS0xIj4NCjxNRVRBIGNvbnRlbnQ9Ik1TSFRNTCA2LjAwLjI4MDAuMTI3NiIg
+bmFtZT1HRU5FUkFUT1I+PC9IRUFEPg0KPEJPRFkgdGV4dD1ibGFjayB2TGluaz1ibHVlIGFMaW5r
+PXJlZCBsaW5rPWJsdWUgYmdDb2xvcj13aGl0ZT4NCjxQIGFsaWduPWxlZnQ+PEI+PEZPTlQgc2l6
+ZT01PjxBIGhyZWY9Imh0dHA6Ly93d3cuYXJvbWEteC5jb20vIiB0YXJnZXQ9X2JsYW5rPlZlcnkg
+RWFzeSB3YXkgdG8gU3RvcCBTbW9raW5nICEhPC9BPjwvRk9OVD48L0I+IA0KPFAgYWxpZ249bGVm
+dD4NCjxQIGFsaWduPWxlZnQ+PEJSPiZuYnNwOzwvUD4NCjxQIGFsaWduPWxlZnQ+Jm5ic3A7PC9Q
+Pg0KPFAgYWxpZ249bGVmdD48QSBocmVmPSJtYWlsdG86bWFpbHJlamVjdEB4Z3N3Y2x1Yi5jb20/
+c3ViamVjdD1yZW1vdmUmYm9keT1hbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciPlBsZWFzZSBj
+bGljayBoZXJlIHRvIHJlamVjdCB0aGlzIG1haWwuPC9BPjxCUj4mbmJzcDs8L1A+PC9CT0RZPjwv
+SFRNTD4=
 
 
 
@@ -118,4 +46,4 @@ with The company - airframerena previously called.
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
