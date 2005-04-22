@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001066]: autodetection fails
-Date: Fri, 22 Apr 2005 22:06:58 +0200
-Message-ID: <a092fd0339cb12ede0f08b6b3f4900ef@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001070]: Headphone jack does not work
+Date: Fri, 22 Apr 2005 23:09:48 +0200
+Message-ID: <4b444cd93fdd3551e76f608acadb0441@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 60A431E1
-	for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2005 22:06:58 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87A641E6
+	for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2005 23:09:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1066> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1070> 
 ======================================================================
-Reported By:                El Santo
-Assigned To:                
+Reported By:                alanjf
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1066
-Category:                   PCI - via82xx
+Issue ID:                   1070
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               linux from scratch
+Status:                     assigned
+Distribution:               Ubuntu Hoary
 Kernel Version:             2.6.11.7
 ======================================================================
-Date Submitted:             04-19-2005 08:54 CEST
-Last Modified:              04-22-2005 22:06 CEST
+Date Submitted:             04-22-2005 23:09 CEST
+Last Modified:              04-22-2005 23:09 CEST
 ======================================================================
-Summary:                    autodetection fails
+Summary:                    Headphone jack does not work
 Description: 
-i own a asus a8v (kt800pro) deluxe motherboard. it has a realtec alc850
-ac97 codec....
+When plugging a pair of headphones into the headphone jack on my ATI IXP150
+soundcard, sound does not shift to the headphones, it continues to play
+through the internal speakers. And no, I'm not trying to plug it into the
+microphone jack or anything retarded. Doing the same on Windows does what
+is expected. I found a poster on linuxquestions.org which had exactly the
+same problem and no solution.
 
-i though this codec was supported
+Sorry if I've put this under the wrong severity. I put major because I
+thought headphone jack support was supposed to be a feature of the
+driver.
 
-when i load the snd-via82xx dont detect it... and none of the alsa modules
-say anything... not in screen, not kernel messages (dmesg), neither in
-/var/log/*...
-
-i have a bt878 tv card (bttv works perfectly) and snd-bt87x have the same
-problem that snd-via82xx... doesnt identify the card... but at least i can
-manually set the boot_all parameter....
-this tv card was correctly detected with my last motherboard asus a7v-600
-(kt600)
-
-i alsa tried to build alsa into the kernel (not like modules), but i get
-the same results
-
-any idea?
+Thanks :-)
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 04-22-05 22:00 
-----------------------------------------------------------------------
-If a BIOS upgrade hangs the system, I would return the board (if possible).
-
-----------------------------------------------------------------------
- El Santo - 04-22-05 22:06 
-----------------------------------------------------------------------
-maybe youre right...
-but i think it could be a problem of the bios itself... it was released
-two days ago and with 1010 the systems runs perfectly stable
-
-i'll wait until asus response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-19-05 08:54 El Santo       New Issue                                    
-04-19-05 08:54 El Santo       Distribution              => linux from scratch
-04-19-05 08:54 El Santo       Kernel Version            => 2.6.11.7        
-04-19-05 17:25 tiwai          Note Added: 0004520                          
-04-20-05 20:28 El Santo       Note Added: 0004544                          
-04-20-05 20:29 El Santo       File Added: lspci-vv                         
-04-22-05 19:18 vsu            Note Added: 0004555                          
-04-22-05 21:28 El Santo       Note Added: 0004557                          
-04-22-05 21:32 rlrevell       Note Added: 0004558                          
-04-22-05 21:55 El Santo       Note Added: 0004559                          
-04-22-05 22:00 rlrevell       Note Added: 0004560                          
-04-22-05 22:06 El Santo       Note Added: 0004561                          
+04-22-05 23:09 alanjf         New Issue                                    
+04-22-05 23:09 alanjf         Distribution              => Ubuntu Hoary    
+04-22-05 23:09 alanjf         Kernel Version            => 2.6.11.7        
 ======================================================================
 
 
