@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Fri, 22 Apr 2005 11:04:46 +0200
-Message-ID: <bc348134d9fd9497328ff63ab5369bb4@bugtrack.alsa-project.org>
+From: =?ISO-8859-1?Q?Istv=E1n_V=E1radi?= <ivaradi@gmail.com>
+Subject: ALSA on AMD64 with a 32-bit userspace
+Date: Fri, 22 Apr 2005 11:04:53 +0200
+Message-ID: <dbdd6db90504220204e2f80ac@mail.gmail.com>
+Reply-To: =?ISO-8859-1?Q?Istv=E1n_V=E1radi?= <ivaradi@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----=_Part_349_5011630.1114160693328"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D5CC71BC
-	for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2005 11:04:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,166 +16,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_349_5011630.1114160693328
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
-======================================================================
-Reported By:                misnagid
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   749
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora FC3
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              04-22-2005 11:04 CEST
-======================================================================
-Summary:                    Buzz from ALSA setup
-Description: 
-I get an almost constant buzz from speakers when I've tried to use ALSA. 
-Have followed your directions from the online web page directions to the
-letter.  Still buzz.
-Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
-Have tried everything I've seen about this problem.
-OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
-driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
-successful in all other regards install of Fedora FC3.
+Hi,
 
-======================================================================
+I am using ALSA with a 64-bit AMD64 kernel (2.6.11) but with 32-bit
+applications. While trying to use Rosegarden4 (with JACK and
+Fluidsynth), I encountered some problems:
 
-----------------------------------------------------------------------
- misnagid - 01-11-05 23:20 
-----------------------------------------------------------------------
-Peter,
-You've been exceptionally kind and considerate to me!  I did as you
-suggested and reported this bug to the Alsa mailing list you suggested. 
-In reply, I received the following critique from Lee Revell.
+- some sequencer-related ioctl's did not work correctly because the
+kernel member of seq_port_info structure was not initialized. I
+attached a patch that initializes this to 0.
 
-On Tue, 2005-01-11 at 05:54 -0500, JerryN wrote:
-> Hi,
-> 
-> Please see:
-> 
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749
-> 
-> and:
-> 
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=806
-> 
-> 
-> I have tried to use ALSA under Fedora FC3 with 2 very different sound
-> cards.  Both sound cards work fine with Suse 9.2, RHEL 3.0, RHEL Beta
-> 4.x, Debian weekly Sarge, latest LIVE Mepis, Mandrake 10.1, you name
-it!
-> 
+- start the playback with snd_pcm_hw_start failed with -EPIPE, because
+some pointers were not updated. I attached a patch for alsa-lib 1.0.8,
+in which sync_ptr is called before SNDRV_PCM_IOCTL_START. It seems to
+solve the problem, though I don't know alsa-lib enough to be sure that
+this is the right solution...
 
-Then it's not an ALSA bug, it's a Fedora bug.  I am not sure why you
-keep filing ALSA bug reports.
+With these patches playback works, but JACK always reports xruns,
+whereas there aren't any. I discovered that the xruns are detected in
+the alsa_driver_wait function in alsa_driver.c (in JACK) returns 0,
+because the snd_pcm_avail_update calls in that function return 0.
+Putting sync_ptr into snd_pcm_avail_update does not seem to solve the
+problem.
 
-> The MB is the Asus A7N8X-E Deluxe.  Latest Bios. Onboard Audio
-disabled.
-> All Alsa instructions including unmuting sound fully followed!
-> 
-> Have tried both Creative Labs Audigy 2 and M-Audio Revolution 7.1.
-> Latest ALSA drivers, etc.
-> 
-> 
-> These bug descriptions are totally extremely complete!!
-> 
-> Nobody's been able to assist at ALSA though theyve tried hard.
-> 
+JACK works properly when run with a 32-bit kernel or when compiled
+into a 64-bit executable.
 
-See above.  ALSA is not the problem, FC3 must be doing something weird.
-Have you tried FC2?  If FC2 works then you can narrow the problem down a
-bit.
+Could you give me some hints as to what can I try? Or what can I do to
+help you debugging this problem? (Please reply to me directly, since I
+am not on the list).
 
-> Red Har Fedora does not reply to my bug reports though it was assigned;
-> never any replies from them.
+Thanks,
 
-How long ago did you file these bug reports?  You can't expect an
-immediate response...
+Istv=E1n
 
-Lee
+------=_Part_349_5011630.1114160693328
+Content-Type: text/x-patch; name="alsa-ioctl32-2.6.11.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="alsa-ioctl32-2.6.11.patch"
 
-----------------------------------------------------------------------
- stransky - 04-22-05 11:04 
-----------------------------------------------------------------------
-Have you updated udev package?
+LS0tIHNvdW5kL2NvcmUvaW9jdGwzMi9zZXEzMi5jLm9yaWcJMjAwNS0wMy0wMiAwODozODozMy4w
+MDAwMDAwMDAgKzAxMDAKKysrIHNvdW5kL2NvcmUvaW9jdGwzMi9zZXEzMi5jCTIwMDUtMDQtMTYg
+MTY6Mzk6MDIuMDAwMDAwMDAwICswMjAwCkBAIC01OSw2ICs1OSw3IEBACiAJQ09QWSh3cml0ZV91
+c2UpO1wKIAlDT1BZKGZsYWdzKTtcCiAJQ09QWSh0aW1lX3F1ZXVlKTtcCisgICAgICAgIGRzdC0+
+a2VybmVsID0gMDtcCiB9CiAKIERFRklORV9BTFNBX0lPQ1RMKHNlcV9wb3J0X2luZm8pOwo=
+------=_Part_349_5011630.1114160693328
+Content-Type: text/x-patch; name="alsa_pcm_hw.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="alsa_pcm_hw.patch"
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-26-04 15:37 misnagid       New Issue                                    
-12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
-12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
-12-26-04 15:58 pzad           Note Added: 0002935                          
-12-26-04 16:31 misnagid       Note Added: 0002936                          
-12-26-04 16:44 misnagid       Note Added: 0002937                          
-12-26-04 16:56 pzad           Note Added: 0002938                          
-12-26-04 17:47 misnagid       Note Added: 0002939                          
-12-26-04 18:07 misnagid       Note Added: 0002940                          
-12-26-04 18:17 misnagid       Note Added: 0002942                          
-12-26-04 18:38 misnagid       Note Added: 0002943                          
-12-26-04 19:27 pzad           Note Added: 0002944                          
-12-26-04 19:44 misnagid       File Added: test.state                       
-12-26-04 19:44 misnagid       Note Added: 0002945                          
-12-26-04 20:02 misnagid       Note Added: 0002946                          
-12-26-04 20:09 misnagid       Note Added: 0002947                          
-12-26-04 20:22 pzad           File Added: newtest.state                    
-12-26-04 20:27 pzad           Note Added: 0002948                          
-12-26-04 20:32 pzad           Note Added: 0002949                          
-12-26-04 20:59 misnagid       Note Added: 0002950                          
-12-26-04 21:11 misnagid       Note Added: 0002951                          
-12-26-04 21:19 pzad           Note Added: 0002952                          
-12-26-04 21:22 pzad           Note Added: 0002953                          
-12-26-04 21:43 misnagid       Note Added: 0002954                          
-12-26-04 21:47 pzad           Note Added: 0002955                          
-12-26-04 22:18 misnagid       Note Added: 0002956                          
-12-26-04 23:46 misnagid       Note Added: 0002957                          
-12-27-04 10:46 pzad           Note Added: 0002958                          
-12-27-04 16:33 misnagid       Note Added: 0002964                          
-12-27-04 16:34 misnagid       File Added: test2.state                      
-12-27-04 16:38 misnagid       Note Added: 0002965                          
-12-27-04 16:45 pzad           Note Added: 0002966                          
-12-27-04 16:58 misnagid       Note Added: 0002967                          
-12-27-04 16:58 misnagid       File Added: test3.state                      
-12-27-04 17:42 misnagid       Note Added: 0002968                          
-12-27-04 17:57 misnagid       Note Added: 0002969                          
-12-27-04 18:16 pzad           Note Added: 0002970                          
-12-27-04 18:43 misnagid       Note Added: 0002971                          
-12-27-04 19:27 misnagid       Note Added: 0002972                          
-12-27-04 21:09 misnagid       Note Added: 0002975                          
-12-27-04 21:31 pzad           Note Added: 0002976                          
-12-27-04 21:47 misnagid       Note Added: 0002977                          
-12-27-04 21:49 misnagid       Note Added: 0002978                          
-12-27-04 22:00 pzad           Note Added: 0002979                          
-12-27-04 22:29 misnagid       Note Added: 0002980                          
-12-27-04 22:54 pzad           Note Added: 0002981                          
-12-27-04 23:15 misnagid       Note Added: 0002982                          
-12-27-04 23:19 misnagid       Note Added: 0002983                          
-12-27-04 23:46 pzad           Note Added: 0002984                          
-12-27-04 23:48 misnagid       Note Added: 0002985                          
-12-28-04 21:13 rlrevell       Note Added: 0002987                          
-01-03-05 00:36 misnagid       Note Added: 0003049                          
-01-03-05 15:10 pzad           Note Added: 0003064                          
-01-09-05 00:27 misnagid       Note Added: 0003132                          
-01-11-05 10:36 pzad           Note Added: 0003141                          
-01-11-05 11:24 misnagid       Note Added: 0003142                          
-01-11-05 23:20 misnagid       Note Added: 0003159                          
-04-22-05 11:04 stransky       Note Added: 0004553                          
-======================================================================
-
-
+LS0tIHNyYy9wY20vcGNtX2h3LmMub3JpZwkyMDA0LTEyLTIxIDE1OjExOjAyLjAwMDAwMDAwMCAr
+MDEwMAorKysgc3JjL3BjbS9wY21faHcuYwkyMDA1LTA0LTE2IDE5OjA5OjExLjAwMDAwMDAwMCAr
+MDIwMApAQCAtNTQzLDYgKzU0Myw3IEBACiAJYXNzZXJ0KHBjbS0+c3RyZWFtICE9IFNORF9QQ01f
+U1RSRUFNX1BMQVlCQUNLIHx8CiAJICAgICAgIHNuZF9wY21fbW1hcF9wbGF5YmFja19od19hdmFp
+bChwY20pID4gMCk7CiAjZW5kaWYKKyAgICAgICAgc3luY19wdHIoaHcsIDApOwogCWlmIChpb2N0
+bChody0+ZmQsIFNORFJWX1BDTV9JT0NUTF9TVEFSVCkgPCAwKSB7CiAJCWVyciA9IC1lcnJubzsK
+IAkJU1lTTVNHKCJTTkRSVl9QQ01fSU9DVExfU1RBUlQgZmFpbGVkIik7Cg==
+------=_Part_349_5011630.1114160693328--
 
 
 -------------------------------------------------------
