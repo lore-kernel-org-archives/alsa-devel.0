@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001066]: autodetection fails
-Date: Fri, 22 Apr 2005 21:28:29 +0200
-Message-ID: <49016a82c6a8179822508887e35c1e18@bugtrack.alsa-project.org>
+Date: Fri, 22 Apr 2005 21:32:54 +0200
+Message-ID: <10fd1db5fdf4314e5bf0b1e5e4eb0e50@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5D5E61D5
-	for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2005 21:28:30 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0E19C1E3
+	for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2005 21:32:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               linux from scratch
 Kernel Version:             2.6.11.7
 ======================================================================
 Date Submitted:             04-19-2005 08:54 CEST
-Last Modified:              04-22-2005 21:28 CEST
+Last Modified:              04-22-2005 21:32 CEST
 ======================================================================
 Summary:                    autodetection fails
 Description: 
@@ -66,18 +66,6 @@ any idea?
 ======================================================================
 
 ----------------------------------------------------------------------
- vsu - 04-22-05 19:18 
-----------------------------------------------------------------------
-ASUS A8V BIOS has a "feature" which cannot be disabled: if a PCI sound card
-is present, the onboard sound is disabled automatically. Therefore you
-need to remove your Guillemot card in order to use the onboard sound.
-
-Apparently some BIOS versions had bugs in this check - they recognized
-some TV tuner cards as sound cards and disabled the onboard sound; if
-VIA8237 still does not appear after removing the Guillemot sound card, but
-appears after you also remove yor bt878 card, you may need to update BIOS.
-
-----------------------------------------------------------------------
  El Santo - 04-22-05 21:28 
 ----------------------------------------------------------------------
 vsu: you are right...
@@ -88,6 +76,11 @@ i'm going to write to asus to ask them to remove this pathetic feature...
 i need the guillemot isis card
 
 thanx and regards
+
+----------------------------------------------------------------------
+ rlrevell - 04-22-05 21:32 
+----------------------------------------------------------------------
+Did you try BIOS upgrade?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -100,6 +93,7 @@ Date Modified  Username       Field                    Change
 04-20-05 20:29 El Santo       File Added: lspci-vv                         
 04-22-05 19:18 vsu            Note Added: 0004555                          
 04-22-05 21:28 El Santo       Note Added: 0004557                          
+04-22-05 21:32 rlrevell       Note Added: 0004558                          
 ======================================================================
 
 
