@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001066]: autodetection fails
-Date: Fri, 22 Apr 2005 21:32:54 +0200
-Message-ID: <10fd1db5fdf4314e5bf0b1e5e4eb0e50@bugtrack.alsa-project.org>
+Date: Fri, 22 Apr 2005 21:55:23 +0200
+Message-ID: <8f800a0b171aba424bbee901366cc356@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0E19C1E3
-	for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2005 21:32:55 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B612CAA
+	for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2005 21:55:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               linux from scratch
 Kernel Version:             2.6.11.7
 ======================================================================
 Date Submitted:             04-19-2005 08:54 CEST
-Last Modified:              04-22-2005 21:32 CEST
+Last Modified:              04-22-2005 21:55 CEST
 ======================================================================
 Summary:                    autodetection fails
 Description: 
@@ -66,21 +66,15 @@ any idea?
 ======================================================================
 
 ----------------------------------------------------------------------
- El Santo - 04-22-05 21:28 
-----------------------------------------------------------------------
-vsu: you are right...
-
-amazingly the sound works perfect after removing guillemot card...
-
-i'm going to write to asus to ask them to remove this pathetic feature...
-i need the guillemot isis card
-
-thanx and regards
-
-----------------------------------------------------------------------
  rlrevell - 04-22-05 21:32 
 ----------------------------------------------------------------------
 Did you try BIOS upgrade?
+
+----------------------------------------------------------------------
+ El Santo - 04-22-05 21:55 
+----------------------------------------------------------------------
+i try the BIOS update, and found that not only doesnt solve the problem,
+but also hangs the system... :-(
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -94,6 +88,7 @@ Date Modified  Username       Field                    Change
 04-22-05 19:18 vsu            Note Added: 0004555                          
 04-22-05 21:28 El Santo       Note Added: 0004557                          
 04-22-05 21:32 rlrevell       Note Added: 0004558                          
+04-22-05 21:55 El Santo       Note Added: 0004559                          
 ======================================================================
 
 
