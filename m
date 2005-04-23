@@ -1,8 +1,14 @@
-From: "Your Stock Broker" <astigmatwatermellon@adkinsandsonswindows.com>
-Subject: Leading auth0rity 0n |0w priced st0cks
-Date: Sat, 23 Apr 2005 16:23:35 +0100
-Message-ID: <1096862523.468000-77694punstermango@adkinsandsonswindows.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001072]: 'Capture Source' and 'Mic Select' controls cannot be switched
+Date: Sat, 23 Apr 2005 21:41:07 +0200
+Message-ID: <979c241d697a26307d485ea8642582e8@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 33819217
+	for <alsa-devel@alsa-project.org>; Sat, 23 Apr 2005 21:41:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,95 +18,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-announce@alsa-project.org
-Cc: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-devel-request@alsa-project.org, alsa-user@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The Oi| and Gas Advisory
 
-Now that Oil and Gas has entered a |ong-term bull market,
-our specialty in pinpointing the hottest companies of the few remaining
-underva|ued energy plays has produced soaring returns.
-Emerson Oil and Gas (EOGI) is an energy developer in the US "Oil Belt"
-and in Canada's most high|y coveted reservoirs with generating
-potential of Mi|lions per week.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1072> 
+======================================================================
+Reported By:                vsu
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1072
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               ALT Linux
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             04-23-2005 21:41 CEST
+Last Modified:              04-23-2005 21:41 CEST
+======================================================================
+Summary:                    'Capture Source' and 'Mic Select' controls cannot be
+switched
+Description: 
+With ALSA CVS snapshots from 2005-04-09 and 2005-04-23 it is not possible
+to select capture source.  I have tried alsamixer, amixer, and even
+"alsactl restore" (by editing the state file directly), but no matter what
+is done, the 'Capture Source' control is still set to 'Mic':
 
-Breaking NEws!!!
+        control.26 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 2
+                comment.item.0 Mic
+                comment.item.1 CD
+                comment.item.2 Video
+                comment.item.3 Aux
+                comment.item.4 Line
+                comment.item.5 Mix
+                comment.item.6 'Mix Mono'
+                comment.item.7 Phone
+                iface MIXER
+                name 'Capture Source'
+                value.0 Mic
+                value.1 Mic
+        }
 
-VANCOUVER, April 22- Emerson Oil and Gas, Inc., announced a decision to explore the development of drilling programs in Wyoming (USA), as well as Alberta (CANADA), where several more very intriguing prospects, that include existing production, are developing rapidly. Emerson will announce further details as lease opportunities and contract negotiations come to fruition.
+However, the AC'97 register 0x1a which should be controlled by this
+control has value which corresponds to 'Phone', not 'Mic':
 
-One of the most effective ways to acquire financing for drilling programs involves existing production of oil and or gas opportunities, as well as targeted areas with surrounding production. Emerson is very optimistic that with its current deal flow it will be able to build a solid foundation to grow.
+$ cat
+/proc/asound/card0/codec97\https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0/ac97\https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0-0+regs
+| grep 0:1a
+0:1a = 0707
 
-David Harker, Emerson President stated, "We at Emerson are aggressively pursuing all possible 
-0pp0rtunities for growth and success. We believe that in many situations we will have the 
-0pp0rtunity to include existing production in a drilling program, which will always encourage the participation of financial partners."
+Changing the register value directly by writing into the proc file
+produces the desired result - the recording source changes, however, the
+mixer control stays nonfunctional.
+
+I also noticed that the 'Mic Select' control is fixed to 'Mic1' and cannot
+be changed.
+
+With alsa-driver-1.0.8 both controls work. Updating first alsa-lib, then
+alsa-utils from 1.0.8 to the 2005-04-23 CVS snapshot did not change this
+behavior.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-23-05 21:41 vsu            New Issue                                    
+04-23-05 21:41 vsu            Distribution              => ALT Linux       
+04-23-05 21:41 vsu            Kernel Version            => 2.6.11          
+======================================================================
 
 
-Symbol - EOGI
-Price - .09
-
-The value of EOGI's shares will skyrocket:
-
-1. Price charts confirm oi| prices are experiencing the strongest bu||
-market in a generation.
-
-2. Natura| Gas prices have trip|ed in the last two years.
-
-3. With multiple projects in high-gear and the expanding production on
-reserves worth mu|ti-millions, EOGI is selling for |ess than 1/4 the
-va|ue of its assets.
-
-4. Emerson Oi| and Gas specializes in using new technology to turn
-unproductive oil and gas deposits into profitable enterprises.
-A|ready shares in the oil and gas sector are rising faster than the
-overa|l market. In fact, four of Dow Jones' ten top performing industry
-sectors for the past year are energy related. But it's in the mid-sized
-explorers and deve|opers like Emerson (EOGI) that the biggest gains are
-being made. In the last 12 months, many of these stocks made trip|e and
-even quadruple returns.
-
-Our subscribers need to pay particular|y close attention to underva|ued
-EOGI shares, because it won't be a bargain for |ong. This sma|l company
-with a comparably smal| market value, is sitting on a bonanza of oi|
-and gas reserves - an unrecognized bonus for investors especia|ly with
-the dai|y jump in energy prices.
-
-But all that will change in a few short weeks, as these reserves move
-into production, bringing an exp|osion of cash that is expected to
-capture the attention of the market, and have an equally exp|osive
-effect on the share price.
-
-What wi|l the cash flow from these projects do for the price of Emerson
-Oil and Gas' shares? Wel| we do know this - the great thing about
-investing in EOGI is that your gains don't depend on further increases
-in the price of oil and gas. Even if energy prices stay f|at, or decline
-slightly, you wi|l stil| make a very hea|thy return. Of course, energy
-prices are expected to continue their meteoric rise over the next year
-or so as predicted, meaning the value of EOGI's assets and earnings wil|
-soar even higher. In that case, the reward for investors wi|l be staggering.
-
-Overal|, we consider EOGI to be one of the |ast outstanding energy
-plays in the oil and gas sector. Once this discovery has been rea|ized,
-EOGI shares wi|| surge sharp|y on heavy investor attention. We have
-identified this discovery for immediate accumulation. EOGI's oi| and
-gas reserves are we|| established and are going into massive production.
-Early investors will secure optimum gains, and any additiona| news in this
-area will really turn up the heat, causing us to revise our targets
-upward in next week's bu|letin.
-
-Oi| and Gas Advisory (OGA) is not a investment expert. Certain
-statements contained in this news|etter may be future-|ooking
-statements within the meaning of The Private Securities Litigation Reform Act of 1995.
-Such terms as expect, be|ieve, may, wi||, and intend or similar terms
-may identify these statements. Past-performance is not an indicator of
-future-resu|ts. This is not an expert to acquire or se|| securities.
-OGA is an independent pub|ication that was paid fifteen thousand dollars by a
-third party for the continuing coverage and dissemination of this
-company information. Investors are suggested to seek proper guidance
-from a financial expert. Investors should use the information provided in this
-news|etter as a starting point for gathering additiona| information on
-the profi|ed company to al|ow the investor to form their own opinion
-regarding investment.
 
 
 -------------------------------------------------------
