@@ -1,10 +1,7 @@
-From: Marcel Holtmann <marcel@holtmann.org>
-Subject: Plugin loading and unloading
-Date: Sat, 23 Apr 2005 16:36:00 +0200
-Message-ID: <1114266960.10706.30.camel@pegasus>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+From: "Your Stock Broker" <astigmatwatermellon@adkinsandsonswindows.com>
+Subject: Leading auth0rity 0n |0w priced st0cks
+Date: Sat, 23 Apr 2005 16:23:35 +0100
+Message-ID: <1096862523.468000-77694punstermango@adkinsandsonswindows.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,34 +12,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-announce@alsa-project.org
+Cc: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-devel-request@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys,
+The Oi| and Gas Advisory
 
-I am working again on the A2DP Bluetooth plugin and the caching support
-in the latest ALSA library is nice and allows me to keep the underlaying
-link connected while stupid programs like XMMS closes the PCM when they
-switch the tracks.
+Now that Oil and Gas has entered a |ong-term bull market,
+our specialty in pinpointing the hottest companies of the few remaining
+underva|ued energy plays has produced soaring returns.
+Emerson Oil and Gas (EOGI) is an energy developer in the US "Oil Belt"
+and in Canada's most high|y coveted reservoirs with generating
+potential of Mi|lions per week.
 
-The PCM opening part and reusing of the underlaying AVDTP connection is
-easy, but I am a little bit concerned about the plugin unloading time.
-So is it possible to add init() and exit() functions that are called
-when the plugin is loaded and unloaded. Like we have for kernel modules?
+Breaking NEws!!!
 
-Do the ALSA library has a timer mechanism that we can use inside a
-plugin. Since it is a bad idea to hold the Bluetooth connection open for
-all the time, I like to add a idle timeout. This allows me to put the
-connection into sniff mode to save power or terminate it.
+VANCOUVER, April 22- Emerson Oil and Gas, Inc., announced a decision to explore the development of drilling programs in Wyoming (USA), as well as Alberta (CANADA), where several more very intriguing prospects, that include existing production, are developing rapidly. Emerson will announce further details as lease opportunities and contract negotiations come to fruition.
 
-Also the listing of plugins is still missing. I am fine with a general
-or plugin specific flag to make its PCM visible.
+One of the most effective ways to acquire financing for drilling programs involves existing production of oil and or gas opportunities, as well as targeted areas with surrounding production. Emerson is very optimistic that with its current deal flow it will be able to build a solid foundation to grow.
 
-Regards
-
-Marcel
+David Harker, Emerson President stated, "We at Emerson are aggressively pursuing all possible 
+0pp0rtunities for growth and success. We believe that in many situations we will have the 
+0pp0rtunity to include existing production in a drilling program, which will always encourage the participation of financial partners."
 
 
+Symbol - EOGI
+Price - .09
+
+The value of EOGI's shares will skyrocket:
+
+1. Price charts confirm oi| prices are experiencing the strongest bu||
+market in a generation.
+
+2. Natura| Gas prices have trip|ed in the last two years.
+
+3. With multiple projects in high-gear and the expanding production on
+reserves worth mu|ti-millions, EOGI is selling for |ess than 1/4 the
+va|ue of its assets.
+
+4. Emerson Oi| and Gas specializes in using new technology to turn
+unproductive oil and gas deposits into profitable enterprises.
+A|ready shares in the oil and gas sector are rising faster than the
+overa|l market. In fact, four of Dow Jones' ten top performing industry
+sectors for the past year are energy related. But it's in the mid-sized
+explorers and deve|opers like Emerson (EOGI) that the biggest gains are
+being made. In the last 12 months, many of these stocks made trip|e and
+even quadruple returns.
+
+Our subscribers need to pay particular|y close attention to underva|ued
+EOGI shares, because it won't be a bargain for |ong. This sma|l company
+with a comparably smal| market value, is sitting on a bonanza of oi|
+and gas reserves - an unrecognized bonus for investors especia|ly with
+the dai|y jump in energy prices.
+
+But all that will change in a few short weeks, as these reserves move
+into production, bringing an exp|osion of cash that is expected to
+capture the attention of the market, and have an equally exp|osive
+effect on the share price.
+
+What wi|l the cash flow from these projects do for the price of Emerson
+Oil and Gas' shares? Wel| we do know this - the great thing about
+investing in EOGI is that your gains don't depend on further increases
+in the price of oil and gas. Even if energy prices stay f|at, or decline
+slightly, you wi|l stil| make a very hea|thy return. Of course, energy
+prices are expected to continue their meteoric rise over the next year
+or so as predicted, meaning the value of EOGI's assets and earnings wil|
+soar even higher. In that case, the reward for investors wi|l be staggering.
+
+Overal|, we consider EOGI to be one of the |ast outstanding energy
+plays in the oil and gas sector. Once this discovery has been rea|ized,
+EOGI shares wi|| surge sharp|y on heavy investor attention. We have
+identified this discovery for immediate accumulation. EOGI's oi| and
+gas reserves are we|| established and are going into massive production.
+Early investors will secure optimum gains, and any additiona| news in this
+area will really turn up the heat, causing us to revise our targets
+upward in next week's bu|letin.
+
+Oi| and Gas Advisory (OGA) is not a investment expert. Certain
+statements contained in this news|etter may be future-|ooking
+statements within the meaning of The Private Securities Litigation Reform Act of 1995.
+Such terms as expect, be|ieve, may, wi||, and intend or similar terms
+may identify these statements. Past-performance is not an indicator of
+future-resu|ts. This is not an expert to acquire or se|| securities.
+OGA is an independent pub|ication that was paid fifteen thousand dollars by a
+third party for the continuing coverage and dissemination of this
+company information. Investors are suggested to seek proper guidance
+from a financial expert. Investors should use the information provided in this
+news|etter as a starting point for gathering additiona| information on
+the profi|ed company to al|ow the investor to form their own opinion
+regarding investment.
 
 
 -------------------------------------------------------
