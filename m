@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001072]: 'Capture Source' and 'Mic Select' controls cannot be switched
-Date: Sun, 24 Apr 2005 13:21:56 +0200
-Message-ID: <5bb1bfd1a4aa3fd0d57f3501d74e249c@bugtrack.alsa-project.org>
+From: Sergey Vlasov <vsu@altlinux.ru>
+Subject: [PATCH] snd-ac97-codec: fix ac97_enum mixer elements
+Date: Sun, 24 Apr 2005 15:21:47 +0400
+Message-ID: <20050424112147.GA14587@procyon.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="8t9RHnE3ZwKMSgU+"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 652CF227
-	for <alsa-devel@alsa-project.org>; Sun, 24 Apr 2005 13:21:56 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,113 +16,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1072> 
-======================================================================
-Reported By:                vsu
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1072
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               ALT Linux
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             04-23-2005 21:41 CEST
-Last Modified:              04-24-2005 13:21 CEST
-======================================================================
-Summary:                    'Capture Source' and 'Mic Select' controls cannot be
-switched
-Description: 
-With ALSA CVS snapshots from 2005-04-09 and 2005-04-23 it is not possible
-to select capture source.  I have tried alsamixer, amixer, and even
-"alsactl restore" (by editing the state file directly), but no matter what
-is done, the 'Capture Source' control is still set to 'Mic':
+--8t9RHnE3ZwKMSgU+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-        control.26 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 2
-                comment.item.0 Mic
-                comment.item.1 CD
-                comment.item.2 Video
-                comment.item.3 Aux
-                comment.item.4 Line
-                comment.item.5 Mix
-                comment.item.6 'Mix Mono'
-                comment.item.7 Phone
-                iface MIXER
-                name 'Capture Source'
-                value.0 Mic
-                value.1 Mic
-        }
+ac97_enum mixer elements (e.g., "Capture Source") did not work because
+of wrong bitmask calculation in snd_ac97_get_enum_double() and
+snd_ac97_put_enum_double().
 
-However, the AC'97 register 0x1a which should be controlled by this
-control has value which corresponds to 'Phone', not 'Mic':
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1072
 
-$ cat
-/proc/asound/card0/codec97\https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0/ac97\https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0-0+regs
-| grep 0:1a
-0:1a = 0707
+Signed-off-by: Sergey Vlasov <vsu@altlinux.ru>
 
-Changing the register value directly by writing into the proc file
-produces the desired result - the recording source changes, however, the
-mixer control stays nonfunctional.
+--- alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c.fix-enum	2005-04-09 16:57=
+:02 +0400
++++ alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c	2005-04-24 15:01:44 +0400
+@@ -465,7 +465,7 @@ int snd_ac97_get_enum_double(snd_kcontro
+ 	struct ac97_enum *e =3D (struct ac97_enum *)kcontrol->private_value;
+ 	unsigned short val, bitmask;
+ =09
+-	for (bitmask =3D 1; bitmask > e->mask; bitmask <<=3D 1)
++	for (bitmask =3D 1; bitmask < e->mask; bitmask <<=3D 1)
+ 		;
+ 	val =3D snd_ac97_read_cache(ac97, e->reg);
+ 	ucontrol->value.enumerated.item[0] =3D (val >> e->shift_l) & (bitmask - 1=
+);
+@@ -482,7 +482,7 @@ int snd_ac97_put_enum_double(snd_kcontro
+ 	unsigned short val;
+ 	unsigned short mask, bitmask;
+ =09
+-	for (bitmask =3D 1; bitmask > e->mask; bitmask <<=3D 1)
++	for (bitmask =3D 1; bitmask < e->mask; bitmask <<=3D 1)
+ 		;
+ 	if (ucontrol->value.enumerated.item[0] > e->mask - 1)
+ 		return -EINVAL;
 
-I also noticed that the 'Mic Select' control is fixed to 'Mic1' and cannot
-be changed.
+--8t9RHnE3ZwKMSgU+
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-With alsa-driver-1.0.8 both controls work. Updating first alsa-lib, then
-alsa-utils from 1.0.8 to the 2005-04-23 CVS snapshot did not change this
-behavior.
-======================================================================
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
 
-----------------------------------------------------------------------
- vsu - 04-23-05 21:56 
-----------------------------------------------------------------------
-Seems that the problem was introduced in this change:
+iD8DBQFCa4FLW82GfkQfsqIRArDkAJ9l7TqDcI11Z2sDFYAKiLqKOMipTACgjigY
+CbuXDZ4MVkDSg/jxy1ES584=
+=irgi
+-----END PGP SIGNATURE-----
 
-Modified Files:
-        ac97_codec.c ac97_patch.c ac97_patch.h
-Log Message:
-Summary: Add CM9780 support, fix CM9761 SPDIF
-
-- Added CM9780 patch
-- Fix the SPDIF support on CM9761/CM9780
-- Allow the generic enum callback to pass any number (not power of 2)
-  as the value mask
-
-Reverting the ac97_codec.c part of the change fixes the behavior of
-Capture Switch (the control can be changed, and the register 0x1a changes
-appropriately).
-
-----------------------------------------------------------------------
- vsu - 04-24-05 13:21 
-----------------------------------------------------------------------
-The attached patch fixes the problem (bitmask calculation was buggy).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-23-05 21:41 vsu            New Issue                                    
-04-23-05 21:41 vsu            Distribution              => ALT Linux       
-04-23-05 21:41 vsu            Kernel Version            => 2.6.11          
-04-23-05 21:56 vsu            Note Added: 0004564                          
-04-24-05 13:21 vsu            File Added: ac97-enum-fix.patch                   
-
-04-24-05 13:21 vsu            Note Added: 0004565                          
-======================================================================
-
-
+--8t9RHnE3ZwKMSgU+--
 
 
 -------------------------------------------------------
