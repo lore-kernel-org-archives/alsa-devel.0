@@ -1,12 +1,13 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: [PATCH] snd-ac97-codec: add support for Front Mic input on ALC850
-Date: Sun, 24 Apr 2005 16:28:28 +0400
-Message-ID: <20050424122828.GB14587@procyon.home>
+From: "Thomas Charbonnel" <thomas@undata.org>
+Subject: [PATCH] hdsp ppc firmware upload fix
+Date: Sun, 24 Apr 2005 17:21:24 +0200 (CEST)
+Message-ID: <35046.193.197.172.195.1114356084.squirrel@www.undata.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yNb1oOkm5a9FJOVX"
+Content-Type: multipart/mixed; boundary="----=_20050424172124_25525"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from undata.org (12-186-106-62.kaptech.net [62.106.186.12])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9E34F23A
+	for <alsa-devel@alsa-project.org>; Sun, 24 Apr 2005 16:22:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,46 +17,109 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, steve@k-hornz.de
 List-Id: alsa-devel@alsa-project.org
 
-
---yNb1oOkm5a9FJOVX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+------=_20050424172124_25525
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-Add the "Mic Front Input Switch" control to the mixer for ALC850.
-Enabling this input is required for using the front panel microphone
-connector with ASUS A8V motherboard.
+Hi,
 
-Signed-off-by: Sergey Vlasov <vsu@altlinux.ru>
+This patch fixes the firmware upload process on powerpc. The "firmware"
+file is in fact configuration data for the iobox, it has nothing to do
+with the computer or endianness (moreover the byte swapping functions
+were broken and dropping 2 bytes out of 4. As they were used twice the
+resulting firmware fed to the card was containing only 0s :)
 
---- alsa-driver/alsa-kernel/pci/ac97/ac97_patch.c.alc850-front-mic	2005-04-=
-23 19:35:45 +0400
-+++ alsa-driver/alsa-kernel/pci/ac97/ac97_patch.c	2005-04-24 16:12:11 +0400
-@@ -1928,6 +1928,7 @@ static void alc850_update_jacks(ac97_t *
-=20
- static const snd_kcontrol_new_t snd_ac97_controls_alc850[] =3D {
- 	AC97_PAGE_SINGLE("Duplicate Front", AC97_ALC650_MULTICH, 0, 1, 0, 0),
-+	AC97_SINGLE("Mic Front Input Switch", AC97_ALC850_JACK_SELECT, 15, 1, 1),
- 	AC97_SURROUND_JACK_MODE_CTL,
- 	AC97_CHANNEL_MODE_CTL,
- };
+Thomas
 
---yNb1oOkm5a9FJOVX
-Content-Type: application/pgp-signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
+Changelog:
+ppc firmware upload fix
 
-iD8DBQFCa5DsW82GfkQfsqIRAlnfAJ43DB1RQY5SCfo7pn9J8HbpkOff5gCffVL8
-tBVgVvpTkNoP4hTJ4tIuBvE=
-=G3QI
------END PGP SIGNATURE-----
+Signed-off-by: Thomas Charbonnel <thomas@undata.org>
 
---yNb1oOkm5a9FJOVX--
+
+
+
+
+------=_20050424172124_25525
+Content-Type: text/x-patch; name="hdsp.diff"
+Content-Disposition: attachment; filename="hdsp.diff"
+
+Index: hdsp.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/rme9652/hdsp.c,v
+retrieving revision 1.86
+diff -r1.86 hdsp.c
+4915,4925c4915
+< #ifdef SNDRV_BIG_ENDIAN
+< 	{
+< 		int i;
+< 		u32 *src = (u32*)fw->data;
+< 		for (i = 0; i < ARRAY_SIZE(hdsp->firmware_cache); i++, src++)
+< 			hdsp->firmware_cache[i] = ((*src & 0x000000ff) << 16) |
+< 				((*src & 0x0000ff00) << 8)  |
+< 				((*src & 0x00ff0000) >> 8)  |
+< 				((*src & 0xff000000) >> 16);
+< 	}
+< #else
+---
+> 
+4927c4917
+< #endif
+---
+> 
+
+------=_20050424172124_25525
+Content-Type: text/x-patch; name="hdsploader.diff"
+Content-Disposition: attachment; filename="hdsploader.diff"
+
+Index: hdsploader.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-tools/hdsploader/hdsploader.c,v
+retrieving revision 1.9
+diff -r1.9 hdsploader.c
+43,52c43
+< #if __BYTE_ORDER == __BIG_ENDIAN
+< 	{
+< 		unsigned int idx;
+< 		for (idx = 0; idx < 24413; idx++)
+< 			array[idx] = ((array[idx] & 0x000000ff) << 16) |
+< 				     ((array[idx] & 0x0000ff00) << 8)  |
+< 				     ((array[idx] & 0x00ff0000) >> 8)  |
+< 				     ((array[idx] & 0xff000000) >> 16);
+< 	}
+< #endif
+---
+> 
+
+------=_20050424172124_25525
+Content-Type: text/x-patch; name="tobin.diff"
+Content-Disposition: attachment; filename="tobin.diff"
+
+Index: tobin.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-firmware/hdsploader/tobin.c,v
+retrieving revision 1.2
+diff -r1.2 tobin.c
+17,26d16
+< #if __BYTE_ORDER == __BIG_ENDIAN
+< 	{
+< 		unsigned int idx;
+< 		for (idx = 0; idx < 24413; idx++)
+< 			array[idx] = ((array[idx] & 0x000000ff) << 16) |
+< 				     ((array[idx] & 0x0000ff00) << 8)  |
+< 				     ((array[idx] & 0x00ff0000) >> 8)  |
+< 				     ((array[idx] & 0xff000000) >> 16);
+< 	}
+< #endif
+
+
+------=_20050424172124_25525--
+
 
 
 -------------------------------------------------------
