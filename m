@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001074]: pcm_dmix hangs on device close
-Date: Sun, 24 Apr 2005 08:48:36 +0200
-Message-ID: <e83f0844529150c0260833f5c3c78d5e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001072]: 'Capture Source' and 'Mic Select' controls cannot be switched
+Date: Sun, 24 Apr 2005 13:21:56 +0200
+Message-ID: <5bb1bfd1a4aa3fd0d57f3501d74e249c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 58B4E23F
-	for <alsa-devel@alsa-project.org>; Sun, 24 Apr 2005 08:48:36 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 652CF227
+	for <alsa-devel@alsa-project.org>; Sun, 24 Apr 2005 13:21:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,106 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1074> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1072> 
 ======================================================================
-Reported By:                ikonst
+Reported By:                vsu
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1074
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   1072
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               ALT Linux
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             04-24-2005 08:48 CEST
-Last Modified:              04-24-2005 08:48 CEST
+Date Submitted:             04-23-2005 21:41 CEST
+Last Modified:              04-24-2005 13:21 CEST
 ======================================================================
-Summary:                    pcm_dmix hangs on device close
+Summary:                    'Capture Source' and 'Mic Select' controls cannot be
+switched
 Description: 
-The fix in pcm_dmix.c revision 1.71 causes the following regression:
+With ALSA CVS snapshots from 2005-04-09 and 2005-04-23 it is not possible
+to select capture source.  I have tried alsamixer, amixer, and even
+"alsactl restore" (by editing the state file directly), but no matter what
+is done, the 'Capture Source' control is still set to 'Mic':
 
-Everytime I access a Flash site thru my 'aoss'-wrapped Mozilla, it hangs:
+        control.26 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 2
+                comment.item.0 Mic
+                comment.item.1 CD
+                comment.item.2 Video
+                comment.item.3 Aux
+                comment.item.4 Line
+                comment.item.5 Mix
+                comment.item.6 'Mix Mono'
+                comment.item.7 Phone
+                iface MIXER
+                name 'Capture Source'
+                value.0 Mic
+                value.1 Mic
+        }
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x40a951c3 in poll ()
-from /lib/tls/libc.so.6
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x4001a1fd in poll ()
-from /usr/lib/libaoss.so
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x40c7bf78 in
-snd_pcm_wait_nocheck (pcm=0x9a7a6a0, timeout=-1)
-    at pcm.c:2234
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0x40cb27fb in
-snd_pcm_dmix_drain (pcm=0x9a7a6a0) at pcm_dmix.c:504
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x40c79bd4 in
-snd_pcm_drain (pcm=0xfffffffc) at pcm.c:1044
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x40c8cbb7 in
-snd_pcm_generic_drain (pcm=0xfffffffc) at
-pcm_generic.c:151
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x40c79bd4 in
-snd_pcm_drain (pcm=0xfffffffc) at pcm.c:1044
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x40bb24e7 in
-lib_oss_pcm_close () from /usr/lib/libalsatoss.so.0
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8  0x400199b4 in close ()
-from /usr/lib/libaoss.so
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9  0x441712b9 in
-PlatformSoundMix::UnlockAudioCallback ()
-   from /usr/lib/flashplugin-nonfree/libflashplayer.so
-...
+However, the AC'97 register 0x1a which should be controlled by this
+control has value which corresponds to 'Phone', not 'Mic':
 
+$ cat
+/proc/asound/card0/codec97\https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0/ac97\https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0-0+regs
+| grep 0:1a
+0:1a = 0707
+
+Changing the register value directly by writing into the proc file
+produces the desired result - the recording source changes, however, the
+mixer control stays nonfunctional.
+
+I also noticed that the 'Mic Select' control is fixed to 'Mic1' and cannot
+be changed.
+
+With alsa-driver-1.0.8 both controls work. Updating first alsa-lib, then
+alsa-utils from 1.0.8 to the 2005-04-23 CVS snapshot did not change this
+behavior.
 ======================================================================
+
+----------------------------------------------------------------------
+ vsu - 04-23-05 21:56 
+----------------------------------------------------------------------
+Seems that the problem was introduced in this change:
+
+Modified Files:
+        ac97_codec.c ac97_patch.c ac97_patch.h
+Log Message:
+Summary: Add CM9780 support, fix CM9761 SPDIF
+
+- Added CM9780 patch
+- Fix the SPDIF support on CM9761/CM9780
+- Allow the generic enum callback to pass any number (not power of 2)
+  as the value mask
+
+Reverting the ac97_codec.c part of the change fixes the behavior of
+Capture Switch (the control can be changed, and the register 0x1a changes
+appropriately).
+
+----------------------------------------------------------------------
+ vsu - 04-24-05 13:21 
+----------------------------------------------------------------------
+The attached patch fixes the problem (bitmask calculation was buggy).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-24-05 08:48 ikonst         New Issue                                    
+04-23-05 21:41 vsu            New Issue                                    
+04-23-05 21:41 vsu            Distribution              => ALT Linux       
+04-23-05 21:41 vsu            Kernel Version            => 2.6.11          
+04-23-05 21:56 vsu            Note Added: 0004564                          
+04-24-05 13:21 vsu            File Added: ac97-enum-fix.patch                   
+
+04-24-05 13:21 vsu            Note Added: 0004565                          
 ======================================================================
 
 
