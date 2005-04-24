@@ -1,12 +1,14 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: [PATCH] snd-ac97-codec: fix ac97_enum mixer elements
-Date: Sun, 24 Apr 2005 15:21:47 +0400
-Message-ID: <20050424112147.GA14587@procyon.home>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001071]: Help with Volume Controls
+Date: Sun, 24 Apr 2005 13:46:07 +0200
+Message-ID: <7f0607577534499353485f357816518a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="8t9RHnE3ZwKMSgU+"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BCA1C227
+	for <alsa-devel@alsa-project.org>; Sun, 24 Apr 2005 13:46:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,59 +18,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---8t9RHnE3ZwKMSgU+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1071> 
+======================================================================
+Reported By:                snekiepete
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1071
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             04-23-2005 07:05 CEST
+Last Modified:              04-24-2005 13:46 CEST
+======================================================================
+Summary:                    Help with Volume Controls
+Description: 
+I am looking for help configuring this card to have the ability to adjust
+"Front" and "Surround" volumes with one control instead of two. Is this
+possible and how?
+======================================================================
 
-ac97_enum mixer elements (e.g., "Capture Source") did not work because
-of wrong bitmask calculation in snd_ac97_get_enum_double() and
-snd_ac97_put_enum_double().
+----------------------------------------------------------------------
+ adamk75 - 04-24-05 13:46 
+----------------------------------------------------------------------
+This seems to be related to the folllwing bugs, which are for different
+soundcards:
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1072
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=919
 
-Signed-off-by: Sergey Vlasov <vsu@altlinux.ru>
+Seems that Alsa doesn't necessary have a master volume control on all
+cards that actually controls the volume of all output..  I know Lee Revell
+is working on this for Live! cards but I have no idea if his solution will
+be able to be used for other cards/drivers.
 
---- alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c.fix-enum	2005-04-09 16:57=
-:02 +0400
-+++ alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c	2005-04-24 15:01:44 +0400
-@@ -465,7 +465,7 @@ int snd_ac97_get_enum_double(snd_kcontro
- 	struct ac97_enum *e =3D (struct ac97_enum *)kcontrol->private_value;
- 	unsigned short val, bitmask;
- =09
--	for (bitmask =3D 1; bitmask > e->mask; bitmask <<=3D 1)
-+	for (bitmask =3D 1; bitmask < e->mask; bitmask <<=3D 1)
- 		;
- 	val =3D snd_ac97_read_cache(ac97, e->reg);
- 	ucontrol->value.enumerated.item[0] =3D (val >> e->shift_l) & (bitmask - 1=
-);
-@@ -482,7 +482,7 @@ int snd_ac97_put_enum_double(snd_kcontro
- 	unsigned short val;
- 	unsigned short mask, bitmask;
- =09
--	for (bitmask =3D 1; bitmask > e->mask; bitmask <<=3D 1)
-+	for (bitmask =3D 1; bitmask < e->mask; bitmask <<=3D 1)
- 		;
- 	if (ucontrol->value.enumerated.item[0] > e->mask - 1)
- 		return -EINVAL;
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-23-05 07:05 snekiepete     New Issue                                    
+04-23-05 07:05 snekiepete     Kernel Version            => 2.6.11          
+04-24-05 13:46 adamk75        Note Added: 0004566                          
+======================================================================
 
---8t9RHnE3ZwKMSgU+
-Content-Type: application/pgp-signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQFCa4FLW82GfkQfsqIRArDkAJ9l7TqDcI11Z2sDFYAKiLqKOMipTACgjigY
-CbuXDZ4MVkDSg/jxy1ES584=
-=irgi
------END PGP SIGNATURE-----
-
---8t9RHnE3ZwKMSgU+--
 
 
 -------------------------------------------------------
