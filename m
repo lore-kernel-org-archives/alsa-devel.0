@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001050]: Sound Blaster Audigy2 NX does not support 44,1kHz
-Date: Mon, 25 Apr 2005 10:47:45 +0200
-Message-ID: <82f0b265b6151e905959126275a1e337@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000977]: Unplug playing USB audio device: normal keyboard dies.
+Date: Mon, 25 Apr 2005 10:49:55 +0200
+Message-ID: <6666bc04c5affdf0bcf2def86ea98f3d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9F0251ED
-	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2005 10:47:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C5B891ED
+	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2005 10:49:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+The following issue has been set as DUPLICATE OF issue 0001073.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1050> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=977> 
 ======================================================================
-Reported By:                gears
+Reported By:                jhje00
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1050
+Issue ID:                   977
 Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Ubuntu 5.04
-Kernel Version:             2.6.10
+Status:                     assigned
+Distribution:               Debian.
+Kernel Version:             2.6.10 + 2.6.11.
 ======================================================================
-Date Submitted:             04-13-2005 17:22 CEST
-Last Modified:              04-25-2005 10:47 CEST
+Date Submitted:             03-09-2005 22:22 CET
+Last Modified:              04-25-2005 10:49 CEST
 ======================================================================
-Summary:                    Sound Blaster Audigy2 NX does not support 44,1kHz
+Summary:                    Unplug playing USB audio device: normal keyboard
+dies.
 Description: 
-For my hardware (Sound Blaster Audigy2 NX) the system also needs to set up
-automatic sound conversion to 48000 instead of default 44100 or the sound
-gets
-badly distorted (at least it does so when using the spdif output). It also
-needs
-its speaker output unmuted.
-
-the sound distortion is because ALSA claims it supports 44,1 kHz (hw:X),
-although it really doesn't
+Using an EgoSys U2A USB audio device I have observed that when unplugging
+the device while it is in use by e.g. xmms or jackd a slew of error
+messages appear. After that, local keyboard is unusable. Mouse and X
+works, remote login is still functional, but I am unable to regain local
+keyboard.
 ======================================================================
-
+Relationships       ID      Summary
 ----------------------------------------------------------------------
- Clemens Ladisch - 04-25-05 10:47 
-----------------------------------------------------------------------
-The hardware does support 44.1 kHz, but the driver and the device cannot
-agree on how to synchronize to each other.
-
-I'm working on this.
+duplicate of        0001073 Loss of keyboard response after powerin...
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-13-05 17:22 gears          New Issue                                    
-04-13-05 17:22 gears          Distribution              => Ubuntu 5.04     
-04-13-05 17:22 gears          Kernel Version            => 2.6.10          
-04-25-05 10:47 Clemens LadischNote Added: 0004571                          
-04-25-05 10:47 Clemens LadischStatus                   assigned => acknowledged
+03-09-05 22:22 jhje00         New Issue                                    
+03-09-05 22:22 jhje00         Distribution              => Debian.         
+03-09-05 22:22 jhje00         Kernel Version            => 2.6.10 + 2.6.11.
+04-25-05 10:49 Clemens LadischRelationship added       duplicate of 0001073
 ======================================================================
 
 
