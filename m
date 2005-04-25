@@ -1,12 +1,8 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Multi device for 2 C-Ports... help needed
-Date: Mon, 25 Apr 2005 13:17:21 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0504251306330.2934-100000@studcom.urz.uni-halle.de>
-References: <1114312187.15165.6.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+From: "SOFTWARE NEWSLETTER" <yegdy@netscape.net>
+Subject: Dis.counted OEM Microsoft, Adobe, Autodesk software for you - occlusive polynomial
+Date: Mon, 25 Apr 2005 21:26:39 +0400
+Message-ID: <08GUJ6QTO05W182PM8@UOFT48.UTOLEDO.EDU>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1114312187.15165.6.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,108 +12,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Geoff Beasley <songshop@bizmedia.com.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel-request@alsa-project.org, alsa-user@alsa-project.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Geoff Beasley wrote:
-> I went to the Alsa site to find out how to do this again, but I got
-> completely confused. There's no mention of the multi plugin at all.
+Hey,
 
-There is a small example, well hidden at
-<http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html>.
+we have just launched our annual clearance sale for computer software.
+http://elmhurst.rancejknfl.com/?GpcLIXGHfKhzYaGcertificate
 
-Try this:
+our prices are incredibly lower, 
+about 200 to 400 percent off on retail prices
 
-pcm.cport_a {
-	type hw
-	card 0       # change the card numbers as appropriate
-	device 0
-}
-pcm.cport_b {
-	type hw
-	card 1
-	device 0
-}
+please take a look at some of our software titles
 
-pcm.playback20 {
-	type multi
-	slaves.a { pcm cport_a channels 10 }
-	slaves.b { pcm cport_b channels 10 }
-	bindings [
-		{ slave a channel 0 }
-		{ slave a channel 1 }
-		{ slave a channel 2 }
-		{ slave a channel 3 }
-		{ slave a channel 4 }
-		{ slave a channel 5 }
-		{ slave a channel 6 }
-		{ slave a channel 7 }
-		{ slave a channel 8 }
-		{ slave a channel 9 }
-		{ slave b channel 0 }
-		{ slave b channel 1 }
-		{ slave b channel 2 }
-		{ slave b channel 3 }
-		{ slave b channel 4 }
-		{ slave b channel 5 }
-		{ slave b channel 6 }
-		{ slave b channel 7 }
-		{ slave b channel 8 }
-		{ slave b channel 9 }
-	]
-}
+available and ready to ship to your doorstep, 
+we also offer you Easy Downloadable delivery Spftware
 
-pcm.capture24 {
-	type multi
-	slaves.a { pcm cport_a channels 12 }
-	slaves.b { pcm cport_b channels 12 }
-	bindings [
-		{ slave a channel 0 }
-		{ slave a channel 1 }
-		{ slave a channel 2 }
-		{ slave a channel 3 }
-		{ slave a channel 4 }
-		{ slave a channel 5 }
-		{ slave a channel 6 }
-		{ slave a channel 7 }
-		{ slave a channel 8 }
-		{ slave a channel 9 }
-		{ slave a channel 10 }
-		{ slave a channel 11 }
-		{ slave b channel 0 }
-		{ slave b channel 1 }
-		{ slave b channel 2 }
-		{ slave b channel 3 }
-		{ slave b channel 4 }
-		{ slave b channel 5 }
-		{ slave b channel 6 }
-		{ slave b channel 7 }
-		{ slave b channel 8 }
-		{ slave b channel 9 }
-		{ slave b channel 10 }
-		{ slave b channel 11 }
-	]
-}
-
-pcm.both {
-	type plug
-	slave.pcm {
-		type asym
-		playback.pcm playback20
-		capture.pcm capture24
-	}
-}
-
-> When I get it going can I expect any extra latency ?
-
-The plugin will copy the audio samples around, but the time needed for
-that should be negligible.
+windows xp professional 2002, 50 dollars
+adobe photoshop 7.0, 60 dollars
+microsoft office XP Professional 2002, 60 dollars
+corel draw graphics suite 11, 60 dollars
 
 
-HTH
-Clemens
+http://elmhurst.rancejknfl.com/?GpcLIXGHfKhzYaGcertificate
 
+looking forward to hear from you
+sincerely
+Willa Mock
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Thanks but no thanks:
+http://uppercut.feputrefymb.com/crackle?asIycOHbfehUFaa
+
+--------------------------
+handle pure carmen gaugeable equipotent allied begrudge paula snub behind eigenvector rand healthful swift spiteful westinghouse group lactate rite barrymore sack pander baghdad generate fontaine enumerate monongahela passer logo rand semiramis 
+thee monsoon covenant jumpy patrick trapezoidal capitol detergent audiotape assistant equanimity airlock burroughs caustic copolymer puberty 
+
+strain trimer were flash dividend interpol calkins alienate raindrop sagacity umber admiralty emporium watery elk mall utilitarian godmother bestubble decadent penis emmanuel room crumble beloit vex continent flour ca crossway carney deniable ratty decomposition opposition southey portent pushout correlate dolce haven fruitful grub apparent monogamous entity echoes grab 
+
+no hamilton
+ zest quarrel wack honoree cavalry 
+cowboy territorial aldebaran marlboro boatswain nightgown steeplechase catalina ash onion supernovae eggshell conducive whalen companionway dig fractionate donner quadruple 
+bashful gaylord nobelium shortsighted nostalgic bodybuilding herb follicular prospect deadhead midmorn detent dharma lillian suffolk
+sonnet transmutation fenugreek defendant pad phoenicia ames garvey slot symbol beforehand keno indifferent furniture cupidity audition binary saratoga bunsen septate apprentice division grenoble wheel variety tawdry method acre illustrate indiscernible hertz foolproof rabies melanoma gerber clogging feature bellman integrity 
+tony quakeress catchy indy foolish cancel butchery enliven flame indulgent portmanteau goldenrod bake execrable befall decorticate perfumery clemson brazen forgery postal zaire velvet circlet turnkey as debater meritorious britten ponder doldrum cancerous cauchy electron prostrate cockeye soldiery trackage lizzie showman baldpate marceau pregnant neurophysiology diacritic streptomycin traitorous accession tithe acerbity 
+grosset binomial bland extolled delay prone purgation cabaret helix roth lateran hardboard librarian condense deferral bent cry abbreviate compartment pyrolyse byway cushion obeisant penman vietnam arrhenius cortege local collector jolt confidante baroque 
 
 
 -------------------------------------------------------
