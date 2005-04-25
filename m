@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001073]: Loss of keyboard response after powering down Extigy
-Date: Mon, 25 Apr 2005 10:42:55 +0200
-Message-ID: <eb2719f6040b7a402f7db67ba19e3b4c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001062]: creative mp3+ doesnt work with external usb hub
+Date: Mon, 25 Apr 2005 10:45:53 +0200
+Message-ID: <a4e759558a45fed1726e34d2221c0bff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 59CA21ED
-	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2005 10:42:56 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3D3901ED
+	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2005 10:45:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1073> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1062> 
 ======================================================================
-Reported By:                mrnoonan81
+Reported By:                TheCoop
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1073
+Issue ID:                   1062
 Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     assigned
 Distribution:               Gentoo
-Kernel Version:             2.6.11-r6
-Resolution:                 fixed
-Fixed in Version:           
+Kernel Version:             2.6.12-rc2-mm3
 ======================================================================
-Date Submitted:             04-24-2005 04:47 CEST
-Last Modified:              04-25-2005 10:42 CEST
+Date Submitted:             04-18-2005 12:04 CEST
+Last Modified:              04-25-2005 10:45 CEST
 ======================================================================
-Summary:                    Loss of keyboard response after powering down Extigy
+Summary:                    creative mp3+ doesnt work with external usb hub
 Description: 
-After powering down my Sound Blaster Extigy using the snd-usb-audio driver,
-my keyboard becomes non-responsive and in addition, I am unable to shut
-down properly (using the mouse, of course).  I use a PS/2 keyboard, so I
-don't expect this is an issue with the USB driver(s).
+My usb creative mp3+ only works when it is plugged directly into the
+computer. When it is plugged into an external usb hub, sound doesnt play
+(the timer is stuck at 0:00), the following appears in the command line:
+ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+
+and the following appears in dmesg:
+cannot submit datapipe for urb 0, err = -38
+cannot submit datapipe for urb 0, err = -38
+cannot submit datapipe for urb 0, err = -38
+
+Details at http://forums.gentoo.org/viewtopic-t-272854.html
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 04-25-05 10:42 
+ Clemens Ladisch - 04-25-05 10:45 
 ----------------------------------------------------------------------
-There was a bug in the USB audio driver that resulted in the kernel input
-event thread being blocked.
-
-This has been fixed in CVS.
+Playing audio data for a USB 1.x device through a 2.0 hub needs special
+support from the USB controller driver.  Error 38 means that your kernel
+does not implement this.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-24-05 04:47 mrnoonan81     New Issue                                    
-04-24-05 04:47 mrnoonan81     Distribution              => Gentoo          
-04-24-05 04:47 mrnoonan81     Kernel Version            => 2.6.11-r6       
-04-25-05 10:42 Clemens LadischStatus                   assigned => resolved
-04-25-05 10:42 Clemens LadischResolution               open => fixed       
-04-25-05 10:42 Clemens LadischNote Added: 0004569                          
+04-18-05 12:04 TheCoop        New Issue                                    
+04-18-05 12:04 TheCoop        Distribution              => Gentoo          
+04-18-05 12:04 TheCoop        Kernel Version            => 2.6.12-rc2-mm3  
+04-25-05 10:45 Clemens LadischNote Added: 0004570                          
 ======================================================================
 
 
