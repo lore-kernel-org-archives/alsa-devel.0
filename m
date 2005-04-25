@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000695]: Turning off Audigy 2 NX makes keyboard unusable
-Date: Mon, 25 Apr 2005 11:00:45 +0200
-Message-ID: <d76d6667c17600c167973b040dd78d11@bugtrack.alsa-project.org>
+Date: Mon, 25 Apr 2005 10:59:53 +0200
+Message-ID: <fea517e564d1939f9004bf5aa91afe57@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D4E9E187
-	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2005 11:00:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B98D1187
+	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2005 10:59:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been set as DUPLICATE OF issue 0000977.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=695> 
 ======================================================================
@@ -35,14 +35,12 @@ Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     assigned
 Distribution:               Debian unstable
 Kernel Version:             2.6.10-rc2-mm4
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
 Date Submitted:             12-01-2004 12:59 CET
-Last Modified:              04-25-2005 11:00 CEST
+Last Modified:              04-25-2005 10:59 CEST
 ======================================================================
 Summary:                    Turning off Audigy 2 NX makes keyboard unusable
 Description: 
@@ -114,14 +112,6 @@ I can confirm this problem. I have a Mandrake 10.1 system with Kernel
 and with the current version. Also when shutting down X the keyboard
 sometimes works on the console.
 
-----------------------------------------------------------------------
- Clemens Ladisch - 04-25-05 11:00 
-----------------------------------------------------------------------
-There was a bug in the USB audio driver that resulted in the kernel input
-event thread being blocked.
-
-This has been fixed in CVS.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -130,9 +120,6 @@ Date Modified  Username       Field                    Change
 12-01-04 12:59 jk             Kernel Version            => 2.6.10-rc2-mm4  
 12-11-04 08:40 suamor         Note Added: 0002810                          
 04-25-05 10:59 Clemens LadischRelationship added       duplicate of 0000977
-04-25-05 11:00 Clemens LadischStatus                   assigned => resolved
-04-25-05 11:00 Clemens LadischResolution               open => fixed       
-04-25-05 11:00 Clemens LadischNote Added: 0004575                          
 ======================================================================
 
 
