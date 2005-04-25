@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Midiman Portman PC/P
-Date: Mon, 25 Apr 2005 09:58:02 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0504250956590.2836-100000@studcom.urz.uni-halle.de>
-References: <20050425055742.GA4032@jose.lug.udel.edu>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001073]: Loss of keyboard response after powering down Extigy
+Date: Mon, 25 Apr 2005 10:42:55 +0200
+Message-ID: <eb2719f6040b7a402f7db67ba19e3b4c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050425055742.GA4032@jose.lug.udel.edu>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 59CA21ED
+	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2005 10:42:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,24 +18,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ross@jose.lug.udel.edu
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ross@jose.lug.udel.edu wrote:
-> In my quest for a MIDI interface today, I happened upon a bargain-bin
-> Portman PC/P - parallel port MIDI interface.
->
-> I saw a driver at portmanlinux.sf.net for the PC/S serial version.
-> Anyone know anything about this parallel port version?
 
-In the alsa-driver package (not in the kernel), there is a
-snd-portman2x4 driver for the Portman 2x4.  I don't know how similar
-these devices are.
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1073> 
+======================================================================
+Reported By:                mrnoonan81
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1073
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.11-r6
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             04-24-2005 04:47 CEST
+Last Modified:              04-25-2005 10:42 CEST
+======================================================================
+Summary:                    Loss of keyboard response after powering down Extigy
+Description: 
+After powering down my Sound Blaster Extigy using the snd-usb-audio driver,
+my keyboard becomes non-responsive and in addition, I am unable to shut
+down properly (using the mouse, of course).  I use a PS/2 keyboard, so I
+don't expect this is an issue with the USB driver(s).
+======================================================================
 
+----------------------------------------------------------------------
+ Clemens Ladisch - 04-25-05 10:42 
+----------------------------------------------------------------------
+There was a bug in the USB audio driver that resulted in the kernel input
+event thread being blocked.
 
-Regards,
-Clemens
+This has been fixed in CVS.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-24-05 04:47 mrnoonan81     New Issue                                    
+04-24-05 04:47 mrnoonan81     Distribution              => Gentoo          
+04-24-05 04:47 mrnoonan81     Kernel Version            => 2.6.11-r6       
+04-25-05 10:42 Clemens LadischStatus                   assigned => resolved
+04-25-05 10:42 Clemens LadischResolution               open => fixed       
+04-25-05 10:42 Clemens LadischNote Added: 0004569                          
+======================================================================
+
 
 
 
