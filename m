@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000977]: Unplug playing USB audio device: normal keyboard dies.
-Date: Mon, 25 Apr 2005 10:49:55 +0200
-Message-ID: <6666bc04c5affdf0bcf2def86ea98f3d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001073]: Loss of keyboard response after powering down Extigy
+Date: Mon, 25 Apr 2005 10:49:57 +0200
+Message-ID: <bfac579cf8d90203797e9bc1e3733e20@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C5B891ED
-	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2005 10:49:55 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0F08F1EF
+	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2005 10:49:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001073.
+The issue 0000977 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=977> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1073> 
 ======================================================================
-Reported By:                jhje00
+Reported By:                mrnoonan81
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   977
+Issue ID:                   1073
 Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian.
-Kernel Version:             2.6.10 + 2.6.11.
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.11-r6
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-09-2005 22:22 CET
-Last Modified:              04-25-2005 10:49 CEST
+Date Submitted:             04-24-2005 04:47 CEST
+Last Modified:              04-25-2005 10:42 CEST
 ======================================================================
-Summary:                    Unplug playing USB audio device: normal keyboard
-dies.
+Summary:                    Loss of keyboard response after powering down Extigy
 Description: 
-Using an EgoSys U2A USB audio device I have observed that when unplugging
-the device while it is in use by e.g. xmms or jackd a slew of error
-messages appear. After that, local keyboard is unusable. Mouse and X
-works, remote login is still functional, but I am unable to regain local
-keyboard.
+After powering down my Sound Blaster Extigy using the snd-usb-audio driver,
+my keyboard becomes non-responsive and in addition, I am unable to shut
+down properly (using the mouse, of course).  I use a PS/2 keyboard, so I
+don't expect this is an issue with the USB driver(s).
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001073 Loss of keyboard response after powerin...
+has duplicate       0000977 Unplug playing USB audio device: normal...
 ======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 04-25-05 10:42 
+----------------------------------------------------------------------
+There was a bug in the USB audio driver that resulted in the kernel input
+event thread being blocked.
+
+This has been fixed in CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-09-05 22:22 jhje00         New Issue                                    
-03-09-05 22:22 jhje00         Distribution              => Debian.         
-03-09-05 22:22 jhje00         Kernel Version            => 2.6.10 + 2.6.11.
-04-25-05 10:49 Clemens LadischRelationship added       duplicate of 0001073
+04-24-05 04:47 mrnoonan81     New Issue                                    
+04-24-05 04:47 mrnoonan81     Distribution              => Gentoo          
+04-24-05 04:47 mrnoonan81     Kernel Version            => 2.6.11-r6       
+04-25-05 10:42 Clemens LadischStatus                   assigned => resolved
+04-25-05 10:42 Clemens LadischResolution               open => fixed       
+04-25-05 10:42 Clemens LadischNote Added: 0004569                          
+04-25-05 10:49 Clemens LadischRelationship added       has duplicate 0000977
 ======================================================================
 
 
