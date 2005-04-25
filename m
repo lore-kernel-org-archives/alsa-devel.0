@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000695]: Turning off Audigy 2 NX makes keyboard unusable
-Date: Mon, 25 Apr 2005 10:59:53 +0200
-Message-ID: <fea517e564d1939f9004bf5aa91afe57@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000370]: CMedia 8768 Support
+Date: Mon, 25 Apr 2005 11:42:01 +0200
+Message-ID: <5c25728cb9037ab3c667e628f47da82c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B98D1187
-	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2005 10:59:53 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 96CB5AC
+	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2005 11:42:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,104 +22,123 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0000977.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=695> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=370> 
 ======================================================================
-Reported By:                jk
-Assigned To:                Clemens Ladisch
+Reported By:                drbobguy
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   695
-Category:                   USB - usb-audio
+Issue ID:                   370
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian unstable
-Kernel Version:             2.6.10-rc2-mm4
+Distribution:               Gentoo
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             12-01-2004 12:59 CET
-Last Modified:              04-25-2005 10:59 CEST
+Date Submitted:             07-07-2004 04:59 CEST
+Last Modified:              04-25-2005 11:42 CEST
 ======================================================================
-Summary:                    Turning off Audigy 2 NX makes keyboard unusable
+Summary:                    CMedia 8768 Support
 Description: 
-If I turn off my Audigy 2 NX, my USB keyboard no longer works under X.  The
-mouse plugged into the keyboard's hub still works.  dmesg doesn't show
-anything suspicous at this point but after stopping X I get the following
-oops:
+I've recently built a new computer with an on-board CMedia 8768 chip.  This
+chip is not listed as one of the supported CMedia chips (8738, etc.),
+although I suspect that is because it is so new.  Just wanted to let you
+guys know it apparently doesn't work with the standard cmipci driver (at
+least I think I'm doing everthing correctly -- I have a decent amount of
+Linux experience but I'm no guru).  Here is what I see though:
 
-Oops: Kernel access of bad area, sig: 11
-[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-SMP NR_CPUS=2 POWERMAC
-NIP: C0000000001CE448 XER: 0000000020000000 LR: C0000000001C7C30
-REGS: c00000000ff97230 TRAP: 0300   Not tainted  (2.6.10-rc2-mm4jk1)
-MSR: 9000000000009032 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
-DAR: 0000000000000000, DSISR: 0000000040000000
-TASK: c00000000ffce030[7] 'events/1' THREAD: c00000000ff94000 CPU: 1
-GPR00: C000000000221430 C00000000FF974B0 C00000000055B1A0
-0000000000000000
-GPR04: FFFFFFFFFFFFFFFF C0000000014EAEB0 000000000000001A
-C00000000FEC4058
-GPR08: 00000000000003A8 C00000000053E3C8 FFFFFFFFFFFFFFFF
-0000000000000000
-GPR12: 0000000022008042 C000000000461500 0000000000000000
-0000000000000000
-GPR16: 0000000001400000 C0000000004068D8 0000000001803C18
-0000000001803C18
-GPR20: C000000000488360 C00000000FF975D4 0000000000000000
-C00000000FEC4058
-GPR24: 00000000000003A8 C0000000014EAD98 00000000000000D0
-C00000000FEC4130
-GPR28: 0000000000000001 C00000000FEC4130 C0000000004E7340
-C00000000FF974B0
-NIP [c0000000001ce448] .strlen+0x4/0x18
-LR [c0000000001c7c30] .kobject_get_path+0x44/0x11c
-Call Trace:
-[c00000000ff974b0] [c00000000ff97500] 0xc00000000ff97500 (unreliable)
-[c00000000ff97560] [c000000000221430] .class_hotplug+0xe4/0x24c
-[c00000000ff97640] [c0000000001c9194] .kobject_hotplug+0x34c/0x38c
-[c00000000ff97730] [c0000000001c81b8] .kobject_del+0x28/0x58
-[c00000000ff977c0] [c000000000221b84] .class_device_del+0x1ac/0x240
-[c00000000ff97880] [c000000000221c3c] .class_device_unregister+0x24/0x44
-[c00000000ff97910] [c000000000222534]
-.class_simple_device_remove+0x104/0x128
-[c00000000ff979a0] [d00000000003ca28] .snd_unregister_device+0x174/0x1d8
-[snd]
-[c00000000ff97a40] [d00000000008543c] .snd_pcm_dev_unregister+0xb4/0x208
-[snd_pcm]
-[c00000000ff97af0] [d000000000044ea4] .snd_device_free+0x140/0x224 [snd]
-[c00000000ff97b80] [d000000000045540] .snd_device_free_all+0xb8/0x10c
-[snd]
-[c00000000ff97c20] [d00000000003d3c8] .snd_card_free+0xa0/0x36c [snd]
-[c00000000ff97d20] [d00000000003d748] .snd_card_free_thread+0xb4/0x170
-[snd]
-[c00000000ff97db0] [c00000000005a4c0] .worker_thread+0x258/0x324
-[c00000000ff97ee0] [c0000000000613dc] .kthread+0x168/0x1bc
-[c00000000ff97f90] [c000000000013500] .kernel_thread+0x4c/0x6c
+The card is recognized in /proc/asound as a CMedia 8738M6.  However, if I
+use a mixer like amixer or gnome-alsamixer none of the mixer settings I
+change will take effect (and I am running these as root).
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000977 Unplug playing USB audio device: normal...
+Any advice or comments would be appreciated.  I'd be happy to help if you
+think there is a possible fix.
 ======================================================================
 
 ----------------------------------------------------------------------
- suamor - 12-11-04 08:40 
+ robg - 01-04-05 05:12 
 ----------------------------------------------------------------------
-I can confirm this problem. I have a Mandrake 10.1 system with Kernel
-2.6.8.1. The bug happens on both the alsa from the kernel itself (1.6.0)
-and with the current version. Also when shutting down X the keyboard
-sometimes works on the console.
+>From a thread on sfftech:
+http://forums.sudhian.com/messageview.aspx?catid=102&threadid=70188&enterthread=y
+
+The thread brought up cltien's note here about the codec not working. The
+response from Soltek:
+
+Actually some days ago, one customer reported to us that onboard audio of
+EQ3801 does not work under "Fedora Core 3 Linux". So now our BIOS engineer
+and C-Media support are working on this issue. If there is any progress, I
+will let you know.
+
+Best regards,
+LydiAtSoltek
+
+----------------------------------------------------------------------
+ Los_Andros - 04-25-05 11:42 
+----------------------------------------------------------------------
+Good news,
+There's a  new beta of the soltek bios availible,
+just send Lydia an email and she will send you the BIOS beta for testing.
+Here's the Link to the Forum and Lydias EMail:
+
+http://forums.sudhian.com/messageview.aspx?catid=102&threadid=70188&STARTPAGE=2&FTVAR_FORUMVIEWTMP=Linear
+
+lydia@soltek.com.tw
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-01-04 12:59 jk             New Issue                                    
-12-01-04 12:59 jk             Distribution              => Debian unstable 
-12-01-04 12:59 jk             Kernel Version            => 2.6.10-rc2-mm4  
-12-11-04 08:40 suamor         Note Added: 0002810                          
-04-25-05 10:59 Clemens LadischRelationship added       duplicate of 0000977
+07-07-04 04:59 drbobguy       New Issue                                    
+07-07-04 04:59 drbobguy       Distribution              => Gentoo          
+07-07-04 04:59 drbobguy       Kernel Version            => 2.6.7           
+07-07-04 05:03 drbobguy       Note Added: 0001390                          
+07-27-04 05:26 robg           Note Added: 0001475                          
+07-30-04 16:56 tiwai          Note Added: 0001493                          
+07-31-04 02:46 drbobguy       File Added: CMI8768.pdf                      
+07-31-04 02:46 drbobguy       Note Added: 0001508                          
+07-31-04 06:10 robg           Note Added: 0001509                          
+08-22-04 22:13 masanetz       Issue Monitored: masanetz                    
+09-06-04 18:02 patrick        Issue Monitored: patrick                     
+10-08-04 05:17 robg           Note Added: 0002043                          
+10-08-04 05:18 robg           File Added: CMI8768 register spec v1.0.pdf        
+           
+10-08-04 05:19 robg           File Added: Programming Guide to CMI8738 PCI Audio
+Chip_v16_0311.pdf                    
+10-08-04 12:49 tiwai          Note Added: 0002050                          
+10-08-04 15:26 tiwai          Note Added: 0002053                          
+10-08-04 15:36 tiwai          Note Added: 0002054                          
+10-09-04 09:05 patrick        File Added: asound.state                     
+10-09-04 09:08 patrick        File Added: cmipci                           
+10-09-04 09:29 patrick        Note Added: 0002061                          
+10-09-04 09:30 patrick        Note Edited: 0002061                         
+10-10-04 04:48 robg           Note Added: 0002064                          
+10-10-04 04:57 robg           Note Added: 0002065                          
+10-13-04 16:37 tiwai          Note Added: 0002126                          
+10-13-04 16:37 tiwai          Note Added: 0002127                          
+10-14-04 01:24 patrick        Note Added: 0002136                          
+10-14-04 12:02 tiwai          Note Added: 0002139                          
+10-14-04 12:03 tiwai          File Added: cmipci-address.diff                   
+
+10-14-04 16:05 patrick        Note Added: 0002151                          
+10-14-04 16:19 tiwai          Note Added: 0002152                          
+10-14-04 23:57 patrick        Note Added: 0002161                          
+10-16-04 00:33 cltien         Note Added: 0002177                          
+10-16-04 07:32 robg           Note Added: 0002184                          
+10-17-04 05:47 ehrenkranz     Issue Monitored: ehrenkranz                    
+10-18-04 11:32 tiwai          Note Added: 0002194                          
+10-18-04 23:00 cltien         Note Added: 0002199                          
+10-19-04 05:35 robg           Note Added: 0002202                          
+11-22-04 12:11 Los_Andros     Note Added: 0002495                          
+11-22-04 12:12 Los_Andros     Note Edited: 0002495                         
+12-25-04 17:13 cltien         Note Added: 0002933                          
+01-04-05 05:12 robg           Note Added: 0003078                          
+01-11-05 12:49 henoux         Issue Monitored: henoux                      
+01-11-05 13:18 henoux         Issue End Monitor: henoux                    
+01-12-05 14:21 solus          Issue Monitored: solus                       
+04-25-05 11:42 Los_Andros     Note Added: 0004576                          
 ======================================================================
 
 
