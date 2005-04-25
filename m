@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000720]: Audigy 2 NX: Digital recording produces silent wave files
-Date: Mon, 25 Apr 2005 10:59:36 +0200
-Message-ID: <69f488680be514c5a2b313fdc5a445bb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000977]: Unplug playing USB audio device: normal keyboard dies.
+Date: Mon, 25 Apr 2005 10:59:55 +0200
+Message-ID: <52c3937a839d679cb9db30c7ee1d4d16@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2465B187
-	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2005 10:59:37 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 86AFF1EE
+	for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2005 10:59:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,56 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The issue 0000695 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=720> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=977> 
 ======================================================================
-Reported By:                suamor
+Reported By:                jhje00
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   720
+Issue ID:                   977
 Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Mandrake Linux 10.1
-Kernel Version:             2.6.8.1
+Distribution:               Debian.
+Kernel Version:             2.6.10 + 2.6.11.
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-11-2004 09:02 CET
-Last Modified:              04-25-2005 10:59 CEST
+Date Submitted:             03-09-2005 22:22 CET
+Last Modified:              04-25-2005 10:50 CEST
 ======================================================================
-Summary:                    Audigy 2 NX: Digital recording produces silent wave
-files
+Summary:                    Unplug playing USB audio device: normal keyboard
+dies.
 Description: 
-Hi,
-
-When I connect an digital device (like a DAT) to the audigy NX I can hear
-the sound being played from the device. I can record using both arecord or
-an OSS
-compatible recording tool. Both tools produce wave files but they record
-nothing but silence.
-
+Using an EgoSys U2A USB audio device I have observed that when unplugging
+the device while it is in use by e.g. xmms or jackd a slew of error
+messages appear. After that, local keyboard is unusable. Mouse and X
+works, remote login is still functional, but I am unable to regain local
+keyboard.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001073 Loss of keyboard response after powerin...
+has duplicate       0000695 Turning off Audigy 2 NX makes keyboard ...
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 04-25-05 10:59 
+ Clemens Ladisch - 04-25-05 10:50 
 ----------------------------------------------------------------------
-The latest driver (only in CVS for now) changes the names of the mixer
-controls to something more sane.
+There was a bug in the USB audio driver that resulted in the kernel input
+event thread being blocked.
+
+This has been fixed in CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-11-04 09:02 suamor         New Issue                                    
-12-11-04 09:02 suamor         Distribution              => Mandrake Linux 10.1
-12-11-04 09:02 suamor         Kernel Version            => 2.6.8.1         
-04-25-05 10:59 Clemens LadischStatus                   assigned => resolved
-04-25-05 10:59 Clemens LadischResolution               open => fixed       
-04-25-05 10:59 Clemens LadischNote Added: 0004574                          
+03-09-05 22:22 jhje00         New Issue                                    
+03-09-05 22:22 jhje00         Distribution              => Debian.         
+03-09-05 22:22 jhje00         Kernel Version            => 2.6.10 + 2.6.11.
+04-25-05 10:49 Clemens LadischRelationship added       duplicate of 0001073
+04-25-05 10:50 Clemens LadischStatus                   assigned => resolved
+04-25-05 10:50 Clemens LadischResolution               open => fixed       
+04-25-05 10:50 Clemens LadischNote Added: 0004572                          
+04-25-05 10:59 Clemens LadischRelationship added       has duplicate 0000695
 ======================================================================
 
 
