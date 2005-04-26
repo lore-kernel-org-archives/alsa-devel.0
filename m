@@ -1,11 +1,14 @@
-From: =?ISO-8859-15?Q?Bernd_M=FCller?= <caret@gmx.de>
-Subject: 5.1 and 2.1 output at same time
-Date: Tue, 26 Apr 2005 18:40:27 +0200
-Message-ID: <426E6EFB.5020909@gmx.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001078]: intel8x0 does not work on any (?) 2.6 kernel
+Date: Tue, 26 Apr 2005 21:29:23 +0200
+Message-ID: <dde158c1d4aae55e356dc7dd12be0757@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A5A028D
+	for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2005 21:29:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,22 +18,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello;
 
-Is it possible to get out 5.1 and stereo sound at the same. I'm using in my 
-mediacenter computer (MythTV) an Audigy 2 soundcard connected to Creative 
-Inspire speaker set. This works fine for me. But i would like also to use an 
-channel modulator to feed image and sound signals from my computer into the 
-cable network at home. The problem is, that i need stereo output from my 
-soundcard to feed the modulator. My question is now, howto get 5.1 and stereo 
-output at the same time. Maybe not possible with one soundcard i thougt about 
-using two soundcards and cloning signal from the 5.1 card to the stereo card. 
-But i've read there should be soundsync problems.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1078> 
+======================================================================
+Reported By:                columbo
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1078
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware Linux 10.1
+Kernel Version:             2.6.11.7
+======================================================================
+Date Submitted:             04-26-2005 21:29 CEST
+Last Modified:              04-26-2005 21:29 CEST
+======================================================================
+Summary:                    intel8x0 does not work on any (?) 2.6 kernel
+Description: 
+After compilation of ALSA drivers, libs, utilities, and after alsaconf ALSA
+modules loads correctly, they are visible in lsmod and so on, but all
+programs can't see sound card, /dev/dsp and so on. With kernels 2.4.x
+everything is OK.
+======================================================================
 
-Any suggestions?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-26-05 21:29 columbo        New Issue                                    
+04-26-05 21:29 columbo        Distribution              => Slackware Linux 10.1
+04-26-05 21:29 columbo        Kernel Version            => 2.6.11.7        
+======================================================================
 
 
 
