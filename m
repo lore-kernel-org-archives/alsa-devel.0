@@ -1,13 +1,14 @@
-From: Steve deRosier <derosier@pianodisc.com>
-Subject: Re: How to tell how many frames gone to PCM
-Date: Tue, 26 Apr 2005 14:45:33 -0700
-Message-ID: <426EB67D.6010809@pianodisc.com>
-References: <426EA20A.70403@pianodisc.com>	 <1114546574.8431.13.camel@mindpipe>  <426EADA7.4090200@pianodisc.com> <1114550230.8431.45.camel@mindpipe>
+From: "Yesilbisikletforum" <yesilbisikletforum@gmail.com>
+Subject: Size de Bekliyoruz...
+Date: Wed, 27 Apr 2005 11:14:26 +0300
+Message-ID: <20050427081422.98C3121F@alsa.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="= Multipart Boundary 0427051114"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1114550230.8431.45.camel@mindpipe>
+Received: from 192.168.1.33 (dsl81-214-58581.adsl.ttnet.net.tr [81.214.228.213])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 98C3121F
+	for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2005 10:14:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,109 +18,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> 
-> One possibility is that you are hitting an ALSA bug.  Some fixes have
-> been merged since ALSA 1.0.8 for bugs that could account for the strange
-> behavior.  The first thing to do is verify the problem does not appear
-> with a newer ALSA.
-> 
+This is a multipart MIME message.
 
-I'll have to try that.  I think we're running 1.0.4 at the moment.  We hesitate to update at this point due to most things just working (mine is the only alsa using program in the system experiencing this problem) and we have a headache every time we upgrade, but maybe it won't be so hard this time around since the API has solidified more than in earlier upgrade tries.
+--= Multipart Boundary 0427051114
+Content-Type: text/plain;
+	charset="ISO-8859-9"
+Content-Transfer-Encoding: quoted-printable
 
-> Another idea, by default the MIDI timing will be driven by the system
-> timer, while the PCM will be driven by the soundcard timer, even if your
-> MIDI port is on the same board as your audio.  Although I would expect
-> the drift to be very small.
-> 
-I should (if I did it right) have the pcm and midi timers linked.  I use two different classes for output, one for the PCM (called CDSP) and one for the MIDI (called CMIDIPort).  Usually this makes things simple, but linking the clocks requires pasing info back and forth between the two.  My thread does this:
----
-mPCMInfo = mDSP.GetInfo();
-if( !mPCMInfo )
-  return false;
-  
-if( !mMIDIPort.LinkPCMTimer( mPCMInfo ) )
-  return false;
+www.yesilbisikletforum.com`da T=FCrkiye`nin en tecr=FCbeli kardosu,bisikl=
+et konusunda her=FEeye e=F0iliyor.
 
-return true;  
----
+Gezi ve tur organizasyonlar=FDndan,haberlere,resimli makalelerden duyurul=
+ara,sa=F0l=FDktan,at=F6lyeye kadar dopdolu bir bilgi kayna=F0=FDd=FDr www=
+.yesilbisikletforum.com
 
-calling CDSP::GetInfo():
----
-snd_pcm_info_t * CDSP::GetInfo( void )
-{
-  snd_pcm_info_t * PCMInfo;
-  
-  snd_pcm_info_malloc( &PCMInfo );
-  int err = snd_pcm_info( hPCM, PCMInfo );
-  if( err < 0 )
-  {
-    FreeInfo( PCMInfo );
-    return NULL;
-  }
-    
-  return PCMInfo;  
+www.yesilbisikletforum.com`da s=FDf=FDr ve ikinci el bisikletlerde bulabi=
+lir,kampanya avantajlar=FDndan faydalanabilirsiniz..
+
+B=FCt=FCn bunlar=FDn yan=FDnda sitemizde en son =E7=FDkan alb=FCm ve divx=
+ filmleri rahatl=FDkla indirebilirsiniz..
+
+Yaz gelirken sizlerde aram=FDza kat=FDl=FDn..
+
+www.yesilbisikletforum.com
+
+T=FCrkiye`nin lider bisiklet forumu
+
+--= Multipart Boundary 0427051114
+Content-Type: text/html;
+	charset="ISO-8859-9"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dwindows-1=
+254">
+<META content=3D"MSHTML 6.00.2900.2627" name=3DGENERATOR>
+<STYLE>BODY {
+	FONT-FAMILY: arial
 }
----
+</STYLE>
+</HEAD>
+<BODY>
+<DIV>
+<DIV>
+<DIV><A href=3D"http://www.yesilbisikletforum.com/"><IMG height=3D84=20
+src=3D"http://www.yesilbisikletforum.com/style-acier/misc/ban.jpg" width=3D=
+630=20
+border=3D0></A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><A href=3D"http://www.yesilbisikletforum.com`da/"><STRONG><FONT=20
+size=3D4>www.yesilbisikletforum.com`da</FONT></STRONG></A><STRONG><FONT s=
+ize=3D4>=20
+T=FCrkiye`nin en tecr=FCbeli kardosu,bisiklet konusunda her=FEeye=20
+e=F0iliyor.</FONT></STRONG></DIV>
+<DIV><STRONG><FONT size=3D4></FONT></STRONG>&nbsp;</DIV>
+<DIV><STRONG><FONT size=3D4>Gezi ve tur organizasyonlar=FDndan,haberlere,=
+resimli=20
+makalelerden duyurulara,sa=F0l=FDktan,at=F6lyeye kadar dopdolu bir bilgi =
+kayna=F0=FDd=FDr=20
+</FONT></STRONG><A href=3D"http://www.yesilbisikletforum.com/"><STRONG><F=
+ONT=20
+size=3D4>www.yesilbisikletforum.com</FONT></STRONG></A></DIV>
+<DIV><STRONG><FONT size=3D4></FONT></STRONG>&nbsp;</DIV>
+<DIV><A href=3D"http://www.yesilbisikletforum.com`da/"><STRONG><FONT=20
+size=3D4>www.yesilbisikletforum.com`da</FONT></STRONG></A><STRONG><FONT s=
+ize=3D4>=20
+s=FDf=FDr ve ikinci el bisikletlerde bulabilir,kampanya avantajlar=FDndan=
+=20
+faydalanabilirsiniz..</FONT></STRONG></DIV>
+<DIV><STRONG><FONT size=3D4></FONT></STRONG>&nbsp;</DIV>
+<DIV><STRONG><FONT size=3D4>B=FCt=FCn bunlar=FDn yan=FDnda sitemizde en s=
+on =E7=FDkan alb=FCm ve=20
+divx filmleri rahatl=FDkla indirebilirsiniz..</FONT></STRONG></DIV>
+<DIV><STRONG><FONT size=3D4></FONT></STRONG>&nbsp;</DIV>
+<DIV><STRONG><FONT size=3D4>Yaz gelirken sizlerde aram=FDza=20
+kat=FDl=FDn..</FONT></STRONG></DIV>
+<DIV><STRONG></STRONG>&nbsp;</DIV>
+<DIV><A href=3D"http://www.yesilbisikletforum.com/"><FONT color=3D#ff0000=
+=20
+size=3D6><STRONG>www.yesilbisikletforum.com</STRONG></FONT></A></DIV>
+<DIV><FONT size=3D6><STRONG></STRONG></FONT>&nbsp;</DIV>
+<DIV><FONT color=3D#00ff00 size=3D6><STRONG>T=FCrkiye`nin lider bisiklet=20
+forumu</STRONG></FONT></DIV></DIV></DIV></BODY></HTML>
 
-And to actually link the timers:
----
-bool CMIDIPort::LinkPCMTimer( const snd_pcm_info_t * PCMInfo )
-{
-  if( !PCMInfo )
-    return false;
-    
-  snd_seq_queue_timer_t * QueueTimer;
-  snd_timer_id_t * QTID;
-    
-  // get the info we need
-  int Card = snd_pcm_info_get_card( PCMInfo );
-  unsigned int Device = snd_pcm_info_get_device( PCMInfo );
-  unsigned int SDevice = snd_pcm_info_get_subdevice( PCMInfo );
-  SDevice = SDevice << 1;
-  // check for bad return
-  if( ( Card < 0 ) ) 
-    return false;
-    
-  // build our timers
-  snd_seq_queue_timer_alloca( &QueueTimer );
-  snd_timer_id_alloca( &QTID );
-  
-  if( snd_seq_get_queue_timer( hSeq, mQueue, QueueTimer ) < 0 )
-    return false;
-  
-  // setup the data that links us to the PCM
-  snd_timer_id_set_class( QTID, SND_TIMER_CLASS_PCM );
-  snd_timer_id_set_sclass( QTID, SND_TIMER_SCLASS_NONE );
-  snd_timer_id_set_card( QTID, Card );
-  snd_timer_id_set_device( QTID, Device );
-  snd_timer_id_set_subdevice( QTID, SDevice );
-
-
-  // setup the actual timer
-  snd_seq_queue_timer_set_type( QueueTimer, SND_SEQ_TIMER_ALSA );
-  snd_seq_queue_timer_set_id( QueueTimer, QTID );
-  snd_seq_set_queue_timer( hSeq, mQueue, QueueTimer );
-  
-  return true;
-}
----
-
-Is that done right?  Is there something I'm forgetting to do?
-
-
-
-> As a last resort, you could hack the low level driver to keep track of
-> the frames written to the hardware.  Add a counter to the chip structure
-> and increment it in the interrupt handler.
-> 
-Ick.  Last resort definately.  Though I have hacked some of the drivers before, I'd just rather not; you know what I mean?  ;)  
-
-Thanks,
-- Steve
+--= Multipart Boundary 0427051114--
 
 
 
