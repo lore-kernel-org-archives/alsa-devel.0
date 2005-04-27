@@ -1,13 +1,13 @@
 From: Steve deRosier <derosier@pianodisc.com>
 Subject: Re: How to tell how many frames gone to PCM
-Date: Wed, 27 Apr 2005 09:43:00 -0700
-Message-ID: <426FC114.6000800@pianodisc.com>
-References: <426EA20A.70403@pianodisc.com> <ad2655cb0504270201165f9859@mail.gmail.com>
+Date: Wed, 27 Apr 2005 09:56:40 -0700
+Message-ID: <426FC448.9050609@pianodisc.com>
+References: <Pine.HPX.4.33n.0504271614590.28618-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <ad2655cb0504270201165f9859@mail.gmail.com>
+In-Reply-To: <Pine.HPX.4.33n.0504271614590.28618-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,51 +17,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <james.dutton@gmail.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Clemens Ladisch wrote:
+> Steve deRosier wrote:
 > 
-> You might want the "snd_pcm_delay()" function.
-> This will return a count of frames in the buffer that have not yet
-> reached the ADC.
-> E.g.
-> snd_pcm_write()   <- Write 1024 frames to the buffer.
-> snd_pcm_delay()  <- If this returns 500, it means that 525 frames have
-> already been played out of the speakers.
+>>>Another idea, by default the MIDI timing will be driven by the system
+>>>timer, while the PCM will be driven by the soundcard timer, even if your
+>>>MIDI port is on the same board as your audio.  Although I would expect
+>>>the drift to be very small.
 > 
-> The snd_pcm_delay() function was introduced into alsa to help
-> audio/video application do lip sync. We could therefore calculate that
-> if we write a frame to the buffer now, it will reach the speakers in
-> exactly snd_pcm_delay() frames time.
 > 
-> Does this help you?
+> Oh, you really expect the (potentially overclocked) system clock and
+> the cheapo sound card crystal to be accurate?  ;-)
+> 
+Nope.  Though, in our case not overclocked but with other issues, see below...
 
-I've got it implemented in my system, but actually it doesn't solve the problem (and actually exasperates it).
+> 
+>>I should (if I did it right) have the pcm and midi timers linked.
+>>
+>>  // setup the data that links us to the PCM
+>>  snd_timer_id_set_class( QTID, SND_TIMER_CLASS_PCM );
+>>  snd_timer_id_set_sclass( QTID, SND_TIMER_SCLASS_NONE );
+>>  snd_timer_id_set_card( QTID, Card );
+>>  snd_timer_id_set_device( QTID, Device );
+>>  snd_timer_id_set_subdevice( QTID, SDevice );
+>>
+>>  // setup the actual timer
+>>  snd_seq_queue_timer_set_type( QueueTimer, SND_SEQ_TIMER_ALSA );
+>>  snd_seq_queue_timer_set_id( QueueTimer, QTID );
+>>  snd_seq_set_queue_timer( hSeq, mQueue, QueueTimer );
+>>
+>>Is that done right?  Is there something I'm forgetting to do?
+> 
+> 
+> You should check the error code, but otherwise this looks OK.
+> 
+Error code for which function?  It's been a long time since I wrote the code and frankly I'm not 100% sure I understand it anyway.
 
-See, we calculate the midi times based on the "sample" time that the midi msg arrives at.
+> Are the inaccuracies you're seeing consistent, and/or dependent on
+> some specific hardware?
+Doubtful.  And not dependent uppon a particular Alsa version either (though I'm in the process of upgrading my Alsa to 1.0.9rc2 in order to get current and eliminate that concern).  See, we've got another player on the system (let's call it a "file player") that plays in sync just fine, but my program ("CD player" if you will) won't.  Now, since mine came second, much of the Alsa functionality was modeled off the "file player" so they are very similar in Alsa specifics (though hugely different in structure, purpose, and archetecture).
 
-So, for example:
-
-Our AlsaSender task receives a right and left audio sample (the two together I suppose is called a frame), and the last MIDI byte of a message.  It keeps a counter of how many audio frames are received at this point.  It sends the audio frame to alsa (actually the CDSP function buffers up PERIOD_SIZE number of samples before it does the ..._writei() in order to not cause excessive function call overhead).  It calculates the MIDI timestamp based on the number of samples it has sent off:
-
-snd_seq_real_time_t time;
-unsigned long long int iTime = (((mPlayedSampleCount*10*P_MILLION)/441);
-time.tv_sec = iTime/P_BILLION;
-time.tv_nsec = iTime%P_BILLION;
-
-snd_seq_ev_set_source(&event, mPort);
-snd_seq_ev_set_subs(&event);
-snd_seq_ev_schedule_real(&event, mQueue, 0, &time);
-snd_seq_event_output(hSeq, &event);
-snd_seq_drain_output(hSeq);
-
-Our audio source is CD, so 44100 is the correct speed for the calculation (non-significant zeros canceled off in the calculation).
-
-Anything obviously wrong with my approach?
+Here's a question... I'd like to get the current time from both the PCM and the MIDI device in order to confirm they've got the clock linked. Is there a meaningful way to test that?
 
 Thanks,
 - Steve
+
+
 
 
 -------------------------------------------------------
