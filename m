@@ -1,11 +1,12 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Problem with setting software parameters.
-Date: Thu, 28 Apr 2005 00:22:18 -0700 (PDT)
-Message-ID: <20050428072218.37233.qmail@web60801.mail.yahoo.com>
-Reply-To: tsw@johana.com
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: How to tell how many frames gone to PCM
+Date: Thu, 28 Apr 2005 10:25:45 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0504281011230.16383-100000@studcom.urz.uni-halle.de>
+References: <426FF6A3.5050304@pianodisc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <426FF6A3.5050304@pianodisc.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,54 +16,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa development <alsa-devel@lists.sourceforge.net>
+To: Steve deRosier <derosier@pianodisc.com>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Back a few versions ago (0.9.6) I had a successful program that worked quite
-well (or at least it didn't have an error like this!).  Now I am updating to
-FC3 and 1.0.8 and with the same source (I swear!!) I'm getting errors when I
-attempt to set the software parameters.  I attempt the call and get the
-error: ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params:
-params->avail_min problem for start_threshold
-     [my error message...]
-Unable to set sw params for playback: Invalid argument
-     [output from "snd_pcm_sw_params_dump (swparams, alsa_log)"]
-start_mode: DATA
-xrun_mode: STOP
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 4410
-xfer_align: 4410
-silence_threshold: 0
-silence_size: 0
-boundary: 1073741824
-     [My printouts follow..]
-Period_size: 4410
-Buffer_size: 16384
-Avail_min: 4410
-Start_threshold: 16384
-Setting of swparams failed: Invalid argument
+Steve deRosier wrote:
+> Forgeting the +4/PERIOD_SIZE hack I've got in there for a moment
+> (I must have a culmative off-by-one error somewhere),
+
+No, the events are usiong the wrong clock.  Real-time scheduling uses
+the system clock instead of the timer source you've set for the queue.
+That is, at every timer interrupt, ALSA checks whether the system time
+has reached the scheduled event time.  OTOH, MIDI ticks are calculated
+using the timer interrupt frequency.
+
+> this player always seemed sloppy, where as the other player was
+> real crisp.  Would I be guessing right that if several real-time
+> scheduled events were supposed to go out, but built up till the
+> tick happened, all of those would be sent out and then more events
+> would buffer till the next tick?
+
+Yes.  Events are sent out at every timer interrupt.  This is true for
+both real-time and tick scheduled events
+
+> Clemens Ladisch wrote:
+> > The nice thing about using ticks is that you can set them up to be any
+> > quantity you want (in this case probably the same as one PCM frame or
+> > period).
+>
+> Ok, I'm changing to tick-based timing.  How do I setup my tick
+> timing?  Is the sample code in the docs what I'm looking for?:
+
+Yes.
+
+> Ideas of the PPQ and BPM I should use to match 1 tick to 1 frame?
+
+I'd use one quarter note per second (tempo = 1000000 microseconds per
+quarter note) so that the sampling frequency can be used directly as
+PPQ (ticks per quarter note).
 
 
-Upon looking at the source in pcm.c around line 824 there are some calculations
-for flagging the error, but I don't see the problem.  In fact the specific
-error line is NOT line 824 in pcm.c.  I then did another install of alsa_libs,
-and the error persists.
+HTH
+Clemens
 
-Have I done something really silly?  Dis something change behind my back?  What
-should the "correct" parameters be?
-
-Thanks for the help.
-
--- 
-Tom Watson
-tsw@johana.com
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
 
 
 -------------------------------------------------------
