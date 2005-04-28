@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: au88x0_synth
-Date: Thu, 28 Apr 2005 18:21:45 +0800
-Message-ID: <4270B939.8050405@netvigator.com>
-References: <423CCDAC.80401@netvigator.com> <200503301013.30400.alien999999999@users.sourceforge.net> <4269C953.4050504@netvigator.com> <200504230928.06494.alien999999999@users.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001080]: [PATCH] alsamixer crashes with toonie (mac-mini) when pressing F4
+Date: Thu, 28 Apr 2005 12:21:24 +0200
+Message-ID: <547133da95f6d962e45348f9604b4067@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200504230928.06494.alien999999999@users.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F171A251
+	for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2005 12:21:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,131 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Alien wrote:
->
-> 
-> 
->>Would you provide the result of "lspci -vvvn" to find out the content of
->>PCI BAR0 of your au8810 card ?
-> 
-> 
-> ok:
-> 
-> []# lspci -vvvn
 
-> 00:00.0 Class 0600: 1106:3188 (rev 01)
-> 	Subsystem: 1043:80a3
-> 	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- 
-Stepping-
-> SERR- FastB2B-
-> 	Status: Cap+ 66Mhz+ UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- 
-<TAbort-
-> <MAbort+ >SERR- <PERR-
-> 	Latency: 8
-> 	Region 0: Memory at 00000000e0000000 (32-bit, prefetchable) [size=256M]
-> 	Capabilities: [80] AGP version 3.5
-> 		Status: RQ=32 Iso- ArqSz=0 Cal=2 SBA+ ITACoh- GART64- HTrans- 
-64bit- FW+
-> AGP3+ Rate=x8
-> 		Command: RQ=1 ArqSz=0 Cal=2 SBA+ AGP+ GART64- 64bit- FW- Rate=x8
-> 	Capabilities: [c0] #08 [0060]
-> 	Capabilities: [68] Power Management version 2
-> 		Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA 
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-> 		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-> 	Capabilities: [58] #08 [8001]
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1080> 
+======================================================================
+Reported By:                gjasny
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1080
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             04-28-2005 12:21 CEST
+Last Modified:              04-28-2005 12:21 CEST
+======================================================================
+Summary:                    [PATCH] alsamixer crashes with toonie (mac-mini)
+when pressing F4
+Description: 
+When entering the capture view, alsamixer recognized that there are no
+napture controls and switches back to playback.
 
-> 
-> 00:0f.0 Class 0104: 1106:3149 (rev 80)
-> 	Subsystem: 1043:80ed
-> 	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- 
-> SERR- FastB2B-
-> 	Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- 
-> <MAbort- >SERR- <PERR-
-> 	Latency: 64
-> 	Interrupt: pin B routed to IRQ 10
-> 	Region 0: I/O ports at e400 [size=8]
-> 	Region 1: I/O ports at e000 [size=4]
-> 	Region 2: I/O ports at d800 [size=8]
-> 	Region 3: I/O ports at d400 [size=4]
-> 	Region 4: I/O ports at d000 [size=16]
-> 	Region 5: I/O ports at c800 [size=256]
-> 	Capabilities: [c0] Power Management version 2
-> 		Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-> 		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-> 
-> 00:0f.1 Class 0101: 1106:0571 (rev 06) (prog-if 8a [Master SecP PriP])
-> 	Subsystem: 1043:80ed
-> 	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- 
-> SERR- FastB2B-
-> 	Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- 
-> <MAbort- >SERR- <PERR-
-> 	Latency: 32
-> 	Interrupt: pin A routed to IRQ 11
-> 	Region 4: I/O ports at fc00 [size=16]
-> 	Capabilities: [c0] Power Management version 2
-> 		Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-> 		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-> 
+But during the first reinit after F4 mixer_grpidx is freeed and malloced.
+Because there are no capture devices mixer_grpidx[0] contains garbage,
+which leads to a crash.
 
-> 
-> 00:10.4 Class 0c03: 1106:3104 (rev 86) (prog-if 20)
-> 	Subsystem: 1043:80ed
-> 	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop- ParErr- Stepping- 
-> SERR- FastB2B-
-> 	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- 
-> <MAbort- >SERR- <PERR-
-> 	Latency: 64, cache line size 40
-> 	Interrupt: pin C routed to IRQ 3
-> 	Region 0: Memory at 00000000fdf00000 (32-bit, non-prefetchable) [size=256]
-> 	Capabilities: [80] Power Management version 2
-> 		Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA PME(D0+,D1+,D2+,D3hot+,D3cold+)
-> 		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-> 
-> 00:11.0 Class 0601: 1106:3227
-> 	Subsystem: 1043:80ed
-> 	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping+ 
-> SERR- FastB2B-
-> 	Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- 
-> <MAbort- >SERR- <PERR-
-> 	Latency: 0
-> 	Capabilities: [c0] Power Management version 2
-> 		Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-> 		Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-> 
-> 
-> 
->>>BUT: sometimes not only that happens, but also when i try to kill the
->>>apps it will not kill. when that happens, all kill, killall, top, ps
->>>aux commands hang at the command line and cannot be killed by CTRL-C
->>>or otherwise, i have been able to see that when i stopped my display
->>>managener I did an lsmod and it gave something like this:
->>>
+I've replaced the malloc with a calloc, so that mixer_grpidx always
+contains some sane values.
 
+Cheers,
+Gregor
+======================================================================
 
-http://lists.nongnu.org/archive/html/openvortex-dev/2003-08/msg00014.html
-
-May be your problem is related to the well-known conflict between
-Vortex cards and VIA chipsets ?
-
-You better post your problem on the openvortex-dev mailing list and
-remember to mention that you are using VIA chipset.
-
-
-
-
-
-
-
-
-
-
-
-
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-28-05 12:21 gjasny         New Issue                                    
+04-28-05 12:21 gjasny         File Added: alsamixer.diff                    
+======================================================================
 
 
 
