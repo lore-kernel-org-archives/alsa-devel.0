@@ -1,11 +1,14 @@
-From: Martin Stransky <stransky@redhat.com>
-Subject: alsa-lib patches
-Date: Fri, 29 Apr 2005 15:57:52 +0200
-Message-ID: <42723D60.4030208@redhat.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001083]: NVIDIA CK8 ALC655 SPDIF passthrough
+Date: Fri, 29 Apr 2005 15:33:19 +0200
+Message-ID: <4ce4b909236e9569fa6771257a3d45b5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020009040209060407000700"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8034D228
+	for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2005 15:33:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,224 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020009040209060407000700
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi,
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1083> 
+======================================================================
+Reported By:                vedran
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1083
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian sid
+Kernel Version:             2.6.10-ac12
+======================================================================
+Date Submitted:             04-29-2005 15:33 CEST
+Last Modified:              04-29-2005 15:33 CEST
+======================================================================
+Summary:                    NVIDIA CK8 ALC655 SPDIF passthrough
+Description: 
+We're using a motherboard with nVidia nforce2IGP chipset, and the sound
+device on this board is NVidia CK8, Realtek ALC655 rev 0. The motherboard
+is MSI K7N2GM2, and SPDIF passthrough works fine on Windows XP with stock
+realtek drivers.
 
-there are some patches for alsa-lib (1.0.9rc2), we use them in Fedora 4. 
-About mixer patch - some user had a problem with ICH6 and this patch helped.
+On Linux, I'm using the latest ALSA CVS (29.04.2005.) on a 2.6.10-ac12
+kernel.
 
-Otherwise, we try to use dmix as the default pcm device in FC4, we have 
-experimental ainit tool for run-time creation of ~/.asoundrc file with 
-safely generated IPC keys for dmix/dsnoop/dshare plugins. Every feedback 
-is welcome...
+I've been able to make a 2 channel  pre-decoded SPDIF output work by using
+the hw:0,2 device. If I use the default device, there is no sound on
+SPDIF, regardless of the SPDIF related controls in mixer. The controls in
+the mixer are:
 
-Ma.
+However, I'm having trouble with AC3 passthrough, I'm using ac3dec -C from
+alsa-tools CVS, and I get no sound.
 
---------------020009040209060407000700
-Content-Type: text/x-patch;
- name="alsa-lib-alpha.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-lib-alpha.patch"
+I'm attaching the archive with the output of iecset and
+/proc/asound/card0/codec97#0/* files during the ac3dec run, and when
+idle.
 
---- alsa-lib-1.0.6/include/alsa-symbols.h.orig	2004-11-30 17:40:41.543824072 +0300
-+++ alsa-lib-1.0.6/include/alsa-symbols.h	2004-11-30 17:42:34.828002372 +0300
-@@ -57,10 +57,16 @@
- 	__asm__ (".set " #name "," #real);		\
- 	__asm__ (".set ." #name ",." #real)
- #else
-+#ifdef __alpha__
-+#define use_default_symbol_version(real, name, version) \
-+        __asm__ (".weak " #name); \
-+        __asm__ (#name " = " #real)
-+#else
- #define use_default_symbol_version(real, name, version) \
- 	__asm__ (".weak " #name); \
- 	__asm__ (".set " #name "," #real)
- #endif
- #endif
-+#endif
- 
- #endif /* __ALSA_SYMBOLS_H */
+Maybe the fact that decoded SPDIF output is not working until I pass it
+through the hw:0,2 has something to do with this, how can I make ac3dec -C
+use hw:0,2?
+======================================================================
 
---------------020009040209060407000700
-Content-Type: text/x-patch;
- name="alsa-lib-gcc4.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-lib-gcc4.patch"
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-29-05 15:33 vedran         New Issue                                    
+04-29-05 15:33 vedran         File Added: spdif_passthrough.tar.gz              
+     
+04-29-05 15:33 vedran         Distribution              => Debian sid      
+04-29-05 15:33 vedran         Kernel Version            => 2.6.10-ac12     
+======================================================================
 
---- alsa-lib-1.0.9rc2/src/control/control.c.gcc4	2005-01-03 12:52:40.000000000 +0100
-+++ alsa-lib-1.0.9rc2/src/control/control.c	2005-04-22 14:33:49.000000000 +0200
-@@ -560,7 +560,7 @@
- int snd_ctl_read(snd_ctl_t *ctl, snd_ctl_event_t *event)
- {
- 	assert(ctl && event);
--	return ctl->ops->read(ctl, event);
-+	return (ctl->ops->read)(ctl, event);
- }
- 
- /**
---- alsa-lib-1.0.9rc2/src/timer/timer.c.gcc4	2004-05-24 16:57:48.000000000 +0200
-+++ alsa-lib-1.0.9rc2/src/timer/timer.c	2005-04-22 14:33:49.000000000 +0200
-@@ -876,7 +876,7 @@
- 	assert(timer);
- 	assert(((timer->mode & O_ACCMODE) == O_RDONLY) || ((timer->mode & O_ACCMODE) == O_RDWR));
- 	assert(buffer || size == 0);
--	return timer->ops->read(timer, buffer, size);
-+	return (timer->ops->read)(timer, buffer, size);
- }
- 
- /**
---- alsa-lib-1.0.9rc2/src/conf.c.gcc4	2005-02-14 16:09:10.000000000 +0100
-+++ alsa-lib-1.0.9rc2/src/conf.c	2005-04-22 14:33:49.000000000 +0200
-@@ -2506,9 +2506,11 @@
-  *               specified by \p result.
-  * \return Zero if successful, otherwise a negative error code.
-  */
-+
-+static int snd_config_hooks(snd_config_t *config, snd_config_t *private_data);
-+
- int snd_config_search_hooks(snd_config_t *config, const char *key, snd_config_t **result)
- {
--	static int snd_config_hooks(snd_config_t *config, snd_config_t *private_data);
- 	SND_CONFIG_SEARCH(config, key, result, \
- 					err = snd_config_hooks(config, NULL); \
- 					if (err < 0) \
-@@ -2526,9 +2528,10 @@
-  *               specified by \p result.
-  * \return Zero if successful, otherwise a negative error code.
-  */
-+static int snd_config_hooks(snd_config_t *config, snd_config_t *private_data);
-+
- int snd_config_searcha_hooks(snd_config_t *root, snd_config_t *config, const char *key, snd_config_t **result)
- {
--	static int snd_config_hooks(snd_config_t *config, snd_config_t *private_data);
- 	SND_CONFIG_SEARCHA(root, config, key, result,
- 					snd_config_searcha_hooks,
- 					err = snd_config_hooks(config, NULL); \
---- alsa-lib-1.0.9rc2/src/pcm/pcm_dmix_generic.c.gcc4	2005-02-08 21:28:31.000000000 +0100
-+++ alsa-lib-1.0.9rc2/src/pcm/pcm_dmix_generic.c	2005-04-22 14:49:57.000000000 +0200
-@@ -72,9 +72,9 @@
- 		} while (*sum != old_sample);
- 		if (!--size)
- 			return;
--		src += src_step;
--		dst += dst_step;
--		sum += sum_step;
-+		src = (signed short *) ((char *)src + src_step);
-+		dst = (signed short *) ((char *)dst + dst_step);
-+		sum = (signed int *)   ((char *)sum + sum_step);
- 	}
- }
- 
-@@ -106,9 +106,9 @@
- 		} while (*sum != old_sample);
- 		if (!--size)
- 			return;
--		src += src_step;
--		dst += dst_step;
--		sum += sum_step;
-+		src = (signed int *) ((char *)src + src_step);
-+		dst = (signed int *) ((char *)dst + dst_step);
-+		sum = (signed int *) ((char *)sum + sum_step);
- 	}
- }
- 
---- alsa-lib-1.0.9rc2/src/pcm/pcm_plugin.c.gcc4	2005-01-20 16:07:59.000000000 +0100
-+++ alsa-lib-1.0.9rc2/src/pcm/pcm_plugin.c	2005-04-22 14:33:49.000000000 +0200
-@@ -316,7 +316,7 @@
- 		snd_pcm_mmap_begin(slave, &slave_areas, &slave_offset, &slave_frames);
- 		if (slave_frames == 0)
- 			break;
--		frames = plugin->read(pcm, areas, offset, frames,
-+		frames = (plugin->read)(pcm, areas, offset, frames,
- 				      slave_areas, slave_offset, &slave_frames);
- 		if (CHECK_SANITY(slave_frames > snd_pcm_mmap_capture_avail(slave))) {
- 			SNDMSG("read overflow %ld > %ld", slave_frames,
-@@ -488,7 +488,7 @@
- 				return xfer > 0 ? (snd_pcm_sframes_t)xfer : err;
- 			if (frames > cont)
- 				frames = cont;
--			frames = plugin->read(pcm, areas, hw_offset, frames,
-+			frames = (plugin->read)(pcm, areas, hw_offset, frames,
- 					      slave_areas, slave_offset, &slave_frames);
- 			snd_atomic_write_begin(&plugin->watom);
- 			snd_pcm_mmap_hw_forward(pcm, frames);
---- alsa-lib-1.0.9rc2/src/hwdep/hwdep.c.gcc4	2004-05-24 16:57:47.000000000 +0200
-+++ alsa-lib-1.0.9rc2/src/hwdep/hwdep.c	2005-04-22 14:33:49.000000000 +0200
-@@ -485,7 +485,7 @@
- 	assert(hwdep);
- 	assert(((hwdep->mode & O_ACCMODE) == O_RDONLY) || ((hwdep->mode & O_ACCMODE) == O_RDWR));
- 	assert(buffer || size == 0);
--	return hwdep->ops->read(hwdep, buffer, size);
-+	return (hwdep->ops->read)(hwdep, buffer, size);
- }
- 
- /**
---- alsa-lib-1.0.9rc2/src/rawmidi/rawmidi.c.gcc4	2004-09-28 12:45:33.000000000 +0200
-+++ alsa-lib-1.0.9rc2/src/rawmidi/rawmidi.c	2005-04-22 14:33:49.000000000 +0200
-@@ -987,5 +987,5 @@
- 	assert(rawmidi);
- 	assert(rawmidi->stream == SND_RAWMIDI_STREAM_INPUT);
- 	assert(buffer || size == 0);
--	return rawmidi->ops->read(rawmidi, buffer, size);
-+	return (rawmidi->ops->read)(rawmidi, buffer, size);
- }
---- alsa-lib-1.0.9rc2/src/seq/seq.c.gcc4	2004-03-23 16:15:21.000000000 +0100
-+++ alsa-lib-1.0.9rc2/src/seq/seq.c	2005-04-22 14:33:49.000000000 +0200
-@@ -3914,7 +3914,7 @@
- static ssize_t snd_seq_event_read_buffer(snd_seq_t *seq)
- {
- 	ssize_t len;
--	len = seq->ops->read(seq, seq->ibuf, seq->ibufsize * sizeof(snd_seq_event_t));
-+	len = (seq->ops->read)(seq, seq->ibuf, seq->ibufsize * sizeof(snd_seq_event_t));
- 	if (len < 0)
- 		return len;
- 	seq->ibuflen = len / sizeof(snd_seq_event_t);
 
---------------020009040209060407000700
-Content-Type: text/x-patch;
- name="alsa-lib-mixer.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-lib-mixer.patch"
-
---- alsa-lib-1.0.9rc2/src/mixer/mixer.c.old	2005-04-22 14:15:33.000000000 +0200
-+++ alsa-lib-1.0.9rc2/src/mixer/mixer.c	2005-04-22 14:27:40.000000000 +0200
-@@ -520,14 +520,22 @@
- 	return c1->class->compare(c1, c2);
- }
- 
-+static snd_mixer_t *qsort_mixer;
- typedef int (*qsort_func)(const void *, const void *);
-+
-+static int compar(const void *a, const void *b) {
-+       return qsort_mixer->compare(*(const snd_mixer_elem_t * const *) a,
-+                                   *(const snd_mixer_elem_t * const *) b);
-+}
-+
- static int snd_mixer_sort(snd_mixer_t *mixer)
- {
- 	unsigned int k;
- 	assert(mixer);
- 	assert(mixer->compare);
- 	INIT_LIST_HEAD(&mixer->elems);
--	qsort(mixer->pelems, mixer->count, sizeof(snd_mixer_elem_t*), (qsort_func)mixer->compare);
-+        qsort_mixer = mixer;
-+	qsort(mixer->pelems, mixer->count, sizeof(snd_mixer_elem_t*), compar);
- 	for (k = 0; k < mixer->count; k++)
- 		list_add_tail(&mixer->pelems[k]->list, &mixer->elems);
- 	return 0;
-
---------------020009040209060407000700--
 
 
 -------------------------------------------------------
