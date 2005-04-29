@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001081]: Clicking noise when short sound files are played.
-Date: Fri, 29 Apr 2005 07:39:46 +0200
-Message-ID: <b171eee23321bc84000d2c510e8141ef@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001068]: enable dmix by default
+Date: Fri, 29 Apr 2005 09:08:16 +0200
+Message-ID: <a184466733fe9eda6c6f8b4922c504f4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1F4201B1
-	for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2005 07:39:47 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D4A1289
+	for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2005 09:08:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1081> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1068> 
 ======================================================================
-Reported By:                raid517
+Reported By:                mandreiana
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1081
-Category:                   CORE - control
+Project:                    ALSA - lib
+Issue ID:                   1068
+Category:                   mixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.11.7
 ======================================================================
-Date Submitted:             04-29-2005 07:39 CEST
-Last Modified:              04-29-2005 07:39 CEST
+Date Submitted:             04-21-2005 06:49 CEST
+Last Modified:              04-29-2005 09:08 CEST
 ======================================================================
-Summary:                    Clicking noise when short sound files are played.
+Summary:                    enable dmix by default
 Description: 
-Hi whenever I play .wav files (or any very short sound files) from sites
-such as the following, the sound plays fine, but it is always followed by
-a slight 'clicking' noise at the exact instant when the sound stops
-playing. What causes this - and how do I prevent it?
+Please see this bug report:
+https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=155421
 
-(Just an example).
-
-http://www.wavsite.com/
-
-GJ
+Someone suggested to change /etc/asound.conf so dmix is turned on, but
+please enable it by default.
 ======================================================================
+
+----------------------------------------------------------------------
+ mandreiana - 04-21-05 08:42 
+----------------------------------------------------------------------
+Note: The ChangeLog hasn't been maintained since 0.2.0 in these
+alsa-lib-1.0.9rc2.tar.bz2
+alsa-utils-1.0.9rc2.tar.bz2
+
+----------------------------------------------------------------------
+ mandreiana - 04-29-05 09:08 
+----------------------------------------------------------------------
+I've upgraded to 1.0.9.rc2, please close this
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-05 07:39 raid517        New Issue                                    
-04-29-05 07:39 raid517        Distribution              => Debian          
-04-29-05 07:39 raid517        Kernel Version            => 2.6.11.7        
+04-21-05 06:49 mandreiana     New Issue                                    
+04-21-05 07:59 pzad           Note Added: 0004546                          
+04-21-05 08:39 mandreiana     Note Added: 0004547                          
+04-21-05 08:42 mandreiana     Note Added: 0004548                          
+04-29-05 09:08 mandreiana     Note Added: 0004578                          
 ======================================================================
 
 
