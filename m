@@ -1,9 +1,9 @@
-From: "Alec" <asq@ctsukexports.co.uk>
-Subject: lyric
-Date: Sat, 30 Apr 2005 16:30:59 +0530
-Message-ID: <002101c54d74$b628f610$4b896d55@prb>
+From: "Rosalie" <kqpeaq@rodleben.de>
+Subject: effeminate
+Date: Sat, 30 Apr 2005 16:38:47 +0530
+Message-ID: <002101c54d75$1f12b800$56be28ed@lcuy>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0204979091=="
+Content-Type: multipart/mixed; boundary="===============0012139533=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,74 +14,86 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============0204979091==
+--===============0012139533==
 Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_001D_01C54DA2.CFD63590"
+	boundary="----=_NextPart_000_001D_01C54DA3.38BE22C0"
 
-------=_NextPart_000_001D_01C54DA2.CFD63590
+------=_NextPart_000_001D_01C54DA3.38BE22C0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001E_01C54DA2.CFD8F4B0"
+	boundary="----=_NextPart_001_001E_01C54DA3.38C15710"
 
-------=_NextPart_001_001E_01C54DA2.CFD8F4B0
+------=_NextPart_001_001E_01C54DA3.38C15710
 Content-Type: text/plain;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-Hey, even my Wife is dead impressed with this.
-This essential piece of the viral ebook jigsaw if often overlooked. , as =
-most wardrobes don't have this.
-Without your list, you are only really profiting from a short term money =
-maker.
-Here's Why I Think PayDotComIs Going To Do Very Well.
-All you have to do is follow the simple instructions.
-As most of the supermarkets claim to be the cheapest, they were trying =
-to sell the idea a bit more creatively. You will never be the victim of =
-slowing down sales and profits. I recently spent a considerable amount =
-of money buying the resell rights to the new version 2 of the course. He =
-came to fame through his TV program 'The Naked Chef', although he does =
-in fact wear his cloths all the time.
->From a seller and an affiliates point of view, ClickBank has many areas =
-that could be improved upon.
-This is done so that their readers can't accuse the editor of trying to =
-dupe them.
-To give you an insight into how you can profit from public domain books, =
-there is going to be a live teleseminar on Monday 4th at 4.
-This essential piece of the viral ebook jigsaw if often overlooked.
-"A well used phrase, but the money really is in the list.
-You should always conduct tests to see what works for your product, in =
-your market.
-But, if you don't deliver the moon, and deliver it fast, your profits =
-and reputation is built on a bed of quicksand.
-Try to match the style of their drop capitals exactly.
-If you already have a good understanding of 'SEO', then you will be able =
-to jump straight in, and start benefiting from using the software =
-straight away. I should go to Sainsbury's.
-She has also been flown in by clients from around the world, so her =
-service is in high demand.
-In your business, offline or online, you should always try and find a =
-USP to differentiate you, your offer, your product etc.
-It all seems so far away, so unachievable.
-All sorts of opportunities will present themselves to you.
-com"I Must Admit That I Didn't Continue Reading AfterThe First Couple of =
-Pages Because I Knew I StoodIn Danger of Being Overwhelmed .
-You should always conduct tests to see what works for your product, in =
-your market. You can do this from your own website, on sites like eBay, =
-offline, or any other way you choose. However, for years now, the forums =
-have been ablaze with affiliates and sellers voicing their frustration =
-with ClickBank.
-, from the competition.
-Too Clever, Too CuteMistake 1 - Personally, I thought the ad was way too =
-cute and clever. 'The Power Of ProofTop Marketing Tip 3 - We all know =
-the power of a 'before and after picture'.
-The big idea behind the ad - Cilla started by saying that there are a =
-lot of different types of diets out there.
+I am now selling my drop capital images through PayDotCom, and I plan on =
+using them for other products in the future as well.
+I also didn't have a clue about how to drive traffic to my new website. =
+I take you to Google, and show you real life examples of advertisers =
+missing out on golden opportunities.
+However, whilst many of these keyword building tools are excellent, =
+you've almost certainly got a very useful keyword building tool sitting =
+on your PC already, but you are not using it!
+"any entrepreneurs set out by trying to find a cheaper way of doing =
+things for their customers.
 This is especially important if you are competing in a crowded =
 marketplace, with lots of people selling the same thing.
-------=_NextPart_001_001E_01C54DA2.CFD8F4B0
+When you look at all these competitors, you will be forgiven for =
+thinking that the market is taken, with no room for little old you. =
+comWhat Can You Learn FromThis Success Story? To get full details of =
+this 'MUST HAVE' course, plus the discount offer, please go here:Sorry =
+this discount offer is now closedClick Here: OnlineBusinessBlueprint. Or =
+the wayward pupil who is going off the rails fast, with a future =
+destined for disaster.
+If a client is someone that wears a lot of jumpers for example, the =
+design of the wardrobe will reflect this and provide adequate space for =
+them.
+The Excellent Ad Example -In the second ad, Sainsbury's used a far =
+better approach than Tesco, on so many counts they just don't compare.
+Too Clever, Too CuteMistake 1 - Personally, I thought the ad was way too =
+cute and clever.
+You will learn how to draw in the masses by creating amazing sales =
+letters that convey your message so powerfully the reader won't be able =
+to keep their credit card from flying out of their wallet.
+She obviously knew her stuff, but was a bit surprised when a magazine =
+editor asked if she would help her with her wardrobe.
+How To Get High Rankings In The Search Engines  "A Way To Get Free =
+Search Engine Traffic,With Rock Solid PROOF That It Works.
+It is 49 pages of great wisdom and I am sure to people who read and =
+apply it will bring in floods of cash.
+Yours FREEI've just put together a short, but very enlightening free =
+report for you.
+I must admit that I didn't continue reading after the first couple of =
+pages because I knew I stood in danger of being overwhelmed by the sheer =
+diversity and brilliance of what I was reading. With a website, you can =
+reach the whole country without having the big overheads that will be =
+weighing down on your high street competitors.
+"I have got some urgent news which I think will interest you.
+Take advantage of the most under-used and powerful tactic of all.
+Inside the report you can promote your site, or other products via your =
+affiliate links.
+But I gave him three tips I rate highly.
+Top Marketing Tip 1 - First off, the celebrity Sainsbury's have been =
+using for their current ad campaign, is the highly rated, and very =
+popular TV Chef Jamie Oliver.
+In the video I mention some free software that I use to create my PDF =
+ebooks with. From a seller and an affiliates point of view, ClickBank =
+has many areas that could be improved upon. t doesn't matter what type =
+of website you have, you can always do with more free traffic, right?
+What if you get falsely accused of SPAM, and your domain gets =
+blacklisted overnight?
+- To get the free search engine optimization guide,and to download the =
+software. Who are you going to trust?
+Final note: Like every marketing and copywriting tip I give you, you =
+should take nothing for granted.
+You might not think so, if you got the concept of the ad in a split =
+second.
+------=_NextPart_001_001E_01C54DA3.38C15710
 Content-Type: text/html;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -90,120 +102,133 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1506" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"restive" hspace=3D0=20
-src=3D"cid:001c01c54d74$b61b3a70$4b896d55@prb" align=3Dbaseline=20
+<DIV><FONT face=3DArial size=3D2><IMG alt=3D"waken" hspace=3D0=20
+src=3D"cid:001c01c54d75$1f02b270$56be28ed@lcuy" align=3Dbaseline=20
 border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Hey, even my Wife is dead impressed =
-with=20
-this.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This essential piece of the viral ebook =
-jigsaw if=20
-often overlooked. , as most wardrobes don't have this.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Without your list, you are only really =
-profiting=20
-from a short term money maker.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Here's Why I Think PayDotComIs Going To =
-Do Very=20
-Well.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>All you have to do is follow the =
-simple=20
-instructions.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>As most of the supermarkets claim to be =
-the=20
-cheapest, they were trying to sell the idea a bit more creatively. You =
-will never be=20
-the victim of slowing down sales and profits. I recently spent a =
-considerable amount=20
-of money buying the resell rights to the new version 2 of the course. He =
-came to=20
-fame through his TV program 'The Naked Chef', although he does in fact =
-wear his=20
-cloths all the time.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>From a seller and an affiliates point =
-of view,=20
-ClickBank has many areas that could be improved upon.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This is done so that their readers =
-can't accuse the=20
-editor of trying to dupe them.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>To give you an insight into how you can =
-profit from=20
-public domain books, there is going to be a live teleseminar on Monday =
-4th at=20
-4.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>This essential piece of the viral ebook =
-jigsaw if=20
-often overlooked.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>"A well used phrase, but the money =
-really is in the=20
-list.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>You should always conduct tests to see =
-what works=20
-for your product, in your market.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>But, if you don't deliver the moon, and =
-deliver it=20
-fast, your profits and reputation is built on a bed of =
-quicksand.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Try to match the style of their drop =
-capitals=20
-exactly.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>If you already have a good =
-understanding of 'SEO',=20
-then you will be able to jump straight in, and start benefiting from =
-using the=20
-software straight away. I should go to Sainsbury's.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>She has also been flown in by clients =
-from around=20
-the world, so her service is in high demand.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>In your business, offline or online, =
-you should=20
-always try and find a USP to differentiate you, your offer, your =
-product=20
-etc.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>It all seems so far away, so=20
-unachievable.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>All sorts of opportunities will present =
-themselves=20
-to you.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>com"I Must Admit That I Didn't Continue =
-Reading=20
-AfterThe First Couple of Pages Because I Knew I StoodIn Danger of Being =
-Overwhelmed=20
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>You should always conduct tests to see =
-what works=20
-for your product, in your market. You can do this from your own website, =
-on sites=20
-like eBay, offline, or any other way you choose. However, for years now, =
-the forums=20
-have been ablaze with affiliates and sellers voicing their frustration =
-with=20
-ClickBank.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>, from the competition.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>Too Clever, Too CuteMistake 1 - =
-Personally, I=20
-thought the ad was way too cute and clever. 'The Power Of ProofTop =
-Marketing Tip 3 -=20
-We all know the power of a 'before and after picture'.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>The big idea behind the ad - Cilla =
-started by=20
-saying that there are a lot of different types of diets out =
-there.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I am now selling my drop capital images =
+through=20
+PayDotCom, and I plan on using them for other products in the future =
+as=20
+well.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I also didn't have a clue about how to =
+drive=20
+traffic to my new website. I take you to Google, and show you real life =
+examples of=20
+advertisers missing out on golden opportunities.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>However, whilst many of these keyword =
+building=20
+tools are excellent, you've almost certainly got a very useful keyword =
+building tool=20
+sitting on your PC already, but you are not using it!</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>"any entrepreneurs set out by trying to =
+find a=20
+cheaper way of doing things for their customers.</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2>This is especially important if you are =
 competing=20
-in a crowded marketplace, with lots of people selling the same=20
-thing.</FONT></DIV></BODY></HTML>
+in a crowded marketplace, with lots of people selling the same =
+thing.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>When you look at all these competitors, =
+you will be=20
+forgiven for thinking that the market is taken, with no room for little =
+old you.=20
+comWhat Can You Learn FromThis Success Story? To get full details of =
+this 'MUST=20
+HAVE' course, plus the discount offer, please go here:Sorry this =
+discount offer is=20
+now closedClick Here: OnlineBusinessBlueprint. Or the wayward pupil who =
+is going off=20
+the rails fast, with a future destined for disaster.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>If a client is someone that wears a lot =
+of jumpers=20
+for example, the design of the wardrobe will reflect this and provide =
+adequate space=20
+for them.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>The Excellent Ad Example -In the second =
+ad,=20
+Sainsbury's used a far better approach than Tesco, on so many counts =
+they just don't=20
+compare.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Too Clever, Too CuteMistake 1 - =
+Personally, I=20
+thought the ad was way too cute and clever.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>You will learn how to draw in the =
+masses by=20
+creating amazing sales letters that convey your message so powerfully =
+the reader=20
+won't be able to keep their credit card from flying out of their=20
+wallet.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>She obviously knew her stuff, but was a =
+bit=20
+surprised when a magazine editor asked if she would help her with her=20
+wardrobe.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>How To Get High Rankings In The Search =
+Engines  "A=20
+Way To Get Free Search Engine Traffic,With Rock Solid PROOF That It=20
+Works.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>It is 49 pages of great wisdom and I am =
+sure to=20
+people who read and apply it will bring in floods of cash.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Yours FREEI've just put together a =
+short, but very=20
+enlightening free report for you.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I must admit that I didn't continue =
+reading after=20
+the first couple of pages because I knew I stood in danger of being =
+overwhelmed by=20
+the sheer diversity and brilliance of what I was reading. With a =
+website, you can=20
+reach the whole country without having the big overheads that will be =
+weighing down=20
+on your high street competitors.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>"I have got some urgent news which I =
+think will=20
+interest you.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Take advantage of the most under-used =
+and powerful=20
+tactic of all.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Inside the report you can promote your =
+site, or=20
+other products via your affiliate links.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>But I gave him three tips I rate=20
+highly.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Top Marketing Tip 1 - First off, the =
+celebrity=20
+Sainsbury's have been using for their current ad campaign, is the highly =
+rated, and=20
+very popular TV Chef Jamie Oliver.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>In the video I mention some free =
+software that I=20
+use to create my PDF ebooks with. From a seller and an affiliates point =
+of view,=20
+ClickBank has many areas that could be improved upon. t doesn't matter =
+what type of=20
+website you have, you can always do with more free traffic, =
+right?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>What if you get falsely accused of =
+SPAM, and your=20
+domain gets blacklisted overnight?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>- To get the free search engine =
+optimization=20
+guide,and to download the software. Who are you going to =
+trust?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Final note: Like every marketing and =
+copywriting=20
+tip I give you, you should take nothing for granted.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>You might not think so, if you got the =
+concept of=20
+the ad in a split second.</FONT></DIV></BODY></HTML>
 
-------=_NextPart_001_001E_01C54DA2.CFD8F4B0--
+------=_NextPart_001_001E_01C54DA3.38C15710--
 
-------=_NextPart_000_001D_01C54DA2.CFD63590
+------=_NextPart_000_001D_01C54DA3.38BE22C0
 Content-Type: image/gif;
-	name="taint.gif"
+	name="grating.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001c01c54d74$b61b3a70$4b896d55@prb>
+Content-ID: <001c01c54d75$1f02b270$56be28ed@lcuy>
 
 R0lGODdhDgIkAfMLAPPp9Nzf/87r/RhXsgqaAAcfIY2CApKQfpoEXfNLNwr8NXCT8fdh6pAO8Jr2
 AxHw6CwAAAAADQIjAQAE/zDISYGlOOvNu+9W+I1faJ5oKKxs676vp75pbd94ru987//AIGlILBqP
@@ -397,11 +422,11 @@ B53hD3/XEFdsas6f+l5cv6ZTB+bj0WXdFSdwrk3M1DOPSc5n35ZlR53vDmdwUl5vLM5evJZaDp8j
 lKZvYDXaMTdjFp9RftJnHZ9zQA/04pbu6UVuN9bpOgdzK56mmZ5wi95P9H5kA+7bfk2LBQOEhQgA
 ADs=
 
-------=_NextPart_000_001D_01C54DA2.CFD63590--
+------=_NextPart_000_001D_01C54DA3.38BE22C0--
 
 
 
---===============0204979091==
+--===============0012139533==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -412,7 +437,7 @@ Take Surveys. Earn Cash. Influence the Future of IT
 Join SourceForge.net's Techsay panel and you'll get the chance to share your
 opinions on IT & business topics through brief surveys - and earn cash
 http://www.techsay.com/default.php?page=join.php&p=sourceforge&CID=DEVDEV
---===============0204979091==
+--===============0012139533==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -423,4 +448,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0204979091==--
+--===============0012139533==--
