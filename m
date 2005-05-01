@@ -1,11 +1,15 @@
-From: Peter Enderborg <pme@ufh.se>
-Subject: 1.0.9rc2
-Date: Sun, 01 May 2005 21:15:09 +0200
-Message-ID: <42752ABD.9010900@ufh.se>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [Alsa-user] Re: [linux-audio-dev] E-MU 1212m Linux drivers
+Date: Sun, 01 May 2005 19:30:31 -0400
+Message-ID: <1114990231.23959.2.camel@mindpipe>
+References: <200505010231.19540.beppe.miletto@tiscali.it>
+	 <1114908114.5626.3.camel@mindpipe>
+	 <200505020124.16569.beppe.miletto@tiscali.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200505020124.16569.beppe.miletto@tiscali.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,52 +19,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Giuseppe Miletto <beppe.miletto@tiscali.it>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I upgraded my 2.6.11.8 kernel baced machine with 1.0.9rc2 alsa.
-Alsaplayer sometimes uses a lot of CPU even when not playing.
- From top:
+On Mon, 2005-05-02 at 01:24 +0200, Giuseppe Miletto wrote:
+> Alle 02:41, domenica 1 maggio 2005, hai scritto:
+> > On Sun, 2005-05-01 at 02:31 +0200, Giuseppe Miletto wrote:
+> > > I've already bought a EMU-1212 and I've doing very good job with windows
+> > > operating system. This has been a forced choice: trying to use EMU-1212
+> > > with my suse 9.2 linux system I haven't been able to go over the use of
+> > > MIDI port of my EMU-1212.
+> > > Since I'm still an entusiastic of linux, I'll be very gratefull if some
+> > > linux driver allow me to work with my EMU-1212 under this system: the
+> > > only use of windows I'm doing now is for sound and music.And EMU-1212 is
+> > > really a great soundcard.
+> >
+> > Can you provide the "lspci -vn" output?  It's possible that some
+> > functionality will work if the driver just treats the card like an APS
+> > (that is, an emu10k1 with no AC97).
+> >
+> > Lee
+> 
+> Hereby is what you asked for.
+> Thanks in advance
+> BYE
+> 
 
-Tasks: 143 total,   2 running, 141 sleeping,   0 stopped,   0 zombie
-Cpu(s): 11.8% us, 41.5% sy,  0.0% ni, 16.9% id, 27.1% wa,  0.8% hi,  2.1% si
-Mem:   2075512k total,  2024640k used,    50872k free,    22344k buffers
-Swap:  1309216k total,        0k used,  1309216k free,  1603944k cached
+James, here's the entry for the 1212m:
 
-  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  
-COMMAND          
- 6169 pme       15   0 47692 7420 4540 S 80.4  0.4   4:54.59 
-alsaplayer       
- 2850 root      15   0  140m  80m 9276 R  5.9  4.0  41:39.57 
-X                
- 3608 pme       15   0  198m 116m  20m S  2.0  5.7  13:27.45 
-mozilla-bin      
-    1 root      16   0  1460  480  428 S  0.0  0.0   0:00.93 
-init             
-    2 root      RT   0     0    0    0 S  0.0  0.0   0:00.00 
-migration/0      
-    3 root      34  19     0    0    0 S  0.0  0.0   0:00.00 
-ksoftirqd/0      
-    4 root      10  -5     0    0    0 S  0.0  0.0   0:00.06 
-events/0         
-    5 root      12  -5     0    0    0 S  0.0  0.0   0:00.01 
-khelper          
-   10 root      10  -5     0    0    0 S  0.0  0.0   0:00.00 
-kthread          
-   19 root      20  -5     0    0    0 S  0.0  0.0   0:00.00 
-kacpid           
-  113 root      10  -5     0    0    0 S  0.0  0.0   0:00.00 
-kblockd/0        
-  126 root      15   0     0    0    0 S  0.0  0.0   0:00.00 
-khubd            
-  180 root      15   0     0    0    0 S  0.0  0.0   3:04.11 
-pdflush          
-  182 root      11  -5     0    0    0 S  0.0  0.0   0:00.00 
-aio/0            
-  181 root      15   0     0    0    0 S  0.0  0.0   7:49.08 kswapd0     
- 
+0000:02:0a.0 Class 0401: 1102:0004 (rev 03)
+        Subsystem: 1102:4001
+        Flags: bus master, medium devsel, latency 32, IRQ 5
+        I/O ports at 9000
+        Capabilities: [dc] Power Management version 2
 
-Anyone else see this ?
+Let's add this to the driver & see what happens.  I'll try to get a
+patch together, feel free to post one if you get a chance before I do.
+
+Lee
+
 
 
 -------------------------------------------------------
