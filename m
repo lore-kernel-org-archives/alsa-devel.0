@@ -1,7 +1,7 @@
 From: alsa@karsites.net
 Subject: Server Down ?? http://www.alsa-project.org/
-Date: Sun, 1 May 2005 14:35:40 +0100 (BST)
-Message-ID: <Pine.LNX.4.61.0505011432140.10009@karsites.net>
+Date: Sun, 1 May 2005 16:09:23 +0100 (BST)
+Message-ID: <Pine.LNX.4.61.0505011607420.10186@karsites.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -18,17 +18,11 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Hi there.
+Hi there - it's back again now, TY
 
-Does anyone know if the maim alsa server:
+Sun 01-MAY-2005, 16:00pm  :-)
 
- http://www.alsa-project.org/  is down?
-
-I connected end of last week.
-
-Nothing there now on Sun 01-MAY-2005 14:30pm
-
-Regards - Keith Roberts
+KR
 
 http://www.karsites.net/
 
