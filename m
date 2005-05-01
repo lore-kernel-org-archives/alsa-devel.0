@@ -1,13 +1,10 @@
-From: Marcel Holtmann <marcel@holtmann.org>
-Subject: Re: Plugin loading and unloading
-Date: Sat, 30 Apr 2005 13:35:26 +0200
-Message-ID: <1114860926.8836.139.camel@pegasus>
-References: <1114266960.10706.30.camel@pegasus>
+From: alsa@karsites.net
+Subject: Server Down ?? http://www.alsa-project.org/
+Date: Sun, 1 May 2005 14:35:40 +0100 (BST)
+Message-ID: <Pine.LNX.4.61.0505011432140.10009@karsites.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1114266960.10706.30.camel@pegasus>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,36 +17,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi again,
 
-> I am working again on the A2DP Bluetooth plugin and the caching support
-> in the latest ALSA library is nice and allows me to keep the underlaying
-> link connected while stupid programs like XMMS closes the PCM when they
-> switch the tracks.
-> 
-> The PCM opening part and reusing of the underlaying AVDTP connection is
-> easy, but I am a little bit concerned about the plugin unloading time.
-> So is it possible to add init() and exit() functions that are called
-> when the plugin is loaded and unloaded. Like we have for kernel modules?
+Hi there.
 
-is it possible to get comments on this?
+Does anyone know if the maim alsa server:
 
-> Do the ALSA library has a timer mechanism that we can use inside a
-> plugin. Since it is a bad idea to hold the Bluetooth connection open for
-> all the time, I like to add a idle timeout. This allows me to put the
-> connection into sniff mode to save power or terminate it.
+ http://www.alsa-project.org/  is down?
 
-I really need to use a timer inside my ALSA plugin. How do it do it?
+I connected end of last week.
 
-> Also the listing of plugins is still missing. I am fine with a general
-> or plugin specific flag to make its PCM visible.
+Nothing there now on Sun 01-MAY-2005 14:30pm
 
-Looks like the 1.0.9-rc3 is coming and this won't be part of it :(
+Regards - Keith Roberts
 
-Regards
-
-Marcel
-
+http://www.karsites.net/
 
 
 
