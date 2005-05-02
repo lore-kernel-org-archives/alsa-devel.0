@@ -1,14 +1,12 @@
-From: "Geoff Beasley" <songshop@bizmedia.com.au>
-Subject: Multi device for 2 C-Ports... More help needed
-Date: Mon, 2 May 2005 13:06:46 +1000
-Message-ID: <20050502030713.6801471A28@mail.netspace.net.au>
-References: <Pine.HPX.4.33n.0504251306330.2934-100000@studcom.urz.uni-halle.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Audigy 2 NX
+Date: Mon, 2 May 2005 09:17:19 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0505020858030.21377-100000@studcom.urz.uni-halle.de>
+References: <ad2655cb0504290959498bda21@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="windows-1250"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0504251306330.2934-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <ad2655cb0504290959498bda21@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,107 +16,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 'Clemens Ladisch' <clemens@ladisch.de>
+To: James Courtier-Dutton <james.dutton@gmail.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the help so far. I've done that but when I start up jack it works
-for about 5 - 10 seconds then says the jack watchdog times out and stops the
-server. During the few seconds it is working I checked in the connections
-tab and there are only 2 ins and 2 outs. Do I need to make any alterations
-to the file?
+James Courtier-Dutton wrote:
+> I notice that you are doing quite a bit of work on the Audigy 2 NX
+> device. Do you have any ideas as to how we can set IEC958 non-audio
+> bits on the optical out, and also detect IEC958 non-audio bits on the
+> optical in. Also, do you have any ideas on how to set the SPDIF rate?
 
-Here is the file I have currently:
+I think these things are done by doing some device-specific memory
+reads/writes.  I haven't yet looked at a USB log of the Windows
+driver.
 
-pcm.cport_a {
-	type hw
-	card 0       # change the card numbers as appropriate
-	device 0
-}
-pcm.cport_b {
-	type hw
-	card 1
-	device 0
-}
+Is it possible to set the SPDIF rate in Windows?
 
-pcm.playback20 {
-	type multi
-	slaves.a { pcm cport_a channels 10 }
-	slaves.b { pcm cport_b channels 10 }
-	bindings [
-		{ slave a channel 0 }
-		{ slave a channel 1 }
-		{ slave a channel 2 }
-		{ slave a channel 3 }
-		{ slave a channel 4 }
-		{ slave a channel 5 }
-		{ slave a channel 6 }
-		{ slave a channel 7 }
-		{ slave a channel 8 }
-		{ slave a channel 9 }
-		{ slave b channel 0 }
-		{ slave b channel 1 }
-		{ slave b channel 2 }
-		{ slave b channel 3 }
-		{ slave b channel 4 }
-		{ slave b channel 5 }
-		{ slave b channel 6 }
-		{ slave b channel 7 }
-		{ slave b channel 8 }
-		{ slave b channel 9 }
-	]
-}
 
-pcm.capture24 {
-	type multi
-	slaves.a { pcm cport_a channels 12 }
-	slaves.b { pcm cport_b channels 12 }
-	bindings [
-		{ slave a channel 0 }
-		{ slave a channel 1 }
-		{ slave a channel 2 }
-		{ slave a channel 3 }
-		{ slave a channel 4 }
-		{ slave a channel 5 }
-		{ slave a channel 6 }
-		{ slave a channel 7 }
-		{ slave a channel 8 }
-		{ slave a channel 9 }
-		{ slave a channel 10 }
-		{ slave a channel 11 }
-		{ slave b channel 0 }
-		{ slave b channel 1 }
-		{ slave b channel 2 }
-		{ slave b channel 3 }
-		{ slave b channel 4 }
-		{ slave b channel 5 }
-		{ slave b channel 6 }
-		{ slave b channel 7 }
-		{ slave b channel 8 }
-		{ slave b channel 9 }
-		{ slave b channel 10 }
-		{ slave b channel 11 }
-	]
-}
-
-pcm.both {
-	type plug
-	slave.pcm {
-		type asym
-		playback.pcm playback20
-		capture.pcm capture24
-	}
-}
-
-Cheers,
-Geoff.
- 
-
--- 
-No virus found in this outgoing message.
-Checked by AVG Anti-Virus.
-Version: 7.0.308 / Virus Database: 266.11.0 - Release Date: 4/29/2005
- 
+Regards,
+Clemens
 
 
 
