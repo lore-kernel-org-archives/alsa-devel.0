@@ -1,18 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [Alsa-user] Re: [linux-audio-dev] E-MU 1212m
-	Linux drivers
-Date: Sun, 01 May 2005 20:33:13 -0400
-Message-ID: <1114993993.23959.8.camel@mindpipe>
-References: <200505010231.19540.beppe.miletto@tiscali.it>
-	 <1114908114.5626.3.camel@mindpipe>
-	 <200505020124.16569.beppe.miletto@tiscali.it>
-	 <1114990231.23959.2.camel@mindpipe> <1114992424.23959.5.camel@mindpipe>
-	 <427580EE.6040500@superbug.co.uk>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: [PATCH] ppc32: Small build fix for alsa powermac
+Date: Mon, 02 May 2005 11:40:30 +1000
+Message-ID: <1114998030.7112.364.camel@gaston>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <427580EE.6040500@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,20 +15,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: Giuseppe Miletto <beppe.miletto@tiscali.it>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Andrew Morton <akpm@osdl.org>
+Cc: Linux Kernel list <linux-kernel@vger.kernel.org>, Linus Torvalds <torvalds@osdl.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2005-05-02 at 02:22 +0100, James Courtier-Dutton wrote:
-> Yes, well, that's really going to work isn't it!!!
-> > +	 .emu10k1_chip = 1} ,
-> 
-> Me thinks ".emu10k2_chip = 1}, " would be more like it. :-)
-> 
+Hi !
 
-Thanks.  Can you tell I just copied and pasted the APS entry? ;-)
+My newer iMac mini driver doesn't build with verbose debug enabled. This
+fixes it, and removes an erroneous error printk (since it's normal on
+some machine to not find some gpios on the "first try").
 
-Lee
+Signed-off-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+
+Index: linux-work/sound/ppc/toonie.c
+===================================================================
+--- linux-work.orig/sound/ppc/toonie.c	2005-05-02 10:51:00.000000000 +1000
++++ linux-work/sound/ppc/toonie.c	2005-05-02 11:38:22.000000000 +1000
+@@ -279,8 +279,7 @@
+ 	if (! base) {
+ 		base = (u32 *)get_property(np, "reg", NULL);
+ 		if (!base) {
+-			DBG("(E) cannot find address for device %s !\n", device);
+-			snd_printd("cannot find address for device %s\n", device);
++			DBG("(E) cannot find address for device %s !\n", name);
+ 			return -ENODEV;
+ 		}
+ 		addr = *base;
+
 
 
 
