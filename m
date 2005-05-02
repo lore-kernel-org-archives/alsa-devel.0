@@ -1,12 +1,12 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: alsa-lib patches
-Date: Mon, 2 May 2005 10:43:51 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0505021028020.21377-100000@studcom.urz.uni-halle.de>
-References: <42723D60.4030208@redhat.com>
+Subject: Re: re multiple C-Ports
+Date: Mon, 2 May 2005 10:54:59 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0505021050550.21377-100000@studcom.urz.uni-halle.de>
+References: <20050502045322.D3D77715CB@mail.netspace.net.au>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42723D60.4030208@redhat.com>
+In-Reply-To: <20050502045322.D3D77715CB@mail.netspace.net.au>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,32 +16,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Martin Stransky <stransky@redhat.com>
-Cc: Lee Revell <rlrevell@joe-job.com>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Geoff Beasley <songshop@bizmedia.com.au>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Martin Stransky wrote:
-> About mixer patch - some user had a problem with ICH6 and this patch helped.
->
-> +static snd_mixer_t *qsort_mixer;
+Geoff Beasley wrote:
+> The first thing I added was a ctl; ctl.both... jack needs this
+> apparently.
 
-This will break with multithreading.
+Yes (but it shouldn't).
 
-> +static int compar(const void *a, const void *b) {
-> +       return qsort_mixer->compare(*(const snd_mixer_elem_t * const *) a,
-> +                                   *(const snd_mixer_elem_t * const *) b);
-> +}
+> I can see 24 outputs in half duplex and mount them in
+> Ardour and play them back, however if we use spdif to sync the
+> cards together the x-runs begin in earnest... no spdif and it
+> works better, tho eventually we get the x-run avalanche.
 
-So the actual problem is that qsort() calls us with a pointer to a
-pointer to the mixer_elem_t, but the compare function takes a single
-pointer.
+I don't really know, but this would indicate that the cards aren't
+really synchronized.  Perhaps you should ask somebody else who
+actually has two ICE1712 cards.
+
+> Capture won't work at all; jack just zombies no matter what.
+
+What does it say?
+
+> Another thing, alsa seems to be being started by something else.
+
+The hotplug system automatically loads USB and PCI drivers.
 
 
-If we don't want to change the mixer API, we have to use some
-pthread_mutex to protext qsort_mixer.
-
-
-Regards,
+HTH
 Clemens
 
 
