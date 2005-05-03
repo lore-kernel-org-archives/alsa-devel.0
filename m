@@ -1,14 +1,17 @@
-From: "Gary E. Miller" <gem@rellim.com>
-Subject: ICH5 fails
-Date: Mon, 2 May 2005 12:31:36 -0700 (PDT)
-Message-ID: <Pine.LNX.4.63.0505021217480.6463@catbert.rellim.com>
-References: <20050502211304.7ec976bd.pochini@shiny.it>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: [Alsa-user] Re: [linux-audio-dev] E-MU 1212m
+	Linux drivers
+Date: Mon, 02 May 2005 23:31:35 -0400
+Message-ID: <1115091095.27819.9.camel@mindpipe>
+References: <200505010231.19540.beppe.miletto@tiscali.it>
+	 <1114908114.5626.3.camel@mindpipe>
+	 <200505020124.16569.beppe.miletto@tiscali.it>
+	 <1114990231.23959.2.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050502211304.7ec976bd.pochini@shiny.it>
-Resent-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
-ReSent-Message-ID: <Pine.LNX.4.63.0505021234350.6463@catbert.rellim.com>
+In-Reply-To: <1114990231.23959.2.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,87 +21,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Sun, 2005-05-01 at 19:30 -0400, Lee Revell wrote:
+> On Mon, 2005-05-02 at 01:24 +0200, Giuseppe Miletto wrote:
+> James, here's the entry for the 1212m:
+> 
+> 0000:02:0a.0 Class 0401: 1102:0004 (rev 03)
+>         Subsystem: 1102:4001
+>         Flags: bus master, medium devsel, latency 32, IRQ 5
+>         I/O ports at 9000
+>         Capabilities: [dc] Power Management version 2
+> 
 
-Yo All!
+Here's a corrected patch to cause the emu10k1 driver to claim this device.
 
-I have been trying to sign up gfor the bugzilla, but I keep getting
-this message:
+I have no idea what will happen, it could work, or lock up your machine.
+But we have at least one Linux user with access to the hardware, so we
+might as well try...
 
-PROBLEMS SENDING MAIL TO:
-Mailer Error: SMTP Error: Could not connect to SMTP host.
+Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
 
-I any case, I have the same issue as bug #1078, except I have more info
-on it.  I have laptops and desktops with the ICH5 sound subsystem.  They
-all work fine up to 2.6.8.1.  Anything past that does not work.  I
-figured I would just wait on it until someone fixed it.  Now I have
-tested up to kernel 2.6.12-rc2 and from alsa driver 1.0.6 to 1.0.9rc2.
-I have mixed and matched various alsa-driver and kernel versions with
-no success.
+Lee
 
-Same problem.  My distro is a basic Slackware 10.0, except for the now
-updated kerenels and gcc.  Same problem with older gcc's as well.
+Index: alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c,v
+retrieving revision 1.55
+diff -u -r1.55 emu10k1_main.c
+--- alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c	10 Apr 2005 14:43:35 -0000	1.55
++++ alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c	2 May 2005 00:06:38 -0000
+@@ -700,6 +700,10 @@
+ 	 .emu10k2_chip = 1,
+ 	 .ca0102_chip = 1,
+ 	 .ac97_chip = 1} ,
++	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x40011102,
++	 .driver = "Audigy", .name = "E-mu 1212m [4001]", 
++	 .id = "1212m",
++	 .emu10k2_chip = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0004,
+ 	 .driver = "Audigy", .name = "Audigy 1 [Unknown]", 
+ 	 .id = "Audigy",
 
-Sadly, I updated my gcc to 4.0 and can no longer compile 2.6.8.1 or
-any alsa before 1.0.7.  So now I need this fixed.
-
-It is not just me because I can google for other folks with the same
-issue.
-
-Here is what I get in dmesg when I load the failing modules:
-
-Jan  7 20:04:09 satchel kernel: Advanced Linux Sound Architecture Driver Version
- 1.0.6 (Sun Aug 15 07:17:53 2004 UTC).
-Jan  7 20:04:09 satchel kernel: ACPI: PCI interrupt 0000:00:1f.5[B] -> GSI 17 (l
-evel, low) -> IRQ 17
-Jan  7 20:04:09 satchel kernel: intel8x0_measure_ac97_clock: measured 49768 usec
-s
-Jan  7 20:04:09 satchel kernel: intel8x0: clocking to 48000
-Jan  7 20:04:09 satchel kernel: ACPI: PCI interrupt 0000:00:1f.6[B] -> GSI 17 (l
-evel, low) -> IRQ 17
-Jan  7 20:04:09 satchel kernel: ALSA device list:
-Jan  7 20:04:09 satchel kernel:   #0: Intel ICH5 with unknown codec at 0xd0000c0
-0, irq 17
-
-Here is what I get when it works:
-Jan  4 00:14:10 satchel kernel: Advanced Linux Sound Architecture Driver Version
- 1.0.4 (Mon May 17 14:31:44 2004 UTC).
-Jan  4 00:14:10 satchel kernel: ACPI: PCI interrupt 0000:00:1f.5[B] -> GSI 17 (l
-evel, low) -> IRQ 17
-Jan  4 00:14:10 satchel kernel: intel8x0_measure_ac97_clock: measured 49918 usec
-s
-Jan  4 00:14:10 satchel kernel: intel8x0: clocking to 48000
-Jan  4 00:14:10 satchel kernel: ACPI: PCI interrupt 0000:00:1f.6[B] -> GSI 17 (l
-evel, low) -> IRQ 17
-Jan  4 00:14:10 satchel kernel: ALSA device list:
-Jan  4 00:14:10 satchel kernel:   #0: Intel ICH5 at 0xd0000c00, irq 17
-Jan  4 00:14:10 satchel kernel:   #1: Intel ICH5 Modem at 0x1800, irq 17
-
-Here is my "cards file:
-
-# cat /proc/asound/cards
-0 [ICH5           ]: ICH4 - Intel ICH5
-                     Intel ICH5 with unknown codec at 0xd0000c00, irq 17
-
-Any ideas?
-
-RGDS
-GARY
-- ---------------------------------------------------------------------------
-Gary E. Miller Rellim 20340 Empire Blvd, Suite E-3, Bend, OR 97701
-	gem@rellim.com  Tel:+1(541)382-8588 Fax: +1(541)382-8676
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQFCdoAb8KZibdeR3qURAt53AKDEM29B4jaRx7gM7V/w9XD2gpFpnQCdG4R0
-VJ5EOHodhHKAGcLnop3Y3k4=
-=fYUA
------END PGP SIGNATURE-----
 
 
 
