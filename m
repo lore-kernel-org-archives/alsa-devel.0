@@ -1,14 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: A simple program to read and write using ALSA
-	Standards
-Date: Tue, 03 May 2005 04:47:01 -0400
-Message-ID: <1115110021.28562.2.camel@mindpipe>
-References: <20050503083813.3785.qmail@web8306.mail.in.yahoo.com>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: alsa-driver does not compile/function with mm kernels.
+Date: Tue, 03 May 2005 14:16:35 +0100
+Message-ID: <427779B3.3070901@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050503083813.3785.qmail@web8306.mail.in.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,24 +15,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Koushik jaikishan <jaykishankrk@yahoo.co.in>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-05-03 at 09:38 +0100, Koushik jaikishan wrote:
-> Hello all,
-> 
-> this is my second mail to you people, i really want a
-> simple program to read and write to an audio device
-> using ALSA standards. can you people please take a
-> look into my request and help me out on this task..
+Hi,
 
-Haven't you ever heard of a Google search?  Just google for it.  Oh
-wait, never mind...
+I have noticed that alsa-driver work with the mm kernels.
+This is due to a change in the class-register functions.
+Would it be a good idea to sync alsa-driver with the kernel, so that the
+alsa-driver cvs will compile with all kernels?
 
-http://equalarea.com/paul/alsa-audio.html
-
-Lee
+James
 
 
 
