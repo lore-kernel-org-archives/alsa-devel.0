@@ -1,12 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ICH5 fails
-Date: Tue, 3 May 2005 15:01:40 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0505031455320.19889-100000@studcom.urz.uni-halle.de>
-References: <Pine.LNX.4.63.0505021217480.6463@catbert.rellim.com>
+From: Martin Langer <martin-langer@gmx.de>
+Subject: [PATCH] compiling problem fixed
+Date: Tue, 3 May 2005 16:29:16 +0200
+Message-ID: <20050503142916.GA3281@tuba>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="ReaqsoxgOBHFXBhH"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.63.0505021217480.6463@catbert.rellim.com>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,27 +15,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Gary E. Miller" <gem@rellim.com>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Gary E. Miller wrote:
-> I have laptops and desktops with the ICH5 sound subsystem.  They
-> all work fine up to 2.6.8.1.  Anything past that does not work.
 
-What does "does not work" mean?  No sound?
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> kernel: ALSA device list:
-> kernel:  #0: Intel ICH5 with unknown codec at 0xd0000c0 0, irq 17
+This fixes a 2.4 compiling problem on alpha. GFP_KERNEL was undeclared.
 
-Please try ALSA 1.0.9rc3.
+Signed-Off-by: Martin Langer <martin-langer@gmx.de>
 
-What are the contents of /proc/asound/card0/codec97#0/ac97#0-0?
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="adriver.patch"
 
+--- include/adriver.h.ORIGINAL	2005-05-03 15:57:09.000000000 +0200
++++ include/adriver.h	2005-05-03 16:09:16.000000000 +0200
+@@ -23,6 +23,7 @@
+  */
+ 
+ #include <linux/version.h>
++#include <linux/slab.h>
+ 
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 2, 3)
+ #error "This driver requires Linux 2.2.3 or higher."
 
-Regards,
-Clemens
-
+--ReaqsoxgOBHFXBhH--
 
 
 -------------------------------------------------------
