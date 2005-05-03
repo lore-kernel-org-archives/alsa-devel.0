@@ -1,12 +1,15 @@
-From: "Gary E. Miller" <gem@rellim.com>
-Subject: Re: ICH5 fails
-Date: Tue, 3 May 2005 12:22:24 -0700 (PDT)
-Message-ID: <Pine.LNX.4.63.0505031211120.16693@catbert.rellim.com>
-References: <Pine.HPX.4.33n.0505031455320.19889-100000@studcom.urz.uni-halle.de>
+From: Giuseppe Miletto <beppe.miletto@tiscali.it>
+Subject: Re: Re: [Alsa-user] Re: [linux-audio-dev] E-MU 1212m Linux drivers
+Date: Tue, 3 May 2005 23:34:52 +0200
+Message-ID: <200505032334.52210.beppe.miletto@tiscali.it>
+References: <200505010231.19540.beppe.miletto@tiscali.it> <1114992424.23959.5.camel@mindpipe> <427580EE.6040500@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0505031455320.19889-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <427580EE.6040500@superbug.co.uk>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,132 +19,106 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-Yo Clemens!
-
-Thank you for taking the time to look at my problem!
-
-On Tue, 3 May 2005, Clemens Ladisch wrote:
-
-> Gary E. Miller wrote:
-> > I have laptops and desktops with the ICH5 sound subsystem.  They
-> > all work fine up to 2.6.8.1.  Anything past that does not work.
+Alle 03:22, luned=EC 2 maggio 2005, James Courtier-Dutton ha scritto:
+> Lee Revell wrote:
+> > On Sun, 2005-05-01 at 19:30 -0400, Lee Revell wrote:
+> >>On Mon, 2005-05-02 at 01:24 +0200, Giuseppe Miletto wrote:
+> >>>Alle 02:41, domenica 1 maggio 2005, hai scritto:
+> >>>>On Sun, 2005-05-01 at 02:31 +0200, Giuseppe Miletto wrote:
+> >>>>>I've already bought a EMU-1212 and I've doing very good job with
+> >>>>> windows operating system. This has been a forced choice: trying to
+> >>>>> use EMU-1212 with my suse 9.2 linux system I haven't been able to go
+> >>>>> over the use of MIDI port of my EMU-1212.
+> >>>>>Since I'm still an entusiastic of linux, I'll be very gratefull if
+> >>>>> some linux driver allow me to work with my EMU-1212 under this
+> >>>>> system: the only use of windows I'm doing now is for sound and
+> >>>>> music.And EMU-1212 is really a great soundcard.
+> >>>>
+> >>>>Can you provide the "lspci -vn" output?  It's possible that some
+> >>>>functionality will work if the driver just treats the card like an APS
+> >>>>(that is, an emu10k1 with no AC97).
+> >>>>
+> >>>>Lee
+> >>>
+> >>>Hereby is what you asked for.
+> >>>Thanks in advance
+> >>>BYE
+> >>
+> >>James, here's the entry for the 1212m:
+> >>
+> >>0000:02:0a.0 Class 0401: 1102:0004 (rev 03)
+> >>        Subsystem: 1102:4001
+> >>        Flags: bus master, medium devsel, latency 32, IRQ 5
+> >>        I/O ports at 9000
+> >>        Capabilities: [dc] Power Management version 2
+> >>
+> >>Let's add this to the driver & see what happens.  I'll try to get a
+> >>patch together, feel free to post one if you get a chance before I do.
+> >
+> > Please try this patch against ALSA CVS.  It should cause the emu10k1
+> > driver to claim this device.
+> >
+> > I have no idea what will happen, it could work, or lock up your machine.
+> >
+> > Lee
+> >
+> > Index: alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c,v
+> > retrieving revision 1.55
+> > diff -u -r1.55 emu10k1_main.c
+> > --- alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c	10 Apr 2005 14:43:35
+> > -0000	1.55 +++ alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c	2 May 2005
+> > 00:06:38 -0000 @@ -700,6 +700,10 @@
+> >  	 .emu10k2_chip =3D 1,
+> >  	 .ca0102_chip =3D 1,
+> >  	 .ac97_chip =3D 1} ,
+> > +	{.vendor =3D 0x1102, .device =3D 0x0004, .subsystem =3D 0x40011102,
+> > +	 .driver =3D "EMU10K1", .name =3D "E-mu 1212m [4001]",
+> > +	 .id =3D "1212m",
+> > +	 .emu10k1_chip =3D 1} ,
+> >  	{.vendor =3D 0x1102, .device =3D 0x0004,
+> >  	 .driver =3D "Audigy", .name =3D "Audigy 1 [Unknown]",
+> >  	 .id =3D "Audigy",
 >
-> What does "does not work" mean?  No sound?
-
-- From my previous post you can see that the Intel audio chip does not
-even show up in /proc/asound/cards, so that is a show stopper right there.
-When it works I get to ALSA cards, one for the modem and one for the
-sound chip.  When it does not work I get an "unkown codec" for the modem
-and nothing for the sound chip.  Not a simple muting problem or some such.
-
-> > kernel: ALSA device list:
-> > kernel:  #0: Intel ICH5 with unknown codec at 0xd0000c0 0, irq 17
+> Yes, well, that's really going to work isn't it!!!
 >
-> Please try ALSA 1.0.9rc3.
-
-Hmm, slightly better.  At leaast there is some logging as to why the
-sound chip is not being found.  Here is my dmesg:
-
-ALSA /mnt/hobbes/u3/local/src/ALSA/alsa-driver-1.0.9rc3/pci/../alsa-kernel/pci/intel8x0m.c:978: Unable to initialize codec #0
-Intel ICH Modem: probe of 0000:00:1f.6 failed with error -13
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
-ALSA /usr/local/src/ALSA/alsa-driver-1.0.9rc3/pci/intel8x0.c:615: codec_read 0: semaphore is not ready for register 0x2c
+> > +	 .emu10k1_chip =3D 1} ,
+>
+> Me thinks ".emu10k2_chip =3D 1}, " would be more like it. :-)
 
 
-> What are the contents of /proc/asound/card0/codec97#0/ac97#0-0?
+Thanks to you,
+I think you both gave me a solution but really I don't know how to manage t=
+he=20
+listed instruction.
+I've a SUSE 9.2 linux version and I use usually YAST2 to confgiure the syst=
+em.
+Moreover when all my sound system is halted (for example when I want to use=
+=20
+Audacity ans it's not able to find the sound card - the Intel one built in =
+in=20
+the motherboard) I run alsaconf as su.
+I've not able to do more than this.
+Do you think you can help me more than already done?
+Grateful in advance.
 
-# cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: Conexant id 30
+Beppe Miletto
 
-Revision         : 0xff
-Compat. Class    : 0x1f
-Subsys. Vendor ID: 0xffff
-Subsys. ID       : 0xffff
-
-Capabilities     : -reserved1- -headphone out-
-DAC resolution   : 18-bit
-ADC resolution   : 18-bit
-3D enhancement   : No 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +20dB [+0dB]
-POP path         : post 3D
-Sim. stereo      : on
-3D enhancement   : on
-Loudness         : on
-Mono output      : Mic
-Mic select       : Mic2
-ADC/DAC loopback : on
-Extended ID      : codec=3 rev=3 AMAP LDAC SDAC CDAC DSA=3 VRM SPDIF DRA VRA
-Extended status  : PRL PRK PRJ PRI SPCV MADC LDAC SDAC CDAC SPDIF=10/11 VRM SPDIF DRA VRA
-PCM front DAC    : 65535Hz
-PCM Surr DAC     : 65535Hz
-PCM LFE DAC      : 65535Hz
-PCM ADC          : 65535Hz
-PCM MIC ADC      : 65535Hz
-SPDIF Control    : PRO Non-audio Preemph50/15 Category=0x7f Generation=1 Rate=32kHz DRS Validity
-
-                    Gain     Inverted  Buffer delay  Location
-Master Out       : -10.5 dBV    X      31/fs         NC/unused
-AUX Out          : -10.5 dBV    X      31/fs         NC/unused
-Center/LFE Out   : -10.5 dBV    X      31/fs         NC/unused
-SPDIF Out        : -10.5 dBV    X      31/fs         NC/unused
-Phone In         : -10.5 dBV    X      31/fs         NC/unused
-Mic 1            : -10.5 dBV    X      31/fs         NC/unused
-Mic 2            : -10.5 dBV    X      31/fs         NC/unused
-Line In          : -10.5 dBV    X      31/fs         NC/unused
-CD In            : -10.5 dBV    X      31/fs         NC/unused
-Video In         : -10.5 dBV    X      31/fs         NC/unused
-Aux In           : -10.5 dBV    X      31/fs         NC/unused
-Mono Out         : -10.5 dBV    X      31/fs         NC/unused
-Extended modem ID: codec=3 CID2 CID1 HSET LIN2 LIN1
-Modem status     : GPIO MREF ADC1 DAC1 ADC2 DAC2 HADC HDAC PRA(GPIO) PRB(res) PRC(ADC1) PRD(DAC1) PRE(ADC2) PRF(DAC2) PRG(HADC) PRH(HDAC)
-Line1 rate       : 65535Hz
-Line2 rate       : 65535Hz
-Headset rate     : 65535Hz
-#
-
-Someone suggested that I add inte8x0m to /etc/hotplug/blacklist, that had
-no effect, the intel8x0m module still loaded.  So I deleted that module so
-only the sound would be loaded, same results.
-
-RGDS
-GARY
-- ---------------------------------------------------------------------------
-Gary E. Miller Rellim 20340 Empire Blvd, Suite E-3, Bend, OR 97701
-	gem@rellim.com  Tel:+1(541)382-8588 Fax: +1(541)382-8676
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQFCd89z8KZibdeR3qURAoBmAJ9ZEUL1YdqD3BobSLRsjZ/G8tS+lQCfRtf4
-4cfSMVnhsRtmLCYNyzDvLIc=
-=tk2C
------END PGP SIGNATURE-----
-
+=2D-=20
+Giuseppe Miletto
+Via Campi Rotondi, 35
+10020 Cambiano (TO)
+tel.      +390119442144
+cell.     +393487659488
+mailto:   beppe.miletto@tiscali.it
+sito web: http://www.elletici.com
 
 
 -------------------------------------------------------
