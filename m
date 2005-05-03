@@ -1,17 +1,12 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [Alsa-user] Re: [linux-audio-dev] E-MU 1212m
-	Linux drivers
-Date: Mon, 02 May 2005 23:31:35 -0400
-Message-ID: <1115091095.27819.9.camel@mindpipe>
-References: <200505010231.19540.beppe.miletto@tiscali.it>
-	 <1114908114.5626.3.camel@mindpipe>
-	 <200505020124.16569.beppe.miletto@tiscali.it>
-	 <1114990231.23959.2.camel@mindpipe>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: How to tell how many frames gone to PCM
+Date: Tue, 3 May 2005 10:05:00 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0505030942520.19889-100000@studcom.urz.uni-halle.de>
+References: <42766BB4.2070500@pianodisc.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1114990231.23959.2.camel@mindpipe>
+In-Reply-To: <42766BB4.2070500@pianodisc.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,50 +16,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
-Cc: James Courtier-Dutton <James@superbug.co.uk>
+To: Steve deRosier <derosier@pianodisc.com>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2005-05-01 at 19:30 -0400, Lee Revell wrote:
-> On Mon, 2005-05-02 at 01:24 +0200, Giuseppe Miletto wrote:
-> James, here's the entry for the 1212m:
-> 
-> 0000:02:0a.0 Class 0401: 1102:0004 (rev 03)
->         Subsystem: 1102:4001
->         Flags: bus master, medium devsel, latency 32, IRQ 5
->         I/O ports at 9000
->         Capabilities: [dc] Power Management version 2
-> 
+Steve deRosier wrote:
+> So, even though I tied the MIDI timer source to the pcm timer, if
+> I use real-time events, those events will use the system clock?
+> I figured the MIDI timer would just be used and the time just
+> calculated via whatever the MIDI timer was doing.
 
-Here's a corrected patch to cause the emu10k1 driver to claim this device.
+Only the 'tick' time is calculated based on timer ticks.  The 'real'
+time uses the system clock.
 
-I have no idea what will happen, it could work, or lock up your machine.
-But we have at least one Linux user with access to the hardware, so we
-might as well try...
+> I notice in /proc/asound/card0/pcm0p/sub0/hw_params gives a
+> tick_time of 1000.  Would that affect anything since I'm
+> triggering the queue time off the pcm?
 
-Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
+No, this is not related to the PCM timer.  Interrupts happen at every
+period boundary ...
 
-Lee
+> # cat hw_params
+> rate: 44100 (44100/1)
+> period_size: 2048
 
-Index: alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c,v
-retrieving revision 1.55
-diff -u -r1.55 emu10k1_main.c
---- alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c	10 Apr 2005 14:43:35 -0000	1.55
-+++ alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c	2 May 2005 00:06:38 -0000
-@@ -700,6 +700,10 @@
- 	 .emu10k2_chip = 1,
- 	 .ca0102_chip = 1,
- 	 .ac97_chip = 1} ,
-+	{.vendor = 0x1102, .device = 0x0004, .subsystem = 0x40011102,
-+	 .driver = "Audigy", .name = "E-mu 1212m [4001]", 
-+	 .id = "1212m",
-+	 .emu10k2_chip = 1} ,
- 	{.vendor = 0x1102, .device = 0x0004,
- 	 .driver = "Audigy", .name = "Audigy 1 [Unknown]", 
- 	 .id = "Audigy",
+... at about 21.5 Hz (44100/2048).
 
+You might want to use smaller periods to reduce the MIDI jitter.
+
+> The MIDI plays WAY too slow.  I don't get it.  I can speed it up
+> clearly by using a larger PPQ or smaller tempo, but I can't seem
+> to do it in any manner that will get my MIDI to line up with my
+> audio.
+>
+> queue 4: [Queue-4]
+> timer PPQ          : 44100
+> current tempo      : 1000000
+> current BPM        : 60
+> current time       : 2.141090884 s
+> current tick       : 94425
+
+If we assume that the system clock and the PCM clocks are almost in
+sync, the theoretical tick time should be 2.141090884 * 44100 = 94422.
+The value above looks OK.
+
+There will be some (more or less constant) delay between the MIDI
+events and the corresponding PCM samples, depending of the delays in
+both devices, but I cannot see how MIDI events could have the wrong
+tempo.
+
+
+Regards,
+Clemens
 
 
 
