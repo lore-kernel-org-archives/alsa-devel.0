@@ -1,7 +1,7 @@
 From: Koushik jaikishan <jaykishankrk@yahoo.co.in>
-Subject: A simple program to read and write to audio device simultaneously with minimal API's of ALSA
-Date: Thu, 5 May 2005 10:08:49 +0100 (BST)
-Message-ID: <20050505090850.21529.qmail@web8306.mail.in.yahoo.com>
+Subject: reading constant length of data from sound card using readi api of alsa
+Date: Thu, 5 May 2005 14:34:56 +0100 (BST)
+Message-ID: <20050505133456.73351.qmail@web8309.mail.in.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
@@ -20,19 +20,20 @@ List-Id: alsa-devel@alsa-project.org
 
 hello all,
 
-i have been getting the reply that is in no way
-concerning to my problem, i already have latency.c and
-pcm.c files for the mentioned problem, but i would
-like to receive a file which works for full duplex
-audio using =20
-minimal API's of ALSA. i am eagarly waiting for your
-replies. Thank You,
+i am not able to read constant amount of data from the
+sound card i dont know why, it always gives me - 11 as
+the returned value for reading 960 bytes of data.
 
+r =3D snd_pcm_readi(handle, buf, 960);
 
+r value will be always -11, i suppose this is a error
+value for not getting any data from the sound card.
+please give me a suggestion on this. Thank you,
 
 regards,
 
 Koushik P S R
+
 
 
 ________________________________________________________________________
