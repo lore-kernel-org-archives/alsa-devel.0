@@ -1,13 +1,14 @@
-From: fab <fab@gnux.info>
+From: "Gary E. Miller" <gem@rellim.com>
 Subject: Re: intel-hda on medion laptop
-Date: Fri, 6 May 2005 00:48:51 +0200
-Message-ID: <20050505224851.GA7681@blackmilk.localzone.fr>
-References: <20050505210932.GA8016@blackmilk.localzone.fr> <Pine.LNX.4.63.0505051422190.31406@catbert.rellim.com>
+Date: Thu, 5 May 2005 16:02:36 -0700 (PDT)
+Message-ID: <Pine.LNX.4.63.0505051601540.31406@catbert.rellim.com>
+References: <20050505210932.GA8016@blackmilk.localzone.fr>
+ <Pine.LNX.4.63.0505051422190.31406@catbert.rellim.com>
+ <20050505224851.GA7681@blackmilk.localzone.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.63.0505051422190.31406@catbert.rellim.com>
+In-Reply-To: <20050505224851.GA7681@blackmilk.localzone.fr>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,36 +18,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Gary E. Miller" <gem@rellim.com>, alsa-devel@lists.sourceforge.net
+To: fab <fab@gnux.info>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Yo fab!
-> 
-> I have a laptop and a desktop with the ICH5 sound. Not had any luck getting
-> either to work since Alsa 1.0.4.
-> 
-> Anything in the dmesg buffer? Can you send the contents of your
-> /proc/asound/cards and /proc/sound/devices?  Anything in your
-> /etc/asound.conf?
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-fab@garg:~% cat /proc/asound/cards
-0 [Intel          ]: HDA-Intel - HDA Intel
-                     HDA Intel at 0x80000000 irq 169
+Yo fab!
 
-fab@garg:~% cat /proc/asound/devices
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
- 33:       : timer
+Sorry I can not be any help, my problem is with the snd-intel8x0 and
+snd-intel8x0m drivers and those have me stumped.
 
 
-and my modprobe.d/sound :
-alias snd-card-0 snd-hda-intel
-alias sound-slot-0 snd-hda-intel
-options snd-hda-intel model=w810
+RGDS
+GARY
+- ---------------------------------------------------------------------------
+Gary E. Miller Rellim 20340 Empire Blvd, Suite E-3, Bend, OR 97701
+	gem@rellim.com  Tel:+1(541)382-8588 Fax: +1(541)382-8676
 
-Regards.
-fab.
+On Fri, 6 May 2005, fab wrote:
+
+> and my modprobe.d/sound :
+> alias snd-card-0 snd-hda-intel
+> alias sound-slot-0 snd-hda-intel
+> options snd-hda-intel model=w810
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQFCeqYP8KZibdeR3qURAkRtAJwOWpid0B4MkjDDgQ4he9dDBjabBwCeIS0f
+gCqxOAavAlOZ5tFKjUw1vnk=
+=GpSq
+-----END PGP SIGNATURE-----
+
 
 
 -------------------------------------------------------
