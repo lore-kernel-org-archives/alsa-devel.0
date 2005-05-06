@@ -1,13 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: reading constant length of data from sound card
- using readi api of alsa
-Date: Fri, 6 May 2005 09:30:08 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0505060856140.14330-100000@studcom.urz.uni-halle.de>
-References: <20050505133456.73351.qmail@web8309.mail.in.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001078]: intel8x0 does not work on any (?) 2.6 kernel
+Date: Fri, 6 May 2005 09:33:51 +0200
+Message-ID: <12c3a9eaf557e1b555ba99ce8c0a8931@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050505133456.73351.qmail@web8309.mail.in.yahoo.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 10DF41EC
+	for <alsa-devel@alsa-project.org>; Fri,  6 May 2005 09:33:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,25 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Koushik jaikishan <jaykishankrk@yahoo.co.in>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Koushik jaikishan wrote:
-> i am not able to read constant amount of data from the
-> sound card i dont know why, it always gives me - 11 as
-> the returned value for reading 960 bytes of data.
 
--11 is -EAGAIN.  You would be able to read some data if you waited
-some time.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1078> 
+======================================================================
+Reported By:                columbo
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1078
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware Linux 10.1
+Kernel Version:             2.6.11.7
+======================================================================
+Date Submitted:             04-26-2005 21:29 CEST
+Last Modified:              05-06-2005 09:33 CEST
+======================================================================
+Summary:                    intel8x0 does not work on any (?) 2.6 kernel
+Description: 
+After compilation of ALSA drivers, libs, utilities, and after alsaconf ALSA
+modules loads correctly, they are visible in lsmod and so on, but all
+programs can't see sound card, /dev/dsp and so on. With kernels 2.4.x
+everything is OK.
+======================================================================
 
-Either disable the non-blocking mode with snd_pcm_nonblock, or wait
-with snd_pcm_wait, or, if you have other devices to wait for, use the
-snd_pcm_poll_* functions with poll().
+----------------------------------------------------------------------
+ gem7 - 05-06-05 09:13 
+----------------------------------------------------------------------
+>Do not use snd-intel8x0m. This is source of your problems. If you load 
+> snd-intel8x0m then it will stop your soundcard. Your modem will not work
+with it >anyway.
 
+Read my note again.  I already mentioned that I added intel8x0m to my
+blacklist and already deleted that module.
 
-HTH
-Clemens
+Just to be sure I just tried your modprobe remove/add and no change.
+
+RGAD
+GARY
+
+----------------------------------------------------------------------
+ pzad - 05-06-05 09:33 
+----------------------------------------------------------------------
+>May 4 09:50:16 satchel kernel: ALSA
+>/usrlocal/src/ALSA/alsa-driver-1.0.9rc3/pci/../alsa-kernel/pci/intel8x0m.c:978:
+>Unable to initialize codec 0
+>May 4 09:50:16 satchel kernel: Intel ICH Modem: probe of 0000:00:1f.6
+failed wi
+
+This means snd-intel8x0m is loading. Are you sure, you don't have it
+compiled in kernel ?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-26-05 21:29 columbo        New Issue                                    
+04-26-05 21:29 columbo        Distribution              => Slackware Linux 10.1
+04-26-05 21:29 columbo        Kernel Version            => 2.6.11.7        
+04-29-05 21:06 columbo        Issue Monitored: columbo                     
+05-06-05 08:50 gem7           Note Added: 0004590                          
+05-06-05 08:59 pzad           Note Added: 0004591                          
+05-06-05 09:00 pzad           Note Added: 0004592                          
+05-06-05 09:13 gem7           Note Added: 0004593                          
+05-06-05 09:33 pzad           Note Added: 0004594                          
+======================================================================
+
 
 
 
