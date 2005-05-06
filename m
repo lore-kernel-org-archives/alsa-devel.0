@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001089]: ali5451 doesn't work on Sun Blade 150
-Date: Fri, 6 May 2005 15:44:02 +0200
-Message-ID: <00865502fd4dd2d773fd4b42ac41cc05@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
+Date: Fri, 6 May 2005 17:35:00 +0200
+Message-ID: <247e87698e1e910ce859979e76824377@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C398D20C
-	for <alsa-devel@alsa-project.org>; Fri,  6 May 2005 15:44:02 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8400D20C
+	for <alsa-devel@alsa-project.org>; Fri,  6 May 2005 17:35:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1089> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
 ======================================================================
-Reported By:                gelaslean
+Reported By:                Demosthenes
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1089
-Category:                   PCI - ali5451
+Issue ID:                   1090
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.8 - 2.6.11.8
+Distribution:               Ubuntu (Hoary Hedgehog)
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             05-06-2005 15:44 CEST
-Last Modified:              05-06-2005 15:44 CEST
+Date Submitted:             05-06-2005 17:34 CEST
+Last Modified:              05-06-2005 17:34 CEST
 ======================================================================
-Summary:                    ali5451 doesn't work on Sun Blade 150
+Summary:                    Support for new Prodigy 7.1 LT
 Description: 
-My Sun Blade 150 (sparc64 cpu) has an onboard ali5451 chipset.
-I installed Debian Sarge and update all packages with apt-get.
-When I load snd-ali-5451 module the system respond with:
+Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
+far as I am aware this card is essentially the same as the Produgy 7.1 but
+low profile and with a couple of physical changes such as no digital in.
 
-ioctl32(alsactl:2142): Unknown cmd fd(3) cmd(40045500){00} arg(effff734)
-on /dev/snd/controlC0
-ioctl32(amixer:2146): Unknown cmd fd(3) cmd(40045500){00} arg(effff814) on
-/dev/snd/controlC0
-ioctl32(amixer:2149): Unknown cmd fd(3) cmd(40045500){00} arg(effff814) on
-/dev/snd/controlC0
-ioctl32(amixer:2152): Unknown cmd fd(3) cmd(40045500){00} arg(effff814) on
-/dev/snd/controlC0
-<snipped many other similar lines>
+ALSA does not detect the card currently and when I try to load the
+snd-1724 module it fails with an EEPROM error.
 
-Obviusly ALSA system doesn't work.
+I have tried compiling a new kernel with the subdevice id for the Prodigy
+7.1 in aureon.h changed to correspond to my device (as detailed here for
+another card
+http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
+Alsa then detects the card and I can load modules and change volumes in
+alsamixer but I haven't been able to produce any sound.
 
-I tried with 2.6.8 (standard Debian package) and 2.6.11.8 (vanilla
-sources) kernel. 
+Hopefully support will be easy to add as this card is almost exactly the
+same as the Prodigy 7.1 (and Aureon Space etc.) which already have
+support.
 
-Any hints?
-
-Leandro Gelasi
-
+I would be very happy to give any further information needed.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-05 15:44 gelaslean      New Issue                                    
-05-06-05 15:44 gelaslean      Distribution              => Debian Sarge    
-05-06-05 15:44 gelaslean      Kernel Version            => 2.6.8 - 2.6.11.8
+05-06-05 17:34 Demosthenes    New Issue                                    
+05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
+Hedgehog)
+05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
 ======================================================================
 
 
