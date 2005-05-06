@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sat, 7 May 2005 01:38:29 +0200
-Message-ID: <d2838d0b594c0fcedea8229fe101dfa4@bugtrack.alsa-project.org>
+From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Subject: Dmix using more CPU than plug:hw
+Date: Sat, 7 May 2005 09:53:46 +1000
+Message-ID: <20050507095346.37b16e6a.erikd-alsa@mega-nerd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5CC9D22E
-	for <alsa-devel@alsa-project.org>; Sat,  7 May 2005 01:38:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,88 +15,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
-======================================================================
-Reported By:                Demosthenes
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1090
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu (Hoary Hedgehog)
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              05-07-2005 01:38 CEST
-======================================================================
-Summary:                    Support for new Prodigy 7.1 LT
-Description: 
-Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
-far as I am aware this card is essentially the same as the Produgy 7.1 but
-low profile and with a couple of physical changes such as no digital in.
+Note : Please CC me on responses as I am not subscribed to this 
+list.
 
-ALSA does not detect the card currently and when I try to load the
-snd-1724 module it fails with an EEPROM error.
+Hi all,
 
-I have tried compiling a new kernel with the subdevice id for the Prodigy
-7.1 in aureon.h changed to correspond to my device (as detailed here for
-another card
-http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
-Alsa then detects the card and I can load modules and change volumes in
-alsamixer but I haven't been able to produce any sound.
+I'm playing around with Polypaudio (an EsoundD replacement) and
+find that it works really well when I connect it to the plug:hw
+and the CPU usage is as I would expect.
 
-Hopefully support will be easy to add as this card is almost exactly the
-same as the Prodigy 7.1 (and Aureon Space etc.) which already have
-support.
+If on the other hand I connect Polypaudio to the plug:dmix1
+(defined as below) device it attempts to chew up 100% of CPU and 
+then dies.
 
-I would be very happy to give any further information needed.
-======================================================================
+The ALSA version is whatever is in the 2.6.11 kernel. I have also
+seen this problem on two different systems (iBook/Tumbler and
+ia32/CMI8738) so its not hardware specific.
 
-----------------------------------------------------------------------
- ungod - 05-06-05 22:48 
-----------------------------------------------------------------------
-And have you tried loading the driver with "model=prodigy71" (instead of
-altering the code)
+Does anyone have any ideas as to why a dmix device behaves so
+differently to plug:hw?
 
-----------------------------------------------------------------------
- Demosthenes - 05-07-05 01:38 
-----------------------------------------------------------------------
-The output of 'lspci -d 1412:1724 -nvx' is:
-
-0000:02:06.0 0401: 1412:1724 (rev 01)
-        Subsystem: 3132:4154
-        Flags: bus master, medium devsel, latency 32, IRQ 18
-        I/O ports at d000 [size=32]
-        I/O ports at d100 [size=128]
-        Capabilities: [80] Power Management version 1
-00: 12 14 24 17 05 00 10 02 01 00 01 04 00 20 00 00
-10: 01 d0 00 00 01 d1 00 00 00 00 00 00 00 00 00 00
-20: 00 00 00 00 00 00 00 00 00 00 00 00 32 31 54 41
-30: 00 00 00 00 80 00 00 00 00 00 00 00 03 01 00 00
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-06-05 17:34 Demosthenes    New Issue                                    
-05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
-Hedgehog)
-05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
-05-06-05 22:44 ungod          Note Added: 0004597                          
-05-06-05 22:48 ungod          Note Added: 0004598                          
-05-07-05 01:38 Demosthenes    Note Added: 0004600                          
-======================================================================
+TIA,
+Erik
 
 
+pcm.dmix1 {
+   type dmix
+   ipc_key 1024
+   slave {
+       pcm "hw:0,0"            # make sure this matches the actual device
+       #period_time 0          # not necessary since ALSA 1.0pre
+       period_size 1024        # Use a power of 2
+       buffer_size 4096        # must be a multiple of period_size
+       #rate 44100             # not necessary; let alsa-lib handle this
+   }
+   bindings {
+       0 0
+       1 1                     # bind only the first 2 channels
+   }
+}
+pcm.duplex
+{
+   type asym
+   playback.pcm "dmix1"
+   capture.pcm "dsnoop"
+}
+# Everything shall be dmix1ed, so redefine "default":
+# Note that this is _not_ a good idea, since dmix1 doesn't allow mmap access currently
+#pcm.!default {
+#   type plug
+#   slave.pcm "duplex"
+#}
+# OSS via aoss should d(mix)stroyed:
+pcm.dsp0 {
+   type plug
+   slave.pcm "duplex"
+}
+ctl.dmix1 {
+   type hw
+   card 0
+}
+
+
+-- 
++-----------------------------------------------------------+
+  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
++-----------------------------------------------------------+
+"OS X is great that way.  I put a copy of OS X on my coffee table,
+and it hasn't been hacked yet. Yes, I am using it as a server. I
+serve several meals on it every week." -- Anthony Minkoff
 
 
 -------------------------------------------------------
