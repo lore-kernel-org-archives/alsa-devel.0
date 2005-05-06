@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001078]: intel8x0 does not work on any (?) 2.6 kernel
-Date: Fri, 6 May 2005 20:24:36 +0200
-Message-ID: <236bc08d1e6398fb4e9e60cf7d4b0816@bugtrack.alsa-project.org>
+Date: Fri, 6 May 2005 19:04:31 +0200
+Message-ID: <a30b91955db0fe2a029e2c9e943e5093@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 360EB21B
-	for <alsa-devel@alsa-project.org>; Fri,  6 May 2005 20:24:36 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DABE0211
+	for <alsa-devel@alsa-project.org>; Fri,  6 May 2005 19:04:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware Linux 10.1
 Kernel Version:             2.6.11.7
 ======================================================================
 Date Submitted:             04-26-2005 21:29 CEST
-Last Modified:              05-06-2005 20:24 CEST
+Last Modified:              05-06-2005 19:04 CEST
 ======================================================================
 Summary:                    intel8x0 does not work on any (?) 2.6 kernel
 Description: 
@@ -49,6 +49,18 @@ modules loads correctly, they are visible in lsmod and so on, but all
 programs can't see sound card, /dev/dsp and so on. With kernels 2.4.x
 everything is OK.
 ======================================================================
+
+----------------------------------------------------------------------
+ pzad - 05-06-05 09:33 
+----------------------------------------------------------------------
+>May 4 09:50:16 satchel kernel: ALSA
+>/usrlocal/src/ALSA/alsa-driver-1.0.9rc3/pci/../alsa-kernel/pci/intel8x0m.c:978:
+>Unable to initialize codec 0
+>May 4 09:50:16 satchel kernel: Intel ICH Modem: probe of 0000:00:1f.6
+failed wi
+
+This means snd-intel8x0m is loading. Are you sure, you don't have it
+compiled in kernel ?
 
 ----------------------------------------------------------------------
  gem7 - 05-06-05 19:04 
@@ -98,22 +110,6 @@ snd_page_alloc          7684  2 snd_intel8x0,snd_pcm
 
 All the rest of my kernel is compiled in, not modules.
 
-----------------------------------------------------------------------
- gem7 - 05-06-05 20:24 
-----------------------------------------------------------------------
-I have it working now.  Yes, the problem was the intel8x0m module. 
-Removeing it
-with modproebe -r is not enough to undo it's damage.  Only a power off
-cold boot got my system to where if I only loaded the intel8x0, and not
-intel8x0m module that things would work.  Thanks for pushing me to try
-some more permutations of that.
-
-Now the core problem remains, what broke intel8x0m after ALSA 1.0.4?  It
-used to not break the intel8x0.  I can understand the intel8x0m not
-working on my laptop but loading it shold not break other related
-subsystems.  If it is not possible to fix it surely needs an obvious
-warning in the doc, if not at boot time.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -127,7 +123,6 @@ Date Modified  Username       Field                    Change
 05-06-05 09:13 gem7           Note Added: 0004593                          
 05-06-05 09:33 pzad           Note Added: 0004594                          
 05-06-05 19:04 gem7           Note Added: 0004595                          
-05-06-05 20:24 gem7           Note Added: 0004596                          
 ======================================================================
 
 
