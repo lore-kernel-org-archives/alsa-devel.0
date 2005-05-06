@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001091]: dmix hangs on 2nd-3rd snd_pcm_drop
-Date: Fri, 6 May 2005 17:48:49 +0200
-Message-ID: <3f7d497954caa3e97a2fa0360a9e5924@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001093]: snd-usb-audio device link is wrong
+Date: Fri, 6 May 2005 23:43:55 +0200
+Message-ID: <6be7161cc48830113da86d4ba13245ff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3249520D
-	for <alsa-devel@alsa-project.org>; Fri,  6 May 2005 17:48:50 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0C3F0209
+	for <alsa-devel@alsa-project.org>; Fri,  6 May 2005 23:43:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1091> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1093> 
 ======================================================================
-Reported By:                ikonst
-Assigned To:                
+Reported By:                davidz
+Assigned To:                Clemens Ladisch
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1091
-Category:                   general
+Project:                    ALSA - driver
+Issue ID:                   1093
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Fedora
+Kernel Version:             2.6.12-rc3
 ======================================================================
-Date Submitted:             05-06-2005 17:48 CEST
-Last Modified:              05-06-2005 17:48 CEST
+Date Submitted:             05-06-2005 23:43 CEST
+Last Modified:              05-06-2005 23:43 CEST
 ======================================================================
-Summary:                    dmix hangs on 2nd-3rd snd_pcm_drop
+Summary:                    snd-usb-audio device link is wrong
 Description: 
-Rhythmbox performs a "drop" upon pressing Pause. When playing thru a dmix
-device, toggling pause-play a couple of time (one or two is enough) will
-cause alsa-lib to hang. Here's the relevant stack trace:
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x40be8741 in
-__read_nocancel () from /lib/tls/libpthread.so.0
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x444790a8 in
-snd_timer_hw_read (handle=0xbfffdcc8,
-buffer=0xfffffe00,
-    size=8) at timer_hw.c:184
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x44478a7a in
-snd_timer_read (timer=0x8, buffer=0xbfffdcc8, size=8)
-    at timer.c:879
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0x44465cbd in
-snd_pcm_direct_clear_timer_queue (dmix=0x8883020)
-    at pcm_direct.c:429
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x44465cfd in
-snd_pcm_direct_timer_stop (dmix=0x8883020)
-    at pcm_direct.c:437
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x44468744 in
-snd_pcm_dmix_drop (pcm=0xfffffe00) at pcm_dmix.c:475
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x4442fb24 in
-snd_pcm_drop (pcm=0xfffffe00) at pcm.c:1021
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x443cf985 in
-gst_alsa_hw_params_dump ()
-   from /usr/lib/gstreamer-0.8/libgstalsa.so
-...
+When using my USB Plantronics headset (which works fine), there is a minor
+cosmetic bug
 
+        [davidz <at> daxter hal]$ ls -l /sys/class/sound/pcmC2D0c/
+        total 0
+        -r--r--r--  1 root root 4096 Apr 29 16:57 dev
+        lrwxrwxrwx  1 root root    0 Apr 29 16:57 device ->
+../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2
+        [davidz <at> daxter hal]$ ls -l /sys/class/sound/pcmC2D0c/device/
+        total 0
+        drwxr-xr-x  3 root root    0 Apr 29 16:57 3-2:1.0
+        drwxr-xr-x  3 root root    0 Apr 29 16:57 3-2:1.1
+        drwxr-xr-x  3 root root    0 Apr 29 16:57 3-2:1.2
+        drwxr-xr-x  3 root root    0 Apr 29 16:57 3-2:1.3
+
+However,
+
+        [davidz <at> daxter hal]$ tree
+/sys/bus/usb/drivers/snd-usb-audio/
+        /sys/bus/usb/drivers/snd-usb-audio/
+        |-- 3-2:1.0 ->
+../../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2/3-2:1.0
+        |-- 3-2:1.1 ->
+../../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2/3-2:1.1
+        |-- 3-2:1.2 ->
+../../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2/3-2:1.2
+        `-- module -> ../../../../module/snd_usb_audio
+
+Thus, the 'device' symlink in /sys/class/sound/pcmC2D0c/ appears to be
+wrong - it needs to point at the USB interface - not the USB device. This
+is with ALSA in 2.6.12-rc3. Should be a one line fix. See also
+
+ http://article.gmane.org/gmane.linux.hotplug.devel/7714
+ http://article.gmane.org/gmane.linux.hotplug.devel/7717
+
+Thanks,
+David
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-05 17:48 ikonst         New Issue                                    
+05-06-05 23:43 davidz         New Issue                                    
+05-06-05 23:43 davidz         Distribution              => Fedora          
+05-06-05 23:43 davidz         Kernel Version            => 2.6.12-rc3      
 ======================================================================
 
 
