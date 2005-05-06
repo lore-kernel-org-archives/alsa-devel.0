@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001092]: Low volume output with snd-i8x0
-Date: Fri, 6 May 2005 22:49:39 +0200
-Message-ID: <2c5b7572e6a11910996b043618d3c68c@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001091]: dmix hangs on 2nd-3rd snd_pcm_drop
+Date: Fri, 6 May 2005 17:48:49 +0200
+Message-ID: <3f7d497954caa3e97a2fa0360a9e5924@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC9C5220
-	for <alsa-devel@alsa-project.org>; Fri,  6 May 2005 22:49:39 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3249520D
+	for <alsa-devel@alsa-project.org>; Fri,  6 May 2005 17:48:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,37 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1092> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1091> 
 ======================================================================
-Reported By:                haYnguy
+Reported By:                ikonst
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1092
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   1091
+Category:                   general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6
 ======================================================================
-Date Submitted:             05-06-2005 22:49 CEST
-Last Modified:              05-06-2005 22:49 CEST
+Date Submitted:             05-06-2005 17:48 CEST
+Last Modified:              05-06-2005 17:48 CEST
 ======================================================================
-Summary:                    Low volume output with snd-i8x0
+Summary:                    dmix hangs on 2nd-3rd snd_pcm_drop
 Description: 
-Whenever I want to listen to anything, the volume is extremely low.
-Everything is supported, plugged in, turned on, turned up, and still the
-volume is very low. I can only hear it when I put the speaker to my ear,
-and still it is quite faint.
+Rhythmbox performs a "drop" upon pressing Pause. When playing thru a dmix
+device, toggling pause-play a couple of time (one or two is enough) will
+cause alsa-lib to hang. Here's the relevant stack trace:
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x40be8741 in
+__read_nocancel () from /lib/tls/libpthread.so.0
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x444790a8 in
+snd_timer_hw_read (handle=0xbfffdcc8,
+buffer=0xfffffe00,
+    size=8) at timer_hw.c:184
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x44478a7a in
+snd_timer_read (timer=0x8, buffer=0xbfffdcc8, size=8)
+    at timer.c:879
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0x44465cbd in
+snd_pcm_direct_clear_timer_queue (dmix=0x8883020)
+    at pcm_direct.c:429
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x44465cfd in
+snd_pcm_direct_timer_stop (dmix=0x8883020)
+    at pcm_direct.c:437
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x44468744 in
+snd_pcm_dmix_drop (pcm=0xfffffe00) at pcm_dmix.c:475
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x4442fb24 in
+snd_pcm_drop (pcm=0xfffffe00) at pcm.c:1021
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x443cf985 in
+gst_alsa_hw_params_dump ()
+   from /usr/lib/gstreamer-0.8/libgstalsa.so
+...
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-05 22:49 haYnguy        New Issue                                    
-05-06-05 22:49 haYnguy        Kernel Version            => 2.6             
+05-06-05 17:48 ikonst         New Issue                                    
 ======================================================================
 
 
