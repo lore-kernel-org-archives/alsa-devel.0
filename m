@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001078]: intel8x0 does not work on any (?) 2.6 kernel
-Date: Fri, 6 May 2005 19:04:31 +0200
-Message-ID: <a30b91955db0fe2a029e2c9e943e5093@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
+Date: Fri, 6 May 2005 22:48:10 +0200
+Message-ID: <639bedf07c4b856377ca780d06fcad51@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DABE0211
-	for <alsa-devel@alsa-project.org>; Fri,  6 May 2005 19:04:31 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E269A21F
+	for <alsa-devel@alsa-project.org>; Fri,  6 May 2005 22:48:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,105 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1078> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
 ======================================================================
-Reported By:                columbo
+Reported By:                Demosthenes
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1078
-Category:                   PCI - intel8x0
+Issue ID:                   1090
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware Linux 10.1
-Kernel Version:             2.6.11.7
+Distribution:               Ubuntu (Hoary Hedgehog)
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             04-26-2005 21:29 CEST
-Last Modified:              05-06-2005 19:04 CEST
+Date Submitted:             05-06-2005 17:34 CEST
+Last Modified:              05-06-2005 22:48 CEST
 ======================================================================
-Summary:                    intel8x0 does not work on any (?) 2.6 kernel
+Summary:                    Support for new Prodigy 7.1 LT
 Description: 
-After compilation of ALSA drivers, libs, utilities, and after alsaconf ALSA
-modules loads correctly, they are visible in lsmod and so on, but all
-programs can't see sound card, /dev/dsp and so on. With kernels 2.4.x
-everything is OK.
+Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
+far as I am aware this card is essentially the same as the Produgy 7.1 but
+low profile and with a couple of physical changes such as no digital in.
+
+ALSA does not detect the card currently and when I try to load the
+snd-1724 module it fails with an EEPROM error.
+
+I have tried compiling a new kernel with the subdevice id for the Prodigy
+7.1 in aureon.h changed to correspond to my device (as detailed here for
+another card
+http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
+Alsa then detects the card and I can load modules and change volumes in
+alsamixer but I haven't been able to produce any sound.
+
+Hopefully support will be easy to add as this card is almost exactly the
+same as the Prodigy 7.1 (and Aureon Space etc.) which already have
+support.
+
+I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 05-06-05 09:33 
+ ungod - 05-06-05 22:44 
 ----------------------------------------------------------------------
->May 4 09:50:16 satchel kernel: ALSA
->/usrlocal/src/ALSA/alsa-driver-1.0.9rc3/pci/../alsa-kernel/pci/intel8x0m.c:978:
->Unable to initialize codec 0
->May 4 09:50:16 satchel kernel: Intel ICH Modem: probe of 0000:00:1f.6
-failed wi
-
-This means snd-intel8x0m is loading. Are you sure, you don't have it
-compiled in kernel ?
+What does `lspci -d 1412:1724 -nvx` produce?
 
 ----------------------------------------------------------------------
- gem7 - 05-06-05 19:04 
+ ungod - 05-06-05 22:48 
 ----------------------------------------------------------------------
-> This means snd-intel8x0m is loading. 
-
-Sure, that time.  As I said, I have tried it w/ and w/o intel8x0m and
-loading the 2 intel drivers in different order.  Just to be sure I just
-deleted the intel8x0m
-module and did a cold reboot.  Same results.
-
-> Are you sure, you don't have it compiled in kernel ?
-
-Notice the modules was 1.0.9rc3?  No kernel has that yet.
-
-Here is a fragment of /proc/config.gz:
-
-#
-# Sound
-#
-CONFIG_SOUND=y
-
-#
-# Advanced Linux Sound Architecture
-#
-# CONFIG_SND is not set
-
-#
-# Open Sound System
-#
-# CONFIG_SOUND_PRIME is not set
-
-#
-
-
-And here is my lsmod:
-
-~# lsmod
-Module                  Size  Used by
-snd_intel8x0           29248  0 
-snd_ac97_codec         79996  1 snd_intel8x0
-snd_pcm                80004  2 snd_intel8x0,snd_ac97_codec
-snd_timer              21124  1 snd_pcm
-snd                    45796  4
-snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
-snd_page_alloc          7684  2 snd_intel8x0,snd_pcm
-
-All the rest of my kernel is compiled in, not modules.
+And have you tried loading the driver with "model=prodigy71" (instead of
+altering the code)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-26-05 21:29 columbo        New Issue                                    
-04-26-05 21:29 columbo        Distribution              => Slackware Linux 10.1
-04-26-05 21:29 columbo        Kernel Version            => 2.6.11.7        
-04-29-05 21:06 columbo        Issue Monitored: columbo                     
-05-06-05 08:50 gem7           Note Added: 0004590                          
-05-06-05 08:59 pzad           Note Added: 0004591                          
-05-06-05 09:00 pzad           Note Added: 0004592                          
-05-06-05 09:13 gem7           Note Added: 0004593                          
-05-06-05 09:33 pzad           Note Added: 0004594                          
-05-06-05 19:04 gem7           Note Added: 0004595                          
+05-06-05 17:34 Demosthenes    New Issue                                    
+05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
+Hedgehog)
+05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
+05-06-05 22:44 ungod          Note Added: 0004597                          
+05-06-05 22:48 ungod          Note Added: 0004598                          
 ======================================================================
 
 
