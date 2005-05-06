@@ -1,14 +1,14 @@
-From: "Gary E. Miller" <gem@rellim.com>
-Subject: Re: intel-hda on medion laptop
-Date: Thu, 5 May 2005 16:02:36 -0700 (PDT)
-Message-ID: <Pine.LNX.4.63.0505051601540.31406@catbert.rellim.com>
-References: <20050505210932.GA8016@blackmilk.localzone.fr>
- <Pine.LNX.4.63.0505051422190.31406@catbert.rellim.com>
- <20050505224851.GA7681@blackmilk.localzone.fr>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: ALSA bugtrack new user signup still broken
+Date: Fri, 6 May 2005 07:30:32 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0505060730120.1835@pnote.perex-int.cz>
+References: <Pine.LNX.4.63.0505050029550.21183@catbert.rellim.com>
+ <1115317060.16141.3.camel@mindpipe>  <Pine.LNX.4.63.0505051121090.21183@catbert.rellim.com>
+ <1115317687.16141.8.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050505224851.GA7681@blackmilk.localzone.fr>
+In-Reply-To: <1115317687.16141.8.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,39 +18,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: fab <fab@gnux.info>
-Cc: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: "Gary E. Miller" <gem@rellim.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Thu, 5 May 2005, Lee Revell wrote:
 
-Yo fab!
+> On Thu, 2005-05-05 at 11:22 -0700, Gary E. Miller wrote:
+> > -----BEGIN PGP SIGNED MESSAGE-----
+> > Hash: SHA1
+> > 
+> > Yo Lee!
+> > 
+> > On Thu, 5 May 2005, Lee Revell wrote:
+> > 
+> > > It's not just new user signups, all mail from the bug tracker is broken.
+> > > I get the same error.  Even if you could report your bug, no one would
+> > > get the email notification.
+> > 
+> > Anyone know a contact address for the bugtrack maintainer or sysadmin?
+> > This has gotta be a simple fix to someone with root.
+> 
+> They all read alsa-devel.  Maybe everyone is on vacation.
 
-Sorry I can not be any help, my problem is with the snd-intel8x0 and
-snd-intel8x0m drivers and those have me stumped.
+The problem should be fixed now.
 
+						Jaroslav
 
-RGDS
-GARY
-- ---------------------------------------------------------------------------
-Gary E. Miller Rellim 20340 Empire Blvd, Suite E-3, Bend, OR 97701
-	gem@rellim.com  Tel:+1(541)382-8588 Fax: +1(541)382-8676
-
-On Fri, 6 May 2005, fab wrote:
-
-> and my modprobe.d/sound :
-> alias snd-card-0 snd-hda-intel
-> alias sound-slot-0 snd-hda-intel
-> options snd-hda-intel model=w810
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
-
-iD8DBQFCeqYP8KZibdeR3qURAkRtAJwOWpid0B4MkjDDgQ4he9dDBjabBwCeIS0f
-gCqxOAavAlOZ5tFKjUw1vnk=
-=GpSq
------END PGP SIGNATURE-----
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
