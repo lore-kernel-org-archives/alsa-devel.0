@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001078]: intel8x0 does not work on any (?) 2.6 kernel
-Date: Fri, 6 May 2005 09:00:40 +0200
-Message-ID: <698018c74cefb8fadad84830549c7a4c@bugtrack.alsa-project.org>
+Date: Fri, 6 May 2005 09:13:44 +0200
+Message-ID: <6ccc3570b65551f059cfa75a67eaee57@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 91F381E3
-	for <alsa-devel@alsa-project.org>; Fri,  6 May 2005 09:00:40 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4CD661E6
+	for <alsa-devel@alsa-project.org>; Fri,  6 May 2005 09:13:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware Linux 10.1
 Kernel Version:             2.6.11.7
 ======================================================================
 Date Submitted:             04-26-2005 21:29 CEST
-Last Modified:              05-06-2005 09:00 CEST
+Last Modified:              05-06-2005 09:13 CEST
 ======================================================================
 Summary:                    intel8x0 does not work on any (?) 2.6 kernel
 Description: 
@@ -49,13 +49,6 @@ modules loads correctly, they are visible in lsmod and so on, but all
 programs can't see sound card, /dev/dsp and so on. With kernels 2.4.x
 everything is OK.
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 05-06-05 08:59 
-----------------------------------------------------------------------
-Do not use snd-intel8x0m. This is source of your problems. If you load
-snd-intel8x0m then it will stop your soundcard. Your modem will not work
-with it anyway.
 
 ----------------------------------------------------------------------
  pzad - 05-06-05 09:00 
@@ -69,6 +62,21 @@ modprobe snd-intel8x0
 sound should work again.
 Do not load snd-intel8x0m module !!!!
 
+----------------------------------------------------------------------
+ gem7 - 05-06-05 09:13 
+----------------------------------------------------------------------
+>Do not use snd-intel8x0m. This is source of your problems. If you load 
+> snd-intel8x0m then it will stop your soundcard. Your modem will not work
+with it >anyway.
+
+Read my note again.  I already mentioned that I added intel8x0m to my
+blacklist and already deleted that module.
+
+Just to be sure I just tried your modprobe remove/add and no change.
+
+RGAD
+GARY
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -79,6 +87,7 @@ Date Modified  Username       Field                    Change
 05-06-05 08:50 gem7           Note Added: 0004590                          
 05-06-05 08:59 pzad           Note Added: 0004591                          
 05-06-05 09:00 pzad           Note Added: 0004592                          
+05-06-05 09:13 gem7           Note Added: 0004593                          
 ======================================================================
 
 
