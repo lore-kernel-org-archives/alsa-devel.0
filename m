@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000810]: Doesn't find any module while using alsaconf
-Date: Sat, 7 May 2005 09:49:25 +0200
-Message-ID: <0afc7abcdcec596cfaa92cb5aa7bc5bd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001086]: surround5x plug will not work with nForce3 intel8x0
+Date: Sat, 7 May 2005 09:57:20 +0200
+Message-ID: <50c3499159d681c789c3297100a633fa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1CCF4226
-	for <alsa-devel@alsa-project.org>; Sat,  7 May 2005 09:49:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CF38F226
+	for <alsa-devel@alsa-project.org>; Sat,  7 May 2005 09:57:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,54 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=810> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1086> 
 ======================================================================
-Reported By:                skorpio
+Reported By:                b00zy
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   810
+Issue ID:                   1086
 Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
+Reproducibility:            N/A
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               Slackware
-Kernel Version:             2.4
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.11-gentoo-r4
 ======================================================================
-Date Submitted:             01-12-2005 11:30 CET
-Last Modified:              05-07-2005 09:49 CEST
+Date Submitted:             05-04-2005 10:27 CEST
+Last Modified:              05-07-2005 09:57 CEST
 ======================================================================
-Summary:                    Doesn't find any module while using alsaconf
+Summary:                    surround5x plug will not work with nForce3 intel8x0
 Description: 
-Alsaconf can't load soundcards modules, so it doesn't find any matching
-soundcard.
+When trying to use -Dplug:surround50 with aplay I'm unable to get
+surround50 sound. Instead there is no sound.
+
+lame --decode 01-at_the_drive-in-fahrenheit.mp3 - |aplay -Dplug:surround50
+-
+
+(no sound, though it *appears* to be playing)
+
+Without -Dplug:surround50, I get stereo sound through the front-left/right
+speakers, but nothing through rear-left/right or center speakers.
+
+lame --decode 01-at_the_drive-in-fahrenheit.mp3 - |aplay -
+
+(only front left/right speakers)
+
+XMMS produces the same behavior when I set the audio device for ALSA
+output plugin to "surround50". However, if I set I set it to
+plug:surround50, XMMS freezes.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 05-04-05 21:49 
+ jdthood - 05-07-05 09:57 
 ----------------------------------------------------------------------
-Submitter: Please provide more information about this problem.
-
-----------------------------------------------------------------------
- jdthood - 05-07-05 09:49 
-----------------------------------------------------------------------
-No further info was provided.
+Does 5.1 sound work?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-12-05 11:30 skorpio        New Issue                                    
-01-12-05 11:30 skorpio        Distribution              => Slackware       
-01-12-05 11:30 skorpio        Kernel Version            => 2.4             
-01-12-05 15:06 tiwai          Note Added: 0003168                          
-05-04-05 21:49 jdthood        Note Added: 0004588                          
-05-07-05 09:49 jdthood        Status                   new => closed       
-05-07-05 09:49 jdthood        Note Added: 0004602                          
+05-04-05 10:27 b00zy          New Issue                                    
+05-04-05 10:27 b00zy          File Added: asound.state                     
+05-04-05 10:27 b00zy          Kernel Version            => 2.6.11-gentoo-r4
+05-04-05 10:29 b00zy          Issue Monitored: b00zy                       
+05-04-05 10:41 b00zy          Issue End Monitor: b00zy                     
+05-07-05 09:57 jdthood        Note Added: 0004603                          
 ======================================================================
 
 
