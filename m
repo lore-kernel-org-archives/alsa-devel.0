@@ -1,10 +1,14 @@
-From: Arnaud Patard <rtp@rtp-net.org>
-Subject: [PATCH] cs4281 DLLRDY
-Date: Sat, 07 May 2005 17:38:52 +0200
-Message-ID: <85sm0zhwqb.fsf@Orfeo.duckcorp.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001092]: Low volume output with snd-i8x0
+Date: Sat, 7 May 2005 18:46:46 +0200
+Message-ID: <6566e0bc025a539ae27b59fb591ccca9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5D60B11F
+	for <alsa-devel@alsa-project.org>; Sat,  7 May 2005 18:46:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,75 +18,160 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---=-=-=
 
-Hi,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1092> 
+======================================================================
+Reported By:                haYnguy
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1092
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6
+======================================================================
+Date Submitted:             05-06-2005 22:49 CEST
+Last Modified:              05-07-2005 18:46 CEST
+======================================================================
+Summary:                    Low volume output with snd-i8x0
+Description: 
+Whenever I want to listen to anything, the volume is extremely low.
+Everything is supported, plugged in, turned on, turned up, and still the
+volume is very low. I can only hear it when I put the speaker to my ear,
+and still it is quite faint.
+======================================================================
 
-I've recently played with my old laptop shipped with a cs4281
-chipset. Sometimes, I was getting the following message when loading the
-snd-cs4281 module:
+----------------------------------------------------------------------
+ jdthood - 05-07-05 09:47 
+----------------------------------------------------------------------
+Please send the output of the amixer command.
 
-May  7 11:38:20 rtp kernel: ACPI: PCI interrupt 0000:00:08.0[A] -> GSI 5
-(level, low) -> IRQ 5
-May  7 11:38:20 rtp kernel: DLLRDY not seen
-May  7 11:38:20 rtp kernel: CS4281: probe of 0000:00:08.0 failed with
-error -5
+----------------------------------------------------------------------
+ haYnguy - 05-07-05 18:46 
+----------------------------------------------------------------------
+amixer output:
 
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'Master Mono',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 29 [94%] [on]
+Simple mixer control 'Headphone Jack Sense',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 16 [52%] [on]
+  Front Right: Playback 16 [52%] [on]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%] [on] Capture [off]
+  Front Right: Playback 31 [100%] [on] Capture [off]
+Simple mixer control 'Line Jack Sense',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'CD',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%] [on] Capture [off]
+  Front Right: Playback 31 [100%] [on] Capture [off]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 31 [100%] [on]
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Mic Boost (+20dB)',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Video',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Phone',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 31 [100%] [on]
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Aux',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%] [on] Capture [off]
+  Front Right: Playback 31 [100%] [on] Capture [off]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [on]
+  Front Right: Capture 0 [0%] [on]
+Simple mixer control 'Mix',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [on]
+  Front Right: Capture [on]
+Simple mixer control 'Mix Mono',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'External Amplifier',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
 
-After giving a quick glance at the datasheet from ftp.alsa-project.org,
-I found that the fpdn bit of the eppmc register was set. After unsetting
-this bit, the problem disappeared and the card was working.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-06-05 22:49 haYnguy        New Issue                                    
+05-06-05 22:49 haYnguy        Kernel Version            => 2.6             
+05-06-05 23:02 haYnguy        Note Added: 0004599                          
+05-07-05 09:47 jdthood        Note Added: 0004601                          
+05-07-05 18:46 haYnguy        Note Added: 0004606                          
+======================================================================
 
-The attached patch test if this bit is set and unset it in that case. 
-
-Regards,
-Arnaud Patard
-
-
---=-=-=
-Content-Type: text/x-patch
-Content-Disposition: inline; filename=cs4281_fpdn.patch
-
-
-Reset the FPDN bit of the EPPMC register if needed
-
-Signed-off-by: Arnaud Patard <arnaud.patard@rtp-net.org>
----
-
- cs4281.c |    8 ++++++++
- 1 files changed, 8 insertions(+)
-
-diff -puN sound/pci/cs4281.c~fpdn sound/pci/cs4281.c
---- linux/sound/pci/cs4281.c~fpdn	2005-02-06 12:45:45.000000000 +0100
-+++ linux/sound/pci/cs4281.c	2005-05-07 16:56:17.000000000 +0200
-@@ -206,7 +206,10 @@ MODULE_PARM_DESC(dual_codec, "Secondary 
- 
- #define BA0_PMCS		0x0344	/* Power Management Control/Status */
- #define BA0_CWPR		0x03e0	/* Configuration Write Protect */
-+
- #define BA0_EPPMC		0x03e4	/* Extended PCI Power Management Control */
-+#define BA0_EPPMC_FPDN		(1<<14) /* Full Power DowN */
-+
- #define BA0_GPIOR		0x03e8	/* GPIO Pin Interface Register */
- 
- #define BA0_SPMC		0x03ec	/* Serial Port Power Management Control (& ASDIN2 enable) */
-@@ -1460,6 +1463,11 @@ static int snd_cs4281_chip_init(cs4281_t
- 	int timeout;
- 	int retry_count = 2;
- 
-+	/* Having EPPMC.FPDN=1 prevent proper chip initialisation */
-+	tmp = snd_cs4281_peekBA0(chip, BA0_EPPMC);
-+	if ( tmp & BA0_EPPMC_FPDN)
-+		snd_cs4281_pokeBA0(chip, BA0_EPPMC, tmp & ~BA0_EPPMC_FPDN);
-+
-       __retry:
- 	tmp = snd_cs4281_peekBA0(chip, BA0_CFLR);
- 	if (tmp != BA0_CFLR_DEFAULT) {
-
---=-=-=--
 
 
 
