@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001013]: Sound is not working on the MacMini
-Date: Sat, 7 May 2005 17:24:34 +0200
-Message-ID: <6fb7498287cb32ee51066d2990cf74f1@bugtrack.alsa-project.org>
+From: Arnaud Patard <rtp@rtp-net.org>
+Subject: [PATCH] cs4281 DLLRDY
+Date: Sat, 07 May 2005 17:38:52 +0200
+Message-ID: <85sm0zhwqb.fsf@Orfeo.duckcorp.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-=-="
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 57789204
-	for <alsa-devel@alsa-project.org>; Sat,  7 May 2005 17:24:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,95 +14,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+--=-=-=
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1013> 
-======================================================================
-Reported By:                timing
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1013
-Category:                   PPC - powermac
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.11.5
-======================================================================
-Date Submitted:             03-24-2005 19:27 CET
-Last Modified:              05-07-2005 17:24 CEST
-======================================================================
-Summary:                    Sound is not working on the MacMini
-Description: 
-Sound is not working on the MacMini. When loading the dmasound_pmac i get
-the following error:
+Hi,
 
-FATAL: Error inserting dmasound_pmac
-(/lib/modules/2.6.11.5/kernel/sound/oss/dmasound/dmasound_pmac.ko): No
-such device
+I've recently played with my old laptop shipped with a cs4281
+chipset. Sometimes, I was getting the following message when loading the
+snd-cs4281 module:
 
-When trying to play music i get an "maybe your device is busy?" error.
+May  7 11:38:20 rtp kernel: ACPI: PCI interrupt 0000:00:08.0[A] -> GSI 5
+(level, low) -> IRQ 5
+May  7 11:38:20 rtp kernel: DLLRDY not seen
+May  7 11:38:20 rtp kernel: CS4281: probe of 0000:00:08.0 failed with
+error -5
 
-I've found a solution on the ubuntuforums(
-http://www.ubuntuforums.org/showthread.php?t=12748 )
 
-it says:
+After giving a quick glance at the datasheet from ftp.alsa-project.org,
+I found that the fpdn bit of the eppmc register was set. After unsetting
+this bit, the problem disappeared and the card was working.
 
-To manually apply the patch (just as easy in this case),
-just open the file linux/sound/ppc/pmac.c in an editor,
-and search for OAKeylargo.
-Where it says SNAPPER right below, you change to SCREAMER (in uppercase).
-(In kernel 2.6.10 it's at line 967). 
+The attached patch test if this bit is set and unset it in that case. 
 
-this solution is very minimal, the alsamixer is slow, and my computer
-hangs for a couple of seconds before the start of every new process (when
-opening a new window in gnome etc.). When i edit pmac.c in the old way my
-system runs normal again.
-======================================================================
+Regards,
+Arnaud Patard
 
-----------------------------------------------------------------------
- perchrh - 04-09-05 14:26 
-----------------------------------------------------------------------
-Patch at 
-http://marc.theaimsgroup.com/?l=linux-kernel&m=111304762025261&w=2
 
-----------------------------------------------------------------------
- perchrh - 05-07-05 17:24 
-----------------------------------------------------------------------
-Benjamin Herrenschmidt <benh@kernel.crashing.org> 
-has made a driver for mac mini sound. It's included in current alsa-cvs
-and linux-2.6.12-rc4 and later
+--=-=-=
+Content-Type: text/x-patch
+Content-Disposition: inline; filename=cs4281_fpdn.patch
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-24-05 19:27 timing         New Issue                                    
-03-24-05 19:27 timing         Distribution              => Ubuntu          
-03-24-05 19:27 timing         Kernel Version            => 2.6.11.5        
-03-24-05 19:32 timing         Note Added: 0004194                          
-03-24-05 19:35 timing         Issue Monitored: timing                      
-03-24-05 19:48 tiwai          Note Added: 0004197                          
-03-24-05 21:35 timing         Note Added: 0004202                          
-03-25-05 21:44 perchrh        Note Added: 0004212                          
-03-25-05 21:50 perchrh        Note Edited: 0004212                         
-03-25-05 21:52 perchrh        Issue Monitored: perchrh                     
-03-25-05 22:57 timing         Note Edited: 0004202                         
-03-25-05 23:27 timing         Note Edited: 0004202                         
-04-03-05 13:44 perchrh        Note Added: 0004309                          
-04-03-05 14:29 perchrh        Note Edited: 0004309                         
-04-03-05 14:30 perchrh        Note Edited: 0004309                         
-04-03-05 14:36 perchrh        Note Added: 0004310                          
-04-09-05 02:45 perchrh        Note Added: 0004381                          
-04-09-05 14:26 perchrh        Note Added: 0004396                          
-05-07-05 17:24 perchrh        Note Added: 0004605                          
-======================================================================
 
+Reset the FPDN bit of the EPPMC register if needed
+
+Signed-off-by: Arnaud Patard <arnaud.patard@rtp-net.org>
+---
+
+ cs4281.c |    8 ++++++++
+ 1 files changed, 8 insertions(+)
+
+diff -puN sound/pci/cs4281.c~fpdn sound/pci/cs4281.c
+--- linux/sound/pci/cs4281.c~fpdn	2005-02-06 12:45:45.000000000 +0100
++++ linux/sound/pci/cs4281.c	2005-05-07 16:56:17.000000000 +0200
+@@ -206,7 +206,10 @@ MODULE_PARM_DESC(dual_codec, "Secondary 
+ 
+ #define BA0_PMCS		0x0344	/* Power Management Control/Status */
+ #define BA0_CWPR		0x03e0	/* Configuration Write Protect */
++
+ #define BA0_EPPMC		0x03e4	/* Extended PCI Power Management Control */
++#define BA0_EPPMC_FPDN		(1<<14) /* Full Power DowN */
++
+ #define BA0_GPIOR		0x03e8	/* GPIO Pin Interface Register */
+ 
+ #define BA0_SPMC		0x03ec	/* Serial Port Power Management Control (& ASDIN2 enable) */
+@@ -1460,6 +1463,11 @@ static int snd_cs4281_chip_init(cs4281_t
+ 	int timeout;
+ 	int retry_count = 2;
+ 
++	/* Having EPPMC.FPDN=1 prevent proper chip initialisation */
++	tmp = snd_cs4281_peekBA0(chip, BA0_EPPMC);
++	if ( tmp & BA0_EPPMC_FPDN)
++		snd_cs4281_pokeBA0(chip, BA0_EPPMC, tmp & ~BA0_EPPMC_FPDN);
++
+       __retry:
+ 	tmp = snd_cs4281_peekBA0(chip, BA0_CFLR);
+ 	if (tmp != BA0_CFLR_DEFAULT) {
+
+--=-=-=--
 
 
 
