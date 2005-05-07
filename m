@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001092]: Low volume output with snd-i8x0
-Date: Sat, 7 May 2005 09:47:40 +0200
-Message-ID: <f2e8bcafdef8ca3dd10fed116e19b328@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000810]: Doesn't find any module while using alsaconf
+Date: Sat, 7 May 2005 09:49:25 +0200
+Message-ID: <0afc7abcdcec596cfaa92cb5aa7bc5bd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D4DB2226
-	for <alsa-devel@alsa-project.org>; Sat,  7 May 2005 09:47:40 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1CCF4226
+	for <alsa-devel@alsa-project.org>; Sat,  7 May 2005 09:49:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1092> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=810> 
 ======================================================================
-Reported By:                haYnguy
+Reported By:                skorpio
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1092
+Issue ID:                   810
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6
+Status:                     closed
+Distribution:               Slackware
+Kernel Version:             2.4
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-06-2005 22:49 CEST
-Last Modified:              05-07-2005 09:47 CEST
+Date Submitted:             01-12-2005 11:30 CET
+Last Modified:              05-07-2005 09:49 CEST
 ======================================================================
-Summary:                    Low volume output with snd-i8x0
+Summary:                    Doesn't find any module while using alsaconf
 Description: 
-Whenever I want to listen to anything, the volume is extremely low.
-Everything is supported, plugged in, turned on, turned up, and still the
-volume is very low. I can only hear it when I put the speaker to my ear,
-and still it is quite faint.
+Alsaconf can't load soundcards modules, so it doesn't find any matching
+soundcard.
 ======================================================================
 
 ----------------------------------------------------------------------
- haYnguy - 05-06-05 23:02 
+ jdthood - 05-04-05 21:49 
 ----------------------------------------------------------------------
-this is my lsmod output:
-
-Module                  Size  Used by
-snd_pcm_oss            56224  0
-snd_mixer_oss          18816  1 snd_pcm_oss
-snd_seq_oss            33408  0
-snd_seq_midi_event      6528  1 snd_seq_oss
-snd_seq                54800  4 snd_seq_oss,snd_seq_midi_event
-snd_seq_device          7308  2 snd_seq_oss,snd_seq
-snd_intel8x0           29376  2
-snd_ac97_codec         81272  1 snd_intel8x0
-snd_pcm                92168  3 snd_pcm_oss,snd_intel8x0,snd_ac97_codec
-snd_timer              22788  2 snd_seq,snd_pcm
-snd                    50788  13
-snd_pcm_oss,snd_mixer_oss,snd_seq_oss,snd_seq,snd_seq_device,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
-snd_page_alloc          8324  2 snd_intel8x0,snd_pcm
+Submitter: Please provide more information about this problem.
 
 ----------------------------------------------------------------------
- jdthood - 05-07-05 09:47 
+ jdthood - 05-07-05 09:49 
 ----------------------------------------------------------------------
-Please send the output of the amixer command.
+No further info was provided.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-05 22:49 haYnguy        New Issue                                    
-05-06-05 22:49 haYnguy        Kernel Version            => 2.6             
-05-06-05 23:02 haYnguy        Note Added: 0004599                          
-05-07-05 09:47 jdthood        Note Added: 0004601                          
+01-12-05 11:30 skorpio        New Issue                                    
+01-12-05 11:30 skorpio        Distribution              => Slackware       
+01-12-05 11:30 skorpio        Kernel Version            => 2.4             
+01-12-05 15:06 tiwai          Note Added: 0003168                          
+05-04-05 21:49 jdthood        Note Added: 0004588                          
+05-07-05 09:49 jdthood        Status                   new => closed       
+05-07-05 09:49 jdthood        Note Added: 0004602                          
 ======================================================================
 
 
