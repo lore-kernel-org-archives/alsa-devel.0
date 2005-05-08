@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sun, 8 May 2005 17:40:12 +0200
-Message-ID: <961dc7f2da3813593090aa9ad250ed04@bugtrack.alsa-project.org>
+From: Forest Bond <f_a_b@softhome.net>
+Subject: writing driver for MOTU PCI 324, 2408 MK-II
+Date: Sun, 8 May 2005 12:14:25 -0400
+Message-ID: <20050508161425.GD25855@localhost.localdomain>
+Reply-To: Forest Bond <f_a_b@softhome.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5F4B276
-	for <alsa-devel@alsa-project.org>; Sun,  8 May 2005 17:40:12 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,93 +17,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hello all,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
-======================================================================
-Reported By:                Demosthenes
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1090
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu (Hoary Hedgehog)
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              05-08-2005 17:40 CEST
-======================================================================
-Summary:                    Support for new Prodigy 7.1 LT
-Description: 
-Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
-far as I am aware this card is essentially the same as the Produgy 7.1 but
-low profile and with a couple of physical changes such as no digital in.
+I'm new to the list.  Joined up because I've decided I want to write a 
+driver for the Mark of the Unicorn PCI-324 PCI card.  This card allows a 
+variety of MOTU external interfaces to be used.  I own a MOTU 2408 MK 
+II, an 8 channel interface.  This (and similar interfaces from MOTU) are 
+common in the pro audio world.
 
-ALSA does not detect the card currently and when I try to load the
-snd-1724 module it fails with an EEPROM error.
+I have emailed MOTU tech support, but have not gotten a response.  I 
+have a feeling this will be the case in the future, as well.  MOTU has 
+strong ties with Apple.
 
-I have tried compiling a new kernel with the subdevice id for the Prodigy
-7.1 in aureon.h changed to correspond to my device (as detailed here for
-another card
-http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
-Alsa then detects the card and I can load modules and change volumes in
-alsamixer but I haven't been able to produce any sound.
+I've searched the list archive, and, from what I can see, noone has 
+begun work on a driver for these interfaces.  It may not be feasible, 
+given the lack of technical information available (yeah, yeah, I know, 
+welcome to the wonderful world of linux driver development).  If, 
+however, anyone is aware of an attempt to write a driver, please let me 
+know.  Also, if anyone is interested in pitching in, send me an email.
 
-Hopefully support will be easy to add as this card is almost exactly the
-same as the Prodigy 7.1 (and Aureon Space etc.) which already have
-support.
+I have limited experience writing drivers (well, next to none, 
+actually), but I'm gonna give it a shot anyway.
 
-I would be very happy to give any further information needed.
-======================================================================
+Couple of questions:
 
-----------------------------------------------------------------------
- Demosthenes - 05-08-05 17:30 
-----------------------------------------------------------------------
-When I try modprobe snd-ice1724 model=prodigy71 I get the same error:
-(syslog)
+Can released ASIO drivers be used to gather technical information on the 
+hardware?
 
-May  8 16:25:05 localhost kernel: ACPI: PCI interrupt 0000:02:06.0[A] ->
-GSI 18 (level, low) -> IRQ 18
-May  8 16:25:05 localhost kernel: ice1724: No matching model found for ID
-0x32315441
-May  8 16:25:05 localhost kernel: ice1724: Invalid EEPROM (size = 120)
-May  8 16:25:05 localhost kernel: ICE1724: probe of 0000:02:06.0 failed
-with error -5
+Are there any good techniques for probing the hardware and discovering 
+necessary technical info?
 
-I should like to try this patch but I cannot see it attached here?
+Any help would be appreciated.
 
-----------------------------------------------------------------------
- ungod - 05-08-05 17:40 
-----------------------------------------------------------------------
-Sorry, forgot to upload it :-)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-06-05 17:34 Demosthenes    New Issue                                    
-05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
-Hedgehog)
-05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
-05-06-05 22:44 ungod          Note Added: 0004597                          
-05-06-05 22:48 ungod          Note Added: 0004598                          
-05-07-05 01:38 Demosthenes    Note Added: 0004600                          
-05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
-05-08-05 00:45 ungod          Note Added: 0004608                          
-05-08-05 17:30 Demosthenes    Note Added: 0004610                          
-05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
-        
-05-08-05 17:40 ungod          Note Added: 0004611                          
-======================================================================
-
-
+Thanks!
+Forest
 
 
 -------------------------------------------------------
