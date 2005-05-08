@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sun, 8 May 2005 20:23:49 +0200
-Message-ID: <1c0cf2e36d7493d6a9a9beda4ae81f72@bugtrack.alsa-project.org>
+Date: Sun, 8 May 2005 20:27:56 +0200
+Message-ID: <adfc67c070f9fc7ced3185e9fc3e8e34@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4A931280
-	for <alsa-devel@alsa-project.org>; Sun,  8 May 2005 20:23:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5B104280
+	for <alsa-devel@alsa-project.org>; Sun,  8 May 2005 20:27:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              05-08-2005 20:23 CEST
+Last Modified:              05-08-2005 20:27 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,11 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 05-08-05 20:18 
-----------------------------------------------------------------------
-I tried that. Still no sound.
-
-----------------------------------------------------------------------
  ungod - 05-08-05 20:23 
 ----------------------------------------------------------------------
 What does
@@ -78,6 +73,11 @@ What does
 and
 'cat /proc/asound/card0/ice1724'
 produce?
+
+----------------------------------------------------------------------
+ ungod - 05-08-05 20:27 
+----------------------------------------------------------------------
+Oh, and just "no sound" or an actual error message? (or does aplay stall?)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -101,6 +101,7 @@ Hedgehog)
 05-08-05 20:08 ungod          Note Added: 0004614                          
 05-08-05 20:18 Demosthenes    Note Added: 0004615                          
 05-08-05 20:23 ungod          Note Added: 0004616                          
+05-08-05 20:27 ungod          Note Added: 0004617                          
 ======================================================================
 
 
