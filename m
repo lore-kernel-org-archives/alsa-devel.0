@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sun, 8 May 2005 17:30:15 +0200
-Message-ID: <28b966bfb048091055769be5d957a5be@bugtrack.alsa-project.org>
+Date: Sun, 8 May 2005 17:40:12 +0200
+Message-ID: <961dc7f2da3813593090aa9ad250ed04@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DBF49280
-	for <alsa-devel@alsa-project.org>; Sun,  8 May 2005 17:30:15 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5F4B276
+	for <alsa-devel@alsa-project.org>; Sun,  8 May 2005 17:40:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              05-08-2005 17:30 CEST
+Last Modified:              05-08-2005 17:40 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,23 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- ungod - 05-08-05 00:45 
-----------------------------------------------------------------------
-If you load the snd-ice1724 module like this:
-
-'modprobe snd-ice1724 model=prodigy71'
-
-you can force the driver to behave as if your card was a Prodigy 7.1.
-
-Anyway, I have made a small patch which should add support for Prodigy 7.1
-LT to the driver. It threats the card as if it was an ordinary Prodigy 7.1
-without digital-in.
-
-Simply apply the patch in the alsa-kernel directory like this:
-
-alsa-kernel$ patch -Np1 -i auroen-prodigy71lt-fix.diff
-
-----------------------------------------------------------------------
  Demosthenes - 05-08-05 17:30 
 ----------------------------------------------------------------------
 When I try modprobe snd-ice1724 model=prodigy71 I get the same error:
@@ -98,6 +81,11 @@ with error -5
 
 I should like to try this patch but I cannot see it attached here?
 
+----------------------------------------------------------------------
+ ungod - 05-08-05 17:40 
+----------------------------------------------------------------------
+Sorry, forgot to upload it :-)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -111,6 +99,9 @@ Hedgehog)
 05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
 05-08-05 00:45 ungod          Note Added: 0004608                          
 05-08-05 17:30 Demosthenes    Note Added: 0004610                          
+05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
+        
+05-08-05 17:40 ungod          Note Added: 0004611                          
 ======================================================================
 
 
