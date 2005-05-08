@@ -1,11 +1,13 @@
 From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: alsa-driver failes to build correctly.
-Date: Sun, 08 May 2005 23:16:38 +0100
-Message-ID: <427E8FC6.6080900@superbug.co.uk>
+Subject: Re: alsa-driver failes to build correctly.
+Date: Sun, 08 May 2005 23:36:34 +0100
+Message-ID: <427E9472.7080107@superbug.co.uk>
+References: <427E8FC6.6080900@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <427E8FC6.6080900@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,25 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+James Courtier-Dutton wrote:
+> Hi,
+> 
+> if one downloads the latest cvs of alsa-driver,alsa-kernel and does
+> 
+> ./configure --with-cards=usb-audio
+> 
+> It fails to build module "snd-hwdep", and so when one does "modprobe
+> snd-usb-audio" if fails with unknown symbols.
+> 
+> But, if one builds with:
+> ./configure --with-cards=emu10k1,usb-audio
+> it works fine.
+> 
+> Can anyone find out why?
+> 
+> James
+> 
 
-if one downloads the latest cvs of alsa-driver,alsa-kernel and does
+OK, I fixed it in CVS now.
 
-./configure --with-cards=usb-audio
-
-It fails to build module "snd-hwdep", and so when one does "modprobe
-snd-usb-audio" if fails with unknown symbols.
-
-But, if one builds with:
-./configure --with-cards=emu10k1,usb-audio
-it works fine.
-
-Can anyone find out why?
-
-James
 
 
 -------------------------------------------------------
