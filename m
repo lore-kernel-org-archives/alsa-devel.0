@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sun, 8 May 2005 20:08:08 +0200
-Message-ID: <0edfff2c4b17ee800bdd0bdecedb718f@bugtrack.alsa-project.org>
+Date: Sun, 8 May 2005 20:18:51 +0200
+Message-ID: <0b1b45a9ff17e2a2641e89e762ada4c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BF86427A
-	for <alsa-devel@alsa-project.org>; Sun,  8 May 2005 20:08:08 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 324D627A
+	for <alsa-devel@alsa-project.org>; Sun,  8 May 2005 20:18:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              05-08-2005 20:08 CEST
+Last Modified:              05-08-2005 20:18 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,34 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 05-08-05 19:12 
-----------------------------------------------------------------------
-I applied the patch and although i could './configure --with-cards=ice1724
---with-sequencer=yes;make;make install' it didnt make any difference to
-the error i was recieving when trying to load the module, that must be my
-problem though since when I compiled a new kernel with the patch alsa did
-detect my card (as Prodigy 7.1 LT) and i can change levels in alsamixer
-but i can't produce any sound.  When I select the card in xmms i get
-"Couldn't open audio. Please check that: Your soundcard is configured
-properly ...." I'm pretty sure that I am loading the right modules on boot
-and my asound.conf contains: 
-pcm.ice1724 {
-type hw
-card 0
-}
-
-ctl.ice1724 {
-type hw
-card 0
-}
-
-as instructed on the alsa site
-(http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=AudioTrak&card=Prodigy+7.1.&chip=Envy24HT&module=ice1724)
-for the Prodigy 7.1
-
-
-
-----------------------------------------------------------------------
  ungod - 05-08-05 20:08 
 ----------------------------------------------------------------------
 Have you tried playing back a wave file with aplay instead? (aplay
@@ -115,6 +87,11 @@ ctl.!default {
 
 since plug can convert between audio formats
 
+----------------------------------------------------------------------
+ Demosthenes - 05-08-05 20:18 
+----------------------------------------------------------------------
+I tried that. Still no sound.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -135,6 +112,7 @@ Hedgehog)
 05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
 05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
 05-08-05 20:08 ungod          Note Added: 0004614                          
+05-08-05 20:18 Demosthenes    Note Added: 0004615                          
 ======================================================================
 
 
