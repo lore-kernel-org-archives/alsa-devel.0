@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sun, 8 May 2005 00:46:00 +0200
-Message-ID: <9f53303e28d5a4d729e065b5a25504c6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000151]: Lockup on Envy24ht/ice1724 when recording with some format/rate combos
+Date: Sun, 8 May 2005 14:24:15 +0200
+Message-ID: <37305ef7fba1a10d353cf233a96bfe59@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4D2423A
-	for <alsa-devel@alsa-project.org>; Sun,  8 May 2005 00:46:00 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A420D278
+	for <alsa-devel@alsa-project.org>; Sun,  8 May 2005 14:24:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,98 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=151> 
 ======================================================================
-Reported By:                Demosthenes
-Assigned To:                
+Reported By:                patricklang
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1090
+Issue ID:                   151
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu (Hoary Hedgehog)
-Kernel Version:             2.6.10
+Status:                     assigned
+Distribution:               Slackware 9.1
+Kernel Version:             2.6.4
 ======================================================================
-Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              05-08-2005 00:45 CEST
+Date Submitted:             03-23-2004 06:05 CET
+Last Modified:              05-08-2005 14:24 CEST
 ======================================================================
-Summary:                    Support for new Prodigy 7.1 LT
+Summary:                    Lockup on Envy24ht/ice1724 when recording with some
+format/rate combos
 Description: 
-Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
-far as I am aware this card is essentially the same as the Produgy 7.1 but
-low profile and with a couple of physical changes such as no digital in.
+arecord -f S32_LE -r 48000 -c 2 file.wav
+(also other rates like 96000)
+records just fine, but crashes after a while.  S16_LE/44100 and S32_LE
+lock or crash (with stack trace) almost immediately.  S32_LE/48k and
+S32_LE/96k seem stable (at least for the 20-30 seconds I recorded)
 
-ALSA does not detect the card currently and when I try to load the
-snd-1724 module it fails with an EEPROM error.
-
-I have tried compiling a new kernel with the subdevice id for the Prodigy
-7.1 in aureon.h changed to correspond to my device (as detailed here for
-another card
-http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
-Alsa then detects the card and I can load modules and change volumes in
-alsamixer but I haven't been able to produce any sound.
-
-Hopefully support will be easy to add as this card is almost exactly the
-same as the Prodigy 7.1 (and Aureon Space etc.) which already have
-support.
-
-I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 05-07-05 01:47 
+ ungod - 05-08-05 14:24 
 ----------------------------------------------------------------------
-The output of 'lspci -d 1412:1724 -nvx' is:
-
-0000:02:06.0 0401: 1412:1724 (rev 01)
-        Subsystem: 3132:4154
-        Flags: bus master, medium devsel, latency 32, IRQ 18
-        I/O ports at d000 [size=32]
-        I/O ports at d100 [size=128]
-        Capabilities: [80] Power Management version 1
-00: 12 14 24 17 05 00 10 02 01 00 01 04 00 20 00 00
-10: 01 d0 00 00 01 d1 00 00 00 00 00 00 00 00 00 00
-20: 00 00 00 00 00 00 00 00 00 00 00 00 32 31 54 41
-30: 00 00 00 00 80 00 00 00 00 00 00 00 03 01 00 00
-
-
-With regards to loading the driver with "model=prodigy71" forgive me for
-asking but could you tell me exactly how to do this please.
-
-
-
-----------------------------------------------------------------------
- ungod - 05-08-05 00:45 
-----------------------------------------------------------------------
-If you load the snd-ice1724 module like this:
-
-'modprobe snd-ice1724 model=prodigy71'
-
-you can force the driver to behave as if your card was a Prodigy 7.1.
-
-Anyway, I have made a small patch which should add support for Prodigy 7.1
-LT to the driver. It threats the card as if it was an ordinary Prodigy 7.1
-without digital-in.
-
-Simply apply the patch in the alsa-kernel directory like this:
-
-alsa-kernel$ patch -Np1 -i auroen-prodigy71lt-fix.diff
+I can't force the driver to crash no matter what I do
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-05 17:34 Demosthenes    New Issue                                    
-05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
-Hedgehog)
-05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
-05-06-05 22:44 ungod          Note Added: 0004597                          
-05-06-05 22:48 ungod          Note Added: 0004598                          
-05-07-05 01:38 Demosthenes    Note Added: 0004600                          
-05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
-05-08-05 00:45 ungod          Note Added: 0004608                          
+03-23-04 06:05 patricklang    New Issue                                    
+03-23-04 06:05 patricklang    Distribution              => Slackware 9.1   
+03-23-04 06:05 patricklang    Kernel Version            => 2.6.4           
+03-23-04 19:02 perex          Status                   new => assigned     
+03-23-04 19:02 perex          Assigned To               => perex           
+05-08-05 14:24 ungod          Note Added: 0004609                          
 ======================================================================
 
 
