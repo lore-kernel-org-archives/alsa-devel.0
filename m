@@ -1,12 +1,12 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Q: Is there a testsuite?
-Date: Mon, 9 May 2005 11:30:34 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0505091042490.20877-100000@studcom.urz.uni-halle.de>
-References: <200505071231.26517.p_christ@hol.gr>
+Subject: Re: writing driver for MOTU PCI 324, 2408 MK-II
+Date: Mon, 9 May 2005 11:39:16 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0505091131500.20877-100000@studcom.urz.uni-halle.de>
+References: <20050508161425.GD25855@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200505071231.26517.p_christ@hol.gr>
+In-Reply-To: <20050508161425.GD25855@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,27 +16,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "P. Christeas" <p_christ@hol.gr>
-Cc: alsa-devel@lists.sourceforge.net
+To: Forest Bond <f_a_b@softhome.net>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-P. Christeas wrote:
-> I was wondering if there is some ALSA testsuite,
+Forest Bond wrote:
+> I've decided I want to write a driver for the Mark of the Unicorn
+> PCI-324 PCI card.
+>
+> I have emailed MOTU tech support, but have not gotten a response.  I
+> have a feeling this will be the case in the future, as well.
 
-There are some programe in alsa-lib/test/, but those are for testing
-the ALSA library.
+IIRC somebody reported that at a NAMM, a MOTU representative said that
+MOTU wouldn't support Linux, wouldn't give out technical information,
+and doesn't want any third party to write Linux drivers.
 
-> that will detect if -my- soundcard covers all the ALSA
-> functionality it exports with some X kernel.
+> Can released ASIO drivers be used to gather technical information on the
+> hardware?
 
-Sound card capabilities are too different to be able to create a test
-suite that fits all.
+Yes.  Reverse engineering is perfectly legal in this case.
 
-You could create a script specific to your sound card that calls
-aplay/arecord/amidi/aplaymidi/amixer/etc.
+> Are there any good techniques for probing the hardware and discovering
+> necessary technical info?
+
+The only good technique is reading the technical documentation,
+preferrably with the source code of the driver to see where the doc is
+wrong.
+
+If that isn't possible, you can run a disassembler on the driver and
+then try to find out what it does.  Good luck.
 
 
-Regards,
+HTH
 Clemens
 
 
