@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001094]: nforce4 - optical spdif out not working
-Date: Mon, 9 May 2005 09:56:49 +0200
-Message-ID: <bfe4758452e11cd85c60cc3b702c9c5b@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Plugin loading and unloading
+Date: Mon, 9 May 2005 10:10:07 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0505090950410.1843@pnote.perex-int.cz>
+References: <1114266960.10706.30.camel@pegasus>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 111C417C
-	for <alsa-devel@alsa-project.org>; Mon,  9 May 2005 09:56:50 +0200 (MEST)
+In-Reply-To: <1114266960.10706.30.camel@pegasus>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,75 +16,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Marcel Holtmann <marcel@holtmann.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 23 Apr 2005, Marcel Holtmann wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1094> 
-======================================================================
-Reported By:                eklarson
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1094
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14_FC3
-======================================================================
-Date Submitted:             05-07-2005 11:36 CEST
-Last Modified:              05-09-2005 09:56 CEST
-======================================================================
-Summary:                    nforce4 - optical spdif out not working
-Description: 
-A 48K PCM optical signal is getting sent out to my receiver, however I
-can't get anything to play.  I saw in the "intel8x0.c" that there is no
-NFORCE4 callouts.  Does the code fully support the nforce4 yet?
-======================================================================
+> Hi guys,
+> 
+> I am working again on the A2DP Bluetooth plugin and the caching support
+> in the latest ALSA library is nice and allows me to keep the underlaying
+> link connected while stupid programs like XMMS closes the PCM when they
+> switch the tracks.
+> 
+> The PCM opening part and reusing of the underlaying AVDTP connection is
+> easy, but I am a little bit concerned about the plugin unloading time.
+> So is it possible to add init() and exit() functions that are called
+> when the plugin is loaded and unloaded. Like we have for kernel modules?
 
-----------------------------------------------------------------------
- eklarson - 05-07-05 23:44 
-----------------------------------------------------------------------
-Followed the instruction on
-"http://www.alsa-project.org/alsa-doc/doc-php/template.php?module=intel8x0"
-and had no luck getting the optical out to work.  There is also a forum
-thread on this topic as well at
-"http://www.nforcershq.com/forum/viewtopic.php?t=58251"
+Wouldn't be possible to use ((constructor)) and ((destructor)) function 
+attributes for this purpose?
 
+> Do the ALSA library has a timer mechanism that we can use inside a
+> plugin. Since it is a bad idea to hold the Bluetooth connection open for
+> all the time, I like to add a idle timeout. This allows me to put the
+> connection into sniff mode to save power or terminate it.
 
+It's not possible to use any time resource using signals, because 
+applications might be using the signal for another purpose. It seems
+to me that the only possibility is to use fork() and code a little 
+watchdog or use threads.
 
-----------------------------------------------------------------------
- gergap - 05-09-05 09:56 
-----------------------------------------------------------------------
-I've the same problem with
-INTEL865G ICH-5 (AOpen XC Cube)
-SuSE 9.2, kernel 2.6.8-24.14
-ALSA 1.0.7rc1
+> Also the listing of plugins is still missing. I am fine with a general
+> or plugin specific flag to make its PCM visible.
 
-I also compiled the newer version ALSA 1.0.8 but also didn't work.
-I can activate IEC958 in the mixer and the light of the optical out goes
-on,
-but I can't hear anything when connected to my receiver.
+Yes, I was evaluating all possibilities and the result is that we will 
+have a cache (configuration file) listing device names with short comments 
+which applications should offer to users in their GUI.
 
-I can retest it when the problem is solved to verify it.
+In this case, a configuration tool (alsactl as standard ALSA tool or 
+perhaps distribution specific) will check the installed and active plugins
+and create a list automagically which can be altered with advanced users
+later. Of course, the list won't be complete in any way, because 
+there are unlimited variations of virtual device names.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-07-05 11:36 eklarson       New Issue                                    
-05-07-05 11:36 eklarson       Distribution              => Fedora Core 3   
-05-07-05 11:36 eklarson       Kernel Version            => 2.6.11-1.14_FC3 
-05-07-05 11:41 eklarson       Note Added: 0004604                          
-05-07-05 23:44 eklarson       Note Edited: 0004604                         
-05-09-05 09:56 gergap         Note Added: 0004622                          
-======================================================================
+						Jaroslav
 
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
