@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000986]: snd-ice1724 outputs white noise on rear surround output of Chaintech AV-710
-Date: Mon, 9 May 2005 10:43:55 +0200
-Message-ID: <0ad8ffecd2c8565f082b99e30d0796b0@bugtrack.alsa-project.org>
+From: Marcel Holtmann <marcel@holtmann.org>
+Subject: Re: Plugin loading and unloading
+Date: Mon, 09 May 2005 11:07:22 +0200
+Message-ID: <1115629642.8949.150.camel@pegasus>
+References: <1114266960.10706.30.camel@pegasus>
+	 <Pine.LNX.4.58.0505090950410.1843@pnote.perex-int.cz>
+	 <1115626583.8949.124.camel@pegasus>
+	 <Pine.LNX.4.58.0505091028000.1843@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A078227C
-	for <alsa-devel@alsa-project.org>; Mon,  9 May 2005 10:43:55 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.58.0505091028000.1843@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +20,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Jaroslav,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=986> 
-======================================================================
-Reported By:                AdamW
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   986
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Mandrakelinux Cooker
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             03-12-2005 22:43 CET
-Last Modified:              05-09-2005 10:43 CEST
-======================================================================
-Summary:                    snd-ice1724 outputs white noise on rear surround
-output of Chaintech AV-710
-Description: 
-A little background. The Chaintech AV-710 soundcard is a 7.1 soundcard
-which uses this driver. It has two DACs. There's a standard DAC that
-drives the first six channels. The rear surround channels, however, are
-driven by a high-quality Wolfson DAC. Audio enthusiasts like to set the
-card to drive the main two channels through this DAC instead in order to
-get a very high quality stereo line-level output. The card's Windows
-driver has an option to do just this, and in the past people have been
-successful doing it on Linux. I am attaching an asound.state file which
-owners of this card used with ALSA 1.0.7 to achieve this. However, I am
-having trouble getting this to work with ALSA 1.0.8. The rear surround
-output just produces white noise all the time. This is the case both with
-this asound.state loaded and also with default levels (i.e., what I get if
-I wipe /etc/asound.state and re-run alsaconf). It'd be nice to know what
-changed between 1.0.7 and 1.0.8 that caused this to break, and how to fix
-it. Thanks!
-======================================================================
+> > > > I am working again on the A2DP Bluetooth plugin and the caching support
+> > > > in the latest ALSA library is nice and allows me to keep the underlaying
+> > > > link connected while stupid programs like XMMS closes the PCM when they
+> > > > switch the tracks.
+> > > > 
+> > > > The PCM opening part and reusing of the underlaying AVDTP connection is
+> > > > easy, but I am a little bit concerned about the plugin unloading time.
+> > > > So is it possible to add init() and exit() functions that are called
+> > > > when the plugin is loaded and unloaded. Like we have for kernel modules?
+> > > 
+> > > Wouldn't be possible to use ((constructor)) and ((destructor)) function 
+> > > attributes for this purpose?
+> > 
+> > I have no idea how. Do you have an example for me. I like to try it.
+> 
+> void snd_async_init(void) __attribute__ ((constructor));
+> 
+> void snd_async_init(void)
+> {
+> }
 
-----------------------------------------------------------------------
- AdamW - 05-09-05 07:42 
-----------------------------------------------------------------------
-Janusk - could you provide your /etc/asound.state if it's not too much
-trouble? With your patch I now get nothing, as opposed to white noise, on
-the Wolfson DAC (rear surround) output, and I can't find a mixer setting
-that makes it right. Thanks!
+this is working fine. Any reason not to make them "static"?
 
-----------------------------------------------------------------------
- jaanusk_ - 05-09-05 10:43 
-----------------------------------------------------------------------
-Interesting, the originally attached asound.state is working ok for me.
+> > > > Do the ALSA library has a timer mechanism that we can use inside a
+> > > > plugin. Since it is a bad idea to hold the Bluetooth connection open for
+> > > > all the time, I like to add a idle timeout. This allows me to put the
+> > > > connection into sniff mode to save power or terminate it.
+> > > 
+> > > It's not possible to use any time resource using signals, because 
+> > > applications might be using the signal for another purpose. It seems
+> > > to me that the only possibility is to use fork() and code a little 
+> > > watchdog or use threads.
+> > 
+> > I thought so for the signals, but can't ALSA provide somekind of other
+> > timer mechanism for internal use?
+> 
+> alsa-lib has access to similar resources as plugin (because plugin is 
+> called from alsa-lib). It might be possible to use an async notification 
+> with the ALSA timer interface using the system timer, but this part has 
+> not been finished in alsa-lib yet.
 
-AdamW: did I understand correctly that after applying the attached
-asound.state you get no sound nor noise when trying to play back audio?
+The question is when do you expect this to be ready? It would help a lot
+if I can use an ALSA native framework for it, because using threads or
+fork() doesn't look like a good idea to me.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-12-05 22:43 AdamW          New Issue                                    
-03-12-05 22:43 AdamW          File Added: asound.state                     
-03-12-05 22:43 AdamW          Distribution              => Mandrakelinux Cooker
-03-12-05 22:43 AdamW          Kernel Version            => 2.6.11          
-03-14-05 16:23 AdamW          Note Added: 0003904                          
-03-19-05 08:17 AdamW          Note Added: 0004010                          
-04-29-05 15:18 jamesferguson  Issue Monitored: jamesferguson                    
-04-29-05 15:24 jamesferguson  Note Added: 0004579                          
-05-08-05 20:46 jaanusk_       File Added: amp2000_wm8728.patch                  
- 
-05-08-05 20:49 jaanusk_       Note Added: 0004619                          
-05-08-05 20:50 jaanusk_       Issue Monitored: jaanusk_                    
-05-09-05 07:42 AdamW          Note Added: 0004621                          
-05-09-05 10:43 jaanusk_       Note Added: 0004623                          
-======================================================================
+> > > > Also the listing of plugins is still missing. I am fine with a general
+> > > > or plugin specific flag to make its PCM visible.
+> > > 
+> > > Yes, I was evaluating all possibilities and the result is that we will 
+> > > have a cache (configuration file) listing device names with short comments 
+> > > which applications should offer to users in their GUI.
+> > > 
+> > > In this case, a configuration tool (alsactl as standard ALSA tool or 
+> > > perhaps distribution specific) will check the installed and active plugins
+> > > and create a list automagically which can be altered with advanced users
+> > > later. Of course, the list won't be complete in any way, because 
+> > > there are unlimited variations of virtual device names.
+> > 
+> > This looks fine to me. Will it in the 1.0.9 release?
+> 
+> I hope so..
+
+Cool.
+
+Regards
+
+Marcel
 
 
 
