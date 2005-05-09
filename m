@@ -1,13 +1,13 @@
-From: Ben Dooks <ben-alsa@fluff.org>
-Subject: Re: AIC23 on i2C
-Date: Wed, 11 May 2005 23:59:01 +0100
-Message-ID: <20050511225901.GQ20090@trinity.fluff.org>
-References: <a0580c510505111145101242a0@mail.gmail.com>
+From: Forest Bond <f_a_b@softhome.net>
+Subject: MOTU driver, cont'd
+Date: Mon, 9 May 2005 18:05:27 -0400
+Message-ID: <20050509220527.GA10385@localhost.localdomain>
+Reply-To: Forest Bond <f_a_b@softhome.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <a0580c510505111145101242a0@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,35 +17,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eduardo Bezerra <edubezval@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 11, 2005 at 02:45:09PM -0400, Eduardo Bezerra wrote:
-> Hi folks,
-> 
-> 
-> 
->  I need to know if there is any driver to AIC23 on I2C written on ALSA.
-> 
-> If there isn't, I want to know how can I get documentation to do this
-> task, because
-> the how-to that I found on 
-> http://www.alsa-project.org/~iwai/writing-an-alsa-driver/index.html
-> 
-> shows only how to write a pci driver.
+Well, I got a response from MOTU.  They don't seem to be very interested 
+in providing any help at all, which is what I was expecting:
 
-I've got a tlv320aic23 driver done with the s3c2410 audio system
-(see patches submitted to the list a while ago). The only problem
-is there is no standard interface for the attaching of IIS based
-codecs to ALSA drivers, unlike AC97.
+------------------quote------------------
+Forest,
 
--- 
-Ben
+At this time MOTU does not release any kind of hardware development kit 
+or
+other specifications to develop drivers for MOTU audio or MIDI 
+interfaces.
+While there currently are no drivers available to use MOTU hardware on a
+Linux system, if the Linux OS does become a more viable platform for 
+DAWs
+then it is possible that MOTU will develop drivers for that platform at
+some point in the future.
 
-Q:      What's a light-year?
-A:      One-third less calories than a regular year.
+Thank you for writing,
+Nic Tuttle
+MOTU Tech Support
+----------------------------------------------------------------
 
+Oh, well.  Guess I'll have to get my hands dirty.  Probably not the best 
+opportunity for getting my feet wet with Linux drivers, but, eh...I paid 
+$1000 for this thing, and I'm officially done with MS and Apple.
+
+Appreciate the responses, I'll keep you all updated.
+
+thanks,
+Forest
 
 
 -------------------------------------------------------
