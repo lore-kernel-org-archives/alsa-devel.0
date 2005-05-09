@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000986]: snd-ice1724 outputs white noise on rear surround output of Chaintech AV-710
-Date: Mon, 9 May 2005 18:09:05 +0200
-Message-ID: <f7a65c4fd0f1d3e75a69c901b0942296@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001074]: pcm_dmix hangs on device close
+Date: Mon, 9 May 2005 20:42:16 +0200
+Message-ID: <07f6de78c284e410230cc1b4bc41ff4f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BB1682D7
-	for <alsa-devel@alsa-project.org>; Mon,  9 May 2005 18:09:05 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC1992EF
+	for <alsa-devel@alsa-project.org>; Mon,  9 May 2005 20:42:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,111 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=986> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1074> 
 ======================================================================
-Reported By:                AdamW
+Reported By:                ikonst
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   986
-Category:                   PCI - ice1724
+Project:                    ALSA - lib
+Issue ID:                   1074
+Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Mandrakelinux Cooker
-Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             03-12-2005 22:43 CET
-Last Modified:              05-09-2005 18:09 CEST
+Date Submitted:             04-24-2005 08:48 CEST
+Last Modified:              05-09-2005 20:42 CEST
 ======================================================================
-Summary:                    snd-ice1724 outputs white noise on rear surround
-output of Chaintech AV-710
+Summary:                    pcm_dmix hangs on device close
 Description: 
-A little background. The Chaintech AV-710 soundcard is a 7.1 soundcard
-which uses this driver. It has two DACs. There's a standard DAC that
-drives the first six channels. The rear surround channels, however, are
-driven by a high-quality Wolfson DAC. Audio enthusiasts like to set the
-card to drive the main two channels through this DAC instead in order to
-get a very high quality stereo line-level output. The card's Windows
-driver has an option to do just this, and in the past people have been
-successful doing it on Linux. I am attaching an asound.state file which
-owners of this card used with ALSA 1.0.7 to achieve this. However, I am
-having trouble getting this to work with ALSA 1.0.8. The rear surround
-output just produces white noise all the time. This is the case both with
-this asound.state loaded and also with default levels (i.e., what I get if
-I wipe /etc/asound.state and re-run alsaconf). It'd be nice to know what
-changed between 1.0.7 and 1.0.8 that caused this to break, and how to fix
-it. Thanks!
+The fix in pcm_dmix.c revision 1.71 causes the following regression:
+
+Everytime I access a Flash site thru my 'aoss'-wrapped Mozilla, it hangs:
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x40a951c3 in poll ()
+from /lib/tls/libc.so.6
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x4001a1fd in poll ()
+from /usr/lib/libaoss.so
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x40c7bf78 in
+snd_pcm_wait_nocheck (pcm=0x9a7a6a0, timeout=-1)
+    at pcm.c:2234
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0x40cb27fb in
+snd_pcm_dmix_drain (pcm=0x9a7a6a0) at pcm_dmix.c:504
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x40c79bd4 in
+snd_pcm_drain (pcm=0xfffffffc) at pcm.c:1044
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x40c8cbb7 in
+snd_pcm_generic_drain (pcm=0xfffffffc) at
+pcm_generic.c:151
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x40c79bd4 in
+snd_pcm_drain (pcm=0xfffffffc) at pcm.c:1044
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x40bb24e7 in
+lib_oss_pcm_close () from /usr/lib/libalsatoss.so.0
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8  0x400199b4 in close ()
+from /usr/lib/libaoss.so
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9  0x441712b9 in
+PlatformSoundMix::UnlockAudioCallback ()
+   from /usr/lib/flashplugin-nonfree/libflashplayer.so
+...
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jaanusk_ - 05-09-05 10:43 
+ chtephan - 05-09-05 17:33 
 ----------------------------------------------------------------------
-Interesting, the originally attached asound.state is working ok for me.
+I can confirm this. Seeing exactly the same with beep-media-player and dmix
+here.
 
-AdamW: did I understand correctly that after applying the attached
-asound.state you get no sound nor noise when trying to play back audio?
+Seems this was introduced with 1.0.9-rc3, but worked with 1.0.9-rc2.
+
+Here's a duplicate:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1091
+
+(TASK_INTERRUPTIBLE in schedule())
+May  9 17:30:24 leto [<d1bbefd4>] snd_timer_user_read+0xb4/0x230
+[snd_timer]
+May  9 17:30:24 leto [<c0161d25>] vfs_read+0x95/0x160
+May  9 17:30:24 leto [<c016207d>] sys_read+0x3d/0x70
+May  9 17:30:24 leto [<c01030ab>] sysenter_past_esp+0x54/0x75
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0xffffe410 in
+__kernel_vsyscall ()
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x4124161b in
+__read_nocancel () from /lib/libpthread.so.0
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x41d7f071 in
+snd_timer_hw_read () from /usr/lib/libasound.so.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0x41d7e9c9 in
+snd_timer_read () from /usr/lib/libasound.so.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x41d6b30a in
+snd_pcm_direct_clear_timer_queue () from
+/usr/lib/libasound.so.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x41d6b34d in
+snd_pcm_direct_timer_stop () from
+/usr/lib/libasound.so.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x41d6d444 in
+snd_pcm_dmix_drop () from /usr/lib/libasound.so.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x41d333f2 in
+snd_pcm_drop () from /usr/lib/libasound.so.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8  0xb76b0eeb in
+alsa_pause () from /usr/lib/bmp/Output/libALSA.so
+
+Linux 2.6.12-rc3-mm3
 
 ----------------------------------------------------------------------
- AdamW - 05-09-05 18:09 
+ chtephan - 05-09-05 20:42 
 ----------------------------------------------------------------------
-Actually, now it's OK, I just had to use the asound.state from this thread
-but delete control 7 from it (ALSA kept complaining about it, probably
-because I compiled driver 1.0.8 but I still have libs and tools 1.0.9rc).
-Now it works fine :). As soon as this patch is merged, I consider it
-fixed. Thanks a lot! Mmm...Wolfson...
+The problem is that if the timer fd is non-blocking, a read will not return
+when there is no more data but block. Something like that patch helps.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 22:43 AdamW          New Issue                                    
-03-12-05 22:43 AdamW          File Added: asound.state                     
-03-12-05 22:43 AdamW          Distribution              => Mandrakelinux Cooker
-03-12-05 22:43 AdamW          Kernel Version            => 2.6.11          
-03-14-05 16:23 AdamW          Note Added: 0003904                          
-03-19-05 08:17 AdamW          Note Added: 0004010                          
-04-29-05 15:18 jamesferguson  Issue Monitored: jamesferguson                    
-04-29-05 15:24 jamesferguson  Note Added: 0004579                          
-05-08-05 20:46 jaanusk_       File Added: amp2000_wm8728.patch                  
- 
-05-08-05 20:49 jaanusk_       Note Added: 0004619                          
-05-08-05 20:50 jaanusk_       Issue Monitored: jaanusk_                    
-05-09-05 07:42 AdamW          Note Added: 0004621                          
-05-09-05 10:43 jaanusk_       Note Added: 0004623                          
-05-09-05 18:09 AdamW          Note Added: 0004628                          
+04-24-05 08:48 ikonst         New Issue                                    
+05-09-05 17:33 chtephan       Note Added: 0004627                          
+05-09-05 17:53 chtephan       Issue Monitored: chtephan                    
+05-09-05 20:41 chtephan       File Added: timer-flush-blocking.diff             
+      
+05-09-05 20:42 chtephan       Note Added: 0004629                          
 ======================================================================
 
 
