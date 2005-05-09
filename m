@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Mon, 9 May 2005 15:03:34 +0200
-Message-ID: <753ea4fc3f731a693c644e5eef44d444@bugtrack.alsa-project.org>
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: writing driver for MOTU PCI 324, 2408 MK-II
+Date: Mon, 9 May 2005 12:53:44 +0200
+Message-ID: <20050509105344.GA5627@tuba>
+References: <20050508161425.GD25855@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 918932C4
-	for <alsa-devel@alsa-project.org>; Mon,  9 May 2005 15:03:34 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20050508161425.GD25855@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,101 +17,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Forest Bond <f_a_b@softhome.net>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, May 08, 2005 at 12:14:25PM -0400, Forest Bond wrote:
+> 
+> Are there any good techniques for probing the hardware and discovering 
+> necessary technical info?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
-======================================================================
-Reported By:                Demosthenes
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1090
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu (Hoary Hedgehog)
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              05-09-2005 15:03 CEST
-======================================================================
-Summary:                    Support for new Prodigy 7.1 LT
-Description: 
-Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
-far as I am aware this card is essentially the same as the Produgy 7.1 but
-low profile and with a couple of physical changes such as no digital in.
+Qemu with the PCI-Proxy patch from Gianni Tedesco seems to be really 
+intersting for reverse engineering, but I've never used it until now...
 
-ALSA does not detect the card currently and when I try to load the
-snd-1724 module it fails with an EEPROM error.
-
-I have tried compiling a new kernel with the subdevice id for the Prodigy
-7.1 in aureon.h changed to correspond to my device (as detailed here for
-another card
-http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
-Alsa then detects the card and I can load modules and change volumes in
-alsamixer but I haven't been able to produce any sound.
-
-Hopefully support will be easy to add as this card is almost exactly the
-same as the Prodigy 7.1 (and Aureon Space etc.) which already have
-support.
-
-I would be very happy to give any further information needed.
-======================================================================
-
-----------------------------------------------------------------------
- ungod - 05-09-05 14:49 
-----------------------------------------------------------------------
-The Multi Track Peaks are reset as soon as you read from them (each time
-you starte alsamixer etc.), so it is perfectly normal.
-
-But if there really is no sound, the WM8770 chip is probably attached
-differently on the LT model than on the ordinary Prodigy model. WM8770
-contains ADC and DAC and controls attenuation. Thing is, the WM8770 is a
-write-only chip, so the driver can do nothing but assume that the changes
-are made.
-
-----------------------------------------------------------------------
- Demosthenes - 05-09-05 15:03 
-----------------------------------------------------------------------
-Right, so is there anything that can be done?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-06-05 17:34 Demosthenes    New Issue                                    
-05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
-Hedgehog)
-05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
-05-06-05 22:44 ungod          Note Added: 0004597                          
-05-06-05 22:48 ungod          Note Added: 0004598                          
-05-07-05 01:38 Demosthenes    Note Added: 0004600                          
-05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
-05-08-05 00:45 ungod          Note Added: 0004608                          
-05-08-05 17:30 Demosthenes    Note Added: 0004610                          
-05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
-        
-05-08-05 17:40 ungod          Note Added: 0004611                          
-05-08-05 19:09 Demosthenes    Note Added: 0004612                          
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 20:08 ungod          Note Added: 0004614                          
-05-08-05 20:18 Demosthenes    Note Added: 0004615                          
-05-08-05 20:23 ungod          Note Added: 0004616                          
-05-08-05 20:27 ungod          Note Added: 0004617                          
-05-08-05 20:37 Demosthenes    Note Added: 0004618                          
-05-09-05 01:01 ungod          Note Added: 0004620                          
-05-09-05 13:15 Demosthenes    Note Added: 0004624                          
-05-09-05 14:49 ungod          Note Added: 0004625                          
-05-09-05 15:03 Demosthenes    Note Added: 0004626                          
-======================================================================
+http://www.scaramanga.co.uk/stuff/qemu-pciproxy/
 
 
+martin
 
 
 -------------------------------------------------------
