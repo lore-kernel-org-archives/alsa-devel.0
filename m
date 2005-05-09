@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001098]: aoss openal    gives too fast sound.
-Date: Mon, 9 May 2005 17:09:39 +0200
-Message-ID: <f7b8ed1f989a77f91f5daf9095f60fa2@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001074]: pcm_dmix hangs on device close
+Date: Mon, 9 May 2005 17:33:09 +0200
+Message-ID: <579bc268fd341de9d22e9800aafe1caf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A4572C4
-	for <alsa-devel@alsa-project.org>; Mon,  9 May 2005 17:09:39 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E809D2D5
+	for <alsa-devel@alsa-project.org>; Mon,  9 May 2005 17:33:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,37 +22,103 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1098> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1074> 
 ======================================================================
-Reported By:                qwer1234
+Reported By:                ikonst
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1098
-Category:                   
+Project:                    ALSA - lib
+Issue ID:                   1074
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             05-09-2005 17:09 CEST
-Last Modified:              05-09-2005 17:09 CEST
+Date Submitted:             04-24-2005 08:48 CEST
+Last Modified:              05-09-2005 17:33 CEST
 ======================================================================
-Summary:                    aoss openal    gives too fast sound.
+Summary:                    pcm_dmix hangs on device close
 Description: 
-Opanal layer gives too fast sound when I use aoss wrapper and I get this
-error multiple times:
+The fix in pcm_dmix.c revision 1.71 causes the following regression:
 
-native_blitbuffer: select error occured
+Everytime I access a Flash site thru my 'aoss'-wrapped Mozilla, it hangs:
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x40a951c3 in poll ()
+from /lib/tls/libc.so.6
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x4001a1fd in poll ()
+from /usr/lib/libaoss.so
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x40c7bf78 in
+snd_pcm_wait_nocheck (pcm=0x9a7a6a0, timeout=-1)
+    at pcm.c:2234
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0x40cb27fb in
+snd_pcm_dmix_drain (pcm=0x9a7a6a0) at pcm_dmix.c:504
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x40c79bd4 in
+snd_pcm_drain (pcm=0xfffffffc) at pcm.c:1044
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x40c8cbb7 in
+snd_pcm_generic_drain (pcm=0xfffffffc) at
+pcm_generic.c:151
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x40c79bd4 in
+snd_pcm_drain (pcm=0xfffffffc) at pcm.c:1044
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x40bb24e7 in
+lib_oss_pcm_close () from /usr/lib/libalsatoss.so.0
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8  0x400199b4 in close ()
+from /usr/lib/libaoss.so
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9  0x441712b9 in
+PlatformSoundMix::UnlockAudioCallback ()
+   from /usr/lib/flashplugin-nonfree/libflashplayer.so
+...
 
 ======================================================================
+
+----------------------------------------------------------------------
+ chtephan - 05-09-05 17:33 
+----------------------------------------------------------------------
+I can confirm this. Seeing exactly the same with beep-media-player and dmix
+here.
+
+Seems this was introduced with 1.0.9-rc3, but worked with 1.0.9-rc2.
+
+Here's a duplicate:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1091
+
+(TASK_INTERRUPTIBLE in schedule())
+May  9 17:30:24 leto [<d1bbefd4>] snd_timer_user_read+0xb4/0x230
+[snd_timer]
+May  9 17:30:24 leto [<c0161d25>] vfs_read+0x95/0x160
+May  9 17:30:24 leto [<c016207d>] sys_read+0x3d/0x70
+May  9 17:30:24 leto [<c01030ab>] sysenter_past_esp+0x54/0x75
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0xffffe410 in
+__kernel_vsyscall ()
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x4124161b in
+__read_nocancel () from /lib/libpthread.so.0
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x41d7f071 in
+snd_timer_hw_read () from /usr/lib/libasound.so.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0x41d7e9c9 in
+snd_timer_read () from /usr/lib/libasound.so.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x41d6b30a in
+snd_pcm_direct_clear_timer_queue () from
+/usr/lib/libasound.so.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x41d6b34d in
+snd_pcm_direct_timer_stop () from
+/usr/lib/libasound.so.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x41d6d444 in
+snd_pcm_dmix_drop () from /usr/lib/libasound.so.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x41d333f2 in
+snd_pcm_drop () from /usr/lib/libasound.so.2
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8  0xb76b0eeb in
+alsa_pause () from /usr/lib/bmp/Output/libALSA.so
+
+Linux 2.6.12-rc3-mm3
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-09-05 17:09 qwer1234       New Issue                                    
+04-24-05 08:48 ikonst         New Issue                                    
+05-09-05 17:33 chtephan       Note Added: 0004627                          
 ======================================================================
 
 
