@@ -1,63 +1,91 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [Alsa-devel] snd-usb-audio driver
-Date: Mon, 9 May 2005 09:41:19 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0505090919440.20877-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001094]: nforce4 - optical spdif out not working
+Date: Mon, 9 May 2005 09:56:49 +0200
+Message-ID: <bfe4758452e11cd85c60cc3b702c9c5b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-hotplug-devel-admin@lists.sourceforge.net>
-Sender: linux-hotplug-devel-admin@lists.sourceforge.net
-Errors-To: linux-hotplug-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux-hotplug-devel>,
-	<mailto:linux-hotplug-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:linux-hotplug-devel@lists.sourceforge.net>
-List-Help: <mailto:linux-hotplug-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux-hotplug-devel>,
-	<mailto:linux-hotplug-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linux-hotplug-devel>
-To: linux-hotplug-devel@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 111C417C
+	for <alsa-devel@alsa-project.org>; Mon,  9 May 2005 09:56:50 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Greg KH wrote:
-> On Fri, Apr 29, 2005 at 05:01:42PM -0400, David Zeuthen wrote:
-> > On Fri, 2005-04-29 at 13:09 -0700, Greg KH wrote:
-> > > You can do this, as you get two different hotplug events.  This is
-> > > because usb drivers bind to the USB inteface, not the main device
-> > > itself.
-> >
-> > As an unrelated note this is actually not true for snd-usb-audio driver
-> >
-> >         [davidz@daxter hal]$ ls -l /sys/class/sound/pcmC2D0c/
-> >         total 0
-> >         -r--r--r--  1 root root 4096 Apr 29 16:57 dev
-> >         lrwxrwxrwx  1 root root    0 Apr 29 16:57 device ->
-> > ../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2
->
-> This should point to the interface, not the device, you are correct.
->
-> >         [davidz@daxter hal]$ tree /sys/bus/usb/drivers/snd-usb-audio/
-> >         /sys/bus/usb/drivers/snd-usb-audio/
-> >         |-- 3-2:1.0 -> ../../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2/3-2:1.0
-> >         |-- 3-2:1.1 -> ../../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2/3-2:1.1
-> >         |-- 3-2:1.2 -> ../../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2/3-2:1.2
-> >         `-- module -> ../../../../module/snd_usb_audio
-> >
-> > That"s a bug, right? Is this the right place to report it?
->
-> Bug in the alsa driver, I suggest reporting it to them.  Should be a one
-> line fix.
 
-The ALSA framework currently has exactly one 'struct device' for all
-devices of a sound card.  If we want to bind to the respectively
-correct interface for each device we have to change more than one
-line.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1094> 
+======================================================================
+Reported By:                eklarson
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1094
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14_FC3
+======================================================================
+Date Submitted:             05-07-2005 11:36 CEST
+Last Modified:              05-09-2005 09:56 CEST
+======================================================================
+Summary:                    nforce4 - optical spdif out not working
+Description: 
+A 48K PCM optical signal is getting sent out to my receiver, however I
+can't get anything to play.  I saw in the "intel8x0.c" that there is no
+NFORCE4 callouts.  Does the code fully support the nforce4 yet?
+======================================================================
 
-I'll make a temporary fix to bind to the first interface that is
-probed.
+----------------------------------------------------------------------
+ eklarson - 05-07-05 23:44 
+----------------------------------------------------------------------
+Followed the instruction on
+"http://www.alsa-project.org/alsa-doc/doc-php/template.php?module=intel8x0"
+and had no luck getting the optical out to work.  There is also a forum
+thread on this topic as well at
+"http://www.nforcershq.com/forum/viewtopic.php?t=58251"
 
 
-Regards,
-Clemens
+
+----------------------------------------------------------------------
+ gergap - 05-09-05 09:56 
+----------------------------------------------------------------------
+I've the same problem with
+INTEL865G ICH-5 (AOpen XC Cube)
+SuSE 9.2, kernel 2.6.8-24.14
+ALSA 1.0.7rc1
+
+I also compiled the newer version ALSA 1.0.8 but also didn't work.
+I can activate IEC958 in the mixer and the light of the optical out goes
+on,
+but I can't hear anything when connected to my receiver.
+
+I can retest it when the problem is solved to verify it.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-07-05 11:36 eklarson       New Issue                                    
+05-07-05 11:36 eklarson       Distribution              => Fedora Core 3   
+05-07-05 11:36 eklarson       Kernel Version            => 2.6.11-1.14_FC3 
+05-07-05 11:41 eklarson       Note Added: 0004604                          
+05-07-05 23:44 eklarson       Note Edited: 0004604                         
+05-09-05 09:56 gergap         Note Added: 0004622                          
+======================================================================
+
 
 
 
