@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Mon, 9 May 2005 14:49:09 +0200
-Message-ID: <51a614b046aea034659f70831f1425be@bugtrack.alsa-project.org>
+Date: Mon, 9 May 2005 15:03:34 +0200
+Message-ID: <753ea4fc3f731a693c644e5eef44d444@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5FD5B2B1
-	for <alsa-devel@alsa-project.org>; Mon,  9 May 2005 14:49:09 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 918932C4
+	for <alsa-devel@alsa-project.org>; Mon,  9 May 2005 15:03:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu (Hoary Hedgehog)
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              05-09-2005 14:49 CEST
+Last Modified:              05-09-2005 15:03 CEST
 ======================================================================
 Summary:                    Support for new Prodigy 7.1 LT
 Description: 
@@ -66,14 +66,6 @@ I would be very happy to give any further information needed.
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 05-09-05 13:15 
-----------------------------------------------------------------------
-I have turned all the volumes up to max, put on external amplifier and
-turned my speakers up to max, but if there is sound I can't hear it.
-However I have noticed that some of the multi track peak levels keep
-reseting theselves to zero, I don't know if this is normal or not.
-
-----------------------------------------------------------------------
  ungod - 05-09-05 14:49 
 ----------------------------------------------------------------------
 The Multi Track Peaks are reset as soon as you read from them (each time
@@ -84,6 +76,11 @@ differently on the LT model than on the ordinary Prodigy model. WM8770
 contains ADC and DAC and controls attenuation. Thing is, the WM8770 is a
 write-only chip, so the driver can do nothing but assume that the changes
 are made.
+
+----------------------------------------------------------------------
+ Demosthenes - 05-09-05 15:03 
+----------------------------------------------------------------------
+Right, so is there anything that can be done?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -112,6 +109,7 @@ Hedgehog)
 05-09-05 01:01 ungod          Note Added: 0004620                          
 05-09-05 13:15 Demosthenes    Note Added: 0004624                          
 05-09-05 14:49 ungod          Note Added: 0004625                          
+05-09-05 15:03 Demosthenes    Note Added: 0004626                          
 ======================================================================
 
 
