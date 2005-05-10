@@ -1,73 +1,56 @@
-From: Greg KH <greg@kroah.com>
-Subject: Re: [Alsa-devel] snd-usb-audio driver
-Date: Tue, 10 May 2005 14:43:00 -0700
-Message-ID: <20050510214300.GA4292@kroah.com>
-References: <Pine.HPX.4.33n.0505090919440.20877-100000@studcom.urz.uni-halle.de>
+From: fab <fab@gnux.info>
+Subject: Medion + intel hda tests
+Date: Wed, 11 May 2005 00:02:38 +0200
+Message-ID: <20050510220238.GA28417@blackmilk.localzone.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-hotplug-devel-admin@lists.sourceforge.net>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0505090919440.20877-100000@studcom.urz.uni-halle.de>
-Sender: linux-hotplug-devel-admin@lists.sourceforge.net
-Errors-To: linux-hotplug-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux-hotplug-devel>,
-	<mailto:linux-hotplug-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:linux-hotplug-devel@lists.sourceforge.net>
-List-Help: <mailto:linux-hotplug-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux-hotplug-devel>,
-	<mailto:linux-hotplug-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linux-hotplug-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: linux-hotplug-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 09, 2005 at 09:41:19AM +0200, Clemens Ladisch wrote:
-> Greg KH wrote:
-> > On Fri, Apr 29, 2005 at 05:01:42PM -0400, David Zeuthen wrote:
-> > > On Fri, 2005-04-29 at 13:09 -0700, Greg KH wrote:
-> > > > You can do this, as you get two different hotplug events.  This is
-> > > > because usb drivers bind to the USB inteface, not the main device
-> > > > itself.
-> > >
-> > > As an unrelated note this is actually not true for snd-usb-audio driver
-> > >
-> > >         [davidz@daxter hal]$ ls -l /sys/class/sound/pcmC2D0c/
-> > >         total 0
-> > >         -r--r--r--  1 root root 4096 Apr 29 16:57 dev
-> > >         lrwxrwxrwx  1 root root    0 Apr 29 16:57 device ->
-> > > ../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2
-> >
-> > This should point to the interface, not the device, you are correct.
-> >
-> > >         [davidz@daxter hal]$ tree /sys/bus/usb/drivers/snd-usb-audio/
-> > >         /sys/bus/usb/drivers/snd-usb-audio/
-> > >         |-- 3-2:1.0 -> ../../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2/3-2:1.0
-> > >         |-- 3-2:1.1 -> ../../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2/3-2:1.1
-> > >         |-- 3-2:1.2 -> ../../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2/3-2:1.2
-> > >         `-- module -> ../../../../module/snd_usb_audio
-> > >
-> > > That"s a bug, right? Is this the right place to report it?
-> >
-> > Bug in the alsa driver, I suggest reporting it to them.  Should be a one
-> > line fix.
-> 
-> The ALSA framework currently has exactly one 'struct device' for all
-> devices of a sound card.  If we want to bind to the respectively
-> correct interface for each device we have to change more than one
-> line.
-> 
-> I'll make a temporary fix to bind to the first interface that is
-> probed.
+Hi,
+since I reported bugs as well as I can and gave no answers, I started to
+do some very basic tests and sourcecode reading.
+I tried to modprobe snd-hda-intel with different "model" option and then
+tested all the outputs, I only marked the working ones :
 
-That will not work a usb speaker device that has the first interface as
-the usb keyboard :)
+Availables inputs:
+ [front] [surround] [center] , [headphone]
+tested model :
+ 3stack        : front
+ 3stack-digout : front
+ 5stack        : front
+ 5stack-digout : front
+ w810          : front surround
 
-Why not just point the struct device for ALSA at the struct
-usb_interface that is passed to you?  That's the proper one to use.
+Ok, as you can see, the w810 is the only offering 2 outputs.
+When I say "it works" I mean "we can ear something of extremely low
+level and bad quality", no output with no model give satisfying sound.
 
-thanks,
+I haven't tested the SPDIF output since I don't have the appropriate
+hardware.
 
-greg k-h
+Under winXP, I can have front and headphone pluged at same time with
+sound on both. I can swap surround and center outputs and chose between
+2 , 4 or 6 channels.
+
+I hope this helps.
+As I already said, I'm ready to code and do whatever needed to make this
+card working. I just have no knowledge under winXP and very little
+driver one.
+
+Best regards.
+Fabien Devaux.
 
 
 -------------------------------------------------------
