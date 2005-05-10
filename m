@@ -1,24 +1,14 @@
-From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Subject: SB0060 emu_chip_details
-Date: Tue, 10 May 2005 18:02:39 +0200
-Message-ID: <20050510160239.GA32206@skinner.hem.za.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000851]: Ali M1535 controller, AC'97 0 does not respond
+Date: Tue, 10 May 2005 22:09:25 +0200
+Message-ID: <0396f01c789270754234533f51379873@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="ZGiS0Q5IWpPtfppv"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0E0A61C4
-	for <alsa-devel@alsa-project.org>; Tue, 10 May 2005 18:05:53 +0200 (MEST)
-Received: from mulder.hem.za.org (unknown [84.217.20.149])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 0D7D66FD3B
-	for <alsa-devel@alsa-project.org>; Tue, 10 May 2005 18:02:42 +0200 (MEST)
-Received: from skinner.hem.za.org ([fec0::202:44ff:fe1d:d021])
-	by mulder.hem.za.org with esmtp (Exim 4.50)
-	id 1DVXBw-00067i-6E
-	for alsa-devel@alsa-project.org; Tue, 10 May 2005 18:02:40 +0200
-Received: from mikael by skinner.hem.za.org with local (Exim 4.50)
-	id 1DVXBv-0008Ph-TT
-	for alsa-devel@alsa-project.org; Tue, 10 May 2005 18:02:39 +0200
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E44CA2ED
+	for <alsa-devel@alsa-project.org>; Tue, 10 May 2005 22:09:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -32,42 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---ZGiS0Q5IWpPtfppv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=851> 
+======================================================================
+Reported By:                omargosh
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   851
+Category:                   PCI - ali5451
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora FC3
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             01-27-2005 21:46 CET
+Last Modified:              05-10-2005 22:09 CEST
+======================================================================
+Summary:                    Ali M1535 controller, AC'97 0 does not respond
+Description: 
+My Ali5451 rev 1 based card (embedded in an Ali M1535 controller) is not
+detected.
 
-The following patch adds SB0060 to emu_chip_details.
+dmesg shows:
 
-Regards,
-Mikael Magnusson
+PCI: Found IRQ 9 for device 0000:00:04.0
+AC'97 0 does not respond - RESET
+AC'97 0 access is not valid [0x0], removing mixer.
+ali mixer creating error.
+ALI 5451: probe of 0000:00:04.0 failed with error -5
+======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 04-13-05 22:10 
+----------------------------------------------------------------------
+Submitter: Do you have any new information about this problem?
+
+----------------------------------------------------------------------
+ omargosh - 05-10-05 22:09 
+----------------------------------------------------------------------
+No I dont, I was never able to get ALSA working with the M1535 chipset,
+currently using OSS Trident support.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-27-05 21:46 omargosh       New Issue                                    
+01-27-05 21:46 omargosh       Distribution              => Fedora FC3      
+01-27-05 21:46 omargosh       Kernel Version            => 2.6.10          
+01-28-05 22:40 omargosh       Note Added: 0003437                          
+04-13-05 22:10 jdthood        Note Added: 0004483                          
+05-10-05 22:09 omargosh       Note Added: 0004635                          
+======================================================================
 
 
---ZGiS0Q5IWpPtfppv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="sb0060.patch"
-
-Index: alsa-kernel/pci/emu10k1/emu10k1_main.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c,v
-retrieving revision 1.55
-diff -u -r1.55 emu10k1_main.c
---- alsa-kernel/pci/emu10k1/emu10k1_main.c	10 Apr 2005 14:43:35 -0000	1.55
-+++ alsa-kernel/pci/emu10k1/emu10k1_main.c	10 May 2005 15:16:05 -0000
-@@ -711,6 +711,12 @@
- 	 .id = "APS",
- 	 .emu10k1_chip = 1,
- 	 .ecard = 1} ,
-+	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80611102,
-+	 .driver = "EMU10K1", .name = "SBLive! Player 5.1 [SB0060]", 
-+	 .id = "Live",
-+	 .emu10k1_chip = 1,
-+	 .ac97_chip = 1,
-+	 .sblive51 = 1} ,
- 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80641102,
- 	 .driver = "EMU10K1", .name = "SB Live 5.1", 
- 	 .id = "Live",
-
---ZGiS0Q5IWpPtfppv--
 
 
 -------------------------------------------------------
