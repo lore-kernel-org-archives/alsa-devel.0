@@ -1,14 +1,16 @@
-From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Subject: Re: Q: Is there a testsuite?
-Date: Tue, 10 May 2005 17:53:07 +1000
-Message-ID: <20050510175307.09923120.erikd-alsa@mega-nerd.com>
-References: <200505071231.26517.p_christ@hol.gr>
-	<Pine.HPX.4.33n.0505091042490.20877-100000@studcom.urz.uni-halle.de>
+From: Giuliano Pochini <pochini@denise.shiny.it>
+Subject: Re: [ALSA - driver 0001090]: Support for new Prodigy
+ 7.1 LT
+Date: Tue, 10 May 2005 10:07:05 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0505100959230.9895@denise.shiny.it>
+References: <c806e5c43e4101c7a5c815407996ed11@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0505091042490.20877-100000@studcom.urz.uni-halle.de>
+Received: from denise.shiny.it (denise.shiny.it [194.20.232.1])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7657F2FB
+	for <alsa-devel@alsa-project.org>; Tue, 10 May 2005 10:07:06 +0200 (MEST)
+In-Reply-To: <c806e5c43e4101c7a5c815407996ed11@bugtrack.alsa-project.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,38 +20,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: bugtrack@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
 
-> P. Christeas wrote:
-> > I was wondering if there is some ALSA testsuite,
-> 
-> There are some programe in alsa-lib/test/, but those are for testing
-> the ALSA library.
-> 
-> > that will detect if -my- soundcard covers all the ALSA
-> > functionality it exports with some X kernel.
-> 
-> Sound card capabilities are too different to be able to create a test
-> suite that fits all.
 
-A test suite is well within the realms of possibility and saying
-its not possible only discourages people from trying.
+On Tue, 10 May 2005 bugtrack@alsa-project.org wrote:
 
-A generalised test suite would be of great benefit to the ALSA
-project.
+> Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
+> far as I am aware this card is essentially the same as the Produgy 7.1 but
+> low profile and with a couple of physical changes such as no digital in.
+> [...]
 
-Erik
--- 
-+-----------------------------------------------------------+
-  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
-+-----------------------------------------------------------+
-"I could never learn to use C++, because of the completely 
-overwhelming desire to redesign the language every time I tried 
-to use it, but this is the normal, healthy reaction to C++."
--- Erik Naggum
+
+Some time ago Egosys wrote here that they were going support ALSA:
+
+http://sourceforge.net/mailarchive/message.php?msg_id=9114977
+
+Did you try to ask them some docs ?
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
