@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001093]: snd-usb-audio device link is wrong
-Date: Tue, 10 May 2005 16:07:07 +0200
-Message-ID: <c2aec24325e0ad96458904504c37ecf0@bugtrack.alsa-project.org>
+From: Marcel Holtmann <marcel@holtmann.org>
+Subject: Re: Device name lists
+Date: Tue, 10 May 2005 17:19:08 +0200
+Message-ID: <1115738349.12058.7.camel@pegasus>
+References: <1114266960.10706.30.camel@pegasus>
+	 <Pine.LNX.4.58.0505090950410.1843@pnote.perex-int.cz>
+	 <1115626583.8949.124.camel@pegasus>
+	 <Pine.LNX.4.58.0505091028000.1843@pnote.perex-int.cz>
+	 <1115629642.8949.150.camel@pegasus>
+	 <Pine.LNX.4.58.0505101257530.1834@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 86BD0301
-	for <alsa-devel@alsa-project.org>; Tue, 10 May 2005 16:07:07 +0200 (MEST)
+Received: from mail.holtmann.net (coyote.holtmann.net [217.160.111.169])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 080202E3
+	for <alsa-devel@alsa-project.org>; Tue, 10 May 2005 17:18:44 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.58.0505101257530.1834@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,89 +25,83 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Jaroslav,
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1093> 
-======================================================================
-Reported By:                davidz
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1093
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora
-Kernel Version:             2.6.12-rc3
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             05-06-2005 23:43 CEST
-Last Modified:              05-10-2005 16:07 CEST
-======================================================================
-Summary:                    snd-usb-audio device link is wrong
-Description: 
+> 	I've added the functions handling device name list to alsa-lib.
+> Because alsa-lib open functions handle virtual names, it's impossible to
+> get list of all possible device names. The interface is:
+> 
+> typedef struct snd_devname snd_devname_t;
+> 
+> struct snd_devname {
+>         char *name;
+>         char *comment;
+>         snd_devname_t *next;
+> };
+> 
+> int snd_names_list(const char *interface, snd_devname_t **list);
+> void snd_names_list_free(snd_devname_t *list);
+> 
+> 	As you can see, it simple as possible. The applications might 
+> request for a device list which can be generated automagically or advanced
+> users might create their own lists.
+> 	The lookup is this:
+> 
+> 1) file specified with ALSA_NAMES_FILE environment variable
+> 2) ~/.asoundnm
+> 3) /etc/asound.names
+> 
+> 	Note that 2) and 3) files are not merged (only one file is 
+> parsed)!!! The syntax of these files is quite straighforward (alsa-lib
+> keeps the order of device compounds):
+> 
+> timer {
+>         alsactl1 {
+>                 name 'hw:CLASS=1,SCLASS=0,CARD=-1,DEV=0,SUBDEV=0'
+>                 comment 'Physical Device - system timer'
+>         }
+> }
+> 
+> 	The alsactl tool was extended to generate a basic set of
+> device names (might be extended to detect other plugins as well). This 
+> command will generate /etc/asound.names file:
+> 
+> 	alsactl names
+> 
+> To generate the user file use:
+> 
+> 	alsactl -f ~/.asoundnm names
+> 
+> 
+> It's still time to do any changes and I would really appreciate 
+> comments...
 
-When using my USB Plantronics headset (which works fine), there is a minor
-cosmetic bug
+this is prefect and I hope that the ALSA library users adapt this very
+soon, but two questions came to my mind:
 
-        [davidz <at> daxter hal]$ ls -l /sys/class/sound/pcmC2D0c/
-        total 0
-        -r--r--r--  1 root root 4096 Apr 29 16:57 dev
-        lrwxrwxrwx  1 root root    0 Apr 29 16:57 device ->
-../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2
-        [davidz <at> daxter hal]$ ls -l /sys/class/sound/pcmC2D0c/device/
-        total 0
-        drwxr-xr-x  3 root root    0 Apr 29 16:57 3-2:1.0
-        drwxr-xr-x  3 root root    0 Apr 29 16:57 3-2:1.1
-        drwxr-xr-x  3 root root    0 Apr 29 16:57 3-2:1.2
-        drwxr-xr-x  3 root root    0 Apr 29 16:57 3-2:1.3
+1) What is the reason for not merging /etc/asound.names and ~/.asoundnm?
 
-However,
+2) Is another config file really needed? Why not add another parameter
+called "name" to the current config file. So that I can simply create
+this entry for my Bluetooth headphone from HP:
 
-        [davidz <at> daxter hal]$ tree
-/sys/bus/usb/drivers/snd-usb-audio/
-        /sys/bus/usb/drivers/snd-usb-audio/
-        |-- 3-2:1.0 ->
-../../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2/3-2:1.0
-        |-- 3-2:1.1 ->
-../../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2/3-2:1.1
-        |-- 3-2:1.2 ->
-../../../../devices/pci0000:00/0000:00:1d.1/usb3/3-2/3-2:1.2
-        `-- module -> ../../../../module/snd_usb_audio
+	pcm.hp {
+	        type a2dp
+	        name "HP stereo headphone"
+	        bdaddr "00:0D:44:xx:xx:xx"
+	}
 
-Thus, the 'device' symlink in /sys/class/sound/pcmC2D0c/ appears to be
-wrong - it needs to point at the USB interface - not the USB device. This
-is with ALSA in 2.6.12-rc3. Should be a one line fix. See also
+If the name value is present then snd_names_list() will show it and
+otherwise not. Telling people to add entries in two files sounds not
+right to me.
 
- http://article.gmane.org/gmane.linux.hotplug.devel/7714
- http://article.gmane.org/gmane.linux.hotplug.devel/7717
+Regards
 
-Thanks,
-David
-======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 05-10-05 16:07 
-----------------------------------------------------------------------
-Now fixed in CVS.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-06-05 23:43 davidz         New Issue                                    
-05-06-05 23:43 davidz         Distribution              => Fedora          
-05-06-05 23:43 davidz         Kernel Version            => 2.6.12-rc3      
-05-10-05 16:07 Clemens LadischStatus                   assigned => resolved
-05-10-05 16:07 Clemens LadischResolution               open => fixed       
-05-10-05 16:07 Clemens LadischNote Added: 0004634                          
-======================================================================
+Marcel
 
 
 
