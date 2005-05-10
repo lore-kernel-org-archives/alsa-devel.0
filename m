@@ -1,16 +1,17 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: [ALSA - driver 0001090]: Support for new Prodigy
- 7.1 LT
-Date: Tue, 10 May 2005 10:07:05 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0505100959230.9895@denise.shiny.it>
-References: <c806e5c43e4101c7a5c815407996ed11@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Device name lists
+Date: Tue, 10 May 2005 13:21:18 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0505101257530.1834@pnote.perex-int.cz>
+References: <1114266960.10706.30.camel@pegasus>
+ <Pine.LNX.4.58.0505090950410.1843@pnote.perex-int.cz>  <1115626583.8949.124.camel@pegasus>
+  <Pine.LNX.4.58.0505091028000.1843@pnote.perex-int.cz> <1115629642.8949.150.camel@pegasus>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from denise.shiny.it (denise.shiny.it [194.20.232.1])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7657F2FB
-	for <alsa-devel@alsa-project.org>; Tue, 10 May 2005 10:07:06 +0200 (MEST)
-In-Reply-To: <c806e5c43e4101c7a5c815407996ed11@bugtrack.alsa-project.org>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 571E1301
+	for <alsa-devel@alsa-project.org>; Tue, 10 May 2005 13:21:20 +0200 (MEST)
+In-Reply-To: <1115629642.8949.150.camel@pegasus>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,29 +21,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: bugtrack@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Marcel Holtmann <marcel@holtmann.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
+
+	I've added the functions handling device name list to alsa-lib.
+Because alsa-lib open functions handle virtual names, it's impossible to
+get list of all possible device names. The interface is:
+
+typedef struct snd_devname snd_devname_t;
+
+struct snd_devname {
+        char *name;
+        char *comment;
+        snd_devname_t *next;
+};
+
+int snd_names_list(const char *interface, snd_devname_t **list);
+void snd_names_list_free(snd_devname_t *list);
+
+	As you can see, it simple as possible. The applications might 
+request for a device list which can be generated automagically or advanced
+users might create their own lists.
+	The lookup is this:
+
+1) file specified with ALSA_NAMES_FILE environment variable
+2) ~/.asoundnm
+3) /etc/asound.names
+
+	Note that 2) and 3) files are not merged (only one file is 
+parsed)!!! The syntax of these files is quite straighforward (alsa-lib
+keeps the order of device compounds):
+
+timer {
+        alsactl1 {
+                name 'hw:CLASS=1,SCLASS=0,CARD=-1,DEV=0,SUBDEV=0'
+                comment 'Physical Device - system timer'
+        }
+}
+
+	The alsactl tool was extended to generate a basic set of
+device names (might be extended to detect other plugins as well). This 
+command will generate /etc/asound.names file:
+
+	alsactl names
+
+To generate the user file use:
+
+	alsactl -f ~/.asoundnm names
 
 
-On Tue, 10 May 2005 bugtrack@alsa-project.org wrote:
+It's still time to do any changes and I would really appreciate 
+comments...
 
-> Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
-> far as I am aware this card is essentially the same as the Produgy 7.1 but
-> low profile and with a couple of physical changes such as no digital in.
-> [...]
+The API is indended mainly for GUI applications or as a source of 
+information for command line tools.
 
+The aplay/arecord tool has now '-n' option which allows listing
+of device names using this new API.
 
-Some time ago Egosys wrote here that they were going support ALSA:
+						Jaroslav
 
-http://sourceforge.net/mailarchive/message.php?msg_id=9114977
-
-Did you try to ask them some docs ?
-
-
---
-Giuliano.
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
