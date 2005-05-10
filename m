@@ -1,15 +1,24 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: Device name lists
-Date: Tue, 10 May 2005 17:57:15 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0505101751170.1834@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0505101728550.5641-100000@studcom.urz.uni-halle.de>
+From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+Subject: SB0060 emu_chip_details
+Date: Tue, 10 May 2005 18:02:39 +0200
+Message-ID: <20050510160239.GA32206@skinner.hem.za.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="ZGiS0Q5IWpPtfppv"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 030FA308
-	for <alsa-devel@alsa-project.org>; Tue, 10 May 2005 17:59:49 +0200 (MEST)
-In-Reply-To: <Pine.HPX.4.33n.0505101728550.5641-100000@studcom.urz.uni-halle.de>
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0E0A61C4
+	for <alsa-devel@alsa-project.org>; Tue, 10 May 2005 18:05:53 +0200 (MEST)
+Received: from mulder.hem.za.org (unknown [84.217.20.149])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 0D7D66FD3B
+	for <alsa-devel@alsa-project.org>; Tue, 10 May 2005 18:02:42 +0200 (MEST)
+Received: from skinner.hem.za.org ([fec0::202:44ff:fe1d:d021])
+	by mulder.hem.za.org with esmtp (Exim 4.50)
+	id 1DVXBw-00067i-6E
+	for alsa-devel@alsa-project.org; Tue, 10 May 2005 18:02:40 +0200
+Received: from mikael by skinner.hem.za.org with local (Exim 4.50)
+	id 1DVXBv-0008Ph-TT
+	for alsa-devel@alsa-project.org; Tue, 10 May 2005 18:02:39 +0200
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,47 +28,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Marcel Holtmann <marcel@holtmann.org>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 May 2005, Clemens Ladisch wrote:
 
-> Marcel Holtmann wrote:
-> > 1) What is the reason for not merging /etc/asound.names and ~/.asoundnm?
-> 
-> Probably the ability to remove names (otherwise we'd need some special
-> syntax for this).
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Exactly. It's not easy to do the merging.
+The following patch adds SB0060 to emu_chip_details.
 
-> > 2) Is another config file really needed? Why not add another parameter
-> > called "name" to the current config file. So that I can simply create
-> > this entry for my Bluetooth headphone from HP:
-> >
-> > 	pcm.hp {
-> > 	        type a2dp
-> > 	        name "HP stereo headphone"
-> > 	        bdaddr "00:0D:44:xx:xx:xx"
-> > 	}
-> 
-> This wouldn't work for definitions having parameters.  It would force
-> users to create a separate definition just so that it can be named.
-> 
-> Logically, these names are one abstraction level above the exising
-> device names.
+Regards,
+Mikael Magnusson
 
-Yes, I discovered this when I was doing the implementation preparation.
-While we agreed with Takashi not to describe the parameters (it would be 
-very complex), the simple list of device names must be totaly separate 
-outside the plugin specification.
 
-						Jaroslav
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="sb0060.patch"
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Index: alsa-kernel/pci/emu10k1/emu10k1_main.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c,v
+retrieving revision 1.55
+diff -u -r1.55 emu10k1_main.c
+--- alsa-kernel/pci/emu10k1/emu10k1_main.c	10 Apr 2005 14:43:35 -0000	1.55
++++ alsa-kernel/pci/emu10k1/emu10k1_main.c	10 May 2005 15:16:05 -0000
+@@ -711,6 +711,12 @@
+ 	 .id = "APS",
+ 	 .emu10k1_chip = 1,
+ 	 .ecard = 1} ,
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80611102,
++	 .driver = "EMU10K1", .name = "SBLive! Player 5.1 [SB0060]", 
++	 .id = "Live",
++	 .emu10k1_chip = 1,
++	 .ac97_chip = 1,
++	 .sblive51 = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80641102,
+ 	 .driver = "EMU10K1", .name = "SB Live 5.1", 
+ 	 .id = "Live",
+
+--ZGiS0Q5IWpPtfppv--
 
 
 -------------------------------------------------------
