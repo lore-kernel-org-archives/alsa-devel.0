@@ -1,13 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: AIC23 on i2C
-Date: Wed, 11 May 2005 16:24:26 -0400
-Message-ID: <1115843066.18184.12.camel@mindpipe>
-References: <a0580c510505111145101242a0@mail.gmail.com>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: [PATCH] (resend) echoaudio disable device
+Date: Wed, 11 May 2005 22:36:01 +0200
+Message-ID: <20050511223601.5b57518f.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <a0580c510505111145101242a0@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,29 +15,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eduardo Bezerra <edubezval@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-05-11 at 14:45 -0400, Eduardo Bezerra wrote:
-> Hi folks,
-> 
-> 
-> 
->  I need to know if there is any driver to AIC23 on I2C written on ALSA.
-> 
-> If there isn't, I want to know how can I get documentation to do this
-> task, because
-> the how-to that I found on 
-> http://www.alsa-project.org/~iwai/writing-an-alsa-driver/index.html
-> 
-> shows only how to write a pci driver.
 
-Look in the alsa-kernel/i2c directory.  It appears to be easier than
-writing a PCI driver.
+*sigh*
 
-Lee
+- Add missing calls to pci_disable_device()
 
+
+Signed-off-by: Giuliano Pochini <pochini@shiny.it>
+
+diff -du alsa-driver__orig/pci/echoaudio/echoaudio.c alsa-driver/pci/echoaudio/echoaudio.c
+--- alsa-driver__orig/pci/echoaudio/echoaudio.c	Sat Apr 23 12:28:27 2005
++++ alsa-driver/pci/echoaudio/echoaudio.c	Mon May  2 21:05:52 2005
+@@ -1746,6 +1746,8 @@
+ 	}
+ 	DE_INIT(("MMIO freed.\n"));
+ 
++	pci_disable_device(chip->pci);
++
+ 	/* release chip data */
+ 	kfree(chip);
+ 	DE_INIT(("Chip freed.\n"));
+@@ -1784,8 +1786,10 @@
+ 
+ 	/* allocate a chip-specific data */
+ 	chip = kcalloc(1, sizeof(echoaudio_t), GFP_KERNEL);
+-	if (!chip)
++	if (!chip) {
++		pci_disable_device(pci);
+ 		return -ENOMEM;
++	}
+ 	DE_INIT(("chip=%p\n", chip));
+ 
+ 	spin_lock_init(&chip->lock);
+
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
