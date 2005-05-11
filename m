@@ -1,13 +1,11 @@
-From: Greg KH <greg@kroah.com>
-Subject: Re: snd-usb-audio driver
-Date: Wed, 11 May 2005 00:41:19 -0700
-Message-ID: <20050511074119.GB10647@kroah.com>
-References: <20050510214300.GA4292@kroah.com> <Pine.HPX.4.33n.0505110932530.29117-100000@studcom.urz.uni-halle.de>
+From: "Yassine" <yhamoudi@advences.com>
+Subject: FW devices
+Date: Wed, 11 May 2005 12:39:57 +0200
+Message-ID: <00f001c55615$c6c57b20$3602a8c0@advences>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_00ED_01C55626.8A25B480"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0505110932530.29117-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,29 +15,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: linux-hotplug-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: Alsa Group <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 11, 2005 at 09:37:37AM +0200, Clemens Ladisch wrote:
-> Greg KH wrote:
-> > On Mon, May 09, 2005 at 09:41:19AM +0200, Clemens Ladisch wrote:
-> > > I'll make a temporary fix to bind to the first interface that is
-> > > probed.
-> >
-> > That will not work a usb speaker device that has the first interface as
-> > the usb keyboard :)
-> >
-> > Why not just point the struct device for ALSA at the struct
-> > usb_interface that is passed to you?
-> 
-> This is exactly what I actually meant when I said "probed".
-> 
-> Fixed now.
+This is a multi-part message in MIME format.
 
-Ah, ok, sorry for the confusion.
+------=_NextPart_000_00ED_01C55626.8A25B480
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-greg k-h
+Hi folks,
+I'm wondering if there's some support for firewire audio devices ? Cause =
+actually major audiocard manufacturer (M-audio terratec ...etc ) use the =
+firewire protocol in there new (pro) cards.
+I personally own a terratec 7.1 firewire. awsome on windows....now that =
+I'm switchin' to linux...I'm just unsure about the compatibility of the =
+firewire audio and alsa...
+Anyone can help.
+thanx ;
+
+Yassine
+------=_NextPart_000_00ED_01C55626.8A25B480
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1498" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi folks,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I'm wondering if there's some support =
+for firewire=20
+audio devices ?&nbsp;Cause actually&nbsp;major audiocard manufacturer =
+(M-audio=20
+terratec ...etc ) use the firewire protocol in there new (pro)=20
+cards.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I personally own a terratec 7.1 =
+firewire. awsome on=20
+windows....now that I'm switchin' to linux...I'm just unsure about the=20
+compatibility of the firewire audio and alsa...</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Anyone can help.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>thanx ;</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Yassine</FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_00ED_01C55626.8A25B480--
+
 
 
 -------------------------------------------------------
