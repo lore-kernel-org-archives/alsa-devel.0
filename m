@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001099]: Gainward Hollywood@home 7.1 VT1721HT-S not yet supported?
-Date: Wed, 11 May 2005 12:52:13 +0200
-Message-ID: <ee3b599c99234099aa56b9aa16c27cf9@bugtrack.alsa-project.org>
+From: Pieter Palmers <pieterp@joow.be>
+Subject: Re: FW devices
+Date: Wed, 11 May 2005 13:15:06 +0200
+Message-ID: <4281E93A.5080308@joow.be>
+References: <00f001c55615$c6c57b20$3602a8c0@advences>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A037BFE
-	for <alsa-devel@alsa-project.org>; Wed, 11 May 2005 12:52:13 +0200 (MEST)
+In-Reply-To: <00f001c55615$c6c57b20$3602a8c0@advences>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,47 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Yassine <yhamoudi@advences.com>
+Cc: Alsa Group <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+The terratec 7.1 firewire is/will be supported by the FreeBob project.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1099> 
-======================================================================
-Reported By:                mrc
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1099
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Home brew
-Kernel Version:             2.6.11
-======================================================================
-Date Submitted:             05-11-2005 12:52 CEST
-Last Modified:              05-11-2005 12:52 CEST
-======================================================================
-Summary:                    Gainward Hollywood@home 7.1 VT1721HT-S not yet
-supported?
-Description: 
-Card detected as ice1724 but no sound.
+http://freebob.sf.net
 
-Just trying this card so minor problem as mb has on-board intel810 AC97
-(disabled while trying Gainward card). Just like to know if card is likely
-to be supported in future - ta.
-======================================================================
+Greets,
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-11-05 12:52 mrc            New Issue                                    
-05-11-05 12:52 mrc            Distribution              => Home brew       
-05-11-05 12:52 mrc            Kernel Version            => 2.6.11          
-======================================================================
+Pieter
+
+Yassine wrote:
+
+> Hi folks,
+> I'm wondering if there's some support for firewire audio devices 
+> ? Cause actually major audiocard manufacturer (M-audio terratec ...etc 
+> ) use the firewire protocol in there new (pro) cards.
+> I personally own a terratec 7.1 firewire. awsome on windows....now 
+> that I'm switchin' to linux...I'm just unsure about the compatibility 
+> of the firewire audio and alsa...
+> Anyone can help.
+> thanx ;
+>  
+> Yassine
 
 
 
