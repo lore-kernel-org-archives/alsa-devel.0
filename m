@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001100]: Driver loaded, no sound card detected
-Date: Wed, 11 May 2005 15:51:24 +0200
-Message-ID: <e6b9114776ed98c6ae002110a7fbc618@bugtrack.alsa-project.org>
+Date: Wed, 11 May 2005 15:53:52 +0200
+Message-ID: <aefe0b3421a3e3cfd9fbe790eac37a4f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E6B0C1FD
-	for <alsa-devel@alsa-project.org>; Wed, 11 May 2005 15:51:24 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 76DF81FD
+	for <alsa-devel@alsa-project.org>; Wed, 11 May 2005 15:53:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1100> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               SuSE Linux 9.2
 Kernel Version:             2.6.8-14.24
 ======================================================================
 Date Submitted:             05-11-2005 15:51 CEST
-Last Modified:              05-11-2005 15:51 CEST
+Last Modified:              05-11-2005 15:53 CEST
 ======================================================================
 Summary:                    Driver loaded, no sound card detected
 Description: 
@@ -56,12 +56,18 @@ error -5
 
 ======================================================================
 
+----------------------------------------------------------------------
+ dwatters - 05-11-05 15:53 
+----------------------------------------------------------------------
+Mainboard is Shuttle FN25, Via Envz 24PT 7.1
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-11-05 15:51 dwatters       New Issue                                    
 05-11-05 15:51 dwatters       Distribution              => SuSE Linux 9.2  
 05-11-05 15:51 dwatters       Kernel Version            => 2.6.8-14.24     
+05-11-05 15:53 dwatters       Note Added: 0004637                          
 ======================================================================
 
 
