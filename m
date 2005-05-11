@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001100]: Driver loaded, no sound card detected
-Date: Wed, 11 May 2005 15:53:52 +0200
-Message-ID: <aefe0b3421a3e3cfd9fbe790eac37a4f@bugtrack.alsa-project.org>
+From: Thierry Vignaud <tvignaud@mandriva.com>
+Subject: Re: Dmix using more CPU than plug:hw
+Date: Wed, 11 May 2005 16:03:33 +0200
+Message-ID: <m2wtq5lv0q.fsf@vador.mandrakesoft.com>
+References: <20050507095346.37b16e6a.erikd-alsa@mega-nerd.com>
+	<s5hmzr128wy.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 76DF81FD
-	for <alsa-devel@alsa-project.org>; Wed, 11 May 2005 15:53:52 +0200 (MEST)
+In-Reply-To: <s5hmzr128wy.wl@alsa2.suse.de> (Takashi Iwai's message of "Wed,
+	11 May 2005 15:23:41 +0200")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,58 +18,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai <tiwai@suse.de> writes:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1100> 
-======================================================================
-Reported By:                dwatters
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1100
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               SuSE Linux 9.2
-Kernel Version:             2.6.8-14.24
-======================================================================
-Date Submitted:             05-11-2005 15:51 CEST
-Last Modified:              05-11-2005 15:53 CEST
-======================================================================
-Summary:                    Driver loaded, no sound card detected
-Description: 
-In /var/log/message gives:
-May 11 10:30:43 miro kernel: ACPI: PCI interrupt 0000:05:06.0[A] -> GSI 5
-(level, low) -> IRQ 5
-May 11 10:30:43 miro kernel: ice1724: No matching model found for ID
-0x97123650
-May 11 10:30:43 miro kernel: ice1724: Invalid EEPROM (size = 255)
-May 11 10:30:43 miro kernel: ICE1724: probe of 0000:05:06.0 failed with
-error -5
+> > I'm playing around with Polypaudio (an EsoundD replacement) and
+> > find that it works really well when I connect it to the plug:hw
+> > and the CPU usage is as I would expect.
+> > 
+> > If on the other hand I connect Polypaudio to the plug:dmix1
+> > (defined as below) device it attempts to chew up 100% of CPU and
+> > then dies.
+> > 
+> > The ALSA version is whatever is in the 2.6.11 kernel. I have also
+> > seen this problem on two different systems (iBook/Tumbler and
+> > ia32/CMI8738) so its not hardware specific.
+> > 
+> > Does anyone have any ideas as to why a dmix device behaves so
+> > differently to plug:hw?
+> 
+> Does it still happen with 1.0.9rc3?
 
-
-======================================================================
-
-----------------------------------------------------------------------
- dwatters - 05-11-05 15:53 
-----------------------------------------------------------------------
-Mainboard is Shuttle FN25, Via Envz 24PT 7.1
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-11-05 15:51 dwatters       New Issue                                    
-05-11-05 15:51 dwatters       Distribution              => SuSE Linux 9.2  
-05-11-05 15:51 dwatters       Kernel Version            => 2.6.8-14.24     
-05-11-05 15:53 dwatters       Note Added: 0004637                          
-======================================================================
-
+afaic artsd with alsa-lib-1.0.9rc3 eats quite lots cpu time. i've got
+similar reports from people that previously reported that artsd was
+using too much cpu time.
 
 
 
