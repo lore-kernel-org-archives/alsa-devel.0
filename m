@@ -1,13 +1,13 @@
-From: Eduardo Bezerra <edubezval@gmail.com>
-Subject: AIC23 on i2C
-Date: Wed, 11 May 2005 14:45:09 -0400
-Message-ID: <a0580c510505111145101242a0@mail.gmail.com>
-Reply-To: Eduardo Bezerra <edubezval@gmail.com>
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: [PATCH] compiling problem fixed
+Date: Wed, 11 May 2005 20:54:59 +0200
+Message-ID: <20050511185459.GA2962@tuba>
+References: <20050503142916.GA3281@tuba> <s5hoebh292c.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="RnlQjJ0d97Da+TV1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
+In-Reply-To: <s5hoebh292c.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,29 +17,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks,
+
+--RnlQjJ0d97Da+TV1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, May 11, 2005 at 03:20:27PM +0200, Takashi Iwai wrote:
+> At Tue, 3 May 2005 16:29:16 +0200,
+> Martin Langer wrote:
+> > 
+> > This fixes a 2.4 compiling problem on alpha. GFP_KERNEL was undeclared.
+> 
+> It's not nice to put to this place.  It always includes the file.
+
+Ah sorry, I see your point. Next time I should scroll down in my 
+editor, before I create a patch :)
+
+> Where does this error happen?  In the gameport wrapper inline
+> function?  
+
+Yep, it's in the gameport wrapper inline function. So now it's 
+placed closer to that wrapper function.
+
+---
+Fix undeclared GFP_KERNEL in gameport wrapper inline function. Compile 
+error happened with debian kernel 2.4.27 (alpha cpu).
+
+Signed-off-by: Martin Langer <martin-langer@gmx.de>
+---
+
+BTW, the miroSOUND PCM12 with the new miro driver is running great, even 
+on my alpha machine here :)
 
 
+martin
 
- I need to know if there is any driver to AIC23 on I2C written on ALSA.
+--RnlQjJ0d97Da+TV1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="adriver.patch"
 
-If there isn't, I want to know how can I get documentation to do this
-task, because
-the how-to that I found on=20
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/index.html
+--- include/adriver.h.ORIGINAL	2005-05-03 15:57:09.000000000 +0200
++++ include/adriver.h	2005-05-11 20:18:38.000000000 +0200
+@@ -749,6 +749,7 @@
+ #include <linux/gameport.h>
+ #undef wait_ms
+ #ifndef to_gameport_driver
++#include <linux/slab.h>
+ /* old gameport interface */
+ struct snd_gameport {
+ 	struct gameport gp;
 
-shows only how to write a pci driver.
-
-
-
-Thanks for any help.
-
-
-
-Eduardo Bezerra Valentin
+--RnlQjJ0d97Da+TV1--
 
 
 -------------------------------------------------------
