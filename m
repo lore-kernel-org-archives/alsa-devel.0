@@ -1,11 +1,18 @@
-From: mailinglist@teg-electronics.com
-Subject: High Speed USB Support?
-Date: Thu, 12 May 2005 14:00:24 +0200 (CEST)
-Message-ID: <33383.192.168.0.245.1115899224.squirrel@teg-electronics.com>
+From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Subject: Re: Dmix using more CPU than plug:hw
+Date: Thu, 12 May 2005 22:24:20 +1000
+Message-ID: <20050512222420.43363636.erikd-alsa@mega-nerd.com>
+References: <20050507095346.37b16e6a.erikd-alsa@mega-nerd.com>
+	<s5hmzr128wy.wl@alsa2.suse.de>
+	<m2wtq5lv0q.fsf@vador.mandrakesoft.com>
+	<s5hekcd26ky.wl@alsa2.suse.de>
+	<20050512200848.1fe02c01.erikd-alsa@mega-nerd.com>
+	<s5hmzr0zpuu.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hmzr0zpuu.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,17 +25,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Is the High Speed USB support in the alsa USB audio driver tested?
+Takashi Iwai wrote:
 
-I am currently designing a High Speed USB audio card and testing
-it in Linux. It would be nice to know if the driver has been tested
-on a high speed device so that I would know if problems I'm having
-is casued by my design or the driver.
+> At Thu, 12 May 2005 20:08:48 +1000,
+> Erik de Castro Lopo wrote:
+>
+> > Is this something that 1.0.9rc3 is likely to fix?
+> 
+> Might be...
 
-My main problem at the moment is popping noises, it seems as some data
-is getting lost but I can't see that my buffers get either full or
-empty, so i wonder if this could be caused by the driver.
+Unfortunately not.
 
+I installed alsa-driver-1.0.9rc3 and alsa-lib-1.0.9rc3. If I 
+then run polypaudio it hangs, hard. So hard that I can't 
+kill it. There's nothing in the system logs.
+
+Erik
+-- 
++-----------------------------------------------------------+
+  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
++-----------------------------------------------------------+
+"The earth is degenerating these days. Bribery and corruption abound.
+Children no longer mind parents ...and it is evident that the end of
+the world is approaching fast." -- Assyrian Tablet Engraved in 2800 B.C.
 
 
 -------------------------------------------------------
