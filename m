@@ -1,14 +1,11 @@
 From: mailinglist@teg-electronics.com
 Subject: Re: High Speed USB Support?
-Date: Thu, 12 May 2005 16:52:00 +0200 (CEST)
-Message-ID: <33485.192.168.0.245.1115909520.squirrel@www.teg-electronics.com>
-References: <33383.192.168.0.245.1115899224.squirrel@teg-electronics.com>
- <Pine.HPX.4.33n.0505121513330.16290-100000@studcom.urz.uni-halle.de>
+Date: Thu, 12 May 2005 16:52:27 +0200 (CEST)
+Message-ID: <33492.192.168.0.245.1115909547.squirrel@www.teg-electronics.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <Pine.HPX.4.33n.0505121513330.16290-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
