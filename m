@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001074]: pcm_dmix hangs on device close
-Date: Thu, 12 May 2005 13:34:27 +0200
-Message-ID: <3efc1d1d14f774de2c91cda7e68c93ef@bugtrack.alsa-project.org>
+Date: Thu, 12 May 2005 13:50:59 +0200
+Message-ID: <387d5cebe115b7f4db648478acdf9be3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AD6982B0
-	for <alsa-devel@alsa-project.org>; Thu, 12 May 2005 13:34:27 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 052DD2BA
+	for <alsa-devel@alsa-project.org>; Thu, 12 May 2005 13:50:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             04-24-2005 08:48 CEST
-Last Modified:              05-12-2005 13:34 CEST
+Last Modified:              05-12-2005 13:50 CEST
 ======================================================================
 Summary:                    pcm_dmix hangs on device close
 Description: 
@@ -74,12 +74,6 @@ PlatformSoundMix::UnlockAudioCallback ()
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-11-05 18:11 
-----------------------------------------------------------------------
-Hmm, non-blocking mode should NOT block.  So, if the timer behaves like you
-mentioned, it must be a bug in the timer code...
-
-----------------------------------------------------------------------
  chtephan - 05-12-05 13:34 
 ----------------------------------------------------------------------
 Of, course, a non-blocking fd does not block, but the timer fd is not
@@ -105,6 +99,12 @@ been opened blocking in the first place.
 > schedule();
 > spin_lock_irq(&tu->qlock);
 
+----------------------------------------------------------------------
+ tiwai - 05-12-05 13:50 
+----------------------------------------------------------------------
+But the timer in dmix is supposed to be opened in non-blocking mode.
+See snd_timer_open() in pcm_direct.c.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -117,6 +117,7 @@ Date Modified  Username       Field                    Change
 05-11-05 17:23 ikonst         Note Added: 0004638                          
 05-11-05 18:11 tiwai          Note Added: 0004639                          
 05-12-05 13:34 chtephan       Note Added: 0004641                          
+05-12-05 13:50 tiwai          Note Added: 0004642                          
 ======================================================================
 
 
