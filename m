@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: MOTU driver, cont'd
-Date: Wed, 11 May 2005 19:19:07 -0400
-Message-ID: <1115853547.18877.0.camel@mindpipe>
-References: <20050509220527.GA10385@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - WWW server 0000938]: AudioScience cards supported.
+Date: Thu, 12 May 2005 05:53:33 +0200
+Message-ID: <9dc4c2113c37e7bd79deaf9496648bab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050509220527.GA10385@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 133C722B
+	for <alsa-devel@alsa-project.org>; Thu, 12 May 2005 05:53:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,21 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Forest Bond <f_a_b@softhome.net>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2005-05-09 at 18:05 -0400, Forest Bond wrote:
-> While there currently are no drivers available to use MOTU hardware on a
-> Linux system, if the Linux OS does become a more viable platform for 
-> DAWs
-> then it is possible that MOTU will develop drivers for that platform at
-> some point in the future.
 
-Let's hold them to this.  Once the RT preempt patches are in the
-mainline kernel, we'll ask them again.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=938> 
+======================================================================
+Reported By:                eliot
+Assigned To:                
+======================================================================
+Project:                    ALSA - WWW server
+Issue ID:                   938
+Category:                   soundcard matrix
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-24-2005 04:11 CET
+Last Modified:              05-12-2005 05:53 CEST
+======================================================================
+Summary:                    AudioScience cards supported.
+Description: 
+AudioScience entries in the matrix should be white (supported).
 
-Lee
+Driver should be "asihpi" OR "asihpi plus HPI download from
+http://www.audioscience.com"
+
+ASI4215 mentioned twice.
+======================================================================
+
+----------------------------------------------------------------------
+ eliot - 05-12-05 05:53 
+----------------------------------------------------------------------
+Download link is now
+http://audioscience.com/internet/download/linux_drivers.htm
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-24-05 04:11 eliot          New Issue                                    
+05-12-05 05:53 eliot          Note Added: 0004640                          
+======================================================================
+
 
 
 
