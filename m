@@ -1,10 +1,9 @@
-From: mailinglist@teg-electronics.com
-Subject: Re: High Speed USB Support?
-Date: Thu, 12 May 2005 16:52:27 +0200 (CEST)
-Message-ID: <33492.192.168.0.245.1115909547.squirrel@www.teg-electronics.com>
+From: rong wang <rhong_wang@yahoo.com>
+Subject: CODEC plug in
+Date: Thu, 12 May 2005 07:59:10 -0700 (PDT)
+Message-ID: <20050512145910.57874.qmail@web31702.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,65 +14,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> mailinglist@teg-electronics.com wrote:
->> Is the High Speed USB support in the alsa USB audio driver tested?
->
-> Yes, with two devices.
->
-> The Edirol UA-1000 doesn't really work.  I don't know why because I
-> don't have access to one anymore.
->
-> With the Audigy 2 NX, I get popping noises.
->
->> My main problem at the moment is popping noises, it seems as some data
->> is getting lost but I can't see that my buffers get either full or
->> empty, so i wonder if this could be caused by the driver.
->
-> The driver uses mostly the same code, as the USB core is supposed to
-> provide the same interface for full speed and high speed devices.
->
-> At the moment I'm assuming that there is either a bug in the EHCI
-> driver, or that the EHCI driver has some requirement that the other
-> host controller drivers have not.
->
-> I'm still debugging, but I'd guess the problem is not with your
-> device.
->
-> BTW: what synchronization type does your device use?
->
+I am new in linux. My question is where is the CODEC
+plug-in, I can plug in different codec of my own in
+the ALSA. Where is the digital mixing and sample rate
+conversion in the ALSA? 
 
-Thanks for the info.
+Is there any complete design doc for the ALSA? So, I
+can see the control flow top-down.
 
-I have tested both async out and adaptive no difference, except
-if I send the wrong byte order to the feedback endpoint which may
-lock the computer (I guess I shouldn't do that :-) ).
-
-I was hoping to avoid having do develop a driver by folowing the
-USB audio spec, unfortunately neither the general USB audio driver
-in Windows or Linux seems to support High Speed USB.
-
->
-> Regards,
-> Clemens
->
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by Oracle Space Sweepstakes
-> Want to be the first software developer in space?
-> Enter now for the Oracle Space Sweepstakes!
-> http://ads.osdn.com/?ad_id=7393&alloc_id=16281&op=click
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
+Thanks
 
 
+
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Read only the mail you want - Yahoo! Mail SpamGuard. 
+http://promotions.yahoo.com/new_mail 
 
 
 -------------------------------------------------------
