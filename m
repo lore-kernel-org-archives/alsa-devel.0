@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001103]: Please support /dev/snd/aload* as well
-Date: Fri, 13 May 2005 14:15:54 +0200
-Message-ID: <eff5ee32dac1f31379d3a61629bd9c9b@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001101]: [VIA 8237 with ALC850] gstreamer alsasink with default device does not work but with "device=hw:0" it does
+Date: Fri, 13 May 2005 14:17:42 +0200
+Message-ID: <911633473a34afedba985504865c1143@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4BBF22CA
-	for <alsa-devel@alsa-project.org>; Fri, 13 May 2005 14:15:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1BE492CA
+	for <alsa-devel@alsa-project.org>; Fri, 13 May 2005 14:17:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,44 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1103> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1101> 
 ======================================================================
-Reported By:                jordi
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1103
-Category:                   general
+Issue ID:                   1101
+Category:                   hw specific configuration
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             05-13-2005 13:49 CEST
-Last Modified:              05-13-2005 14:15 CEST
+Date Submitted:             05-11-2005 22:15 CEST
+Last Modified:              05-13-2005 14:17 CEST
 ======================================================================
-Summary:                    Please support /dev/snd/aload* as well
+Summary:                    [VIA 8237 with ALC850] gstreamer alsasink with
+default device does not work but with "device=hw:0" it does
 Description: 
-Currently, alsa-lib looks for aload* files in /dev.
+The submitter of https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305189
+and an interlocutor have discovered that
+gstreaming to "alsasink" does not work but the same to "alsasink
+device=hw:0" does work.
 
-I think it would be nice if these files could live in /dev/snd, with the
-rest of ALSA devices.
-
-Can alsa-lib be modified to support aload* devices in both /dev and
-/dev/snd?
-
-Maybe in the future, after people have transitioned, support for
-/dev/aload* could be dropped. Defaulting to /dev/snd and falling back to
-/dev could be the way to work for now.
-
-The udev maintainer thinks this would be a good enhancement.
+Please see http://bugs.debian.org/305189 for the discussion which includes
+lots more detail.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-13-05 14:15 
+ tiwai - 05-13-05 14:17 
 ----------------------------------------------------------------------
-FYI, the support of /dev/aload* can be disabled via --disable-aload
-configure option.  This is better together with udev.
+Does it happen witn ALSA 1.0.9rc3, too?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-05 13:49 jordi          New Issue                                    
-05-13-05 14:15 tiwai          Note Added: 0004644                          
+05-11-05 22:15 jdthood        New Issue                                    
+05-13-05 14:17 tiwai          Note Added: 0004645                          
 ======================================================================
 
 
