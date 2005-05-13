@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Fri, 13 May 2005 19:48:43 +0200
-Message-ID: <7e5e862e4e9f0fbad7a8e2785a69a5ea@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001104]: Hidden volumes
+Date: Fri, 13 May 2005 20:05:42 +0200
+Message-ID: <99e299808bddc47bddf83566f7e3f7e7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DEF712A8
-	for <alsa-devel@alsa-project.org>; Fri, 13 May 2005 19:48:43 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 94C242A8
+	for <alsa-devel@alsa-project.org>; Fri, 13 May 2005 20:05:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,40 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1104> 
 ======================================================================
-Reported By:                minmax
+Reported By:                Yota_VGA
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   557
-Category:                   CORE OSS - pcm
+Issue ID:                   1104
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.7
+Distribution:               gentoo
+Kernel Version:             2.6.8-gentoo-r9
 ======================================================================
-Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-13-2005 19:48 CEST
+Date Submitted:             05-13-2005 20:05 CEST
+Last Modified:              05-13-2005 20:05 CEST
 ======================================================================
-Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
-situation
+Summary:                    Hidden volumes
 Description: 
-When the first few writes to the oss emulation device are done in specific
-way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
+With my system (Sound blaster live! player 1024, linux kernel
+2.6.8-gentoo-r9) some volumes don't compare at startup. But if I play a
+sound this magically compare in the mixer. And if I change some of this
+volumes and re-play a song this rechange to previous values.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 05-13-05 19:38 
-----------------------------------------------------------------------
-It's not the alsa-utils but ALSA drivers in kernel.
-I won't be surprised if it was already fixed in ALSA 1.0.9rc3 :)
-
-----------------------------------------------------------------------
- gk4 - 05-13-05 19:48 
-----------------------------------------------------------------------
-I'm running FC3 with the 2.6.10-1.766_FC3 kernel.  How can I determine
-which level of ALSA the kernel is using?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-01-04 16:18 minmax         New Issue                                    
-10-01-04 16:18 minmax         Distribution              => Debian unstable 
-10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
-10-02-04 10:52 minmax         Issue Monitored: minmax                      
-04-09-05 16:09 jdthood        Note Added: 0004406                          
-04-09-05 16:22 minmax         Note Added: 0004410                          
-05-13-05 15:20 gk4            Note Added: 0004646                          
-05-13-05 15:24 perex          Note Added: 0004647                          
-05-13-05 15:26 tiwai          Note Added: 0004648                          
-05-13-05 19:35 gk4            Note Added: 0004651                          
-05-13-05 19:38 tiwai          Note Added: 0004652                          
-05-13-05 19:48 gk4            Note Added: 0004655                          
+05-13-05 20:05 Yota_VGA       New Issue                                    
+05-13-05 20:05 Yota_VGA       Distribution              => gentoo          
+05-13-05 20:05 Yota_VGA       Kernel Version            => 2.6.8-gentoo-r9 
 ======================================================================
 
 
