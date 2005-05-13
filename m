@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001103]: Please support /dev/snd/aload* as well
-Date: Fri, 13 May 2005 15:36:36 +0200
-Message-ID: <c3ece10350cc4701f44831b0e99b5034@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001101]: [VIA 8237 with ALC850] gstreamer alsasink with default device does not work but with "device=hw:0" it does
+Date: Fri, 13 May 2005 15:38:12 +0200
+Message-ID: <6c4af0a433e4db1d8d7db0595b0eb0d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB8D61D1
-	for <alsa-devel@alsa-project.org>; Fri, 13 May 2005 15:36:36 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5D6CE2CA
+	for <alsa-devel@alsa-project.org>; Fri, 13 May 2005 15:38:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,52 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1103> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1101> 
 ======================================================================
-Reported By:                jordi
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1103
-Category:                   general
+Issue ID:                   1101
+Category:                   hw specific configuration
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             05-13-2005 13:49 CEST
-Last Modified:              05-13-2005 15:36 CEST
+Date Submitted:             05-11-2005 22:15 CEST
+Last Modified:              05-13-2005 15:38 CEST
 ======================================================================
-Summary:                    Please support /dev/snd/aload* as well
+Summary:                    [VIA 8237 with ALC850] gstreamer alsasink with
+default device does not work but with "device=hw:0" it does
 Description: 
-Currently, alsa-lib looks for aload* files in /dev.
+The submitter of https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305189
+and an interlocutor have discovered that
+gstreaming to "alsasink" does not work but the same to "alsasink
+device=hw:0" does work.
 
-I think it would be nice if these files could live in /dev/snd, with the
-rest of ALSA devices.
-
-Can alsa-lib be modified to support aload* devices in both /dev and
-/dev/snd?
-
-Maybe in the future, after people have transitioned, support for
-/dev/aload* could be dropped. Defaulting to /dev/snd and falling back to
-/dev could be the way to work for now.
-
-The udev maintainer thinks this would be a good enhancement.
+Please see http://bugs.debian.org/305189 for the discussion which includes
+lots more detail.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-13-05 14:15 
+ tiwai - 05-13-05 14:17 
 ----------------------------------------------------------------------
-FYI, the support of /dev/aload* can be disabled via --disable-aload
-configure option.  This is better together with udev.
+Does it happen witn ALSA 1.0.9rc3, too?
 
 ----------------------------------------------------------------------
- jdthood - 05-13-05 15:36 
+ jdthood - 05-13-05 15:38 
 ----------------------------------------------------------------------
-> FYI, the support of /dev/aload* can be disabled via --disable-aload
-> configure option.
+>  Does it happen witn ALSA 1.0.9rc3, too?
 
-
-What is the advantage of disabling this support?
-
-
-> This is better together with udev.
-
-
-Why is it better to disable aload support with udev?  I was assuming
-that the whole point of having the aload devices was to allow the
-ALSA library to induce module loading on udev systems.
+The submitter tested with libasound2 1.0.9rc3 but this did not help.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-05 13:49 jordi          New Issue                                    
-05-13-05 14:15 tiwai          Note Added: 0004644                          
-05-13-05 15:36 jdthood        Note Added: 0004649                          
+05-11-05 22:15 jdthood        New Issue                                    
+05-13-05 14:17 tiwai          Note Added: 0004645                          
+05-13-05 15:38 jdthood        Note Added: 0004650                          
 ======================================================================
 
 
