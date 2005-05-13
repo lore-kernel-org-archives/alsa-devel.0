@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001101]: [VIA 8237 with ALC850] gstreamer alsasink with default device does not work but with "device=hw:0" it does
-Date: Fri, 13 May 2005 15:38:12 +0200
-Message-ID: <6c4af0a433e4db1d8d7db0595b0eb0d9@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: au88x0_synth
+Date: Fri, 13 May 2005 22:05:47 +0800
+Message-ID: <4284B43B.6040309@netvigator.com>
+References: <423CCDAC.80401@netvigator.com> <200503301013.30400.alien999999999@users.sourceforge.net> <4269C953.4050504@netvigator.com> <200504230928.06494.alien999999999@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5D6CE2CA
-	for <alsa-devel@alsa-project.org>; Fri, 13 May 2005 15:38:12 +0200 (MEST)
+In-Reply-To: <200504230928.06494.alien999999999@users.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +17,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+It is abnormal to get the message "vortex: reg error" on your au8810, it 
+does not appear in my au8830.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1101> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1101
-Category:                   hw specific configuration
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             05-11-2005 22:15 CEST
-Last Modified:              05-13-2005 15:38 CEST
-======================================================================
-Summary:                    [VIA 8237 with ALC850] gstreamer alsasink with
-default device does not work but with "device=hw:0" it does
-Description: 
-The submitter of https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305189
-and an interlocutor have discovered that
-gstreaming to "alsasink" does not work but the same to "alsasink
-device=hw:0" does work.
+http://savannah.nongnu.org/support/?func=detailitem&item_id=102951
 
-Please see http://bugs.debian.org/305189 for the discussion which includes
-lots more detail.
-======================================================================
+You will need to find out the code which cause "vortex: reg error".
 
-----------------------------------------------------------------------
- tiwai - 05-13-05 14:17 
-----------------------------------------------------------------------
-Does it happen witn ALSA 1.0.9rc3, too?
+You may try the following:
 
-----------------------------------------------------------------------
- jdthood - 05-13-05 15:38 
-----------------------------------------------------------------------
->  Does it happen witn ALSA 1.0.9rc3, too?
+1) Remove code relating to SPDIF ( only SQ1500 and au8830 has SPDIF )
 
-The submitter tested with libasound2 1.0.9rc3 but this did not help.
+2) use hwwrite(vortex->mmio, VORTEX_CODEC_EN,
+hwread(vortex->mmio, VORTEX_CODEC_EN) | EN_CODEC0);
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-11-05 22:15 jdthood        New Issue                                    
-05-13-05 14:17 tiwai          Note Added: 0004645                          
-05-13-05 15:38 jdthood        Note Added: 0004650                          
-======================================================================
+No need to use (EN_CODEC0 | EN_CODEC1 ) since your au8810 only has 
+stereo codec.
+
+You can use .openalrc to configure OpenAL to use ALSA
+
+(define devices '(alsa))
+(define speaker-num 2)
+(define alsa-out-device "hw:0,0")
+(define alsa-in-device "hw:0,0")
+
+
+> 
+> 
+>>Use alsamixer to find out which ac97 codec on your au8810.
+> 
+> 
+> chip: Wolfson WM9701A
+> 
+> 
+>>Do you have any application using gameport, mpu401 or OSS  ?
+> 
+> 
+> haven't gotten any gameport to work, not on the emu10k1 nor the au8810, never 
+> use MPU401 and i use OSS emulation on games like AA, ET, OpenAL...
+> 
+> 
+>>>i've had this major crash below only 3 times; and the logs didn't
+>>>detect anything specific at the time. the only thing the logs
+>>>mentioned at that time was an ntpd sync going on; so the only thing i
+>>>can think of is that at a certain moment when a sync is going on, some
+>>>kind of lock is holding cause this to happen... the only thing that i
+>>>can do to fix this is reset...
+>>
+>>Do the log indicate the snd-au8810 is loaded properly ?
+> 
+> 
+> yes of course: it gives
+> 
+> vortex: reg error
+> 
+> as always ;-)
+> 
+> 
+
+
+
 
 
 
