@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Fri, 13 May 2005 15:26:55 +0200
-Message-ID: <55f6664e91af15b7f21dc87b3cef29a1@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001103]: Please support /dev/snd/aload* as well
+Date: Fri, 13 May 2005 15:36:36 +0200
+Message-ID: <c3ece10350cc4701f44831b0e99b5034@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F5E12CA
-	for <alsa-devel@alsa-project.org>; Fri, 13 May 2005 15:26:55 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB8D61D1
+	for <alsa-devel@alsa-project.org>; Fri, 13 May 2005 15:36:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1103> 
 ======================================================================
-Reported By:                minmax
+Reported By:                jordi
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   557
-Category:                   CORE OSS - pcm
+Project:                    ALSA - lib
+Issue ID:                   1103
+Category:                   general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.7
 ======================================================================
-Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-13-2005 15:26 CEST
+Date Submitted:             05-13-2005 13:49 CEST
+Last Modified:              05-13-2005 15:36 CEST
 ======================================================================
-Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
-situation
+Summary:                    Please support /dev/snd/aload* as well
 Description: 
-When the first few writes to the oss emulation device are done in specific
-way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
+Currently, alsa-lib looks for aload* files in /dev.
+
+I think it would be nice if these files could live in /dev/snd, with the
+rest of ALSA devices.
+
+Can alsa-lib be modified to support aload* devices in both /dev and
+/dev/snd?
+
+Maybe in the future, after people have transitioned, support for
+/dev/aload* could be dropped. Defaulting to /dev/snd and falling back to
+/dev could be the way to work for now.
+
+The udev maintainer thinks this would be a good enhancement.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 05-13-05 15:24 
+ tiwai - 05-13-05 14:15 
 ----------------------------------------------------------------------
-Can someone write a short program / test utility which triggers this bug?
+FYI, the support of /dev/aload* can be disabled via --disable-aload
+configure option.  This is better together with udev.
 
 ----------------------------------------------------------------------
- tiwai - 05-13-05 15:26 
+ jdthood - 05-13-05 15:36 
 ----------------------------------------------------------------------
-Did you try the latest ALSA driver?
-It's not clear which version causes this problem.
+> FYI, the support of /dev/aload* can be disabled via --disable-aload
+> configure option.
+
+
+What is the advantage of disabling this support?
+
+
+> This is better together with udev.
+
+
+Why is it better to disable aload support with udev?  I was assuming
+that the whole point of having the aload devices was to allow the
+ALSA library to induce module loading on udev systems.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-01-04 16:18 minmax         New Issue                                    
-10-01-04 16:18 minmax         Distribution              => Debian unstable 
-10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
-10-02-04 10:52 minmax         Issue Monitored: minmax                      
-04-09-05 16:09 jdthood        Note Added: 0004406                          
-04-09-05 16:22 minmax         Note Added: 0004410                          
-05-13-05 15:20 gk4            Note Added: 0004646                          
-05-13-05 15:24 perex          Note Added: 0004647                          
-05-13-05 15:26 tiwai          Note Added: 0004648                          
+05-13-05 13:49 jordi          New Issue                                    
+05-13-05 14:15 tiwai          Note Added: 0004644                          
+05-13-05 15:36 jdthood        Note Added: 0004649                          
 ======================================================================
 
 
