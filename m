@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001104]: Hidden volumes
-Date: Fri, 13 May 2005 20:05:42 +0200
-Message-ID: <99e299808bddc47bddf83566f7e3f7e7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001105]: Hidden volumes
+Date: Fri, 13 May 2005 20:06:00 +0200
+Message-ID: <e937749e92f2dde38e394bef4d42e8c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 94C242A8
-	for <alsa-devel@alsa-project.org>; Fri, 13 May 2005 20:05:42 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 62CA02A8
+	for <alsa-devel@alsa-project.org>; Fri, 13 May 2005 20:06:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1104> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1105> 
 ======================================================================
 Reported By:                Yota_VGA
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1104
+Issue ID:                   1105
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
