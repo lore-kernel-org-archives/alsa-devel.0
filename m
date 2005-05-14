@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001110]: Some switch is missing
-Date: Sat, 14 May 2005 10:40:45 +0200
-Message-ID: <ce5ecb0b75b19d4ac9c72be83464e331@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001053]: cannot change line-in volume on MSI K8N Platinum that has SBLive! 24 bit
+Date: Sat, 14 May 2005 13:14:50 +0200
+Message-ID: <780ba6fb76906416b3894cf382dbb38a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9396A30F
-	for <alsa-devel@alsa-project.org>; Sat, 14 May 2005 10:40:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 380F92FB
+	for <alsa-devel@alsa-project.org>; Sat, 14 May 2005 13:14:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,40 +22,68 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1110> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1053> 
 ======================================================================
-Reported By:                technik
-Assigned To:                
+Reported By:                Cimmo
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1110
-Category:                   PCI - es1938
+Issue ID:                   1053
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               mandriva , suse 9.2
-Kernel Version:             2.6
+Status:                     acknowledged
+Distribution:               Fedora Core 4 test 2
+Kernel Version:             2.6.11-1.1236 FC4-x86_64 that contains 2.6.12rc2
 ======================================================================
-Date Submitted:             05-14-2005 10:40 CEST
-Last Modified:              05-14-2005 10:40 CEST
+Date Submitted:             04-14-2005 19:27 CEST
+Last Modified:              05-14-2005 13:14 CEST
 ======================================================================
-Summary:                    Some switch is missing
+Summary:                    cannot change line-in volume on MSI K8N Platinum
+that has SBLive! 24 bit
 Description: 
-When you open mixer(kmix, alsamixer or other) you can't muteing micropone,
-line and other record source. It's a big problem when you using internet
-telephone like skype. When you speak to mic you hear your voice an your
-friend, and you can't make lauder becouse mic and speker interference.
+I have a MSI K8N Platinum motherboard that has SBLive! 24 bit integrated.
+(Un)fortunatelly this motherboard provide two different jacks for Mic and
+Line-In instead of one single jack in the pci version of the sb live 24
+bit (see image).
+
+The result is that I cannot use line-in for my soundcard becuase the
+volume is 0 and I cannot change it.
+
+The "Capture feedback into playback" in the mixer change the mic's volume.
 ======================================================================
+
+----------------------------------------------------------------------
+ Cimmo - 05-11-05 15:05 
+----------------------------------------------------------------------
+Any news?
+
+----------------------------------------------------------------------
+ pelias - 05-14-05 13:14 
+----------------------------------------------------------------------
+jcdutton,
+
+I own an MSI with CA0106, too. Are you planning to arrange the capturing
+capabilities of this SB, or should we worry about buying another audio
+board?
+
+Thanks
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-14-05 10:40 technik        New Issue                                    
-05-14-05 10:40 technik        Distribution              => mandriva , suse 9.2
-05-14-05 10:40 technik        Kernel Version            => 2.6             
+04-14-05 19:27 Cimmo          New Issue                                    
+04-14-05 19:27 Cimmo          File Added: MSIK8N.jpg                       
+04-14-05 19:27 Cimmo          Distribution              => Fedora Core 4 test 2
+04-14-05 19:27 Cimmo          Kernel Version            => 2.6.11-1.1236
+FC4-x86_64 that contains 2.6.12rc2
+04-14-05 21:42 jcdutton       Note Added: 0004495                          
+04-14-05 21:42 jcdutton       Status                   assigned => acknowledged
+05-11-05 15:05 Cimmo          Note Added: 0004636                          
+05-14-05 13:14 pelias         Note Added: 0004657                          
 ======================================================================
 
 
