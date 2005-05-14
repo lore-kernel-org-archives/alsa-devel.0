@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001108]: There is no ISA module ad1816 (not ad1816a)
-Date: Sat, 14 May 2005 06:58:12 +0200
-Message-ID: <7cb43cf1c2d6b6c15e9ca6ba818372ca@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001109]: I does't job with the 5.1 modules ca0106
+Date: Sat, 14 May 2005 09:48:56 +0200
+Message-ID: <4997e43bd571ff6bf9d5cc2b8e8f2380@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 759B7309
-	for <alsa-devel@alsa-project.org>; Sat, 14 May 2005 06:58:12 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 956C930F
+	for <alsa-devel@alsa-project.org>; Sat, 14 May 2005 09:48:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,37 +24,35 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1108> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1109> 
 ======================================================================
-Reported By:                sonne000ca
-Assigned To:                
+Reported By:                alex4988
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1108
-Category:                   OTHERS
+Issue ID:                   1109
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
+Status:                     assigned
+Distribution:               gentoo
 Kernel Version:             
 ======================================================================
-Date Submitted:             05-14-2005 06:58 CEST
-Last Modified:              05-14-2005 06:58 CEST
+Date Submitted:             05-14-2005 09:48 CEST
+Last Modified:              05-14-2005 09:48 CEST
 ======================================================================
-Summary:                    There is no ISA module ad1816 (not ad1816a)
+Summary:                    I does't job with the 5.1 modules ca0106
 Description: 
-This webpage describes the installation of the module ad1816:
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Shark+Multimedia&card=Shark+Predator+3D+%28ISA%29.&chip=AD1816A&module=ad1816
-
-However, this card is not available in alsa-drivers, only ad1816a is
-available.
+I doesn't work the modules ca0106 with 5.1 system.What i can make??.
+SORRY ENGLISH 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-14-05 06:58 sonne000ca     New Issue                                    
+05-14-05 09:48 alex4988       New Issue                                    
+05-14-05 09:48 alex4988       Distribution              => gentoo          
 ======================================================================
 
 
