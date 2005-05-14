@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001090]: Support for new Prodigy 7.1 LT
-Date: Sat, 14 May 2005 15:18:29 +0200
-Message-ID: <ce3bc8a785cff2d7c9c47a6dc6464a79@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001053]: cannot change line-in volume on MSI K8N Platinum that has SBLive! 24 bit
+Date: Sat, 14 May 2005 15:48:05 +0200
+Message-ID: <52b918583b697e55e2931fe374d9f3c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 282062F6
-	for <alsa-devel@alsa-project.org>; Sat, 14 May 2005 15:18:30 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6C61F2BA
+	for <alsa-devel@alsa-project.org>; Sat, 14 May 2005 15:48:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,93 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1090> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1053> 
 ======================================================================
-Reported By:                Demosthenes
-Assigned To:                
+Reported By:                Cimmo
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1090
-Category:                   PCI - ice1724
+Issue ID:                   1053
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu (Hoary Hedgehog)
-Kernel Version:             2.6.10
+Status:                     acknowledged
+Distribution:               Fedora Core 4 test 2
+Kernel Version:             2.6.11-1.1236 FC4-x86_64 that contains 2.6.12rc2
 ======================================================================
-Date Submitted:             05-06-2005 17:34 CEST
-Last Modified:              05-14-2005 15:18 CEST
+Date Submitted:             04-14-2005 19:27 CEST
+Last Modified:              05-14-2005 15:48 CEST
 ======================================================================
-Summary:                    Support for new Prodigy 7.1 LT
+Summary:                    cannot change line-in volume on MSI K8N Platinum
+that has SBLive! 24 bit
 Description: 
-Could you please try to add support for the Audiotrak Prodigy 7.1 LT, as
-far as I am aware this card is essentially the same as the Produgy 7.1 but
-low profile and with a couple of physical changes such as no digital in.
+I have a MSI K8N Platinum motherboard that has SBLive! 24 bit integrated.
+(Un)fortunatelly this motherboard provide two different jacks for Mic and
+Line-In instead of one single jack in the pci version of the sb live 24
+bit (see image).
 
-ALSA does not detect the card currently and when I try to load the
-snd-1724 module it fails with an EEPROM error.
+The result is that I cannot use line-in for my soundcard becuase the
+volume is 0 and I cannot change it.
 
-I have tried compiling a new kernel with the subdevice id for the Prodigy
-7.1 in aureon.h changed to correspond to my device (as detailed here for
-another card
-http://linux.derkeiler.com/Newsgroups/comp.os.linux.hardware/2004-10/0340.html).
-Alsa then detects the card and I can load modules and change volumes in
-alsamixer but I haven't been able to produce any sound.
-
-Hopefully support will be easy to add as this card is almost exactly the
-same as the Prodigy 7.1 (and Aureon Space etc.) which already have
-support.
-
-I would be very happy to give any further information needed.
+The "Capture feedback into playback" in the mixer change the mic's volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 05-10-05 15:50 
+ pelias - 05-14-05 13:14 
 ----------------------------------------------------------------------
-Is it possible I can do this (look at the board, maybe use voltmeter)
-without knowing anything about GPIO pins, if someone could instruct me as
-to what to do.
+jcdutton,
+
+I own an MSI with CA0106, too. Are you planning to arrange the capturing
+capabilities of this SB, or should we worry about buying another audio
+board?
+
+Thanks
 
 ----------------------------------------------------------------------
- Demosthenes - 05-14-05 15:18 
+ jcdutton - 05-14-05 15:48 
 ----------------------------------------------------------------------
-ungod I don't know where you have gone, but is there anything more that can
-be done.
-
-Or is there anyone else out there who might be able to help?
+There are no plans to support any capture features in the ca0106 driver
+currently due to lack of datasheets.
+This is also noted on the sound card matrix.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-05 17:34 Demosthenes    New Issue                                    
-05-06-05 17:35 Demosthenes    Distribution              => Ubuntu (Hoary
-Hedgehog)
-05-06-05 17:35 Demosthenes    Kernel Version            => 2.6.10          
-05-06-05 22:44 ungod          Note Added: 0004597                          
-05-06-05 22:48 ungod          Note Added: 0004598                          
-05-07-05 01:38 Demosthenes    Note Added: 0004600                          
-05-07-05 01:47 Demosthenes    Note Edited: 0004600                         
-05-08-05 00:45 ungod          Note Added: 0004608                          
-05-08-05 17:30 Demosthenes    Note Added: 0004610                          
-05-08-05 17:39 ungod          File Added: aureon-prodigy71lt-fix.diff           
-        
-05-08-05 17:40 ungod          Note Added: 0004611                          
-05-08-05 19:09 Demosthenes    Note Added: 0004612                          
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 19:12 Demosthenes    Note Edited: 0004612                         
-05-08-05 20:08 ungod          Note Added: 0004614                          
-05-08-05 20:18 Demosthenes    Note Added: 0004615                          
-05-08-05 20:23 ungod          Note Added: 0004616                          
-05-08-05 20:27 ungod          Note Added: 0004617                          
-05-08-05 20:37 Demosthenes    Note Added: 0004618                          
-05-09-05 01:01 ungod          Note Added: 0004620                          
-05-09-05 13:15 Demosthenes    Note Added: 0004624                          
-05-09-05 14:49 ungod          Note Added: 0004625                          
-05-09-05 15:03 Demosthenes    Note Added: 0004626                          
-05-10-05 09:36 ungod          Note Added: 0004632                          
-05-10-05 15:50 Demosthenes    Note Added: 0004633                          
-05-14-05 15:18 Demosthenes    Note Added: 0004658                          
+04-14-05 19:27 Cimmo          New Issue                                    
+04-14-05 19:27 Cimmo          File Added: MSIK8N.jpg                       
+04-14-05 19:27 Cimmo          Distribution              => Fedora Core 4 test 2
+04-14-05 19:27 Cimmo          Kernel Version            => 2.6.11-1.1236
+FC4-x86_64 that contains 2.6.12rc2
+04-14-05 21:42 jcdutton       Note Added: 0004495                          
+04-14-05 21:42 jcdutton       Status                   assigned => acknowledged
+05-11-05 15:05 Cimmo          Note Added: 0004636                          
+05-14-05 13:14 pelias         Note Added: 0004657                          
+05-14-05 15:48 jcdutton       Note Added: 0004659                          
 ======================================================================
 
 
