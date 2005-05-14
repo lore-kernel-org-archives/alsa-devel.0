@@ -1,14 +1,24 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001111]: Audigy2NX: Channels interchanged
-Date: Sat, 14 May 2005 17:34:51 +0200
-Message-ID: <7e8f5483bb2642338a9924e53c408a45@bugtrack.alsa-project.org>
+From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+Subject: ld10k1 needs alsa-lib version 1.0.9rc3
+Date: Sat, 14 May 2005 18:49:20 +0200
+Message-ID: <20050514164920.GA14666@skinner.hem.za.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A9AB2B9
-	for <alsa-devel@alsa-project.org>; Sat, 14 May 2005 17:34:51 +0200 (MEST)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 00DBA1C2
+	for <alsa-devel@alsa-project.org>; Sat, 14 May 2005 18:49:22 +0200 (MEST)
+Received: from mulder.hem.za.org (unknown [84.217.31.114])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id A186C71052
+	for <alsa-devel@alsa-project.org>; Sat, 14 May 2005 18:49:22 +0200 (MEST)
+Received: from skinner.hem.za.org ([fec0::202:44ff:fe1d:d021])
+	by mulder.hem.za.org with esmtp (Exim 4.50)
+	id 1DWzpI-00086P-Ti
+	for alsa-devel@alsa-project.org; Sat, 14 May 2005 18:49:20 +0200
+Received: from mikael by skinner.hem.za.org with local (Exim 4.50)
+	id 1DWzpI-00041s-Jq
+	for alsa-devel@alsa-project.org; Sat, 14 May 2005 18:49:20 +0200
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,120 +31,14 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1111> 
-======================================================================
-Reported By:                fabian
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1111
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.11.9
-======================================================================
-Date Submitted:             05-14-2005 17:34 CEST
-Last Modified:              05-14-2005 17:34 CEST
-======================================================================
-Summary:                    Audigy2NX: Channels interchanged
-Description: 
-Hi
+ld10k1 in alsa-tools needs emu10k1.h from alsa-lib 1.0.9rc3, since
+emu10k1_fx8010_info_t has changed. The configure.in script should be
+updated appropriately.
 
-I recently bought an Audigy2NX for my Laptop to use my Creative Inspire
-5300 5.1 System. I configured around a little bit, and tried to simulate
-5.1 sound with stereo-mp3s by copying the audiostreams using TTable. I got
-very confusing results so I tried speaker-test.
-
-speaker-test -D default -c 6 -f 300 -p 300
-
-default is, cause I have to resample output to 48k to get correct sound:
-
-1. Problem:
-The confusing thing is that I noticed that the rear speakers are
-interchanged with the subwoofer/center speaker. First I thought I made a
-mistake with the plugs, but I checked everything: I only get the correct
-output, when I plug the black chord for rear speaker in "Sub/center" on
-the Audigy and vice versa.
-
-Little other problems:
-* The Master volume adjustor on the card itself doesn't work.
-* When I use the "Mute" button on the card, I only can unmute in software
-* The channels in "Alsamixer" are named very confusingly: 
-Speaker
-Speaker1
-Speaker2
-Speaker2
-Speaker2
-Speaker2
-Speaker3 (is a switch)
-How does Alsamixer get the labels for the channels? Can one rename the
-channels anywhere?
-
-And a question:
-* Will the remote control work someday?
-
-
-And the last thing I want to say: I got in touch with ALSA today the first
-time, and I'm fascinated about the things you can do especially in
-asound.conf. Great great great Work! :-)
-
-greetings
-fabian
-
-PS:
-My /etc/asound.conf:
-
-pcm.intel8x0 {
-        type hw
-        card 0
-}
-
-ctl.intel8x0 {
-        type hw
-        card 0
-}
-
-pcm.Audigy2NX {
-        type hw
-        card 1
-}
-
-ctl.Audigy2NX {
-        type hw
-        card 1
-}
-
-pcm.!default {
-        type plug
-        slave {
-                pcm Audigy2NX
-                rate 48000
-        }
-}
-
-ctl.!default {
-        type plug
-        slave {
-                ctl Audigy2NX
-                rate 48000
-        }
-}
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-14-05 17:34 fabian         New Issue                                    
-05-14-05 17:34 fabian         Kernel Version            => 2.6.11.9        
-======================================================================
-
+Regards,
+Mikael Magnusson
 
 
 
