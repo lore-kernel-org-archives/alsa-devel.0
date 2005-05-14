@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001107]: amixer crashes with M-Audio Revolution 7.1 when value is given to numid=0
-Date: Sat, 14 May 2005 02:50:38 +0200
-Message-ID: <8b24f4b68e840cafe42da79d7f654d2f@bugtrack.alsa-project.org>
+From: rong wang <rhong_wang@yahoo.com>
+Subject: Several questions about digital mixing /plugin/sound effect
+Date: Fri, 13 May 2005 21:10:55 -0700 (PDT)
+Message-ID: <20050514041056.74619.qmail@web31702.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 266232CB
-	for <alsa-devel@alsa-project.org>; Sat, 14 May 2005 02:50:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +14,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1107> 
-======================================================================
-Reported By:                sst4
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1107
-Category:                   amixer
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             05-14-2005 02:50 CEST
-Last Modified:              05-14-2005 02:50 CEST
-======================================================================
-Summary:                    amixer crashes with M-Audio Revolution 7.1 when
-value is given to numid=0
-Description: 
-The following says it all:
-
-"
-[root@athlon ~]# cat /proc/asound/pcm
-00-00: ICE1724 : ICE1724 : playback 1 : capture 1
-00-01: IEC1724 IEC958 : IEC1724 IEC958 : playback 1
-00-02: ICE1724 Surrounds : ICE1724 Surround PCM : playback 3
-[root@athlon ~]# amixer  cset numid=0 50%
-amixer: control.c:251: snd_ctl_elem_info: Assertion `ctl && info &&
-(info->id.name[0] || info->id.numid)'failed.
-Aborted (core dumped)
-[root@athlon ~]#
-".
-
-The same configuration as in
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1106
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1096 ,
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1095 .
-
-Thanks in advance,
-  Sergei.
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-14-05 02:50 sst4           New Issue                                    
-======================================================================
+1. if we have several audio streams needed to be mixed
+before sending to CODEC, Should we
+   have to use server such as Jacked to do the mixing
+work? From document, Jacked is majorly used for data
+streaming from one application to another application,
+if I don't have such need, only for digital mixing,
+Could I avoid to use Jacked such kind of audio server
+for digital mixing purpose? For Jack server, how many
+applications support and use Jacked?
+>From searching on the web, it seems not a lot.
+2.  Is the alsa-lib  statically linked to audio
+application? Or the library is dynamically linked? 
+3. Where the software sound effect processing (Chorus,
+echo cancellation etc) in the ALSA?
+4. Is there any document to introduce ALSA plugin (how
+to expand it to include our own plugin, how it works
+etc)?
+5. If I have one application tried to playback
+different format sound, MP3, AAC etc, if I have my own
+MP3, AAC decoder, Is there anyway application can
+unplug one SW CODEC and load another plugin depends on
+File format on the fly?
+6. If on my machine, I cannot run float data type,
+only integer, Could I still use Jacked, according to
+   doc, Jacked is 32 bit float? Is there any other
+better choice? 
+7. If I don't need sequencer etc stuff, How could I
+remove the sequencer from lib and rebuild the lib?
+Not sure I asked the right question, I am totally new
+here.
 
 
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
 
 
 -------------------------------------------------------
