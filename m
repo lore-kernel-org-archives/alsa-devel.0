@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001110]: Some switch is missing
-Date: Sun, 15 May 2005 15:38:46 +0200
-Message-ID: <ad400c9f63d61ba3ce9cc803932d85dd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001112]: ad1816a based card with id "ADS7180" not detected
+Date: Sun, 15 May 2005 15:41:32 +0200
+Message-ID: <57c1e974b28e7c90affd03ea0c12448c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2E06B351
-	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 15:38:47 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CD79A351
+	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 15:41:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1110> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1112> 
 ======================================================================
-Reported By:                technik
-Assigned To:                
+Reported By:                sonne000ca
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1110
-Category:                   PCI - es1938
+Issue ID:                   1112
+Category:                   ISA - ad1816a
 Reproducibility:            always
 Severity:                   tweak
 Priority:                   normal
-Status:                     new
-Distribution:               mandriva , suse 9.2
-Kernel Version:             2.6
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-14-2005 10:40 CEST
-Last Modified:              05-15-2005 15:38 CEST
+Date Submitted:             05-15-2005 08:41 CEST
+Last Modified:              05-15-2005 15:41 CEST
 ======================================================================
-Summary:                    Some switch is missing
+Summary:                    ad1816a based card with id "ADS7180" not detected
 Description: 
-When you open mixer(kmix, alsamixer or other) you can't muteing micropone,
-line and other record source. It's a big problem when you using internet
-telephone like skype. When you speak to mic you hear your voice an your
-friend, and you can't make lauder becouse mic and speker interference.
+To fix, add:
+{ .id = "ADS7180", .devs = { { .id = "ADS7180" }, { .id = "ADS7181" } }
+},
+to snd_ad1816a_pnpids[] in ad1816a,c
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-15-05 15:38 
+ tiwai - 05-15-05 15:41 
 ----------------------------------------------------------------------
-Why don't you set "Mic Playack Volume" to 0?
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-14-05 10:40 technik        New Issue                                    
-05-14-05 10:40 technik        Distribution              => mandriva , suse 9.2
-05-14-05 10:40 technik        Kernel Version            => 2.6             
-05-15-05 15:38 tiwai          Note Added: 0004660                          
+05-15-05 08:41 sonne000ca     New Issue                                    
+05-15-05 15:41 tiwai          Status                   new => resolved     
+05-15-05 15:41 tiwai          Resolution               open => fixed       
+05-15-05 15:41 tiwai          Assigned To               => tiwai           
+05-15-05 15:41 tiwai          Note Added: 0004661                          
 ======================================================================
 
 
