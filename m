@@ -1,13 +1,14 @@
-From: Kevin F.Quinn <co@kevquinn.com>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Re: alsa-lib patches
-Date: Mon, 16 May 2005 0:15:33 +0200
-Message-ID: <MJYDXX111E5W3.18076434643TADVE@kevquinn.com>
+Date: Sun, 15 May 2005 18:33:31 -0400
+Message-ID: <1116196411.25898.1.camel@mindpipe>
 References: <1116189290.10653.5.camel@mindpipe>
+	 <MJYDXX111E5W3.18076434643TADVE@kevquinn.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-References: <1116189290.10653.5.camel@mindpipe>
+In-Reply-To: <MJYDXX111E5W3.18076434643TADVE@kevquinn.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,20 +18,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "Kevin F.Quinn" <co@kevquinn.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 15/5/2005 22:34:50, Lee Revell (rlrevell@joe-job=2Ecom) wrote:
-> On Sun, 2005-05-15 at 22:24 +0200, Kevin F=2EQuinn wrote:
-> > You also need to make it thread-safe, as Clements mentioned
+On Mon, 2005-05-16 at 00:15 +0200, Kevin F.Quinn wrote:
+> On 15/5/2005 22:34:50, Lee Revell (rlrevell@joe-job.com) wrote:
+> > On Sun, 2005-05-15 at 22:24 +0200, Kevin F.Quinn wrote:
+> > > You also need to make it thread-safe, as Clements mentioned
+> > 
+> > Why?  The rest of alsa-lib is not thread-safe.
 > 
-> Why?  The rest of alsa-lib is not thread-safe=2E
+> Only by comparison with control/hcontrol.c, which has a similar situation already in that style (see snd_hctl_sort()); also conf.c, pcm/pcm_meter.c and pcm/pcm_share.c go to the trouble of pthread mutexes.  If it's overkill there, then fair enough.
+> 
 
-Only by comparison with control/hcontrol=2Ec, which has a similar situatio=
-n already in that style (see snd_hctl_sort()); also conf=2Ec, pcm/pcm_mete=
-r=2Ec and pcm/pcm_share=2Ec go to the trouble of pthread mutexes=2E  If it=
-'s overkill there, then fair enough=2E
+OK, makes sense.
 
+Lee
 
 
 
