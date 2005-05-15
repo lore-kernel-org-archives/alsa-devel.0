@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: vga kills the audio NO MORE !!!
-Date: Sat, 14 May 2005 16:19:42 -0400
-Message-ID: <1116101982.9141.35.camel@mindpipe>
-References: <Pine.NEB.4.62.0505141920320.23428@droog.sdf-eu.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001112]: ad1816a based card with id "ADS7180" not detected
+Date: Sun, 15 May 2005 08:41:37 +0200
+Message-ID: <1cbcefaf4f9dadcd1a3a72188ae0e1b3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.NEB.4.62.0505141920320.23428@droog.sdf-eu.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D40D932F
+	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 08:41:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,31 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Laurence Darby <ldarby@sdf-eu.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-05-14 at 20:12 +0000, Laurence Darby wrote:
-> 
-> I have a PCI trident cyberblade graphics chip, and if almost anything 
-> happened on screen, the audio would squeal and squawk.  I've fixed it for 
-> this card.  The doc at http://www.alsa-project.org/misc/vgakills.txt 
-> basically says to put the accelerator command queue status check back in 
-> to the graphics driver, which is what I've done, with some guess work 
-> too...
-> 
-> I think it slightly decreases performance, so the Xorg devs probably 
-> wouldn't be interested, but as it increases audio quality, I guess this is 
-> the place to post about it.  If there are other lists you think may be 
-> interested, feel free to forward it on.
 
-They should be interested.  Not checking the FIFO status before writing
-to it is a bug.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1112> 
+======================================================================
+Reported By:                sonne000ca
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1112
+Category:                   ISA - ad1816a
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             05-15-2005 08:41 CEST
+Last Modified:              05-15-2005 08:41 CEST
+======================================================================
+Summary:                    ad1816a based card with id "ADS7180" not detected
+Description: 
+To fix, add:
+{ .id = "ADS7180", .devs = { { .id = "ADS7180" }, { .id = "ADS7181" } }
+},
+to snd_ad1816a_pnpids[] in ad1816a,c
 
-The via driver had the same bug, which was fixed after I reported it to
-the developers.
 
-Lee
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-15-05 08:41 sonne000ca     New Issue                                    
+======================================================================
+
 
 
 
