@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001074]: pcm_dmix hangs on device close
-Date: Sun, 15 May 2005 15:45:22 +0200
-Message-ID: <4a4d5225035ad4d03137d28fa625e17c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
+Date: Sun, 15 May 2005 15:50:49 +0200
+Message-ID: <adfc79f47d28a30ba39a3bd4c9931a52@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9EF0C351
-	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 15:45:22 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF751356
+	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 15:50:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,110 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1074> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
 ======================================================================
-Reported By:                ikonst
+Reported By:                minmax
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1074
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   557
+Category:                   CORE OSS - pcm
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             vanilla 2.6.7
 ======================================================================
-Date Submitted:             04-24-2005 08:48 CEST
-Last Modified:              05-15-2005 15:45 CEST
+Date Submitted:             10-01-2004 16:18 CEST
+Last Modified:              05-15-2005 15:50 CEST
 ======================================================================
-Summary:                    pcm_dmix hangs on device close
+Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
+situation
 Description: 
-The fix in pcm_dmix.c revision 1.71 causes the following regression:
-
-Everytime I access a Flash site thru my 'aoss'-wrapped Mozilla, it hangs:
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x40a951c3 in poll ()
-from /lib/tls/libc.so.6
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x4001a1fd in poll ()
-from /usr/lib/libaoss.so
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x40c7bf78 in
-snd_pcm_wait_nocheck (pcm=0x9a7a6a0, timeout=-1)
-    at pcm.c:2234
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0x40cb27fb in
-snd_pcm_dmix_drain (pcm=0x9a7a6a0) at pcm_dmix.c:504
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x40c79bd4 in
-snd_pcm_drain (pcm=0xfffffffc) at pcm.c:1044
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x40c8cbb7 in
-snd_pcm_generic_drain (pcm=0xfffffffc) at
-pcm_generic.c:151
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x40c79bd4 in
-snd_pcm_drain (pcm=0xfffffffc) at pcm.c:1044
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x40bb24e7 in
-lib_oss_pcm_close () from /usr/lib/libalsatoss.so.0
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8  0x400199b4 in close ()
-from /usr/lib/libaoss.so
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9  0x441712b9 in
-PlatformSoundMix::UnlockAudioCallback ()
-   from /usr/lib/flashplugin-nonfree/libflashplayer.so
-...
-
+When the first few writes to the oss emulation device are done in specific
+way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
 ======================================================================
 
 ----------------------------------------------------------------------
- chtephan - 05-13-05 22:57 
+ gk4 - 05-13-05 19:48 
 ----------------------------------------------------------------------
-Ok, this is bad, really bad.
-
-You are, of course, right.
-
-The problem is a very bad ioctl mixup:
-
-16035 open("/dev/snd/timer", O_RDONLY|O_NONBLOCK) = 19
-[...]
-16038 ioctl(19, FIONBIO, [0])        = 0 (!!!)
-[...]
-16038 read(19,  <unfinished ...>
-
-I wrote an ioctl interceptor via LD_PRELOAD to find out that the
-mysterious FIONBIO is actually:
-
-src/timer/timer_hw.c: line 159 (snd_timer_hw_stop)
-
->       if (ioctl(tmr->poll_fd, SNDRV_TIMER_IOCTL_STOP) < 0)
-
-The numeric value of SNDRV_TIMER_IOCTL_STOP
-
-asound.h:       SNDRV_TIMER_IOCTL_STOP = _IO('T', 0x21),
-
-_IO('T', 0x21) = _IOC(0, 0, 'T', 0x21) = ('T' << 8) + 0x21 = 0x5421
-
-And guess what?
-
-#define FIONBIO                0x5421
-
-This is *very* bad.
+I'm running FC3 with the 2.6.10-1.766_FC3 kernel.  How can I determine
+which level of ALSA the kernel is using?
 
 ----------------------------------------------------------------------
- tiwai - 05-15-05 15:45 
+ tiwai - 05-15-05 15:50 
 ----------------------------------------------------------------------
-Yeah, that's really bad.  We need to change these ioctls.
-Meanwhile, I'll apply your patch as a temporary workaround.
+Check /proc/asound/version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-24-05 08:48 ikonst         New Issue                                    
-05-09-05 17:33 chtephan       Note Added: 0004627                          
-05-09-05 17:53 chtephan       Issue Monitored: chtephan                    
-05-09-05 20:41 chtephan       File Added: timer-flush-blocking.diff             
-      
-05-09-05 20:42 chtephan       Note Added: 0004629                          
-05-11-05 17:23 ikonst         Note Added: 0004638                          
-05-11-05 18:11 tiwai          Note Added: 0004639                          
-05-12-05 13:34 chtephan       Note Added: 0004641                          
-05-12-05 13:50 tiwai          Note Added: 0004642                          
-05-13-05 22:57 chtephan       Note Added: 0004656                          
-05-15-05 15:45 tiwai          Note Added: 0004662                          
+10-01-04 16:18 minmax         New Issue                                    
+10-01-04 16:18 minmax         Distribution              => Debian unstable 
+10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
+10-02-04 10:52 minmax         Issue Monitored: minmax                      
+04-09-05 16:09 jdthood        Note Added: 0004406                          
+04-09-05 16:22 minmax         Note Added: 0004410                          
+05-13-05 15:20 gk4            Note Added: 0004646                          
+05-13-05 15:24 perex          Note Added: 0004647                          
+05-13-05 15:26 tiwai          Note Added: 0004648                          
+05-13-05 19:35 gk4            Note Added: 0004651                          
+05-13-05 19:38 tiwai          Note Added: 0004652                          
+05-13-05 19:48 gk4            Note Added: 0004655                          
+05-15-05 15:50 tiwai          Note Added: 0004663                          
 ======================================================================
 
 
