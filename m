@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001110]: Some switch is missing
-Date: Sun, 15 May 2005 16:13:17 +0200
-Message-ID: <2111b78515a47a1ff72e7a429cd5bf90@bugtrack.alsa-project.org>
+From: "RKHenry" <robert.henry@earthlink.net>
+Subject: RE: error: broken pipe
+Date: Sun, 15 May 2005 10:14:20 -0400
+Message-ID: <000801c55958$63dd0370$6501a8c0@rkh>
+References: <Pine.LNX.4.58.0505151101040.4270@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 13477207
-	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 16:13:17 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.58.0505151101040.4270@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1110> 
-======================================================================
-Reported By:                technik
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1110
-Category:                   PCI - es1938
-Reproducibility:            always
-Severity:                   tweak
-Priority:                   normal
-Status:                     new
-Distribution:               mandriva , suse 9.2
-Kernel Version:             2.6
-======================================================================
-Date Submitted:             05-14-2005 10:40 CEST
-Last Modified:              05-15-2005 16:13 CEST
-======================================================================
-Summary:                    Some switch is missing
-Description: 
-When you open mixer(kmix, alsamixer or other) you can't muteing micropone,
-line and other record source. It's a big problem when you using internet
-telephone like skype. When you speak to mic you hear your voice an your
-friend, and you can't make lauder becouse mic and speker interference.
-======================================================================
 
-----------------------------------------------------------------------
- technik - 05-15-05 16:07 
-----------------------------------------------------------------------
-When J set "mic volume" to 0 level the level of "record source mic" is set
-to 0 too. In "kmix" potentiometer for playback and record is only one and
-this is a problem.
+-----Original Message-----
+From: alsa-devel-admin@lists.sourceforge.net
+[mailto:alsa-devel-admin@lists.sourceforge.net] On Behalf Of Jaroslav =
+Kysela
+Sent: Sunday, May 15, 2005 5:02 AM
+To: Christian Konrad
+Cc: alsa-devel@lists.sourceforge.net
+Subject: Re: [Alsa-devel] error: broken pipe
 
-----------------------------------------------------------------------
- tiwai - 05-15-05 16:13 
-----------------------------------------------------------------------
-Then it's a bug of kmix.  ES1938 has separate "Mic Playback Volume" and
-"Mic Capture Volume".  Try alsamixer, for example.
+On Sat, 14 May 2005, Christian Konrad wrote:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-14-05 10:40 technik        New Issue                                    
-05-14-05 10:40 technik        Distribution              => mandriva , suse 9.2
-05-14-05 10:40 technik        Kernel Version            => 2.6             
-05-15-05 15:38 tiwai          Note Added: 0004660                          
-05-15-05 16:07 technik        Note Added: 0004664                          
-05-15-05 16:13 tiwai          Note Added: 0004665                          
-======================================================================
+> Hi!
+>=20
+> what exactly does this error mean? This is just a sine-genrator and it
+> uses the following code:
+>=20
+> while( (pcmreturn =3D snd_pcm_writei(pcm_handle, data, frames)) < 0)
+> {
+> 		=09
+> 	switch(pcmreturn)
+> 	{
+> 	case EBADFD:	cout << "EBADFD" << endl; break;
+> 	case EPIPE:	cout << "Buffer underrun." << endl; break;
+> 	case ESTRPIPE:	cout << "suspend. " << endl; break;=09
+> 	default: cout << snd_strerror(pcmreturn) << endl;
+> 	}
+> 		=09
+> =09
+> 	snd_pcm_prepare(pcm_handle);
+> }
+>=20
+> The only error I get is broken pipe (returned by snd_strerror).
 
+It's correct. You should check for negative values (e.g. -EPIPE) in your =
+
+switch statement.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by Oracle Space Sweepstakes
+Want to be the first software developer in space?
+Enter now for the Oracle Space Sweepstakes!
+http://ads.osdn.com/?ad_id=3D7393&alloc_id=3D16281&op=3Dclick
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 
