@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001110]: Some switch is missing
-Date: Sun, 15 May 2005 17:09:55 +0200
-Message-ID: <c55f96e1ae38e9f085efaeed0b66bbe9@bugtrack.alsa-project.org>
+Date: Sun, 15 May 2005 17:14:30 +0200
+Message-ID: <9262dd5bca958c4f3db9341913523246@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE8A9335
-	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 17:09:55 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BE9C3335
+	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 17:14:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               mandriva , suse 9.2
 Kernel Version:             2.6
 ======================================================================
 Date Submitted:             05-14-2005 10:40 CEST
-Last Modified:              05-15-2005 17:09 CEST
+Last Modified:              05-15-2005 17:14 CEST
 ======================================================================
 Summary:                    Some switch is missing
 Description: 
@@ -51,16 +51,13 @@ friend, and you can't make lauder becouse mic and speker interference.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-15-05 17:04 
-----------------------------------------------------------------------
-ES1938 has no Mic mute switch but only playback volume.
-
-Start alsamixer and change "Mic" volume to 0 on Playback view mode (press
-[F3]).  Then press [F4] to change Capture view mode, and raise "Mic"
-volume to an appropriate value.
-
-----------------------------------------------------------------------
  technik - 05-15-05 17:09 
+----------------------------------------------------------------------
+ok one problem more when J start alsa mixer it's open my first sound card,
+how start alsa mixer with my secound sound card ?
+
+----------------------------------------------------------------------
+ technik - 05-15-05 17:14 
 ----------------------------------------------------------------------
 ok one problem more when J start alsa mixer it's open my first sound card,
 how start alsa mixer with my secound sound card ?
@@ -79,6 +76,7 @@ Date Modified  Username       Field                    Change
 05-15-05 17:00 technik        Note Added: 0004668                          
 05-15-05 17:04 tiwai          Note Added: 0004669                          
 05-15-05 17:09 technik        Note Added: 0004670                          
+05-15-05 17:14 technik        Note Added: 0004671                          
 ======================================================================
 
 
