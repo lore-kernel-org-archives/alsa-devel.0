@@ -1,14 +1,14 @@
-From: "RKHenry" <robert.henry@earthlink.net>
-Subject: RE: error: broken pipe
-Date: Sun, 15 May 2005 10:20:26 -0400
-Message-ID: <000f01c55959$3e793760$6501a8c0@rkh>
-References: <Pine.LNX.4.58.0505151101040.4270@pnote.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001110]: Some switch is missing
+Date: Sun, 15 May 2005 16:30:09 +0200
+Message-ID: <180316248aa9e402eb3699a3ef53403a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0505151101040.4270@pnote.perex-int.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 227E1243
+	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 16:30:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Thanks for that. I've also been getting "Broken Pipe" messages. I =
-suspected
-that it was due to overruns (my application is a capture application). =
-For
-now I've been ignoring return values and have been concentrating on =
-getting
-the thing to work. I see that I'll need to handle the return value, even
-though in my particular application I can simply ignore overruns.=20
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1110> 
+======================================================================
+Reported By:                technik
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1110
+Category:                   PCI - es1938
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     new
+Distribution:               mandriva , suse 9.2
+Kernel Version:             2.6
+======================================================================
+Date Submitted:             05-14-2005 10:40 CEST
+Last Modified:              05-15-2005 16:30 CEST
+======================================================================
+Summary:                    Some switch is missing
+Description: 
+When you open mixer(kmix, alsamixer or other) you can't muteing micropone,
+line and other record source. It's a big problem when you using internet
+telephone like skype. When you speak to mic you hear your voice an your
+friend, and you can't make lauder becouse mic and speker interference.
+======================================================================
 
-Oh, and sorry for those spurious blank messages. Somehow my e-mail =
-client
-settings were accidentally changed and those were sent inadvertently.
+----------------------------------------------------------------------
+ tiwai - 05-15-05 16:13 
+----------------------------------------------------------------------
+Then it's a bug of kmix.  ES1938 has separate "Mic Playback Volume" and
+"Mic Capture Volume".  Try alsamixer, for example.
 
-Robert Henry
+----------------------------------------------------------------------
+ technik - 05-15-05 16:30 
+----------------------------------------------------------------------
+:) J try alsa mixer and other but it's the same problem , but J start MDK
+move 9.2 and its all okey, for knoppix 3.4 it's okey too, generaly old
+version alsa its ok.
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-14-05 10:40 technik        New Issue                                    
+05-14-05 10:40 technik        Distribution              => mandriva , suse 9.2
+05-14-05 10:40 technik        Kernel Version            => 2.6             
+05-15-05 15:38 tiwai          Note Added: 0004660                          
+05-15-05 16:07 technik        Note Added: 0004664                          
+05-15-05 16:13 tiwai          Note Added: 0004665                          
+05-15-05 16:30 technik        Note Added: 0004666                          
+======================================================================
 
------Original Message-----
-From: alsa-devel-admin@lists.sourceforge.net
-[mailto:alsa-devel-admin@lists.sourceforge.net] On Behalf Of Jaroslav =
-Kysela
-Sent: Sunday, May 15, 2005 5:02 AM
-To: Christian Konrad
-Cc: alsa-devel@lists.sourceforge.net
-Subject: Re: [Alsa-devel] error: broken pipe
-
-On Sat, 14 May 2005, Christian Konrad wrote:
-
-> Hi!
->=20
-> what exactly does this error mean? This is just a sine-genrator and it
-> uses the following code:
->=20
-> while( (pcmreturn =3D snd_pcm_writei(pcm_handle, data, frames)) < 0)
-> {
-> 		=09
-> 	switch(pcmreturn)
-> 	{
-> 	case EBADFD:	cout << "EBADFD" << endl; break;
-> 	case EPIPE:	cout << "Buffer underrun." << endl; break;
-> 	case ESTRPIPE:	cout << "suspend. " << endl; break;=09
-> 	default: cout << snd_strerror(pcmreturn) << endl;
-> 	}
-> 		=09
-> =09
-> 	snd_pcm_prepare(pcm_handle);
-> }
->=20
-> The only error I get is broken pipe (returned by snd_strerror).
-
-It's correct. You should check for negative values (e.g. -EPIPE) in your =
-
-switch statement.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by Oracle Space Sweepstakes
-Want to be the first software developer in space?
-Enter now for the Oracle Space Sweepstakes!
-http://ads.osdn.com/?ad_id=3D7393&alloc_id=3D16281&op=3Dclick
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 
