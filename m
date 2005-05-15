@@ -1,7 +1,7 @@
 From: "RKHenry" <robert.henry@earthlink.net>
 Subject: RE: error: broken pipe
-Date: Sun, 15 May 2005 10:12:59 -0400
-Message-ID: <000601c55958$34396d20$6501a8c0@rkh>
+Date: Sun, 15 May 2005 10:13:41 -0400
+Message-ID: <000701c55958$4c6db720$6501a8c0@rkh>
 References: <Pine.LNX.4.58.0505151101040.4270@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -18,7 +18,7 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
