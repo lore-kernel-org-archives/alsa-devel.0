@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001110]: Some switch is missing
-Date: Sun, 15 May 2005 17:04:06 +0200
-Message-ID: <f660aefcca642bcbaad90e53bd0afd02@bugtrack.alsa-project.org>
+Date: Sun, 15 May 2005 17:09:55 +0200
+Message-ID: <c55f96e1ae38e9f085efaeed0b66bbe9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 70E6032F
-	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 17:04:06 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE8A9335
+	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 17:09:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               mandriva , suse 9.2
 Kernel Version:             2.6
 ======================================================================
 Date Submitted:             05-14-2005 10:40 CEST
-Last Modified:              05-15-2005 17:04 CEST
+Last Modified:              05-15-2005 17:09 CEST
 ======================================================================
 Summary:                    Some switch is missing
 Description: 
@@ -51,25 +51,6 @@ friend, and you can't make lauder becouse mic and speker interference.
 ======================================================================
 
 ----------------------------------------------------------------------
- technik - 05-15-05 17:00 
-----------------------------------------------------------------------
-ok
-1.Start mdk move 9.2 from cd
-2.open kmix
-3.first window playback (pcm master and other unimportant)
-4.secound window input (mic has 2 switches one for record one for
-playback)
-5.choice record source as mic
-6.choice playback source as mic
-7.make volume up (J hear my voice in speaker)
-8.unchek switch for playback 'mic'(it's silence)
-9.J record my voice an next J play it. (input source and volume it's OK)
-
-J try make the same operation for mandriva but its not posible becouse
-switch for mic playback is missing.
-Tell me what J doing wrong?
-
-----------------------------------------------------------------------
  tiwai - 05-15-05 17:04 
 ----------------------------------------------------------------------
 ES1938 has no Mic mute switch but only playback volume.
@@ -77,6 +58,12 @@ ES1938 has no Mic mute switch but only playback volume.
 Start alsamixer and change "Mic" volume to 0 on Playback view mode (press
 [F3]).  Then press [F4] to change Capture view mode, and raise "Mic"
 volume to an appropriate value.
+
+----------------------------------------------------------------------
+ technik - 05-15-05 17:09 
+----------------------------------------------------------------------
+ok one problem more when J start alsa mixer it's open my first sound card,
+how start alsa mixer with my secound sound card ?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -91,6 +78,7 @@ Date Modified  Username       Field                    Change
 05-15-05 16:37 tiwai          Note Added: 0004667                          
 05-15-05 17:00 technik        Note Added: 0004668                          
 05-15-05 17:04 tiwai          Note Added: 0004669                          
+05-15-05 17:09 technik        Note Added: 0004670                          
 ======================================================================
 
 
