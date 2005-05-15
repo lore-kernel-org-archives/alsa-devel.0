@@ -1,7 +1,7 @@
 From: "RKHenry" <robert.henry@earthlink.net>
 Subject: RE: error: broken pipe
-Date: Sun, 15 May 2005 10:14:20 -0400
-Message-ID: <000801c55958$63dd0370$6501a8c0@rkh>
+Date: Sun, 15 May 2005 10:20:26 -0400
+Message-ID: <000f01c55959$3e793760$6501a8c0@rkh>
 References: <Pine.LNX.4.58.0505151101040.4270@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -18,9 +18,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+
+Thanks for that. I've also been getting "Broken Pipe" messages. I =
+suspected
+that it was due to overruns (my application is a capture application). =
+For
+now I've been ignoring return values and have been concentrating on =
+getting
+the thing to work. I see that I'll need to handle the return value, even
+though in my particular application I can simply ignore overruns.=20
+
+Oh, and sorry for those spurious blank messages. Somehow my e-mail =
+client
+settings were accidentally changed and those were sent inadvertently.
+
+Robert Henry
 
 
 -----Original Message-----
