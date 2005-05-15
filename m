@@ -1,11 +1,14 @@
-From: Kevin F.Quinn <co@kevquinn.com>
-Subject: Re: alsa-lib patches
-Date: Sun, 15 May 2005 16:57:39 +0200
-Message-ID: <4VSQHX111E5W3.1736062366PHUYD5@kevquinn.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001110]: Some switch is missing
+Date: Sun, 15 May 2005 17:00:03 +0200
+Message-ID: <e3ddd0319248e6276b2757c0884c0473@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 55342272
+	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 17:00:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,44 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Martin Stransky wrote:
-> > About mixer patch - some user had a problem with ICH6 and this patch h=
-elped=2E
-> >
-> > +static snd_mixer_t *qsort_mixer;
->  
-> This will break with multithreading=2E
->  
-> > +static int compar(const void *a, const void *b) {
-> > +       return qsort_mixer->compare(*(const snd_mixer_elem_t * const *=
-) a,
-> > +                                   *(const snd_mixer_elem_t * const *=
-) b);
-> > +}
->  
-> So the actual problem is that qsort() calls us with a pointer to a
-> pointer to the mixer_elem_t, but the compare function takes a single
-> pointer=2E
->  
->  
-> If we don"t want to change the mixer API, we have to use some
-> pthread_mutex to protext qsort_mixer=2E
 
-Some of us have been watching this at Gentoo, as we agree the patch applie=
-d to remove the nested function in src/mixer/mixer=2Ec is broken=2E
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1110> 
+======================================================================
+Reported By:                technik
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1110
+Category:                   PCI - es1938
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     new
+Distribution:               mandriva , suse 9.2
+Kernel Version:             2.6
+======================================================================
+Date Submitted:             05-14-2005 10:40 CEST
+Last Modified:              05-15-2005 17:00 CEST
+======================================================================
+Summary:                    Some switch is missing
+Description: 
+When you open mixer(kmix, alsamixer or other) you can't muteing micropone,
+line and other record source. It's a big problem when you using internet
+telephone like skype. When you speak to mic you hear your voice an your
+friend, and you can't make lauder becouse mic and speker interference.
+======================================================================
 
-See https://bugs=2Egentoo=2Eorg/show_bug=2Ecgi?id=3D82242 (skip straight t=
-o the end, comment #13) where the PaX team have supplied a patch that ough=
-t to work, along the lines of a change made to src/control/hcontrol=2Ec ov=
-er a year ago which fixed the same issue there=2E  Patch at https://bugs=2E=
-gentoo=2Eorg/attachment=2Ecgi?id=3D58918
+----------------------------------------------------------------------
+ tiwai - 05-15-05 16:37 
+----------------------------------------------------------------------
+Did you really change "Mic Playback Volume"?
+Please elaborate what you did exactly.
 
-Cheers,
-Kev=2E
+Also, I don't know what do you mean "ok".  There shouldn't be changes in
+this regard between different versions.
+
+----------------------------------------------------------------------
+ technik - 05-15-05 17:00 
+----------------------------------------------------------------------
+ok
+1.Start mdk move 9.2 from cd
+2.open kmix
+3.first window playback (pcm master and other unimportant)
+4.secound window input (mic has 2 switches one for record one for
+playback)
+5.choice record source as mic
+6.choice playback source as mic
+7.make volume up (J hear my voice in speaker)
+8.unchek switch for playback 'mic'(it's silence)
+9.J record my voice an next J play it. (input source and volume it's OK)
+
+J try make the same operation for mandriva but its not posible becouse
+switch for mic playback is missing.
+Tell me what J doing wrong?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-14-05 10:40 technik        New Issue                                    
+05-14-05 10:40 technik        Distribution              => mandriva , suse 9.2
+05-14-05 10:40 technik        Kernel Version            => 2.6             
+05-15-05 15:38 tiwai          Note Added: 0004660                          
+05-15-05 16:07 technik        Note Added: 0004664                          
+05-15-05 16:13 tiwai          Note Added: 0004665                          
+05-15-05 16:30 technik        Note Added: 0004666                          
+05-15-05 16:37 tiwai          Note Added: 0004667                          
+05-15-05 17:00 technik        Note Added: 0004668                          
+======================================================================
 
 
 
