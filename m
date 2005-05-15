@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Sun, 15 May 2005 15:50:49 +0200
-Message-ID: <adfc79f47d28a30ba39a3bd4c9931a52@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001110]: Some switch is missing
+Date: Sun, 15 May 2005 16:07:01 +0200
+Message-ID: <1b23b933f9fee5343d5039cc7ae38bd4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF751356
-	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 15:50:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 940D4355
+	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 16:07:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,52 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1110> 
 ======================================================================
-Reported By:                minmax
+Reported By:                technik
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   557
-Category:                   CORE OSS - pcm
+Issue ID:                   1110
+Category:                   PCI - es1938
 Reproducibility:            always
-Severity:                   minor
+Severity:                   tweak
 Priority:                   normal
 Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.7
+Distribution:               mandriva , suse 9.2
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-15-2005 15:50 CEST
+Date Submitted:             05-14-2005 10:40 CEST
+Last Modified:              05-15-2005 16:07 CEST
 ======================================================================
-Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
-situation
+Summary:                    Some switch is missing
 Description: 
-When the first few writes to the oss emulation device are done in specific
-way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
+When you open mixer(kmix, alsamixer or other) you can't muteing micropone,
+line and other record source. It's a big problem when you using internet
+telephone like skype. When you speak to mic you hear your voice an your
+friend, and you can't make lauder becouse mic and speker interference.
 ======================================================================
 
 ----------------------------------------------------------------------
- gk4 - 05-13-05 19:48 
+ tiwai - 05-15-05 15:38 
 ----------------------------------------------------------------------
-I'm running FC3 with the 2.6.10-1.766_FC3 kernel.  How can I determine
-which level of ALSA the kernel is using?
+Why don't you set "Mic Playack Volume" to 0?
 
 ----------------------------------------------------------------------
- tiwai - 05-15-05 15:50 
+ technik - 05-15-05 16:07 
 ----------------------------------------------------------------------
-Check /proc/asound/version.
+When J set "mic volume" to 0 level the level of "record source mic" is set
+to 0 too. In "kmix" potentiometer for playback and record is only one and
+this is a problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-01-04 16:18 minmax         New Issue                                    
-10-01-04 16:18 minmax         Distribution              => Debian unstable 
-10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
-10-02-04 10:52 minmax         Issue Monitored: minmax                      
-04-09-05 16:09 jdthood        Note Added: 0004406                          
-04-09-05 16:22 minmax         Note Added: 0004410                          
-05-13-05 15:20 gk4            Note Added: 0004646                          
-05-13-05 15:24 perex          Note Added: 0004647                          
-05-13-05 15:26 tiwai          Note Added: 0004648                          
-05-13-05 19:35 gk4            Note Added: 0004651                          
-05-13-05 19:38 tiwai          Note Added: 0004652                          
-05-13-05 19:48 gk4            Note Added: 0004655                          
-05-15-05 15:50 tiwai          Note Added: 0004663                          
+05-14-05 10:40 technik        New Issue                                    
+05-14-05 10:40 technik        Distribution              => mandriva , suse 9.2
+05-14-05 10:40 technik        Kernel Version            => 2.6             
+05-15-05 15:38 tiwai          Note Added: 0004660                          
+05-15-05 16:07 technik        Note Added: 0004664                          
 ======================================================================
 
 
