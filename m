@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001112]: ad1816a based card with id "ADS7180" not detected
-Date: Sun, 15 May 2005 08:41:37 +0200
-Message-ID: <1cbcefaf4f9dadcd1a3a72188ae0e1b3@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: error: broken pipe
+Date: Sun, 15 May 2005 11:01:37 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0505151101040.4270@pnote.perex-int.cz>
+References: <1116089623.8003.2.camel@latitude>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D40D932F
-	for <alsa-devel@alsa-project.org>; Sun, 15 May 2005 08:41:37 +0200 (MEST)
+In-Reply-To: <1116089623.8003.2.camel@latitude>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,47 +16,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Christian Konrad <konrad@in.tum.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 14 May 2005, Christian Konrad wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1112> 
-======================================================================
-Reported By:                sonne000ca
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1112
-Category:                   ISA - ad1816a
-Reproducibility:            always
-Severity:                   tweak
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             05-15-2005 08:41 CEST
-Last Modified:              05-15-2005 08:41 CEST
-======================================================================
-Summary:                    ad1816a based card with id "ADS7180" not detected
-Description: 
-To fix, add:
-{ .id = "ADS7180", .devs = { { .id = "ADS7180" }, { .id = "ADS7181" } }
-},
-to snd_ad1816a_pnpids[] in ad1816a,c
+> Hi!
+> 
+> what exactly does this error mean? This is just a sine-genrator and it
+> uses the following code:
+> 
+> while( (pcmreturn = snd_pcm_writei(pcm_handle, data, frames)) < 0)
+> {
+> 			
+> 	switch(pcmreturn)
+> 	{
+> 	case EBADFD:	cout << "EBADFD" << endl; break;
+> 	case EPIPE:	cout << "Buffer underrun." << endl; break;
+> 	case ESTRPIPE:	cout << "suspend. " << endl; break;	
+> 	default: cout << snd_strerror(pcmreturn) << endl;
+> 	}
+> 			
+> 	
+> 	snd_pcm_prepare(pcm_handle);
+> }
+> 
+> The only error I get is broken pipe (returned by snd_strerror).
 
+It's correct. You should check for negative values (e.g. -EPIPE) in your 
+switch statement.
 
-======================================================================
+						Jaroslav
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-15-05 08:41 sonne000ca     New Issue                                    
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
