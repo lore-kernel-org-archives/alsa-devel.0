@@ -1,13 +1,14 @@
-From: Nick Rout <nick@rout.co.nz>
+From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
 Subject: Re: WTF? The Whore Lived Like a German
-Date: Mon, 16 May 2005 21:40:05 +1200
-Message-ID: <1116236405.6152.3.camel@sf.rout.dyndns.org>
+Date: Mon, 16 May 2005 20:00:55 +1000
+Message-ID: <20050516200055.34bf1e92.erikd-alsa@mega-nerd.com>
 References: <fe65d311.ad5acc5fb@alsa-project.org>
+	<1116236405.6152.3.camel@sf.rout.dyndns.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <fe65d311.ad5acc5fb@alsa-project.org>
+In-Reply-To: <1116236405.6152.3.camel@sf.rout.dyndns.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,21 +21,31 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-errrr i am new here, but is this typical of this list? I mean it is a
-tragic story for sure, but on a quick scan I couldn't see a reference to
-alsa!
+Nick Rout wrote:
 
-or am I just feeding the troll?
+> errrr i am new here, but is this typical of this list?
 
+The posting policy of this list is open, but I do believe
+they have a spam filter.
 
-. On Mon, 2005-05-16 at 08:52 +0000, robin@xfree86.org wrote:
-> Full Article:
-> http://service.spiegel.de/cache/international/0,1518,344374,00.html
+> I mean it is a
+> tragic story for sure, but on a quick scan I couldn't see a reference to
+> alsa!
 > 
+> or am I just feeding the troll?
 
+Not a troll. This is spam sent by the sobig q virus. Aparently this
+virus sends out links to neo-nazi sites as well as more mainstean
+german web sites.
+
+Erik
 -- 
-Nick Rout <nick@rout.co.nz>
-
++-----------------------------------------------------------+
+  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
++-----------------------------------------------------------+
+I'd rather not work with people who aren't careful. It's darwinism in
+software development.
+	Linus Torvalds on the linux-kernel list
 
 
 -------------------------------------------------------
