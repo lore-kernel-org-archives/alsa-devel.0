@@ -1,14 +1,14 @@
-From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Subject: Re: WTF? The Whore Lived Like a German
-Date: Mon, 16 May 2005 20:00:55 +1000
-Message-ID: <20050516200055.34bf1e92.erikd-alsa@mega-nerd.com>
-References: <fe65d311.ad5acc5fb@alsa-project.org>
-	<1116236405.6152.3.camel@sf.rout.dyndns.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
+Date: Mon, 16 May 2005 16:08:49 +0200
+Message-ID: <aafbd63da2a9c5edc4171857a4196e2d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1116236405.6152.3.camel@sf.rout.dyndns.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ABD6528B
+	for <alsa-devel@alsa-project.org>; Mon, 16 May 2005 16:08:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,34 +18,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Nick Rout wrote:
 
-> errrr i am new here, but is this typical of this list?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
+======================================================================
+Reported By:                minmax
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   557
+Category:                   CORE OSS - pcm
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             vanilla 2.6.7
+======================================================================
+Date Submitted:             10-01-2004 16:18 CEST
+Last Modified:              05-16-2005 16:08 CEST
+======================================================================
+Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
+situation
+Description: 
+When the first few writes to the oss emulation device are done in specific
+way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
+======================================================================
 
-The posting policy of this list is open, but I do believe
-they have a spam filter.
+----------------------------------------------------------------------
+ tiwai - 05-15-05 15:50 
+----------------------------------------------------------------------
+Check /proc/asound/version.
 
-> I mean it is a
-> tragic story for sure, but on a quick scan I couldn't see a reference to
-> alsa!
-> 
-> or am I just feeding the troll?
+----------------------------------------------------------------------
+ gk4 - 05-16-05 16:08 
+----------------------------------------------------------------------
+My /proc/asound/version file has:
 
-Not a troll. This is spam sent by the sobig q virus. Aparently this
-virus sends out links to neo-nazi sites as well as more mainstean
-german web sites.
+Advanced Linux Sound Architecture Driver Version 1.0.6 (Sun Aug 15
+07:17:53 2004 UTC).  Compiled on Feb  9 2005 for kernel 2.6.10-1.766_FC3.
 
-Erik
--- 
-+-----------------------------------------------------------+
-  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
-+-----------------------------------------------------------+
-I'd rather not work with people who aren't careful. It's darwinism in
-software development.
-	Linus Torvalds on the linux-kernel list
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-01-04 16:18 minmax         New Issue                                    
+10-01-04 16:18 minmax         Distribution              => Debian unstable 
+10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
+10-02-04 10:52 minmax         Issue Monitored: minmax                      
+04-09-05 16:09 jdthood        Note Added: 0004406                          
+04-09-05 16:22 minmax         Note Added: 0004410                          
+05-13-05 15:20 gk4            Note Added: 0004646                          
+05-13-05 15:24 perex          Note Added: 0004647                          
+05-13-05 15:26 tiwai          Note Added: 0004648                          
+05-13-05 19:35 gk4            Note Added: 0004651                          
+05-13-05 19:38 tiwai          Note Added: 0004652                          
+05-13-05 19:48 gk4            Note Added: 0004655                          
+05-15-05 15:50 tiwai          Note Added: 0004663                          
+05-16-05 16:08 gk4            Note Added: 0004676                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
