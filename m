@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000981]: I don't get any sound on nforce 3 (AMD64 plataform).
-Date: Mon, 16 May 2005 21:49:34 +0200
-Message-ID: <2db2a4e666d96b0572c6b5440e10ae60@bugtrack.alsa-project.org>
+Date: Mon, 16 May 2005 22:41:19 +0200
+Message-ID: <7608db67526755c12e8f5adb740163c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1C0752C2
-	for <alsa-devel@alsa-project.org>; Mon, 16 May 2005 21:49:35 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A644A235
+	for <alsa-devel@alsa-project.org>; Mon, 16 May 2005 22:41:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=981> 
 ======================================================================
 Reported By:                soulhunter
-Assigned To:                
+Assigned To:                jdthood
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   981
@@ -35,12 +35,14 @@ Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Debian and Gentoo.
 Kernel Version:             2.6.11
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-12-2005 01:48 CET
-Last Modified:              05-16-2005 21:49 CEST
+Last Modified:              05-16-2005 22:41 CEST
 ======================================================================
 Summary:                    I don't get any sound on nforce 3 (AMD64 plataform).
 Description: 
@@ -90,6 +92,9 @@ Date Modified  Username       Field                    Change
 03-16-05 13:03 tiwai          Note Added: 0003953                          
 03-23-05 16:00 jdthood        Note Added: 0004168                          
 05-16-05 21:49 soulhunter     Note Added: 0004677                          
+05-16-05 22:41 jdthood        Status                   new => resolved     
+05-16-05 22:41 jdthood        Resolution               open => fixed       
+05-16-05 22:41 jdthood        Assigned To               => jdthood         
 ======================================================================
 
 
