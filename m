@@ -1,13 +1,25 @@
 From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Subject: Re: [PATCH] alsa-tools
-Date: Mon, 16 May 2005 21:03:27 +0200
-Message-ID: <20050516190326.GA21914@skinner.hem.za.org>
-References: <20050516143936.GA12324@skinner.hem.za.org>
+Subject: [PATCH] alsa-tools
+Date: Mon, 16 May 2005 16:41:24 +0200
+Message-ID: <4288B114.1000900@glocalnet.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed;
+ boundary="------------060601000601050700000909"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20050516143936.GA12324@skinner.hem.za.org>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3FCB62AD
+	for <alsa-devel@alsa-project.org>; Mon, 16 May 2005 16:41:25 +0200 (MEST)
+Received: from mulder.hem.za.org (unknown [84.217.31.114])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 8217971DC3
+	for <alsa-devel@alsa-project.org>; Mon, 16 May 2005 16:41:24 +0200 (MEST)
+Received: from skinner.hem.za.org ([fec0::202:44ff:fe1d:d021])
+	by mulder.hem.za.org with esmtp (Exim 4.50)
+	id 1DXgmb-0002Zq-Ch
+	for alsa-devel@alsa-project.org; Mon, 16 May 2005 16:41:25 +0200
+Received: from localhost ([127.0.0.1])
+	by skinner.hem.za.org with esmtp (Exim 4.50)
+	id 1DXgmb-0003ZI-0Q
+	for alsa-devel@alsa-project.org; Mon, 16 May 2005 16:41:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,35 +29,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 16, 2005 at 04:39:36PM +0200, Mikael Magnusson wrote:
-> ld10k1_configure.patch
-> ld10k1_makefile.patch
-> Removes ALSA_CFLAGS and ALSA_LIBS in configure.in, they are added to
-> CFLAGS and LDADD in src/Makefile.am already. Adds "-Wall" to CFLAGS only
-> if CFLAGS is undefined.
-> 
-> qlo10k1_configure.patch
-> qlo10k1_makefile.patch
-> Adds LD10K1_CFLAGS and LD10K1_LDFLAGS in src/Makefile.am, and moves
-> QT_CXXFLAGS to the makefile.
-> 
-> qlo10k1_acinclude.patch
-> Fixes pattern in gw_CHECK_QT not to match files that the linker won't
-> use, for example libqt.so.3 . Needed if both libqt and libqt-mt shared
-> libraries are installed, but only the libqt-mt development library.
-> 
-> Signed-Off-By: Mikael Magnusson <mikma@users.sourceforge.net>
-> 
+This is a multi-part message in MIME format.
+--------------060601000601050700000909
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-With the patches this time.
+ld10k1_configure.patch
+ld10k1_makefile.patch
+Removes ALSA_CFLAGS and ALSA_LIBS in configure.in, they are added to
+CFLAGS and LDADD in src/Makefile.am already. Adds "-Wall" to CFLAGS only
+if CFLAGS is undefined.
 
-/Mikael Magnusson
+qlo10k1_configure.patch
+qlo10k1_makefile.patch
+Adds LD10K1_CFLAGS and LD10K1_LDFLAGS in src/Makefile.am, and moves
+QT_CXXFLAGS to the makefile.
+
+qlo10k1_acinclude.patch
+Fixes pattern in gw_CHECK_QT not to match files that the linker won't
+use, for example libqt.so.3 . Needed if both libqt and libqt-mt shared
+libraries are installed, but only the libqt-mt development library.
+
+Signed-Off-By: Mikael Magnusson <mikma@users.sourceforge.net>
 
 
-ld10k1_configure.patch:
+--------------060601000601050700000909
+Content-Type: text/x-patch;
+ name="ld10k1_configure.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ld10k1_configure.patch"
+
 diff -ur orig/alsa-tools-1.0.9rc3/ld10k1/configure.in alsa-tools-1.0.9rc3/ld10k1/configure.in
 --- orig/alsa-tools-1.0.9rc3/ld10k1/configure.in        2005-04-11 15:15:52.000000000 +0200
 +++ alsa-tools-1.0.9rc3/ld10k1/configure.in     2005-05-14 23:18:10.000000000 +0200
@@ -60,7 +77,13 @@ diff -ur orig/alsa-tools-1.0.9rc3/ld10k1/configure.in alsa-tools-1.0.9rc3/ld10k1
  effectsdir='$(pkgdatadir)/effects'
  AC_SUBST(effectsdir)
 
-ld10k1_makefile.patch:
+--------------060601000601050700000909
+Content-Type: text/x-patch;
+ name="ld10k1_makefile.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ld10k1_makefile.patch"
+
 diff -ur orig/alsa-tools-1.0.9rc3/ld10k1/src/Makefile.am alsa-tools-1.0.9rc3/ld10k1/src/Makefile.am
 --- orig/alsa-tools-1.0.9rc3/ld10k1/src/Makefile.am     2005-03-18 14:41:02.000000000 +0100
 +++ alsa-tools-1.0.9rc3/ld10k1/src/Makefile.am  2005-05-15 00:37:00.000000000 +0200
@@ -74,7 +97,13 @@ diff -ur orig/alsa-tools-1.0.9rc3/ld10k1/src/Makefile.am alsa-tools-1.0.9rc3/ld1
  lo10k1_SOURCES = lo10k1.c
  lo10k1_CFLAGS = $(ALSA_CFLAGS) -DEFFECTSDIR='"$(effectsdir)"'
 
-qlo10k1_acinclude.patch:
+--------------060601000601050700000909
+Content-Type: text/x-patch;
+ name="qlo10k1_acinclude.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="qlo10k1_acinclude.patch"
+
 diff -ur orig/alsa-tools-1.0.9rc3/qlo10k1/acinclude.m4 alsa-tools-1.0.9rc3/qlo10k1/acinclude.m4
 --- orig/alsa-tools-1.0.9rc3/qlo10k1/acinclude.m4	2005-03-18 17:42:49.000000000 +0100
 +++ alsa-tools-1.0.9rc3/qlo10k1/acinclude.m4	2005-05-14 17:12:04.000000000 +0200
@@ -101,7 +130,13 @@ diff -ur orig/alsa-tools-1.0.9rc3/qlo10k1/acinclude.m4 alsa-tools-1.0.9rc3/qlo10
              QT_IS_MT="yes"
              QT_IS_EMBEDDED="yes"
 
-qlo10k1_configure.patch:
+--------------060601000601050700000909
+Content-Type: text/x-patch;
+ name="qlo10k1_configure.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="qlo10k1_configure.patch"
+
 diff -ur orig/alsa-tools-1.0.9rc3/qlo10k1/configure.in alsa-tools-1.0.9rc3/qlo10k1/configure.in
 --- orig/alsa-tools-1.0.9rc3/qlo10k1/configure.in       2005-03-18 17:42:49.000000000 +0100
 +++ alsa-tools-1.0.9rc3/qlo10k1/configure.in    2005-05-14 17:13:38.000000000 +0200
@@ -115,7 +150,13 @@ diff -ur orig/alsa-tools-1.0.9rc3/qlo10k1/configure.in alsa-tools-1.0.9rc3/qlo10
  
  AC_OUTPUT(Makefile
 
-qlo10k1_makefile.patch:
+--------------060601000601050700000909
+Content-Type: text/x-patch;
+ name="qlo10k1_makefile.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="qlo10k1_makefile.patch"
+
 diff -ur orig/alsa-tools-1.0.9rc3/qlo10k1/src/Makefile.am alsa-tools-1.0.9rc3/qlo10k1/src/Makefile.am
 --- orig/alsa-tools-1.0.9rc3/qlo10k1/src/Makefile.am    2005-03-18 17:42:49.000000000 +0100
 +++ alsa-tools-1.0.9rc3/qlo10k1/src/Makefile.am 2005-05-14 22:04:16.000000000 +0200
@@ -131,6 +172,7 @@ diff -ur orig/alsa-tools-1.0.9rc3/qlo10k1/src/Makefile.am alsa-tools-1.0.9rc3/ql
  qlo10k1_LDADD = $(LDADD) $(QT_LDADD)
  
 
+--------------060601000601050700000909--
 
 
 -------------------------------------------------------
