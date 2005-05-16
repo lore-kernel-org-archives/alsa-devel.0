@@ -1,14 +1,24 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Mon, 16 May 2005 16:08:49 +0200
-Message-ID: <aafbd63da2a9c5edc4171857a4196e2d@bugtrack.alsa-project.org>
+From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+Subject: [PATCH] alsa-tools
+Date: Mon, 16 May 2005 16:39:36 +0200
+Message-ID: <20050516143936.GA12324@skinner.hem.za.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ABD6528B
-	for <alsa-devel@alsa-project.org>; Mon, 16 May 2005 16:08:49 +0200 (MEST)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 22153211
+	for <alsa-devel@alsa-project.org>; Mon, 16 May 2005 16:39:37 +0200 (MEST)
+Received: from mulder.hem.za.org (unknown [84.217.31.114])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 7C1EB71DC3
+	for <alsa-devel@alsa-project.org>; Mon, 16 May 2005 16:39:37 +0200 (MEST)
+Received: from skinner.hem.za.org ([fec0::202:44ff:fe1d:d021])
+	by mulder.hem.za.org with esmtp (Exim 4.50)
+	id 1DXgkr-0002YG-FF
+	for alsa-devel@alsa-project.org; Mon, 16 May 2005 16:39:37 +0200
+Received: from mikael by skinner.hem.za.org with local (Exim 4.50)
+	id 1DXgkr-0003YD-4Q
+	for alsa-devel@alsa-project.org; Mon, 16 May 2005 16:39:37 +0200
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,66 +31,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+ld10k1_configure.patch
+ld10k1_makefile.patch
+Removes ALSA_CFLAGS and ALSA_LIBS in configure.in, they are added to
+CFLAGS and LDADD in src/Makefile.am already. Adds "-Wall" to CFLAGS only
+if CFLAGS is undefined.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
-======================================================================
-Reported By:                minmax
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   557
-Category:                   CORE OSS - pcm
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.7
-======================================================================
-Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-16-2005 16:08 CEST
-======================================================================
-Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
-situation
-Description: 
-When the first few writes to the oss emulation device are done in specific
-way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
-======================================================================
+qlo10k1_configure.patch
+qlo10k1_makefile.patch
+Adds LD10K1_CFLAGS and LD10K1_LDFLAGS in src/Makefile.am, and moves
+QT_CXXFLAGS to the makefile.
 
-----------------------------------------------------------------------
- tiwai - 05-15-05 15:50 
-----------------------------------------------------------------------
-Check /proc/asound/version.
+qlo10k1_acinclude.patch
+Fixes pattern in gw_CHECK_QT not to match files that the linker won't
+use, for example libqt.so.3 . Needed if both libqt and libqt-mt shared
+libraries are installed, but only the libqt-mt development library.
 
-----------------------------------------------------------------------
- gk4 - 05-16-05 16:08 
-----------------------------------------------------------------------
-My /proc/asound/version file has:
-
-Advanced Linux Sound Architecture Driver Version 1.0.6 (Sun Aug 15
-07:17:53 2004 UTC).  Compiled on Feb  9 2005 for kernel 2.6.10-1.766_FC3.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-01-04 16:18 minmax         New Issue                                    
-10-01-04 16:18 minmax         Distribution              => Debian unstable 
-10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
-10-02-04 10:52 minmax         Issue Monitored: minmax                      
-04-09-05 16:09 jdthood        Note Added: 0004406                          
-04-09-05 16:22 minmax         Note Added: 0004410                          
-05-13-05 15:20 gk4            Note Added: 0004646                          
-05-13-05 15:24 perex          Note Added: 0004647                          
-05-13-05 15:26 tiwai          Note Added: 0004648                          
-05-13-05 19:35 gk4            Note Added: 0004651                          
-05-13-05 19:38 tiwai          Note Added: 0004652                          
-05-13-05 19:48 gk4            Note Added: 0004655                          
-05-15-05 15:50 tiwai          Note Added: 0004663                          
-05-16-05 16:08 gk4            Note Added: 0004676                          
-======================================================================
-
+Signed-Off-By: Mikael Magnusson <mikma@users.sourceforge.net>
 
 
 
