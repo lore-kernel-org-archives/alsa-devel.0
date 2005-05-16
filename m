@@ -1,9 +1,10 @@
-From: rong wang <rhong_wang@yahoo.com>
-Subject: need help!
-Date: Mon, 16 May 2005 12:23:36 -0700 (PDT)
-Message-ID: <20050516192336.751.qmail@web31705.mail.mud.yahoo.com>
+From: ibingle@aol.com
+Subject: Du wirst ausspioniert ....!
+Date: Mon, 16 May 2005 20:48:18 GMT
+Message-ID: <84d0b7b08.f50158e@aol.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -14,26 +15,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Here is the question
+und weisst es nicht einmal:
 
-1, If I have my own CODEC plugin (optimizied version),
-how could I install it within ALSA?
+http://www.heise.de/newsticker/meldung/58003
+http://www.heise.de/newsticker/meldung/59304
 
-2. Where is the sound effect processing in ALSA?
+http://www.heise.de/newsticker/meldung/58311
 
-Last time, Lee answered my question, but
-unfortunately, I lost his email address. 
-Anybody answered my question, appreciated!
 
-Rhong
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+http://www.heise.de/newsticker/meldung/58351
 
 
 -------------------------------------------------------
