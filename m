@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000981]: I don't get any sound on nforce 3 (AMD64 plataform).
-Date: Mon, 16 May 2005 22:41:19 +0200
-Message-ID: <7608db67526755c12e8f5adb740163c7@bugtrack.alsa-project.org>
+From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+Subject: Re: [PATCH] alsa-tools
+Date: Mon, 16 May 2005 21:03:27 +0200
+Message-ID: <20050516190326.GA21914@skinner.hem.za.org>
+References: <20050516143936.GA12324@skinner.hem.za.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A644A235
-	for <alsa-devel@alsa-project.org>; Mon, 16 May 2005 22:41:19 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20050516143936.GA12324@skinner.hem.za.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,85 +17,119 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, May 16, 2005 at 04:39:36PM +0200, Mikael Magnusson wrote:
+> ld10k1_configure.patch
+> ld10k1_makefile.patch
+> Removes ALSA_CFLAGS and ALSA_LIBS in configure.in, they are added to
+> CFLAGS and LDADD in src/Makefile.am already. Adds "-Wall" to CFLAGS only
+> if CFLAGS is undefined.
+> 
+> qlo10k1_configure.patch
+> qlo10k1_makefile.patch
+> Adds LD10K1_CFLAGS and LD10K1_LDFLAGS in src/Makefile.am, and moves
+> QT_CXXFLAGS to the makefile.
+> 
+> qlo10k1_acinclude.patch
+> Fixes pattern in gw_CHECK_QT not to match files that the linker won't
+> use, for example libqt.so.3 . Needed if both libqt and libqt-mt shared
+> libraries are installed, but only the libqt-mt development library.
+> 
+> Signed-Off-By: Mikael Magnusson <mikma@users.sourceforge.net>
+> 
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=981> 
-======================================================================
-Reported By:                soulhunter
-Assigned To:                jdthood
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   981
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               Debian and Gentoo.
-Kernel Version:             2.6.11
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             03-12-2005 01:48 CET
-Last Modified:              05-16-2005 22:41 CEST
-======================================================================
-Summary:                    I don't get any sound on nforce 3 (AMD64 plataform).
-Description: 
->From kernel version 2.6.9 and up I don't get any sound.  I currently use
-2.6.8.1 (where the sound works just fine).
+With the patches this time.
 
-I even tried to compile 2.6.11 with only snd_intel8x0 as module: nothing.
+/Mikael Magnusson
 
-I have no idea what is going on, yes I looked at the volume settings, and
-unmuted the master and pcm channels.  The sound application seems to be
-"playing", but I get no sound.
 
-My motherboard is a Chaintech VNF250.
-======================================================================
+ld10k1_configure.patch:
+diff -ur orig/alsa-tools-1.0.9rc3/ld10k1/configure.in alsa-tools-1.0.9rc3/ld10k1/configure.in
+--- orig/alsa-tools-1.0.9rc3/ld10k1/configure.in        2005-04-11 15:15:52.000000000 +0200
++++ alsa-tools-1.0.9rc3/ld10k1/configure.in     2005-05-14 23:18:10.000000000 +0200
+@@ -9,8 +9,7 @@
+ AC_DISABLE_STATIC
+ AC_PROG_LIBTOOL
+ AM_PATH_ALSA(1.0.8, [], [])
+-CFLAGS="$CFLAGS $ALSA_CFLAGS -Wall"
+-LIBS="$LIBS $ALSA_LIBS"
++CFLAGS="${CFLAGS--Wall}"
+ 
+ effectsdir='$(pkgdatadir)/effects'
+ AC_SUBST(effectsdir)
 
-----------------------------------------------------------------------
- jdthood - 03-23-05 16:00 
-----------------------------------------------------------------------
-This could have something to do with the index numbers assigned to the
-drivers.  Please send the output of /proc/asound/cards.  Are you sure you
-are directing sound output to the right card?
+ld10k1_makefile.patch:
+diff -ur orig/alsa-tools-1.0.9rc3/ld10k1/src/Makefile.am alsa-tools-1.0.9rc3/ld10k1/src/Makefile.am
+--- orig/alsa-tools-1.0.9rc3/ld10k1/src/Makefile.am     2005-03-18 14:41:02.000000000 +0100
++++ alsa-tools-1.0.9rc3/ld10k1/src/Makefile.am  2005-05-15 00:37:00.000000000 +0200
+@@ -13,6 +13,8 @@
+ lib_LTLIBRARIES = liblo10k1.la
+ liblo10k1_la_SOURCES = comm.c liblo10k1.c liblo10k1ef.c liblo10k1lf.c
+ #liblo10k1_la_HEADERS = comm.h liblo10k1.h liblo10k1ef.h ld10k1_error.h ld10k1_fnc.h liblo10k1lf.h
++liblo10k1_la_CFLAGS = $(ALSA_CFLAGS)
++liblo10k1_la_LIBADD = $(ALSA_LIBS)
+ 
+ lo10k1_SOURCES = lo10k1.c
+ lo10k1_CFLAGS = $(ALSA_CFLAGS) -DEFFECTSDIR='"$(effectsdir)"'
 
-----------------------------------------------------------------------
- soulhunter - 05-16-05 21:49 
-----------------------------------------------------------------------
-Ok, I just solved this.  The problem went away when I muted the IEC58
-(something like that) Input Capture in alsamixer..... The weird thing is
-that it worked "out-of-the-box" in 2.6.8.1 and from 2.6.9 I had the
-problem, I verified the problem gone in 2.6.11.
+qlo10k1_acinclude.patch:
+diff -ur orig/alsa-tools-1.0.9rc3/qlo10k1/acinclude.m4 alsa-tools-1.0.9rc3/qlo10k1/acinclude.m4
+--- orig/alsa-tools-1.0.9rc3/qlo10k1/acinclude.m4	2005-03-18 17:42:49.000000000 +0100
++++ alsa-tools-1.0.9rc3/qlo10k1/acinclude.m4	2005-05-14 17:12:04.000000000 +0200
+@@ -99,17 +99,17 @@
+             fi
+         fi
+ 
+-        if test "x`ls $QTDIR/lib/libqt.* 2> /dev/null`" != x ; then
++        if test "x`ls $QTDIR/lib/libqt.{a,so} 2> /dev/null`" != x ; then
+             QT_LIB="-lqt"
+             QT_IS_MT="no"
+-        elif test "x`ls $QTDIR/lib/libqt-mt.* 2> /dev/null`" != x ; then
++        elif test "x`ls $QTDIR/lib/libqt-mt.{a,so} 2> /dev/null`" != x ; then
+             QT_LIB="-lqt-mt"
+             QT_IS_MT="yes"
+-        elif test "x`ls $QTDIR/lib/libqte.* 2> /dev/null`" != x ; then
++        elif test "x`ls $QTDIR/lib/libqte.{a,so} 2> /dev/null`" != x ; then
+             QT_LIB="-lqte"
+             QT_IS_MT="no"
+             QT_IS_EMBEDDED="yes"
+-        elif test "x`ls $QTDIR/lib/libqte-mt.* 2> /dev/null`" != x ; then
++        elif test "x`ls $QTDIR/lib/libqte-mt.{a,so} 2> /dev/null`" != x ; then
+             QT_LIB="-lqte-mt"
+             QT_IS_MT="yes"
+             QT_IS_EMBEDDED="yes"
 
-Sorry that I took so long to post this, I was offline.
+qlo10k1_configure.patch:
+diff -ur orig/alsa-tools-1.0.9rc3/qlo10k1/configure.in alsa-tools-1.0.9rc3/qlo10k1/configure.in
+--- orig/alsa-tools-1.0.9rc3/qlo10k1/configure.in       2005-03-18 17:42:49.000000000 +0100
++++ alsa-tools-1.0.9rc3/qlo10k1/configure.in    2005-05-14 17:13:38.000000000 +0200
+@@ -8,7 +8,7 @@
+ 
+ AC_C_BIGENDIAN
+ gw_CHECK_QT
+-CXXFLAGS="$CXXFLAGS $QT_CXXFLAGS -Wall"
++CXXFLAGS="${CXXFLAGS--Wall}"
+ AM_PATH_LD10K1(0.1.8)
+ 
+ AC_OUTPUT(Makefile
 
-Please, somebody close this bug.
-
-Thanks for maintaining this great software.
-
-Sincerely,
-
-Ildefonso Camargo.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-12-05 01:48 soulhunter     New Issue                                    
-03-12-05 01:48 soulhunter     Distribution              => Debian and Gentoo.
-03-12-05 01:48 soulhunter     Kernel Version            => 2.6.11          
-03-16-05 13:03 tiwai          Note Added: 0003953                          
-03-23-05 16:00 jdthood        Note Added: 0004168                          
-05-16-05 21:49 soulhunter     Note Added: 0004677                          
-05-16-05 22:41 jdthood        Status                   new => resolved     
-05-16-05 22:41 jdthood        Resolution               open => fixed       
-05-16-05 22:41 jdthood        Assigned To               => jdthood         
-======================================================================
-
+qlo10k1_makefile.patch:
+diff -ur orig/alsa-tools-1.0.9rc3/qlo10k1/src/Makefile.am alsa-tools-1.0.9rc3/qlo10k1/src/Makefile.am
+--- orig/alsa-tools-1.0.9rc3/qlo10k1/src/Makefile.am    2005-03-18 17:42:49.000000000 +0100
++++ alsa-tools-1.0.9rc3/qlo10k1/src/Makefile.am 2005-05-14 22:04:16.000000000 +0200
+@@ -4,6 +4,10 @@
+ # of the other Makefile.am variables
+ bin_PROGRAMS = qlo10k1
+ 
++AM_CPPFLAGS = $(LD10K1_CFLAGS)
++AM_CXXFLAGS= $(QT_CXXFLAGS)
++AM_LDFLAGS = $(LD10K1_LDFLAGS)
++
+ # the libraries to link against.
+ qlo10k1_LDADD = $(LDADD) $(QT_LDADD)
+ 
 
 
 
