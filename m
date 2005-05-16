@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001050]: Sound Blaster Audigy2 NX does not support 44,1kHz
-Date: Mon, 16 May 2005 07:16:25 +0200
-Message-ID: <37688202f33f37659a5236b2af533163@bugtrack.alsa-project.org>
+From: Sergey Vlasov <vsu@altlinux.ru>
+Subject: Re: Re: alsa-lib patches
+Date: Mon, 16 May 2005 12:53:29 +0400
+Message-ID: <20050516085329.GA15479@master.mivlgu.local>
+References: <20050515172102.GA13135@procyon.home> <MDKETX111E5W3.417177801CEUALA@kevquinn.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="liOOAslEiF7prFVr"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF6B6236
-	for <alsa-devel@alsa-project.org>; Mon, 16 May 2005 07:16:25 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <MDKETX111E5W3.417177801CEUALA@kevquinn.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +18,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "Kevin F. Quinn" <co@kevquinn.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1050> 
-======================================================================
-Reported By:                gears
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1050
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     acknowledged
-Distribution:               Ubuntu 5.04
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             04-13-2005 17:22 CEST
-Last Modified:              05-16-2005 07:16 CEST
-======================================================================
-Summary:                    Sound Blaster Audigy2 NX does not support 44,1kHz
-Description: 
-For my hardware (Sound Blaster Audigy2 NX) the system also needs to set up
-automatic sound conversion to 48000 instead of default 44100 or the sound
-gets
-badly distorted (at least it does so when using the spdif output). It also
-needs
-its speaker output unmuted.
+--liOOAslEiF7prFVr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-the sound distortion is because ALSA claims it supports 44,1 kHz (hw:X),
-although it really doesn't
-======================================================================
+On Sun, May 15, 2005 at 10:24:03PM +0200, Kevin F. Quinn wrote:
+> On 15/5/2005 19:21:02, Sergey Vlasov (vsu@altlinux.ru) wrote:
+[skip]
+> > static int snd_mixer_qsort_compare(const void *a, const void *b)
+> > {
+> > 	snd_mixer_elem_t *elem_a =3D *(snd_mixer_elem_t **)a;
+> > 	snd_mixer_elem_t *elem_b =3D *(snd_mixer_elem_t **)b;
+> >
+> > 	return elem_a->class->mixer->compare(elem_a, elem_b);
+> > }
+> >
+> > static int snd_mixer_sort(snd_mixer_t *mixer)
+> > {
+> > 	unsigned int k;
+> > 	assert(mixer);
+> > 	assert(mixer->compare);
+> > 	INIT_LIST_HEAD(&mixer->elems);
+> > 	qsort(mixer->pelems, mixer->count, sizeof(snd_mixer_elem_t*),
+> > snd_mixer_qsort_compare);
+> > 	for (k =3D 0; k < mixer->count; k++)
+> > 		list_add_tail(&mixer->pelems[k]->list, &mixer->elems);
+> > 	return 0;
+> > }
+>=20
+> You also need to make it thread-safe, as Clements mentioned; the PaX
+> team's proposal at https://bugs.gentoo.org/attachment.cgi?id=3D58918 does
+> that as well:
 
-----------------------------------------------------------------------
- Clemens Ladisch - 04-25-05 10:47 
-----------------------------------------------------------------------
-The hardware does support 44.1 kHz, but the driver and the device cannot
-agree on how to synchronize to each other.
+It does that only because it uses a static variable:
 
-I'm working on this.
+> +static snd_mixer_t *compare_mixer;
+> +static int mixer_compare(const void *a, const void *b) {
+> +	return compare_mixer->compare(*(const snd_mixer_elem_t * const *) a,
+> +				      *(const snd_mixer_elem_t * const *) b);
+> +}
 
-----------------------------------------------------------------------
- WMCoolmon - 05-16-05 07:16 
-----------------------------------------------------------------------
-I'd also be very interested in seeing this fixed. Sound quality on par with
-Windows is something I'd love to see in Linux; resampling never really
-sounds as good.
+Because compare_mixer in this implementation is shared between all
+threads, locking is required to make sure that different threads do not
+attemt to use this variable at the same time.  My code does not use static
+variables and therefore does not need such locking.
 
-It's great to hear someone's working on this. :)
+--liOOAslEiF7prFVr
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-13-05 17:22 gears          New Issue                                    
-04-13-05 17:22 gears          Distribution              => Ubuntu 5.04     
-04-13-05 17:22 gears          Kernel Version            => 2.6.10          
-04-25-05 10:47 Clemens LadischNote Added: 0004571                          
-04-25-05 10:47 Clemens LadischStatus                   assigned => acknowledged
-05-16-05 07:16 WMCoolmon      Note Added: 0004675                          
-======================================================================
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
+iD8DBQFCiF+JW82GfkQfsqIRAlaYAJ428WTLLldI4OFgtZEer2j9paDEyACfVxUG
+kenaZjZxb1UThqhFaDXN2Ok=
+=c1eo
+-----END PGP SIGNATURE-----
 
+--liOOAslEiF7prFVr--
 
 
 -------------------------------------------------------
