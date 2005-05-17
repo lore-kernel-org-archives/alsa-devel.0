@@ -1,13 +1,14 @@
-From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Subject: Re: [PATCH] alsa-tools
-Date: Tue, 17 May 2005 17:50:05 +0200
-Message-ID: <20050517155005.GA749@skinner.hem.za.org>
-References: <4288B114.1000900@glocalnet.net> <s5h1x86qlh0.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001074]: pcm_dmix hangs on device close
+Date: Tue, 17 May 2005 17:51:46 +0200
+Message-ID: <1cbdb7e824032d5befe4203689b539e8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="2fHTh5uZTiUOsy+g"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5h1x86qlh0.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4898E2CE
+	for <alsa-devel@alsa-project.org>; Tue, 17 May 2005 17:51:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,85 +18,96 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---2fHTh5uZTiUOsy+g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1074> 
+======================================================================
+Reported By:                ikonst
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1074
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             04-24-2005 08:48 CEST
+Last Modified:              05-17-2005 17:51 CEST
+======================================================================
+Summary:                    pcm_dmix hangs on device close
+Description: 
+The fix in pcm_dmix.c revision 1.71 causes the following regression:
 
-On Tue, May 17, 2005 at 10:56:43AM +0200, Takashi Iwai wrote:
-> At Mon, 16 May 2005 16:41:24 +0200,
-> Mikael Magnusson wrote:
-> > 
-> > ld10k1_configure.patch
-> > ld10k1_makefile.patch
-> > Removes ALSA_CFLAGS and ALSA_LIBS in configure.in, they are added to
-> > CFLAGS and LDADD in src/Makefile.am already. Adds "-Wall" to CFLAGS only
-> > if CFLAGS is undefined.
-> > 
-> > qlo10k1_configure.patch
-> > qlo10k1_makefile.patch
-> > Adds LD10K1_CFLAGS and LD10K1_LDFLAGS in src/Makefile.am, and moves
-> > QT_CXXFLAGS to the makefile.
-> > 
-> > qlo10k1_acinclude.patch
-> > Fixes pattern in gw_CHECK_QT not to match files that the linker won't
-> > use, for example libqt.so.3 . Needed if both libqt and libqt-mt shared
-> > libraries are installed, but only the libqt-mt development library.
-> 
-> Thanks.  I think we can get rid of -Wall.
-> It's not mandatory at all.  Let's simply remove CFLAGS=XXX lines.
-> 
-> Could you regenerate patches with that change?
-> 
-> 
-> Takashi
-> 
+Everytime I access a Flash site thru my 'aoss'-wrapped Mozilla, it hangs:
 
-Ok, I have removed -Wall from CFLAGS (and CXXFLAGS) in
-ld10k1_configure2.patch and qlo10k1_configure2.patch.
-I don't resend ld10k1_makefile.patch, qlo10k1_makefile.patch and
-qlo10k1_acinclude.patch, since they are unchanged.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x40a951c3 in poll ()
+from /lib/tls/libc.so.6
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x4001a1fd in poll ()
+from /usr/lib/libaoss.so
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x40c7bf78 in
+snd_pcm_wait_nocheck (pcm=0x9a7a6a0, timeout=-1)
+    at pcm.c:2234
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0x40cb27fb in
+snd_pcm_dmix_drain (pcm=0x9a7a6a0) at pcm_dmix.c:504
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x40c79bd4 in
+snd_pcm_drain (pcm=0xfffffffc) at pcm.c:1044
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x40c8cbb7 in
+snd_pcm_generic_drain (pcm=0xfffffffc) at
+pcm_generic.c:151
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x40c79bd4 in
+snd_pcm_drain (pcm=0xfffffffc) at pcm.c:1044
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x40bb24e7 in
+lib_oss_pcm_close () from /usr/lib/libalsatoss.so.0
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8  0x400199b4 in close ()
+from /usr/lib/libaoss.so
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9  0x441712b9 in
+PlatformSoundMix::UnlockAudioCallback ()
+   from /usr/lib/flashplugin-nonfree/libflashplayer.so
+...
 
-/Mikael Magnusson
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 05-15-05 15:45 
+----------------------------------------------------------------------
+Yeah, that's really bad.  We need to change these ioctls.
+Meanwhile, I'll apply your patch as a temporary workaround.
+
+----------------------------------------------------------------------
+ tiwai - 05-17-05 17:51 
+----------------------------------------------------------------------
+This should be fixed on CVS now.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-24-05 08:48 ikonst         New Issue                                    
+05-09-05 17:33 chtephan       Note Added: 0004627                          
+05-09-05 17:53 chtephan       Issue Monitored: chtephan                    
+05-09-05 20:41 chtephan       File Added: timer-flush-blocking.diff             
+      
+05-09-05 20:42 chtephan       Note Added: 0004629                          
+05-11-05 17:23 ikonst         Note Added: 0004638                          
+05-11-05 18:11 tiwai          Note Added: 0004639                          
+05-12-05 13:34 chtephan       Note Added: 0004641                          
+05-12-05 13:50 tiwai          Note Added: 0004642                          
+05-13-05 22:57 chtephan       Note Added: 0004656                          
+05-15-05 15:45 tiwai          Note Added: 0004662                          
+05-17-05 17:51 tiwai          Status                   new => resolved     
+05-17-05 17:51 tiwai          Resolution               open => fixed       
+05-17-05 17:51 tiwai          Assigned To               => tiwai           
+05-17-05 17:51 tiwai          Note Added: 0004680                          
+======================================================================
 
 
---2fHTh5uZTiUOsy+g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="ld10k1_configure2.patch"
-
-diff -urNad alsa-tools-1.0.8+1.0.9rc3/ld10k1/configure.in /tmp/dpep.byc0VN/alsa-tools-1.0.8+1.0.9rc3/ld10k1/configure.in
---- alsa-tools-1.0.8+1.0.9rc3/ld10k1/configure.in	2005-05-17 17:31:23.534229607 +0200
-+++ /tmp/dpep.byc0VN/alsa-tools-1.0.8+1.0.9rc3/ld10k1/configure.in	2005-05-17 17:31:39.847422177 +0200
-@@ -9,8 +9,6 @@
- AC_DISABLE_STATIC
- AC_PROG_LIBTOOL
- AM_PATH_ALSA(1.0.8, [], [])
--CFLAGS="$CFLAGS $ALSA_CFLAGS -Wall"
--LIBS="$LIBS $ALSA_LIBS"
- 
- effectsdir='$(pkgdatadir)/effects'
- AC_SUBST(effectsdir)
-
---2fHTh5uZTiUOsy+g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="qlo10k1_configure2.patch"
-
-diff -urNad alsa-tools-1.0.8+1.0.9rc3/qlo10k1/configure.in /tmp/dpep.6IrRDe/alsa-tools-1.0.8+1.0.9rc3/qlo10k1/configure.in
---- alsa-tools-1.0.8+1.0.9rc3/qlo10k1/configure.in	2005-05-17 17:31:23.116327144 +0200
-+++ /tmp/dpep.6IrRDe/alsa-tools-1.0.8+1.0.9rc3/qlo10k1/configure.in	2005-05-17 17:32:13.039675246 +0200
-@@ -8,7 +8,6 @@
- 
- AC_C_BIGENDIAN
- gw_CHECK_QT
--CXXFLAGS="$CXXFLAGS $QT_CXXFLAGS -Wall"
- AM_PATH_LD10K1(0.1.8)
- 
- AC_OUTPUT(Makefile
-
---2fHTh5uZTiUOsy+g--
 
 
 -------------------------------------------------------
