@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001098]: aoss openal    gives too fast sound.
-Date: Tue, 17 May 2005 17:53:32 +0200
-Message-ID: <4051ef2c4393d07245b1fe5e4fe16325@bugtrack.alsa-project.org>
+Date: Tue, 17 May 2005 17:52:56 +0200
+Message-ID: <d9ba626d422239fde010a88064af12e8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4DA172CE
-	for <alsa-devel@alsa-project.org>; Tue, 17 May 2005 17:53:32 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4BAAF2CE
+	for <alsa-devel@alsa-project.org>; Tue, 17 May 2005 17:52:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             05-09-2005 17:09 CEST
-Last Modified:              05-17-2005 17:53 CEST
+Last Modified:              05-17-2005 17:52 CEST
 ======================================================================
 Summary:                    aoss openal    gives too fast sound.
 Description: 
@@ -55,19 +55,12 @@ native_blitbuffer: select error occured
 You didn't pass "plug" layer, right?  Otherwise the sample rate isn't
 converted.
 
-----------------------------------------------------------------------
- tiwai - 05-17-05 17:53 
-----------------------------------------------------------------------
-BTW, with ALSA 1.0.9, dmix will be used automatically, so you don't have to
-set up the configuration explicitly.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-09-05 17:09 qwer1234       New Issue                                    
 05-09-05 17:15 qwer1234       Issue Monitored: qwer1234                    
 05-17-05 17:52 tiwai          Note Added: 0004681                          
-05-17-05 17:53 tiwai          Note Added: 0004682                          
 ======================================================================
 
 
