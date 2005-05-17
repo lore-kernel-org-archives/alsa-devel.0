@@ -1,14 +1,11 @@
-From: Marcel Holtmann <marcel@holtmann.org>
-Subject: Re: IO plugin and multiple poll descriptors
-Date: Tue, 17 May 2005 15:03:35 +0200
-Message-ID: <1116335015.10063.91.camel@pegasus>
-References: <1116173811.8886.55.camel@pegasus>
-	 <s5h3bsmqlq2.wl@alsa2.suse.de>
+From: infouk@pricerunner.com
+Subject: Deutsche Buerger trauen sich nicht ...
+Date: Tue, 17 May 2005 14:57:35 UTC
+Message-ID: <94cc.52a2a7d4f055bc@pricerunner.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h3bsmqlq2.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,40 +15,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Mailing List <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Auslaenderbanden terrorisieren Wahlkampf - deutsche Buerger trauen sich nicht ihre Meinung zu sagen!
 
-> > for the IO plugin we can specify one descriptor for poll().
-> > 
-> > 	io.poll_fd = fd;
-> > 	io.poll_events = POLLIN;
-> > 
-> > I like to use more than one, because in the Bluetooth cases I always
-> > have to deal with a signal and a separate media channel. Is it possible
-> > to add support for that or do I must work around it.
-> 
-> Currently, the alsa-lib handles only one poll_fd internally although
-> API allows the multiple poll_fds.  So, it's not quite easy to add the
-> multiple fds...
+Weiter auf:
+http://www.npd-nrw.net/aktuelles/03_2005/ak_presse_nrw_1603.htm
 
-are there any plans to change this in the future?
+Auslaender ueberfallen nationale Aktivisten:
+http://www.npd.de/npd_info/meldungen/2005/m0505-13.html
 
-Maybe it is a good idea to retrieve the poll_fd through a callback. I
-think of something like you already do in the library:
-
-	poll_descriptors(snd_pcm_ioplug_t *io, struct pollfd *pfds)
-	poll_descriptors_count(snd_pcm_ioplug_t *io)
-
-Or do you have a good idea on how to workaround it?
-
-Regards
-
-Marcel
-
-
+http://www.npd.de/npd_info/meldungen/2005/m0505-14.html
 
 
 -------------------------------------------------------
