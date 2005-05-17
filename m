@@ -1,13 +1,13 @@
-From: Peter Stuge <stuge-alsa@cdy.org>
-Subject: Re: USB soundcard acting up
-Date: Tue, 17 May 2005 17:05:15 +0200
-Message-ID: <20050517150515.GA25071@foo.birdnet.se>
-References: <20050517004134.GA15202@foo.birdnet.se> <Pine.HPX.4.33n.0505170945570.13786-100000@studcom.urz.uni-halle.de>
+From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+Subject: Re: [PATCH] alsa-tools
+Date: Tue, 17 May 2005 17:50:05 +0200
+Message-ID: <20050517155005.GA749@skinner.hem.za.org>
+References: <4288B114.1000900@glocalnet.net> <s5h1x86qlh0.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="2fHTh5uZTiUOsy+g"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0505170945570.13786-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <s5h1x86qlh0.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,55 +20,82 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-(I'm on the list, please don't cc me. Thanks!)
 
-Thanks for the reply!
+--2fHTh5uZTiUOsy+g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Tue, May 17, 2005 at 09:54:10AM +0200, Clemens Ladisch wrote:
-> Peter Stuge wrote:
-> > The PCM2902 is a USB Audio Class device and the ALSA driver picks it
-> > up without problems. It works well most of the time, but..
-> >
-> > Now and then the MD deck unlocks for a fraction of a second, i.e.
-> > loses sync in the digital input stream, which of course causes audio
-> > to be lost.
-> >
-> > Question is where the problem lies. It's not really reproducable, it
-> > happens stochastically whether I'm actually playing audio or not.
+On Tue, May 17, 2005 at 10:56:43AM +0200, Takashi Iwai wrote:
+> At Mon, 16 May 2005 16:41:24 +0200,
+> Mikael Magnusson wrote:
+> > 
+> > ld10k1_configure.patch
+> > ld10k1_makefile.patch
+> > Removes ALSA_CFLAGS and ALSA_LIBS in configure.in, they are added to
+> > CFLAGS and LDADD in src/Makefile.am already. Adds "-Wall" to CFLAGS only
+> > if CFLAGS is undefined.
+> > 
+> > qlo10k1_configure.patch
+> > qlo10k1_makefile.patch
+> > Adds LD10K1_CFLAGS and LD10K1_LDFLAGS in src/Makefile.am, and moves
+> > QT_CXXFLAGS to the makefile.
+> > 
+> > qlo10k1_acinclude.patch
+> > Fixes pattern in gw_CHECK_QT not to match files that the linker won't
+> > use, for example libqt.so.3 . Needed if both libqt and libqt-mt shared
+> > libraries are installed, but only the libqt-mt development library.
 > 
-> That is, when you aren't playing anything, the device sends a stream
-> of silence which has the same glitches?
+> Thanks.  I think we can get rid of -Wall.
+> It's not mandatory at all.  Let's simply remove CFLAGS=XXX lines.
+> 
+> Could you regenerate patches with that change?
+> 
+> 
+> Takashi
+> 
 
-Correct. This would indicate that the problem isn't really with ALSA,
-but I figured someone on the list could provide insight from
-experience with USB audio devices in general. :)
+Ok, I have removed -Wall from CFLAGS (and CXXFLAGS) in
+ld10k1_configure2.patch and qlo10k1_configure2.patch.
+I don't resend ld10k1_makefile.patch, qlo10k1_makefile.patch and
+qlo10k1_acinclude.patch, since they are unchanged.
 
-
-> The output endpoints use adaptive synchronization, i.e., the PCM2902
-> is responsible for determining the exact rate of USB data, and
-> synchronizin to that.  It may be possible that it thinks the sample
-> rate has changed, or that it can better approximate the USB data rate
-> by using a slightly different sample rate.
-
-Aha. I haven't read up on the Audio Class spec but I imagined there
-was a command for selecting the sampling rate.
-
-
-> Does this happen at both 44.1 and 48 kHz?  Synchronization at 44.1
-> kHz isn't easy because packet sizes aren't constant, but at 48 kHz,
-> the driver sends exactly 48 samples per USB frame.
-
-Right, I remember there was something special each 9th frame when
-running at 44.1 from when I've looked in the audio class spec last.
-
-But yes, it has happened at both rates. I've experimented back and
-forth but haven't found any sure way to either reproduce or suppress
-the problem.
-
-Thanks for the input so far!
+/Mikael Magnusson
 
 
-//Peter
+--2fHTh5uZTiUOsy+g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="ld10k1_configure2.patch"
+
+diff -urNad alsa-tools-1.0.8+1.0.9rc3/ld10k1/configure.in /tmp/dpep.byc0VN/alsa-tools-1.0.8+1.0.9rc3/ld10k1/configure.in
+--- alsa-tools-1.0.8+1.0.9rc3/ld10k1/configure.in	2005-05-17 17:31:23.534229607 +0200
++++ /tmp/dpep.byc0VN/alsa-tools-1.0.8+1.0.9rc3/ld10k1/configure.in	2005-05-17 17:31:39.847422177 +0200
+@@ -9,8 +9,6 @@
+ AC_DISABLE_STATIC
+ AC_PROG_LIBTOOL
+ AM_PATH_ALSA(1.0.8, [], [])
+-CFLAGS="$CFLAGS $ALSA_CFLAGS -Wall"
+-LIBS="$LIBS $ALSA_LIBS"
+ 
+ effectsdir='$(pkgdatadir)/effects'
+ AC_SUBST(effectsdir)
+
+--2fHTh5uZTiUOsy+g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="qlo10k1_configure2.patch"
+
+diff -urNad alsa-tools-1.0.8+1.0.9rc3/qlo10k1/configure.in /tmp/dpep.6IrRDe/alsa-tools-1.0.8+1.0.9rc3/qlo10k1/configure.in
+--- alsa-tools-1.0.8+1.0.9rc3/qlo10k1/configure.in	2005-05-17 17:31:23.116327144 +0200
++++ /tmp/dpep.6IrRDe/alsa-tools-1.0.8+1.0.9rc3/qlo10k1/configure.in	2005-05-17 17:32:13.039675246 +0200
+@@ -8,7 +8,6 @@
+ 
+ AC_C_BIGENDIAN
+ gw_CHECK_QT
+-CXXFLAGS="$CXXFLAGS $QT_CXXFLAGS -Wall"
+ AM_PATH_LD10K1(0.1.8)
+ 
+ AC_OUTPUT(Makefile
+
+--2fHTh5uZTiUOsy+g--
 
 
 -------------------------------------------------------
