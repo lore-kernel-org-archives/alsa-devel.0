@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001086]: surround5x plug will not work with nForce3 intel8x0
-Date: Tue, 17 May 2005 18:28:44 +0200
-Message-ID: <5d5c3aeac9881b74ab5121fb3eff5f8a@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001114]: Redline depends on terminal height
+Date: Tue, 17 May 2005 22:33:34 +0200
+Message-ID: <93129fe22939c2e0ab1ea92590dbee2f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B7904310
-	for <alsa-devel@alsa-project.org>; Tue, 17 May 2005 18:28:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8656C266
+	for <alsa-devel@alsa-project.org>; Tue, 17 May 2005 22:33:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,40 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1086> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1114> 
 ======================================================================
-Reported By:                b00zy
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1086
-Category:                   PCI - intel8x0
-Reproducibility:            N/A
+Project:                    ALSA - utils
+Issue ID:                   1114
+Category:                   alsamixer
+Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.11-gentoo-r4
 ======================================================================
-Date Submitted:             05-04-2005 10:27 CEST
-Last Modified:              05-17-2005 18:28 CEST
+Date Submitted:             05-17-2005 22:33 CEST
+Last Modified:              05-17-2005 22:33 CEST
 ======================================================================
-Summary:                    surround5x plug will not work with nForce3 intel8x0
+Summary:                    Redline depends on terminal height
 Description: 
-When trying to use -Dplug:surround50 with aplay I'm unable to get
-surround50 sound. Instead there is no sound.
+The submitter of Debian bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=309337 says the
+following:
 
-lame --decode 01-at_the_drive-in-fahrenheit.mp3 - |aplay -Dplug:surround50
--
-
-(no sound, though it *appears* to be playing)
-
-Without -Dplug:surround50, I get stereo sound through the front-left/right
-speakers, but nothing through rear-left/right or center speakers.
-
-lame --decode 01-at_the_drive-in-fahrenheit.mp3 - |aplay -
-
-(only front left/right speakers)
-
-XMMS produces the same behavior when I set the audio device for ALSA
-output plugin to "surround50". However, if I set I set it to
-plug:surround50, XMMS freezes.
+I noticed that that running alsamixer on a 50-line xterm, red appears on
+my volume controls between 79 and 81. On a 24-line xterm, it appears
+between 71 and 73. This seems slightly odd, though I don't know if
+there's any way to tell what PC soundcard mixers happen to put out. :)
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 05-07-05 09:57 
-----------------------------------------------------------------------
-Does 5.1 sound work?
-
-----------------------------------------------------------------------
- tiwai - 05-17-05 18:28 
-----------------------------------------------------------------------
-surround50 expects that the input channels are 5.
-You would need to define an appropriate PCM type in ~/.asoundrc together
-with route plugin with fixed "channels" parameter.  Otherwise the signals
-won't be sent to surrounds.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-04-05 10:27 b00zy          New Issue                                    
-05-04-05 10:27 b00zy          File Added: asound.state                     
-05-04-05 10:27 b00zy          Kernel Version            => 2.6.11-gentoo-r4
-05-04-05 10:29 b00zy          Issue Monitored: b00zy                       
-05-04-05 10:41 b00zy          Issue End Monitor: b00zy                     
-05-07-05 09:57 jdthood        Note Added: 0004603                          
-05-17-05 18:28 tiwai          Note Added: 0004684                          
+05-17-05 22:33 jdthood        New Issue                                    
 ======================================================================
 
 
