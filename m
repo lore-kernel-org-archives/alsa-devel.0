@@ -1,25 +1,11 @@
-From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Subject: [PATCH] alsa-tools
-Date: Mon, 16 May 2005 16:41:24 +0200
-Message-ID: <4288B114.1000900@glocalnet.net>
+From: Peter Stuge <stuge-alsa@cdy.org>
+Subject: USB soundcard acting up
+Date: Tue, 17 May 2005 02:41:34 +0200
+Message-ID: <20050517004134.GA15202@foo.birdnet.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060601000601050700000909"
+Content-Type: multipart/mixed; boundary="0OAP2g/MAC+5xKAE"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3FCB62AD
-	for <alsa-devel@alsa-project.org>; Mon, 16 May 2005 16:41:25 +0200 (MEST)
-Received: from mulder.hem.za.org (unknown [84.217.31.114])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 8217971DC3
-	for <alsa-devel@alsa-project.org>; Mon, 16 May 2005 16:41:24 +0200 (MEST)
-Received: from skinner.hem.za.org ([fec0::202:44ff:fe1d:d021])
-	by mulder.hem.za.org with esmtp (Exim 4.50)
-	id 1DXgmb-0002Zq-Ch
-	for alsa-devel@alsa-project.org; Mon, 16 May 2005 16:41:25 +0200
-Received: from localhost ([127.0.0.1])
-	by skinner.hem.za.org with esmtp (Exim 4.50)
-	id 1DXgmb-0003ZI-0Q
-	for alsa-devel@alsa-project.org; Mon, 16 May 2005 16:41:25 +0200
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -29,150 +15,1162 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------060601000601050700000909
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-ld10k1_configure.patch
-ld10k1_makefile.patch
-Removes ALSA_CFLAGS and ALSA_LIBS in configure.in, they are added to
-CFLAGS and LDADD in src/Makefile.am already. Adds "-Wall" to CFLAGS only
-if CFLAGS is undefined.
+--0OAP2g/MAC+5xKAE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-qlo10k1_configure.patch
-qlo10k1_makefile.patch
-Adds LD10K1_CFLAGS and LD10K1_LDFLAGS in src/Makefile.am, and moves
-QT_CXXFLAGS to the makefile.
+Hello,
 
-qlo10k1_acinclude.patch
-Fixes pattern in gw_CHECK_QT not to match files that the linker won't
-use, for example libqt.so.3 . Needed if both libqt and libqt-mt shared
-libraries are installed, but only the libqt-mt development library.
+I've built myself a simple USB soundcard from a PCM2902 TI chip and a
+TosLink transmitter to avoid the sub-optimal DAC and signalling
+environment in my laptop. The soundcard connects to my MD deck that I
+either record on or just use as a DAC for playback.
 
-Signed-Off-By: Mikael Magnusson <mikma@users.sourceforge.net>
+The PCM2902 is a USB Audio Class device and the ALSA driver picks it
+up without problems. It works well most of the time, but..
+
+Now and then the MD deck unlocks for a fraction of a second, i.e.
+loses sync in the digital input stream, which of course causes audio
+to be lost.
+
+Question is where the problem lies. It's not really reproducable, it
+happens stochastically whether I'm actually playing audio or not. It
+has happened with xmms OSS output+ALSA OSS emulation, xmms ALSA
+output, alsaplayer and I believe once with mplayer too.
+
+I have almost ruled out cabling completely, since I can remove the
+optical cable from the transmitter and still have the MD lock to the
+signal if I just hold the connector a few millimeters away from the
+transmitter.
+
+My circuit is a reference circuit straight from the data sheet,
+connected to the reference circuit for the optical transmitter. Just
+the chip and a handful passive components. Images at
+http://cdy.org/~stuge/usnd/
+
+I'm using ALSA compiled into the kernel, 2.6.11.7 right now and it
+seems to happen less frequently here than with the 2.6.12rc:s that I
+tried before. I've just compiled a 2.6.11.9 and will reboot into that
+shortly.
+
+Currently (2.6.11.7) :
+$ cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.8 (Thu Jan 13
+09:39:32 2005 UTC).
+
+$ cat /proc/asound/devices 
+  8: [0- 0]: raw midi
+ 18: [0- 2]: digital audio playback
+ 17: [0- 1]: digital audio playback
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+ 33:       : timer
+ 48: [1- 0]: digital audio playback
+ 56: [1- 0]: digital audio capture
+ 32: [1- 0]: ctl
+
+$ cat /proc/asound/cards
+0 [CS46xx         ]: CS46xx - Sound Fusion CS46xx
+                     Sound Fusion CS46xx at 0xe8122000/0xe8000000,
+irq 9
+1 [default        ]: USB-Audio - USB Audio CODEC 
+                     Burr-Brown from TI               USB Audio CODEC
+at usb-0000:00:07.2-1.3, full
+
+$ cat /proc/asound/pcm
+00-00: CS46xx : CS46xx : playback 31 : capture 1
+00-01: CS46xx - Rear : CS46xx - Rear : playback 31
+00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
+01-00: USB Audio : USB Audio : playback 1 : capture 1
+
+Of course, I could use the 00-02 output instead, but I can't find a
+connector for it on the laptop.
+
+Anyway, does this sound at all like something related to ALSA? What
+can I do to help debug? I know a fair bit of USB but haven't done
+anything audio class before. lsusb -v output is attached.
+
+Thanks for your time!
 
 
---------------060601000601050700000909
-Content-Type: text/x-patch;
- name="ld10k1_configure.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ld10k1_configure.patch"
+//Peter
 
-diff -ur orig/alsa-tools-1.0.9rc3/ld10k1/configure.in alsa-tools-1.0.9rc3/ld10k1/configure.in
---- orig/alsa-tools-1.0.9rc3/ld10k1/configure.in        2005-04-11 15:15:52.000000000 +0200
-+++ alsa-tools-1.0.9rc3/ld10k1/configure.in     2005-05-14 23:18:10.000000000 +0200
-@@ -9,8 +9,7 @@
- AC_DISABLE_STATIC
- AC_PROG_LIBTOOL
- AM_PATH_ALSA(1.0.8, [], [])
--CFLAGS="$CFLAGS $ALSA_CFLAGS -Wall"
--LIBS="$LIBS $ALSA_LIBS"
-+CFLAGS="${CFLAGS--Wall}"
- 
- effectsdir='$(pkgdatadir)/effects'
- AC_SUBST(effectsdir)
+--0OAP2g/MAC+5xKAE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="lsusb-pcm2902.txt"
 
---------------060601000601050700000909
-Content-Type: text/x-patch;
- name="ld10k1_makefile.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ld10k1_makefile.patch"
 
-diff -ur orig/alsa-tools-1.0.9rc3/ld10k1/src/Makefile.am alsa-tools-1.0.9rc3/ld10k1/src/Makefile.am
---- orig/alsa-tools-1.0.9rc3/ld10k1/src/Makefile.am     2005-03-18 14:41:02.000000000 +0100
-+++ alsa-tools-1.0.9rc3/ld10k1/src/Makefile.am  2005-05-15 00:37:00.000000000 +0200
-@@ -13,6 +13,8 @@
- lib_LTLIBRARIES = liblo10k1.la
- liblo10k1_la_SOURCES = comm.c liblo10k1.c liblo10k1ef.c liblo10k1lf.c
- #liblo10k1_la_HEADERS = comm.h liblo10k1.h liblo10k1ef.h ld10k1_error.h ld10k1_fnc.h liblo10k1lf.h
-+liblo10k1_la_CFLAGS = $(ALSA_CFLAGS)
-+liblo10k1_la_LIBADD = $(ALSA_LIBS)
- 
- lo10k1_SOURCES = lo10k1.c
- lo10k1_CFLAGS = $(ALSA_CFLAGS) -DEFFECTSDIR='"$(effectsdir)"'
+Bus 001 Device 004: ID 08bb:2902 Texas Instruments Japan 
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0 
+  bDeviceProtocol         0 
+  bMaxPacketSize0         8
+  idVendor           0x08bb Texas Instruments Japan
+  idProduct          0x2902 
+  bcdDevice            1.00
+  iManufacturer           1 Burr-Brown from TI              
+  iProduct                2 USB Audio CODEC 
+  iSerial                 0 
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength         1191
+    bNumInterfaces          4
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x80
+    MaxPower              100mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      1 Control Device
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                10
+        bDescriptorType        36
+        bDescriptorSubtype      1 (HEADER)
+        bcdADC               1.00
+        wTotalLength           62
+        bInCollection           2
+        baInterfaceNr( 0)       1
+        baInterfaceNr( 1)       2
+      AudioControl Interface Descriptor:
+        bLength                12
+        bDescriptorType        36
+        bDescriptorSubtype      2 (INPUT_TERMINAL)
+        bTerminalID             1
+        wTerminalType      0x0101 USB Streaming
+        bAssocTerminal          0
+        bNrChannels             2
+        wChannelConfig     0x0003
+          Left Front (L)
+          Right Front (R)
+        iChannelNames           0 
+        iTerminal               0 
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+        bTerminalID             2
+        wTerminalType      0x0301 Speaker
+        bAssocTerminal          0
+        bSourceID               3
+        iTerminal               0 
+      AudioControl Interface Descriptor:
+        bLength                10
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                 3
+        bSourceID               1
+        bControlSize            1
+        bmaControls( 0)      0x01
+          Mute
+        bmaControls( 0)      0x02
+          Volume
+        bmaControls( 0)      0x02
+          Volume
+        iFeature                0 
+      AudioControl Interface Descriptor:
+        bLength                12
+        bDescriptorType        36
+        bDescriptorSubtype      2 (INPUT_TERMINAL)
+        bTerminalID             4
+        wTerminalType      0x0201 Microphone
+        bAssocTerminal          0
+        bNrChannels             2
+        wChannelConfig     0x0003
+          Left Front (L)
+          Right Front (R)
+        iChannelNames           0 
+        iTerminal               0 
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+        bTerminalID             5
+        wTerminalType      0x0101 USB Streaming
+        bAssocTerminal          0
+        bSourceID               4
+        iTerminal               0 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                17
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            3 Discrete
+        tSamFreq[ 0]        32000
+        tSamFreq[ 1]        44100
+        tSamFreq[ 2]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+        wMaxPacketSize        192
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay            512 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       2
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                17
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             1
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            3 Discrete
+        tSamFreq[ 0]        32000
+        tSamFreq[ 1]        44100
+        tSamFreq[ 2]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+        wMaxPacketSize         96
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay            512 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       3
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                17
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           1
+        bBitResolution          8
+        bSamFreqType            3 Discrete
+        tSamFreq[ 0]        32000
+        tSamFreq[ 1]        44100
+        tSamFreq[ 2]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+        wMaxPacketSize         96
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay            512 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       4
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                17
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             1
+        bSubframeSize           1
+        bBitResolution          8
+        bSamFreqType            3 Discrete
+        tSamFreq[ 0]        32000
+        tSamFreq[ 1]        44100
+        tSamFreq[ 2]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+        wMaxPacketSize         48
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay            512 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       5
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              2 PCM8
+      AudioControl Interface Descriptor:
+        bLength                17
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           1
+        bBitResolution          8
+        bSamFreqType            3 Discrete
+        tSamFreq[ 0]        32000
+        tSamFreq[ 1]        44100
+        tSamFreq[ 2]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+        wMaxPacketSize         96
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay            512 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       6
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              2 PCM8
+      AudioControl Interface Descriptor:
+        bLength                17
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             1
+        bSubframeSize           1
+        bBitResolution          8
+        bSamFreqType            3 Discrete
+        tSamFreq[ 0]        32000
+        tSamFreq[ 1]        44100
+        tSamFreq[ 2]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+        wMaxPacketSize         48
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay            512 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        196
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       2
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             1
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize         98
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       3
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        44100
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        180
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       4
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             1
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        44100
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize         90
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       5
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        32000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize        132
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       6
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             1
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        32000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize         66
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       7
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        22050
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize         92
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       8
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             1
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        22050
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize         46
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting       9
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        16000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize         68
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting      10
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             1
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        16000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize         34
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting      11
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           1
+        bBitResolution          8
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        16000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize         34
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting      12
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             1
+        bSubframeSize           1
+        bBitResolution          8
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        16000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize         17
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting      13
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           1
+        bBitResolution          8
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]         8000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize         18
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting      14
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             1
+        bSubframeSize           1
+        bBitResolution          8
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]         8000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x84  EP 4 IN
+        bmAttributes            5
+          Transfer Type            Isochronous
+          Synch Type               Asynchronous
+        wMaxPacketSize          9
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay              0 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        2
+      bAlternateSetting      15
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0 
+      iInterface              0 
+      AudioControl Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           5
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioControl Interface Descriptor:
+        bLength                11
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            1 Discrete
+        tSamFreq[ 0]        11025
+  descriptor length past end: 09 05 84
+  Language IDs: (length=4)
+     0409 English(US)
 
---------------060601000601050700000909
-Content-Type: text/x-patch;
- name="qlo10k1_acinclude.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="qlo10k1_acinclude.patch"
-
-diff -ur orig/alsa-tools-1.0.9rc3/qlo10k1/acinclude.m4 alsa-tools-1.0.9rc3/qlo10k1/acinclude.m4
---- orig/alsa-tools-1.0.9rc3/qlo10k1/acinclude.m4	2005-03-18 17:42:49.000000000 +0100
-+++ alsa-tools-1.0.9rc3/qlo10k1/acinclude.m4	2005-05-14 17:12:04.000000000 +0200
-@@ -99,17 +99,17 @@
-             fi
-         fi
- 
--        if test "x`ls $QTDIR/lib/libqt.* 2> /dev/null`" != x ; then
-+        if test "x`ls $QTDIR/lib/libqt.{a,so} 2> /dev/null`" != x ; then
-             QT_LIB="-lqt"
-             QT_IS_MT="no"
--        elif test "x`ls $QTDIR/lib/libqt-mt.* 2> /dev/null`" != x ; then
-+        elif test "x`ls $QTDIR/lib/libqt-mt.{a,so} 2> /dev/null`" != x ; then
-             QT_LIB="-lqt-mt"
-             QT_IS_MT="yes"
--        elif test "x`ls $QTDIR/lib/libqte.* 2> /dev/null`" != x ; then
-+        elif test "x`ls $QTDIR/lib/libqte.{a,so} 2> /dev/null`" != x ; then
-             QT_LIB="-lqte"
-             QT_IS_MT="no"
-             QT_IS_EMBEDDED="yes"
--        elif test "x`ls $QTDIR/lib/libqte-mt.* 2> /dev/null`" != x ; then
-+        elif test "x`ls $QTDIR/lib/libqte-mt.{a,so} 2> /dev/null`" != x ; then
-             QT_LIB="-lqte-mt"
-             QT_IS_MT="yes"
-             QT_IS_EMBEDDED="yes"
-
---------------060601000601050700000909
-Content-Type: text/x-patch;
- name="qlo10k1_configure.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="qlo10k1_configure.patch"
-
-diff -ur orig/alsa-tools-1.0.9rc3/qlo10k1/configure.in alsa-tools-1.0.9rc3/qlo10k1/configure.in
---- orig/alsa-tools-1.0.9rc3/qlo10k1/configure.in       2005-03-18 17:42:49.000000000 +0100
-+++ alsa-tools-1.0.9rc3/qlo10k1/configure.in    2005-05-14 17:13:38.000000000 +0200
-@@ -8,7 +8,7 @@
- 
- AC_C_BIGENDIAN
- gw_CHECK_QT
--CXXFLAGS="$CXXFLAGS $QT_CXXFLAGS -Wall"
-+CXXFLAGS="${CXXFLAGS--Wall}"
- AM_PATH_LD10K1(0.1.8)
- 
- AC_OUTPUT(Makefile
-
---------------060601000601050700000909
-Content-Type: text/x-patch;
- name="qlo10k1_makefile.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="qlo10k1_makefile.patch"
-
-diff -ur orig/alsa-tools-1.0.9rc3/qlo10k1/src/Makefile.am alsa-tools-1.0.9rc3/qlo10k1/src/Makefile.am
---- orig/alsa-tools-1.0.9rc3/qlo10k1/src/Makefile.am    2005-03-18 17:42:49.000000000 +0100
-+++ alsa-tools-1.0.9rc3/qlo10k1/src/Makefile.am 2005-05-14 22:04:16.000000000 +0200
-@@ -4,6 +4,10 @@
- # of the other Makefile.am variables
- bin_PROGRAMS = qlo10k1
- 
-+AM_CPPFLAGS = $(LD10K1_CFLAGS)
-+AM_CXXFLAGS= $(QT_CXXFLAGS)
-+AM_LDFLAGS = $(LD10K1_LDFLAGS)
-+
- # the libraries to link against.
- qlo10k1_LDADD = $(LDADD) $(QT_LDADD)
- 
-
---------------060601000601050700000909--
+--0OAP2g/MAC+5xKAE--
 
 
 -------------------------------------------------------
