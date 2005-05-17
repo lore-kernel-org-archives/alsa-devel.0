@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: High Speed USB Support?
-Date: Tue, 17 May 2005 12:42:23 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0505171239130.4787-100000@studcom.urz.uni-halle.de>
-References: <33485.192.168.0.245.1115909520.squirrel@www.teg-electronics.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001089]: ali5451 doesn't work on Sun Blade 150
+Date: Tue, 17 May 2005 13:40:37 +0200
+Message-ID: <ee6378dec5a13a2fab98971e03b25918@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <33485.192.168.0.245.1115909520.squirrel@www.teg-electronics.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 85EC729C
+	for <alsa-devel@alsa-project.org>; Tue, 17 May 2005 13:40:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,77 +18,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mailinglist@teg-electronics.com
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-mailinglist@teg-electronics.com wrote:
-> if I send the wrong byte order to the feedback endpoint which may
-> lock the computer (I guess I shouldn't do that :-) ).
 
-Thanks, fixed now.  :-)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1089> 
+======================================================================
+Reported By:                gelaslean
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1089
+Category:                   PCI - ali5451
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             2.6.8 - 2.6.11.8
+======================================================================
+Date Submitted:             05-06-2005 15:44 CEST
+Last Modified:              05-17-2005 13:40 CEST
+======================================================================
+Summary:                    ali5451 doesn't work on Sun Blade 150
+Description: 
+My Sun Blade 150 (sparc64 cpu) has an onboard ali5451 chipset.
+I installed Debian Sarge and update all packages with apt-get.
+When I load snd-ali-5451 module the system respond with:
 
-> I was hoping to avoid having do develop a driver by folowing the
-> USB audio spec, unfortunately neither the general USB audio driver
-> in Windows or Linux seems to support High Speed USB.
+ioctl32(alsactl:2142): Unknown cmd fd(3) cmd(40045500){00} arg(effff734)
+on /dev/snd/controlC0
+ioctl32(amixer:2146): Unknown cmd fd(3) cmd(40045500){00} arg(effff814) on
+/dev/snd/controlC0
+ioctl32(amixer:2149): Unknown cmd fd(3) cmd(40045500){00} arg(effff814) on
+/dev/snd/controlC0
+ioctl32(amixer:2152): Unknown cmd fd(3) cmd(40045500){00} arg(effff814) on
+/dev/snd/controlC0
+<snipped many other similar lines>
 
-Playback on the Audigy 2 NX works fine now.
+Obviusly ALSA system doesn't work.
 
-Please try the latest driver (my patch should be on the public
-SourceForge CVS server in a few hours), _and_ apply the following
-patch to the kernel:
+I tried with 2.6.8 (standard Debian package) and 2.6.11.8 (vanilla
+sources) kernel. 
 
+Any hints?
 
-Index: linux-2.6.11/drivers/usb/host/ehci-sched.c
-===================================================================
---- linux-2.6.11.orig/drivers/usb/host/ehci-sched.c	2005-03-02 22:00:29.000000000 +0100
-+++ linux-2.6.11/drivers/usb/host/ehci-sched.c	2005-05-14 16:41:21.000000000 +0200
-@@ -1203,8 +1203,7 @@
- 	struct ehci_itd		*itd,
- 	struct ehci_iso_sched	*iso_sched,
- 	unsigned		index,
--	u16			uframe,
--	int			first
-+	u16			uframe
- )
- {
- 	struct ehci_iso_packet	*uf = &iso_sched->packet [index];
-@@ -1221,7 +1220,7 @@
- 	itd->hw_bufp_hi [pg] |= cpu_to_le32 ((u32)(uf->bufp >> 32));
+Leandro Gelasi
 
- 	/* iso_frame_desc[].offset must be strictly increasing */
--	if (unlikely (!first && uf->cross)) {
-+	if (unlikely (uf->cross)) {
- 		u64	bufp = uf->bufp + 4096;
- 		itd->pg = ++pg;
- 		itd->hw_bufp [pg] |= cpu_to_le32 (bufp & ~(u32)0);
-@@ -1250,7 +1249,7 @@
- 	struct ehci_iso_stream	*stream
- )
- {
--	int			packet, first = 1;
-+	int			packet;
- 	unsigned		next_uframe, uframe, frame;
- 	struct ehci_iso_sched	*iso_sched = urb->hcpriv;
- 	struct ehci_itd		*itd;
-@@ -1283,7 +1282,6 @@
- 			list_move_tail (&itd->itd_list, &stream->td_list);
- 			itd->stream = iso_stream_get (stream);
- 			itd->urb = usb_get_urb (urb);
--			first = 1;
- 			itd_init (stream, itd);
- 		}
+======================================================================
 
-@@ -1291,8 +1289,7 @@
- 		frame = next_uframe >> 3;
+----------------------------------------------------------------------
+ gelaslean - 05-17-05 13:40 
+----------------------------------------------------------------------
+The sound card works with Trident OSS driver, but the mixer doesn't work.
+For example, kmixer seems to work correctly, but the mixer level are not
+setted.
 
- 		itd->usecs [uframe] = stream->usecs;
--		itd_patch (itd, iso_sched, packet, uframe, first);
--		first = 0;
-+		itd_patch (itd, iso_sched, packet, uframe);
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-06-05 15:44 gelaslean      New Issue                                    
+05-06-05 15:44 gelaslean      Distribution              => Debian Sarge    
+05-06-05 15:44 gelaslean      Kernel Version            => 2.6.8 - 2.6.11.8
+05-17-05 13:40 gelaslean      Note Added: 0004678                          
+======================================================================
 
- 		next_uframe += stream->interval;
- 		stream->depth += stream->interval;
 
 
 
