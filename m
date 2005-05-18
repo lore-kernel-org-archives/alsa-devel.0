@@ -1,15 +1,14 @@
-From: Marcel Holtmann <marcel@holtmann.org>
-Subject: Re: IO plugin and multiple poll descriptors
-Date: Wed, 18 May 2005 14:05:43 +0200
-Message-ID: <1116417943.10063.234.camel@pegasus>
-References: <1116173811.8886.55.camel@pegasus>
-	 <s5h3bsmqlq2.wl@alsa2.suse.de> <1116335015.10063.91.camel@pegasus>
-	 <s5h7jhxq15v.wl@alsa2.suse.de>  <s5hu0l0okxs.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001089]: ali5451 doesn't work on Sun Blade 150
+Date: Wed, 18 May 2005 14:11:25 +0200
+Message-ID: <4f2510a0cf242d334c06ec2fc52822a5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hu0l0okxs.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3FDB7294
+	for <alsa-devel@alsa-project.org>; Wed, 18 May 2005 14:11:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,92 +18,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Mailing List <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-> > > > > for the IO plugin we can specify one descriptor for poll().
-> > > > > 
-> > > > > 	io.poll_fd = fd;
-> > > > > 	io.poll_events = POLLIN;
-> > > > > 
-> > > > > I like to use more than one, because in the Bluetooth cases I always
-> > > > > have to deal with a signal and a separate media channel. Is it possible
-> > > > > to add support for that or do I must work around it.
-> > > > 
-> > > > Currently, the alsa-lib handles only one poll_fd internally although
-> > > > API allows the multiple poll_fds.  So, it's not quite easy to add the
-> > > > multiple fds...
-> > > 
-> > > are there any plans to change this in the future?
-> > > 
-> > > Maybe it is a good idea to retrieve the poll_fd through a callback. I
-> > > think of something like you already do in the library:
-> > > 
-> > > 	poll_descriptors(snd_pcm_ioplug_t *io, struct pollfd *pfds)
-> > > 	poll_descriptors_count(snd_pcm_ioplug_t *io)
-> > > 
-> > > Or do you have a good idea on how to workaround it?
-> > 
-> > I agree, adding the appropriate new callbacks would be the simplest
-> > solution.  I'll implement it soon if no one is against it.
-> 
-> I added the new callbacks to CVS.
-> The following two fields are added to snd_pcm_ioplug_callback_t:
-> 
-> 	/**
-> 	 * poll descriptors count; optional
-> 	 */
-> 	int (*poll_descriptors_count)(snd_pcm_ioplug_t *io);
-> 	/**
-> 	 * poll descriptors; optional
-> 	 */
-> 	int (*poll_descriptors)(snd_pcm_ioplug_t *io, struct pollfd *pfd, unsigned int space);
-> 
-> If they are NULL, poll_fd is used as well as in the former version.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1089> 
+======================================================================
+Reported By:                gelaslean
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1089
+Category:                   PCI - ali5451
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sarge
+Kernel Version:             2.6.8 - 2.6.11.8
+======================================================================
+Date Submitted:             05-06-2005 15:44 CEST
+Last Modified:              05-18-2005 14:11 CEST
+======================================================================
+Summary:                    ali5451 doesn't work on Sun Blade 150
+Description: 
+My Sun Blade 150 (sparc64 cpu) has an onboard ali5451 chipset.
+I installed Debian Sarge and update all packages with apt-get.
+When I load snd-ali-5451 module the system respond with:
 
-should we set poll_fd to -1 or leave it untouched when using the new
-callbacks.
+ioctl32(alsactl:2142): Unknown cmd fd(3) cmd(40045500){00} arg(effff734)
+on /dev/snd/controlC0
+ioctl32(amixer:2146): Unknown cmd fd(3) cmd(40045500){00} arg(effff814) on
+/dev/snd/controlC0
+ioctl32(amixer:2149): Unknown cmd fd(3) cmd(40045500){00} arg(effff814) on
+/dev/snd/controlC0
+ioctl32(amixer:2152): Unknown cmd fd(3) cmd(40045500){00} arg(effff814) on
+/dev/snd/controlC0
+<snipped many other similar lines>
 
-We can set poll_events through the callback now, right? I like to have
-different events for different descriptors. One POLLIN and one POLLOUT.
+Obviusly ALSA system doesn't work.
 
-What happens at the moment when I really return two poll_fd.
+I tried with 2.6.8 (standard Debian package) and 2.6.11.8 (vanilla
+sources) kernel. 
 
-> This change breaks the compatibility with older versions.
-> For the future compatibility, I added a new field to
-> snd_pcm_ioplug_t.
+Any hints?
 
-Does it? If the new callbacks are not used you will fall back to poll_fd
-and so no difference at all.
+Leandro Gelasi
 
-And you never released a final version with IOPLUG support.
+======================================================================
 
-> The first field of snd_pcm_ioplug_t is "version" now.  This field must
-> be filled by the caller with SND_PCM_IOPLUG_VERSION constant defined
-> in pcm_ioplug.h.
-> 
-> struct snd_pcm_ioplug {
-> 	/**
-> 	 * protocol version; SND_PCM_IOPLUG_VERSION must be filled here
-> 	 * before calling #snd_pcm_ioplug_create()
-> 	 */
-> 	unsigned int version;
-> 	/**
-> 	 * name of this plugin; must be filled before calling #snd_pcm_ioplug_create()
-> 	 */
-> 	const char *name;
-> 	...
-> 
-> Could you change your driver to follow this?
+----------------------------------------------------------------------
+ tiwai - 05-17-05 17:50 
+----------------------------------------------------------------------
+ioctl32 wrapper was largely rewritten in the recent version.
 
-As soon as the anonymous CVS gives me the code ;)
+----------------------------------------------------------------------
+ gelaslean - 05-18-05 14:11 
+----------------------------------------------------------------------
+I just succeded to obtain a working audio in KDE (that was what I want at
+beginning). After various attempt I upgraded alsa-utils to 1.0.8+1.0.9rc3
+Debian package and now I can use artsd in "Threaded OSS" mode (disabling
+autoconfigure).
+Other alsa packages are at 1.0.8 version with Debian patched kernel
+2.6.8.
 
-Regards
+The problems with ioctl32 are still present and I think that alsa in
+working only as OSS emulation mode.
 
-Marcel
+It is possible this is a 32/64 bit issue?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-06-05 15:44 gelaslean      New Issue                                    
+05-06-05 15:44 gelaslean      Distribution              => Debian Sarge    
+05-06-05 15:44 gelaslean      Kernel Version            => 2.6.8 - 2.6.11.8
+05-17-05 13:40 gelaslean      Note Added: 0004678                          
+05-17-05 17:50 tiwai          Note Added: 0004679                          
+05-18-05 14:11 gelaslean      Note Added: 0004686                          
+======================================================================
 
 
 
