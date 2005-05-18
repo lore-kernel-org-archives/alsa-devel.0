@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001098]: aoss openal    gives too fast sound.
-Date: Wed, 18 May 2005 00:38:54 +0200
-Message-ID: <2fd622802343dfe22205ef3725d3de0a@bugtrack.alsa-project.org>
+From: "John O'Donnell" <johnod@covad.net>
+Subject: Re: made the jump from 0.9.0rc1 (2.4.29) to 1.0.8	(2.6.11.9)
+Date: Tue, 17 May 2005 21:40:51 -0400
+Message-ID: <428A9D23.9070509@covad.net>
+References: <428836D1.6060603@covad.net> <1116226446.26508.2.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 64F832BB
-	for <alsa-devel@alsa-project.org>; Wed, 18 May 2005 00:38:54 +0200 (MEST)
+In-Reply-To: <1116226446.26508.2.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,125 +17,101 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> On Mon, 2005-05-16 at 01:59 -0400, John O'Donnell wrote:
+> 
+>>alsamixer: function snd_ctl_open failed for default: No such file or 
+>>directory
+>>
+> 
+> 
+> It sounds like the /dev/snd/* entries do not exist.  Your distros
+> install scripts should create them.
+> 
+> Lee
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1098> 
-======================================================================
-Reported By:                qwer1234
-Assigned To:                
-======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1098
-Category:                   
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             05-09-2005 17:09 CEST
-Last Modified:              05-18-2005 00:38 CEST
-======================================================================
-Summary:                    aoss openal    gives too fast sound.
-Description: 
-Opanal layer gives too fast sound when I use aoss wrapper and I get this
-error multiple times:
+TYVM - that was precisely the problem.  I ran sndconfig and all is well.
+But I seem to have to run that every time I boot.  I think Slackware 
+10.1+ uses udev if that means anything to anyone.  I havent done 
+research yet and it is a minor issue...
 
-native_blitbuffer: select error occured
+compared with the next issue.  And this keeps me back in 2.4/0.9.0rc1.
 
-======================================================================
+Weird issue.  Everything else seems to work, World of Warcraft under 
+cedega, xine (been watching long movies, etc just fine), xmms works 
+great thru my 2nd sound card (onboard VIA) line-linked to my 1st 
+(trident) which is how I always listen to MP3s and play Enemy Territory 
+(ET uses the sound exclusively and I like to use TeamSpeak at the same 
+time).  Teamspeak works great thru the primary card.
 
-----------------------------------------------------------------------
- tiwai - 05-17-05 17:53 
-----------------------------------------------------------------------
-BTW, with ALSA 1.0.9, dmix will be used automatically, so you don't have to
-set up the configuration explicitly.
+I am a Unreal Tournament NUT at heart.  I cant leave this game.  I run a 
+dual proc linux server hosted with like 10 UT servers.
 
-----------------------------------------------------------------------
- qwer1234 - 05-18-05 00:38 
-----------------------------------------------------------------------
-I don't understand this sentence:
-You didn't pass "plug" layer.
-My asound.conf is:
-pcm.dmixoss {
-         type dmix
-         ipc_key 5678293
-         slave {
-           pcm "hw:0,0"
-           period_time 0
-           period_size 1024
-           buffer_size 8192
-	   rate 48000
-         }
-      bindings {
-       	   0 0 # from 0 => to 0
-   	   1 1 # from 1 => to 1
-    }
-}
-pcm.dsnooposs {
-         type dsnoop
-         ipc_key 5778293
-         slave {
-             pcm "hw:0,0"
-             period_time 0
-             period_size 1024
-             buffer_size 8192
-	     rate 48000
-	}
-    bindings {
-        0 0 # from 0 => to 0
-        1 1 # from 1 => to 1
-    }
-} 
-pcm.duplex {
-        type asym
-        playback.pcm "dmixoss"
-        capture.pcm "dsnooposs"
-}
+The sound in my client STUTTERS?!?!?  I thought maybe it was video as it 
+affects the video display too, but I ran ut -nosound and no odd video 
+effects, so I believe it is definitely sound driver related.  I thought 
+maybe turning off the kernel preemption might help but it has made no 
+difference.
 
-pcm.!default {
-        type plug
-        slave.pcm "duplex"
-}
+UT uses OSS.  I am not sure what all the other software is using.
 
-ctl.!default {
-	type hw           
-	card 0
-}
+I have tried both the Generic and OpenAL subsystems and BOTH stutter and 
+crackle.  I have always used the Generic in the past with both real OSS 
+drivers (before discovering ALSA long ago) and ALSA itself.
 
-pcm.dsp0 {
-    type plug
-    slave.pcm "duplex"
-}
+[Audio.GenericAudioSubsystem]
+UseFilter=True
+UseSurround=False
+UseStereo=True
+UseCDMusic=False
+UseDigitalMusic=False
+UseSpatial=False
+UseReverb=False
+Use3dHardware=False
+LowSoundQuality=False
+ReverseStereo=False
+Latency=40
+OutputRate=22050Hz
+Channels=16
+MusicVolume=0
+SoundVolume=32
+AmbientFactor=0.700000
+DopplerSpeed=0.000000
 
-ctl.dsp0 {
-    type hw
-    card 0
-}
+[ALAudio.ALAudioSubsystem]
+UseFilter=True
+UseSurround=False
+UseStereo=True
+UseCDMusic=False
+UseDigitalMusic=True
+UseSpatial=True
+UseReverb=True
+Use3dHardware=False
+LowSoundQuality=False
+ReverseStereo=False
+Latency=40
+OutputRate=22050Hz
+Channels=16
+MusicVolume=0
+SoundVolume=32
+AmbientFactor=0.700000
+DopplerSpeed=0.000000
+MusicBufferSize=16384
 
-ctl.mixer0 {
-    type hw 
-    card 0
-}
-ctl.mixer {
-    type hw
-    card 0
-}
+Any Ideas?!?
+TIA
+Johnny O
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-09-05 17:09 qwer1234       New Issue                                    
-05-09-05 17:15 qwer1234       Issue Monitored: qwer1234                    
-05-17-05 17:52 tiwai          Note Added: 0004681                          
-05-17-05 17:53 tiwai          Note Added: 0004682                          
-05-18-05 00:38 qwer1234       Note Added: 0004685                          
-======================================================================
-
-
+-- 
+=== Never ask a geek why, just nod your head and slowly back away.===
++================================+==================================+
+|  John O'Donnell                |                                  |
+|  (Sr. Systems Engineer,        |     http://juanisan.homeip.net   |
+|  Net Admin, Webmaster, etc.)   |     E-Mail: johnod@covad.net     |
++================================+==================================+
 
 
 -------------------------------------------------------
