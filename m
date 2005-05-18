@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001756]: Detects soundcard, alsamixer is ok, fiddled with switches, but no audio output
-Date: Sat, 25 Feb 2006 18:57:33 +0100
-Message-ID: <e0ef25b74f2b1cc31e553b7a374b8097@bugtrack.alsa-project.org>
+From: "Bennett Sutherland" <robbins@airliquide.com>
+Subject: Pre-approvedd rate #vjwlnythwlgfbtl
+Date: Wed, 18 May 2005 03:50:25 -0800
+Message-ID: <37816.8906122029$1140904510@news.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+ boundary="------------RecordSys..cotyledon.nazarene"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8AC391C9
-	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 18:57:33 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8AA9F1D7
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 22:02:01 +0100 (MET)
+Received: from wmh38-2-82-236-97-87.fbx.proxad.net (wmh38-2-82-236-97-87.fbx.proxad.net [82.236.97.87])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id BEF5A761A2
+	for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2006 22:01:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,259 +24,189 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------RecordSys..cotyledon.nazarene
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1756> 
-======================================================================
-Reported By:                rawsock
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1756
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu Breezy Badger
-Kernel Version:             2.6.12-i686
-======================================================================
-Date Submitted:             01-16-2006 18:51 CET
-Last Modified:              02-25-2006 18:57 CET
-======================================================================
-Summary:                    Detects soundcard, alsamixer is ok, fiddled with
-switches, but no audio output
-Description: 
-Tried switching External Amplifier, SPDIF output, Mic, PC Speaker, etc ...
-but to no avail. My laptop is a Packard Bell EasyNote A8, but the chipset
-seems pretty standard. The output of dmesg does not show any error while
-loading modules.
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+</head>
+<body bgcolor="#ffffff" text="#000000">
+<a href="http://www.zxc6.net/mrg.asp"><img alt=""
+ src="cid:.0.0..0..@taffeta.msn.com." border="0"></a><br>
+arteriole try bell in chalmers and biometry ,
+aaa or defendant ! loyal try denial try
+siegfried be inequitable it's bronco some cotangent try
+recuse it's taboo try togo , stanhope a
+bygone , palomar but array some lack it's
+lovelace not frau be petite , geese ,
+amethystine see domicile a ornery it mothball be
+careworn it fredrickson the aba be liberate in
+braille not coffer ,<br>
+Keine <a href="http://www.zxc6.net/n.asp">email hier</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+, luger but surplus it's<br>
+try curium try inflict and<br>
+! himalaya may spheric be<br>
+see bergland on conservatory it<br>
 
-On full volume settings, i can hear popping sounds when switching mic, pcm
-or lfe on/off. I can also hear the same loud pop when loading the sound
-module.
+<br>
+<br>
+</body>
+</html>
 
-== lspci output
+--------------RecordSys..cotyledon.nazarene
+Content-Type: image/gif;
+ name="insure..gif"
+Content-Transfer-Encoding: base64
+Content-ID: <.0.0..0..@taffeta.msn.com.>
+Content-Disposition: inline;
+ filename="insure..gif"
 
-0000:00:00.0 Host bridge: Intel Corp. Mobile Memory Controller Hub (rev
-03)
-0000:00:02.0 VGA compatible controller: Intel Corp. Mobile Graphics
-Controller (rev 03)
-0000:00:02.1 Display controller: Intel Corp. Mobile Graphics Controller
-(rev 03)
-0000:00:1c.0 PCI bridge: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-PCI Express Port 1 (rev 04)
-0000:00:1d.0 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #1 (rev 04)
-0000:00:1d.1 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #2 (rev 04)
-0000:00:1d.2 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #3 (rev 04)
-0000:00:1d.3 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #4 (rev 04)
-0000:00:1d.7 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB2 EHCI Controller (rev 04)
-0000:00:1e.0 PCI bridge: Intel Corp. 82801 PCI Bridge (rev d4)
-0000:00:1e.2 Multimedia audio controller: Intel Corp.
-82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97 Audio Controller (rev 04)
-0000:00:1e.3 Modem: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97
-Modem Controller (rev 04)
-0000:00:1f.0 ISA bridge: Intel Corp. 82801FBM (ICH6M) LPC Interface Bridge
-(rev 04)
-0000:00:1f.1 IDE interface: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) IDE Controller (rev 04)
-0000:00:1f.3 SMBus: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) SMBus
-Controller (rev 04)
-0000:06:01.0 CardBus bridge: Texas Instruments: Unknown device 8031
-0000:06:01.2 FireWire (IEEE 1394): Texas Instruments: Unknown device 8032
-0000:06:01.3 Unknown mass storage controller: Texas Instruments: Unknown
-device 8033
-0000:06:03.0 Network controller: Intel Corp. PRO/Wireless 2200BG (rev 05)
-0000:06:08.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
-RTL-8139/8139C/8139C+ (rev 10)
-
-== lsmod output
-
-snd_intel8x0           35036  2
-snd_ac97_codec         99136  1 snd_intel8x0
-snd_ac97_bus            2144  1 snd_ac97_codec
-snd_pcm_oss            56352  0
-snd_mixer_oss          20512  1 snd_pcm_oss
-snd_pcm                96776  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
-snd_timer              26916  1 snd_pcm
-snd                    58756  10
-snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              10816  1 snd
-snd_page_alloc         10984  2 snd_intel8x0,snd_pcm
-binfmt_misc            12456  1
-rfcomm                 41816  0
-l2cap                  28196  5 rfcomm
-bluetooth              52452  4 rfcomm,l2cap
-speedstep_centrino      7600  1
-cpufreq_powersave       1696  0
-cpufreq_stats           5860  0
-cpufreq_userspace       4472  1
-cpufreq_ondemand        6300  0
-cpufreq_conservative     7332  0
-freq_table              4548  2 speedstep_centrino,cpufreq_stats
-pcmcia                 41548  2
-i915                   20576  1
-drm                    77204  2 i915
-tc1100_wmi              6660  0
-video                  16036  0
-battery                 9444  0
-container               4384  0
-button                  6480  0
-pcc_acpi               10848  0
-sony_acpi               5292  0
-ac                      4708  0
-dev_acpi               10916  0
-hotkey                 11300  0
-ipv6                  281856  8
-xfrm_user              20132  2
-xfrm4_tunnel            3748  0
-ipcomp                  8456  0
-esp4                    8192  0
-ah4                     6400  0
-af_packet              23560  2
-tsdev                   7808  0
-rtc                    14292  0
-ipw2200               110988  0
-ieee80211              34888  1 ipw2200
-ieee80211_crypt         6560  1 ieee80211
-firmware_class         11328  1 ipw2200
-ohci1394               37172  0
-yenta_socket           29228  2
-rsrc_nonstatic         14336  1 yenta_socket
-pcmcia_core            44976  3 pcmcia,yenta_socket,rsrc_nonstatic
-hw_random               5620  0
-shpchp                 48576  0
-pci_hotplug            31060  1 shpchp
-intel_agp              24284  1
-agpgart                36264  3 drm,intel_agp
-deflate                 4064  0
-zlib_deflate           24248  1 deflate
-twofish                47616  0
-serpent                20672  0
-aes                    29792  0
-blowfish                8352  0
-des                    17664  0
-sha256                 10944  0
-sha1                    2624  0
-crypto_null             2240  0
-af_key                 36144  0
-nls_cp437               5664  1
-ntfs                  109936  1
-joydev                 10272  0
-dm_mod                 61752  1
-sr_mod                 17828  0
-sbp2                   24740  0
-scsi_mod              144264  2 sr_mod,sbp2
-ieee1394              107704  2 ohci1394,sbp2
-psmouse                39556  0
-mousedev               12288  2
-parport_pc             37604  0
-lp                     11876  0
-parport                39176  2 parport_pc,lp
-md_mod                 76404  0
-reiserfs              280432  2
-thermal                13448  0
-processor              23456  2 speedstep_centrino,thermal
-fan                     4612  0
-usbhid                 40384  0
-8139cp                 23328  0
-8139too                28832  0
-mii                     6048  2 8139cp,8139too
-ehci_hcd               36968  0
-uhci_hcd               35120  0
-usbcore               136996  4 usbhid,ehci_hcd,uhci_hcd
-ide_cd                 43972  0
-cdrom                  41472  2 sr_mod,ide_cd
-ide_disk               18944  5
-ide_generic             1280  0
-piix                   11236  1
-generic                 5156  0
-ide_core              147956  5 ide_cd,ide_disk,ide_generic,piix,generic
-unix                   30416  668
-vga16fb                13448  0
-vgastate                9984  1 vga16fb
-cfbimgblt               2880  1 vga16fb
-cfbfillrect             4128  1 vga16fb
-cfbcopyarea             3872  1 vga16fb
-tileblit                2560  0
-font                    8096  0
-
-== output of /proc/interrupts
-
- 0:    1467003    IO-APIC-edge  timer
-  1:      27671    IO-APIC-edge  i8042
-  8:          1    IO-APIC-edge  rtc
-  9:        334   IO-APIC-level  acpi
- 12:     232936    IO-APIC-edge  i8042
- 14:     107773    IO-APIC-edge  ide0
- 16:      45563   IO-APIC-level  ipw2200, Intel ICH6
- 17:     101668   IO-APIC-level  uhci_hcd:usb4, yenta, ohci1394, eth1,
-i915@pci:0000:00:02.0
- 19:     359145   IO-APIC-level  uhci_hcd:usb3
- 20:          2   IO-APIC-level  uhci_hcd:usb1, ehci_hcd:usb5
- 21:          0   IO-APIC-level  uhci_hcd:usb2
-NMI:          0
-LOC:     192512
-ERR:          0
-MIS:          0
-
-
-
-======================================================================
-
-----------------------------------------------------------------------
- anhi1968 - 02-14-06 22:35 
-----------------------------------------------------------------------
-#lspci -v -v
-00:1e.2 Multimedia audio controller: Intel Corporation
-82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97 Audio Controller (rev 03)
-        Subsystem: IBM Unknown device 0567
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0
-        Interrupt: pin A routed to IRQ 18
-        Region 0: I/O ports at 1c00 [size=256]
-        Region 1: I/O ports at 1880 [size=64]
-        Region 2: Memory at a8000800 (32-bit, non-prefetchable)
-[size=512]
-        Region 3: Memory at a8000400 (32-bit, non-prefetchable)
-[size=256]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-----------------------------------------------------------------------
- thoroughfare - 02-25-06 18:57 
-----------------------------------------------------------------------
-I too have a Packard Bell EasyNote A8202, with the same problem on Ubuntu
-5.10 (Breezy).
-
-I've tried everything, if I can help with this at all please let me know!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-16-06 18:51 rawsock        New Issue                                    
-01-16-06 18:51 rawsock        Distribution              => Ubuntu Breezy Badger
-01-16-06 18:51 rawsock        Kernel Version            => 2.6.12-i686     
-01-17-06 18:46 rawsock        File Added: proc_asound.tar.gz                    
-01-18-06 16:06 anhi1968       Note Added: 0007711                          
-02-14-06 22:17 anhi1968       Issue Monitored: anhi1968                    
-02-14-06 22:22 anhi1968       Note Added: 0008071                          
-02-14-06 22:35 anhi1968       Note Added: 0008072                          
-02-25-06 18:57 thoroughfare   Note Added: 0008190                          
-======================================================================
-
-
+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
+--------------RecordSys..cotyledon.nazarene--
 
 
 -------------------------------------------------------
