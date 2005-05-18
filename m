@@ -1,13 +1,11 @@
-From: "John O'Donnell" <johnod@covad.net>
-Subject: Re: made the jump from 0.9.0rc1 (2.4.29) to 1.0.8	(2.6.11.9)
-Date: Tue, 17 May 2005 21:40:51 -0400
-Message-ID: <428A9D23.9070509@covad.net>
-References: <428836D1.6060603@covad.net> <1116226446.26508.2.camel@mindpipe>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: [PATCH] ppc32: Fix Alsa PowerMac driver on old machines
+Date: Wed, 18 May 2005 12:53:43 +1000
+Message-ID: <1116384823.6122.2.camel@gaston>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1116226446.26508.2.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,101 +15,116 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>
+Cc: Alsa-Devel List <alsa-devel@lists.sourceforge.net>, Linux Kernel list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Mon, 2005-05-16 at 01:59 -0400, John O'Donnell wrote:
-> 
->>alsamixer: function snd_ctl_open failed for default: No such file or 
->>directory
->>
-> 
-> 
-> It sounds like the /dev/snd/* entries do not exist.  Your distros
-> install scripts should create them.
-> 
-> Lee
+Hi !
 
-TYVM - that was precisely the problem.  I ran sndconfig and all is well.
-But I seem to have to run that every time I boot.  I think Slackware 
-10.1+ uses udev if that means anything to anyone.  I havent done 
-research yet and it is a minor issue...
+The g5 support code broke some earlier models unfortunately as those
+bail out early from the detect function, before the point where I added
+the code to locate the PCI device for use with DMA allocations.
 
-compared with the next issue.  And this keeps me back in 2.4/0.9.0rc1.
+This patch fixes it.
 
-Weird issue.  Everything else seems to work, World of Warcraft under 
-cedega, xine (been watching long movies, etc just fine), xmms works 
-great thru my 2nd sound card (onboard VIA) line-linked to my 1st 
-(trident) which is how I always listen to MP3s and play Enemy Territory 
-(ET uses the sound exclusively and I like to use TeamSpeak at the same 
-time).  Teamspeak works great thru the primary card.
+Signed-off-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 
-I am a Unreal Tournament NUT at heart.  I cant leave this game.  I run a 
-dual proc linux server hosted with like 10 UT servers.
+Index: linux-work/sound/ppc/pmac.c
+===================================================================
+--- linux-work.orig/sound/ppc/pmac.c	2005-05-02 10:51:00.000000000 +1000
++++ linux-work/sound/ppc/pmac.c	2005-05-09 12:01:42.000000000 +1000
+@@ -876,7 +876,7 @@
+  */
+ static int __init snd_pmac_detect(pmac_t *chip)
+ {
+-	struct device_node *sound;
++	struct device_node *sound = NULL;
+ 	unsigned int *prop, l;
+ 	struct macio_chip* macio;
+ 
+@@ -906,20 +906,22 @@
+ 		chip->is_pbook_G3 = 1;
+ 	chip->node = find_devices("awacs");
+ 	if (chip->node)
+-		return 0; /* ok */
++		sound = chip->node;
+ 
+ 	/*
+ 	 * powermac G3 models have a node called "davbus"
+ 	 * with a child called "sound".
+ 	 */
+-	chip->node = find_devices("davbus");
++	if (!chip->node)
++		chip->node = find_devices("davbus");
+ 	/*
+ 	 * if we didn't find a davbus device, try 'i2s-a' since
+ 	 * this seems to be what iBooks have
+ 	 */
+ 	if (! chip->node) {
+ 		chip->node = find_devices("i2s-a");
+-		if (chip->node && chip->node->parent && chip->node->parent->parent) {
++		if (chip->node && chip->node->parent &&
++		    chip->node->parent->parent) {
+ 			if (device_is_compatible(chip->node->parent->parent,
+ 						 "K2-Keylargo"))
+ 				chip->is_k2 = 1;
+@@ -928,9 +930,11 @@
+ 	if (! chip->node)
+ 		return -ENODEV;
+ 
+-	sound = find_devices("sound");
+-	while (sound && sound->parent != chip->node)
+-		sound = sound->next;
++	if (!sound) {
++		sound = find_devices("sound");
++		while (sound && sound->parent != chip->node)
++			sound = sound->next;
++	}
+ 	if (! sound)
+ 		return -ENODEV;
+ 	prop = (unsigned int *) get_property(sound, "sub-frame", NULL);
+@@ -1019,7 +1023,8 @@
+ 		}
+ 	}
+ 	if (chip->pdev == NULL)
+-		printk(KERN_WARNING "snd-powermac: can't locate macio PCI device !\n");
++		printk(KERN_WARNING "snd-powermac: can't locate macio PCI"
++		       " device !\n");
+ 
+ 	detect_byte_swap(chip);
+ 
+@@ -1027,7 +1032,8 @@
+ 	   are available */
+ 	prop = (unsigned int *) get_property(sound, "sample-rates", &l);
+ 	if (! prop)
+-		prop = (unsigned int *) get_property(sound, "output-frame-rates", &l);
++		prop = (unsigned int *) get_property(sound,
++						     "output-frame-rates", &l);
+ 	if (prop) {
+ 		int i;
+ 		chip->freqs_ok = 0;
+@@ -1054,7 +1060,8 @@
+ /*
+  * exported - boolean info callbacks for ease of programming
+  */
+-int snd_pmac_boolean_stereo_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t *uinfo)
++int snd_pmac_boolean_stereo_info(snd_kcontrol_t *kcontrol,
++				 snd_ctl_elem_info_t *uinfo)
+ {
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+ 	uinfo->count = 2;
+@@ -1063,7 +1070,8 @@
+ 	return 0;
+ }
+ 
+-int snd_pmac_boolean_mono_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t *uinfo)
++int snd_pmac_boolean_mono_info(snd_kcontrol_t *kcontrol,
++			       snd_ctl_elem_info_t *uinfo)
+ {
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+ 	uinfo->count = 1;
 
-The sound in my client STUTTERS?!?!?  I thought maybe it was video as it 
-affects the video display too, but I ran ut -nosound and no odd video 
-effects, so I believe it is definitely sound driver related.  I thought 
-maybe turning off the kernel preemption might help but it has made no 
-difference.
 
-UT uses OSS.  I am not sure what all the other software is using.
-
-I have tried both the Generic and OpenAL subsystems and BOTH stutter and 
-crackle.  I have always used the Generic in the past with both real OSS 
-drivers (before discovering ALSA long ago) and ALSA itself.
-
-[Audio.GenericAudioSubsystem]
-UseFilter=True
-UseSurround=False
-UseStereo=True
-UseCDMusic=False
-UseDigitalMusic=False
-UseSpatial=False
-UseReverb=False
-Use3dHardware=False
-LowSoundQuality=False
-ReverseStereo=False
-Latency=40
-OutputRate=22050Hz
-Channels=16
-MusicVolume=0
-SoundVolume=32
-AmbientFactor=0.700000
-DopplerSpeed=0.000000
-
-[ALAudio.ALAudioSubsystem]
-UseFilter=True
-UseSurround=False
-UseStereo=True
-UseCDMusic=False
-UseDigitalMusic=True
-UseSpatial=True
-UseReverb=True
-Use3dHardware=False
-LowSoundQuality=False
-ReverseStereo=False
-Latency=40
-OutputRate=22050Hz
-Channels=16
-MusicVolume=0
-SoundVolume=32
-AmbientFactor=0.700000
-DopplerSpeed=0.000000
-MusicBufferSize=16384
-
-Any Ideas?!?
-TIA
-Johnny O
-
--- 
-=== Never ask a geek why, just nod your head and slowly back away.===
-+================================+==================================+
-|  John O'Donnell                |                                  |
-|  (Sr. Systems Engineer,        |     http://juanisan.homeip.net   |
-|  Net Admin, Webmaster, etc.)   |     E-Mail: johnod@covad.net     |
-+================================+==================================+
 
 
 -------------------------------------------------------
