@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001115]: codec_semaphore: semaphore is not ready [0x1][0x1300]
-Date: Wed, 18 May 2005 16:53:17 +0200
-Message-ID: <2a66f216265a759c8f000bb0a89f0108@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001116]: Ghost MPU 401 Device hangs my Laptop
+Date: Wed, 18 May 2005 17:08:10 +0200
+Message-ID: <d82b731f000c7027e6e9e6f146bb962a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 18328206
-	for <alsa-devel@alsa-project.org>; Wed, 18 May 2005 16:53:18 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1DF072E3
+	for <alsa-devel@alsa-project.org>; Wed, 18 May 2005 17:08:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1115> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1116> 
 ======================================================================
 Reported By:                keinstein
-Assigned To:                sashak
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1115
-Category:                   PCI - intel8x0m
+Issue ID:                   1116
+Category:                   PCI - trident
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Debian/testing
+Kernel Version:             2.6.11.6
 ======================================================================
-Date Submitted:             05-18-2005 16:53 CEST
-Last Modified:              05-18-2005 16:53 CEST
+Date Submitted:             05-18-2005 17:08 CEST
+Last Modified:              05-18-2005 17:08 CEST
 ======================================================================
-Summary:                    codec_semaphore: semaphore is not ready
-[0x1][0x1300]
+Summary:                    Ghost MPU 401 Device hangs my Laptop
 Description: 
-I'm using a Laptop with sis630 chipset. The sound works with the
-snd-trident driver, but the modem seems to be a SIS 7013. 
+The trident driver for my Laptop (SIS 630 / SIS 7018) seems to initialize a
+mpu device, which may be not present in my computer. At least I don't have
+a game port  connector at that computer. Trying to access it well hang my
+computer.
+amidi seems to work but cannot be stopped. The computer doesn't respond to
+any keyboard action as in X as on the text console. 
+Running amidi -p hw:0,0 on the console fills the screen with lines
+starting with 01, 03, 05 or 07. After a time this number is increased. But
+it seems to end at 07.
 
-When loading the modem I get error messages. In the log file I find the
-following information:
-May 18 16:48:23 tobias1 kernel: ACPI: PCI interrupt 0000:00:01.6[C] -> GSI
-10 (level, low) -> IRQ 10
-May 18 16:48:23 tobias1 kernel: codec_semaphore: semaphore is not ready
-[0x1][0x1300]
-May 18 16:48:23 tobias1 last message repeated 378 times
-May 18 16:48:23 tobias1 kernel: AC'97 1 does not respond - RESET
-May 18 16:48:23 tobias1 kernel: codec_semaphore: semaphore is not ready
-[0x1][0x1300]
-May 18 16:48:23 tobias1 kernel: codec_semaphore: semaphore is not ready
-[0x1][0x1300]
-May 18 16:48:23 tobias1 kernel: AC'97 1 access is not valid [0xffffffff],
-removing mixer.
-May 18 16:48:23 tobias1 kernel: Unable to initialize codec
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
-May 18 16:48:23 tobias1 kernel: Intel ICH Modem: probe of 0000:00:01.6
-failed with error -5
+It is very annoying as programs like noteedit, that insist on accessing
+midi ports will hang my computer at start. 
 
-
-Loading before the trident driver does not help.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-18-05 16:53 keinstein      New Issue                                    
+05-18-05 17:08 keinstein      New Issue                                    
+05-18-05 17:08 keinstein      Distribution              => Debian/testing  
+05-18-05 17:08 keinstein      Kernel Version            => 2.6.11.6        
 ======================================================================
 
 
