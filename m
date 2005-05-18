@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001116]: Ghost MPU 401 Device hangs my Laptop
-Date: Wed, 18 May 2005 17:08:10 +0200
-Message-ID: <d82b731f000c7027e6e9e6f146bb962a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001117]: Sequencer documentation for snd-trident-synth
+Date: Wed, 18 May 2005 17:18:18 +0200
+Message-ID: <107a30e537b6f307fb1af030b4fc1c9a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1DF072E3
-	for <alsa-devel@alsa-project.org>; Wed, 18 May 2005 17:08:11 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 33908272
+	for <alsa-devel@alsa-project.org>; Wed, 18 May 2005 17:18:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,39 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1116> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1117> 
 ======================================================================
 Reported By:                keinstein
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1116
+Issue ID:                   1117
 Category:                   PCI - trident
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian/testing
-Kernel Version:             2.6.11.6
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-18-2005 17:08 CEST
-Last Modified:              05-18-2005 17:08 CEST
+Date Submitted:             05-18-2005 17:18 CEST
+Last Modified:              05-18-2005 17:18 CEST
 ======================================================================
-Summary:                    Ghost MPU 401 Device hangs my Laptop
+Summary:                    Sequencer documentation for snd-trident-synth
 Description: 
-The trident driver for my Laptop (SIS 630 / SIS 7018) seems to initialize a
-mpu device, which may be not present in my computer. At least I don't have
-a game port  connector at that computer. Trying to access it well hang my
-computer.
-amidi seems to work but cannot be stopped. The computer doesn't respond to
-any keyboard action as in X as on the text console. 
-Running amidi -p hw:0,0 on the console fills the screen with lines
-starting with 01, 03, 05 or 07. After a time this number is increased. But
-it seems to end at 07.
+Im searching the net for years, but I didn't really find any documentation
+about the snd-trident-synth module. I would like to know how does it work?
+Does it work on SIS 7018 at all? Which programs do I have to use for it?
+In the /proc tree  I get information that I have 8 MB Wavetable space, but
+I really don't know, how to access them. 
 
-It is very annoying as programs like noteedit, that insist on accessing
-midi ports will hang my computer at start. 
-
+Please add a Readme.trident to the alsa documentation directory
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-18-05 17:08 keinstein      New Issue                                    
-05-18-05 17:08 keinstein      Distribution              => Debian/testing  
-05-18-05 17:08 keinstein      Kernel Version            => 2.6.11.6        
+05-18-05 17:18 keinstein      New Issue                                    
 ======================================================================
 
 
