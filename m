@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001115]: codec_semaphore: semaphore is not ready [0x1][0x1300]
-Date: Thu, 19 May 2005 21:42:28 +0200
-Message-ID: <6445a7a6ef2a1fd1407a427d743ed9a9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001118]: es1868 - mono recording not working properly
+Date: Thu, 19 May 2005 23:36:00 +0200
+Message-ID: <25d64d73d469bf8221bb2d8be0b00901@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 03A80195
-	for <alsa-devel@alsa-project.org>; Thu, 19 May 2005 21:42:28 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E16EC224
+	for <alsa-devel@alsa-project.org>; Thu, 19 May 2005 23:36:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,68 +22,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1115> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1118> 
 ======================================================================
-Reported By:                keinstein
-Assigned To:                sashak
+Reported By:                MStrecke
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1115
-Category:                   PCI - intel8x0m
+Issue ID:                   1118
+Category:                   PCI - es1968
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Ubuntu
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             05-18-2005 16:53 CEST
-Last Modified:              05-19-2005 21:42 CEST
+Date Submitted:             05-19-2005 23:36 CEST
+Last Modified:              05-19-2005 23:36 CEST
 ======================================================================
-Summary:                    codec_semaphore: semaphore is not ready
-[0x1][0x1300]
+Summary:                    es1868 - mono recording not working properly
 Description: 
-I'm using a Laptop with sis630 chipset. The sound works with the
-snd-trident driver, but the modem seems to be a SIS 7013. 
+I'm using an old Fujitsu Lifebook E-6570. The on-board sound card is
+recognized as "ESS Technology ES1978 Maestro 2E (rev 10)", ID: 125d:1978.
 
-When loading the modem I get error messages. In the log file I find the
-following information:
-May 18 16:48:23 tobias1 kernel: ACPI: PCI interrupt 0000:00:01.6[C] -> GSI
-10 (level, low) -> IRQ 10
-May 18 16:48:23 tobias1 kernel: codec_semaphore: semaphore is not ready
-[0x1][0x1300]
-May 18 16:48:23 tobias1 last message repeated 378 times
-May 18 16:48:23 tobias1 kernel: AC'97 1 does not respond - RESET
-May 18 16:48:23 tobias1 kernel: codec_semaphore: semaphore is not ready
-[0x1][0x1300]
-May 18 16:48:23 tobias1 kernel: codec_semaphore: semaphore is not ready
-[0x1][0x1300]
-May 18 16:48:23 tobias1 kernel: AC'97 1 access is not valid [0xffffffff],
-removing mixer.
-May 18 16:48:23 tobias1 kernel: Unable to initialize codec
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
-May 18 16:48:23 tobias1 kernel: Intel ICH Modem: probe of 0000:00:01.6
-failed with error -5
+I'm having problems recording mono audio (mic input, line input, etc.).
+Only a medium pitched tone is recorded (not a sine waveform, no feed
+back).  Stereo recording works without problems (using audacity).
 
-
-Loading before the trident driver does not help.
 ======================================================================
-
-----------------------------------------------------------------------
- sashak - 05-19-05 21:42 
-----------------------------------------------------------------------
-Looks like semaphore policy missunderstanding between 'trident' and
-'intel8x0m' drivers. Could you test with 'intel8x0' + 'intel8x0m'  instead
-of  'trident' + 'intel8x0m' (probably after cold reboot)? ('intel8x0'
-supports SiS audio as well).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-18-05 16:53 keinstein      New Issue                                    
-05-19-05 21:42 sashak         Note Added: 0004695                          
+05-19-05 23:36 MStrecke       New Issue                                    
+05-19-05 23:36 MStrecke       Distribution              => Ubuntu          
+05-19-05 23:36 MStrecke       Kernel Version            => 2.6.10          
 ======================================================================
 
 
