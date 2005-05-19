@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001098]: aoss openal    gives too fast sound.
-Date: Thu, 19 May 2005 16:59:02 +0200
-Message-ID: <8b0a6396eb3c49d38715537e065bc1ad@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: How to autoconfigure MIDI in liveCD?
+Date: Thu, 19 May 2005 13:22:06 -0400
+Message-ID: <1116523326.21685.80.camel@mindpipe>
+References: <20050518183049.5841.qmail@web53604.mail.yahoo.com>
+	 <1116441448.4866.6.camel@mindpipe>  <m2u0kz875g.fsf@vador.mandrakesoft.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1D0A01F0
-	for <alsa-devel@alsa-project.org>; Thu, 19 May 2005 16:59:02 +0200 (MEST)
+In-Reply-To: <m2u0kz875g.fsf@vador.mandrakesoft.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +18,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Thierry Vignaud <tvignaud@mandriva.com>
+Cc: "airplays55@yahoo.com" <airplays55@yahoo.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2005-05-19 at 19:20 +0200, Thierry Vignaud wrote:
+> Lee Revell <rlrevell@joe-job.com> writes:
+> 
+> > > Knoppix 3.8 liveCD (which includes ALSA 1.0.8) loads
+> > > the audio but not the midi portion of the soundcard. 
+> > > In order to get the midi modules loaded (snd-seq-midi
+> > > etc.), I have to manually run "alsaconf", which
+> > > requires human intervention for me to accept the
+> > > soundcard it found by probing, and also accepting the
+> > > choice for alsaconf to modify /etc/modprobe.d/sound
+> > > and /etc/modprobe.conf.
+> > 
+> > Before you think too hard, try the newest ALSA (1.0.9-rc3).  There
+> > was some kind of bug in 1.0.8 where snd-seq-midi had to be loaded
+> > manually.
+> 
+> does the above means that drivers for card with a midi chip will
+> trigger the loading of appropriate midi sub modules?
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1098> 
-======================================================================
-Reported By:                qwer1234
-Assigned To:                
-======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1098
-Category:                   
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             05-09-2005 17:09 CEST
-Last Modified:              05-19-2005 16:59 CEST
-======================================================================
-Summary:                    aoss openal    gives too fast sound.
-Description: 
-Opanal layer gives too fast sound when I use aoss wrapper and I get this
-error multiple times:
+Yes, that was the nature of the bug IIRC.
 
-native_blitbuffer: select error occured
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 05-19-05 14:12 
-----------------------------------------------------------------------
-Hmm, the silence of alsa mode seems to be a bug of openal.
-
-Anyway, try ALSA 1.0.9rc3 if you use dmix before stepping deeply into the
-debuggin.  Many bugs have been fixed regarding it.  Don't forget to update
-all drivers, lib and alsa-oss stuff.
-
-----------------------------------------------------------------------
- qwer1234 - 05-19-05 16:59 
-----------------------------------------------------------------------
-How can I check which alsa driver version do I have in my 2.6 kernel?
-I use 2.6.11.10.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-09-05 17:09 qwer1234       New Issue                                    
-05-09-05 17:15 qwer1234       Issue Monitored: qwer1234                    
-05-17-05 17:52 tiwai          Note Added: 0004681                          
-05-17-05 17:53 tiwai          Note Added: 0004682                          
-05-18-05 00:38 qwer1234       Note Added: 0004685                          
-05-18-05 00:41 qwer1234       Note Edited: 0004685                         
-05-18-05 14:53 tiwai          Note Added: 0004687                          
-05-18-05 14:55 tiwai          Note Added: 0004688                          
-05-19-05 13:37 qwer1234       Note Added: 0004689                          
-05-19-05 14:12 tiwai          Note Added: 0004690                          
-05-19-05 16:59 qwer1234       Note Added: 0004694                          
-======================================================================
-
+Lee
 
 
 
