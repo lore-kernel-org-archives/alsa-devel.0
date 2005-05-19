@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001114]: Redline depends on terminal height
-Date: Thu, 19 May 2005 14:18:45 +0200
-Message-ID: <8700213d083b9b87ed37a17721d7b60a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
+Date: Thu, 19 May 2005 15:28:07 +0200
+Message-ID: <8b55615ac8b27bcf98ee21ebe91a979d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2135D225
-	for <alsa-devel@alsa-project.org>; Thu, 19 May 2005 14:18:46 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A3251F4
+	for <alsa-devel@alsa-project.org>; Thu, 19 May 2005 15:28:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1114> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                minmax
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1114
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   557
+Category:                   CORE OSS - pcm
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 won't fix
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             vanilla 2.6.7
 ======================================================================
-Date Submitted:             05-17-2005 22:33 CEST
-Last Modified:              05-19-2005 14:18 CEST
+Date Submitted:             10-01-2004 16:18 CEST
+Last Modified:              05-19-2005 15:28 CEST
 ======================================================================
-Summary:                    Redline depends on terminal height
+Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
+situation
 Description: 
-The submitter of Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=309337 says the
-following:
-
-I noticed that that running alsamixer on a 50-line xterm, red appears on
-my volume controls between 79 and 81. On a 24-line xterm, it appears
-between 71 and 73. This seems slightly odd, though I don't know if
-there's any way to tell what PC soundcard mixers happen to put out. :)
+When the first few writes to the oss emulation device are done in specific
+way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-19-05 14:18 
+ gk4 - 05-16-05 16:08 
 ----------------------------------------------------------------------
-Yes, it depends on the terminal height.  The red line starts over "almost"
-80% but it can't be exat in the lower height (resolution).
+My /proc/asound/version file has:
+
+Advanced Linux Sound Architecture Driver Version 1.0.6 (Sun Aug 15
+07:17:53 2004 UTC).  Compiled on Feb  9 2005 for kernel 2.6.10-1.766_FC3.
+
+----------------------------------------------------------------------
+ parente - 05-19-05 15:28 
+----------------------------------------------------------------------
+I'm trying to test this on FC4 test 3 with alsa driver 1.0.9rc3. grep isn't
+turning up the original lines reported as causing the problem so maybe
+they've been removed. Can someone point me to the file where this
+problematic code was originally located?
+
+There's still a clipping problem using alsa with gnome speech. I'd like to
+see if it's being caused by this same bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-17-05 22:33 jdthood        New Issue                                    
-05-19-05 14:18 tiwai          Status                   new => resolved     
-05-19-05 14:18 tiwai          Resolution               open => won't fix   
-05-19-05 14:18 tiwai          Assigned To               => tiwai           
-05-19-05 14:18 tiwai          Note Added: 0004692                          
+10-01-04 16:18 minmax         New Issue                                    
+10-01-04 16:18 minmax         Distribution              => Debian unstable 
+10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
+10-02-04 10:52 minmax         Issue Monitored: minmax                      
+04-09-05 16:09 jdthood        Note Added: 0004406                          
+04-09-05 16:22 minmax         Note Added: 0004410                          
+05-13-05 15:20 gk4            Note Added: 0004646                          
+05-13-05 15:24 perex          Note Added: 0004647                          
+05-13-05 15:26 tiwai          Note Added: 0004648                          
+05-13-05 19:35 gk4            Note Added: 0004651                          
+05-13-05 19:38 tiwai          Note Added: 0004652                          
+05-13-05 19:48 gk4            Note Added: 0004655                          
+05-15-05 15:50 tiwai          Note Added: 0004663                          
+05-16-05 16:08 gk4            Note Added: 0004676                          
+05-19-05 15:28 parente        Note Added: 0004693                          
 ======================================================================
 
 
