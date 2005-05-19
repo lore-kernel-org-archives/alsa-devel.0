@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001098]: aoss openal    gives too fast sound.
-Date: Thu, 19 May 2005 14:12:46 +0200
-Message-ID: <5c0ea982eef3887d5ae061d0b4368f6c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001116]: Ghost MPU 401 Device hangs my Laptop
+Date: Thu, 19 May 2005 14:13:58 +0200
+Message-ID: <f8b594056ace4801412dd9d8478f00fb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 85E741F2
-	for <alsa-devel@alsa-project.org>; Thu, 19 May 2005 14:12:46 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 93BD11F2
+	for <alsa-devel@alsa-project.org>; Thu, 19 May 2005 14:13:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1098> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1116> 
 ======================================================================
-Reported By:                qwer1234
+Reported By:                keinstein
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1098
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1116
+Category:                   PCI - trident
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
+Distribution:               Debian/testing
+Kernel Version:             2.6.11.6
 ======================================================================
-Date Submitted:             05-09-2005 17:09 CEST
-Last Modified:              05-19-2005 14:12 CEST
+Date Submitted:             05-18-2005 17:08 CEST
+Last Modified:              05-19-2005 14:13 CEST
 ======================================================================
-Summary:                    aoss openal    gives too fast sound.
+Summary:                    Ghost MPU 401 Device hangs my Laptop
 Description: 
-Opanal layer gives too fast sound when I use aoss wrapper and I get this
-error multiple times:
+The trident driver for my Laptop (SIS 630 / SIS 7018) seems to initialize a
+mpu device, which may be not present in my computer. At least I don't have
+a game port  connector at that computer. Trying to access it well hang my
+computer.
+amidi seems to work but cannot be stopped. The computer doesn't respond to
+any keyboard action as in X as on the text console. 
+Running amidi -p hw:0,0 on the console fills the screen with lines
+starting with 01, 03, 05 or 07. After a time this number is increased. But
+it seems to end at 07.
 
-native_blitbuffer: select error occured
+It is very annoying as programs like noteedit, that insist on accessing
+midi ports will hang my computer at start. 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- qwer1234 - 05-19-05 13:37 
+ tiwai - 05-19-05 14:13 
 ----------------------------------------------------------------------
-1. ALSA mode on openal gives me no sound.
-   It looks like it is mute, but it is not.
-
-2. Most of tests in openal-cvs have too fast sound.
-   armyops (americas army) game have too fast sound with aoss.
-
-Because ALSA mode on openal doesn't work for me I use aoss wrapper.
-
-----------------------------------------------------------------------
- tiwai - 05-19-05 14:12 
-----------------------------------------------------------------------
-Hmm, the silence of alsa mode seems to be a bug of openal.
-
-Anyway, try ALSA 1.0.9rc3 if you use dmix before stepping deeply into the
-debuggin.  Many bugs have been fixed regarding it.  Don't forget to update
-all drivers, lib and alsa-oss stuff.
+Disabling mpu401 for SI7018 might be the easiest solution.
+Is there any device with SI7018 and MPU401 at all?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-09-05 17:09 qwer1234       New Issue                                    
-05-09-05 17:15 qwer1234       Issue Monitored: qwer1234                    
-05-17-05 17:52 tiwai          Note Added: 0004681                          
-05-17-05 17:53 tiwai          Note Added: 0004682                          
-05-18-05 00:38 qwer1234       Note Added: 0004685                          
-05-18-05 00:41 qwer1234       Note Edited: 0004685                         
-05-18-05 14:53 tiwai          Note Added: 0004687                          
-05-18-05 14:55 tiwai          Note Added: 0004688                          
-05-19-05 13:37 qwer1234       Note Added: 0004689                          
-05-19-05 14:12 tiwai          Note Added: 0004690                          
+05-18-05 17:08 keinstein      New Issue                                    
+05-18-05 17:08 keinstein      Distribution              => Debian/testing  
+05-18-05 17:08 keinstein      Kernel Version            => 2.6.11.6        
+05-19-05 14:13 tiwai          Note Added: 0004691                          
 ======================================================================
 
 
