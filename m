@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: How to autoconfigure MIDI in liveCD?
-Date: Wed, 18 May 2005 14:37:28 -0400
-Message-ID: <1116441448.4866.6.camel@mindpipe>
-References: <20050518183049.5841.qmail@web53604.mail.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - liboss 0001098]: aoss openal    gives too fast sound.
+Date: Thu, 19 May 2005 13:37:49 +0200
+Message-ID: <671ba066c2e464f8a4c91e0f74ec5fb9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050518183049.5841.qmail@web53604.mail.yahoo.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C7E0324E
+	for <alsa-devel@alsa-project.org>; Thu, 19 May 2005 13:37:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,24 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "airplays55@yahoo.com" <airplays55@yahoo.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-05-18 at 11:30 -0700, airplays55@yahoo.com wrote:
-> Knoppix 3.8 liveCD (which includes ALSA 1.0.8) loads
-> the audio but not the midi portion of the soundcard. 
-> In order to get the midi modules loaded (snd-seq-midi
-> etc.), I have to manually run "alsaconf", which
-> requires human intervention for me to accept the
-> soundcard it found by probing, and also accepting the
-> choice for alsaconf to modify /etc/modprobe.d/sound
-> and /etc/modprobe.conf.
 
-Before you think too hard, try the newest ALSA (1.0.9-rc3).  There was
-some kind of bug in 1.0.8 where snd-seq-midi had to be loaded manually.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1098> 
+======================================================================
+Reported By:                qwer1234
+Assigned To:                
+======================================================================
+Project:                    ALSA - liboss
+Issue ID:                   1098
+Category:                   
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             05-09-2005 17:09 CEST
+Last Modified:              05-19-2005 13:37 CEST
+======================================================================
+Summary:                    aoss openal    gives too fast sound.
+Description: 
+Opanal layer gives too fast sound when I use aoss wrapper and I get this
+error multiple times:
 
-Lee
+native_blitbuffer: select error occured
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 05-18-05 14:55 
+----------------------------------------------------------------------
+Also, does ALSA mode on openal work properly?
+
+----------------------------------------------------------------------
+ qwer1234 - 05-19-05 13:37 
+----------------------------------------------------------------------
+1. ALSA mode on openal gives me no sound.
+   It looks like it is mute, but it is not.
+
+2. Most of tests in openal-cvs have too fast sound.
+   armyops (americas army) game have too fast sound with aoss.
+
+Because ALSA mode on openal doesn't work for me I use aoss wrapper.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-09-05 17:09 qwer1234       New Issue                                    
+05-09-05 17:15 qwer1234       Issue Monitored: qwer1234                    
+05-17-05 17:52 tiwai          Note Added: 0004681                          
+05-17-05 17:53 tiwai          Note Added: 0004682                          
+05-18-05 00:38 qwer1234       Note Added: 0004685                          
+05-18-05 00:41 qwer1234       Note Edited: 0004685                         
+05-18-05 14:53 tiwai          Note Added: 0004687                          
+05-18-05 14:55 tiwai          Note Added: 0004688                          
+05-19-05 13:37 qwer1234       Note Added: 0004689                          
+======================================================================
+
 
 
 
