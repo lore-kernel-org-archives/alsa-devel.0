@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Thu, 19 May 2005 15:28:07 +0200
-Message-ID: <8b55615ac8b27bcf98ee21ebe91a979d@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001098]: aoss openal    gives too fast sound.
+Date: Thu, 19 May 2005 16:59:02 +0200
+Message-ID: <8b0a6396eb3c49d38715537e065bc1ad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A3251F4
-	for <alsa-devel@alsa-project.org>; Thu, 19 May 2005 15:28:08 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1D0A01F0
+	for <alsa-devel@alsa-project.org>; Thu, 19 May 2005 16:59:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1098> 
 ======================================================================
-Reported By:                minmax
+Reported By:                qwer1234
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   557
-Category:                   CORE OSS - pcm
+Project:                    ALSA - liboss
+Issue ID:                   1098
+Category:                   
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.7
 ======================================================================
-Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-19-2005 15:28 CEST
+Date Submitted:             05-09-2005 17:09 CEST
+Last Modified:              05-19-2005 16:59 CEST
 ======================================================================
-Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
-situation
+Summary:                    aoss openal    gives too fast sound.
 Description: 
-When the first few writes to the oss emulation device are done in specific
-way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
+Opanal layer gives too fast sound when I use aoss wrapper and I get this
+error multiple times:
+
+native_blitbuffer: select error occured
+
 ======================================================================
 
 ----------------------------------------------------------------------
- gk4 - 05-16-05 16:08 
+ tiwai - 05-19-05 14:12 
 ----------------------------------------------------------------------
-My /proc/asound/version file has:
+Hmm, the silence of alsa mode seems to be a bug of openal.
 
-Advanced Linux Sound Architecture Driver Version 1.0.6 (Sun Aug 15
-07:17:53 2004 UTC).  Compiled on Feb  9 2005 for kernel 2.6.10-1.766_FC3.
+Anyway, try ALSA 1.0.9rc3 if you use dmix before stepping deeply into the
+debuggin.  Many bugs have been fixed regarding it.  Don't forget to update
+all drivers, lib and alsa-oss stuff.
 
 ----------------------------------------------------------------------
- parente - 05-19-05 15:28 
+ qwer1234 - 05-19-05 16:59 
 ----------------------------------------------------------------------
-I'm trying to test this on FC4 test 3 with alsa driver 1.0.9rc3. grep isn't
-turning up the original lines reported as causing the problem so maybe
-they've been removed. Can someone point me to the file where this
-problematic code was originally located?
-
-There's still a clipping problem using alsa with gnome speech. I'd like to
-see if it's being caused by this same bug.
+How can I check which alsa driver version do I have in my 2.6 kernel?
+I use 2.6.11.10.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-01-04 16:18 minmax         New Issue                                    
-10-01-04 16:18 minmax         Distribution              => Debian unstable 
-10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
-10-02-04 10:52 minmax         Issue Monitored: minmax                      
-04-09-05 16:09 jdthood        Note Added: 0004406                          
-04-09-05 16:22 minmax         Note Added: 0004410                          
-05-13-05 15:20 gk4            Note Added: 0004646                          
-05-13-05 15:24 perex          Note Added: 0004647                          
-05-13-05 15:26 tiwai          Note Added: 0004648                          
-05-13-05 19:35 gk4            Note Added: 0004651                          
-05-13-05 19:38 tiwai          Note Added: 0004652                          
-05-13-05 19:48 gk4            Note Added: 0004655                          
-05-15-05 15:50 tiwai          Note Added: 0004663                          
-05-16-05 16:08 gk4            Note Added: 0004676                          
-05-19-05 15:28 parente        Note Added: 0004693                          
+05-09-05 17:09 qwer1234       New Issue                                    
+05-09-05 17:15 qwer1234       Issue Monitored: qwer1234                    
+05-17-05 17:52 tiwai          Note Added: 0004681                          
+05-17-05 17:53 tiwai          Note Added: 0004682                          
+05-18-05 00:38 qwer1234       Note Added: 0004685                          
+05-18-05 00:41 qwer1234       Note Edited: 0004685                         
+05-18-05 14:53 tiwai          Note Added: 0004687                          
+05-18-05 14:55 tiwai          Note Added: 0004688                          
+05-19-05 13:37 qwer1234       Note Added: 0004689                          
+05-19-05 14:12 tiwai          Note Added: 0004690                          
+05-19-05 16:59 qwer1234       Note Added: 0004694                          
 ======================================================================
 
 
