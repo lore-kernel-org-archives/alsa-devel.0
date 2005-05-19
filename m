@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001098]: aoss openal    gives too fast sound.
-Date: Thu, 19 May 2005 13:37:49 +0200
-Message-ID: <671ba066c2e464f8a4c91e0f74ec5fb9@bugtrack.alsa-project.org>
+Date: Thu, 19 May 2005 14:12:46 +0200
+Message-ID: <5c0ea982eef3887d5ae061d0b4368f6c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C7E0324E
-	for <alsa-devel@alsa-project.org>; Thu, 19 May 2005 13:37:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 85E741F2
+	for <alsa-devel@alsa-project.org>; Thu, 19 May 2005 14:12:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             05-09-2005 17:09 CEST
-Last Modified:              05-19-2005 13:37 CEST
+Last Modified:              05-19-2005 14:12 CEST
 ======================================================================
 Summary:                    aoss openal    gives too fast sound.
 Description: 
@@ -50,11 +50,6 @@ native_blitbuffer: select error occured
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-18-05 14:55 
-----------------------------------------------------------------------
-Also, does ALSA mode on openal work properly?
-
-----------------------------------------------------------------------
  qwer1234 - 05-19-05 13:37 
 ----------------------------------------------------------------------
 1. ALSA mode on openal gives me no sound.
@@ -64,6 +59,15 @@ Also, does ALSA mode on openal work properly?
    armyops (americas army) game have too fast sound with aoss.
 
 Because ALSA mode on openal doesn't work for me I use aoss wrapper.
+
+----------------------------------------------------------------------
+ tiwai - 05-19-05 14:12 
+----------------------------------------------------------------------
+Hmm, the silence of alsa mode seems to be a bug of openal.
+
+Anyway, try ALSA 1.0.9rc3 if you use dmix before stepping deeply into the
+debuggin.  Many bugs have been fixed regarding it.  Don't forget to update
+all drivers, lib and alsa-oss stuff.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -77,6 +81,7 @@ Date Modified  Username       Field                    Change
 05-18-05 14:53 tiwai          Note Added: 0004687                          
 05-18-05 14:55 tiwai          Note Added: 0004688                          
 05-19-05 13:37 qwer1234       Note Added: 0004689                          
+05-19-05 14:12 tiwai          Note Added: 0004690                          
 ======================================================================
 
 
