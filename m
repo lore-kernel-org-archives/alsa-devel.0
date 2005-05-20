@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - firmware 0001119]: USB headset not working
-Date: Fri, 20 May 2005 08:48:36 +0200
-Message-ID: <a76aa99f8be328c8685ddbafc45e54b2@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: RE: ALSA PCM DMA questions
+Date: Fri, 20 May 2005 10:53:03 +0200 (CEST)
+Message-ID: <XFMail.20050520105303.pochini@shiny.it>
+References: <083AB380E3924D4795740AAE9A27DCABDB962B@cgy2000.interalia.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2C04D225
-	for <alsa-devel@alsa-project.org>; Fri, 20 May 2005 08:48:37 +0200 (MEST)
+In-Reply-To: <083AB380E3924D4795740AAE9A27DCABDB962B@cgy2000.interalia.ca>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,52 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Derek Jones <DJones@Interalia.ca>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1119> 
-======================================================================
-Reported By:                donlvnv
-Assigned To:                
-======================================================================
-Project:                    ALSA - firmware
-Issue ID:                   1119
-Category:                   
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             05-20-2005 08:48 CEST
-Last Modified:              05-20-2005 08:48 CEST
-======================================================================
-Summary:                    USB headset not working
-Description: 
-using ac97 on a Shuttle SFF and suse 9.3 with a Logitech 300 headset.
-The headset won't work. I have tried it with Knoppix 3.8 Livecd.
-Kmix recognizes it and it work under knoppix, but as soon as I run
-alsaconf.
-The Headset stops working and there is no tab for it in Kmix.
-Alsamixer has no place for it under suse or knoppix. I have got it to
-output to the headset in Control Center,Sound & Multimedia,Sound
-System.Hardware tab by overriding device location to /dev/dsp1, and then
-in the general tab and selecting  the test sound.
-======================================================================
+On 19-May-2005 Derek Jones wrote:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-20-05 08:48 donlvnv        New Issue                                    
-======================================================================
+> After the DMA transfer completes, I call snd_pcm_period_elaped(substrea=
+m).
+> I'm guessing that this moves a buffer pointer. What I cannot figure out
+> is how to determine where I am in the buffer so that I can start the ne=
+xt
+> DMA from the correct position.
+
+Does your hw require restart the DMA after each block ?  This is bad. It'=
+s
+nearly impossible to do that without a small delay. BTW, the hw should
+provide a way to know what it is playing/recording. It it doesn't, you ha=
+ve
+to count IRQs. If you have to restart the DMA every time, it's simple: ju=
+st
+store the current block number when you start it for later use.
 
 
+> When the entire buffer has been DMA'ed, is the buffer overwritten with =
+new
+> PCM data from userland
+
+During playback, part of the buffer (one or more periods) is filled with
+new data. snd_pcm_period_elapsed() triggers it.
+
+
+> or does the DMA buffer work like a circular buffer with userland data
+> being transferred into the buffer at each PCM period.
+
+Yes.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by Oracle Space Sweepstakes
 Want to be the first software developer in space?
 Enter now for the Oracle Space Sweepstakes!
-http://ads.osdn.com/?ad_id=7412&alloc_id=16344&op=click
+http://ads.osdn.com/?ad_id=3D7412&alloc_id=3D16344&op=3Dclick
