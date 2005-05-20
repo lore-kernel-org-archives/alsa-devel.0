@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Fri, 20 May 2005 22:02:42 +0200
-Message-ID: <e17a9fdfad262f8bf3ce9a02968377ee@bugtrack.alsa-project.org>
+Date: Fri, 20 May 2005 22:05:26 +0200
+Message-ID: <17d5b414a36741c080f06f2e2bb34aae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6E03F24D
-	for <alsa-devel@alsa-project.org>; Fri, 20 May 2005 22:02:42 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1E5BD24D
+	for <alsa-devel@alsa-project.org>; Fri, 20 May 2005 22:05:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              05-20-2005 22:02 CEST
+Last Modified:              05-20-2005 22:05 CEST
 ======================================================================
 Summary:                    Master volume only controls front output (emu10k1)
 Description: 
@@ -60,20 +60,6 @@ related to          0000919 Master volume doesn't control rear spea...
 ======================================================================
 
 ----------------------------------------------------------------------
- adamk75 - 02-17-05 23:28 
-----------------------------------------------------------------------
-I've been waiting since early last year.  I thought I was being patient
-:-)
-
-Anyway, I was only asking because the thread back and forth on alsa-devel
-and alsa-user about the problem stopped almost a week ago.  Since the
-volume levels of alsa-devel and alsa-user are way too high for me, I
-figured I'd check up here.
-
-Anyway, the driver has been broken for so long, I can certainly wait a
-little longer.
-
-----------------------------------------------------------------------
  Miwer - 05-20-05 22:02 
 ----------------------------------------------------------------------
 adamk75 I agree with you - we've been waiting for this problem to be fixed
@@ -86,6 +72,12 @@ tell us to be patient, but it's not easy when nothing's happening. I don't
 mean to disrespect you, but when you make a statement like "I should have
 this working real soon now", then why is this still open after yet another
 4 months?
+
+----------------------------------------------------------------------
+ rlrevell - 05-20-05 22:05 
+----------------------------------------------------------------------
+Sorry, I don't have time to work on this.  Please bug the ALSA developers
+to get the abstract mixer layer finished.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -123,6 +115,7 @@ Date Modified  Username       Field                    Change
 02-22-05 09:56 perex          Relationship added       related to 0000919  
 05-20-05 20:39 Miwer          Issue Monitored: Miwer                       
 05-20-05 22:02 Miwer          Note Added: 0004699                          
+05-20-05 22:05 rlrevell       Note Added: 0004700                          
 ======================================================================
 
 
