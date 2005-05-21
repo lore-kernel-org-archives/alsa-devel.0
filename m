@@ -1,13 +1,13 @@
 From: postmaster@no.where
-Subject: Delivery failure (S.Blacker@qed-uk.com)
-Date: Sat, 21 May 2005 15:52:35 +0100
-Message-ID: <Tc22262debd710c5d73c5@mailgw.millerbros.co.uk>
+Subject: Delivery failure (conderjames@qed-uk.com)
+Date: Sat, 21 May 2005 15:52:41 +0100
+Message-ID: <Tc22262debd710c5d8bac@mailgw.millerbros.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status; boundary="5058/189/1116687155/MAILsweeper/mailgw.millerbros.co.uk"
+Content-Type: multipart/report; report-type=delivery-status; boundary="5080/189/1116687161/MAILsweeper/mailgw.millerbros.co.uk"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp-out1.blueyonder.co.uk (smtp-out1.blueyonder.co.uk [195.188.213.4])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 72F2C175
-	for <alsa-devel@alsa-project.org>; Sat, 21 May 2005 16:52:39 +0200 (MEST)
+Received: from smtp-out3.blueyonder.co.uk (smtp-out3.blueyonder.co.uk [195.188.213.6])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 35EF0238
+	for <alsa-devel@alsa-project.org>; Sat, 21 May 2005 16:52:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,29 +20,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---5058/189/1116687155/MAILsweeper/mailgw.millerbros.co.uk
+--5080/189/1116687161/MAILsweeper/mailgw.millerbros.co.uk
 Content-Type: text/plain
 
 Your message has encountered delivery problems
 to the following recipient(s):
 
-S.Blacker@qed-uk.com
+conderjames@qed-uk.com
 Delivery failed
-550 <S.Blacker@qed-uk.com>... User unknown
+550 <conderjames@qed-uk.com>... User unknown
 
 
 No recipients were successfully delivered to.
 
 
 
---5058/189/1116687155/MAILsweeper/mailgw.millerbros.co.uk
+--5080/189/1116687161/MAILsweeper/mailgw.millerbros.co.uk
 Content-Type: message/delivery-status
 
 
 Status: 5.0.0 (Permanent failure - no additional status information available)
 
 
---5058/189/1116687155/MAILsweeper/mailgw.millerbros.co.uk
+--5080/189/1116687161/MAILsweeper/mailgw.millerbros.co.uk
 Content-Type: message/rfc822
 
 From: alsa-devel@alsa-project.org
@@ -57,7 +57,7 @@ Content-Type: text/plain; charset="us-ascii"
 Lese selbst:
 http://www.rp-online.de/public/article/nachrichten/wirtschaft/finanzen/deutschland/85815
 
---5058/189/1116687155/MAILsweeper/mailgw.millerbros.co.uk--
+--5080/189/1116687161/MAILsweeper/mailgw.millerbros.co.uk--
 
 
 
