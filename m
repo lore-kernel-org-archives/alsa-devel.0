@@ -1,10 +1,10 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: What is "io_remap_pfn_range"?
-Date: Sat, 21 May 2005 15:27:32 +0100 (BST)
-Message-ID: <20050521142732.54087.qmail@web52908.mail.yahoo.com>
+From: postmaster@safeway.co.uk
+Subject: Undeliverable: 60 Jahre Befreiung: Wer feiert mit?
+Date: Sat, 21 May 2005 15:43:32 +0100
+Message-ID: <C32F7430E8AFD411AF5A000629393D2F06AD056C@SWEXSR02>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_000_01C55E13.75B622EC"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,31 +15,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This message is in MIME format. Since your mail reader does not understand
+this format, some or all of this message may not be legible.
 
-What is this symbol "io_remap_pfn_range" used by snd-pcm.ko, please? It i=
-s not present in my
-2.6.11.10 kernel.
+------_=_NextPart_000_01C55E13.75B622EC
+Content-Type: text/plain
 
-Cheers,
-Chris
+Your message
+
+  To:      SMTPfeedback@safeway.co.uk
+  Subject: 60 Jahre Befreiung: Wer feiert mit?
+  Sent:    Sat, 21 May 2005 15:39:06 +0100
+
+did not reach the following recipient(s):
+
+yahoo.co.ukfeedback@safeway.co.uk on Sat, 21 May 2005 15:43:31 +0100
+    The recipient name is not recognized
+	The MTS-ID of the original message is: c=US;a=
+;p=SAFEWAY;l=SWEXSR020505211443LH1NTDGV
+    MSEXCH:IMS:SAFEWAY:WARWICK:SWEXSR02 0 (000C05A6) Unknown Recipient
+Barkerfeedback@safeway.co.uk on Sat, 21 May 2005 15:43:31 +0100
+    The recipient name is not recognized
+	The MTS-ID of the original message is: c=US;a=
+;p=SAFEWAY;l=SWEXSR020505211443LH1NTDGV
+    MSEXCH:IMS:SAFEWAY:WARWICK:SWEXSR02 0 (000C05A6) Unknown Recipient
+SMTPfeedback@safeway.co.uk on Sat, 21 May 2005 15:43:31 +0100
+    The recipient name is not recognized
+	The MTS-ID of the original message is: c=US;a=
+;p=SAFEWAY;l=SWEXSR020505211443LH1NTDGV
+    MSEXCH:IMS:SAFEWAY:WARWICK:SWEXSR02 0 (000C05A6) Unknown Recipient
+safeway.co.ukfeedback@safeway.co.uk on Sat, 21 May 2005 15:43:31 +0100
+    The recipient name is not recognized
+	The MTS-ID of the original message is: c=US;a=
+;p=SAFEWAY;l=SWEXSR020505211443LH1NTDGV
+    MSEXCH:IMS:SAFEWAY:WARWICK:SWEXSR02 0 (000C05A6) Unknown Recipient
 
 
 
-=09
-=09
-	=09
-___________________________________________________________=20
-Yahoo! Messenger - want a free and easy way to contact your friends onlin=
-e? http://uk.messenger.yahoo.com
+------_=_NextPart_000_01C55E13.75B622EC
+Content-Type: message/rfc822
+
+Message-ID: <f7c5acf0c200fbf1@lists.sf.net>
+From: alsa-devel@lists.sf.net
+To: SMTPfeedback@safeway.co.uk
+Subject: 60 Jahre Befreiung: Wer feiert mit?
+Date: Sat, 21 May 2005 15:39:06 +0100
+MIME-Version: 1.0
+X-Mailer: Internet Mail Service (5.5.2650.21)
+X-MS-Embedded-Report: 
+Content-Type: text/plain
+
+http://www.unserforum.com/aff/include.php?path=content/content.php&contentid
+=149
+
+http://www.unserforum.com/aff/include.php?path=content/content.php&contentid
+=54
+
+http://www.unserforum.com/aff/include.php?path=content/content.php&contentid
+=55
+
+http://www.unserforum.com/aff/include.php?path=content/content.php&contentid
+=56
+
+------_=_NextPart_000_01C55E13.75B622EC--
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by Oracle Space Sweepstakes
 Want to be the first software developer in space?
 Enter now for the Oracle Space Sweepstakes!
-http://ads.osdn.com/?ad_id=3D7412&alloc_id=3D16344&op=3Dclick
+http://ads.osdn.com/?ad_id=7412&alloc_id=16344&op=click
