@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Fri, 20 May 2005 22:05:26 +0200
-Message-ID: <17d5b414a36741c080f06f2e2bb34aae@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [2.6 patch] sound/isa/: cleanups
+Date: Sat, 21 May 2005 02:04:02 +0200
+Message-ID: <20050521000402.GP5112__40173.2615930543$1116634224$gmane$org@stusta.de>
+References: <20050513140053.GF16549@stusta.de> <s5hd5rvryaw.wl@alsa2.suse.de> <20050513143720.GH16549@stusta.de> <s5h7ji3rwum.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1E5BD24D
-	for <alsa-devel@alsa-project.org>; Fri, 20 May 2005 22:05:27 +0200 (MEST)
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 9612C258
+	for <alsa-devel@alsa-project.org>; Sat, 21 May 2005 02:04:08 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5h7ji3rwum.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,106 +20,332 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, May 13, 2005 at 05:04:17PM +0200, Takashi Iwai wrote:
+> At Fri, 13 May 2005 16:37:20 +0200,
+> Adrian Bunk wrote:
+> > 
+> > On Fri, May 13, 2005 at 04:32:55PM +0200, Takashi Iwai wrote:
+> > >...
+> > > The unused stuff in sound/isa/gus/* are for (everlasting :) future
+> > > development, e.g. WaveTable synth support.  So I don't think it's a
+> > > good idea to remove completely them.
+> > >...
+> > 
+> > Would a patch to #if 0 them away be OK?
+> 
+> Yes, fine for me.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
-======================================================================
-Reported By:                wzzrd
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   154
-Category:                   mixer
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              05-20-2005 22:05 CEST
-======================================================================
-Summary:                    Master volume only controls front output (emu10k1)
-Description: 
-Setting the alsamixer Master Volume slider only controls the front two
-speakers. The rear speakers have to be controlled with the Wave Surround
-setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
-bug. If I'm wrong putting it here, sorry.
+Updated patch below.
 
-It would be very convenient to be able to control all four speakers with
-the Master Volume setting and to have a Front and Rear slider to control
-the front and rear speakers individually.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000176 Master volume does not alters center, L...
-has duplicate       0000786 Master can't handle all channel
-related to          0000172 Master volume control only controls fro...
-related to          0000919 Master volume doesn't control rear spea...
-======================================================================
+> Takashi
 
-----------------------------------------------------------------------
- Miwer - 05-20-05 22:02 
-----------------------------------------------------------------------
-adamk75 I agree with you - we've been waiting for this problem to be fixed
-for a LONG time now. This has been a problem for at least 18 months now,
-according to various forum posts.
+cu
+Adrian
 
-rlrevell why is it taking so long? You say that it's beeing worked on, but
-that's not what it looks like when reading alsa-user or alsa-devel. You
-tell us to be patient, but it's not easy when nothing's happening. I don't
-mean to disrespect you, but when you make a statement like "I should have
-this working real soon now", then why is this still open after yet another
-4 months?
 
-----------------------------------------------------------------------
- rlrevell - 05-20-05 22:05 
-----------------------------------------------------------------------
-Sorry, I don't have time to work on this.  Please bug the ALSA developers
-to get the abstract mixer layer finished.
+<--  snip  -->
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-23-04 17:31 wzzrd          New Issue                                    
-03-23-04 18:42 perex          View Status              @0@ => public       
-03-23-04 18:42 perex          Description Updated                          
-03-23-04 18:42 perex          Additional Information Updated                    
-03-23-04 18:43 perex          Status                   new => assigned     
-03-23-04 18:43 perex          Assigned To               => perex           
-03-26-04 20:21 djtm           Note Added: 0000708                          
-04-19-04 02:47 tarball        Issue Monitored: tarball                     
-04-19-04 21:23 perex          Relationship added       has duplicate 0000176
-05-24-04 22:51 delmonico      Note Added: 0001199                          
-10-22-04 16:44 perex          Relationship added       related to 0000172  
-10-23-04 01:09 djtm           Note Added: 0002253                          
-10-23-04 01:09 djtm           File Added: alsavol.sh                       
-10-23-04 01:10 djtm           Note Edited: 0002253                         
-11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
-01-04-05 21:01 Miwer          Note Added: 0003081                          
-01-04-05 21:11 rlrevell       Note Added: 0003082                          
-01-04-05 21:29 pzad           Note Added: 0003083                          
-01-04-05 21:38 rlrevell       Note Added: 0003084                          
-01-04-05 22:30 pzad           Note Added: 0003085                          
-01-04-05 22:38 rlrevell       Note Added: 0003086                          
-01-07-05 18:23 tiwai          Relationship added       has duplicate 0000786
-01-09-05 20:28 voroskoi       Issue Monitored: voroskoi                    
-01-27-05 00:58 adamk75        Issue Monitored: adamk75                     
-01-27-05 01:00 adamk75        Note Added: 0003418                          
-02-01-05 22:57 adamk75        Note Added: 0003475                          
-02-03-05 20:20 rlrevell       Note Added: 0003493                          
-02-17-05 22:01 adamk75        Note Added: 0003642                          
-02-17-05 22:59 rlrevell       Note Added: 0003646                          
-02-17-05 23:28 adamk75        Note Added: 0003647                          
-02-22-05 09:56 perex          Relationship added       related to 0000919  
-05-20-05 20:39 Miwer          Issue Monitored: Miwer                       
-05-20-05 22:02 Miwer          Note Added: 0004699                          
-05-20-05 22:05 rlrevell       Note Added: 0004700                          
-======================================================================
 
+This patch contains the following possible cleanups:
+- make needlesly global code static
+- #if 0 the following unused global functions:
+  - gus/gus_volume.c: snd_gf1_gvol_to_lvol_raw
+  - gus/gus_volume.c: snd_gf1_calc_ramp_rate
+  - gus/gus_volume.c: snd_gf1_compute_vibrato
+  - gus/gus_volume.c: snd_gf1_compute_pitchbend
+  - gus/gus_volume.c: snd_gf1_compute_freq
+  - gus/gus_io.c: snd_gf1_i_adlib_write
+  - gus/gus_io.c: snd_gf1_i_write_addr
+  - gus/gus_io.c: snd_gf1_pokew
+  - gus/gus_io.c: snd_gf1_peekw
+  - gus/gus_io.c: snd_gf1_dram_setmem
+  - gus/gus_io.c: snd_gf1_print_global_registers
+  - gus/gus_io.c: snd_gf1_print_setup_registers
+  - gus/gus_io.c: snd_gf1_peek_print_block
+  - gus/gus_io.c: snd_gf1_print_setup_registers
+  - gus/gus_io.c: snd_gf1_peek_print_block
+- #if 0 the following unused global variable:
+  - gus/gus_tables.h: snd_gf1_scale_table
+- remove the following unneeded EXPORT_SYMBOL's:
+  - gus/gus_main.c: snd_gf1_i_write16
+  - gus/gus_main.c: snd_gf1_start
+  - gus/gus_main.c: snd_gf1_stop
+
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
+
+---
+
+ include/sound/gus.h        |   23 -----------------------
+ sound/isa/gus/gus_io.c     |   14 +++++++++++---
+ sound/isa/gus/gus_main.c   |    3 ---
+ sound/isa/gus/gus_mem.c    |   12 ++++++------
+ sound/isa/gus/gus_reset.c  |    3 ++-
+ sound/isa/gus/gus_synth.c  |    3 ++-
+ sound/isa/gus/gus_tables.h |    4 ++++
+ sound/isa/gus/gus_volume.c |    8 ++++++++
+ 8 files changed, 33 insertions(+), 37 deletions(-)
+
+--- linux-2.6.11-mm1-full/sound/isa/gus/gus_mem.c.old	2005-03-06 23:43:49.000000000 +0100
++++ linux-2.6.11-mm1-full/sound/isa/gus/gus_mem.c	2005-03-06 23:44:50.000000000 +0100
+@@ -39,8 +39,8 @@
+ 	}
+ }
+ 
+-snd_gf1_mem_block_t *snd_gf1_mem_xalloc(snd_gf1_mem_t * alloc,
+-				        snd_gf1_mem_block_t * block)
++static snd_gf1_mem_block_t *snd_gf1_mem_xalloc(snd_gf1_mem_t * alloc,
++					       snd_gf1_mem_block_t * block)
+ {
+ 	snd_gf1_mem_block_t *pblock, *nblock;
+ 
+@@ -105,8 +105,8 @@
+ 	return 0;
+ }
+ 
+-snd_gf1_mem_block_t *snd_gf1_mem_look(snd_gf1_mem_t * alloc,
+-				      unsigned int address)
++static snd_gf1_mem_block_t *snd_gf1_mem_look(snd_gf1_mem_t * alloc,
++					     unsigned int address)
+ {
+ 	snd_gf1_mem_block_t *block;
+ 
+@@ -118,8 +118,8 @@
+ 	return NULL;
+ }
+ 
+-snd_gf1_mem_block_t *snd_gf1_mem_share(snd_gf1_mem_t * alloc,
+-				       unsigned int *share_id)
++static snd_gf1_mem_block_t *snd_gf1_mem_share(snd_gf1_mem_t * alloc,
++					      unsigned int *share_id)
+ {
+ 	snd_gf1_mem_block_t *block;
+ 
+--- linux-2.6.11-mm1-full/sound/isa/gus/gus_reset.c.old	2005-03-06 23:45:07.000000000 +0100
++++ linux-2.6.11-mm1-full/sound/isa/gus/gus_reset.c	2005-03-06 23:45:20.000000000 +0100
+@@ -161,7 +161,8 @@
+ #endif
+ }
+ 
+-void snd_gf1_clear_voices(snd_gus_card_t * gus, unsigned short v_min, unsigned short v_max)
++static void snd_gf1_clear_voices(snd_gus_card_t * gus, unsigned short v_min,
++				 unsigned short v_max)
+ {
+ 	unsigned long flags;
+ 	unsigned int daddr;
+--- linux-2.6.11-mm1-full/sound/isa/gus/gus_synth.c.old	2005-03-06 23:47:13.000000000 +0100
++++ linux-2.6.11-mm1-full/sound/isa/gus/gus_synth.c	2005-03-06 23:47:29.000000000 +0100
+@@ -99,7 +99,8 @@
+ 	snd_seq_instr_list_free_cond(p->gus->gf1.ilist, &ifree, client, 0);
+ }
+  
+-int snd_gus_synth_event_input(snd_seq_event_t *ev, int direct, void *private_data, int atomic, int hop)
++static int snd_gus_synth_event_input(snd_seq_event_t *ev, int direct,
++				     void *private_data, int atomic, int hop)
+ {
+ 	snd_gus_port_t * p = (snd_gus_port_t *) private_data;
+ 	
+--- linux-2.6.11-mm2-full/include/sound/gus.h.old	2005-03-09 02:56:00.000000000 +0100
++++ linux-2.6.11-mm2-full/include/sound/gus.h	2005-03-09 03:04:59.000000000 +0100
+@@ -526,9 +526,6 @@
+ extern void snd_gf1_dram_addr(snd_gus_card_t * gus, unsigned int addr);
+ extern void snd_gf1_poke(snd_gus_card_t * gus, unsigned int addr, unsigned char data);
+ extern unsigned char snd_gf1_peek(snd_gus_card_t * gus, unsigned int addr);
+-extern void snd_gf1_pokew(snd_gus_card_t * gus, unsigned int addr, unsigned short data);
+-extern unsigned short snd_gf1_peekw(snd_gus_card_t * gus, unsigned int addr);
+-extern void snd_gf1_dram_setmem(snd_gus_card_t * gus, unsigned int addr, unsigned short value, unsigned int count);
+ extern void snd_gf1_write_addr(snd_gus_card_t * gus, unsigned char reg, unsigned int addr, short w_16bit);
+ extern unsigned int snd_gf1_read_addr(snd_gus_card_t * gus, unsigned char reg, short w_16bit);
+ extern void snd_gf1_i_ctrl_stop(snd_gus_card_t * gus, unsigned char reg);
+@@ -544,9 +541,6 @@
+ {
+ 	return snd_gf1_i_look16(gus, reg | 0x80);
+ }
+-extern void snd_gf1_i_adlib_write(snd_gus_card_t * gus, unsigned char reg, unsigned char data);
+-extern void snd_gf1_i_write_addr(snd_gus_card_t * gus, unsigned char reg, unsigned int addr, short w_16bit);
+-extern unsigned int snd_gf1_i_read_addr(snd_gus_card_t * gus, unsigned char reg, short w_16bit);
+ 
+ extern void snd_gf1_select_active_voices(snd_gus_card_t * gus);
+ 
+@@ -580,10 +574,6 @@
+ 
+ void snd_gf1_mem_lock(snd_gf1_mem_t * alloc, int xup);
+ int snd_gf1_mem_xfree(snd_gf1_mem_t * alloc, snd_gf1_mem_block_t * block);
+-snd_gf1_mem_block_t *snd_gf1_mem_look(snd_gf1_mem_t * alloc,
+-				      unsigned int address);
+-snd_gf1_mem_block_t *snd_gf1_mem_share(snd_gf1_mem_t * alloc,
+-				       unsigned int *share_id);
+ snd_gf1_mem_block_t *snd_gf1_mem_alloc(snd_gf1_mem_t * alloc, int owner,
+ 				       char *name, int size, int w_16,
+ 				       int align, unsigned int *share_id);
+@@ -608,23 +598,13 @@
+ /* gus_volume.c */
+ 
+ unsigned short snd_gf1_lvol_to_gvol_raw(unsigned int vol);
+-unsigned int snd_gf1_gvol_to_lvol_raw(unsigned short gf1_vol);
+-unsigned int snd_gf1_calc_ramp_rate(snd_gus_card_t * gus,
+-				    unsigned short start,
+-				    unsigned short end,
+-				    unsigned int us);
+ unsigned short snd_gf1_translate_freq(snd_gus_card_t * gus, unsigned int freq2);
+-unsigned short snd_gf1_compute_pitchbend(unsigned short pitchbend, unsigned short sens);
+-unsigned short snd_gf1_compute_freq(unsigned int freq,
+-				    unsigned int rate,
+-				    unsigned short mix_rate);
+ 
+ /* gus_reset.c */
+ 
+ void snd_gf1_set_default_handlers(snd_gus_card_t * gus, unsigned int what);
+ void snd_gf1_smart_stop_voice(snd_gus_card_t * gus, unsigned short voice);
+ void snd_gf1_stop_voice(snd_gus_card_t * gus, unsigned short voice);
+-void snd_gf1_clear_voices(snd_gus_card_t * gus, unsigned short v_min, unsigned short v_max);
+ void snd_gf1_stop_voices(snd_gus_card_t * gus, unsigned short v_min, unsigned short v_max);
+ snd_gus_voice_t *snd_gf1_alloc_voice(snd_gus_card_t * gus, int type, int client, int port);
+ void snd_gf1_free_voice(snd_gus_card_t * gus, snd_gus_voice_t *voice);
+@@ -641,9 +621,6 @@
+ 
+ #ifdef CONFIG_SND_DEBUG
+ extern void snd_gf1_print_voice_registers(snd_gus_card_t * gus);
+-extern void snd_gf1_print_global_registers(snd_gus_card_t * gus);
+-extern void snd_gf1_print_setup_registers(snd_gus_card_t * gus);
+-extern void snd_gf1_peek_print_block(snd_gus_card_t * gus, unsigned int addr, int count, int w_16bit);
+ #endif
+ 
+ /* gus.c */
+--- linux-2.6.11-mm2-full/sound/isa/gus/gus_main.c.old	2005-03-09 02:56:00.000000000 +0100
++++ linux-2.6.11-mm2-full/sound/isa/gus/gus_main.c	2005-03-09 03:04:01.000000000 +0100
+@@ -459,7 +459,6 @@
+ EXPORT_SYMBOL(snd_gf1_look16);
+ EXPORT_SYMBOL(snd_gf1_i_write8);
+ EXPORT_SYMBOL(snd_gf1_i_look8);
+-EXPORT_SYMBOL(snd_gf1_i_write16);
+ EXPORT_SYMBOL(snd_gf1_i_look16);
+ EXPORT_SYMBOL(snd_gf1_dram_addr);
+ EXPORT_SYMBOL(snd_gf1_write_addr);
+@@ -470,8 +469,6 @@
+ EXPORT_SYMBOL(snd_gf1_free_voice);
+ EXPORT_SYMBOL(snd_gf1_ctrl_stop);
+ EXPORT_SYMBOL(snd_gf1_stop_voice);
+-EXPORT_SYMBOL(snd_gf1_start);
+-EXPORT_SYMBOL(snd_gf1_stop);
+   /* gus_mixer.c */
+ EXPORT_SYMBOL(snd_gf1_new_mixer);
+   /* gus_pcm.c */
+
+--- linux-2.6.12-rc4-mm2-full/sound/isa/gus/gus_tables.h.old	2005-05-21 01:37:27.000000000 +0200
++++ linux-2.6.12-rc4-mm2-full/sound/isa/gus/gus_tables.h	2005-05-21 01:37:59.000000000 +0200
+@@ -23,6 +23,8 @@
+ 
+ #ifdef __GUS_TABLES_ALLOC__
+ 
++#if 0
++
+ unsigned int snd_gf1_scale_table[SNDRV_GF1_SCALE_TABLE_SIZE] =
+ {
+       8372,      8870,      9397,      9956,     10548,     11175,
+@@ -49,6 +51,8 @@
+   12123977,  12844906
+ };
+ 
++#endif  /*  0  */
++
+ unsigned short snd_gf1_atten_table[SNDRV_GF1_ATTEN_TABLE_SIZE] = {
+   4095 /* 0   */,1789 /* 1   */,1533 /* 2   */,1383 /* 3   */,1277 /* 4   */,
+   1195 /* 5   */,1127 /* 6   */,1070 /* 7   */,1021 /* 8   */,978  /* 9   */,
+--- linux-2.6.12-rc4-mm2-full/sound/isa/gus/gus_volume.c.old	2005-05-21 01:31:05.000000000 +0200
++++ linux-2.6.12-rc4-mm2-full/sound/isa/gus/gus_volume.c	2005-05-21 01:31:53.000000000 +0200
+@@ -55,6 +55,8 @@
+ 	return (e << 8) | m;
+ }
+ 
++#if 0
++
+ unsigned int snd_gf1_gvol_to_lvol_raw(unsigned short gf1_vol)
+ {
+ 	unsigned int rvol;
+@@ -108,6 +110,8 @@
+ 	return (range << 6) | (increment & 0x3f);
+ }
+ 
++#endif  /*  0  */
++
+ unsigned short snd_gf1_translate_freq(snd_gus_card_t * gus, unsigned int freq16)
+ {
+ 	freq16 >>= 3;
+@@ -120,6 +124,8 @@
+ 	return ((freq16 << 9) + (gus->gf1.playback_freq >> 1)) / gus->gf1.playback_freq;
+ }
+ 
++#if 0
++
+ short snd_gf1_compute_vibrato(short cents, unsigned short fc_register)
+ {
+ 	static short vibrato_table[] =
+@@ -208,3 +214,5 @@
+ 	}
+ 	return (unsigned short) fc;
+ }
++
++#endif  /*  0  */
+--- linux-2.6.12-rc4-mm2-full/sound/isa/gus/gus_io.c.old	2005-05-21 01:32:29.000000000 +0200
++++ linux-2.6.12-rc4-mm2-full/sound/isa/gus/gus_io.c	2005-05-21 01:36:42.000000000 +0200
+@@ -244,6 +244,8 @@
+ 	return res;
+ }
+ 
++#if 0
++
+ void snd_gf1_i_adlib_write(snd_gus_card_t * gus,
+ 		           unsigned char reg,
+ 		           unsigned char data)
+@@ -265,6 +267,8 @@
+ 	spin_unlock_irqrestore(&gus->reg_lock, flags);
+ }
+ 
++#endif  /*  0  */
++
+ unsigned int snd_gf1_i_read_addr(snd_gus_card_t * gus,
+ 				 unsigned char reg, short w_16bit)
+ {
+@@ -329,6 +333,8 @@
+ 	return res;
+ }
+ 
++#if 0
++
+ void snd_gf1_pokew(snd_gus_card_t * gus, unsigned int addr, unsigned short data)
+ {
+ 	unsigned long flags;
+@@ -405,9 +411,7 @@
+ 	spin_unlock_irqrestore(&gus->reg_lock, flags);
+ }
+ 
+-/*
+-
+- */
++#endif  /*  0  */
+ 
+ void snd_gf1_select_active_voices(snd_gus_card_t * gus)
+ {
+@@ -469,6 +473,8 @@
+ 		printk(" -%i- GF1  pan                    = 0x%x\n", voice, snd_gf1_i_read8(gus, 0x0c));
+ }
+ 
++#if 0
++
+ void snd_gf1_print_global_registers(snd_gus_card_t * gus)
+ {
+ 	unsigned char global_mode = 0x00;
+@@ -528,4 +534,6 @@
+ 	}
+ }
+ 
++#endif  /*  0  */
++
+ #endif
 
 
 
