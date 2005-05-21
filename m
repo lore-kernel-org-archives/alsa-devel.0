@@ -1,11 +1,13 @@
-From: postmaster@safeway.co.uk
-Subject: Undeliverable: 60 Jahre Befreiung: Wer feiert mit?
-Date: Sat, 21 May 2005 15:43:32 +0100
-Message-ID: <C32F7430E8AFD411AF5A000629393D2F06AD056C@SWEXSR02>
+From: postmaster@no.where
+Subject: Delivery failure (timjilly@qed-uk.com)
+Date: Sat, 21 May 2005 15:52:34 +0100
+Message-ID: <Tc22262debd710c5d6f28@mailgw.millerbros.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_000_01C55E13.75B622EC"
+Content-Type: multipart/report; report-type=delivery-status; boundary="5052/189/1116687154/MAILsweeper/mailgw.millerbros.co.uk"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from smtp-out1.blueyonder.co.uk (smtp-out1.blueyonder.co.uk [195.188.213.4])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 64DB4125
+	for <alsa-devel@alsa-project.org>; Sat, 21 May 2005 16:52:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,72 +17,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
-
-------_=_NextPart_000_01C55E13.75B622EC
+--5052/189/1116687154/MAILsweeper/mailgw.millerbros.co.uk
 Content-Type: text/plain
 
-Your message
+Your message has encountered delivery problems
+to the following recipient(s):
 
-  To:      SMTPfeedback@safeway.co.uk
-  Subject: 60 Jahre Befreiung: Wer feiert mit?
-  Sent:    Sat, 21 May 2005 15:39:06 +0100
+timjilly@qed-uk.com
+Delivery failed
+550 <timjilly@qed-uk.com>... User unknown
 
-did not reach the following recipient(s):
 
-yahoo.co.ukfeedback@safeway.co.uk on Sat, 21 May 2005 15:43:31 +0100
-    The recipient name is not recognized
-	The MTS-ID of the original message is: c=US;a=
-;p=SAFEWAY;l=SWEXSR020505211443LH1NTDGV
-    MSEXCH:IMS:SAFEWAY:WARWICK:SWEXSR02 0 (000C05A6) Unknown Recipient
-Barkerfeedback@safeway.co.uk on Sat, 21 May 2005 15:43:31 +0100
-    The recipient name is not recognized
-	The MTS-ID of the original message is: c=US;a=
-;p=SAFEWAY;l=SWEXSR020505211443LH1NTDGV
-    MSEXCH:IMS:SAFEWAY:WARWICK:SWEXSR02 0 (000C05A6) Unknown Recipient
-SMTPfeedback@safeway.co.uk on Sat, 21 May 2005 15:43:31 +0100
-    The recipient name is not recognized
-	The MTS-ID of the original message is: c=US;a=
-;p=SAFEWAY;l=SWEXSR020505211443LH1NTDGV
-    MSEXCH:IMS:SAFEWAY:WARWICK:SWEXSR02 0 (000C05A6) Unknown Recipient
-safeway.co.ukfeedback@safeway.co.uk on Sat, 21 May 2005 15:43:31 +0100
-    The recipient name is not recognized
-	The MTS-ID of the original message is: c=US;a=
-;p=SAFEWAY;l=SWEXSR020505211443LH1NTDGV
-    MSEXCH:IMS:SAFEWAY:WARWICK:SWEXSR02 0 (000C05A6) Unknown Recipient
+No recipients were successfully delivered to.
 
 
 
-------_=_NextPart_000_01C55E13.75B622EC
+--5052/189/1116687154/MAILsweeper/mailgw.millerbros.co.uk
+Content-Type: message/delivery-status
+
+
+Status: 5.0.0 (Permanent failure - no additional status information available)
+
+
+--5052/189/1116687154/MAILsweeper/mailgw.millerbros.co.uk
 Content-Type: message/rfc822
 
-Message-ID: <f7c5acf0c200fbf1@lists.sf.net>
-From: alsa-devel@lists.sf.net
-To: SMTPfeedback@safeway.co.uk
-Subject: 60 Jahre Befreiung: Wer feiert mit?
-Date: Sat, 21 May 2005 15:39:06 +0100
+From: alsa-devel@alsa-project.org
+To: mail@qed-uk.com
+Date: Sat, 21 May 2005 14:35:21 GMT
+Subject: Massenhafter Steuerbetrug durch auslaendische Arbeitnehmer
 MIME-Version: 1.0
-X-Mailer: Internet Mail Service (5.5.2650.21)
-X-MS-Embedded-Report: 
-Content-Type: text/plain
+Message-ID: <7c7b45bada.6c5702@alsa-project.org>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 
-http://www.unserforum.com/aff/include.php?path=content/content.php&contentid
-=149
+Lese selbst:
+http://www.rp-online.de/public/article/nachrichten/wirtschaft/finanzen/deutschland/85815
 
-http://www.unserforum.com/aff/include.php?path=content/content.php&contentid
-=54
+--5052/189/1116687154/MAILsweeper/mailgw.millerbros.co.uk--
 
-http://www.unserforum.com/aff/include.php?path=content/content.php&contentid
-=55
-
-http://www.unserforum.com/aff/include.php?path=content/content.php&contentid
-=56
-
-------_=_NextPart_000_01C55E13.75B622EC--
 
 
 -------------------------------------------------------
