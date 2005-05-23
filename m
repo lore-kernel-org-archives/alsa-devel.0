@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001080]: [PATCH] alsamixer crashes with toonie (mac-mini) when pressing F4
-Date: Mon, 23 May 2005 18:57:52 +0200
-Message-ID: <ef0709c26676d9400af8f13b52442b35@bugtrack.alsa-project.org>
+From: Sasha Khapyorsky <sashak@smlink.com>
+Subject: Re: ali5451.c: M5451 info needed
+Date: Mon, 23 May 2005 22:37:02 +0300
+Message-ID: <20050523193702.GB16150@sashak.softier.local>
+References: <20050522001953.GG27978@tecr> <s5hu0ku2qmq.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E096922F
-	for <alsa-devel@alsa-project.org>; Mon, 23 May 2005 18:57:52 +0200 (MEST)
+In-reply-to: <s5hu0ku2qmq.wl@alsa2.suse.de>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +18,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On 12:17 Mon 23 May     , Takashi Iwai wrote:
+> 
+> I don't know of the datasheet of this chipset.  IIRC, we got a source
+> code from Acer, but not a datasheet.
+> 
+> Anyway, ali5451 looks pretty similar with Trident 4D DX/NX.
+> The chip supports only 2 fixed periods.  If you need more periods,
+> allocate an extra voice with the period size and let it generating
+> interrupts but not producing sounds.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1080> 
-======================================================================
-Reported By:                gjasny
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1080
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             04-28-2005 12:21 CEST
-Last Modified:              05-23-2005 18:57 CEST
-======================================================================
-Summary:                    [PATCH] alsamixer crashes with toonie (mac-mini)
-when pressing F4
-Description: 
-When entering the capture view, alsamixer recognized that there are no
-napture controls and switches back to playback.
+Yes, it is done so with audio playback, but not with capture. I've
+tried something like this with modem playback, but output is going to
+regular pcm channel (to speacker) and not to phone line. Seems some
+bit setting is necessary.
 
-But during the first reinit after F4 mixer_grpidx is freeed and malloced.
-Because there are no capture devices mixer_grpidx[0] contains garbage,
-which leads to a crash.
+Well, I'll try to work with 2 periods - aplay and arecord are ok.
 
-I've replaced the malloc with a calloc, so that mixer_grpidx always
-contains some sane values.
+Thanks, Takashi.
 
-Cheers,
-Gregor
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 05-23-05 18:57 
-----------------------------------------------------------------------
-Fixed on CVS.  Thanks.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-28-05 12:21 gjasny         New Issue                                    
-04-28-05 12:21 gjasny         File Added: alsamixer.diff                    
-05-23-05 18:57 tiwai          Status                   new => resolved     
-05-23-05 18:57 tiwai          Resolution               open => fixed       
-05-23-05 18:57 tiwai          Assigned To               => tiwai           
-05-23-05 18:57 tiwai          Note Added: 0004705                          
-======================================================================
-
+Sasha.
 
 
 
