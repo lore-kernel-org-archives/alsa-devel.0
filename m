@@ -1,11 +1,12 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: MSI K8N CA0106 SB Live 24bit  capture tests needed.
-Date: Sun, 22 May 2005 11:11:26 +0100
-Message-ID: <42905ACE.2060806@superbug.co.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: What is "io_remap_pfn_range"?
+Date: Mon, 23 May 2005 09:04:10 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0505230903240.6341-100000@studcom.urz.uni-halle.de>
+References: <20050521142732.54087.qmail@web52908.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20050521142732.54087.qmail@web52908.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,22 +16,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Chris Rankin <rankincj@yahoo.com>
+Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Chris Rankin wrote:
+> What is this symbol "io_remap_pfn_range" used by snd-pcm.ko,
+> please?
 
-Can anyone who has a motherboard with the Creative CA0106 chip on it
-please contact me.
+A bug.  Just fixed on CVS.
 
-I have some idea on how to possibly get capture to work for Mic and Line In.
 
-This possible fix is only for Motherboard based Creative CA0106 chip.
-It will not help the SB Live 24 bit PCI card versions.
-
-Thank you
-
-James
+HTH
+Clemens
 
 
 
