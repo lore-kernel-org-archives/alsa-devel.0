@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001092]: Low volume output with snd-i8x0
-Date: Tue, 24 May 2005 12:18:23 +0200
-Message-ID: <92b173dc1f77537c24fef627b1c601a2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000986]: snd-ice1724 outputs white noise on rear surround output of Chaintech AV-710
+Date: Tue, 24 May 2005 12:23:33 +0200
+Message-ID: <6043958620c69c345d5730100a233337@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3D93C1DD
-	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 12:18:23 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C6A771DD
+	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 12:23:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1092> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=986> 
 ======================================================================
-Reported By:                haYnguy
+Reported By:                AdamW
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1092
-Category:                   PCI - intel8x0
+Issue ID:                   986
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6
+Distribution:               Mandrakelinux Cooker
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             05-06-2005 22:49 CEST
-Last Modified:              05-24-2005 12:18 CEST
+Date Submitted:             03-12-2005 22:43 CET
+Last Modified:              05-24-2005 12:23 CEST
 ======================================================================
-Summary:                    Low volume output with snd-i8x0
+Summary:                    snd-ice1724 outputs white noise on rear surround
+output of Chaintech AV-710
 Description: 
-Whenever I want to listen to anything, the volume is extremely low.
-Everything is supported, plugged in, turned on, turned up, and still the
-volume is very low. I can only hear it when I put the speaker to my ear,
-and still it is quite faint.
+A little background. The Chaintech AV-710 soundcard is a 7.1 soundcard
+which uses this driver. It has two DACs. There's a standard DAC that
+drives the first six channels. The rear surround channels, however, are
+driven by a high-quality Wolfson DAC. Audio enthusiasts like to set the
+card to drive the main two channels through this DAC instead in order to
+get a very high quality stereo line-level output. The card's Windows
+driver has an option to do just this, and in the past people have been
+successful doing it on Linux. I am attaching an asound.state file which
+owners of this card used with ALSA 1.0.7 to achieve this. However, I am
+having trouble getting this to work with ALSA 1.0.8. The rear surround
+output just produces white noise all the time. This is the case both with
+this asound.state loaded and also with default levels (i.e., what I get if
+I wipe /etc/asound.state and re-run alsaconf). It'd be nice to know what
+changed between 1.0.7 and 1.0.8 that caused this to break, and how to fix
+it. Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- haYnguy - 05-10-05 03:25 
+ AdamW - 05-09-05 18:09 
 ----------------------------------------------------------------------
-i did but it is still very low... (still in the same situation)
+Actually, now it's OK, I just had to use the asound.state from this thread
+but delete control 7 from it (ALSA kept complaining about it, probably
+because I compiled driver 1.0.8 but I still have libs and tools 1.0.9rc).
+Now it works fine :). As soon as this patch is merged, I consider it
+fixed. Thanks a lot! Mmm...Wolfson...
 
 ----------------------------------------------------------------------
- tiwai - 05-24-05 12:18 
+ tiwai - 05-24-05 12:23 
 ----------------------------------------------------------------------
-Try to turn off 'Headphone Jack Sense' and 'Line Jack Sense' switches.
-If this doesn't work, I would suspect a hardware problem.
+Does the chaintech AV-710 have the same subvendor ID with AMP AUDIO2000?
+It's weird...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-05 22:49 haYnguy        New Issue                                    
-05-06-05 22:49 haYnguy        Kernel Version            => 2.6             
-05-06-05 23:02 haYnguy        Note Added: 0004599                          
-05-07-05 09:47 jdthood        Note Added: 0004601                          
-05-07-05 18:46 haYnguy        Note Added: 0004606                          
-05-08-05 19:51 jdthood        Note Added: 0004613                          
-05-10-05 03:25 haYnguy        Note Added: 0004631                          
-05-24-05 12:18 tiwai          Note Added: 0004715                          
+03-12-05 22:43 AdamW          New Issue                                    
+03-12-05 22:43 AdamW          File Added: asound.state                     
+03-12-05 22:43 AdamW          Distribution              => Mandrakelinux Cooker
+03-12-05 22:43 AdamW          Kernel Version            => 2.6.11          
+03-14-05 16:23 AdamW          Note Added: 0003904                          
+03-19-05 08:17 AdamW          Note Added: 0004010                          
+04-29-05 15:18 jamesferguson  Issue Monitored: jamesferguson                    
+04-29-05 15:24 jamesferguson  Note Added: 0004579                          
+05-08-05 20:46 jaanusk_       File Added: amp2000_wm8728.patch                  
+ 
+05-08-05 20:49 jaanusk_       Note Added: 0004619                          
+05-08-05 20:50 jaanusk_       Issue Monitored: jaanusk_                    
+05-09-05 07:42 AdamW          Note Added: 0004621                          
+05-09-05 10:43 jaanusk_       Note Added: 0004623                          
+05-09-05 18:09 AdamW          Note Added: 0004628                          
+05-24-05 12:23 tiwai          Note Added: 0004716                          
 ======================================================================
 
 
