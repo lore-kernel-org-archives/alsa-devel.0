@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001097]: alsamixer crashes on powerpc
-Date: Tue, 24 May 2005 12:27:21 +0200
-Message-ID: <0ae46e2acca3fe177f56a0413e02afb7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001013]: Sound is not working on the MacMini
+Date: Tue, 24 May 2005 12:27:57 +0200
+Message-ID: <ff7df994f6eec57d276d6186c493d690@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A4EC41DD
-	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 12:27:21 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8567F1DF
+	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 12:27:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,92 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1097> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1013> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                timing
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1097
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1013
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
+Distribution:               Ubuntu
+Kernel Version:             2.6.11.5
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-08-2005 20:02 CEST
+Date Submitted:             03-24-2005 19:27 CET
 Last Modified:              05-24-2005 12:27 CEST
 ======================================================================
-Summary:                    alsamixer crashes on powerpc
+Summary:                    Sound is not working on the MacMini
 Description: 
-The submitter of Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=308090 reports that
-alsamixer crashes.
+Sound is not working on the MacMini. When loading the dmasound_pmac i get
+the following error:
 
-1) run "alsamixer" from a shell prompt
-2) press <TAB> at text UI screen that appears
-3) observe crash
+FATAL: Error inserting dmasound_pmac
+(/lib/modules/2.6.11.5/kernel/sound/oss/dmasound/dmasound_pmac.ko): No
+such device
 
-Please see http://bugs.debian.org/308090 for lots of additional
-information.
+When trying to play music i get an "maybe your device is busy?" error.
+
+I've found a solution on the ubuntuforums(
+http://www.ubuntuforums.org/showthread.php?t=12748 )
+
+it says:
+
+To manually apply the patch (just as easy in this case),
+just open the file linux/sound/ppc/pmac.c in an editor,
+and search for OAKeylargo.
+Where it says SNAPPER right below, you change to SCREAMER (in uppercase).
+(In kernel 2.6.10 it's at line 967). 
+
+this solution is very minimal, the alsamixer is slow, and my computer
+hangs for a couple of seconds before the start of every new process (when
+opening a new window in gnome etc.). When i edit pmac.c in the old way my
+system runs normal again.
 ======================================================================
+
+----------------------------------------------------------------------
+ perchrh - 05-07-05 17:24 
+----------------------------------------------------------------------
+Benjamin Herrenschmidt <benh@kernel.crashing.org> 
+has made a driver for mac mini sound. It's included in current alsa-cvs
+and linux-2.6.12-rc4 and later
 
 ----------------------------------------------------------------------
  tiwai - 05-24-05 12:27 
 ----------------------------------------------------------------------
-Fixed on CVS, 1.0.9rc4a.
+Fixed on CVS, 1.0.9rc4.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-08-05 20:02 jdthood        New Issue                                    
-05-24-05 12:27 tiwai          Status                   new => resolved     
+03-24-05 19:27 timing         New Issue                                    
+03-24-05 19:27 timing         Distribution              => Ubuntu          
+03-24-05 19:27 timing         Kernel Version            => 2.6.11.5        
+03-24-05 19:32 timing         Note Added: 0004194                          
+03-24-05 19:35 timing         Issue Monitored: timing                      
+03-24-05 19:48 tiwai          Note Added: 0004197                          
+03-24-05 21:35 timing         Note Added: 0004202                          
+03-25-05 21:44 perchrh        Note Added: 0004212                          
+03-25-05 21:50 perchrh        Note Edited: 0004212                         
+03-25-05 21:52 perchrh        Issue Monitored: perchrh                     
+03-25-05 22:57 timing         Note Edited: 0004202                         
+03-25-05 23:27 timing         Note Edited: 0004202                         
+04-03-05 13:44 perchrh        Note Added: 0004309                          
+04-03-05 14:29 perchrh        Note Edited: 0004309                         
+04-03-05 14:30 perchrh        Note Edited: 0004309                         
+04-03-05 14:36 perchrh        Note Added: 0004310                          
+04-09-05 02:45 perchrh        Note Added: 0004381                          
+04-09-05 14:26 perchrh        Note Added: 0004396                          
+05-07-05 17:24 perchrh        Note Added: 0004605                          
+05-07-05 17:24 perchrh        Issue End Monitor: perchrh                    
+05-24-05 12:27 tiwai          Status                   assigned => resolved
 05-24-05 12:27 tiwai          Resolution               open => fixed       
-05-24-05 12:27 tiwai          Assigned To               => tiwai           
-05-24-05 12:27 tiwai          Note Added: 0004717                          
+05-24-05 12:27 tiwai          Note Added: 0004718                          
 ======================================================================
 
 
