@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001068]: enable dmix by default
-Date: Tue, 24 May 2005 09:29:55 +0200
-Message-ID: <64e5eb312181e4f9a8c7c0302c7fffa6@bugtrack.alsa-project.org>
+Date: Tue, 24 May 2005 09:35:22 +0200
+Message-ID: <db4a5b18ca88de8cafe1c13533bb7a50@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A93991D7
-	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 09:29:55 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3764F1D7
+	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 09:35:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             04-21-2005 06:49 CEST
-Last Modified:              05-24-2005 09:29 CEST
+Last Modified:              05-24-2005 09:35 CEST
 ======================================================================
 Summary:                    enable dmix by default
 Description: 
@@ -50,16 +50,19 @@ please enable it by default.
 ======================================================================
 
 ----------------------------------------------------------------------
- mandreiana - 04-29-05 09:08 
-----------------------------------------------------------------------
-I've upgraded to 1.0.9.rc2, please close this
-
-----------------------------------------------------------------------
  Martin Pitt - 05-24-05 09:29 
 ----------------------------------------------------------------------
 Please do not close it right now. I'm using 1.0.9rc3, dmix really is
 enabled by default, but only for the first card. All subsequent cards do
 not use dmix. Is this on purpose? If not, will it be fixed in 1.0.9 final?
+
+----------------------------------------------------------------------
+ pzad - 05-24-05 09:35 
+----------------------------------------------------------------------
+dmix should be enabled for all cheap motherboards cards (except I think
+envy24 based cards).
+
+What other cards do you have ?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -70,6 +73,7 @@ Date Modified  Username       Field                    Change
 04-21-05 08:42 mandreiana     Note Added: 0004548                          
 04-29-05 09:08 mandreiana     Note Added: 0004578                          
 05-24-05 09:29 Martin Pitt    Note Added: 0004707                          
+05-24-05 09:35 pzad           Note Added: 0004708                          
 ======================================================================
 
 
