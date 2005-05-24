@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001108]: There is no ISA module ad1816 (not ad1816a)
-Date: Tue, 24 May 2005 12:43:13 +0200
-Message-ID: <743fa84fa69d6213c7b93e37c6ebea54@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000800]: Sound is Corrupted or terribe quality.
+Date: Tue, 24 May 2005 13:37:07 +0200
+Message-ID: <ba86775a11e082f0f72be8a58635f2b1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C6BCD198
-	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 12:43:13 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D0E421E2
+	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 13:37:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,43 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1108> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=800> 
 ======================================================================
-Reported By:                sonne000ca
+Reported By:                abonilla
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1108
-Category:                   OTHERS
+Issue ID:                   800
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Debian
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             05-14-2005 06:58 CEST
-Last Modified:              05-24-2005 12:43 CEST
+Date Submitted:             01-10-2005 03:20 CET
+Last Modified:              05-24-2005 13:37 CEST
 ======================================================================
-Summary:                    There is no ISA module ad1816 (not ad1816a)
+Summary:                    Sound is Corrupted or terribe quality.
 Description: 
-This webpage describes the installation of the module ad1816:
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Shark+Multimedia&card=Shark+Predator+3D+%28ISA%29.&chip=AD1816A&module=ad1816
-
-However, this card is not available in alsa-drivers, only ad1816a is
-available.
+Sound goes out just like if the jack was not propperly plugged. bad Sound
+Quality.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-24-05 12:43 
+ jdthood - 03-19-05 12:42 
 ----------------------------------------------------------------------
-I think it's available now on the latest 1.0.9rc4, right?
+>  How about 1.0.9rc1? Many bugs have been fixed for hda driver. 
+
+I have asked the submitter to try 1.0.9rc1 but it may be that
+we will get no feedback from him until 1.0.9 is released.
+(I don't plan to make a new Debian release of alsa-driver until
+1.0.9 is finalized.)
+
+----------------------------------------------------------------------
+ jdthood - 05-24-05 13:37 
+----------------------------------------------------------------------
+The submitter installed 1.0.9rc2-1 modules but the "rustling" persists. 
+The submitter provides a recording of the rustling in an mp3 file.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-14-05 06:58 sonne000ca     New Issue                                    
-05-24-05 12:43 tiwai          Note Added: 0004724                          
+01-10-05 03:20 abonilla       New Issue                                    
+01-10-05 03:20 abonilla       Distribution              => Debian          
+01-10-05 03:20 abonilla       Kernel Version            => 2.6.9           
+01-10-05 14:56 tiwai          Note Added: 0003134                          
+03-16-05 13:27 jdthood        Note Added: 0003956                          
+03-18-05 18:23 tiwai          Note Added: 0004003                          
+03-18-05 23:35 allefant       Issue Monitored: allefant                    
+03-18-05 23:36 allefant       Issue End Monitor: allefant                    
+03-19-05 12:42 jdthood        Note Added: 0004036                          
+05-24-05 13:37 jdthood        Note Added: 0004725                          
 ======================================================================
 
 
