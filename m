@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001103]: Please support /dev/snd/aload* as well
-Date: Tue, 24 May 2005 14:02:09 +0200
-Message-ID: <a5d3eb5cbaf34dc13aa22da37263e000@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001032]: 1.0.9rc2 causes mplayer -ao alsa to crash on startup
+Date: Tue, 24 May 2005 14:11:35 +0200
+Message-ID: <4466e5890cc79037424e5e687802c959@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2DDB01E3
-	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 14:02:10 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AC5FA1E3
+	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 14:11:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,94 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1103> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1032> 
 ======================================================================
-Reported By:                jordi
+Reported By:                bero
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   1103
-Category:                   general
+Issue ID:                   1032
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   crash
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             05-13-2005 13:49 CEST
-Last Modified:              05-24-2005 14:02 CEST
+Date Submitted:             04-02-2005 16:10 CEST
+Last Modified:              05-24-2005 14:11 CEST
 ======================================================================
-Summary:                    Please support /dev/snd/aload* as well
+Summary:                    1.0.9rc2 causes mplayer -ao alsa to crash on startup
 Description: 
-Currently, alsa-lib looks for aload* files in /dev.
-
-I think it would be nice if these files could live in /dev/snd, with the
-rest of ALSA devices.
-
-Can alsa-lib be modified to support aload* devices in both /dev and
-/dev/snd?
-
-Maybe in the future, after people have transitioned, support for
-/dev/aload* could be dropped. Defaulting to /dev/snd and falling back to
-/dev could be the way to work for now.
-
-The udev maintainer thinks this would be a good enhancement.
+1.0.9rc2 causes mplayer -ao alsa to crash on startup
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-13-05 14:15 
+ jdthood - 05-24-05 13:55 
 ----------------------------------------------------------------------
-FYI, the support of /dev/aload* can be disabled via --disable-aload
-configure option.  This is better together with udev.
+Debian bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=310189 is
+possibly the same bug.  With 1.0.9rc2 the submitter
+found that he couldn't quit mplayer cleanly and had to kill it.  He
+attached an strace.
 
-----------------------------------------------------------------------
- jdthood - 05-13-05 15:36 
-----------------------------------------------------------------------
-> FYI, the support of /dev/aload* can be disabled via --disable-aload
-> configure option.
-
-
-What is the advantage of disabling this support?
-
-
-> This is better together with udev.
-
-
-Why is it better to disable aload support with udev?  I was assuming
-that the whole point of having the aload devices was to allow the
-ALSA library to induce module loading on udev systems.
+    http://bugs.debian.org/310189
 
 ----------------------------------------------------------------------
- tiwai - 05-13-05 19:45 
+ tiwai - 05-24-05 14:11 
 ----------------------------------------------------------------------
-Enabling /dev/aload* might cause the strange side-effect together with
-udev.  At least I have problems with modprobe and udev.
-
-/dev/aload* was introduced far earlier than udev.  It was for 2.2/2.4
-kernels.  The reason it stand in /dev and not in /dev/snd is that /dev/snd
-was a symlink to /proc/asound/dev in early days.
-
-I don't mind to change the path of these files.  The files are accessed
-only internally by alsa-lib, so changing the path won't be a big problem. 
-But this kind of thing should be specified in configure option.  Feel free
-to send a patch :)
-
-----------------------------------------------------------------------
- tiwai - 05-13-05 19:46 
-----------------------------------------------------------------------
-More exactly: the problem is by the combination of udev + aload + resmgr +
-modprobe, IIRC.
+These bugs should have been already fixed.
+Try 1.0.9rc4.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-05 13:49 jordi          New Issue                                    
-05-13-05 14:15 tiwai          Note Added: 0004644                          
-05-13-05 15:36 jdthood        Note Added: 0004649                          
-05-13-05 19:45 tiwai          Note Added: 0004653                          
-05-13-05 19:46 tiwai          Note Added: 0004654                          
-05-24-05 14:02 jdthood        Severity                 minor => feature    
+04-02-05 16:10 bero           New Issue                                    
+04-02-05 16:10 bero           File Added: alsa-lib-mplayer.patch                
+   
+04-05-05 21:08 Toph           Note Added: 0004340                          
+04-05-05 21:17 rlrevell       Note Added: 0004341                          
+04-29-05 09:07 mandreiana     Issue Monitored: mandreiana                    
+05-24-05 13:55 jdthood        Note Added: 0004726                          
+05-24-05 14:11 tiwai          Note Added: 0004727                          
 ======================================================================
 
 
