@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001125]: reproducible hang on nforce3 -- all applications
-Date: Tue, 24 May 2005 23:43:15 +0200
-Message-ID: <a601dcbde3b2f90b667fe1dd5be1c245@bugtrack.alsa-project.org>
+Date: Wed, 25 May 2005 00:39:45 +0200
+Message-ID: <ca7c92f910a3e62ef4e56416b294f3b8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 476001F3
-	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 23:43:16 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 29CF11FC
+	for <alsa-devel@alsa-project.org>; Wed, 25 May 2005 00:39:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.11-gentoo-r8
 ======================================================================
 Date Submitted:             05-24-2005 23:36 CEST
-Last Modified:              05-24-2005 23:43 CEST
+Last Modified:              05-25-2005 00:39 CEST
 ======================================================================
 Summary:                    reproducible hang on nforce3 -- all applications
 Description: 
@@ -159,6 +159,18 @@ PCI devices found:
       Master Capable.  Latency=32.  Min Gnt=4.Max Lat=255.
       Prefetchable 32 bit memory at 0xe3001000 [0xe3001fff].
 
+----------------------------------------------------------------------
+ dogpatch - 05-25-05 00:39 
+----------------------------------------------------------------------
+Okay, this is probably my fault.
+
+Was using gentoo ebuild of alsa-driver 1.0.9r3.
+
+Removed alsa-driver ebuild and went with the kernel builtin drivers
+(1.0.8) and all is well again.
+
+Apologies ... please cancel this bug.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -168,6 +180,7 @@ Date Modified  Username       Field                    Change
 05-24-05 23:36 dogpatch       Kernel Version            => 2.6.11-gentoo-r8
 05-24-05 23:41 dogpatch       Issue Monitored: dogpatch                    
 05-24-05 23:43 dogpatch       Note Added: 0004733                          
+05-25-05 00:39 dogpatch       Note Added: 0004734                          
 ======================================================================
 
 
