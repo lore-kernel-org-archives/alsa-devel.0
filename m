@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001117]: Sequencer documentation for snd-trident-synth
-Date: Tue, 24 May 2005 12:32:48 +0200
-Message-ID: <d13c7575f000b1a12ca30beaf7620085@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001091]: dmix hangs on 2nd-3rd snd_pcm_drop
+Date: Tue, 24 May 2005 12:31:02 +0200
+Message-ID: <6bcba9d41c60654d7850b448db7fe414@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 30F101DF
-	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 12:32:48 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BDA601DF
+	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 12:31:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1117> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1091> 
 ======================================================================
-Reported By:                keinstein
-Assigned To:                
+Reported By:                ikonst
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1117
-Category:                   PCI - trident
+Project:                    ALSA - lib
+Issue ID:                   1091
+Category:                   general
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-18-2005 17:18 CEST
-Last Modified:              05-24-2005 12:32 CEST
+Date Submitted:             05-06-2005 17:48 CEST
+Last Modified:              05-24-2005 12:31 CEST
 ======================================================================
-Summary:                    Sequencer documentation for snd-trident-synth
+Summary:                    dmix hangs on 2nd-3rd snd_pcm_drop
 Description: 
-Im searching the net for years, but I didn't really find any documentation
-about the snd-trident-synth module. I would like to know how does it work?
-Does it work on SIS 7018 at all? Which programs do I have to use for it?
-In the /proc tree  I get information that I have 8 MB Wavetable space, but
-I really don't know, how to access them. 
+Rhythmbox performs a "drop" upon pressing Pause. When playing thru a dmix
+device, toggling pause-play a couple of time (one or two is enough) will
+cause alsa-lib to hang. Here's the relevant stack trace:
 
-Please add a Readme.trident to the alsa documentation directory
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0  0x40be8741 in
+__read_nocancel () from /lib/tls/libpthread.so.0
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1  0x444790a8 in
+snd_timer_hw_read (handle=0xbfffdcc8,
+buffer=0xfffffe00,
+    size=8) at timer_hw.c:184
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2  0x44478a7a in
+snd_timer_read (timer=0x8, buffer=0xbfffdcc8, size=8)
+    at timer.c:879
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3  0x44465cbd in
+snd_pcm_direct_clear_timer_queue (dmix=0x8883020)
+    at pcm_direct.c:429
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4  0x44465cfd in
+snd_pcm_direct_timer_stop (dmix=0x8883020)
+    at pcm_direct.c:437
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5  0x44468744 in
+snd_pcm_dmix_drop (pcm=0xfffffe00) at pcm_dmix.c:475
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6  0x4442fb24 in
+snd_pcm_drop (pcm=0xfffffe00) at pcm.c:1021
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7  0x443cf985 in
+gst_alsa_hw_params_dump ()
+   from /usr/lib/gstreamer-0.8/libgstalsa.so
+...
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-24-05 11:58 
+ tiwai - 05-24-05 12:31 
 ----------------------------------------------------------------------
-The implementation isn't complete.  Only a legacy module-player would work.
-
-----------------------------------------------------------------------
- syrjala - 05-24-05 12:32 
-----------------------------------------------------------------------
-A few years ago I patched mikmod to support ALSA sequencer. I sent the
-patch to mikmod maintainers and they told me they would apply it to their
-next release. But it appears that didn't happen. The patch is still
-available on my webiste 
-http://www.sci.fi/~syrjala/alsa/libmikmod_alsa_seq.patch.gz
-
-I only tested it on a GUS PnP card at the time but I think it should work
-with the trident synth as well. It worked fine for the most part but a few
-modules had a instruments that didn't sound right. Also I could never get
-the tempo/bpm stuff to work correctly.
-
-Like I said it's been a few years so the patch might not work with the
-latest mikmod release.
+Fixed on 1.0.9rc4.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-18-05 17:18 keinstein      New Issue                                    
-05-24-05 11:58 tiwai          Note Added: 0004711                          
-05-24-05 12:32 syrjala        Note Added: 0004722                          
+05-06-05 17:48 ikonst         New Issue                                    
+05-24-05 12:31 tiwai          Status                   new => resolved     
+05-24-05 12:31 tiwai          Resolution               open => fixed       
+05-24-05 12:31 tiwai          Assigned To               => tiwai           
+05-24-05 12:31 tiwai          Note Added: 0004720                          
 ======================================================================
 
 
