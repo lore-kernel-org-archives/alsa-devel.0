@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001068]: enable dmix by default
-Date: Tue, 24 May 2005 09:35:22 +0200
-Message-ID: <db4a5b18ca88de8cafe1c13533bb7a50@bugtrack.alsa-project.org>
+From: Tomko <tomko@avantwave.com>
+Subject: simple alsa adapter template
+Date: Tue, 24 May 2005 15:48:12 +0800
+Message-ID: <4292DC3C.2080404@avantwave.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3764F1D7
-	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 09:35:22 +0200 (MEST)
+Received: from mail.avantwave.com (mail.avantwave.com [210.17.210.210])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 92C841D7
+	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 09:48:22 +0200 (MEST)
+Received: from [172.16.11.197] ([172.16.11.197])
+	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id j4O7c3Xb032600
+	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 15:38:03 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,61 +24,16 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi everyone,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1068> 
-======================================================================
-Reported By:                mandreiana
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1068
-Category:                   mixer
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             04-21-2005 06:49 CEST
-Last Modified:              05-24-2005 09:35 CEST
-======================================================================
-Summary:                    enable dmix by default
-Description: 
-Please see this bug report:
-https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=155421
+I am now trying to write a adapter driver for DAC3560 called by the ALSA 
+subsystem, can anyone tell me where i can find a template for it ? any 
+example is welcome.
 
-Someone suggested to change /etc/asound.conf so dmix is turned on, but
-please enable it by default.
-======================================================================
+I am new to ALSA, hope someone can give me a hand.
 
-----------------------------------------------------------------------
- Martin Pitt - 05-24-05 09:29 
-----------------------------------------------------------------------
-Please do not close it right now. I'm using 1.0.9rc3, dmix really is
-enabled by default, but only for the first card. All subsequent cards do
-not use dmix. Is this on purpose? If not, will it be fixed in 1.0.9 final?
-
-----------------------------------------------------------------------
- pzad - 05-24-05 09:35 
-----------------------------------------------------------------------
-dmix should be enabled for all cheap motherboards cards (except I think
-envy24 based cards).
-
-What other cards do you have ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-21-05 06:49 mandreiana     New Issue                                    
-04-21-05 07:59 pzad           Note Added: 0004546                          
-04-21-05 08:39 mandreiana     Note Added: 0004547                          
-04-21-05 08:42 mandreiana     Note Added: 0004548                          
-04-29-05 09:08 mandreiana     Note Added: 0004578                          
-05-24-05 09:29 Martin Pitt    Note Added: 0004707                          
-05-24-05 09:35 pzad           Note Added: 0004708                          
-======================================================================
-
+Regards,
+TOM
 
 
 
