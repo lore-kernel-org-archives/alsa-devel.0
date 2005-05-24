@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001123]: No Sound on snd-via82xx
-Date: Tue, 24 May 2005 14:30:05 +0200
-Message-ID: <0cc67f7f0e93b3f20810682eb20f73bf@bugtrack.alsa-project.org>
+From: Atro Tossavainen <atossava@cc.helsinki.fi>
+Subject: Gainward Hollywood@Home 7.1 Sound Card
+Date: Tue, 24 May 2005 15:49:19 +0300 (EEST)
+Message-ID: <200505241249.j4OCnJ7H016485@kruuna.helsinki.fi>
+Reply-To: Atro.Tossavainen@helsinki.fi
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1E7311E3
-	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 14:30:06 +0200 (MEST)
+Received: from kruuna.helsinki.fi (kruuna.helsinki.fi [128.214.205.14])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8D1E91E3
+	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 14:49:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,159 +20,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
+Cc: manne.laukkanen@sci.fi
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1123> 
-======================================================================
-Reported By:                fingolfin
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1123
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10.0
-Kernel Version:             2.6.10 and up
-======================================================================
-Date Submitted:             05-24-2005 14:30 CEST
-Last Modified:              05-24-2005 14:30 CEST
-======================================================================
-Summary:                    No Sound on snd-via82xx
-Description: 
-In the most recent kernel revisions, sound for a VIA sound card no
-longer works, except from the CD drive's direct connection to the sound
-card (i.e., no more ogg123, sox, xmms, etc.). I have tried the stock
-kernel 2.6.10 on OpenTLE 7.0.1 (Waghor Lite) and compiled 2.6.11.10 on
-Slackware. In neither case did sound on my VIA work. However, stock
-kernel on Ubuntu Warty (2.6.8.1) and compiled 2.6.7 on Slackware were
-effective.
+A friend of mine gave me a Gainward Hollywood@Home 7.1 Sound Card to
+play with since he couldn't get it to work in Linux and figured that
+if there was somebody who could it'd be me.  Well, I can't, because
+this particular card isn't supported in ALSA although its chipset is.
 
-I have tried different options for ac97_quirk and dxs_support, all to no
-avail.
+In lspci -vvvv, it appears thus:
 
-I understand that the alsa suite is going under major changes for new
-functionality and support coming up to the 1.1 release and I appreciate
-the tremendous effort going into it. I also understand that the via
-driver's development has been difficult. Nevertheless I am now forced to
-use the old OSS drivers. :)
+00:0b.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24 [Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
+        Subsystem: CardExpert Technology: Unknown device 0200
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32
+        Interrupt: pin A routed to IRQ 5
+        Region 0: I/O ports at e400 [size=32]
+        Region 1: I/O ports at e800 [size=128]
+        Capabilities: [80] Power Management version 1
+                Flags: PMEClk- DSI- D1- D2+ AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-Output of lspci -v on Slackware, 2.6.11.10
+When I modprobe snd-ice1724, the following appears in dmesg:
 
-00:00.0 Host bridge: VIA Technologies, Inc. VT8378 [KM400] Chipset Host
-Bridge
-	Subsystem: VIA Technologies, Inc.: Unknown device 0000
-	Flags: bus master, 66Mhz, medium devsel, latency 8
-	Memory at e0000000 (32-bit, prefetchable) [size=64M]
-	Capabilities: [80] AGP version 3.5
-	Capabilities: [c0] Power Management version 2
+ice1724: No matching model found for ID 0xb0100002
+ice1724: Invalid EEPROM version 1
 
-00:01.0 PCI bridge: VIA Technologies, Inc. VT8237 PCI Bridge (prog-if 00
-[Normal decode])
-	Flags: bus master, 66Mhz, medium devsel, latency 0
-	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-	Memory behind bridge: dde00000-dfefffff
-	Prefetchable memory behind bridge: d5d00000-ddcfffff
-	Capabilities: [80] Power Management version 2
+These results are from a vanilla 2.6.11 kernel.  Help is appreciated,
+but this is certainly not an urgent issue.
 
-00:10.0 USB Controller: VIA Technologies, Inc. VT6202 [USB 2.0 controller]
-(rev 80) (prog-if 00 [UHCI])
-	Subsystem: VIA Technologies, Inc. VT6202 [USB 2.0 controller]
-	Flags: bus master, medium devsel, latency 32, IRQ 11
-	I/O ports at e400 [size=32]
-	Capabilities: [80] Power Management version 2
-
-00:10.1 USB Controller: VIA Technologies, Inc. VT6202 [USB 2.0 controller]
-(rev 80) (prog-if 00 [UHCI])
-	Subsystem: VIA Technologies, Inc. VT6202 [USB 2.0 controller]
-	Flags: bus master, medium devsel, latency 32, IRQ 5
-	I/O ports at e800 [size=32]
-	Capabilities: [80] Power Management version 2
-
-00:10.2 USB Controller: VIA Technologies, Inc. VT6202 [USB 2.0 controller]
-(rev 80) (prog-if 00 [UHCI])
-	Subsystem: VIA Technologies, Inc. VT6202 [USB 2.0 controller]
-	Flags: bus master, medium devsel, latency 32, IRQ 5
-	I/O ports at ec00 [size=32]
-	Capabilities: [80] Power Management version 2
-
-00:10.3 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 82) (prog-if
-20 [EHCI])
-	Subsystem: VIA Technologies, Inc. USB 2.0
-	Flags: bus master, medium devsel, latency 32, IRQ 10
-	Memory at dfffff00 (32-bit, non-prefetchable) [size=256]
-	Capabilities: [80] Power Management version 2
-
-00:11.0 ISA bridge: VIA Technologies, Inc. VT8235 ISA Bridge
-	Subsystem: VIA Technologies, Inc.: Unknown device 0000
-	Flags: bus master, stepping, medium devsel, latency 0
-	Capabilities: [c0] Power Management version 2
-
-00:11.1 IDE interface: VIA Technologies, Inc.
-VT82C586A/B/VT82C686/A/B/VT823x/A/C/VT8235 PIPC Bus Master IDE (rev 06)
-(prog-if 8a [Master SecP PriP])
-	Subsystem: VIA Technologies, Inc.
-VT82C586/B/VT82C686/A/B/VT8233/A/C/VT8235 PIPC Bus Master IDE
-	Flags: bus master, medium devsel, latency 32, IRQ 255
-	I/O ports at fc00 [size=16]
-	Capabilities: [c0] Power Management version 2
-
-00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
-	Subsystem: Elitegroup Computer Systems: Unknown device a101
-	Flags: medium devsel, IRQ 5
-	I/O ports at dc00 [size=256]
-	Capabilities: [c0] Power Management version 2
-
-00:11.6 Communication controller: VIA Technologies, Inc. Intel 537 [AC97
-Modem] (rev 80)
-	Subsystem: SILICON Laboratories: Unknown device 4c21
-	Flags: medium devsel, IRQ 5
-	I/O ports at e000 [size=256]
-	Capabilities: [d0] Power Management version 2
-
-00:12.0 Ethernet controller: VIA Technologies, Inc. VT6102 [Rhine-II] (rev
-74)
-	Subsystem: VIA Technologies, Inc. VT6102 [Rhine II] Embeded Ethernet
-Controller on VT8235
-	Flags: bus master, medium devsel, latency 32, IRQ 11
-	I/O ports at d800 [size=256]
-	Memory at dffffe00 (32-bit, non-prefetchable) [size=256]
-	Capabilities: [40] Power Management version 2
-
-01:00.0 VGA compatible controller: VIA Technologies, Inc. VT8378 [S3
-UniChrome] Integrated Video (rev 01) (prog-if 00 [VGA])
-	Subsystem: VIA Technologies, Inc.: Unknown device 0000
-	Flags: bus master, 66Mhz, medium devsel, latency 32, IRQ 11
-	Memory at d8000000 (32-bit, prefetchable) [size=64M]
-	Memory at de000000 (32-bit, non-prefetchable) [size=16M]
-	Expansion ROM at dfef0000 [disabled] [size=64K]
-	Capabilities: [60] Power Management version 2
-	Capabilities: [70] AGP version 2.0
-
-There is no difference between that and lspci -v on 2.6.7 under
-Slackware, which leads me to believe nothing like the new ACPI IRQ
-routing or other low-level code is to blame. Instead (though I am not a
-kernel developer and submit my advice, well, humbly), I suggest
-examination of the differences between the earlier and later drivers 
-for the via series.
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-24-05 14:30 fingolfin      New Issue                                    
-05-24-05 14:30 fingolfin      Distribution              => Slackware 10.0  
-05-24-05 14:30 fingolfin      Kernel Version            => 2.6.10 and up   
-======================================================================
-
-
+Regards,
+-- 
+Atro Tossavainen (Mr.)               / The Institute of Biotechnology at
+Systems Analyst, Techno-Amish &     / the University of Helsinki, Finland,
++358-9-19158939  UNIX Dinosaur     / employs me, but my opinions are my own.
+< URL : http : / / www . helsinki . fi / %7E atossava / > NO FILE ATTACHMENTS
 
 
 -------------------------------------------------------
