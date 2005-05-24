@@ -1,17 +1,14 @@
-From: Tomko <tomko@avantwave.com>
-Subject: simple alsa adapter template
-Date: Tue, 24 May 2005 15:48:12 +0800
-Message-ID: <4292DC3C.2080404@avantwave.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001118]: es1868 - mono recording not working properly
+Date: Tue, 24 May 2005 11:53:01 +0200
+Message-ID: <312204bfc98058fa23814fc33457fe08@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.avantwave.com (mail.avantwave.com [210.17.210.210])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 92C841D7
-	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 09:48:22 +0200 (MEST)
-Received: from [172.16.11.197] ([172.16.11.197])
-	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id j4O7c3Xb032600
-	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 15:38:03 +0800
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2699B18D
+	for <alsa-devel@alsa-project.org>; Tue, 24 May 2005 11:53:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,16 +21,61 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi everyone,
 
-I am now trying to write a adapter driver for DAC3560 called by the ALSA 
-subsystem, can anyone tell me where i can find a template for it ? any 
-example is welcome.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1118> 
+======================================================================
+Reported By:                MStrecke
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1118
+Category:                   PCI - es1968
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             05-19-2005 23:36 CEST
+Last Modified:              05-24-2005 11:53 CEST
+======================================================================
+Summary:                    es1868 - mono recording not working properly
+Description: 
+I'm using an old Fujitsu Lifebook E-6570. The on-board sound card is
+recognized as "ESS Technology ES1978 Maestro 2E (rev 10)", ID: 125d:1978.
 
-I am new to ALSA, hope someone can give me a hand.
+I'm having problems recording mono audio (mic input, line input, etc.).
+Only a medium pitched tone is recorded (not a sine waveform, no feed
+back).  Stereo recording works without problems (using audacity).
 
-Regards,
-TOM
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 05-23-05 11:39 
+----------------------------------------------------------------------
+Mono capture works fine with my machine (compaq armada M700).
+Attach /etc/asound.state to check your mixer configuration.
+
+----------------------------------------------------------------------
+ tiwai - 05-24-05 11:53 
+----------------------------------------------------------------------
+Can you try arecord (with -c1) for mono?  If this works, the problem is
+likely in the OSS emulation code.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-19-05 23:36 MStrecke       New Issue                                    
+05-19-05 23:36 MStrecke       Distribution              => Ubuntu          
+05-19-05 23:36 MStrecke       Kernel Version            => 2.6.10          
+05-23-05 11:39 tiwai          Note Added: 0004702                          
+05-23-05 13:44 MStrecke       File Added: asound.state                     
+05-24-05 11:53 tiwai          Note Added: 0004709                          
+======================================================================
+
 
 
 
