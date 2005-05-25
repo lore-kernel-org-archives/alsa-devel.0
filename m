@@ -1,11 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: echoaudio - soundcards matrix update
-Date: Wed, 25 May 2005 22:02:40 +0200
-Message-ID: <20050525220240.397fa953.pochini@shiny.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
+Date: Wed, 25 May 2005 23:10:32 +0200
+Message-ID: <b774047c1809c7d5bfbc787104abeff8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="Multipart=_Wed__25_May_2005_22_02_40_+0200_.t3i0VhSPZ9ZNZ5J"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4DCFE1A3
+	for <alsa-devel@alsa-project.org>; Wed, 25 May 2005 23:10:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,311 +18,102 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---Multipart=_Wed__25_May_2005_22_02_40_+0200_.t3i0VhSPZ9ZNZ5J
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
+======================================================================
+Reported By:                mr-k
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   761
+Category:                   OTHERS
+Reproducibility:            random
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             12-30-2004 13:13 CET
+Last Modified:              05-25-2005 23:10 CEST
+======================================================================
+Summary:                    Driver and all sound aplications hangs
+Description: 
+I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
+alsa
+from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
+problems.
 
-
-Attached is an update for the echoaudio driver.
-
-<not_in_cvs> allowed me to put a link to the page that hosted the driver
-when it wasn't in alsa-driver yet, which has a lot of info that users may
-find useful. Is there another way to publish such a link ?
-
-
---
-Giuliano.
-
-
-
---Multipart=_Wed__25_May_2005_22_02_40_+0200_.t3i0VhSPZ9ZNZ5J
-Content-Type: text/xml;
- name="vendor-Echoaudio.xml"
-Content-Disposition: attachment;
- filename="vendor-Echoaudio.xml"
-Content-Transfer-Encoding: 7bit
-
-<?xml version="1.0" encoding="US-ASCII"?>
-<alsacards>
-  <vendor>
-    <name>Echo Digital Audio Corporation</name>
-    <link>http://www.echoaudio.com</link>
-  </vendor>
-
-  <device>
-    <module>darla20</module>
-    <product>
-      <name>Darla</name>
-    </product>
-    <chip>
-      <name>Motorola 56301</name>
-    </chip>
-    <pci_bus/>
-    <has_analog_out count="8"/>
-    <has_analog_in count="2"/>
-    <extrainfo>Discontinued</extrainfo>
-  </device>
-
-  <device>
-    <module>gina20</module>
-    <product>
-      <name>Gina</name>
-    </product>
-    <chip>
-      <name>Motorola 56301</name>
-    </chip>
-    <pci_bus/>
-    <has_analog_out count="8"/>
-    <has_analog_in count="2"/>
-    <has_spdif_out count="1"/>
-    <has_spdif_in count="1"/>
-    <extrainfo>Discontinued</extrainfo>
-  </device>
-
-  <device>
-    <module>layla20</module>
-    <product>
-      <name>Layla</name>
-    </product>
-    <chip>
-      <name>Motorola 56301, FPGA</name>
-    </chip>
-    <pci_bus/>
-    <has_analog_out count="10"/>
-    <has_analog_in count="8"/>
-    <has_spdif_out count="1"/>
-    <has_spdif_in count="1"/>
-    <has_midi_out count="1"/>
-    <has_midi_in count="1"/>
-    <extrainfo>Discontinued</extrainfo>
-  </device>
-
-  <device category="pro">
-    <module>darla24</module>
-    <product>
-      <name>Darla24</name>
-    </product>
-    <chip>
-      <name>Motorola 56301</name>
-    </chip>
-    <pci_bus/>
-    <has_analog_out count="8"/>
-    <has_analog_in count="2"/>
-    <extrainfo>Discontinued</extrainfo>
-  </device>
-
-  <device category="pro">
-    <module>gina24</module>
-    <product>
-      <name>Gina24</name>
-      <link>http://www.echoaudio.com/Products/Discontinued/Gina24/index.php</link>
-    </product>
-    <chip>
-      <name>Motorola 56301 or 56361, FPGA</name>
-    </chip>
-    <pci_bus/>
-    <has_analog_out count="8"/>
-    <has_analog_in count="2"/>
-    <has_spdif_out count="1"/>
-    <has_spdif_in count="1"/>
-    <has_toslink_out count="1"/>
-    <has_toslink_in count="1"/>
-    <has_adat_out count="1"/>
-    <has_adat_in count="1"/>
-    <extrainfo>Discontinued</extrainfo>
-  </device>
-
-  <device category="pro">
-    <module>layla24</module>
-    <product>
-      <name>Layla24</name>
-      <link>http://www.echoaudio.com/Products/Discontinued/Layla24/index.php</link>
-    </product>
-    <product>
-      <name>Layla24-CARDBUS</name>
-      <link>http://www.echoaudio.com/Products/CardBus/Laptop/index.php</link>
-    </product>
-    <chip>
-      <name>Motorola 56361, FPGA</name>
-    </chip>
-    <pci_bus/>
-    <pcmcia/>
-    <has_analog_out count="8"/>
-    <has_analog_in count="8"/>
-    <has_spdif_out count="1"/>
-    <has_spdif_in count="1"/>
-    <has_toslink_out count="1"/>
-    <has_toslink_in count="1"/>
-    <has_adat_out count="1"/>
-    <has_adat_in count="1"/>
-    <has_midi_out count="1"/>
-    <has_midi_in count="1"/>
-    <extrainfo>Discontinued</extrainfo>
-  </device>
-
-  <device category="pro">
-    <module>mona</module>
-    <product>
-      <name>Mona</name>
-      <link>http://www.echoaudio.com/Products/Discontinued/Mona/index.php</link>
-    </product>
-    <product>
-      <name>Mona-CARDBUS</name>
-      <link>http://www.echoaudio.com/Products/CardBus/Laptop/index.php</link>
-    </product>
-    <chip>
-      <name>Motorola 56301 or 56361, FPGA</name>
-    </chip>
-    <pci_bus/>
-    <pcmcia/>
-    <has_analog_out count="6"/>
-    <has_analog_in count="4"/>
-    <has_spdif_out count="1"/>
-    <has_spdif_in count="1"/>
-    <has_toslink_out count="1"/>
-    <has_toslink_in count="1"/>
-    <has_adat_out count="1"/>
-    <has_adat_in count="1"/>
-    <extrainfo>Discontinued</extrainfo>
-  </device>
-
-  <device category="pro">
-    <module>mia</module>
-    <product>
-      <name>Mia</name>
-      <link>http://www.echoaudio.com/Products/Discontinued/Mia/index.php</link>
-    </product>
-    <chip>
-      <name>Motorola 56361</name>
-    </chip>
-    <pci_bus/>
-    <has_analog_out count="2"/>
-    <has_analog_in count="2"/>
-    <has_spdif_out count="1"/>
-    <has_spdif_in count="1"/>
-    <has_mixing/>
-    <extrainfo>Discontinued</extrainfo>
-  </device>
-
-  <device category="pro">
-    <module>mia</module>
-    <product>
-      <name>Mia-midi</name>
-      <link>http://www.echoaudio.com/Products/PCI/MiaMIDI/index.php</link>
-    </product>
-    <chip>
-      <name>Motorola 56361</name>
-    </chip>
-    <pci_bus/>
-    <has_analog_out count="2"/>
-    <has_analog_in count="2"/>
-    <has_spdif_out count="1"/>
-    <has_spdif_in count="1"/>
-    <has_midi_out count="1"/>
-    <has_midi_in count="1"/>
-    <has_mixing/>
-  </device>
-
-  <device category="pro">
-    <module>indigo</module>
-    <product>
-      <name>Indigo</name>
-      <link>http://www.echoaudio.com/Products/Discontinued/Indigo/index.php</link>
-    </product>
-    <chip>
-      <name>Motorola 56361</name>
-    </chip>
-    <pcmcia/>
-    <has_analog_out count="2"/>
-    <has_mixing/>
-    <extrainfo>Discontinued</extrainfo>
-  </device>
-
-  <device category="pro">
-    <module>indigoio</module>
-    <product>
-      <name>Indigo IO</name>
-      <link>http://www.echoaudio.com/Products/CardBus/IndigoIO/index.php</link>
-    </product>
-    <chip>
-      <name>Motorola 56361</name>
-      <link></link>
-    </chip>
-    <pcmcia/>
-    <has_analog_out count="2"/>
-    <has_analog_in count="2"/>
-    <has_mixing/>
-  </device>
-
-  <device category="pro">
-    <module>indigodj</module>
-    <product>
-      <name>Indigo DJ</name>
-      <link>http://www.echoaudio.com/Products/CardBus/IndigoDJ/index.php</link>
-    </product>
-    <chip>
-      <name>Motorola 56361</name>
-    </chip>
-    <pcmcia/>
-    <has_analog_out count="4"/>
-    <has_mixing/>
-  </device>
-
-  <device category="pro">
-    <module>echo3g</module>
-    <product>
-      <name>Gina 3G</name>
-      <link>http://www.echoaudio.com/Products/PCI/Gina3G/index.php</link>
-    </product>
-    <chip>
-      <name>Motorola 56361, FPGA</name>
-    </chip>
-    <pci_bus/>
-    <has_analog_out count="6"/>
-    <has_analog_in count="2"/>
-    <has_spdif_out count="1"/>
-    <has_spdif_in count="1"/>
-    <has_toslink_out count="1"/>
-    <has_toslink_in count="1"/>
-    <has_adat_out count="1"/>
-    <has_adat_in count="1"/>
-    <has_midi_out count="1"/>
-    <has_midi_in count="1"/>
-  </device>
-
-  <device category="pro">
-    <module>echo3g</module>
-    <product>
-      <name>Layla 3G</name>
-      <link>http://www.echoaudio.com/Products/PCI/Layla3G/index.php</link>
-    </product>
-    <chip>
-      <name>Motorola 56361, FPGA</name>
-    </chip>
-    <pci_bus/>
-    <has_analog_out count="8"/>
-    <has_analog_in count="8"/>
-    <has_spdif_out count="1"/>
-    <has_spdif_in count="1"/>
-    <has_toslink_out count="1"/>
-    <has_toslink_in count="1"/>
-    <has_adat_out count="1"/>
-    <has_adat_in count="1"/>
-    <has_midi_out count="1"/>
-    <has_midi_in count="1"/>
-  </device>
-
-</alsacards>
+Sometimes (up to couple times a day) driver crash and all processes using
+sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
+the
+module by rmmod (it hangs also). When i try to shutdown the system, it
+stops
+when it try to remove the module. ps hangs when it try to get
+informations
+about other hung processes, also when i try to do it manualy (by
+/proc/pid/),
+it hangs. Everything else is working good. 
+There are no messages from the kernel in /var/log/messages and
+/var/log/dmesg or reported to the console. 
 
 
+======================================================================
 
---Multipart=_Wed__25_May_2005_22_02_40_+0200_.t3i0VhSPZ9ZNZ5J--
+----------------------------------------------------------------------
+ mr-k - 04-02-05 21:50 
+----------------------------------------------------------------------
+The last fine-working version is 1.0.6a. The problem occurs in versions
+1.0.7 to 1.0.9rc2 (which is the one I'm currently using). I've also
+spotted that in all the versions with the problem the awaiting time
+between the process termination and the channel release (with all channels
+busy) is bigger than in the previous versions (where it's almost
+unnoticeable).
+
+----------------------------------------------------------------------
+ mr-k - 05-25-05 23:10 
+----------------------------------------------------------------------
+I see that you can't do anything whit that.. Am I only one who have this
+problem? Maybe there is anything else tha I could do to help you ?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-30-04 13:13 mr-k           New Issue                                    
+12-30-04 13:13 mr-k           Distribution              => Gentoo          
+12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
+12-30-04 13:15 mr-k           File Added: alsa-report                      
+12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
+12-30-04 15:09 tiwai          Note Added: 0003022                          
+01-01-05 22:21 mr-k           Note Added: 0003038                          
+01-07-05 22:41 mr-k           Note Added: 0003123                          
+01-11-05 22:11 mr-k           Note Added: 0003158                          
+01-11-05 22:12 mr-k           File Added: alsa.log                         
+01-12-05 15:14 tiwai          Note Added: 0003170                          
+01-12-05 15:57 mr-k           Note Added: 0003173                          
+01-16-05 15:38 mr-k           Note Added: 0003218                          
+02-09-05 21:45 mr-k           Note Edited: 0003173                         
+02-09-05 21:46 mr-k           Note Edited: 0003123                         
+03-10-05 16:46 mr-k           Note Added: 0003868                          
+03-10-05 16:47 mr-k           Note Edited: 0003868                         
+03-20-05 22:53 bendis         Issue Monitored: bendis                      
+03-22-05 17:59 mr-k           Issue Monitored: tiwai                       
+03-22-05 17:59 mr-k           Note Added: 0004126                          
+03-30-05 18:27 tiwai          Note Added: 0004269                          
+03-30-05 19:06 mr-k           Note Added: 0004270                          
+03-30-05 19:19 tiwai          Note Added: 0004271                          
+03-31-05 00:36 mr-k           Note Added: 0004276                          
+03-31-05 00:36 mr-k           File Added: alsa-sysrq                       
+04-02-05 21:50 mr-k           Note Added: 0004300                          
+05-25-05 23:10 mr-k           Note Added: 0004737                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
