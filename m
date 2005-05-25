@@ -1,14 +1,13 @@
-From: Atro Tossavainen <atossava@cc.helsinki.fi>
-Subject: Re: Gainward Hollywood@Home 7.1 Sound Card
-Date: Wed, 25 May 2005 10:24:28 +0300 (EEST)
-Message-ID: <200505250724.j4P7OSIA019067@kruuna.helsinki.fi>
-References: <s5hd5rg8u4v.wl@alsa2.suse.de>
-Reply-To: Atro.Tossavainen@helsinki.fi
+From: Lorenzo Milesi <lorenzo.milesi@gmail.com>
+Subject: Problems with HDa
+Date: Wed, 25 May 2005 09:44:24 +0200
+Message-ID: <29c147bd05052500442c455d8@mail.gmail.com>
+Reply-To: Lorenzo Milesi <lorenzo.milesi@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hd5rg8u4v.wl@alsa2.suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,30 +18,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: manne.laukkanen@sci.fi
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+hi
 
-> You may try different models by passing "model=XXX" module option.
-> See ALSA-Configuration.txt.
+A friend of mine has just bought a brand new Asus laptop, equiped with
+an Intel 82801fb.
+We're having lots of troubles with this card, and still we couldn't
+get it working. We previously tried with azm module and then with alsa
+1.0.9's hda driver. both modules load correctly, alsamixer works, but
+absolutely no sound comes out from the speakers.
+I was missing one thing: when loading the hda module it says:
+hda_codec.c:512:
+hda_codec.c: no AFG node found
 
-Will give it a try.
-
-> Though, I guess another models wouldn't match with your board easily.
-> You'll likely need to write a codec initialization and mixer set-up
-> code over I2C/SPI like other boards.
-
-If picking one of the already defined models doesn't work, I'll just
-donate the card to somebody who wants to do that, I don't have the
-skills nor the time to try to acquire them, and for a <$50 card, who
-cares anyway?
-
--- 
-Atro Tossavainen (Mr.)               / The Institute of Biotechnology at
-Systems Analyst, Techno-Amish &     / the University of Helsinki, Finland,
-+358-9-19158939  UNIX Dinosaur     / employs me, but my opinions are my own.
-< URL : http : / / www . helsinki . fi / %7E atossava / > NO FILE ATTACHMENTS
+Any help?
+thanks
+maxxer
 
 
 -------------------------------------------------------
