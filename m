@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001126]: alsa-lib 1.0.9rc4 does not compile with debugging off (--with-debug=no)
-Date: Wed, 25 May 2005 21:43:43 +0200
-Message-ID: <9e976ba183752953a8c88a3561fae680@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: echoaudio - soundcards matrix update
+Date: Wed, 25 May 2005 22:02:40 +0200
+Message-ID: <20050525220240.397fa953.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="Multipart=_Wed__25_May_2005_22_02_40_+0200_.t3i0VhSPZ9ZNZ5J"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB2C41D7
-	for <alsa-devel@alsa-project.org>; Wed, 25 May 2005 21:43:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +15,311 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1126> 
-======================================================================
-Reported By:                amir
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1126
-Category:                   general
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             05-25-2005 21:43 CEST
-Last Modified:              05-25-2005 21:43 CEST
-======================================================================
-Summary:                    alsa-lib 1.0.9rc4 does not compile with debugging
-off (--with-debug=no)
-Description: 
-alsa-lib 1.0.9rc4 does not compile with debugging turned off 
-using configure flag --with-debug=no 
-which causes #define NDEBUG in config.h
-
-recent code in src/pcm/pcm_params.c added dump_hw_params()
-to print debugging
-
-but the function exists only ifndef NDEBUG
-my patch causes the function to be empty (optimized out)
-when NDEBUG is defined.
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-25-05 21:43 amir           New Issue                                    
-05-25-05 21:43 amir           File Added: fix-dump_hw_params.diff               
-    
-======================================================================
+--Multipart=_Wed__25_May_2005_22_02_40_+0200_.t3i0VhSPZ9ZNZ5J
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
 
+Attached is an update for the echoaudio driver.
+
+<not_in_cvs> allowed me to put a link to the page that hosted the driver
+when it wasn't in alsa-driver yet, which has a lot of info that users may
+find useful. Is there another way to publish such a link ?
+
+
+--
+Giuliano.
+
+
+
+--Multipart=_Wed__25_May_2005_22_02_40_+0200_.t3i0VhSPZ9ZNZ5J
+Content-Type: text/xml;
+ name="vendor-Echoaudio.xml"
+Content-Disposition: attachment;
+ filename="vendor-Echoaudio.xml"
+Content-Transfer-Encoding: 7bit
+
+<?xml version="1.0" encoding="US-ASCII"?>
+<alsacards>
+  <vendor>
+    <name>Echo Digital Audio Corporation</name>
+    <link>http://www.echoaudio.com</link>
+  </vendor>
+
+  <device>
+    <module>darla20</module>
+    <product>
+      <name>Darla</name>
+    </product>
+    <chip>
+      <name>Motorola 56301</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="8"/>
+    <has_analog_in count="2"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device>
+    <module>gina20</module>
+    <product>
+      <name>Gina</name>
+    </product>
+    <chip>
+      <name>Motorola 56301</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="8"/>
+    <has_analog_in count="2"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device>
+    <module>layla20</module>
+    <product>
+      <name>Layla</name>
+    </product>
+    <chip>
+      <name>Motorola 56301, FPGA</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="10"/>
+    <has_analog_in count="8"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_midi_out count="1"/>
+    <has_midi_in count="1"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>darla24</module>
+    <product>
+      <name>Darla24</name>
+    </product>
+    <chip>
+      <name>Motorola 56301</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="8"/>
+    <has_analog_in count="2"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>gina24</module>
+    <product>
+      <name>Gina24</name>
+      <link>http://www.echoaudio.com/Products/Discontinued/Gina24/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56301 or 56361, FPGA</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="8"/>
+    <has_analog_in count="2"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_toslink_out count="1"/>
+    <has_toslink_in count="1"/>
+    <has_adat_out count="1"/>
+    <has_adat_in count="1"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>layla24</module>
+    <product>
+      <name>Layla24</name>
+      <link>http://www.echoaudio.com/Products/Discontinued/Layla24/index.php</link>
+    </product>
+    <product>
+      <name>Layla24-CARDBUS</name>
+      <link>http://www.echoaudio.com/Products/CardBus/Laptop/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361, FPGA</name>
+    </chip>
+    <pci_bus/>
+    <pcmcia/>
+    <has_analog_out count="8"/>
+    <has_analog_in count="8"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_toslink_out count="1"/>
+    <has_toslink_in count="1"/>
+    <has_adat_out count="1"/>
+    <has_adat_in count="1"/>
+    <has_midi_out count="1"/>
+    <has_midi_in count="1"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>mona</module>
+    <product>
+      <name>Mona</name>
+      <link>http://www.echoaudio.com/Products/Discontinued/Mona/index.php</link>
+    </product>
+    <product>
+      <name>Mona-CARDBUS</name>
+      <link>http://www.echoaudio.com/Products/CardBus/Laptop/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56301 or 56361, FPGA</name>
+    </chip>
+    <pci_bus/>
+    <pcmcia/>
+    <has_analog_out count="6"/>
+    <has_analog_in count="4"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_toslink_out count="1"/>
+    <has_toslink_in count="1"/>
+    <has_adat_out count="1"/>
+    <has_adat_in count="1"/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>mia</module>
+    <product>
+      <name>Mia</name>
+      <link>http://www.echoaudio.com/Products/Discontinued/Mia/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="2"/>
+    <has_analog_in count="2"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_mixing/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>mia</module>
+    <product>
+      <name>Mia-midi</name>
+      <link>http://www.echoaudio.com/Products/PCI/MiaMIDI/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="2"/>
+    <has_analog_in count="2"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_midi_out count="1"/>
+    <has_midi_in count="1"/>
+    <has_mixing/>
+  </device>
+
+  <device category="pro">
+    <module>indigo</module>
+    <product>
+      <name>Indigo</name>
+      <link>http://www.echoaudio.com/Products/Discontinued/Indigo/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361</name>
+    </chip>
+    <pcmcia/>
+    <has_analog_out count="2"/>
+    <has_mixing/>
+    <extrainfo>Discontinued</extrainfo>
+  </device>
+
+  <device category="pro">
+    <module>indigoio</module>
+    <product>
+      <name>Indigo IO</name>
+      <link>http://www.echoaudio.com/Products/CardBus/IndigoIO/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361</name>
+      <link></link>
+    </chip>
+    <pcmcia/>
+    <has_analog_out count="2"/>
+    <has_analog_in count="2"/>
+    <has_mixing/>
+  </device>
+
+  <device category="pro">
+    <module>indigodj</module>
+    <product>
+      <name>Indigo DJ</name>
+      <link>http://www.echoaudio.com/Products/CardBus/IndigoDJ/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361</name>
+    </chip>
+    <pcmcia/>
+    <has_analog_out count="4"/>
+    <has_mixing/>
+  </device>
+
+  <device category="pro">
+    <module>echo3g</module>
+    <product>
+      <name>Gina 3G</name>
+      <link>http://www.echoaudio.com/Products/PCI/Gina3G/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361, FPGA</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="6"/>
+    <has_analog_in count="2"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_toslink_out count="1"/>
+    <has_toslink_in count="1"/>
+    <has_adat_out count="1"/>
+    <has_adat_in count="1"/>
+    <has_midi_out count="1"/>
+    <has_midi_in count="1"/>
+  </device>
+
+  <device category="pro">
+    <module>echo3g</module>
+    <product>
+      <name>Layla 3G</name>
+      <link>http://www.echoaudio.com/Products/PCI/Layla3G/index.php</link>
+    </product>
+    <chip>
+      <name>Motorola 56361, FPGA</name>
+    </chip>
+    <pci_bus/>
+    <has_analog_out count="8"/>
+    <has_analog_in count="8"/>
+    <has_spdif_out count="1"/>
+    <has_spdif_in count="1"/>
+    <has_toslink_out count="1"/>
+    <has_toslink_in count="1"/>
+    <has_adat_out count="1"/>
+    <has_adat_in count="1"/>
+    <has_midi_out count="1"/>
+    <has_midi_in count="1"/>
+  </device>
+
+</alsacards>
+
+
+
+--Multipart=_Wed__25_May_2005_22_02_40_+0200_.t3i0VhSPZ9ZNZ5J--
 
 
 -------------------------------------------------------
