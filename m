@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001118]: es1868 - mono recording not working properly
-Date: Fri, 27 May 2005 01:15:48 +0200
-Message-ID: <e7b68f1588ec4a0a37561374be686b91@bugtrack.alsa-project.org>
+From: Janina Sajka <janina@rednote.net>
+Subject: ALSA's Captcha Prevents My Participation
+Date: Thu, 26 May 2005 19:30:02 -0400
+Message-ID: <20050526233002.GC12496@rednote.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2792E207
-	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 01:15:49 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +15,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I would like to sign up for access to ALSA's bug tracking system, however I cannot do it because the form discriminates against people who cannot see.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1118> 
-======================================================================
-Reported By:                MStrecke
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1118
-Category:                   PCI - es1968
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             05-19-2005 23:36 CEST
-Last Modified:              05-27-2005 01:15 CEST
-======================================================================
-Summary:                    es1868 - mono recording not working properly
-Description: 
-I'm using an old Fujitsu Lifebook E-6570. The on-board sound card is
-recognized as "ESS Technology ES1978 Maestro 2E (rev 10)", ID: 125d:1978.
+The web form provided at https://bugtrack.alsa-project.org/alsa-bug/signup_page.php says (in part):
 
-I'm having problems recording mono audio (mic input, line input, etc.).
-Only a medium pitched tone is recorded (not a sine waveform, no feed
-back).  Stereo recording works without problems (using audacity).
+   ALSA bugtracking system
 
-======================================================================
+   Signup
+   Username: _____
+   Email:_____ 
+   Enter the code as it is shown in the box on the right: _____
 
-----------------------------------------------------------------------
- tiwai - 05-24-05 11:53 
-----------------------------------------------------------------------
-Can you try arecord (with -c1) for mono?  If this works, the problem is
-likely in the OSS emulation code.
+The W3C's accessibility guidance for Captcha (also generically known as Turing
+Tests) is at:
 
-----------------------------------------------------------------------
- MStrecke - 05-27-05 01:15 
-----------------------------------------------------------------------
-arecord works fine in mono and stereo... It seems that the driver is not
-the culprit. Thank you for your information.
+http://www.w3.org/TR/turingtest
 
-Who do I have to "bug" now :-) ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-19-05 23:36 MStrecke       New Issue                                    
-05-19-05 23:36 MStrecke       Distribution              => Ubuntu          
-05-19-05 23:36 MStrecke       Kernel Version            => 2.6.10          
-05-23-05 11:39 tiwai          Note Added: 0004702                          
-05-23-05 13:44 MStrecke       File Added: asound.state                     
-05-24-05 11:53 tiwai          Note Added: 0004709                          
-05-27-05 01:15 MStrecke       Note Added: 0004741                          
-======================================================================
+An alternative sign up mechanism is needed. Who do I need to write to about this?
 
 
+Janina Sajka				Phone: +1.202.494.7040
+Partner, Capital Accessibility LLC	http://www.CapitalAccessibility.Com
+Bringing the Owasys 22C screenless cell phone to the U.S. and Canada. Go to http://www.ScreenlessPhone.Com to learn more.
+
+Chair, Accessibility Workgroup		Free Standards Group (FSG)
+janina@freestandards.org		http://a11y.org
 
 
 -------------------------------------------------------
