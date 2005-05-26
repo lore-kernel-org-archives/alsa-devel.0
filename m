@@ -1,13 +1,18 @@
-From: Chris Wright <chrisw@osdl.org>
-Subject: Re: 2.6.12-rc5-mm1
-Date: Thu, 26 May 2005 14:07:58 -0700
-Message-ID: <20050526210758.GK23013@shell0.pdx.osdl.net>
-References: <20050525134933.5c22234a.akpm@osdl.org> <1117093392l.17165l.0l@werewolf.able.es> <20050526005841.08a8aae0.akpm@osdl.org> <200505261554.54807.rjw@sisk.pl> <20050526134532.1580defc.akpm@osdl.org>
+From: Andrew Morton <akpm@osdl.org>
+Subject: Re: 2.6.12-rc5-mm1 alsa oops
+Date: Thu, 26 May 2005 14:24:44 -0700
+Message-ID: <20050526142444.01363443.akpm@osdl.org>
+References: <1117092768.26173.4.camel@localhost>
+	<200505261944.50942.petkov@uni-muenster.de>
+	<1117130470.5477.5.camel@mindpipe>
+	<200505262012.45833.petkov@uni-muenster.de>
+	<1117132339.5477.20.camel@mindpipe>
+	<42961700.5090005@rentec.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20050526134532.1580defc.akpm@osdl.org>
+In-Reply-To: <42961700.5090005@rentec.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,18 +22,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrew Morton <akpm@osdl.org>
-Cc: "Rafael J. Wysocki" <rjw@sisk.pl>, jamagallon@able.es, tomlins@cam.org, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: Wolfgang Wander <wwc@rentec.com>
+Cc: rlrevell@joe-job.com, petkov@uni-muenster.de, pharon@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-* Andrew Morton (akpm@osdl.org) wrote:
-> I assume the problem is due to one of the ASLA patches in rc5-mm1, but it's
-> possible that it lies elsewhere.  It would be great if someone could fire
-> up quilt and do a binary search...
+Wolfgang Wander <wwc@rentec.com> wrote:
+>
+> Lee Revell wrote:
+> > On Thu, 2005-05-26 at 20:12 +0200, Borislav Petkov wrote:
+> > 
+> >>On Thursday 26 May 2005 20:01, Lee Revell wrote:
+> >>
+> >>>On Thu, 2005-05-26 at 19:44 +0200, Borislav Petkov wrote:
+> >>>
+> >>>><snip>
+> >>>>
+> >>>>Andrew,
+> >>>>
+> >>>>similar oopses as the one I'm replying to all over the place. At it
+> >>>>happens m in snd_pcm_mmap_data_close(). Here's a stack trace:
+> >>>
+> >>>No one using ALSA CVS or any of the 1.0.9 release candidates ever
+> >>>reported this, but lots of -mm users are... does that help at all?  I
+> >>>suspect some upstream bug that ALSA just happens to trigger.
+> >>
+> >>yeah,
+> >>
+> >>this has to do with alsa indirectly. snd_pcm_mmap_data_close() accesses some 
+> >>vm_area_struct->vm_private_data and apparently there have been some 
+> >>optimizations to mmap code to avoid fragmentation of vma's so i think there's 
+> >>the problem. However, we'll need the smarter ones here :))
+> > 
+> > 
+> > Any idea which patches to back out?
+> 
+> 
+> avoiding-mmap-fragmentation-fix-2.patch
+> 
+> seems to do the trick. Ken will likely have a fix-3 shortly ;-)
+> 
 
-I had started that, but then read a few accounts of backing out
-avoiding-mmap-fragmentation-fix-2.patch fixing the problem.  Both that
-patch and alsa are using vm_private_data.  Madness ensues.
+Yup.  This appears to be not-an-alsa-bug.  Thanks.
 
 
 -------------------------------------------------------
