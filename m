@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001129]: codec 0 is not valid
-Date: Thu, 26 May 2005 23:51:38 +0200
-Message-ID: <52205d0a01a3a8f62c3eaf0c0cfb78ef@bugtrack.alsa-project.org>
+Date: Fri, 27 May 2005 00:28:33 +0200
+Message-ID: <00d6b13125ba6682d57843a1109df640@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D84BA207
-	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 23:51:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A6E1137
+	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 00:28:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1129> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-26-2005 23:51 CEST
-Last Modified:              05-26-2005 23:51 CEST
+Last Modified:              05-27-2005 00:28 CEST
 ======================================================================
 Summary:                    codec 0 is not valid
 Description: 
@@ -62,10 +62,24 @@ sound-service-0-6
 
 ======================================================================
 
+----------------------------------------------------------------------
+ afselby - 05-27-05 00:28 
+----------------------------------------------------------------------
+the basic problem, of course, is no sound.
+Kmix does not recognize  AD1980, aumix does recognize
+
+AFIK, I have unmuted.
+  How do I verify this?
+
+The error
+ALSA ../alsa-kernel/pci/via82xx.c:797: zero position is read
+occurs when I play() or aplay() a wav file.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-26-05 23:51 afselby        New Issue                                    
+05-27-05 00:28 afselby        Note Added: 0004740                          
 ======================================================================
 
 
