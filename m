@@ -1,27 +1,16 @@
-From: Roger Mach <bigmach@us.ibm.com>
-Subject: Patch to fix 0000557: SNDCTL_DSP_GETOPTR not working correctly in
- specific situation
-Date: Thu, 26 May 2005 08:46:49 -0700
-Message-ID: <1117122409.4786.35.camel@w-rmach.beaverton.ibm.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: 2.6.12-rc3-mm3: ALSA broken ?
+Date: Thu, 26 May 2005 11:55:57 -0400
+Message-ID: <1117122958.6261.18.camel@mindpipe>
+References: <20050504221057.1e02a402.akpm@osdl.org>
+	 <1115510869l.7472l.0l@werewolf.able.es>
+	 <1115594680l.7540l.0l@werewolf.able.es>
+	 <20050526001828.0b3959f6.akpm@osdl.org>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from e33.co.us.ibm.com (e33.co.us.ibm.com [32.97.110.131])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86CDC1F4
-	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 17:46:53 +0200 (MEST)
-Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com [9.17.195.11])
-	by e33.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j4QFkpmD599472
-	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 11:46:51 -0400
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by westrelay02.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id j4QFkohT231066
-	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 09:46:50 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11/8.13.3) with ESMTP id j4QFkoaK021820
-	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 09:46:50 -0600
-Received: from IBM-7PY89WP400D.beaverton.ibm.com (IBM-7PY89WP400D.beaverton.ibm.com [9.47.21.174])
-	by d03av02.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id j4QFkoRf021750
-	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 09:46:50 -0600
+In-Reply-To: <20050526001828.0b3959f6.akpm@osdl.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -31,14 +20,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: "J.A. Magallon" <jamagallon@able.es>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have just posted a patch which fixes this problem.  As was noted in a
-previous comment, this is an accessibility issue when used in text-to-
-speech applications.
+On Thu, 2005-05-26 at 00:18 -0700, Andrew Morton wrote:
+> "J.A. Magallon" <jamagallon@able.es> wrote:
+>  
+> > > Ehem, is ALSA broken ?
+> > > 
+> > > I can't spread stereo output to 4 channel. More specific, I can't switch
+> > > one of my female jacks between in and out.
+> > >
 
--- Roger
+You are using alsamixer and not some GUI mixer, right?  There were
+recently some changes to the ALSA mixer API and AFAIK none of the GUI
+mixers have caught up yet.
+
+> > Side note: trying to load settings from rc4 in -mm says:
+> > 
+> > alsactl: set_control:930: warning: name mismatch (Surround Jack as Input/Surround Jack Mode) for control #42
+> > alsactl: set_control:932: warning: index mismatch (0/0) for control #42
+> > alsactl: set_control:1030: bad control.42.value type
+> > 
+
+These are harmless, it's just telling you that because control #42 was
+renamed from "Surround Jack as Input" to "Surround Jack Mode".  Looks
+like it was changed from a boolean to an enumerated control.
+
+Lee
 
 
 
