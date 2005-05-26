@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001127]: kernel panic while accessing midi
-Date: Thu, 26 May 2005 09:48:53 +0200
-Message-ID: <31049ce5cfe009bec86215046125c3f1@bugtrack.alsa-project.org>
+From: Andrew Morton <akpm@osdl.org>
+Subject: Re: 2.6.12-rc5-mm1
+Date: Thu, 26 May 2005 00:58:41 -0700
+Message-ID: <20050526005841.08a8aae0.akpm@osdl.org>
+References: <20050525134933.5c22234a.akpm@osdl.org>
+	<200505252243.21092.tomlins@cam.org>
+	<20050525204107.722504bd.akpm@osdl.org>
+	<1117093392l.17165l.0l@werewolf.able.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC548207
-	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 09:48:53 +0200 (MEST)
+In-Reply-To: <1117093392l.17165l.0l@werewolf.able.es>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,45 +20,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "J.A. Magallon" <jamagallon@able.es>
+Cc: tomlins@cam.org, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+"J.A. Magallon" <jamagallon@able.es> wrote:
+>
+> 
+> On 05.26, Andrew Morton wrote:
+> > 
+> > (Added alsa-devel to cc)
+> > 
+> > Ed Tomlinson <tomlins@cam.org> wrote:
+> > > 
+> > > Got the following when I tried to use sound.  Anyone else see problems in alsa land?
+> > > 
+> 
+> Me too. As beep-media-player ends playing a mp3 track, oops !
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1127> 
-======================================================================
-Reported By:                ulrichmoehrke
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1127
-Category:                   PCI - als4000
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               debian sarge (kernel from sid)
-Kernel Version:             2.6.11 (2.6.11-1-k7)
-======================================================================
-Date Submitted:             05-26-2005 09:48 CEST
-Last Modified:              05-26-2005 09:48 CEST
-======================================================================
-Summary:                    kernel panic while accessing midi
-Description: 
-When I try to play a midi file the system freezes/kernel panic.
-======================================================================
+hm, OK, you're also on x86_64.  What sound card and driver?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-26-05 09:48 ulrichmoehrke  New Issue                                    
-05-26-05 09:48 ulrichmoehrke  File Added: aadebug.out                      
-05-26-05 09:48 ulrichmoehrke  Distribution              => debian sarge (kernel
-from sid)
-05-26-05 09:48 ulrichmoehrke  Kernel Version            => 2.6.11 (2.6.11-1-k7)
-======================================================================
+> Decoded below, for if it gives additional info:
 
+Actually, no, ksymoops removes info.  Please just send the kernel's oops
+output directly.  (Make sure that CONFIG_KALLSYMS=y).
 
 
 
