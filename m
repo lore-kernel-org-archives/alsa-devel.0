@@ -1,97 +1,121 @@
 From: Andrew Morton <akpm@osdl.org>
-Subject: Re: 2.6.12-rc5-mm1
-Date: Wed, 25 May 2005 20:41:07 -0700
-Message-ID: <20050525204107.722504bd.akpm@osdl.org>
-References: <20050525134933.5c22234a.akpm@osdl.org>
-	<200505252243.21092.tomlins@cam.org>
+Subject: Re: Oops in set_spdif_output in i810_audio
+Date: Wed, 25 May 2005 21:41:33 -0700
+Message-ID: <20050525214133.1aaa69f7.akpm@osdl.org>
+References: <424F20F6.8010804@latinsud.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S261170AbVEZDmP@vger.kernel.org>
-In-Reply-To: <200505252243.21092.tomlins@cam.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ed Tomlinson <tomlins@cam.org>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <424F20F6.8010804@latinsud.com>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: "SuD (Alex)" <sud@latinsud.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-(Added alsa-devel to cc)
-
-Ed Tomlinson <tomlins@cam.org> wrote:
+"SuD (Alex)" <sud@latinsud.com> wrote:
 >
-> On Wednesday 25 May 2005 16:49, you wrote:
-> >=20
-> > ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.1=
-2-rc5/2.6.12-rc5-mm1/
-> >=20
-> > - Added Oracle's clustering filesystem driver, via git-ocfs.
-> >=20
-> > =A0 =A0 OCFS2, a shared disk cluster file system. =A0See
-> > =A0 =A0 Documentation/filesystems/ocfs2.txt Additionally a users gu=
-ide is
-> > =A0 =A0 available at:
-> > =A0 =A0 http://oss.oracle.com/projects/ocfs2-tools/dist/documentati=
-on/users_guide.txt
-> >=20
-> > - New Xtensa architecture: Tensilica Xtensa CPU series.
-> >=20
-> > - Added the Red Hat distributed lock manager for people to look at.
-> >=20
-> > - Various new git trees. =A0The remaining holdouts are:
->=20
-> Got the following when I tried to use sound.  Anyone else see problem=
-s in alsa land?
->=20
-> May 25 21:17:38 grover kernel: [  131.322558] PGD 2ab13067 PUD 2ab1b0=
-67 PMD 2a3f1067 PTE 0
-> May 25 21:17:38 grover kernel: [  131.351464] CPU 0
-> May 25 21:17:38 grover kernel: [  131.358041] Modules linked in: rade=
-on nfsd exportfs lockd sunrpc sg parport_pc lp parport ipv6 sd_
-> mod evdev mousedev tsdev usbhid usb_storage snd_intel8x0 snd_ac97_cod=
-ec snd_pcm_oss snd_mixer_oss snd_pcm snd_timer snd soundcore sn
-> d_page_alloc ehci_hcd ohci_hcd eth1394 sata_nv libata forcedeth
->  ohci1394 powernow_k8 freq_table processor cpufreq_userspace w83627hf=
- eeprom i2c_sensor i2c_isa i2c_nforce2 i2c_core sr_mod sbp2 scs
-> i_mod ieee1394 rtc unix
-> May 25 21:17:38 grover kernel: [  131.487598] Pid: 5481, comm: artsd =
-Not tainted 2.6.12-rc5-mm1
-> May 25 21:17:38 grover kernel: [  131.506496] RIP: 0010:[__nosave_end=
-+129759479/2131247104] <ffffffff8813b8f7>{:snd_pcm:snd_pcm_mmap
-> _data_close+7}
-> May 25 21:17:38 grover kernel: [  131.535142] RSP: 0018:ffff81002ab9d=
-ee0  EFLAGS: 00010286
-> May 25 21:17:38 grover kernel: [  131.553183] RAX: 00002aaaadb59000 R=
-BX: ffff810029c64988 RCX: fffffffffffffff2
-> May 25 21:17:38 grover kernel: [  131.576657] RDX: ffff810029c64988 R=
-SI: ffff81002d672ce0 RDI: ffff81002b339f50
-> May 25 21:17:38 grover kernel: [  131.600129] RBP: ffff81002b3051c0 R=
-08: ffff810029c649a8 R09: ffff81002ab9dec8
-> May 25 21:17:38 grover kernel: [  131.623602] R10: 0000000000000002 R=
-11: 0000000000000206 R12: ffff81002b339f50
-> May 25 21:17:38 grover kernel: [  131.647075] R13: ffff81002b339f50 R=
-14: ffff81002e7f2a08 R15: 00002aaaadb67000
-> May 25 21:17:38 grover kernel: [  131.670548] FS:  00002aaaad6d8f50(0=
-000) GS:ffffffff80550840(0000) knlGS:0000000000000000
-> May 25 21:17:38 grover kernel: [  131.697165] CS:  0010 DS: 0000 ES: =
-0000 CR0: 0000000080050033
-> May 25 21:17:38 grover kernel: [  131.716064] CR2: 00002aaaadb59098 C=
-R3: 000000002aafd000 CR4: 00000000000006e0
-> May 25 21:17:38 grover kernel: [  131.739537] Process artsd (pid: 548=
-1, threadinfo ffff81002ab9c000, task ffff81002ada97f0)
-> May 25 21:17:38 grover kernel: [  131.766439] Stack: ffffffff8016942d=
- 0000000000000000 0000000000000000 ffff81002e7f2a00
-> May 25 21:17:38 grover kernel: [  131.792174]        ffffffff8016a936=
- ffff81002d672df0 ffff81002d672e08 ffff81002d672df0
-> May 25 21:17:38 grover kernel: [  131.818481]        ffff81002e7f2a00=
- 0000000000560600
-> May 25 21:17:38 grover kernel: [  131.835065] Call Trace:<ffffffff801=
-6942d>{remove_vm_struct+125} <ffffffff8016a936>{do_munmap+550}
-> May 25 21:17:38 grover kernel: [  131.864282]        <ffffffff8016b0f=
-d>{sys_munmap+77} <ffffffff8010ead6>{system_call+126}
-> May 25 21:17:38 grover kernel: [  131.890928]
-> May 25 21:17:38 grover kernel: [  131.898387]
-> May 25 21:17:38 grover kernel: [  131.898388] Code: 48 8b 80 98 00 00=
- 00 ff 88 08 01 00 00 c3 66 66 66 90 66 66
->=20
-> Hope this helps,
-> Ed Tomlinson
+> Hi, i got a new ahtec laptop and i get null pointer oops everytime i 
+> load i810_audio on 2.4 and 2.6 (including 2.6.11.6) kernels.
+
+Is this still occurring in 2.6.12-rc5?
+
+Thanks.
+
+> *** These are init messages & oops:
+> i810_audio: Unknown symbol ac97_set_dac_rate
+> i810_audio: Unknown symbol ac97_release_codec
+> i810_audio: Unknown symbol ac97_set_adc_rate
+> i810_audio: Unknown symbol ac97_alloc_codec
+> i810_audio: Unknown symbol ac97_probe_codec
+> Intel 810 + AC97 Audio, version 1.01, 04:15:45 Jan 24 2005
+> ACPI: PCI interrupt 0000:00:1f.5[B] -> GSI 10 (level, low) -> IRQ 10
+> i810: Intel ICH4 found at IO 0x18c0 and 0x1c00, MEM 0xe0100c00 and 
+> 0xe0100800, IRQ 10
+> i810: Intel ICH4 mmio at 0xde9f3c00 and 0xdea84800
+> i810_audio: Primary codec has ID 0
+> i810_audio: Audio Controller supports 6 channels.
+> i810_audio: Defaulting to base 2 channel mode.
+> i810_audio: Resetting connection 0
+> i810_audio: Connection 0 with codec id 0
+> ac97_codec: AC97 Modem codec, id: CXT48 (Unknown)
+> i810_audio: codec 0 is a softmodem - skipping.
+> ...
+> EIP:    0060:[<dec4b172>]    Not tainted
+> EFLAGS: 00010246   (2.6.8-2-686)
+> EIP is at i810_set_spdif_output+0x22/0x160 [i810_audio]
+> eax: ffffffff   ebx: 00000000   ecx: d9c28400   edx: d9c28400
+> esi: 00000000   edi: 00000000   ebp: d6edfb80   esp: d7383e30
+> ds: 007b   es: 007b   ss: 0068
+> Process insmod (pid: 3358, threadinfo=d7382000 task=dca643b0)
+> Stack: 00004461 ffffffce c011c7f4 00000000 d6edfb80 00000000 d6edfc18 
+> 00000000
+>        dec4ff9f d6edfb80 ffffffff 00000000 dec51740 d7383e7c dda3c240 
+> 00000a04
+>        d9c28400 dec4fdb0 d6edfbb0 d9c28400 00000000 00000001 00000000 
+> 00000001
+> Call Trace:
+>  [<c011c7f4>] release_console_sem+0xc4/0xd0
+>  [<dec4ff9f>] i810_configure_clocking+0xbf/0x4c0 [i810_audio]
+>  [<dec4fdb0>] i810_ac97_init+0x4a0/0x5d0 [i810_audio]
+>  [<dec5084f>] i810_probe+0x4af/0x690 [i810_audio]
+> 
+> *** This is my device:
+> 0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM 
+> (ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 03)
+>         Subsystem: QUANTA Computer Inc: Unknown device 0707
+>         Flags: bus master, medium devsel, latency 0, IRQ 10
+>         I/O ports at 1c00 [size=256]
+>         I/O ports at 18c0 [size=64]
+>         Memory at e0100c00 (32-bit, non-prefetchable) [size=512]
+>         Memory at e0100800 (32-bit, non-prefetchable) [size=256]
+>         Capabilities: [50] Power Management version 2
+> 
+> 
+> *** What happened in set_spdif_output:
+>       struct ac97_codec *codec = state->card->ac97_codec[0];
+>      // ... for some reason codec is NULL, and then
+>       if(!codec->codec_ops->digital)
+>      // ... oops
+> 
+> *** Why is that null?
+>    Perhaps it is because the driver thinks that the card is a modem and 
+> releases it. So no codecs are available, but some functions expect at 
+> least one codec to exist.
+> 
+>    if(codec->modem)
+>                 {
+>                         printk(KERN_WARNING "i810_audio: codec %d is a 
+> softmodem - skipping.\n", ac97_id);
+>                         ac97_release_codec(codec);
+> 
+>   And is detected as modem because of this condition (in ac97_codec.c):
+>   /* Check for an AC97 1.0 soft modem (ID1) */
+>   if(codec->codec_read(codec, AC97_RESET) & 2)                        
+> 
+> I don't know much about ac97, i also have an ac97 modem. Anybody knows 
+> what is wrong?
+> 
+> Btw, Alsa snd-intel8x0 driver works, but as many distros still default 
+> to Oss i think this bug should be hunt.
+> 
+> -
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
+
+
+-------------------------------------------------------
+SF.Net email is sponsored by: GoToMeeting - the easiest way to collaborate
+online with coworkers and clients while avoiding the high cost of travel and
+communications. There is no equipment to buy and you can meet as often as
+you want. Try it free.http://ads.osdn.com/?ad_id=7402&alloc_id=16135&op=click
