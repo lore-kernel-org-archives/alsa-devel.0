@@ -1,23 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Patch to fix 0000557: SNDCTL_DSP_GETOPTR not working
- correctly in specific situation
-Date: Thu, 26 May 2005 19:02:36 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0505261859370.29904-100000@studcom.urz.uni-halle.de>
-References: <ea585bb21353f1f2b4cd644ec750e240@bugtrack.alsa-project.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001128]: ALSA Driver for FW1884
+Date: Thu, 26 May 2005 20:25:45 +0200
+Message-ID: <4bd465856218d3b9a68a46b18218473d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D6994205
-	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 19:02:37 +0200 (MEST)
-Received: from studcom.urz.uni-halle.de ([141.48.3.19])
-	 by mailgate.uni-halle.de with esmtp  (Exim 4.51)
-	 id 1DbLkj-0001fg-Bp for <alsa-devel@alsa-project.org>
-	 ; Thu, 26 May 2005 19:02:37 +0200
-Received: from localhost (aezr4@localhost)
-	by studcom.urz.uni-halle.de (8.9.3 (PHNE_28760_binary)/8.9.3) with ESMTP id TAA14839
-	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 19:02:36 +0200 (METDST)
-In-Reply-To: <ea585bb21353f1f2b4cd644ec750e240@bugtrack.alsa-project.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE04F208
+	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 20:25:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -30,13 +21,49 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Roger Mach wrote:
-> I have just posted a patch which fixes this problem.
 
-Applied; thanks.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1128> 
+======================================================================
+Reported By:                elvingonzalez
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1128
+Category:                   OTHERS
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             05-26-2005 20:25 CEST
+Last Modified:              05-26-2005 20:25 CEST
+======================================================================
+Summary:                    ALSA Driver for FW1884
+Description: 
+Hi,
 
+I will like to know if there is any ASLA driver that supports the Tascam
+FW1884.
+If there is not a driver for the FW1884, how can I contribute to make
+one?
 
-Clemens
+If this is not place to be asking this, I apology and ask where can I get
+information about this matter. 
+
+Thanks
+Elvin
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-26-05 20:25 elvingonzalez  New Issue                                    
+======================================================================
+
 
 
 
