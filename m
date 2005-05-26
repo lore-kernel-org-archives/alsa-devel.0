@@ -1,18 +1,14 @@
-From: Andrew Morton <akpm@osdl.org>
-Subject: Re: 2.6.12-rc5-mm1 alsa oops
-Date: Thu, 26 May 2005 14:24:44 -0700
-Message-ID: <20050526142444.01363443.akpm@osdl.org>
-References: <1117092768.26173.4.camel@localhost>
-	<200505261944.50942.petkov@uni-muenster.de>
-	<1117130470.5477.5.camel@mindpipe>
-	<200505262012.45833.petkov@uni-muenster.de>
-	<1117132339.5477.20.camel@mindpipe>
-	<42961700.5090005@rentec.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001129]: codec 0 is not valid
+Date: Thu, 26 May 2005 23:51:38 +0200
+Message-ID: <52205d0a01a3a8f62c3eaf0c0cfb78ef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42961700.5090005@rentec.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D84BA207
+	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 23:51:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Wolfgang Wander <wwc@rentec.com>
-Cc: rlrevell@joe-job.com, petkov@uni-muenster.de, pharon@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Wolfgang Wander <wwc@rentec.com> wrote:
->
-> Lee Revell wrote:
-> > On Thu, 2005-05-26 at 20:12 +0200, Borislav Petkov wrote:
-> > 
-> >>On Thursday 26 May 2005 20:01, Lee Revell wrote:
-> >>
-> >>>On Thu, 2005-05-26 at 19:44 +0200, Borislav Petkov wrote:
-> >>>
-> >>>><snip>
-> >>>>
-> >>>>Andrew,
-> >>>>
-> >>>>similar oopses as the one I'm replying to all over the place. At it
-> >>>>happens m in snd_pcm_mmap_data_close(). Here's a stack trace:
-> >>>
-> >>>No one using ALSA CVS or any of the 1.0.9 release candidates ever
-> >>>reported this, but lots of -mm users are... does that help at all?  I
-> >>>suspect some upstream bug that ALSA just happens to trigger.
-> >>
-> >>yeah,
-> >>
-> >>this has to do with alsa indirectly. snd_pcm_mmap_data_close() accesses some 
-> >>vm_area_struct->vm_private_data and apparently there have been some 
-> >>optimizations to mmap code to avoid fragmentation of vma's so i think there's 
-> >>the problem. However, we'll need the smarter ones here :))
-> > 
-> > 
-> > Any idea which patches to back out?
-> 
-> 
-> avoiding-mmap-fragmentation-fix-2.patch
-> 
-> seems to do the trick. Ken will likely have a fix-3 shortly ;-)
-> 
 
-Yup.  This appears to be not-an-alsa-bug.  Thanks.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1129> 
+======================================================================
+Reported By:                afselby
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1129
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             05-26-2005 23:51 CEST
+Last Modified:              05-26-2005 23:51 CEST
+======================================================================
+Summary:                    codec 0 is not valid
+Description: 
+repeatable error (/var/log/messages):
+kernel: PCI: Setting latency timer of device 00:11.5 to  64
+kernel: ALSA ../alsa-kernel/pci/via82xx.c:584: codec_read: codec 0 is not
+valid for reg=0x7e, xval= 0x2fe0000, is [0xfe0000]
+   NOTE: I modified source print to include reg & xval
+
+today, once:
+May 26 17:25:45 localhost kernel: ALSA ../alsa-kernel/pci/via82xx.c:797:
+zero position is read
+May 26 17:26:08 localhost kernel: ALSA ../alsa-kernel/pci/via82xx.c:797:
+zero position is read
+May 26 17:27:35 localhost modprobe: modprobe: Can't locate module
+sound-slot-0
+May 26 17:27:35 localhost modprobe: modprobe: Can't locate module
+sound-service-0-6
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-26-05 23:51 afselby        New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
