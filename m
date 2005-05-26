@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001129]: codec 0 is not valid
-Date: Fri, 27 May 2005 00:28:33 +0200
-Message-ID: <00d6b13125ba6682d57843a1109df640@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001118]: es1868 - mono recording not working properly
+Date: Fri, 27 May 2005 01:15:48 +0200
+Message-ID: <e7b68f1588ec4a0a37561374be686b91@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A6E1137
-	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 00:28:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2792E207
+	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 01:15:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1129> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1118> 
 ======================================================================
-Reported By:                afselby
-Assigned To:                
+Reported By:                MStrecke
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1129
-Category:                   PCI - via82xx
+Issue ID:                   1118
+Category:                   PCI - es1968
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             05-26-2005 23:51 CEST
-Last Modified:              05-27-2005 00:28 CEST
+Date Submitted:             05-19-2005 23:36 CEST
+Last Modified:              05-27-2005 01:15 CEST
 ======================================================================
-Summary:                    codec 0 is not valid
+Summary:                    es1868 - mono recording not working properly
 Description: 
-repeatable error (/var/log/messages):
-kernel: PCI: Setting latency timer of device 00:11.5 to  64
-kernel: ALSA ../alsa-kernel/pci/via82xx.c:584: codec_read: codec 0 is not
-valid for reg=0x7e, xval= 0x2fe0000, is [0xfe0000]
-   NOTE: I modified source print to include reg & xval
+I'm using an old Fujitsu Lifebook E-6570. The on-board sound card is
+recognized as "ESS Technology ES1978 Maestro 2E (rev 10)", ID: 125d:1978.
 
-today, once:
-May 26 17:25:45 localhost kernel: ALSA ../alsa-kernel/pci/via82xx.c:797:
-zero position is read
-May 26 17:26:08 localhost kernel: ALSA ../alsa-kernel/pci/via82xx.c:797:
-zero position is read
-May 26 17:27:35 localhost modprobe: modprobe: Can't locate module
-sound-slot-0
-May 26 17:27:35 localhost modprobe: modprobe: Can't locate module
-sound-service-0-6
+I'm having problems recording mono audio (mic input, line input, etc.).
+Only a medium pitched tone is recorded (not a sine waveform, no feed
+back).  Stereo recording works without problems (using audacity).
 
 ======================================================================
 
 ----------------------------------------------------------------------
- afselby - 05-27-05 00:28 
+ tiwai - 05-24-05 11:53 
 ----------------------------------------------------------------------
-the basic problem, of course, is no sound.
-Kmix does not recognize  AD1980, aumix does recognize
+Can you try arecord (with -c1) for mono?  If this works, the problem is
+likely in the OSS emulation code.
 
-AFIK, I have unmuted.
-  How do I verify this?
+----------------------------------------------------------------------
+ MStrecke - 05-27-05 01:15 
+----------------------------------------------------------------------
+arecord works fine in mono and stereo... It seems that the driver is not
+the culprit. Thank you for your information.
 
-The error
-ALSA ../alsa-kernel/pci/via82xx.c:797: zero position is read
-occurs when I play() or aplay() a wav file.
+Who do I have to "bug" now :-) ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-26-05 23:51 afselby        New Issue                                    
-05-27-05 00:28 afselby        Note Added: 0004740                          
+05-19-05 23:36 MStrecke       New Issue                                    
+05-19-05 23:36 MStrecke       Distribution              => Ubuntu          
+05-19-05 23:36 MStrecke       Kernel Version            => 2.6.10          
+05-23-05 11:39 tiwai          Note Added: 0004702                          
+05-23-05 13:44 MStrecke       File Added: asound.state                     
+05-24-05 11:53 tiwai          Note Added: 0004709                          
+05-27-05 01:15 MStrecke       Note Added: 0004741                          
 ======================================================================
 
 
