@@ -1,13 +1,15 @@
 From: Andrew Morton <akpm@osdl.org>
-Subject: Re: Oops in set_spdif_output in i810_audio
-Date: Wed, 25 May 2005 21:41:33 -0700
-Message-ID: <20050525214133.1aaa69f7.akpm@osdl.org>
-References: <424F20F6.8010804@latinsud.com>
+Subject: Re: 2.6.12-rc3-mm3: ALSA broken ?
+Date: Thu, 26 May 2005 00:18:28 -0700
+Message-ID: <20050526001828.0b3959f6.akpm@osdl.org>
+References: <20050504221057.1e02a402.akpm@osdl.org>
+	<1115510869l.7472l.0l@werewolf.able.es>
+	<1115594680l.7540l.0l@werewolf.able.es>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <424F20F6.8010804@latinsud.com>
+In-Reply-To: <1115594680l.7540l.0l@werewolf.able.es>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,101 +19,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "SuD (Alex)" <sud@latinsud.com>
+To: "J.A. Magallon" <jamagallon@able.es>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-"SuD (Alex)" <sud@latinsud.com> wrote:
+"J.A. Magallon" <jamagallon@able.es> wrote:
 >
-> Hi, i got a new ahtec laptop and i get null pointer oops everytime i 
-> load i810_audio on 2.4 and 2.6 (including 2.6.11.6) kernels.
+> 
+> On 05.08, J.A. Magallon wrote:
+> > 
+> > On 05.05, Andrew Morton wrote:
+> > > 
+> > > ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.12-rc3/2.6.12-rc3-mm3/
+> > > 
+> > > - device mapper updates
+> > > 
+> > > - more UML updates
+> > > 
+> > > - -mm seems unusually stable at present.
+> > > 
+> > 
+> > Ehem, is ALSA broken ?
+> > 
+> > I can't spread stereo output to 4 channel. More specific, I can't switch
+> > one of my female jacks between in and out.
+> > 
+> > Long explanation: I have an
+> > 
+> > 00:1f.5 Multimedia audio controller: Intel Corporation 82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller (rev 02)
+> > 
+> > It has three outputs. One is always output, for normal stereo or front in 4
+> > channel. One other is LineIn/Back-for-4-channel. And the third is
+> > Mic/Bass-Center.
+> > 
+> > In 2.6.11 I have two
+> > toggles in ALSA: 'Spread front to center...' and 'surround jack as input'
+> > Adjusting both I could get to duplicate the output in the Back jack.
+> > In 2.6.12-rc3-mm3 there is no way to get this working.
+> > 
+> 
+> I have just tested in 2.6.12-rc4 and works fine. I even feed the stereo
+> signal to the 6 channels, so 4 go to my desktop speaker system and one
+> other pair to may home stereo.
+> 
+> Something is broken in -mm wrt ALSA. If you need me to test some specific
+> version, pleas just ask.
+> 
+> Side note: trying to load settings from rc4 in -mm says:
+> 
+> alsactl: set_control:930: warning: name mismatch (Surround Jack as Input/Surround Jack Mode) for control #42
+> alsactl: set_control:932: warning: index mismatch (0/0) for control #42
+> alsactl: set_control:1030: bad control.42.value type
+> 
 
-Is this still occurring in 2.6.12-rc5?
+Could we have an update on this please?  Do these problems persist in
+2.6.12-rc5 and/or 2.6.12-rc5-mm1?
 
 Thanks.
-
-> *** These are init messages & oops:
-> i810_audio: Unknown symbol ac97_set_dac_rate
-> i810_audio: Unknown symbol ac97_release_codec
-> i810_audio: Unknown symbol ac97_set_adc_rate
-> i810_audio: Unknown symbol ac97_alloc_codec
-> i810_audio: Unknown symbol ac97_probe_codec
-> Intel 810 + AC97 Audio, version 1.01, 04:15:45 Jan 24 2005
-> ACPI: PCI interrupt 0000:00:1f.5[B] -> GSI 10 (level, low) -> IRQ 10
-> i810: Intel ICH4 found at IO 0x18c0 and 0x1c00, MEM 0xe0100c00 and 
-> 0xe0100800, IRQ 10
-> i810: Intel ICH4 mmio at 0xde9f3c00 and 0xdea84800
-> i810_audio: Primary codec has ID 0
-> i810_audio: Audio Controller supports 6 channels.
-> i810_audio: Defaulting to base 2 channel mode.
-> i810_audio: Resetting connection 0
-> i810_audio: Connection 0 with codec id 0
-> ac97_codec: AC97 Modem codec, id: CXT48 (Unknown)
-> i810_audio: codec 0 is a softmodem - skipping.
-> ...
-> EIP:    0060:[<dec4b172>]    Not tainted
-> EFLAGS: 00010246   (2.6.8-2-686)
-> EIP is at i810_set_spdif_output+0x22/0x160 [i810_audio]
-> eax: ffffffff   ebx: 00000000   ecx: d9c28400   edx: d9c28400
-> esi: 00000000   edi: 00000000   ebp: d6edfb80   esp: d7383e30
-> ds: 007b   es: 007b   ss: 0068
-> Process insmod (pid: 3358, threadinfo=d7382000 task=dca643b0)
-> Stack: 00004461 ffffffce c011c7f4 00000000 d6edfb80 00000000 d6edfc18 
-> 00000000
->        dec4ff9f d6edfb80 ffffffff 00000000 dec51740 d7383e7c dda3c240 
-> 00000a04
->        d9c28400 dec4fdb0 d6edfbb0 d9c28400 00000000 00000001 00000000 
-> 00000001
-> Call Trace:
->  [<c011c7f4>] release_console_sem+0xc4/0xd0
->  [<dec4ff9f>] i810_configure_clocking+0xbf/0x4c0 [i810_audio]
->  [<dec4fdb0>] i810_ac97_init+0x4a0/0x5d0 [i810_audio]
->  [<dec5084f>] i810_probe+0x4af/0x690 [i810_audio]
-> 
-> *** This is my device:
-> 0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM 
-> (ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 03)
->         Subsystem: QUANTA Computer Inc: Unknown device 0707
->         Flags: bus master, medium devsel, latency 0, IRQ 10
->         I/O ports at 1c00 [size=256]
->         I/O ports at 18c0 [size=64]
->         Memory at e0100c00 (32-bit, non-prefetchable) [size=512]
->         Memory at e0100800 (32-bit, non-prefetchable) [size=256]
->         Capabilities: [50] Power Management version 2
-> 
-> 
-> *** What happened in set_spdif_output:
->       struct ac97_codec *codec = state->card->ac97_codec[0];
->      // ... for some reason codec is NULL, and then
->       if(!codec->codec_ops->digital)
->      // ... oops
-> 
-> *** Why is that null?
->    Perhaps it is because the driver thinks that the card is a modem and 
-> releases it. So no codecs are available, but some functions expect at 
-> least one codec to exist.
-> 
->    if(codec->modem)
->                 {
->                         printk(KERN_WARNING "i810_audio: codec %d is a 
-> softmodem - skipping.\n", ac97_id);
->                         ac97_release_codec(codec);
-> 
->   And is detected as modem because of this condition (in ac97_codec.c):
->   /* Check for an AC97 1.0 soft modem (ID1) */
->   if(codec->codec_read(codec, AC97_RESET) & 2)                        
-> 
-> I don't know much about ac97, i also have an ac97 modem. Anybody knows 
-> what is wrong?
-> 
-> Btw, Alsa snd-intel8x0 driver works, but as many distros still default 
-> to Oss i think this bug should be hunt.
-> 
-> -
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
 
 
 -------------------------------------------------------
