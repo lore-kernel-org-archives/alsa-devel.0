@@ -1,14 +1,27 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Thu, 26 May 2005 17:27:45 +0200
-Message-ID: <ea585bb21353f1f2b4cd644ec750e240@bugtrack.alsa-project.org>
+From: Roger Mach <bigmach@us.ibm.com>
+Subject: Patch to fix 0000557: SNDCTL_DSP_GETOPTR not working correctly in
+ specific situation
+Date: Thu, 26 May 2005 08:46:49 -0700
+Message-ID: <1117122409.4786.35.camel@w-rmach.beaverton.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDDE2202
-	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 17:27:45 +0200 (MEST)
+Received: from e33.co.us.ibm.com (e33.co.us.ibm.com [32.97.110.131])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86CDC1F4
+	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 17:46:53 +0200 (MEST)
+Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com [9.17.195.11])
+	by e33.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j4QFkpmD599472
+	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 11:46:51 -0400
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by westrelay02.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id j4QFkohT231066
+	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 09:46:50 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11/8.13.3) with ESMTP id j4QFkoaK021820
+	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 09:46:50 -0600
+Received: from IBM-7PY89WP400D.beaverton.ibm.com (IBM-7PY89WP400D.beaverton.ibm.com [9.47.21.174])
+	by d03av02.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id j4QFkoRf021750
+	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 09:46:50 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,96 +34,11 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I have just posted a patch which fixes this problem.  As was noted in a
+previous comment, this is an accessibility issue when used in text-to-
+speech applications.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
-======================================================================
-Reported By:                minmax
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   557
-Category:                   CORE OSS - pcm
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             vanilla 2.6.7
-======================================================================
-Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-26-2005 17:27 CEST
-======================================================================
-Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
-situation
-Description: 
-When the first few writes to the oss emulation device are done in specific
-way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
-======================================================================
-
-----------------------------------------------------------------------
- minmax - 05-20-05 00:38 
-----------------------------------------------------------------------
-parente: The code that i posted is an example of WORKAROUND for the bug.
-not the code from alsa, but something an application writer can do to get
-around of the bug in ALSA. I have not investigated where in ALSA the bug
-actually lies.
-
-----------------------------------------------------------------------
- Roger Mach - 05-26-05 17:27 
-----------------------------------------------------------------------
-Summary: Fixes bug 557: SNDCTL_DSP_GETOPTR not working correctly
-
-This patch changes snd_pcm_oss_bytes() by adding a local variable
-for the frames -> bytes conversion, which means that the frame count
-is no longer corrupted by this conversion.
-
-Signed-off-by: Roger Mach <bigmach@us.ibm.com>
-
---- alsa-kernel/core/oss/pcm_oss.c.orig 2005-05-24 09:13:47.000000000
--0700
-+++ alsa-kernel/core/oss/pcm_oss.c      2005-05-24 09:11:40.000000000
--0700
-@@ -124,11 +124,12 @@ int snd_pcm_plugin_append(snd_pcm_plugin
-
- static long snd_pcm_oss_bytes(snd_pcm_substream_t *substream, long
-frames)
- {
-+       long bytes = 0;
-        snd_pcm_runtime_t *runtime = substream->runtime;
-        snd_pcm_uframes_t buffer_size =
-snd_pcm_lib_buffer_bytes(substream);
--       frames = frames_to_bytes(runtime, frames);
-+       bytes = frames_to_bytes(runtime, frames);
-        if (buffer_size == runtime->oss.buffer_bytes)
--               return frames;
-+               return bytes;
-        return (runtime->oss.buffer_bytes * frames) / buffer_size;
- }
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-01-04 16:18 minmax         New Issue                                    
-10-01-04 16:18 minmax         Distribution              => Debian unstable 
-10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
-10-02-04 10:52 minmax         Issue Monitored: minmax                      
-04-09-05 16:09 jdthood        Note Added: 0004406                          
-04-09-05 16:22 minmax         Note Added: 0004410                          
-05-13-05 15:20 gk4            Note Added: 0004646                          
-05-13-05 15:24 perex          Note Added: 0004647                          
-05-13-05 15:26 tiwai          Note Added: 0004648                          
-05-13-05 19:35 gk4            Note Added: 0004651                          
-05-13-05 19:38 tiwai          Note Added: 0004652                          
-05-13-05 19:48 gk4            Note Added: 0004655                          
-05-15-05 15:50 tiwai          Note Added: 0004663                          
-05-16-05 16:08 gk4            Note Added: 0004676                          
-05-19-05 15:28 parente        Note Added: 0004693                          
-05-20-05 00:38 minmax         Note Added: 0004698                          
-05-26-05 17:27 Roger Mach     Note Added: 0004738                          
-======================================================================
-
+-- Roger
 
 
 
