@@ -1,16 +1,23 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: 2.6.12-rc3-mm3: ALSA broken ?
-Date: Thu, 26 May 2005 11:55:57 -0400
-Message-ID: <1117122958.6261.18.camel@mindpipe>
-References: <20050504221057.1e02a402.akpm@osdl.org>
-	 <1115510869l.7472l.0l@werewolf.able.es>
-	 <1115594680l.7540l.0l@werewolf.able.es>
-	 <20050526001828.0b3959f6.akpm@osdl.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Patch to fix 0000557: SNDCTL_DSP_GETOPTR not working
+ correctly in specific situation
+Date: Thu, 26 May 2005 19:02:36 +0200 (METDST)
+Message-ID: <Pine.HPX.4.33n.0505261859370.29904-100000@studcom.urz.uni-halle.de>
+References: <ea585bb21353f1f2b4cd644ec750e240@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050526001828.0b3959f6.akpm@osdl.org>
+Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D6994205
+	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 19:02:37 +0200 (MEST)
+Received: from studcom.urz.uni-halle.de ([141.48.3.19])
+	 by mailgate.uni-halle.de with esmtp  (Exim 4.51)
+	 id 1DbLkj-0001fg-Bp for <alsa-devel@alsa-project.org>
+	 ; Thu, 26 May 2005 19:02:37 +0200
+Received: from localhost (aezr4@localhost)
+	by studcom.urz.uni-halle.de (8.9.3 (PHNE_28760_binary)/8.9.3) with ESMTP id TAA14839
+	for <alsa-devel@alsa-project.org>; Thu, 26 May 2005 19:02:36 +0200 (METDST)
+In-Reply-To: <ea585bb21353f1f2b4cd644ec750e240@bugtrack.alsa-project.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,35 +27,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrew Morton <akpm@osdl.org>
-Cc: "J.A. Magallon" <jamagallon@able.es>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-05-26 at 00:18 -0700, Andrew Morton wrote:
-> "J.A. Magallon" <jamagallon@able.es> wrote:
->  
-> > > Ehem, is ALSA broken ?
-> > > 
-> > > I can't spread stereo output to 4 channel. More specific, I can't switch
-> > > one of my female jacks between in and out.
-> > >
+Roger Mach wrote:
+> I have just posted a patch which fixes this problem.
 
-You are using alsamixer and not some GUI mixer, right?  There were
-recently some changes to the ALSA mixer API and AFAIK none of the GUI
-mixers have caught up yet.
+Applied; thanks.
 
-> > Side note: trying to load settings from rc4 in -mm says:
-> > 
-> > alsactl: set_control:930: warning: name mismatch (Surround Jack as Input/Surround Jack Mode) for control #42
-> > alsactl: set_control:932: warning: index mismatch (0/0) for control #42
-> > alsactl: set_control:1030: bad control.42.value type
-> > 
 
-These are harmless, it's just telling you that because control #42 was
-renamed from "Surround Jack as Input" to "Surround Jack Mode".  Looks
-like it was changed from a boolean to an enumerated control.
-
-Lee
+Clemens
 
 
 
