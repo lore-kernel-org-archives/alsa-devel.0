@@ -1,15 +1,12 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: Chris Wright <chrisw@osdl.org>
 Subject: Re: 2.6.12-rc5-mm1
-Date: Thu, 26 May 2005 17:04:36 -0400
-Message-ID: <1117141476.6705.5.camel@mindpipe>
-References: <20050525134933.5c22234a.akpm@osdl.org>
-	 <1117093392l.17165l.0l@werewolf.able.es>
-	 <20050526005841.08a8aae0.akpm@osdl.org> <200505261554.54807.rjw@sisk.pl>
-	 <20050526134532.1580defc.akpm@osdl.org>
+Date: Thu, 26 May 2005 14:07:58 -0700
+Message-ID: <20050526210758.GK23013@shell0.pdx.osdl.net>
+References: <20050525134933.5c22234a.akpm@osdl.org> <1117093392l.17165l.0l@werewolf.able.es> <20050526005841.08a8aae0.akpm@osdl.org> <200505261554.54807.rjw@sisk.pl> <20050526134532.1580defc.akpm@osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 In-Reply-To: <20050526134532.1580defc.akpm@osdl.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -24,38 +21,14 @@ To: Andrew Morton <akpm@osdl.org>
 Cc: "Rafael J. Wysocki" <rjw@sisk.pl>, jamagallon@able.es, tomlins@cam.org, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-05-26 at 13:45 -0700, Andrew Morton wrote:
-> "Rafael J. Wysocki" <rjw@sisk.pl> wrote:
-> >
-> > n Thursday, 26 of May 2005 09:58, Andrew Morton wrote:
-> >  > "J.A. Magallon" <jamagallon@able.es> wrote:
-> >  > >
-> >  > > 
-> >  > > On 05.26, Andrew Morton wrote:
-> >  > > > 
-> >  > > > (Added alsa-devel to cc)
-> >  > > > 
-> >  > > > Ed Tomlinson <tomlins@cam.org> wrote:
-> >  > > > > 
-> >  > > > > Got the following when I tried to use sound.  Anyone else see problems in alsa land?
-> >  > > > > 
-> >  > > 
-> >  > > Me too. As beep-media-player ends playing a mp3 track, oops !
-> >  > 
-> >  > hm, OK, you're also on x86_64.  What sound card and driver?
-> > 
-> >  I've got the following on a dual-Opteron box with Tyan Thunder K8W (snd_intel8x0):
-> 
-> OK, thanks.  I guess we can set this problem aside for now, as this bug
-> isn't present in 2.6.12-rc5 (correct?).
-> 
+* Andrew Morton (akpm@osdl.org) wrote:
 > I assume the problem is due to one of the ASLA patches in rc5-mm1, but it's
-> possible that it lies elsewhere.
+> possible that it lies elsewhere.  It would be great if someone could fire
+> up quilt and do a binary search...
 
-See the "Patch avoiding-mmap-fragmentation-fix-2.patch oops" thread.
-
-Lee
-
+I had started that, but then read a few accounts of backing out
+avoiding-mmap-fragmentation-fix-2.patch fixing the problem.  Both that
+patch and alsa are using vm_private_data.  Madness ensues.
 
 
 -------------------------------------------------------
