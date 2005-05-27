@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Creative SB Live 24bit capture status
-Date: Fri, 27 May 2005 14:52:28 +0100
-Message-ID: <ad2655cb0505270652272abfb@mail.gmail.com>
-Reply-To: James Courtier-Dutton <james.dutton@gmail.com>
+From: Adam K Kirchhoff <adamk@voicenet.com>
+Subject: Re: [ALSA - lib 0000154]: Master volume only controls front output
+ (emu10k1)
+Date: Fri, 27 May 2005 10:02:29 -0400
+Message-ID: <42972875.7040309@voicenet.com>
+References: <da3ba5a8e39a99b562591bfbaba64ac7@bugtrack.alsa-project.org> <428E803F.9050608@voicenet.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <428E803F.9050608@voicenet.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,17 +21,31 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Adam K Kirchhoff wrote:
 
-I am pleased to announce that Creative have finally sent me some
-information regarding how to enable capture on the SB Live 24bit sound
-card.
-I will hopefully be adding support for it to alsa either this weekend or ne=
-xt.
+> bugtrack@alsa-project.org wrote:
+>
+>>
+>> ----------------------------------------------------------------------
+>> rlrevell - 05-20-05 22:05 
+>> ----------------------------------------------------------------------
+>> Sorry, I don't have time to work on this.  Please bug the ALSA 
+>> developers
+>> to get the abstract mixer layer finished.
+>>
+>>  
+>>
+>
+> Hey developers, what's up with the abstract mixer layer? :-)
+>
+> Adam
+>
+>
 
-Cheers
+Anyone?
 
-James
+Adam
+
 
 
 -------------------------------------------------------
