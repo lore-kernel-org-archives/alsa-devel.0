@@ -1,14 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: [ALSA - lib 0000154]: Master volume only controls
- front output (emu10k1)
-Date: Fri, 27 May 2005 16:08:01 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0505271605220.1757@pnote.perex-int.cz>
-References: <da3ba5a8e39a99b562591bfbaba64ac7@bugtrack.alsa-project.org>
- <428E803F.9050608@voicenet.com> <42972875.7040309@voicenet.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Creative SB Live 24bit capture status
+Date: Fri, 27 May 2005 10:40:08 -0400
+Message-ID: <1117204808.13829.50.camel@mindpipe>
+References: <ad2655cb0505270652272abfb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42972875.7040309@voicenet.com>
+In-Reply-To: <ad2655cb0505270652272abfb@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,47 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adam K Kirchhoff <adamk@voicenet.com>
+To: James Courtier-Dutton <james.dutton@gmail.com>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 27 May 2005, Adam K Kirchhoff wrote:
-
-> Adam K Kirchhoff wrote:
+On Fri, 2005-05-27 at 14:52 +0100, James Courtier-Dutton wrote:
+> Hi,
 > 
-> > bugtrack@alsa-project.org wrote:
-> >
-> >>
-> >> ----------------------------------------------------------------------
-> >> rlrevell - 05-20-05 22:05 
-> >> ----------------------------------------------------------------------
-> >> Sorry, I don't have time to work on this.  Please bug the ALSA 
-> >> developers
-> >> to get the abstract mixer layer finished.
-> >>
-> >>  
-> >>
-> >
-> > Hey developers, what's up with the abstract mixer layer? :-)
-> >
-> > Adam
-> >
-> >
+> I am pleased to announce that Creative have finally sent me some
+> information regarding how to enable capture on the SB Live 24bit sound
+> card.
+> I will hopefully be adding support for it to alsa either this weekend or next.
 > 
-> Anyone?
 
-I am working on it, but also doing zillions of other things. The actual 
-status is that the virtual mixer can be created inside the lisp 
-interpreter. I am looking for a clever code design to map the hardware 
-controls with minimal lisp code to abstract ones.... I need something like 
-an object model inside lisp (object == mixer element).
+Wow, this is great, great news.  I was afraid they were going to
+completely ruin the 'it just works' reputation of the SBLive brand in
+the eyes of Linux users by continuing to withhold this info.
 
-						Jaroslav
+Lee  
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
