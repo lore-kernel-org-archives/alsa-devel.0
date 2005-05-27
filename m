@@ -1,10 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: ALSA 1.0.9 is out
-Date: Fri, 27 May 2005 17:37:49 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0505271733230.1757@pnote.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001130]: Russian traslation of alsaconf messages
+Date: Fri, 27 May 2005 17:55:32 +0200
+Message-ID: <db7a57cb33f4ba60ffba43be745b2439@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83222210
+	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 17:55:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,24 +18,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: ALSA Announce <alsa-announce@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
 
-	thank you to all ALSA team members and all other hackers involved
-in the ALSA project, I can announce next ALSA release 1.0.9. There are
-many changes since 1.0.8 and you can find them at this URL:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1130> 
+======================================================================
+Reported By:                Evgeniy
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1130
+Category:                   alsaconf
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             05-27-2005 17:55 CEST
+Last Modified:              05-27-2005 17:55 CEST
+======================================================================
+Summary:                    Russian traslation of alsaconf messages
+Description: 
+Russian traslation of alsaconf messages,
+made for lsa-utils-1.0.9rc4a
+======================================================================
 
-http://www.alsa-project.org/changes/v1-0-8--v1-0-9.txt
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-27-05 17:55 Evgeniy        New Issue                                    
+05-27-05 17:55 Evgeniy        File Added: ru.po.bz2                        
+======================================================================
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
