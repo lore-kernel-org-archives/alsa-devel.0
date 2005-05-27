@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001118]: es1868 - mono recording not working properly
-Date: Fri, 27 May 2005 12:29:05 +0200
-Message-ID: <890967b5abfaf6216f509770b5bef21c@bugtrack.alsa-project.org>
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+Subject: Re: 2.6.12-rc5-mm1
+Date: Fri, 27 May 2005 12:29:01 +0200
+Message-ID: <200505271229.01699.rjw@sisk.pl>
+References: <20050525134933.5c22234a.akpm@osdl.org> <200505261554.54807.rjw@sisk.pl> <20050526134532.1580defc.akpm@osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB09720D
-	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 12:29:05 +0200 (MEST)
+In-Reply-To: <20050526134532.1580defc.akpm@osdl.org>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,69 +19,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: jamagallon@able.es, tomlins@cam.org, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thursday, 26 of May 2005 22:45, Andrew Morton wrote:
+> "Rafael J. Wysocki" <rjw@sisk.pl> wrote:
+> >
+> > n Thursday, 26 of May 2005 09:58, Andrew Morton wrote:
+> >  > "J.A. Magallon" <jamagallon@able.es> wrote:
+> >  > >
+> >  > > 
+> >  > > On 05.26, Andrew Morton wrote:
+> >  > > > 
+> >  > > > (Added alsa-devel to cc)
+> >  > > > 
+> >  > > > Ed Tomlinson <tomlins@cam.org> wrote:
+> >  > > > > 
+> >  > > > > Got the following when I tried to use sound.  Anyone else see problems in alsa land?
+> >  > > > > 
+> >  > > 
+> >  > > Me too. As beep-media-player ends playing a mp3 track, oops !
+> >  > 
+> >  > hm, OK, you're also on x86_64.  What sound card and driver?
+> > 
+> >  I've got the following on a dual-Opteron box with Tyan Thunder K8W (snd_intel8x0):
+> 
+> OK, thanks.  I guess we can set this problem aside for now, as this bug
+> isn't present in 2.6.12-rc5 (correct?).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1118> 
-======================================================================
-Reported By:                MStrecke
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1118
-Category:                   PCI - es1968
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             05-19-2005 23:36 CEST
-Last Modified:              05-27-2005 12:29 CEST
-======================================================================
-Summary:                    es1868 - mono recording not working properly
-Description: 
-I'm using an old Fujitsu Lifebook E-6570. The on-board sound card is
-recognized as "ESS Technology ES1978 Maestro 2E (rev 10)", ID: 125d:1978.
+Yup.
 
-I'm having problems recording mono audio (mic input, line input, etc.).
-Only a medium pitched tone is recorded (not a sine waveform, no feed
-back).  Stereo recording works without problems (using audacity).
+> I assume the problem is due to one of the ASLA patches in rc5-mm1, but it's
+> possible that it lies elsewhere.
 
-======================================================================
+Well, yes.  Apparently, it goes away if you revert the following patch:
 
-----------------------------------------------------------------------
- MStrecke - 05-27-05 01:15 
-----------------------------------------------------------------------
-arecord works fine in mono and stereo... It seems that the driver is not
-the culprit. Thank you for your information.
+avoiding-mmap-fragmentation-fix-2.patch
 
-Who do I have to "bug" now :-) ?
-
-----------------------------------------------------------------------
- tiwai - 05-27-05 12:29 
-----------------------------------------------------------------------
-Check whether it's a general bug of OSS emulation.  For example, try "rec"
-included in sox.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-19-05 23:36 MStrecke       New Issue                                    
-05-19-05 23:36 MStrecke       Distribution              => Ubuntu          
-05-19-05 23:36 MStrecke       Kernel Version            => 2.6.10          
-05-23-05 11:39 tiwai          Note Added: 0004702                          
-05-23-05 13:44 MStrecke       File Added: asound.state                     
-05-24-05 11:53 tiwai          Note Added: 0004709                          
-05-27-05 01:15 MStrecke       Note Added: 0004741                          
-05-27-05 12:29 tiwai          Note Added: 0004748                          
-======================================================================
+Greets,
+Rafael
 
 
+-- 
+- Would you tell me, please, which way I ought to go from here?
+- That depends a good deal on where you want to get to.
+		-- Lewis Carroll "Alice's Adventures in Wonderland"
 
 
 -------------------------------------------------------
