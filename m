@@ -1,15 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [alsa-cvslog] CVS: alsa-kernel/core/oss pcm_oss.c,1.87,1.88
-Date: Fri, 27 May 2005 10:40:15 +0200 (CEST)
-Message-ID: <Pine.LNX.4.58.0505271038060.1757@pnote.perex-int.cz>
-References: <E1DbLgK-0000QR-5z@sc8-pr-cvs1.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
+Date: Fri, 27 May 2005 10:56:35 +0200
+Message-ID: <0ff5898e27c454285131277874ffc0ce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 184CF209
-	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 10:40:16 +0200 (MEST)
-In-Reply-To: <E1DbLgK-0000QR-5z@sc8-pr-cvs1.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1860209
+	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 10:56:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,60 +18,100 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <cladisch@users.sourceforge.net>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 26 May 2005, Clemens Ladisch wrote:
 
-> Update of /cvsroot/alsa/alsa-kernel/core/oss
-> In directory sc8-pr-cvs1.sourceforge.net:/tmp/cvs-serv1617
-> 
-> Modified Files:
-> 	pcm_oss.c 
-> Log Message:
-> Summary: pcm_oss - fix SNDCTL_DSP_GETOPTR not working correctly
-> 
-> This patch changes snd_pcm_oss_bytes() by adding a local variable
-> for the frames -> bytes conversion, which means that the frame count
-> is no longer corrupted by this conversion.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=557> 
+======================================================================
+Reported By:                minmax
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   557
+Category:                   CORE OSS - pcm
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             vanilla 2.6.7
+======================================================================
+Date Submitted:             10-01-2004 16:18 CEST
+Last Modified:              05-27-2005 10:56 CEST
+======================================================================
+Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
+situation
+Description: 
+When the first few writes to the oss emulation device are done in specific
+way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
+======================================================================
 
+----------------------------------------------------------------------
+ Roger Mach - 05-26-05 17:27 
+----------------------------------------------------------------------
+Summary: Fixes bug 557: SNDCTL_DSP_GETOPTR not working correctly
+
+This patch changes snd_pcm_oss_bytes() by adding a local variable
+for the frames -> bytes conversion, which means that the frame count
+is no longer corrupted by this conversion.
+
+Signed-off-by: Roger Mach <bigmach@us.ibm.com>
+
+--- alsa-kernel/core/oss/pcm_oss.c.orig 2005-05-24 09:13:47.000000000
+-0700
++++ alsa-kernel/core/oss/pcm_oss.c      2005-05-24 09:11:40.000000000
+-0700
+@@ -124,11 +124,12 @@ int snd_pcm_plugin_append(snd_pcm_plugin
+
+ static long snd_pcm_oss_bytes(snd_pcm_substream_t *substream, long
+frames)
+ {
++       long bytes = 0;
+        snd_pcm_runtime_t *runtime = substream->runtime;
+        snd_pcm_uframes_t buffer_size =
+snd_pcm_lib_buffer_bytes(substream);
+-       frames = frames_to_bytes(runtime, frames);
++       bytes = frames_to_bytes(runtime, frames);
+        if (buffer_size == runtime->oss.buffer_bytes)
+-               return frames;
++               return bytes;
+        return (runtime->oss.buffer_bytes * frames) / buffer_size;
+ }
+
+----------------------------------------------------------------------
+ perex - 05-27-05 10:56 
+----------------------------------------------------------------------
 It seems like a wrong patch to me. We cannot mix frames with bytes (see
-last expression). I think that there is a overflow in the return
+last expression). I think that there might be an overflow in the return
 expression.
 
-					Jaroslav
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-01-04 16:18 minmax         New Issue                                    
+10-01-04 16:18 minmax         Distribution              => Debian unstable 
+10-01-04 16:18 minmax         Kernel Version            => vanilla 2.6.7   
+10-02-04 10:52 minmax         Issue Monitored: minmax                      
+04-09-05 16:09 jdthood        Note Added: 0004406                          
+04-09-05 16:22 minmax         Note Added: 0004410                          
+05-13-05 15:20 gk4            Note Added: 0004646                          
+05-13-05 15:24 perex          Note Added: 0004647                          
+05-13-05 15:26 tiwai          Note Added: 0004648                          
+05-13-05 19:35 gk4            Note Added: 0004651                          
+05-13-05 19:38 tiwai          Note Added: 0004652                          
+05-13-05 19:48 gk4            Note Added: 0004655                          
+05-15-05 15:50 tiwai          Note Added: 0004663                          
+05-16-05 16:08 gk4            Note Added: 0004676                          
+05-19-05 15:28 parente        Note Added: 0004693                          
+05-20-05 00:38 minmax         Note Added: 0004698                          
+05-26-05 17:27 Roger Mach     Note Added: 0004738                          
+05-27-05 10:56 perex          Note Added: 0004742                          
+======================================================================
 
-> 
-> Signed-off-by: Roger Mach <bigmach@us.ibm.com>
-> 
-> Index: pcm_oss.c
-> ===================================================================
-> RCS file: /cvsroot/alsa/alsa-kernel/core/oss/pcm_oss.c,v
-> retrieving revision 1.87
-> retrieving revision 1.88
-> diff -u -r1.87 -r1.88
-> --- pcm_oss.c	12 Apr 2005 16:33:59 -0000	1.87
-> +++ pcm_oss.c	26 May 2005 16:58:01 -0000	1.88
-> @@ -124,11 +124,12 @@
->  
->  static long snd_pcm_oss_bytes(snd_pcm_substream_t *substream, long frames)
->  {
-> +	long bytes = 0;
->  	snd_pcm_runtime_t *runtime = substream->runtime;
->  	snd_pcm_uframes_t buffer_size = snd_pcm_lib_buffer_bytes(substream);
-> -	frames = frames_to_bytes(runtime, frames);
-> +	bytes = frames_to_bytes(runtime, frames);
->  	if (buffer_size == runtime->oss.buffer_bytes)
-> -		return frames;
-> +		return bytes;
->  	return (runtime->oss.buffer_bytes * frames) / buffer_size;
->  }
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
