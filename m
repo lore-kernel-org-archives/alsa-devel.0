@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001087]: No Mic or line in capabality
-Date: Sat, 28 May 2005 00:38:41 +0200
-Message-ID: <4d55fb6f177c9af3279b7cd7f280cba5@bugtrack.alsa-project.org>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: CVS alsamixer core dumps when displaying Capture devices
+Date: Fri, 27 May 2005 23:52:37 +0100 (BST)
+Message-ID: <20050527225237.59613.qmail@web52903.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 403C7149
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 00:38:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +15,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1087> 
-======================================================================
-Reported By:                pelias
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1087
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     closed
-Distribution:               Fedora
-Kernel Version:             2.6.11-1.14_FC3
-Resolution:                 open
-Fixed in Version:           
-======================================================================
-Date Submitted:             05-05-2005 19:28 CEST
-Last Modified:              05-28-2005 00:38 CEST
-======================================================================
-Summary:                    No Mic or line in capabality
-Description: 
-I am able to hear sound but I cannot switch to Mic or Line in input. 
-In "nvmixer/Advance options" all the options cannot be swapped. 
-In "nvmixer/Volume" all the mute bits cannot be swapped.
-Briefly none control is working.
+The latest CVS alsamixer is aborting as soon as I press "F4":
 
-I have also tried to fix this (byt with no result) with
-kmix, alsamixer
-======================================================================
+(gdb) where
+#0  0xffffe410 in ?? ()
+#1  0xbffff2e0 in ?? ()
+#2  0x00000006 in ?? ()
+#3  0x000051b4 in ?? ()
+#4  0xb7dbe221 in *__GI_raise (sig=3D6)
+    at ../nptl/sysdeps/unix/sysv/linux/raise.c:64
+#5  0xb7dbf979 in *__GI_abort () at ../sysdeps/generic/abort.c:88
+#6  0xb7db7b16 in *__GI___assert_fail (assertion=3D0x0, file=3D0x0, line=3D=
+0,=20
+    function=3D0xb7f893a3 "snd_mixer_selem_get_enum_item") at assert.c:83
+#7  0xb7f1c31c in snd_mixer_selem_get_enum_item (elem=3D0x0,=20
+    channel=3DSND_MIXER_SCHN_FRONT_LEFT, itemp=3D0x0) at simple.c:1975
+#8  0x0804bc36 in mixer_update_cbar (elem_index=3D0) at alsamixer.c:971
+#9  0x0804ea47 in main (argc=3D-1, argv=3D0x0) at alsamixer.c:1099
 
-----------------------------------------------------------------------
- pelias - 05-05-05 20:12 
-----------------------------------------------------------------------
-jcdutton,
-
-I have just see your reply in nvforum (posted 04-16-05, thread : FC3
-nforce4 unsolved sound problem), telling me that no capture support is
-available. 
-Are planning to arrange this or does this mean that I won't be able to use
-the capture features (and buy another audio card) ?
-
-Thanks for your answer.
-
-----------------------------------------------------------------------
- jcdutton - 05-28-05 00:38 
-----------------------------------------------------------------------
-We have received the needed information from Creative.
-Line-in and Mic-in now work on the SB Live 24bit.
-Support was added to the ALSA CVS after alsa-driver 1.0.9 was released.
-So, it is only supported in version of alsa-driver after 1.0.9
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-05-05 19:28 pelias         New Issue                                    
-05-05-05 19:28 pelias         Distribution              => Fedora          
-05-05-05 19:28 pelias         Kernel Version            => 2.6.11-1.14_FC3 
-05-05-05 20:12 pelias         Note Added: 0004589                          
-05-28-05 00:38 jcdutton       Status                   assigned => closed  
-05-28-05 00:38 jcdutton       Note Added: 0004756                          
-======================================================================
+(gdb) list
+1970            assert(elem->type =3D=3D SND_MIXER_ELEM_SIMPLE);
+1971            s =3D elem->private_data;
+1972            if ((unsigned int) channel >=3D s->str[0].channels)
+1973                    return -EINVAL;
+1974            helem =3D s->ctls[CTL_ENUMLIST].elem;
+1975            assert(helem);
+1976            memset(&ctl, 0, sizeof(ctl));
+1977            err =3D snd_hctl_elem_read(helem, &ctl);
+1978            if (! err)
+1979                    *itemp =3D ctl.value.enumerated.item[channel];
 
 
+I have a SB-Live! soundcard in this machine.
+
+Cheers,
+Chris
+
+
+
+=09
+=09
+	=09
+___________________________________________________________=20
+Yahoo! Messenger - NEW crystal clear PC to PC calling worldwide with voic=
+email http://uk.messenger.yahoo.com
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by Yahoo.
 Introducing Yahoo! Search Developer Network - Create apps using Yahoo!
 Search APIs Find out how you can build Yahoo! directly into your own
-Applications - visit http://developer.yahoo.net/?fr=offad-ysdn-ostg-q22005
+Applications - visit http://developer.yahoo.net/?fr=3Doffad-ysdn-ostg-q22=
+005
