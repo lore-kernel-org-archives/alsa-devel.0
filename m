@@ -1,15 +1,14 @@
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-Subject: Re: 2.6.12-rc5-mm1
-Date: Fri, 27 May 2005 12:29:01 +0200
-Message-ID: <200505271229.01699.rjw@sisk.pl>
-References: <20050525134933.5c22234a.akpm@osdl.org> <200505261554.54807.rjw@sisk.pl> <20050526134532.1580defc.akpm@osdl.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001127]: kernel panic while accessing midi
+Date: Fri, 27 May 2005 12:32:28 +0200
+Message-ID: <b610ed7a9a6f0d38dccc35c622fedb36@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20050526134532.1580defc.akpm@osdl.org>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA4AC20D
+	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 12:32:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,52 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrew Morton <akpm@osdl.org>
-Cc: jamagallon@able.es, tomlins@cam.org, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday, 26 of May 2005 22:45, Andrew Morton wrote:
-> "Rafael J. Wysocki" <rjw@sisk.pl> wrote:
-> >
-> > n Thursday, 26 of May 2005 09:58, Andrew Morton wrote:
-> >  > "J.A. Magallon" <jamagallon@able.es> wrote:
-> >  > >
-> >  > > 
-> >  > > On 05.26, Andrew Morton wrote:
-> >  > > > 
-> >  > > > (Added alsa-devel to cc)
-> >  > > > 
-> >  > > > Ed Tomlinson <tomlins@cam.org> wrote:
-> >  > > > > 
-> >  > > > > Got the following when I tried to use sound.  Anyone else see problems in alsa land?
-> >  > > > > 
-> >  > > 
-> >  > > Me too. As beep-media-player ends playing a mp3 track, oops !
-> >  > 
-> >  > hm, OK, you're also on x86_64.  What sound card and driver?
-> > 
-> >  I've got the following on a dual-Opteron box with Tyan Thunder K8W (snd_intel8x0):
-> 
-> OK, thanks.  I guess we can set this problem aside for now, as this bug
-> isn't present in 2.6.12-rc5 (correct?).
 
-Yup.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1127> 
+======================================================================
+Reported By:                ulrichmoehrke
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1127
+Category:                   PCI - als4000
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               debian sarge (kernel from sid)
+Kernel Version:             2.6.11 (2.6.11-1-k7)
+======================================================================
+Date Submitted:             05-26-2005 09:48 CEST
+Last Modified:              05-27-2005 12:32 CEST
+======================================================================
+Summary:                    kernel panic while accessing midi
+Description: 
+When I try to play a midi file the system freezes/kernel panic.
+======================================================================
 
-> I assume the problem is due to one of the ASLA patches in rc5-mm1, but it's
-> possible that it lies elsewhere.
+----------------------------------------------------------------------
+ tiwai - 05-27-05 12:32 
+----------------------------------------------------------------------
+Try the attached patch.
 
-Well, yes.  Apparently, it goes away if you revert the following patch:
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-26-05 09:48 ulrichmoehrke  New Issue                                    
+05-26-05 09:48 ulrichmoehrke  File Added: aadebug.out                      
+05-26-05 09:48 ulrichmoehrke  Distribution              => debian sarge (kernel
+from sid)
+05-26-05 09:48 ulrichmoehrke  Kernel Version            => 2.6.11 (2.6.11-1-k7)
+05-27-05 12:32 tiwai          Note Added: 0004749                          
+======================================================================
 
-avoiding-mmap-fragmentation-fix-2.patch
 
-Greets,
-Rafael
-
-
--- 
-- Would you tell me, please, which way I ought to go from here?
-- That depends a good deal on where you want to get to.
-		-- Lewis Carroll "Alice's Adventures in Wonderland"
 
 
 -------------------------------------------------------
