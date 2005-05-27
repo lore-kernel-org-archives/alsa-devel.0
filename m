@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000557]: SNDCTL_DSP_GETOPTR not working correctly in specific situation
-Date: Fri, 27 May 2005 10:56:35 +0200
-Message-ID: <0ff5898e27c454285131277874ffc0ce@bugtrack.alsa-project.org>
+Date: Fri, 27 May 2005 11:04:13 +0200
+Message-ID: <b37735d8288528985937a8ff9bf3d026@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1860209
-	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 10:56:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C058209
+	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 11:04:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian unstable
 Kernel Version:             vanilla 2.6.7
 ======================================================================
 Date Submitted:             10-01-2004 16:18 CEST
-Last Modified:              05-27-2005 10:56 CEST
+Last Modified:              05-27-2005 11:04 CEST
 ======================================================================
 Summary:                    SNDCTL_DSP_GETOPTR not working correctly in specific
 situation
@@ -50,43 +50,16 @@ way, SNDCTL_DSP_GETOPTR returns wrongly huge results in info.bytes
 ======================================================================
 
 ----------------------------------------------------------------------
- Roger Mach - 05-26-05 17:27 
-----------------------------------------------------------------------
-Summary: Fixes bug 557: SNDCTL_DSP_GETOPTR not working correctly
-
-This patch changes snd_pcm_oss_bytes() by adding a local variable
-for the frames -> bytes conversion, which means that the frame count
-is no longer corrupted by this conversion.
-
-Signed-off-by: Roger Mach <bigmach@us.ibm.com>
-
---- alsa-kernel/core/oss/pcm_oss.c.orig 2005-05-24 09:13:47.000000000
--0700
-+++ alsa-kernel/core/oss/pcm_oss.c      2005-05-24 09:11:40.000000000
--0700
-@@ -124,11 +124,12 @@ int snd_pcm_plugin_append(snd_pcm_plugin
-
- static long snd_pcm_oss_bytes(snd_pcm_substream_t *substream, long
-frames)
- {
-+       long bytes = 0;
-        snd_pcm_runtime_t *runtime = substream->runtime;
-        snd_pcm_uframes_t buffer_size =
-snd_pcm_lib_buffer_bytes(substream);
--       frames = frames_to_bytes(runtime, frames);
-+       bytes = frames_to_bytes(runtime, frames);
-        if (buffer_size == runtime->oss.buffer_bytes)
--               return frames;
-+               return bytes;
-        return (runtime->oss.buffer_bytes * frames) / buffer_size;
- }
-
-----------------------------------------------------------------------
  perex - 05-27-05 10:56 
 ----------------------------------------------------------------------
 It seems like a wrong patch to me. We cannot mix frames with bytes (see
 last expression). I think that there might be an overflow in the return
 expression.
+
+----------------------------------------------------------------------
+ perex - 05-27-05 11:04 
+----------------------------------------------------------------------
+Ok, attached fix2.patch might fix this issue properly. Could you test it?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -109,6 +82,8 @@ Date Modified  Username       Field                    Change
 05-20-05 00:38 minmax         Note Added: 0004698                          
 05-26-05 17:27 Roger Mach     Note Added: 0004738                          
 05-27-05 10:56 perex          Note Added: 0004742                          
+05-27-05 11:03 perex          File Added: fix2.patch                       
+05-27-05 11:04 perex          Note Added: 0004743                          
 ======================================================================
 
 
