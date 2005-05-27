@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001129]: codec 0 is not valid
-Date: Fri, 27 May 2005 12:35:19 +0200
-Message-ID: <fc7d5f1a86db647ed0a384f9e0b8fd09@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001098]: aoss openal    gives too fast sound.
+Date: Fri, 27 May 2005 12:36:30 +0200
+Message-ID: <7bfde75ecb9d21b9e6d74a9a1f7e6676@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D5F920D
-	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 12:35:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9528A20D
+	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 12:36:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1129> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1098> 
 ======================================================================
-Reported By:                afselby
-Assigned To:                
+Reported By:                qwer1234
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1129
-Category:                   PCI - via82xx
+Project:                    ALSA - liboss
+Issue ID:                   1098
+Category:                   
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-26-2005 23:51 CEST
-Last Modified:              05-27-2005 12:35 CEST
+Date Submitted:             05-09-2005 17:09 CEST
+Last Modified:              05-27-2005 12:36 CEST
 ======================================================================
-Summary:                    codec 0 is not valid
+Summary:                    aoss openal    gives too fast sound.
 Description: 
-repeatable error (/var/log/messages):
-kernel: PCI: Setting latency timer of device 00:11.5 to  64
-kernel: ALSA ../alsa-kernel/pci/via82xx.c:584: codec_read: codec 0 is not
-valid for reg=0x7e, xval= 0x2fe0000, is [0xfe0000]
-   NOTE: I modified source print to include reg & xval
+Opanal layer gives too fast sound when I use aoss wrapper and I get this
+error multiple times:
 
-today, once:
-May 26 17:25:45 localhost kernel: ALSA ../alsa-kernel/pci/via82xx.c:797:
-zero position is read
-May 26 17:26:08 localhost kernel: ALSA ../alsa-kernel/pci/via82xx.c:797:
-zero position is read
-May 26 17:27:35 localhost modprobe: modprobe: Can't locate module
-sound-slot-0
-May 26 17:27:35 localhost modprobe: modprobe: Can't locate module
-sound-service-0-6
+native_blitbuffer: select error occured
 
 ======================================================================
 
 ----------------------------------------------------------------------
- afselby - 05-27-05 00:28 
+ qwer1234 - 05-25-05 05:24 
 ----------------------------------------------------------------------
-the basic problem, of course, is no sound.
-Kmix does not recognize  AD1980, aumix does recognize
-
-AFIK, I have unmuted.
-  How do I verify this?
-
-The error
-ALSA ../alsa-kernel/pci/via82xx.c:797: zero position is read
-occurs when I play() or aplay() a wav file.
+aoss armyops; works fine with alsa 1.0.9rc3a,
+but openal doesn't give me any sound with alsa driver.
+I think that this is openal bug, but I don't know that
+for sure. I will try to debug openal. Mabey I will find out
+what is wrong.
 
 ----------------------------------------------------------------------
- tiwai - 05-27-05 12:35 
+ tiwai - 05-27-05 12:36 
 ----------------------------------------------------------------------
-This is likely a broken BIOS or a wrong ACPI support.
-Try to turn off ACPI.
+OK, then let's close this bug now.
+Please open another one for the bug of alsa mode of openal if you find
+anything.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-26-05 23:51 afselby        New Issue                                    
-05-27-05 00:28 afselby        Note Added: 0004740                          
-05-27-05 12:35 tiwai          Note Added: 0004750                          
+05-09-05 17:09 qwer1234       New Issue                                    
+05-09-05 17:15 qwer1234       Issue Monitored: qwer1234                    
+05-17-05 17:52 tiwai          Note Added: 0004681                          
+05-17-05 17:53 tiwai          Note Added: 0004682                          
+05-18-05 00:38 qwer1234       Note Added: 0004685                          
+05-18-05 00:41 qwer1234       Note Edited: 0004685                         
+05-18-05 14:53 tiwai          Note Added: 0004687                          
+05-18-05 14:55 tiwai          Note Added: 0004688                          
+05-19-05 13:37 qwer1234       Note Added: 0004689                          
+05-19-05 14:12 tiwai          Note Added: 0004690                          
+05-19-05 16:59 qwer1234       Note Added: 0004694                          
+05-24-05 11:59 tiwai          Note Added: 0004712                          
+05-25-05 05:24 qwer1234       Note Added: 0004735                          
+05-27-05 12:36 tiwai          Status                   new => resolved     
+05-27-05 12:36 tiwai          Resolution               open => fixed       
+05-27-05 12:36 tiwai          Assigned To               => tiwai           
+05-27-05 12:36 tiwai          Note Added: 0004751                          
 ======================================================================
 
 
