@@ -1,13 +1,15 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Creative SB Live 24bit capture status
-Date: Fri, 27 May 2005 10:40:08 -0400
-Message-ID: <1117204808.13829.50.camel@mindpipe>
-References: <ad2655cb0505270652272abfb@mail.gmail.com>
+From: Giuliano Pochini <pochini@denise.shiny.it>
+Subject: Re: Re: [ALSA - lib 0000154]: Master volume only controls
+ front output (emu10k1)
+Date: Fri, 27 May 2005 16:43:18 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0505271615270.15406@denise.shiny.it>
+References: <da3ba5a8e39a99b562591bfbaba64ac7@bugtrack.alsa-project.org>
+ <428E803F.9050608@voicenet.com> <42972875.7040309@voicenet.com>
+ <Pine.LNX.4.58.0505271605220.1757@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <ad2655cb0505270652272abfb@mail.gmail.com>
+In-Reply-To: <Pine.LNX.4.58.0505271605220.1757@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,25 +19,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <james.dutton@gmail.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Adam K Kirchhoff <adamk@voicenet.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-05-27 at 14:52 +0100, James Courtier-Dutton wrote:
-> Hi,
-> 
-> I am pleased to announce that Creative have finally sent me some
-> information regarding how to enable capture on the SB Live 24bit sound
-> card.
-> I will hopefully be adding support for it to alsa either this weekend or next.
-> 
 
-Wow, this is great, great news.  I was afraid they were going to
-completely ruin the 'it just works' reputation of the SBLive brand in
-the eyes of Linux users by continuing to withhold this info.
 
-Lee  
+On Fri, 27 May 2005, Jaroslav Kysela wrote:
 
+> > > Hey developers, what's up with the abstract mixer layer? :-)
+> > >
+> >
+> > Anyone?
+>
+> I am working on it, but also doing zillions of other things. The actual
+> status is that the virtual mixer can be created inside the lisp
+> interpreter. I am looking for a clever code design to map the hardware
+> controls with minimal lisp code to abstract ones.... I need something like
+> an object model inside lisp (object == mixer element).
+
+I was thinking about it, too. I'm not sure the lisp thing is the right
+way. If we want it to be generic enough we have to make a quite big part
+of the API available to the lisp interpreter. It would make the interface
+quite difficult to use and lisp doesn't make things simpler.
+I wonder if, maybe, it is simpler to write a loadable plugin interface and
+write the plugins in C as usual. A plugin is fast (no need to be
+interpreted), it's about as complex as a lisp program (same API) and it
+can be added without recompiling libasound (just like a lisp script) and
+no need to learn lisp :)
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
