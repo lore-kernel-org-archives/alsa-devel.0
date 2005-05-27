@@ -1,15 +1,15 @@
-From: Lorenzo Milesi <lorenzo.milesi@gmail.com>
-Subject: Re: Problems with HDa
-Date: Fri, 27 May 2005 10:39:35 +0200
-Message-ID: <29c147bd05052701397c573a99@mail.gmail.com>
-References: <29c147bd05052500442c455d8@mail.gmail.com>
-	 <s5h3bsbr7f9.wl@alsa2.suse.de>
-Reply-To: Lorenzo Milesi <lorenzo.milesi@gmail.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [alsa-cvslog] CVS: alsa-kernel/core/oss pcm_oss.c,1.87,1.88
+Date: Fri, 27 May 2005 10:40:15 +0200 (CEST)
+Message-ID: <Pine.LNX.4.58.0505271038060.1757@pnote.perex-int.cz>
+References: <E1DbLgK-0000QR-5z@sc8-pr-cvs1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_5670_12052954.1117183175614"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h3bsbr7f9.wl@alsa2.suse.de>
+Received: from gate.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 184CF209
+	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 10:40:16 +0200 (MEST)
+In-Reply-To: <E1DbLgK-0000QR-5z@sc8-pr-cvs1.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,170 +19,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <cladisch@users.sourceforge.net>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_5670_12052954.1117183175614
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Thu, 26 May 2005, Clemens Ladisch wrote:
 
-Hi
+> Update of /cvsroot/alsa/alsa-kernel/core/oss
+> In directory sc8-pr-cvs1.sourceforge.net:/tmp/cvs-serv1617
+> 
+> Modified Files:
+> 	pcm_oss.c 
+> Log Message:
+> Summary: pcm_oss - fix SNDCTL_DSP_GETOPTR not working correctly
+> 
+> This patch changes snd_pcm_oss_bytes() by adding a local variable
+> for the frames -> bytes conversion, which means that the frame count
+> is no longer corrupted by this conversion.
 
-Thanks for your reply.
-We could do some testing yesterday, but they were unsuccessful.
+It seems like a wrong patch to me. We cannot mix frames with bytes (see
+last expression). I think that there is a overflow in the return
+expression.
 
-As you told us, we downloaded 1.0.9rc4 and compiled modules from that.
-We tried all the possible models using module=3D3jack in the modprobe
-command, but noone of them worked.
-Then we tried making modules with debug enabled, and modprobing with
-module=3Dtest.
-With an aplay going in another session we tried all the possible pin
-combinations, but we got no output.
+					Jaroslav
 
-As you requested, in case of failure, I'm attaching the proc file.
+> 
+> Signed-off-by: Roger Mach <bigmach@us.ibm.com>
+> 
+> Index: pcm_oss.c
+> ===================================================================
+> RCS file: /cvsroot/alsa/alsa-kernel/core/oss/pcm_oss.c,v
+> retrieving revision 1.87
+> retrieving revision 1.88
+> diff -u -r1.87 -r1.88
+> --- pcm_oss.c	12 Apr 2005 16:33:59 -0000	1.87
+> +++ pcm_oss.c	26 May 2005 16:58:01 -0000	1.88
+> @@ -124,11 +124,12 @@
+>  
+>  static long snd_pcm_oss_bytes(snd_pcm_substream_t *substream, long frames)
+>  {
+> +	long bytes = 0;
+>  	snd_pcm_runtime_t *runtime = substream->runtime;
+>  	snd_pcm_uframes_t buffer_size = snd_pcm_lib_buffer_bytes(substream);
+> -	frames = frames_to_bytes(runtime, frames);
+> +	bytes = frames_to_bytes(runtime, frames);
+>  	if (buffer_size == runtime->oss.buffer_bytes)
+> -		return frames;
+> +		return bytes;
+>  	return (runtime->oss.buffer_bytes * frames) / buffer_size;
+>  }
 
-I hope we can solve this issue.
-
-Thank you very much.
-Maxxer
-
-> If the driver is loaded and doesn't complain like above, the silent
-> problem is likely the wrong PIN assignment.
-> For ALC880 codec (you can check it in /proc/asound/card0/codec#*
-> file), try a different "model" module option.  See
-> ALSA-Configuration.txt for details.  Make sure that you use the
-> latest 1.0.9rc4!
->=20
-> If none of models matches your device, try to build drivers with debug
-> option and set model=3Dtest.  This will enable almost all available
-> controls for testing.  Check different PIN configurations via
-> alsamixer, and report it to here together with the content of
-> /proc/asound/card0/codec#* files.
-
-------=_Part_5670_12052954.1117183175614
-Content-Type: text/plain; name="alsa.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="alsa.txt"
-
-Q29kZWM6IFJlYWx0ZWsgQUxDODgwDQpBZGRyZXNzOiAwDQpWZW5kb3IgSWQ6IDB4MTBlYzA4ODAN
-ClN1YnN5c3RlbSBJZDogMHgwDQpSZXZpc2lvbiBJZDogMHg5MDUwMA0KRGVmYXVsdCBQQ006IHJh
-dGVzIDB4NTYwLCBiaXRzIDB4MGUsIHR5cGVzIDB4MQ0KRGVmYXVsdCBBbXAtSW4gY2FwczogTi9B
-DQpEZWZhdWx0IEFtcC1PdXQgY2FwczogTi9BDQpOb2RlIDB4MDIgW0F1ZGlvIE91dHB1dF0gd2Nh
-cHMgMHg0MTE6IFN0ZXJlbw0KICBQQ006IHJhdGVzIDB4NTYwLCBiaXRzIDB4MGUsIHR5cGVzIDB4
-MQ0KTm9kZSAweDAzIFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4NDExOiBTdGVyZW8NCiAgUENNOiBy
-YXRlcyAweDU2MCwgYml0cyAweDBlLCB0eXBlcyAweDENCk5vZGUgMHgwNCBbQXVkaW8gT3V0cHV0
-XSB3Y2FwcyAweDQxMTogU3RlcmVvDQogIFBDTTogcmF0ZXMgMHgxNjAsIGJpdHMgMHgwZSwgdHlw
-ZXMgMHgxDQpOb2RlIDB4MDUgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MTE6IFN0ZXJlbw0KICBQ
-Q006IHJhdGVzIDB4MTYwLCBiaXRzIDB4MGUsIHR5cGVzIDB4MQ0KTm9kZSAweDA2IFtBdWRpbyBP
-dXRwdXRdIHdjYXBzIDB4MjExOiBTdGVyZW8gRGlnaXRhbA0KICBQQ006IHJhdGVzIDB4MTYwLCBi
-aXRzIDB4MWUsIHR5cGVzIDB4MQ0KTm9kZSAweDA3IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDA1
-MWI6IFN0ZXJlbyBBbXAtSW4NCiAgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgyMywg
-c3RlcHNpemU9MHgwMywgbXV0ZT0xDQogIEFtcC1JbiB2YWxzOiAweDAwIDB4MDANCiAgUENNOiBy
-YXRlcyAweDE2MCwgYml0cyAweDA2LCB0eXBlcyAweDENCiAgQ29ubmVjdGlvbjogNw0KICAgICAw
-eDE4KiAweDE5IDB4MWEgMHgxYiAweDFjIDB4MTQgMHgxNQ0KTm9kZSAweDA4IFtBdWRpbyBJbnB1
-dF0gd2NhcHMgMHgxMDA1MWI6IFN0ZXJlbyBBbXAtSW4NCiAgQW1wLUluIGNhcHM6IG9mcz0weDAw
-LCBuc3RlcHM9MHgyMywgc3RlcHNpemU9MHgwMywgbXV0ZT0xDQogIEFtcC1JbiB2YWxzOiAweDAw
-IDB4MDANCiAgUENNOiByYXRlcyAweDE2MCwgYml0cyAweDA2LCB0eXBlcyAweDENCiAgQ29ubmVj
-dGlvbjogNw0KICAgICAweDE4KiAweDE5IDB4MWEgMHgxYiAweDFjIDB4MTQgMHgxNQ0KTm9kZSAw
-eDA5IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDA1MWI6IFN0ZXJlbyBBbXAtSW4NCiAgQW1wLUlu
-IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgyMywgc3RlcHNpemU9MHgwMywgbXV0ZT0xDQogIEFt
-cC1JbiB2YWxzOiAweDAwIDB4MDANCiAgUENNOiByYXRlcyAweDE2MCwgYml0cyAweDA2LCB0eXBl
-cyAweDENCiAgQ29ubmVjdGlvbjogMTANCiAgICAgMHgxOCAweDE5IDB4MWEgMHgxYiAweDFjKiAw
-eDBiIDB4MTQgMHgxNSAweDE2IDB4MTcNCk5vZGUgMHgwYSBbQXVkaW8gSW5wdXRdIHdjYXBzIDB4
-MTAwMzkxOiBTdGVyZW8gRGlnaXRhbA0KICBQQ006IHJhdGVzIDB4MTYwLCBiaXRzIDB4MWUsIHR5
-cGVzIDB4MQ0KICBDb25uZWN0aW9uOiAxDQogICAgIDB4MWYNCk5vZGUgMHgwYiBbQXVkaW8gTWl4
-ZXJdIHdjYXBzIDB4MjAwMTBiOiBTdGVyZW8gQW1wLUluDQogIEFtcC1JbiBjYXBzOiBvZnM9MHgy
-MywgbnN0ZXBzPTB4NDEsIHN0ZXBzaXplPTB4MDMsIG11dGU9MQ0KICBBbXAtSW4gdmFsczogMHgy
-OSAweDI5DQogIENvbm5lY3Rpb246IDgNCiAgICAgMHgxOCAweDE5IDB4MWEgMHgxYiAweDFjIDB4
-MWQgMHgxNCAweDE1DQpOb2RlIDB4MGMgW0F1ZGlvIE1peGVyXSB3Y2FwcyAweDIwMDEwZjogU3Rl
-cmVvIEFtcC1JbiBBbXAtT3V0DQogIEFtcC1JbiBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAs
-IHN0ZXBzaXplPTB4MDAsIG11dGU9MQ0KICBBbXAtSW4gdmFsczogMHgwMCAweDAwDQogIEFtcC1P
-dXQgY2Fwczogb2ZzPTB4NDAsIG5zdGVwcz0weDQwLCBzdGVwc2l6ZT0weDAzLCBtdXRlPTANCiAg
-QW1wLU91dCB2YWxzOiAweDNjIDB4M2MNCiAgQ29ubmVjdGlvbjogMg0KICAgICAweDAyIDB4MGIN
-Ck5vZGUgMHgwZCBbQXVkaW8gTWl4ZXJdIHdjYXBzIDB4MjAwMTBmOiBTdGVyZW8gQW1wLUluIEFt
-cC1PdXQNCiAgQW1wLUluIGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgw
-MCwgbXV0ZT0xDQogIEFtcC1JbiB2YWxzOiAweDAwIDB4MDANCiAgQW1wLU91dCBjYXBzOiBvZnM9
-MHg0MCwgbnN0ZXBzPTB4NDAsIHN0ZXBzaXplPTB4MDMsIG11dGU9MA0KICBBbXAtT3V0IHZhbHM6
-IDB4MzQgMHgzNA0KICBDb25uZWN0aW9uOiAyDQogICAgIDB4MDMgMHgwYg0KTm9kZSAweDBlIFtB
-dWRpbyBNaXhlcl0gd2NhcHMgMHgyMDAxMGY6IFN0ZXJlbyBBbXAtSW4gQW1wLU91dA0KICBBbXAt
-SW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTENCiAg
-QW1wLUluIHZhbHM6IDB4MDAgMHgwMA0KICBBbXAtT3V0IGNhcHM6IG9mcz0weDQwLCBuc3RlcHM9
-MHg0MCwgc3RlcHNpemU9MHgwMywgbXV0ZT0wDQogIEFtcC1PdXQgdmFsczogMHgzNSAweDM1DQog
-IENvbm5lY3Rpb246IDINCiAgICAgMHgwNCAweDBiDQpOb2RlIDB4MGYgW0F1ZGlvIE1peGVyXSB3
-Y2FwcyAweDIwMDEwZjogU3RlcmVvIEFtcC1JbiBBbXAtT3V0DQogIEFtcC1JbiBjYXBzOiBvZnM9
-MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQ0KICBBbXAtSW4gdmFsczog
-MHgwMCAweDAwDQogIEFtcC1PdXQgY2Fwczogb2ZzPTB4NDAsIG5zdGVwcz0weDQwLCBzdGVwc2l6
-ZT0weDAzLCBtdXRlPTANCiAgQW1wLU91dCB2YWxzOiAweDJmIDB4MmYNCiAgQ29ubmVjdGlvbjog
-Mg0KICAgICAweDA1IDB4MGINCk5vZGUgMHgxMCBbQXVkaW8gU2VsZWN0b3JdIHdjYXBzIDB4MzAw
-MTAxOiBTdGVyZW8NCiAgQ29ubmVjdGlvbjogNA0KICAgICAweDBjKiAweDBkIDB4MGUgMHgwZg0K
-Tm9kZSAweDExIFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDAxMDE6IFN0ZXJlbw0KICBDb25u
-ZWN0aW9uOiA0DQogICAgIDB4MGMqIDB4MGQgMHgwZSAweDBmDQpOb2RlIDB4MTIgW0F1ZGlvIFNl
-bGVjdG9yXSB3Y2FwcyAweDMwMDEwMTogU3RlcmVvDQogIENvbm5lY3Rpb246IDQNCiAgICAgMHgw
-YyogMHgwZCAweDBlIDB4MGYNCk5vZGUgMHgxMyBbQXVkaW8gU2VsZWN0b3JdIHdjYXBzIDB4MzAw
-MTAxOiBTdGVyZW8NCiAgQ29ubmVjdGlvbjogNA0KICAgICAweDBjKiAweDBkIDB4MGUgMHgwZg0K
-Tm9kZSAweDE0IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAxOGQ6IFN0ZXJlbyBBbXAtT3V0DQog
-IEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRl
-PTENCiAgQW1wLU91dCB2YWxzOiAweDgwIDB4ODANCiAgUGluY2FwIDB4MDgzZjogSU4gT1VUIEhQ
-DQogIFBpbiBEZWZhdWx0IDB4MDAwMDAwMDA6IFtKYWNrXSBMaW5lIE91dCBhdCBFeHQgTi9BDQog
-ICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93bg0KICBQaW4tY3RsczogMHgyMDogSU4N
-CiAgQ29ubmVjdGlvbjogMQ0KICAgICAweDBjDQpOb2RlIDB4MTUgW1BpbiBDb21wbGV4XSB3Y2Fw
-cyAweDQwMDE4ZDogU3RlcmVvIEFtcC1PdXQNCiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0
-ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQ0KICBBbXAtT3V0IHZhbHM6IDB4ODAgMHg4
-MA0KICBQaW5jYXAgMHgwODNmOiBJTiBPVVQgSFANCiAgUGluIERlZmF1bHQgMHgwMDAwMDAwMDog
-W0phY2tdIExpbmUgT3V0IGF0IEV4dCBOL0ENCiAgICBDb25uID0gVW5rbm93biwgQ29sb3IgPSBV
-bmtub3duDQogIFBpbi1jdGxzOiAweDIwOiBJTg0KICBDb25uZWN0aW9uOiAxDQogICAgIDB4MGQN
-Ck5vZGUgMHgxNiBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMThkOiBTdGVyZW8gQW1wLU91dA0K
-ICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0
-ZT0xDQogIEFtcC1PdXQgdmFsczogMHg4MCAweDgwDQogIFBpbmNhcCAweDA4M2Y6IElOIE9VVCBI
-UA0KICBQaW4gRGVmYXVsdCAweDAwMDAwMDAwOiBbSmFja10gTGluZSBPdXQgYXQgRXh0IE4vQQ0K
-ICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9IFVua25vd24NCiAgUGluLWN0bHM6IDB4MjA6IElO
-DQogIENvbm5lY3Rpb246IDENCiAgICAgMHgwZQ0KTm9kZSAweDE3IFtQaW4gQ29tcGxleF0gd2Nh
-cHMgMHg0MDAxOGQ6IFN0ZXJlbyBBbXAtT3V0DQogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5z
-dGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTENCiAgQW1wLU91dCB2YWxzOiAweDAwIDB4
-MDANCiAgUGluY2FwIDB4MDgzZjogSU4gT1VUIEhQDQogIFBpbiBEZWZhdWx0IDB4MDAwMDAwMDA6
-IFtKYWNrXSBMaW5lIE91dCBhdCBFeHQgTi9BDQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0g
-VW5rbm93bg0KICBQaW4tY3RsczogMHgwMDoNCiAgQ29ubmVjdGlvbjogMQ0KICAgICAweDBmDQpO
-b2RlIDB4MTggW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDE4ZDogU3RlcmVvIEFtcC1PdXQNCiAg
-QW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9
-MQ0KICBBbXAtT3V0IHZhbHM6IDB4ODAgMHg4MA0KICBQaW5jYXAgMHgwODEzM2Y6IElOIE9VVCBI
-UA0KICBQaW4gRGVmYXVsdCAweDAwMDAwMDAwOiBbSmFja10gTGluZSBPdXQgYXQgRXh0IE4vQQ0K
-ICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9IFVua25vd24NCiAgUGluLWN0bHM6IDB4MjE6IElO
-DQogIENvbm5lY3Rpb246IDENCiAgICAgMHgxMA0KTm9kZSAweDE5IFtQaW4gQ29tcGxleF0gd2Nh
-cHMgMHg0MDAxOGQ6IFN0ZXJlbyBBbXAtT3V0DQogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5z
-dGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTENCiAgQW1wLU91dCB2YWxzOiAweDgwIDB4
-ODANCiAgUGluY2FwIDB4MDgxMzNmOiBJTiBPVVQgSFANCiAgUGluIERlZmF1bHQgMHgwMDAwMDAw
-MDogW0phY2tdIExpbmUgT3V0IGF0IEV4dCBOL0ENCiAgICBDb25uID0gVW5rbm93biwgQ29sb3Ig
-PSBVbmtub3duDQogIFBpbi1jdGxzOiAweDIwOiBJTg0KICBDb25uZWN0aW9uOiAxDQogICAgIDB4
-MTENCk5vZGUgMHgxYSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMThkOiBTdGVyZW8gQW1wLU91
-dA0KICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwg
-bXV0ZT0xDQogIEFtcC1PdXQgdmFsczogMHg4MCAweDgwDQogIFBpbmNhcCAweDA4MTMzZjogSU4g
-T1VUIEhQDQogIFBpbiBEZWZhdWx0IDB4MDAwMDAwMDA6IFtKYWNrXSBMaW5lIE91dCBhdCBFeHQg
-Ti9BDQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93bg0KICBQaW4tY3RsczogMHgy
-MTogSU4NCiAgQ29ubmVjdGlvbjogMQ0KICAgICAweDEyDQpOb2RlIDB4MWIgW1BpbiBDb21wbGV4
-XSB3Y2FwcyAweDQwMDE4ZDogU3RlcmVvIEFtcC1PdXQNCiAgQW1wLU91dCBjYXBzOiBvZnM9MHgw
-MCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQ0KICBBbXAtT3V0IHZhbHM6IDB4
-ODAgMHg4MA0KICBQaW5jYXAgMHgwODEzM2Y6IElOIE9VVCBIUA0KICBQaW4gRGVmYXVsdCAweDAw
-MDAwMDAwOiBbSmFja10gTGluZSBPdXQgYXQgRXh0IE4vQQ0KICAgIENvbm4gPSBVbmtub3duLCBD
-b2xvciA9IFVua25vd24NCiAgUGluLWN0bHM6IDB4MjA6IElODQogIENvbm5lY3Rpb246IDENCiAg
-ICAgMHgxMw0KTm9kZSAweDFjIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAwMDE6IFN0ZXJlbw0K
-ICBQaW5jYXAgMHgwODIwOiBJTg0KICBQaW4gRGVmYXVsdCAweDAwMDAwMDAwOiBbSmFja10gTGlu
-ZSBPdXQgYXQgRXh0IE4vQQ0KICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9IFVua25vd24NCiAg
-UGluLWN0bHM6IDB4MDA6DQpOb2RlIDB4MWQgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDAwMDog
-TW9ubw0KICBQaW5jYXAgMHgwODIwOiBJTg0KICBQaW4gRGVmYXVsdCAweDAwMDAwMDAwOiBbSmFj
-a10gTGluZSBPdXQgYXQgRXh0IE4vQQ0KICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9IFVua25v
-d24NCiAgUGluLWN0bHM6IDB4MDA6DQpOb2RlIDB4MWUgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQw
-MDMwMDogTW9ubyBEaWdpdGFsDQogIFBpbmNhcCAweDA4MTA6IE9VVA0KICBQaW4gRGVmYXVsdCAw
-eDAwMDAwMDAwOiBbSmFja10gTGluZSBPdXQgYXQgRXh0IE4vQQ0KICAgIENvbm4gPSBVbmtub3du
-LCBDb2xvciA9IFVua25vd24NCiAgUGluLWN0bHM6IDB4MDA6DQogIENvbm5lY3Rpb246IDENCiAg
-ICAgMHgwNg0KTm9kZSAweDFmIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAyMDA6IE1vbm8gRGln
-aXRhbA0KICBQaW5jYXAgMHgwODIwOiBJTg0KICBQaW4gRGVmYXVsdCAweDAwMDAwMDAwOiBbSmFj
-a10gTGluZSBPdXQgYXQgRXh0IE4vQQ0KICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9IFVua25v
-d24NCiAgUGluLWN0bHM6IDB4MDA6DQpOb2RlIDB4MjAgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0g
-d2NhcHMgMHhmMDAwNDA6IE1vbm8NCk5vZGUgMHgyMSBbVm9sdW1lIEtub2IgV2lkZ2V0XSB3Y2Fw
-cyAweDYwMDA4MDogTW9ubw0KDQo=
-------=_Part_5670_12052954.1117183175614--
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
