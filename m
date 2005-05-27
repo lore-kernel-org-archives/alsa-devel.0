@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Creative SB Live 24bit capture status
-Date: Fri, 27 May 2005 17:15:41 -0400
-Message-ID: <1117228541.13829.89.camel@mindpipe>
-References: <ad2655cb0505270652272abfb@mail.gmail.com>
-	 <1117204808.13829.50.camel@mindpipe>  <42978C5E.7090606@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001128]: ALSA Driver for FW1884
+Date: Fri, 27 May 2005 23:39:51 +0200
+Message-ID: <a62df2d9044063c17ef76fd6f5953f4d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <42978C5E.7090606@superbug.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D37DD206
+	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 23:39:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,37 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: James Courtier-Dutton <james.dutton@gmail.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-05-27 at 22:08 +0100, James Courtier-Dutton wrote:
-> Lee Revell wrote:
-> > On Fri, 2005-05-27 at 14:52 +0100, James Courtier-Dutton wrote:
-> > 
-> >>Hi,
-> >>
-> >>I am pleased to announce that Creative have finally sent me some
-> >>information regarding how to enable capture on the SB Live 24bit sound
-> >>card.
-> >>I will hopefully be adding support for it to alsa either this weekend or next.
-> >>
-> > 
-> > 
-> > Wow, this is great, great news.  I was afraid they were going to
-> > completely ruin the 'it just works' reputation of the SBLive brand in
-> > the eyes of Linux users by continuing to withhold this info.
-> > 
-> > Lee  
-> > 
-> 
-> SB Live 24bit capture of Line-in now works.
-> I have just checked it into the CVS...enjoy.
-> 
 
-And just a few hours too late for ALSA 1.0.9...
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1128> 
+======================================================================
+Reported By:                elvingonzalez
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1128
+Category:                   OTHERS
+Reproducibility:            N/A
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             05-26-2005 20:25 CEST
+Last Modified:              05-27-2005 23:39 CEST
+======================================================================
+Summary:                    ALSA Driver for FW1884
+Description: 
+Hi,
 
-Lee 
+I will like to know if there is any ASLA driver that supports the Tascam
+FW1884.
+If there is not a driver for the FW1884, how can I contribute to make
+one?
+
+If this is not place to be asking this, I apology and ask where can I get
+information about this matter. 
+
+Thanks
+Elvin
+======================================================================
+
+----------------------------------------------------------------------
+ martin - 05-26-05 21:48 
+----------------------------------------------------------------------
+Alsa doesn' t support the Tascam FW1884. Sorry.
+
+Please jump to http://freebob.sf.net
+
+They are working on firewire audio support for linux. But it depends on
+the chipset in the fw1884. 
+
+martin
+
+----------------------------------------------------------------------
+ elvingonzalez - 05-27-05 23:39 
+----------------------------------------------------------------------
+I checked with Freebob and because of the chipset, there's no much
+probability of it to work with the FW1884.
+
+If there is no ALSA driver for the FW1884. Is there a way for me to help
+writting one? Can this be done at all? What information do I need to get
+and how do I get it?
+
+Once again, thanks again for your time.
+Elvin
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-26-05 20:25 elvingonzalez  New Issue                                    
+05-26-05 21:48 martin         Note Added: 0004739                          
+05-27-05 23:39 elvingonzalez  Note Added: 0004755                          
+======================================================================
+
 
 
 
