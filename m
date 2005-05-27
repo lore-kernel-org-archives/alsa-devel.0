@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001127]: kernel panic while accessing midi
-Date: Fri, 27 May 2005 12:32:28 +0200
-Message-ID: <b610ed7a9a6f0d38dccc35c622fedb36@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001129]: codec 0 is not valid
+Date: Fri, 27 May 2005 12:35:19 +0200
+Message-ID: <fc7d5f1a86db647ed0a384f9e0b8fd09@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA4AC20D
-	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 12:32:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D5F920D
+	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 12:35:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,43 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1127> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1129> 
 ======================================================================
-Reported By:                ulrichmoehrke
+Reported By:                afselby
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1127
-Category:                   PCI - als4000
+Issue ID:                   1129
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               debian sarge (kernel from sid)
-Kernel Version:             2.6.11 (2.6.11-1-k7)
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-26-2005 09:48 CEST
-Last Modified:              05-27-2005 12:32 CEST
+Date Submitted:             05-26-2005 23:51 CEST
+Last Modified:              05-27-2005 12:35 CEST
 ======================================================================
-Summary:                    kernel panic while accessing midi
+Summary:                    codec 0 is not valid
 Description: 
-When I try to play a midi file the system freezes/kernel panic.
+repeatable error (/var/log/messages):
+kernel: PCI: Setting latency timer of device 00:11.5 to  64
+kernel: ALSA ../alsa-kernel/pci/via82xx.c:584: codec_read: codec 0 is not
+valid for reg=0x7e, xval= 0x2fe0000, is [0xfe0000]
+   NOTE: I modified source print to include reg & xval
+
+today, once:
+May 26 17:25:45 localhost kernel: ALSA ../alsa-kernel/pci/via82xx.c:797:
+zero position is read
+May 26 17:26:08 localhost kernel: ALSA ../alsa-kernel/pci/via82xx.c:797:
+zero position is read
+May 26 17:27:35 localhost modprobe: modprobe: Can't locate module
+sound-slot-0
+May 26 17:27:35 localhost modprobe: modprobe: Can't locate module
+sound-service-0-6
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-27-05 12:32 
+ afselby - 05-27-05 00:28 
 ----------------------------------------------------------------------
-Try the attached patch.
+the basic problem, of course, is no sound.
+Kmix does not recognize  AD1980, aumix does recognize
+
+AFIK, I have unmuted.
+  How do I verify this?
+
+The error
+ALSA ../alsa-kernel/pci/via82xx.c:797: zero position is read
+occurs when I play() or aplay() a wav file.
+
+----------------------------------------------------------------------
+ tiwai - 05-27-05 12:35 
+----------------------------------------------------------------------
+This is likely a broken BIOS or a wrong ACPI support.
+Try to turn off ACPI.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-26-05 09:48 ulrichmoehrke  New Issue                                    
-05-26-05 09:48 ulrichmoehrke  File Added: aadebug.out                      
-05-26-05 09:48 ulrichmoehrke  Distribution              => debian sarge (kernel
-from sid)
-05-26-05 09:48 ulrichmoehrke  Kernel Version            => 2.6.11 (2.6.11-1-k7)
-05-27-05 12:32 tiwai          Note Added: 0004749                          
+05-26-05 23:51 afselby        New Issue                                    
+05-27-05 00:28 afselby        Note Added: 0004740                          
+05-27-05 12:35 tiwai          Note Added: 0004750                          
 ======================================================================
 
 
