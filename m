@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001129]: codec 0 is not valid
-Date: Fri, 27 May 2005 17:22:11 +0200
-Message-ID: <8ad2832bb181c3d89a678b4f20694f6a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000986]: snd-ice1724 outputs white noise on rear surround output of Chaintech AV-710
+Date: Fri, 27 May 2005 17:26:30 +0200
+Message-ID: <ea4f056cf594db24456d489a97fc6ffb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EDB7D20F
-	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 17:22:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C232F20F
+	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 17:26:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,105 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1129> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=986> 
 ======================================================================
-Reported By:                afselby
-Assigned To:                
+Reported By:                AdamW
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1129
-Category:                   PCI - via82xx
+Issue ID:                   986
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Distribution:               Mandrakelinux Cooker
+Kernel Version:             2.6.11
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-26-2005 23:51 CEST
-Last Modified:              05-27-2005 17:22 CEST
+Date Submitted:             03-12-2005 22:43 CET
+Last Modified:              05-27-2005 17:26 CEST
 ======================================================================
-Summary:                    codec 0 is not valid
+Summary:                    snd-ice1724 outputs white noise on rear surround
+output of Chaintech AV-710
 Description: 
-repeatable error (/var/log/messages):
-kernel: PCI: Setting latency timer of device 00:11.5 to  64
-kernel: ALSA ../alsa-kernel/pci/via82xx.c:584: codec_read: codec 0 is not
-valid for reg=0x7e, xval= 0x2fe0000, is [0xfe0000]
-   NOTE: I modified source print to include reg & xval
-
-today, once:
-May 26 17:25:45 localhost kernel: ALSA ../alsa-kernel/pci/via82xx.c:797:
-zero position is read
-May 26 17:26:08 localhost kernel: ALSA ../alsa-kernel/pci/via82xx.c:797:
-zero position is read
-May 26 17:27:35 localhost modprobe: modprobe: Can't locate module
-sound-slot-0
-May 26 17:27:35 localhost modprobe: modprobe: Can't locate module
-sound-service-0-6
-
+A little background. The Chaintech AV-710 soundcard is a 7.1 soundcard
+which uses this driver. It has two DACs. There's a standard DAC that
+drives the first six channels. The rear surround channels, however, are
+driven by a high-quality Wolfson DAC. Audio enthusiasts like to set the
+card to drive the main two channels through this DAC instead in order to
+get a very high quality stereo line-level output. The card's Windows
+driver has an option to do just this, and in the past people have been
+successful doing it on Linux. I am attaching an asound.state file which
+owners of this card used with ALSA 1.0.7 to achieve this. However, I am
+having trouble getting this to work with ALSA 1.0.8. The rear surround
+output just produces white noise all the time. This is the case both with
+this asound.state loaded and also with default levels (i.e., what I get if
+I wipe /etc/asound.state and re-run alsaconf). It'd be nice to know what
+changed between 1.0.7 and 1.0.8 that caused this to break, and how to fix
+it. Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-27-05 12:35 
+ jaanusk_ - 05-24-05 21:35 
 ----------------------------------------------------------------------
-This is likely a broken BIOS or a wrong ACPI support.
-Try to turn off ACPI.
+Seems so, at least all av710-s seem to be detected as audio2000-s. From my
+AV710:
+
+EEPROM:
+  Subvendor        : 0x12142417
+  Size             : 28 bytes
+  Version          : 1
+  System Config    : 0x2
+  ACLink           : 0x2
+  I2S              : 0x10
+  S/PDIF           : 0xc1
+  GPIO direction   : 0xff
+  GPIO mask        : 0xff
+  GPIO state       : 0xff
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=18        : 0x1
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=19        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=20        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=21        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=22        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=23        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=24        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=25        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=26        : 0x0
+  Extra https://bugtrack.alsa-project.org/alsa-bug/view.php?id=27        : 0x0
 
 ----------------------------------------------------------------------
- afselby - 05-27-05 17:22 
+ tiwai - 05-27-05 17:26 
 ----------------------------------------------------------------------
-Looks like this and  0001123 are closely related
+Fixed on CVS, aka 1.0.9-final.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-26-05 23:51 afselby        New Issue                                    
-05-27-05 00:28 afselby        Note Added: 0004740                          
-05-27-05 12:35 tiwai          Note Added: 0004750                          
-05-27-05 17:22 afselby        Note Added: 0004753                          
+03-12-05 22:43 AdamW          New Issue                                    
+03-12-05 22:43 AdamW          File Added: asound.state                     
+03-12-05 22:43 AdamW          Distribution              => Mandrakelinux Cooker
+03-12-05 22:43 AdamW          Kernel Version            => 2.6.11          
+03-14-05 16:23 AdamW          Note Added: 0003904                          
+03-19-05 08:17 AdamW          Note Added: 0004010                          
+04-29-05 15:18 jamesferguson  Issue Monitored: jamesferguson                    
+04-29-05 15:24 jamesferguson  Note Added: 0004579                          
+05-08-05 20:46 jaanusk_       File Added: amp2000_wm8728.patch                  
+ 
+05-08-05 20:49 jaanusk_       Note Added: 0004619                          
+05-08-05 20:50 jaanusk_       Issue Monitored: jaanusk_                    
+05-09-05 07:42 AdamW          Note Added: 0004621                          
+05-09-05 10:43 jaanusk_       Note Added: 0004623                          
+05-09-05 18:09 AdamW          Note Added: 0004628                          
+05-24-05 12:23 tiwai          Note Added: 0004716                          
+05-24-05 21:35 jaanusk_       Note Added: 0004729                          
+05-27-05 17:26 tiwai          Status                   new => resolved     
+05-27-05 17:26 tiwai          Resolution               open => fixed       
+05-27-05 17:26 tiwai          Assigned To               => tiwai           
+05-27-05 17:26 tiwai          Note Added: 0004754                          
 ======================================================================
 
 
