@@ -1,15 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-cvslog] CVS: alsa-kernel/core/oss pcm_oss.c,1.87,1.88
-Date: Fri, 27 May 2005 11:23:17 +0200 (METDST)
-Message-ID: <Pine.HPX.4.33n.0505271112380.8310-100000@studcom.urz.uni-halle.de>
-References: <Pine.LNX.4.58.0505271038060.1757@pnote.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001126]: alsa-lib 1.0.9rc4 does not compile with debugging off (--with-debug=no)
+Date: Fri, 27 May 2005 11:26:14 +0200
+Message-ID: <5d13ed0040863b5d8b241ac96f0752eb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E153209
-	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 11:23:19 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.58.0505271038060.1757@pnote.perex-int.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B3DA1209
+	for <alsa-devel@alsa-project.org>; Fri, 27 May 2005 11:26:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,52 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Thu, 26 May 2005, Clemens Ladisch wrote:
-> > Modified Files:
-> > 	pcm_oss.c
-> > Log Message:
-> > Summary: pcm_oss - fix SNDCTL_DSP_GETOPTR not working correctly
-> >
-> > This patch changes snd_pcm_oss_bytes() by adding a local variable
-> > for the frames -> bytes conversion, which means that the frame count
-> > is no longer corrupted by this conversion.
->
-> It seems like a wrong patch to me. We cannot mix frames with bytes (see
-> last expression).
 
-I assumed that buffer_size would be in frames (due to its type), but
-this is obviously wroung.
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1126> 
+======================================================================
+Reported By:                amir
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1126
+Category:                   general
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             05-25-2005 21:43 CEST
+Last Modified:              05-27-2005 11:26 CEST
+======================================================================
+Summary:                    alsa-lib 1.0.9rc4 does not compile with debugging
+off (--with-debug=no)
+Description: 
+alsa-lib 1.0.9rc4 does not compile with debugging turned off 
+using configure flag --with-debug=no 
+which causes #define NDEBUG in config.h
 
-> This reverts the last patch which wrongly mixes bytes and frames.
-> The real culprit might be the 32-bit overflow, so the return expression uses
-> 64-bit values now in snd_pcm_oss_bytes().
->
->  static long snd_pcm_oss_bytes(snd_pcm_substream_t *substream, long frames)
->  {
-> -     long bytes = 0;
->       snd_pcm_runtime_t *runtime = substream->runtime;
->       snd_pcm_uframes_t buffer_size = snd_pcm_lib_buffer_bytes(substream);
-> -     bytes = frames_to_bytes(runtime, frames);
-> +     frames = frames_to_bytes(runtime, frames);
->       if (buffer_size == runtime->oss.buffer_bytes)
-> -             return bytes;
-> -     return (runtime->oss.buffer_bytes * frames) / buffer_size;
-> +             return frames;
-> +     return (long)(((int64_t)runtime->oss.buffer_bytes * (int64_t)frames) / (int64_t)buffer_size);
->  }
+recent code in src/pcm/pcm_params.c added dump_hw_params()
+to print debugging
 
-This still uses a misleading type for buffer_size, and uses 'frames'
-for a value not measure in frames.  I think I'd better rename these.
-Any objections?
+but the function exists only ifndef NDEBUG
+my patch causes the function to be empty (optimized out)
+when NDEBUG is defined.
 
+======================================================================
 
-Regards,
-Clemens
+----------------------------------------------------------------------
+ tiwai - 05-27-05 11:26 
+----------------------------------------------------------------------
+Thanks for reproting.
+I'd like to rather get rid of the debug dump function than enabling
+always...  Fixed on CVS now.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-25-05 21:43 amir           New Issue                                    
+05-25-05 21:43 amir           File Added: fix-dump_hw_params.diff               
+    
+05-27-05 11:26 tiwai          Status                   new => resolved     
+05-27-05 11:26 tiwai          Resolution               open => fixed       
+05-27-05 11:26 tiwai          Assigned To               => tiwai           
+05-27-05 11:26 tiwai          Note Added: 0004744                          
+======================================================================
+
 
 
 
