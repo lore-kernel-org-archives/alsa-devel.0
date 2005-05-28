@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000987]: new chipset
-Date: Sat, 28 May 2005 12:20:52 +0200
-Message-ID: <b231030ab8506f1a0dde54c88ad5fe1f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000686]: No surround sound
+Date: Sat, 28 May 2005 12:23:42 +0200
+Message-ID: <a00028e871b3f6a284d840d31c686423@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0F4D214
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:21:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00BA4214
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:23:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=987> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=686> 
 ======================================================================
-Reported By:                mitchix
+Reported By:                dziegiel
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   987
-Category:                   PCI - ca0106
+Issue ID:                   686
+Category:                   PCI - audigyls
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               debian useing pure64 sid
-Kernel Version:             2.6.10-9-amd64-k8
-Resolution:                 fixed
+Distribution:               Gentoo Linux
+Kernel Version:             2.4.26-gentoo-r9
+Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-12-2005 22:49 CET
-Last Modified:              05-28-2005 12:20 CEST
+Date Submitted:             11-28-2004 15:45 CET
+Last Modified:              05-28-2005 12:23 CEST
 ======================================================================
-Summary:                    new chipset
+Summary:                    No surround sound
 Description: 
-Vendor 1462: Micro-Star International Co., Ltd.
-Card model K8N Neo4 Platinum/SLI
+I can`t enable surround sound on my 5.1 speakers.
+In xmms with alsa-plugin i get stereo with 2 Front speakers[low-quality
+sound] ,but with oss i get 2 Front and Center[they work fine]without
+Rear.
+In movies[I`ve tried several players] I have the same problem.
+When I type:
+mplayer -ao alsa1x -channels 6 movie.avi
+I get:
+...
+alsa-init: soundcard set to surround51
+ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
+definition (id: surround51, value: cards.pcm.surround51)
+alsa-init: playback open error:
+Z&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=322;y argument
+...
 
-On Board Audio
- 	
-Creative sound Bluster Live 24-bit H/W audio
-24-bit / 96KHz audio quality
-100db SNR clarity
-Up to 7.1 CH Surround Sound, Dolby Digital ready
-
-modprobe snd_ca0106
-Model 1009 Rev 00000000 Serial 10091462
-
-
+I`ve tried everything with alsamixer, but with no result.
+PS.
+Sorry for my English.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000901 The onboard audigyls chip on msi k8 dia...
-======================================================================
 
 ----------------------------------------------------------------------
- mitchix - 03-12-05 22:55 
+ jcdutton - 03-19-05 18:21 
 ----------------------------------------------------------------------
-Sorry this is Dup of 901
+You need to upgrade to the latest alsa-driver 1.0.8 and alsa-lib 1.0.8 or
+above.
+The version of alsa-driver should always match the version of alsa-lib.
 
 ----------------------------------------------------------------------
- jcdutton - 03-19-05 18:19 
+ jcdutton - 05-28-05 12:23 
 ----------------------------------------------------------------------
-Fixed in 1.0.9
+Closed due to lack of feedback.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 22:49 mitchix        New Issue                                    
-03-12-05 22:49 mitchix        Distribution              => debian useing pure64
-sid
-03-12-05 22:49 mitchix        Kernel Version            => 2.6.10-9-amd64-k8
-03-12-05 22:55 mitchix        Note Added: 0003899                          
-03-19-05 18:17 jcdutton       Relationship added       duplicate of 0000901
-03-19-05 18:19 jcdutton       Duplicate ID             0 => 901            
-03-19-05 18:19 jcdutton       Status                   assigned => resolved
-03-19-05 18:19 jcdutton       Resolution               open => fixed       
-03-19-05 18:19 jcdutton       Note Added: 0004061                          
-05-28-05 12:20 jcdutton       Status                   resolved => closed  
+11-28-04 15:45 dziegiel       New Issue                                    
+11-28-04 15:45 dziegiel       Distribution              => Gentoo Linux    
+11-28-04 15:45 dziegiel       Kernel Version            => 2.4.26-gentoo-r9
+12-06-04 23:34 jcdutton       Note Added: 0002743                          
+12-06-04 23:34 jcdutton       Status                   assigned => feedback
+01-30-05 12:38 dziegiel       Note Added: 0003441                          
+01-30-05 13:40 jcdutton       Note Added: 0003442                          
+02-02-05 17:41 dziegiel       Note Added: 0003490                          
+02-03-05 12:57 dziegiel       Note Edited: 0003490                         
+02-13-05 11:15 sHINOBI        Issue Monitored: sHINOBI                     
+03-19-05 18:21 jcdutton       Note Added: 0004063                          
+05-28-05 12:23 jcdutton       Status                   feedback => closed  
+05-28-05 12:23 jcdutton       Note Added: 0004766                          
 ======================================================================
 
 
