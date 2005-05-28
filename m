@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001053]: cannot change line-in volume on MSI K8N Platinum that has SBLive! 24 bit
-Date: Sat, 28 May 2005 12:16:04 +0200
-Message-ID: <cf1594f3953bc83d138d109474842707@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001031]: Sound Blaster Live! 7.1 24-bit (ID: 10061102) muted
+Date: Sat, 28 May 2005 12:19:18 +0200
+Message-ID: <0d50daea1f360f2fef41e32c9f504911@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A43AC1E2
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:16:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF32D205
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:19:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1053> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1031> 
 ======================================================================
-Reported By:                Cimmo
+Reported By:                Oleg Ivanenko
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1053
+Issue ID:                   1031
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4 test 2
-Kernel Version:             2.6.11-1.1236 FC4-x86_64 that contains 2.6.12rc2
+Status:                     closed
+Distribution:               
+Kernel Version:             2.4.29
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-14-2005 19:27 CEST
-Last Modified:              05-28-2005 12:16 CEST
+Date Submitted:             04-01-2005 16:25 CEST
+Last Modified:              05-28-2005 12:19 CEST
 ======================================================================
-Summary:                    cannot change line-in volume on MSI K8N Platinum
-that has SBLive! 24 bit
+Summary:                    Sound Blaster Live! 7.1 24-bit (ID: 10061102) muted
 Description: 
-I have a MSI K8N Platinum motherboard that has SBLive! 24 bit integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack in the pci version of the sb live 24
-bit (see image).
+Firstly, sorry for my ugly english.
 
-The result is that I cannot use line-in for my soundcard becuase the
-volume is 0 and I cannot change it.
+I've subj soundcard, kernel 2.4.29 and alsa 1.0.8
 
-The "Capture feedback into playback" in the mixer change the mic's volume.
+corresponding alsa-driver ca0106 compiled and installed perfectly (imho).
+no any errors. lsmod view all modules
+alsa-lib and alsa-utils compiled and installed too whithout errors
+/proc/asound/ looks seems a very good
+
+alsamixer is working (mute/unmute, changing level), but I don't hear
+anything with aplay, mplayer or mpg321 :(
+jack start fails too
+
+I've onboard sound card intel8x0 on the same computer -- it's work fine
+when alone module loaded, whithout ca0106.
+
+Any required logs, lspci etc will be sent. Just say what you need.
+
+PS. i've similar problem as described in report "0000906: OSS mixer does
+not work" too
 ======================================================================
 
 ----------------------------------------------------------------------
- dwh - 05-20-05 00:14 
+ jcdutton - 04-01-05 22:59 
 ----------------------------------------------------------------------
-You don't have datasheets for the EMU10Kx, right?
+The volume by default is set to 0, so no sound.
+Run at the command line "alsamixer" and adjust the "Analog Front" volume
+control.
+You should then get sound from the Green jack on the card.
+
+Use of the speaker-test application can help.
+e.g.
+speaker-test -c2 -Dplug:front
 
 ----------------------------------------------------------------------
- jcdutton - 05-28-05 12:16 
+ jcdutton - 05-28-05 12:19 
 ----------------------------------------------------------------------
-We now have enough information to enable sound CAPTURE on the SB Live 24bit
-card.
-It is now supported in the current alsa-driver cvs.
-I have tested the PCI Card, and it now works for Mic and Line In.
-I have not tested the MSI motherboard based card.
-Please test and report.
+Closed due to lack of feedback.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-14-05 19:27 Cimmo          New Issue                                    
-04-14-05 19:27 Cimmo          File Added: MSIK8N.jpg                       
-04-14-05 19:27 Cimmo          Distribution              => Fedora Core 4 test 2
-04-14-05 19:27 Cimmo          Kernel Version            => 2.6.11-1.1236
-FC4-x86_64 that contains 2.6.12rc2
-04-14-05 21:42 jcdutton       Note Added: 0004495                          
-04-14-05 21:42 jcdutton       Status                   assigned => acknowledged
-05-11-05 15:05 Cimmo          Note Added: 0004636                          
-05-14-05 13:14 pelias         Note Added: 0004657                          
-05-14-05 15:48 jcdutton       Note Added: 0004659                          
-05-20-05 00:14 dwh            Note Added: 0004697                          
-05-28-05 12:16 jcdutton       Note Added: 0004764                          
-05-28-05 12:16 jcdutton       Status                   acknowledged => feedback
+04-01-05 16:25 Oleg Ivanenko  New Issue                                    
+04-01-05 16:25 Oleg Ivanenko  Kernel Version            => 2.4.29          
+04-01-05 22:59 jcdutton       Note Added: 0004296                          
+04-03-05 13:30 jcdutton       Status                   assigned => feedback
+05-28-05 12:19 jcdutton       Status                   feedback => closed  
+05-28-05 12:19 jcdutton       Note Added: 0004765                          
 ======================================================================
 
 
