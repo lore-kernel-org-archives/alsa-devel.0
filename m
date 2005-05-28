@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001131]: Alsamixer crashing - using Audigy Platinum Ex
-Date: Sat, 28 May 2005 04:15:35 +0200
-Message-ID: <54a39b7f8703e9597f78c1871bb1862f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001128]: ALSA Driver for FW1884
+Date: Sat, 28 May 2005 05:19:06 +0200
+Message-ID: <a4eed6715560b539a4f4fa3d329a363f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32F521A7
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 04:15:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 860CD20C
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 05:19:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1131> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1128> 
 ======================================================================
-Reported By:                sorn73
+Reported By:                elvingonzalez
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1131
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   minor
+Project:                    ALSA - driver
+Issue ID:                   1128
+Category:                   OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-27-2005 21:52 CEST
-Last Modified:              05-28-2005 04:15 CEST
+Date Submitted:             05-26-2005 20:25 CEST
+Last Modified:              05-28-2005 05:19 CEST
 ======================================================================
-Summary:                    Alsamixer crashing - using Audigy Platinum Ex
+Summary:                    ALSA Driver for FW1884
 Description: 
-I'm having problems with setting the capture levels on my Audigy card. If I
-start up alsamixer and press F4 I get a crash:
-"alsamixer: simple.c:1975: snd_mixer_selem_get_enum_item: Assertion
-`helem' failed.
-Abort (core dumped)"
+Hi,
 
-Also, since Kmix (from KDE 3.4) doesn't show any capture devices, I'm
-thinking this is not a problem with alsamixer, but with something else.
-But since I don't know where I report it on alsamixer.
+I will like to know if there is any ASLA driver that supports the Tascam
+FW1884.
+If there is not a driver for the FW1884, how can I contribute to make
+one?
 
-This is actually alsa v1.0.9, but you can't select that from the list of
-versions.
+If this is not place to be asking this, I apology and ask where can I get
+information about this matter. 
 
+Thanks
+Elvin
 ======================================================================
 
 ----------------------------------------------------------------------
- mrmachine - 05-28-05 04:15 
+ elvingonzalez - 05-27-05 23:39 
 ----------------------------------------------------------------------
-i get the exact same thing with my soundblaster live 5.1. however, i'm
-still able to use the capture channels ... aadebug attached.
+I checked with Freebob and because of the chipset, there's no much
+probability of it to work with the FW1884.
+
+If there is no ALSA driver for the FW1884. Is there a way for me to help
+writting one? Can this be done at all? What information do I need to get
+and how do I get it?
+
+Once again, thanks again for your time.
+Elvin
+
+----------------------------------------------------------------------
+ rlrevell - 05-28-05 05:19 
+----------------------------------------------------------------------
+Please search the alsa-devel archives for "reverse engineering".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-27-05 21:52 sorn73         New Issue                                    
-05-28-05 04:13 mrmachine      File Added: aadebug.txt                      
-05-28-05 04:15 mrmachine      Note Added: 0004757                          
+05-26-05 20:25 elvingonzalez  New Issue                                    
+05-26-05 21:48 martin         Note Added: 0004739                          
+05-27-05 23:39 elvingonzalez  Note Added: 0004755                          
+05-28-05 05:19 rlrevell       Note Added: 0004758                          
 ======================================================================
 
 
