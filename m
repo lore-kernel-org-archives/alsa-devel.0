@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001135]: Build regression 1.0.9rc4a -> 1.0.9 on 2.4.2[012] kernels (usbmidi.c patching).
-Date: Sat, 28 May 2005 11:57:12 +0200
-Message-ID: <1e849fb8274ada56f08aa422eab8b8b2@bugtrack.alsa-project.org>
+Date: Sat, 28 May 2005 12:04:13 +0200
+Message-ID: <4c6bb7415a80796cf542cafb202b7557@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BCEE11D3
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 11:57:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89A7E1E2
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:04:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.4.20-22
 ======================================================================
 Date Submitted:             05-28-2005 09:52 CEST
-Last Modified:              05-28-2005 11:57 CEST
+Last Modified:              05-28-2005 12:04 CEST
 ======================================================================
 Summary:                    Build regression 1.0.9rc4a -> 1.0.9 on 2.4.2[012]
 kernels (usbmidi.c patching).
@@ -64,12 +64,20 @@ make[1]: Leaving directory `/var/tmp/BUILD/alsa-driver-1.0.9'
 ----------------------------------------------------------------------
 Same problem here - self-compiled 2.4.30 kernel on Slackware 10.1.
 
+----------------------------------------------------------------------
+ ZlatkO - 05-28-05 12:04 
+----------------------------------------------------------------------
+Trivial patch attached. :-)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-28-05 09:52 thimm          New Issue                                    
 05-28-05 09:52 thimm          Kernel Version            => 2.4.20-22       
 05-28-05 11:57 ZlatkO         Note Added: 0004761                          
+05-28-05 12:03 ZlatkO         File Added: alsa-driver-1.0.9.diff                
+   
+05-28-05 12:04 ZlatkO         Note Added: 0004762                          
 ======================================================================
 
 
