@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001135]: Build regression 1.0.9rc4a -> 1.0.9 on 2.4.2[012] kernels (usbmidi.c patching).
-Date: Sat, 28 May 2005 12:04:13 +0200
-Message-ID: <4c6bb7415a80796cf542cafb202b7557@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001121]: Very low volume through SPDIF (no master volume?)
+Date: Sat, 28 May 2005 12:13:19 +0200
+Message-ID: <52c45444c93da2d96d42102eb903fc74@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89A7E1E2
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:04:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 375B71E2
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:13:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1135> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1121> 
 ======================================================================
-Reported By:                thimm
-Assigned To:                perex
+Reported By:                dacid
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1135
-Category:                   0_compilation problem_!!!
+Issue ID:                   1121
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             2.4.20-22
+Distribution:               Gentoo (vanilla kernel)
+Kernel Version:             2.6.12-rc4
 ======================================================================
-Date Submitted:             05-28-2005 09:52 CEST
-Last Modified:              05-28-2005 12:04 CEST
+Date Submitted:             05-21-2005 03:21 CEST
+Last Modified:              05-28-2005 12:13 CEST
 ======================================================================
-Summary:                    Build regression 1.0.9rc4a -> 1.0.9 on 2.4.2[012]
-kernels (usbmidi.c patching).
+Summary:                    Very low volume through SPDIF (no master volume?)
 Description: 
-Trying to build alsa-driver 1.0.9 on any 2.4 based RHL (7.3 to 9), FC1 or
-RHEL3 kernel the build aborts with:
-
-patching file usbmidi.c
-Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 FAILED at 288.
-1 out of 4 hunks FAILED -- saving rejects to file usbmidi.c.rej
-make[2]: *** [usbmidi.c] Error 1
-make[2]: Leaving directory `/var/tmp/BUILD/alsa-driver-1.0.9/usb'
-make[1]: *** [dep] Error 1
-make[1]: Leaving directory `/var/tmp/BUILD/alsa-driver-1.0.9'
-
+Hello - 
+   I've been trying for a few weeks now to get SPDIF out working on my
+Soundblaster 24bit card working.
+   The issue is that the output to my receiver is very low, if I crank it
+way up (-8db), I can hear some audio, but it is very muffled and
+distored.
+   I've tried various setting combinations in alsamixer, to no avail.
+   I'm also a little curious as to why this soundcard has no master volume
+or PCM controls.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- ZlatkO - 05-28-05 11:57 
+ jcdutton - 05-28-05 12:13 
 ----------------------------------------------------------------------
-Same problem here - self-compiled 2.4.30 kernel on Slackware 10.1.
-
-----------------------------------------------------------------------
- ZlatkO - 05-28-05 12:04 
-----------------------------------------------------------------------
-Trivial patch attached. :-)
+Are you using the Creative SPDIF Dongle?
+The dongle has Optical/Coax in and out.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 09:52 thimm          New Issue                                    
-05-28-05 09:52 thimm          Kernel Version            => 2.4.20-22       
-05-28-05 11:57 ZlatkO         Note Added: 0004761                          
-05-28-05 12:03 ZlatkO         File Added: alsa-driver-1.0.9.diff                
-   
-05-28-05 12:04 ZlatkO         Note Added: 0004762                          
+05-21-05 03:21 dacid          New Issue                                    
+05-21-05 03:21 dacid          Distribution              => Gentoo (vanilla
+kernel)
+05-21-05 03:21 dacid          Kernel Version            => 2.6.12-rc4      
+05-24-05 01:54 dacid          Issue Monitored: dacid                       
+05-28-05 12:13 jcdutton       Note Added: 0004763                          
 ======================================================================
 
 
