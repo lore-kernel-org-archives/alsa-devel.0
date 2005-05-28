@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001137]: Oops when using ALSA with kernel 2.6.12-rc5-mm1
-Date: Sat, 28 May 2005 14:29:59 +0200
-Message-ID: <420d1385e2e9e7226dc2d5ca29655e72@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
+Date: Sat, 28 May 2005 16:06:11 +0200
+Message-ID: <d56f6904d85027d97b243f8e5f69f42f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E4531B8
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 14:29:59 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 359431F2
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 16:06:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,131 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1137> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
 ======================================================================
-Reported By:                bero
+Reported By:                sjberryman
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1137
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   724
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     feedback
+Distribution:               Fedora Core1, Core2 and Suse 9.2
+Kernel Version:             2.6.9 2.4.28 2.6.8
 ======================================================================
-Date Submitted:             05-28-2005 14:29 CEST
-Last Modified:              05-28-2005 14:29 CEST
+Date Submitted:             12-13-2004 09:21 CET
+Last Modified:              05-28-2005 16:06 CEST
 ======================================================================
-Summary:                    Oops when using ALSA with kernel 2.6.12-rc5-mm1
+Summary:                    No apparent support for Creative Sounblaster 24 bit.
 Description: 
-Unable to handle kernel NULL pointer dereference at virtual address
-000000a4
- printing eip:
-e0ead873
-*pde = 00000000
-Oops: 0002 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-Modules linked in: eeprom i2c_sensor radeon drm i2c_algo_bit i2c_core
-intel_agp agpgart snd_intel8x0 snd_via82xx
- gameport snd_ac97_codec ac97_bus snd_pcm snd_timer snd_page_alloc
-snd_mpu401_uart snd_rawmidi snd_seq_device sn
-d soundcore psmouse binfmt_misc pcmcia firmware_class yenta_socket
-rsrc_nonstatic pcmcia_core 8139too mii af_pac
-ket sr_mod ide_cd cdrom ohci1394 ieee1394 sd_mod usbhid usb_storage
-scsi_mod ehci_hcd uhci_hcd usbcore video the
-rmal processor hotkey fan container button battery ac rtc
-CPU:    0
-EIP:    0060:[<e0ead873>]    Not tainted VLI
-EFLAGS: 00010286   (2.6.12-0.rc5.1ark)
-EIP is at snd_pcm_mmap_data_close+0xa/0x11 [snd_pcm]
-eax: 00000000   ebx: d8bac880   ecx: d85dfd50   edx: e0ead869
-esi: db2216a0   edi: db2216a0   ebp: b7eed000   esp: dbc94f54
-ds: 007b   es: 007b   ss: 0068
-Process artsd (pid: 1723, threadinfo=dbc94000 task=da70b030)
-Stack: c0148c21 db2216a0 de875580 00000000 00000000 c0149ed6 db2216a0
-000800fb
-       d8bac880 fffffff0 de875584 d977bb70 d977bb7c b7efd000 d977bb70
-de875580
-       de8755b0 080970a0 dbc94000 c014a759 de875580 b7eed000 00010000
-b7eed000
-Call Trace:
- [<c0148c21>] remove_vm_struct+0x63/0x65
- [<c0149ed6>] do_munmap+0x1cf/0x22c
- [<c014a759>] sys_munmap+0x49/0x69
- [<c0102d7f>] sysenter_past_esp+0x54/0x75
-Code: 8d 05 a0 0a ec e0 e8 a9 4d 41 df e9 17 ff ff ff 8b 44 24 04 8b 40 50
-8b 40 60 ff 80 a4 00 00 00 c3 8b 44 2
-4 04 8b 40 50 8b 40 60 <ff> 88 a4 00 00 00 c3 83 ec 1c b9 48 00 00 00 89
-7c 24 14 89 6c
+No apparent support for Creative Sounblaster 24 bit.
 
+Fedora does not find any sound device.
+
+Susi finds a device but can't activate it.
 ======================================================================
+
+----------------------------------------------------------------------
+ sHINOBI - 02-09-05 08:57 
+----------------------------------------------------------------------
+Errm, to be honest I'm not sure with the chip->serial number. I guess it
+should be listed with lspci -nvv command. Relevant part is:
+
+01:0d.0 Class 0401: 1102:0007
+        Subsystem: 1462:1009
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32 (500ns min, 5000ns max)
+        Interrupt: pin A routed to IRQ 11
+        Region 0: I/O ports at de00 [size=32]
+        Capabilities: [dc] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+BTW should be the James notified about this card?
+
+----------------------------------------------------------------------
+ sjberryman - 05-28-05 16:06 
+----------------------------------------------------------------------
+I have once again tested the latest alsa driver release 1.0.9 with FC3
+kernel  2.6.11-1.27_FC3 on a Dell 
+
+
+Tried to set it up according to the instructions in the soundcards link.
+
+When I run the config-system-sound utility I get 
+
+"
+amixer: Unable to find simple control 'Master',0
+
+amixer: Unable to find simple control 'PCM',0
+
+Playing WAVE '/usr/share/system-config-soundcard/sound-sample.wav' :
+Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+Warning: rate is not accurate (requested = 44100Hz, got = 48000Hz)
+         please, try the plug plugin (-Dplug:hw:0,0)
+"
+
+When I try to play an mp3 file using mpg321 I get
+
+"
+Playing MPEG stream from two_out_of_three_aint_bad.mp3 ...
+MPEG 1.0 layer III, 128 kbit/s, 44100 Hz joint-stereo
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+"
+
+and of course I still get no sound.
+
+
+The /proc/asound/cards file contains
+
+0 [CA0106         ]: CA0106 - CA0106
+                     Live! 7.1 24bit [SB0413] at 0xc8e0 irq 3
+
+
+
+Is this card really supported as indicated by the alsa souncards list?
+Am I doing something wrong?
+
+How can I fix it or get more information so someone can?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 14:29 bero           New Issue                                    
+12-13-04 09:21 sjberryman     New Issue                                    
+12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
+and Suse 9.2
+12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
+12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
+12-13-04 10:07 pzad           Note Added: 0002821                          
+12-16-04 18:28 tiwai          Status                   new => resolved     
+12-16-04 18:28 tiwai          Resolution               open => not an issue
+12-16-04 18:28 tiwai          Assigned To               => tiwai           
+12-16-04 18:28 tiwai          Assigned To              tiwai =>            
+01-19-05 09:08 sjberryman     Status                   resolved => feedback
+01-19-05 09:08 sjberryman     Resolution               not an issue => reopened
+01-19-05 09:08 sjberryman     Note Added: 0003263                          
+01-19-05 14:27 tiwai          Note Added: 0003266                          
+01-22-05 22:15 nadavkav       Note Added: 0003379                          
+01-22-05 23:20 fmoraes        Note Added: 0003381                          
+01-25-05 22:39 Kane32         Note Added: 0003411                          
+01-26-05 13:18 nadavkav       Note Added: 0003416                          
+02-08-05 23:26 sHINOBI        Issue Monitored: sHINOBI                     
+02-08-05 23:32 sHINOBI        Note Added: 0003534                          
+02-09-05 07:25 pzad           Note Added: 0003535                          
+02-09-05 08:57 sHINOBI        Note Added: 0003536                          
+02-09-05 13:25 nadavkav       Issue Monitored: nadavkav                    
+02-09-05 13:25 nadavkav       Issue End Monitor: nadavkav                    
+05-28-05 16:06 sjberryman     Note Added: 0004774                          
 ======================================================================
 
 
