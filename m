@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Sat, 28 May 2005 08:49:03 +0200
-Message-ID: <3d141689c9c9f9d3602a642e755900c2@bugtrack.alsa-project.org>
+Date: Sat, 28 May 2005 09:17:09 +0200
+Message-ID: <5635b8bb27536294dc80a7fb31bf694c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0399224
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 08:49:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 314D91E2
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 09:17:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-28-2005 08:49 CEST
+Last Modified:              05-28-2005 09:17 CEST
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -68,12 +68,28 @@ not, I will just wait for new alsa-driver.)
 thanks
 ======================================================================
 
+----------------------------------------------------------------------
+ liangalei - 05-28-05 09:17 
+----------------------------------------------------------------------
+[root@room-1109 ~]# /sbin/lsmod | grep snd
+snd_intel8x0           34752  2
+snd_ac97_codec         78588  1 snd_intel8x0
+snd_mixer_oss          19072  1
+snd_pcm                99848  2 snd_intel8x0,snd_ac97_codec
+snd_timer              33668  1 snd_pcm
+snd                    59396  7
+snd_intel8x0,snd_ac97_codec,snd_mixer_oss,snd_pcm,snd_timer
+soundcore              10785  2 snd
+snd_page_alloc         10244  2 snd_intel8x0,snd_pcm
+[root@room-1109 ~]#
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-28-05 08:49 liangalei      New Issue                                    
 05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
 05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
+05-28-05 09:17 liangalei      Note Added: 0004759                          
 ======================================================================
 
 
