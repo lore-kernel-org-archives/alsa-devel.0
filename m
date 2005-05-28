@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001133]: openal gives no sound with alsa driver
-Date: Sat, 28 May 2005 07:22:31 +0200
-Message-ID: <6ee8122d01d43e1291daa9187fdb32a1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
+Date: Sat, 28 May 2005 08:49:03 +0200
+Message-ID: <3d141689c9c9f9d3602a642e755900c2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4282E222
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 07:22:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0399224
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 08:49:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,40 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1133> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
 ======================================================================
-Reported By:                qwer1234
-Assigned To:                
+Reported By:                liangalei
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1133
-Category:                   PCI - via82xx
+Issue ID:                   1134
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               slackware-current
-Kernel Version:             2.6.12-rc5
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14
 ======================================================================
-Date Submitted:             05-28-2005 07:22 CEST
-Last Modified:              05-28-2005 07:22 CEST
+Date Submitted:             05-28-2005 08:49 CEST
+Last Modified:              05-28-2005 08:49 CEST
 ======================================================================
-Summary:                    openal gives no sound with alsa driver
+Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
+52-101)
 Description: 
-When I add this to ~/.openalrc
- (define devices '(alsa))
- (define alsa-device "default")
- (define speaker-num 2)
-I get no sound with openalrc.
-I use dmix plugin.
+My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+
+alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
+just support modem's AC-97 or else provide whole sound ? )
+
+alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
+will contine to "Have a lot fun".
+
+I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
+recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
+
+Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
+----- ./configure --with-cards=azx (error: no this card)
+----- ./configure ; make; make install (no error report), not run
+./snddevices
+
+No sound ! So much days, so much test..... (if i915GM chipset + Conexant
+chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
+not, I will just wait for new alsa-driver.)
+
+thanks
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 07:22 qwer1234       New Issue                                    
-05-28-05 07:22 qwer1234       Distribution              => slackware-current
-05-28-05 07:22 qwer1234       Kernel Version            => 2.6.12-rc5      
+05-28-05 08:49 liangalei      New Issue                                    
+05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
+05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
 ======================================================================
 
 
