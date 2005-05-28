@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Sat, 28 May 2005 09:17:09 +0200
-Message-ID: <5635b8bb27536294dc80a7fb31bf694c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001135]: Build regression 1.0.9rc4a -> 1.0.9 on 2.4.2[012] kernels (usbmidi.c patching).
+Date: Sat, 28 May 2005 09:52:10 +0200
+Message-ID: <ed8481c8f55af414d154f4bc6c703858@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 314D91E2
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 09:17:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C09C1220
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 09:52:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1135> 
 ======================================================================
-Reported By:                liangalei
+Reported By:                thimm
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1134
+Issue ID:                   1135
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Distribution:               
+Kernel Version:             2.4.20-22
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-28-2005 09:17 CEST
+Date Submitted:             05-28-2005 09:52 CEST
+Last Modified:              05-28-2005 09:52 CEST
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    Build regression 1.0.9rc4a -> 1.0.9 on 2.4.2[012]
+kernels (usbmidi.c patching).
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+Trying to build alsa-driver 1.0.9 on any 2.4 based RHL (7.3 to 9), FC1 or
+RHEL3 kernel the build aborts with:
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
+patching file usbmidi.c
+Hunk https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 FAILED at 288.
+1 out of 4 hunks FAILED -- saving rejects to file usbmidi.c.rej
+make[2]: *** [usbmidi.c] Error 1
+make[2]: Leaving directory `/var/tmp/BUILD/alsa-driver-1.0.9/usb'
+make[1]: *** [dep] Error 1
+make[1]: Leaving directory `/var/tmp/BUILD/alsa-driver-1.0.9'
 
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
 
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
-
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
-
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
-
-thanks
 ======================================================================
-
-----------------------------------------------------------------------
- liangalei - 05-28-05 09:17 
-----------------------------------------------------------------------
-[root@room-1109 ~]# /sbin/lsmod | grep snd
-snd_intel8x0           34752  2
-snd_ac97_codec         78588  1 snd_intel8x0
-snd_mixer_oss          19072  1
-snd_pcm                99848  2 snd_intel8x0,snd_ac97_codec
-snd_timer              33668  1 snd_pcm
-snd                    59396  7
-snd_intel8x0,snd_ac97_codec,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              10785  2 snd
-snd_page_alloc         10244  2 snd_intel8x0,snd_pcm
-[root@room-1109 ~]#
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
+05-28-05 09:52 thimm          New Issue                                    
+05-28-05 09:52 thimm          Kernel Version            => 2.4.20-22       
 ======================================================================
 
 
