@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
-Date: Sat, 28 May 2005 16:06:11 +0200
-Message-ID: <d56f6904d85027d97b243f8e5f69f42f@bugtrack.alsa-project.org>
+From: Kendra L.Brown <361jemmy@accessus.net>
+Subject: =?iso-8859-1?B?TWFjcm9tZWRpYSBTdHVkaW8gTVggMjAwNCAtIHZlcnkgbG93IHByaWNl?=
+Date: Sat, 28 May 2005 17:22:55 +0000
+Message-ID: <4e6201c563a9$83119c27$2cc91372@accessus.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/related;
+    type="multipart/alternative";
+    boundary="----=_NextPart_000_0000_187D84CC.32DF9F0E"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 359431F2
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 16:06:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,142 +16,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
-======================================================================
-Reported By:                sjberryman
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   724
-Category:                   OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core1, Core2 and Suse 9.2
-Kernel Version:             2.6.9 2.4.28 2.6.8
-======================================================================
-Date Submitted:             12-13-2004 09:21 CET
-Last Modified:              05-28-2005 16:06 CEST
-======================================================================
-Summary:                    No apparent support for Creative Sounblaster 24 bit.
-Description: 
-No apparent support for Creative Sounblaster 24 bit.
-
-Fedora does not find any sound device.
-
-Susi finds a device but can't activate it.
-======================================================================
-
-----------------------------------------------------------------------
- sHINOBI - 02-09-05 08:57 
-----------------------------------------------------------------------
-Errm, to be honest I'm not sure with the chip->serial number. I guess it
-should be listed with lspci -nvv command. Relevant part is:
-
-01:0d.0 Class 0401: 1102:0007
-        Subsystem: 1462:1009
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 32 (500ns min, 5000ns max)
-        Interrupt: pin A routed to IRQ 11
-        Region 0: I/O ports at de00 [size=32]
-        Capabilities: [dc] Power Management version 2
-                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-BTW should be the James notified about this card?
-
-----------------------------------------------------------------------
- sjberryman - 05-28-05 16:06 
-----------------------------------------------------------------------
-I have once again tested the latest alsa driver release 1.0.9 with FC3
-kernel  2.6.11-1.27_FC3 on a Dell 
+------=_NextPart_000_0000_187D84CC.32DF9F0E
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_001_0001_7371055A.D7AAEC54"
 
 
-Tried to set it up according to the instructions in the soundcards link.
+------=_NextPart_001_0001_7371055A.D7AAEC54
+Content-Type: text/plain;
+    charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-When I run the config-system-sound utility I get 
+     Get all the software you need for less!
+Our software is 2-10 times cheaper than sold by our competitors.
 
-"
-amixer: Unable to find simple control 'Master',0
+Just a few examples:
+$79.95 Windows XP Professional (Including: Service Pack 2)
+$89.95 Microsoft Office 2003 Professional / $79.95 Office XP Professional
+$99.95 Adobe Photoshop 8.0/CS (Including: ImageReady CS)
+$179.95 Macromedia Studio MX 2004 (Including: Dreamweaver MX + Flash MX
++ Fireworks MX)
+$79.95 Adobe Acrobat 6.0 Professional
+$59.95 Corel Draw Graphics Suite 11
 
-amixer: Unable to find simple control 'PCM',0
+Special Offers:
+$89.95 Windows XP Professional + Office XP Professional
+$149.95 Adobe Creative Suite Premium (5 CD)
+$129.95 Adobe Photoshop 7 + Adobe Premiere 7 + Adobe Illustrator 10
 
-Playing WAVE '/usr/share/system-config-soundcard/sound-sample.wav' :
-Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-Warning: rate is not accurate (requested = 44100Hz, got = 48000Hz)
-         please, try the plug plugin (-Dplug:hw:0,0)
-"
+All main products from Microsoft, Adobe, Macromedia, Corel, etc.
+And lots more... Please visit us at:
 
-When I try to play an mp3 file using mpg321 I get
+http://www.oemdisks.biz
 
-"
-Playing MPEG stream from two_out_of_three_aint_bad.mp3 ...
-MPEG 1.0 layer III, 128 kbit/s, 44100 Hz joint-stereo
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-"
-
-and of course I still get no sound.
+Best regards,
+Kendra L. Brown
 
 
-The /proc/asound/cards file contains
+_____________________________________________________ 
+To be taken off future campaigns, go: http://www.oemdisks.biz/uns.htm
+_____________________________________________________ 
 
-0 [CA0106         ]: CA0106 - CA0106
-                     Live! 7.1 24bit [SB0413] at 0xc8e0 irq 3
+ 
+------=_NextPart_001_0001_7371055A.D7AAEC54
+Content-Type: text/html;
+    charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<META content="MSHTML 6.00.2900.2604" name=GENERATOR></HEAD>
+<BODY>
+<CENTER>
+<TABLE cellSpacing=0 cellPadding=0 width=800 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD>Get all the software you need for 
+      less!<BR>Our software is 2-10 times cheaper than sold by 
+      our competitors.<BR><BR>Just a few 
+      examples:<BR>$79.95 Windows XP Professional (Including: Service Pack 
+      2)<BR>$89.95 Microsoft Office 2003 Professional / $79.95 Office 
+      XP Professional<BR>$99.95 Adobe Photoshop 8.0/CS (Including: ImageReady 
+      CS)<BR>$179.95 Macromedia Studio MX 2004 (Including: Dreamweaver MX + 
+      Flash MX + Fireworks MX)<BR>$79.95 Adobe Acrobat 6.0 
+      Professional<BR>$59.95 Corel Draw Graphics Suite 11<BR><BR>Special Offers:<BR>$89.95 Windows 
+      XP Professional + Office XP Professional<BR>$149.95 Adobe Creative Suite Premium (5 CD)<BR>$129.95 Adobe Photoshop 7 + Adobe 
+      Premiere 7 + Adobe Illustrator 10<BR><BR>All main products from Microsoft, 
+      Adobe, Macromedia, Corel, etc.<BR>And lots more... Please visit us at:<BR><BR><A 
+      href="http://www.oemdisks.biz">http://www.oemdisks.biz</A><BR><BR>Best regards,<BR>Kendra L. Brown<BR><BR><BR>_____________________________________________________ 
+      <BR>To be taken off future campaigns, go: <A 
+      href="http://www.oemdisks.biz/uns.htm">http://www.oemdisks.biz/uns.htm</A><BR>_____________________________________________________ 
+
+      <P></P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
+
+------=_NextPart_001_0001_7371055A.D7AAEC54--
 
 
 
-Is this card really supported as indicated by the alsa souncards list?
-Am I doing something wrong?
-
-How can I fix it or get more information so someone can?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-13-04 09:21 sjberryman     New Issue                                    
-12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
-and Suse 9.2
-12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
-12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
-12-13-04 10:07 pzad           Note Added: 0002821                          
-12-16-04 18:28 tiwai          Status                   new => resolved     
-12-16-04 18:28 tiwai          Resolution               open => not an issue
-12-16-04 18:28 tiwai          Assigned To               => tiwai           
-12-16-04 18:28 tiwai          Assigned To              tiwai =>            
-01-19-05 09:08 sjberryman     Status                   resolved => feedback
-01-19-05 09:08 sjberryman     Resolution               not an issue => reopened
-01-19-05 09:08 sjberryman     Note Added: 0003263                          
-01-19-05 14:27 tiwai          Note Added: 0003266                          
-01-22-05 22:15 nadavkav       Note Added: 0003379                          
-01-22-05 23:20 fmoraes        Note Added: 0003381                          
-01-25-05 22:39 Kane32         Note Added: 0003411                          
-01-26-05 13:18 nadavkav       Note Added: 0003416                          
-02-08-05 23:26 sHINOBI        Issue Monitored: sHINOBI                     
-02-08-05 23:32 sHINOBI        Note Added: 0003534                          
-02-09-05 07:25 pzad           Note Added: 0003535                          
-02-09-05 08:57 sHINOBI        Note Added: 0003536                          
-02-09-05 13:25 nadavkav       Issue Monitored: nadavkav                    
-02-09-05 13:25 nadavkav       Issue End Monitor: nadavkav                    
-05-28-05 16:06 sjberryman     Note Added: 0004774                          
-======================================================================
-
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by Yahoo.
-Introducing Yahoo! Search Developer Network - Create apps using Yahoo!
-Search APIs Find out how you can build Yahoo! directly into your own
-Applications - visit http://developer.yahoo.net/?fr=offad-ysdn-ostg-q22005
+------=_NextPart_000_0000_187D84CC.32DF9F0E--
