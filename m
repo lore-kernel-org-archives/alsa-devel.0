@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
-Date: Sat, 28 May 2005 12:29:11 +0200
-Message-ID: <5e1e9f8aa3781271f2603ff1ea286099@bugtrack.alsa-project.org>
+Date: Sat, 28 May 2005 12:29:33 +0200
+Message-ID: <ecbe6f8c1e34d947379ada01c6dd556c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 721AE214
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:29:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD47A214
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:29:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
 ======================================================================
@@ -35,7 +35,7 @@ Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     closed
 Distribution:               Fedora Core 3
 Kernel Version:             2.6.10-1.766_FC3
 Resolution:                 fixed
@@ -104,6 +104,7 @@ Date Modified  Username       Field                    Change
 05-28-05 12:29 jcdutton       Status                   feedback => resolved
 05-28-05 12:29 jcdutton       Resolution               open => fixed       
 05-28-05 12:29 jcdutton       Note Added: 0004771                          
+05-28-05 12:29 jcdutton       Status                   resolved => closed  
 ======================================================================
 
 
