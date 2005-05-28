@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001121]: Very low volume through SPDIF (no master volume?)
-Date: Sat, 28 May 2005 12:30:23 +0200
-Message-ID: <a9ce6ddf285ffa6c12fa08b9239cdfe5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001113]: application crash
+Date: Sat, 28 May 2005 12:33:09 +0200
+Message-ID: <4e506a7f19ef55344e701cb718e001f3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65DF9214
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:30:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7351F214
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:33:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1121> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1113> 
 ======================================================================
-Reported By:                dacid
-Assigned To:                jcdutton
+Reported By:                Yota_VGA
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1121
-Category:                   PCI - ca0106
+Issue ID:                   1113
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo (vanilla kernel)
-Kernel Version:             2.6.12-rc4
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.6.8-gentoo-r9
 ======================================================================
-Date Submitted:             05-21-2005 03:21 CEST
-Last Modified:              05-28-2005 12:30 CEST
+Date Submitted:             05-16-2005 19:52 CEST
+Last Modified:              05-28-2005 12:33 CEST
 ======================================================================
-Summary:                    Very low volume through SPDIF (no master volume?)
+Summary:                    application crash
 Description: 
-Hello - 
-   I've been trying for a few weeks now to get SPDIF out working on my
-Soundblaster 24bit card working.
-   The issue is that the output to my receiver is very low, if I crank it
-way up (-8db), I can hear some audio, but it is very muffled and
-distored.
-   I've tried various setting combinations in alsamixer, to no avail.
-   I'm also a little curious as to why this soundcard has no master volume
-or PCM controls.
-
+Some applications crash when i listen a wave with aplay (and in some other
+circostances, i've not be tested very well), like as xmms (when I use the
+alsa plugin and I play a song) and alsamixer.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 05-28-05 12:13 
+ Stephan Wurm - 05-27-05 12:13 
 ----------------------------------------------------------------------
-Are you using the Creative SPDIF Dongle?
-The dongle has Optical/Coax in and out.
+Forgot to say, that I haven't tried Alsa 1.0.9rc* yet.
 
 ----------------------------------------------------------------------
- jcdutton - 05-28-05 12:30 
+ jcdutton - 05-28-05 12:33 
 ----------------------------------------------------------------------
-Please provide feedback.
+This is most likely a bug in xmms.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-21-05 03:21 dacid          New Issue                                    
-05-21-05 03:21 dacid          Distribution              => Gentoo (vanilla
-kernel)
-05-21-05 03:21 dacid          Kernel Version            => 2.6.12-rc4      
-05-24-05 01:54 dacid          Issue Monitored: dacid                       
-05-28-05 12:13 jcdutton       Note Added: 0004763                          
-05-28-05 12:30 jcdutton       Note Added: 0004772                          
-05-28-05 12:30 jcdutton       Status                   assigned => feedback
+05-16-05 19:52 Yota_VGA       New Issue                                    
+05-16-05 19:52 Yota_VGA       Distribution              => gentoo          
+05-16-05 19:52 Yota_VGA       Kernel Version            => 2.6.8-gentoo-r9 
+05-27-05 12:12 Stephan Wurm   Note Added: 0004745                          
+05-27-05 12:13 Stephan Wurm   Issue Monitored: Stephan Wurm                    
+05-27-05 12:13 Stephan Wurm   Note Added: 0004746                          
+05-28-05 12:33 jcdutton       Note Added: 0004773                          
 ======================================================================
 
 
