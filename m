@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000901]: The onboard audigyls chip on msi k8 diamond motherboard not recognized. Path supplied.
-Date: Sat, 28 May 2005 12:20:04 +0200
-Message-ID: <3b6fd751820a998b80b98e85ae99fc4b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000987]: new chipset
+Date: Sat, 28 May 2005 12:20:52 +0200
+Message-ID: <b231030ab8506f1a0dde54c88ad5fe1f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 828BB214
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:20:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0F4D214
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:21:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=901> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=987> 
 ======================================================================
-Reported By:                kiksen
+Reported By:                mitchix
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   901
+Issue ID:                   987
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.10
+Distribution:               debian useing pure64 sid
+Kernel Version:             2.6.10-9-amd64-k8
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-11-2005 23:49 CET
+Date Submitted:             03-12-2005 22:49 CET
 Last Modified:              05-28-2005 12:20 CEST
 ======================================================================
-Summary:                    The onboard audigyls chip on msi k8 diamond
-motherboard not recognized. Path supplied.
+Summary:                    new chipset
 Description: 
-We'll. The driver fails to load (and dmesg comlaints about a missing AC97)
+Vendor 1462: Micro-Star International Co., Ltd.
+Card model K8N Neo4 Platinum/SLI
 
-Have made a path.
+On Board Audio
+ 	
+Creative sound Bluster Live 24-bit H/W audio
+24-bit / 96KHz audio quality
+100db SNR clarity
+Up to 7.1 CH Surround Sound, Dolby Digital ready
+
+modprobe snd_ca0106
+Model 1009 Rev 00000000 Serial 10091462
+
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0000987 new chipset
+duplicate of        0000901 The onboard audigyls chip on msi k8 dia...
 ======================================================================
 
 ----------------------------------------------------------------------
- sHINOBI - 02-13-05 01:21 
+ mitchix - 03-12-05 22:55 
 ----------------------------------------------------------------------
-*nods*, seems to be better:
-
-0 [CA0106         ]: CA0106 - CA0106
-                     Live! by MSI [SB0438] at 0xde00 irq 233
+Sorry this is Dup of 901
 
 ----------------------------------------------------------------------
- jcdutton - 02-13-05 01:27 
+ jcdutton - 03-19-05 18:19 
 ----------------------------------------------------------------------
-Thank you. A modified patch will be added to alsa cvs.
+Fixed in 1.0.9
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-11-05 23:49 kiksen         New Issue                                    
-02-11-05 23:49 kiksen         File Added: msi_audigyls_patch.patch              
-     
-02-11-05 23:49 kiksen         Distribution              => Gentoo          
-02-11-05 23:49 kiksen         Kernel Version            => 2.6.10          
-02-12-05 00:56 jcdutton       Note Added: 0003569                          
-02-12-05 14:36 kiksen         Note Added: 0003571                          
-02-12-05 22:43 sHINOBI        Issue Monitored: sHINOBI                     
-02-12-05 22:47 sHINOBI        Note Added: 0003572                          
-02-13-05 00:18 jcdutton       Note Added: 0003574                          
-02-13-05 00:54 sHINOBI        Note Added: 0003575                          
-02-13-05 01:08 jcdutton       Note Added: 0003576                          
-02-13-05 01:21 sHINOBI        Note Added: 0003577                          
-02-13-05 01:27 jcdutton       Status                   assigned => resolved
-02-13-05 01:27 jcdutton       Resolution               open => fixed       
-02-13-05 01:27 jcdutton       Note Added: 0003578                          
-02-22-05 19:22 sHINOBI        Issue End Monitor: sHINOBI                    
-03-19-05 18:17 jcdutton       Relationship added       has duplicate 0000987
+03-12-05 22:49 mitchix        New Issue                                    
+03-12-05 22:49 mitchix        Distribution              => debian useing pure64
+sid
+03-12-05 22:49 mitchix        Kernel Version            => 2.6.10-9-amd64-k8
+03-12-05 22:55 mitchix        Note Added: 0003899                          
+03-19-05 18:17 jcdutton       Relationship added       duplicate of 0000901
+03-19-05 18:19 jcdutton       Duplicate ID             0 => 901            
+03-19-05 18:19 jcdutton       Status                   assigned => resolved
+03-19-05 18:19 jcdutton       Resolution               open => fixed       
+03-19-05 18:19 jcdutton       Note Added: 0004061                          
 05-28-05 12:20 jcdutton       Status                   resolved => closed  
 ======================================================================
 
