@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001008]: only one application can play at once
-Date: Sat, 28 May 2005 12:24:55 +0200
-Message-ID: <bc8b8a156747dd4498563664095498c0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001043]: gstreamer cannot play flacs or oggs when p16v is enabled.
+Date: Sat, 28 May 2005 12:27:10 +0200
+Message-ID: <8b8c414769a7626206cb59e312a687dc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D075D214
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:24:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A6D0214
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 12:27:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1008> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1043> 
 ======================================================================
-Reported By:                msillence
+Reported By:                stuNNed
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1008
-Category:                   PCI - ca0106
+Issue ID:                   1043
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             2.6.11.5
+Distribution:               Ubuntu Linux 5.0.4
+Kernel Version:             2.6.10-5-686-smp
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-22-2005 22:15 CET
-Last Modified:              05-28-2005 12:24 CEST
+Date Submitted:             04-09-2005 21:46 CEST
+Last Modified:              05-28-2005 12:27 CEST
 ======================================================================
-Summary:                    only one application can play at once
+Summary:                    gstreamer cannot play flacs or oggs when p16v is
+enabled.
 Description: 
-when two applications try and play or write to the dsp at the same time the
-second  gets a device in use message.
+Please see bug report at gnome.org:
+
+http://bugzilla.gnome.org/show_bug.cgi?id=171131
+
+gstreamer apps muine and rhythmbox can play mp3 files fine but cannot play
+ogg vorbis files or flac files.  i'm guessing this might be an issue with
+the driver and alsa-lib?
 ======================================================================
 
 ----------------------------------------------------------------------
- msillence - 04-03-05 19:36 
+ jcdutton - 04-10-05 13:38 
 ----------------------------------------------------------------------
-Curious the via driver supports multiple programs accessing the sound card
-at once without dmix.
-I'm afraid that due to the lack of recording support I intend to sell/give
-away the card and try another. (I filed this bug at the same time as the
-recording problem)
-Thanks for the suggestion though.
+Does the latest alsa-driver CVS improve things?
+I put a patch in yesterday.
 
 ----------------------------------------------------------------------
- jcdutton - 05-28-05 12:24 
+ jcdutton - 05-28-05 12:27 
 ----------------------------------------------------------------------
-The ca0106 driver now supports capture.
+Closed due to lack of feedback.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-05 22:15 msillence      New Issue                                    
-03-22-05 22:15 msillence      Kernel Version            => 2.6.11.5        
-04-03-05 13:32 jcdutton       Note Added: 0004308                          
-04-03-05 13:32 jcdutton       Status                   assigned => feedback
-04-03-05 19:36 msillence      Note Added: 0004313                          
-05-28-05 12:24 jcdutton       Status                   feedback => closed  
-05-28-05 12:24 jcdutton       Note Added: 0004767                          
+04-09-05 21:46 stuNNed        New Issue                                    
+04-09-05 21:46 stuNNed        Distribution              => Ubuntu Linux 5.0.4
+04-09-05 21:46 stuNNed        Kernel Version            => 2.6.10-5-686-smp
+04-09-05 21:49 stuNNed        Note Added: 0004430                          
+04-09-05 22:11 stuNNed        Issue Monitored: stuNNed                     
+04-09-05 22:37 stuNNed        Note Added: 0004431                          
+04-10-05 13:38 jcdutton       Note Added: 0004438                          
+04-10-05 13:38 jcdutton       Assigned To               => jcdutton        
+04-10-05 13:38 jcdutton       Status                   new => feedback     
+05-28-05 12:27 jcdutton       Status                   feedback => closed  
+05-28-05 12:27 jcdutton       Note Added: 0004769                          
 ======================================================================
 
 
