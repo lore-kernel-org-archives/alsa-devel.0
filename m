@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001128]: ALSA Driver for FW1884
-Date: Sat, 28 May 2005 05:19:06 +0200
-Message-ID: <a4eed6715560b539a4f4fa3d329a363f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001133]: openal gives no sound with alsa driver
+Date: Sat, 28 May 2005 07:22:31 +0200
+Message-ID: <6ee8122d01d43e1291daa9187fdb32a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 860CD20C
-	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 05:19:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4282E222
+	for <alsa-devel@alsa-project.org>; Sat, 28 May 2005 07:22:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1128> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1133> 
 ======================================================================
-Reported By:                elvingonzalez
+Reported By:                qwer1234
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1128
-Category:                   OTHERS
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   1133
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               slackware-current
+Kernel Version:             2.6.12-rc5
 ======================================================================
-Date Submitted:             05-26-2005 20:25 CEST
-Last Modified:              05-28-2005 05:19 CEST
+Date Submitted:             05-28-2005 07:22 CEST
+Last Modified:              05-28-2005 07:22 CEST
 ======================================================================
-Summary:                    ALSA Driver for FW1884
+Summary:                    openal gives no sound with alsa driver
 Description: 
-Hi,
-
-I will like to know if there is any ASLA driver that supports the Tascam
-FW1884.
-If there is not a driver for the FW1884, how can I contribute to make
-one?
-
-If this is not place to be asking this, I apology and ask where can I get
-information about this matter. 
-
-Thanks
-Elvin
+When I add this to ~/.openalrc
+ (define devices '(alsa))
+ (define alsa-device "default")
+ (define speaker-num 2)
+I get no sound with openalrc.
+I use dmix plugin.
 ======================================================================
-
-----------------------------------------------------------------------
- elvingonzalez - 05-27-05 23:39 
-----------------------------------------------------------------------
-I checked with Freebob and because of the chipset, there's no much
-probability of it to work with the FW1884.
-
-If there is no ALSA driver for the FW1884. Is there a way for me to help
-writting one? Can this be done at all? What information do I need to get
-and how do I get it?
-
-Once again, thanks again for your time.
-Elvin
-
-----------------------------------------------------------------------
- rlrevell - 05-28-05 05:19 
-----------------------------------------------------------------------
-Please search the alsa-devel archives for "reverse engineering".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-26-05 20:25 elvingonzalez  New Issue                                    
-05-26-05 21:48 martin         Note Added: 0004739                          
-05-27-05 23:39 elvingonzalez  Note Added: 0004755                          
-05-28-05 05:19 rlrevell       Note Added: 0004758                          
+05-28-05 07:22 qwer1234       New Issue                                    
+05-28-05 07:22 qwer1234       Distribution              => slackware-current
+05-28-05 07:22 qwer1234       Kernel Version            => 2.6.12-rc5      
 ======================================================================
 
 
